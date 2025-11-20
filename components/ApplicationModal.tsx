@@ -47,6 +47,7 @@ export default function ApplicationModal({
 
   const handleGoToDashboard = () => {
     router.push("/talent/dashboard");
+    router.refresh();
     onClose();
     setIsSubmitted(false);
     setCoverLetter("");
