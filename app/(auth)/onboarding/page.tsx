@@ -196,7 +196,7 @@ const CreateProfileStep = ({
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-0 flex-1 overflow-hidden border">
         {/* Left side - Form */}
-        <div className="flex flex-col justify-start p-6 md:p-10 md:pr-6 bg-white overflow-y-auto">
+        <div className="flex flex-col justify-start p-6 md:p-10 md:pr-6 bg-white overflow-y-auto scrollbar-hidden">
           <div className="flex flex-col gap-8 min-h-min">
             {/* Header */}
             <div className="flex flex-col gap-3 flex-shrink-0">
@@ -720,7 +720,7 @@ const OnboardingPage = () => {
                   <p className="text-sm">Preview Panel</p>
                 </div>
               </div>
-              <div className="flex flex-col justify-start p-8 md:p-12 lg:p-16 bg-white overflow-y-auto">
+              <div className="flex flex-col justify-start p-8 md:p-12 lg:p-16 bg-white overflow-y-auto scrollbar-hidden">
                 <ShowcaseSkillsStep
                   onNext={handleSkillsNext}
                   onBack={handleBack}
