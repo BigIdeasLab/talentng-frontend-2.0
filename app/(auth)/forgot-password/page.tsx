@@ -17,7 +17,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-white overflow-hidden">
+    <div className="relative h-screen bg-white overflow-hidden">
       {/* Gradient Background */}
       <svg
         className="absolute inset-0 w-full h-full"
@@ -85,7 +85,7 @@ const ForgotPassword = () => {
       </svg>
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-8">
+      <div className="relative z-10 h-screen flex items-center justify-center px-4 py-8 overflow-y-auto">
         <div className="w-full max-w-md">
           <div className="bg-white rounded-[30px] shadow-lg p-8 md:p-12 lg:p-16">
             <div className="flex flex-col items-center gap-8">

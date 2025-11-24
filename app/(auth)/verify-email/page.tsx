@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 const VerifyEmailPage = () => {
   return (
-    <div className="relative min-h-screen bg-white overflow-hidden">
+    <div className="relative h-screen bg-white overflow-hidden">
       {/* Gradient Background */}
       <svg
         className="absolute inset-0 w-full h-full"
