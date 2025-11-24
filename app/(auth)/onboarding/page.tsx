@@ -209,10 +209,7 @@ const CreateProfileStep = ({
             </div>
 
             {/* Form */}
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-[13px]"
-      >
+            <form onSubmit={handleSubmit} className="flex flex-col gap-[13px]">
               {/* First Name */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
