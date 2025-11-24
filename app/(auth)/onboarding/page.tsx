@@ -48,13 +48,28 @@ const SelectRoleStep = ({ onNext }: { onNext: (role: Role) => void }) => {
   ];
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="relative flex flex-col gap-8">
+      {/* Logo */}
+      <img
+        src="https://api.builder.io/api/v1/image/assets/TEMP/e6cfaabb6014008791cbccd5e74eb9e74ecc352c?width=160"
+        alt="TalentNG Logo"
+        className="absolute top-0 left-0 w-20 h-auto rounded-[3.457px] shadow-[0.777px_0.777px_24.66px_0_rgba(0,0,0,0.25)]"
+      />
+
+      {/* Back Button */}
+      <button
+        className="absolute top-0 right-0 px-[25px] py-[21px] bg-[#A9A9A9] text-white rounded-[60px] text-[15px] font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors"
+        onClick={() => window.history.back()}
+      >
+        Back
+      </button>
+
       {/* Header */}
-      <div className="flex flex-col gap-3 text-center">
-        <h2 className="text-3xl md:text-[30px] font-semibold text-black">
-          How Do You Want To Use Talent.Ng
+      <div className="flex flex-col gap-5 text-center mt-16">
+        <h2 className="text-2xl md:text-[30px] font-medium text-black capitalize font-[Inter_Tight] leading-[105%]">
+          How do you want to use Talent.ng
         </h2>
-        <p className="text-base md:text-[17px] font-light text-gray-400">
+        <p className="text-sm md:text-[17px] font-light text-[#919191] capitalize font-[Inter_Tight] leading-[120%]">
           Pick the option that best describes you
         </p>
       </div>
@@ -65,14 +80,14 @@ const SelectRoleStep = ({ onNext }: { onNext: (role: Role) => void }) => {
           <button
             key={role.id}
             onClick={() => setSelectedRole(role.id as Role)}
-            className={`flex flex-col rounded-[10px] overflow-hidden transition-all ${
+            className={`flex flex-col overflow-hidden transition-all ${
               selectedRole === role.id
-                ? "ring-2 ring-[#5C30FF] shadow-lg"
-                : "border border-gray-200"
+                ? "ring-2 ring-[#5C30FF]"
+                : ""
             }`}
           >
             {/* Image */}
-            <div className="relative w-full aspect-square bg-gray-100 overflow-hidden">
+            <div className="relative w-full aspect-square bg-[#E3E3E3] overflow-hidden">
               <img
                 src={role.image}
                 alt={role.label}
@@ -81,42 +96,25 @@ const SelectRoleStep = ({ onNext }: { onNext: (role: Role) => void }) => {
             </div>
 
             {/* Label */}
-            <div className="flex-1 bg-white p-4 flex items-center justify-center text-center">
-              <span className="text-sm md:text-base font-semibold text-black">
+            <div className="bg-white py-[17px] px-2.5 flex items-center justify-center">
+              <span className="text-base font-medium text-black font-[Inter_Tight]">
                 {role.label}
               </span>
             </div>
-
-            {/* Checkmark */}
-            {selectedRole === role.id && (
-              <div className="absolute top-3 right-3 w-6 h-6 bg-[#5C30FF] rounded-full flex items-center justify-center">
-                <svg
-                  className="w-4 h-4 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-              </div>
-            )}
           </button>
         ))}
       </div>
 
       {/* Continue Button */}
-      <Button
-        onClick={() => selectedRole && onNext(selectedRole)}
-        disabled={!selectedRole}
-        className="w-full h-[53px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-base disabled:bg-gray-400"
-      >
-        Continue
-      </Button>
+      <div className="flex justify-center">
+        <Button
+          onClick={() => selectedRole && onNext(selectedRole)}
+          disabled={!selectedRole}
+          className="px-10 py-[21px] h-[53px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-medium text-[15px] font-[Inter_Tight] disabled:bg-gray-400 disabled:cursor-not-allowed"
+        >
+          Continue
+        </Button>
+      </div>
     </div>
   );
 };
