@@ -499,7 +499,7 @@ const OnboardingPage = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-white overflow-hidden">
+    <div className="relative h-screen bg-white overflow-hidden">
       {/* Gradient Background */}
       <svg
         className="absolute inset-0 w-full h-full"
@@ -567,7 +567,7 @@ const OnboardingPage = () => {
       </svg>
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-8 md:px-8 lg:px-12">
+      <div className="relative z-10 h-screen flex items-center justify-center px-4 py-8 md:px-8 lg:px-12 overflow-y-auto">
         <div className="w-full max-w-6xl">
           <div className="bg-white rounded-[30px] shadow-lg overflow-hidden">
             {currentStep === 1 ? (
@@ -612,7 +612,7 @@ const OnboardingPage = () => {
 const OnboardingPageWithSuspense = () => (
   <Suspense
     fallback={
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
       </div>
     }
