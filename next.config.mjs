@@ -7,6 +7,11 @@ const nextConfig = {
         hostname: 's3.us-east-1.amazonaws.com',
         pathname: '/talent.ng/profile-images/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'api.builder.io',
+        pathname: '/api/v1/image/**',
+      },
     ],
   },
   async rewrites() {
