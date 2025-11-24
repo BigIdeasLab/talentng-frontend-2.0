@@ -48,31 +48,13 @@ const SelectRoleStep = ({ onNext }: { onNext: (role: Role) => void }) => {
   ];
 
   return (
-    <div className="relative flex flex-col gap-8 pt-16">
-      {/* Top Bar */}
-      <div className="absolute top-0 left-0 right-0 flex items-center justify-between">
-        {/* Logo */}
-        <img
-          src="https://api.builder.io/api/v1/image/assets/TEMP/e6cfaabb6014008791cbccd5e74eb9e74ecc352c?width=160"
-          alt="TalentNG Logo"
-          className="w-20 h-auto rounded-[3.457px] shadow-[0.777px_0.777px_24.66px_0_rgba(0,0,0,0.25)]"
-        />
-
-        {/* Back Button */}
-        <button
-          className="px-[25px] py-[11px] bg-[#A9A9A9] text-white rounded-[60px] text-[15px] font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-[53px]"
-          onClick={() => window.history.back()}
-        >
-          Back
-        </button>
-      </div>
-
+    <div className="flex flex-col gap-8">
       {/* Header */}
-      <div className="flex flex-col gap-5 text-center">
-        <h2 className="text-2xl md:text-[30px] font-medium text-black capitalize font-[Inter_Tight] leading-[105%]">
+      <div className="flex flex-col gap-3 text-center">
+        <h2 className="text-3xl md:text-[30px] font-semibold text-black">
           How do you want to use Talent.ng
         </h2>
-        <p className="text-sm md:text-[17px] font-light text-[#919191] capitalize font-[Inter_Tight] leading-[120%]">
+        <p className="text-sm md:text-[17px] font-light text-[#919191]">
           Pick the option that best describes you
         </p>
       </div>
