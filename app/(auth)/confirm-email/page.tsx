@@ -258,60 +258,32 @@ const ConfirmEmailPage = () => {
                         render={({ field }) => (
                           <FormItem>
                             <FormControl>
-                              <div
-                                className={`flex gap-2 justify-center rounded-[10px] p-2 ${
-                                  error ? "bg-red-50" : "bg-gray-100"
-                                }`}
-                              >
+                              <div className="flex justify-center items-center rounded-[10px] bg-[#F5F5F5] py-[5px] px-[54px]">
                                 <InputOTP maxLength={6} {...field}>
-                                  <InputOTPGroup className="flex gap-0">
+                                  <InputOTPGroup className="flex items-center gap-0">
                                     <InputOTPSlot
                                       index={0}
-                                      className={`w-12 h-14 text-2xl font-semibold border-0 rounded-[8px] ${
-                                        error
-                                          ? "bg-red-100 text-red-600"
-                                          : "bg-white text-black"
-                                      }`}
+                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
                                     />
                                     <InputOTPSlot
                                       index={1}
-                                      className={`w-12 h-14 text-2xl font-semibold border-0 rounded-[8px] ${
-                                        error
-                                          ? "bg-red-100 text-red-600"
-                                          : "bg-white text-black"
-                                      }`}
+                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
                                     />
                                     <InputOTPSlot
                                       index={2}
-                                      className={`w-12 h-14 text-2xl font-semibold border-0 rounded-[8px] ${
-                                        error
-                                          ? "bg-red-100 text-red-600"
-                                          : "bg-white text-black"
-                                      }`}
+                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
                                     />
                                     <InputOTPSlot
                                       index={3}
-                                      className={`w-12 h-14 text-2xl font-semibold border-0 rounded-[8px] ${
-                                        error
-                                          ? "bg-red-100 text-red-600"
-                                          : "bg-white text-black"
-                                      }`}
+                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
                                     />
                                     <InputOTPSlot
                                       index={4}
-                                      className={`w-12 h-14 text-2xl font-semibold border-0 rounded-[8px] ${
-                                        error
-                                          ? "bg-red-100 text-red-600"
-                                          : "bg-white text-black"
-                                      }`}
+                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
                                     />
                                     <InputOTPSlot
                                       index={5}
-                                      className={`w-12 h-14 text-2xl font-semibold border-0 rounded-[8px] ${
-                                        error
-                                          ? "bg-red-100 text-red-600"
-                                          : "bg-white text-black"
-                                      }`}
+                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
                                     />
                                   </InputOTPGroup>
                                 </InputOTP>
