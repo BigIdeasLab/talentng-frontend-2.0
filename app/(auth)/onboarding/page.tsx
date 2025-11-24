@@ -196,8 +196,8 @@ const CreateProfileStep = ({
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-0 flex-1 overflow-hidden border">
         {/* Left side - Form */}
-        <div className="flex flex-col justify-start p-6 md:p-10 md:pr-6 bg-white overflow-hidden">
-          <div className="flex flex-col gap-8">
+        <div className="flex flex-col justify-start p-6 md:p-10 md:pr-6 bg-white overflow-y-auto">
+          <div className="flex flex-col gap-8 min-h-min">
             {/* Header */}
             <div className="flex flex-col gap-3 flex-shrink-0">
               <p className="text-[17px] text-[#919191] font-light font-[Inter_Tight] leading-[120%] capitalize">
