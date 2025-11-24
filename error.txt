@@ -1,0 +1,10 @@
+useEffect running. Profile: undefined
+C:\Users\hecan\Documents\talentng-frontend\app\talent\dashboard\complete-profile\page.tsx:97 useEffect running. Profile: undefined
+C:\Users\hecan\Documents\talentng-frontend\app\talent\dashboard\complete-profile\page.tsx:97 useEffect running. Profile: {id: 'ceffafd6-37ec-412e-99dd-97e1f0212515', userId: 'c66a3428-191e-43cf-b8da-9e5b0b527971', fullName: 'rturturtu', headline: '', bio: '', …}
+C:\Users\hecan\Documents\talentng-frontend\app\talent\dashboard\complete-profile\page.tsx:99 Fetched profile data: {id: 'ceffafd6-37ec-412e-99dd-97e1f0212515', userId: 'c66a3428-191e-43cf-b8da-9e5b0b527971', fullName: 'rturturtu', headline: '', bio: '', …}
+C:\Users\hecan\Documents\talentng-frontend\app\talent\dashboard\complete-profile\page.tsx:172 handleNext called. currentStepIndex: 0
+C:\Users\hecan\Documents\talentng-frontend\app\talent\dashboard\complete-profile\page.tsx:172 handleNext called. currentStepIndex: 1
+C:\Users\hecan\Documents\talentng-frontend\components\CompleteProfile\PortfolioUploadStep.tsx:108 Uploading complete. Calling onNext.
+C:\Users\hecan\Documents\talentng-frontend\app\talent\dashboard\complete-profile\page.tsx:172 handleNext called. currentStepIndex: 2
+C:\Users\hecan\Documents\talentng-frontend\app\talent\dashboard\complete-profile\page.tsx:97 useEffect running. Profile: {id: 'ceffafd6-37ec-412e-99dd-97e1f0212515', userId: 'c66a3428-191e-43cf-b8da-9e5b0b527971', fullName: 'rturturtu', headline: '', bio: '', …}
+C:\Users\hecan\Documents\talentng-frontend\app\talent\dashboard\complete-profile\page.tsx:99 Fetched profile data: {id: 'ceffafd6-37ec-412e-99dd-97e1f0212515', userId: 'c66a3428-191e-43cf-b8da-9e5b0b527971', fullName: 'rturturtu', headline: '', bio: '', …}

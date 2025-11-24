@@ -1,0 +1,46 @@
+export interface Talent {
+  id: string;
+  userId: string;
+  fullName: string | null;
+  headline: string | null;
+  bio: string | null;
+  skills: string[];
+  workExperience: any[]; 
+  education: any[];
+  location: string | null;
+  links: string | null;
+  portfolioItems: any[];
+  resumeUrl: string | null;
+  visibility: 'public' | 'private';
+  isFeatured: boolean;
+  featuredUntil: string | null;
+  views: number;
+  coverImageUrl: string | null;
+  profileImageUrl: string | null;
+  company: string | null;
+  duration: string | null;
+  description: string | null;
+  gallery: any[];
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  availability: string | null;
+  preferredRole: string | null;
+  phoneNumber: string | null;
+  user: {
+    id: string;
+    username: string;
+    email: string;
+    role: 'talent';
+    status: 'active' | 'inactive';
+    isVerified: boolean;
+    verificationLevel: 'basic' | 'intermediate' | 'advanced';
+    emailVerifiedAt: string | null;
+    lastLoginAt: string | null;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+    oneSignalPlayerId: string | null;
+    twoFactorEnabled: boolean;
+  };
+}
