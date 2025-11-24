@@ -149,11 +149,11 @@ const Signup = () => {
           <div className="bg-white rounded-[30px] shadow-lg overflow-hidden max-h-[calc(100vh-24px)] flex flex-col">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
               {/* Left Side - Logo */}
-              <div className="hidden md:flex flex-col items-center justify-center p-6 lg:p-10 bg-white overflow-hidden">
+              <div className="hidden md:flex flex-col items-center justify-center p-8 lg:p-12 bg-white overflow-hidden">
                 <img
                   src="https://api.builder.io/api/v1/image/assets/TEMP/ecad5cb9cbb17ee75c4a3aee33c69b88431f60fc?width=1224"
                   alt="Talent.ng Logo"
-                  className="w-full max-w-sm h-auto rounded-[22px] shadow-md"
+                  className="w-full max-w-md object-contain rounded-[22px] shadow-md"
                 />
               </div>
 
