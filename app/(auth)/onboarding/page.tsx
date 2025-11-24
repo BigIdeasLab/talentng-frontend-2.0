@@ -630,7 +630,7 @@ const OnboardingPage = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col px-3 py-8 md:px-4 lg:px-6 w-full">
+    <div className="relative min-h-screen flex flex-col items-center justify-center px-3 py-8 md:px-4 lg:px-6 w-full">
       {/* Gradient Background */}
       <svg
         className="absolute inset-0 w-full h-full"
@@ -698,28 +698,34 @@ const OnboardingPage = () => {
       </svg>
 
       {/* Content */}
-      <div className="bg-white rounded-[30px] shadow-lg overflow-hidden w-full max-w-6xl z-10 my-auto">
+      <div className="bg-white rounded-[30px] shadow-lg overflow-hidden w-full max-w-6xl z-10 h-[90vh] flex flex-col">
         {currentStep === 1 && (
-          <SelectRoleStep
-            onNext={handleRoleSelect}
-            onBack={handleSelectRoleBack}
-          />
+          <div className="h-full flex flex-col overflow-hidden">
+            <SelectRoleStep
+              onNext={handleRoleSelect}
+              onBack={handleSelectRoleBack}
+            />
+          </div>
         )}
         {currentStep === 2 && (
-          <CreateProfileStep onNext={handleProfileNext} onBack={handleBack} />
+          <div className="h-full flex flex-col overflow-hidden">
+            <CreateProfileStep onNext={handleProfileNext} onBack={handleBack} />
+          </div>
         )}
         {currentStep === 3 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-            <div className="hidden md:flex flex-col items-center justify-center p-12 lg:p-16 bg-gray-50">
-              <div className="text-center text-gray-400">
-                <p className="text-sm">Preview Panel</p>
+          <div className="h-full flex flex-col overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
+              <div className="hidden md:flex flex-col items-center justify-center p-12 lg:p-16 bg-gray-50">
+                <div className="text-center text-gray-400">
+                  <p className="text-sm">Preview Panel</p>
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col justify-start p-8 md:p-12 lg:p-16 bg-white">
-              <ShowcaseSkillsStep
-                onNext={handleSkillsNext}
-                onBack={handleBack}
-              />
+              <div className="flex flex-col justify-start p-8 md:p-12 lg:p-16 bg-white overflow-y-auto">
+                <ShowcaseSkillsStep
+                  onNext={handleSkillsNext}
+                  onBack={handleBack}
+                />
+              </div>
             </div>
           </div>
         )}
