@@ -151,7 +151,7 @@ const Signup = () => {
               {/* Left Side - Logo */}
               <div className="hidden md:flex flex-col items-center justify-center p-8 lg:p-12 bg-white overflow-hidden">
                 <img
-                  src="https://api.builder.io/api/v1/image/assets/TEMP/ecad5cb9cbb17ee75c4a3aee33c69b88431f60fc?width=1224"
+                  src="/logo.png"
                   alt="Talent.ng Logo"
                   className="w-full max-w-md object-contain rounded-[22px] shadow-md"
                 />

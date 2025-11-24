@@ -81,7 +81,7 @@ const Login = () => {
   };
 
   return (
-    <div className="relative h-screen bg-white overflow-hidden">
+    <div className="relative min-h-screen bg-white overflow-auto">
       {/* Gradient Background */}
       <svg
         className="absolute inset-0 w-full h-full"
@@ -149,22 +149,22 @@ const Login = () => {
       </svg>
 
       {/* Content */}
-      <div className="relative z-10 h-screen flex items-center justify-center px-3 py-3 md:px-4 lg:px-6 overflow-hidden">
-        <div className="w-full max-w-5xl max-h-full">
-          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden max-h-[calc(100vh-24px)] flex flex-col">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-3 py-6 md:py-8 lg:py-12 md:px-4 lg:px-6">
+        <div className="w-full max-w-5xl">
+          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden flex flex-col md:flex-row border border-red-900">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0 w-full">
               {/* Left Side - Logo */}
-              <div className="hidden md:flex flex-col items-center justify-center p-8 lg:p-12 bg-white overflow-hidden">
+              <div className="hidden md:flex flex-col items-center justify-center p-8 lg:p-12 bg-white min-h-[400px] md:min-h-auto">
                 <img
-                  src="https://api.builder.io/api/v1/image/assets/TEMP/ecad5cb9cbb17ee75c4a3aee33c69b88431f60fc?width=1224"
+                  src="/logo.png"
                   alt="Talent.ng Logo"
-                  className="w-full max-w-md object-contain rounded-[22px] shadow-md"
+                  className="w-full max-w-sm object-contain"
                 />
               </div>
 
               {/* Right Side - Form */}
-              <div className="flex flex-col justify-center p-6 md:p-8 lg:p-10 bg-white overflow-y-auto">
-                <div className="flex flex-col gap-5 text-sm md:text-base">
+              <div className="flex flex-col justify-center p-6 md:p-8 lg:p-10 bg-white">
+                <div className="flex flex-col gap-5 text-sm md:text-base w-full">
                   {/* Header */}
                   <div className="flex flex-col gap-3">
                     <h1 className="text-2xl md:text-[28px] font-semibold text-black leading-tight">

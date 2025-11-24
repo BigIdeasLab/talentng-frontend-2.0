@@ -38,10 +38,10 @@ const OnboardingPage = () => {
 
   const handleFinalSubmit = async (data: any) => {
     setIsLoading(true);
-    
+
     // Prepare FormData for multipart/form-data request
     const formData = new FormData();
-    
+
     // Add role - map "employer" to "RECRUITER" for API
     let roleValue: "TALENT" | "RECRUITER" | "MENTOR";
     if (selectedRole === "employer") {
@@ -58,7 +58,7 @@ const OnboardingPage = () => {
       return;
     }
     formData.append("role", roleValue);
-    
+
     // Add profile as JSON string
     if (!profileData) {
       toast({
@@ -70,10 +70,10 @@ const OnboardingPage = () => {
       return;
     }
     formData.append("profile", JSON.stringify(profileData));
-    
+
     // Add details as JSON string
     formData.append("details", JSON.stringify(data));
-    
+
     // Add profile image if provided (optional)
     if (profileImage) {
       formData.append("profileImage", profileImage);
@@ -101,17 +101,18 @@ const OnboardingPage = () => {
     } catch (error: any) {
       // Extract error message, handling both Error objects and API error responses
       let errorMessage = "An unknown error occurred.";
-      
+
       if (error?.message) {
         errorMessage = error.message;
       } else if (typeof error === "string") {
         errorMessage = error;
       }
-      
+
       // Check if it's a timeout/transaction error and provide actionable feedback
-      const isTimeoutError = errorMessage.toLowerCase().includes("timeout") || 
-                            errorMessage.toLowerCase().includes("transaction");
-      
+      const isTimeoutError =
+        errorMessage.toLowerCase().includes("timeout") ||
+        errorMessage.toLowerCase().includes("transaction");
+
       toast({
         variant: "destructive",
         title: "Onboarding Failed",
@@ -244,10 +245,7 @@ const OnboardingPage = () => {
         )}
         {currentStep === 2 && (
           <div className="h-full flex flex-col overflow-hidden">
-            <CreateProfileStep 
-              onNext={handleProfileNext} 
-              onBack={handleBack}
-            />
+            <CreateProfileStep onNext={handleProfileNext} onBack={handleBack} />
           </div>
         )}
         {currentStep === 3 && (
