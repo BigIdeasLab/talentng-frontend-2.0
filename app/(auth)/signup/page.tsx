@@ -144,12 +144,12 @@ const Signup = () => {
       </svg>
 
       {/* Content */}
-      <div className="relative z-10 h-screen flex items-center justify-center px-4 py-8 md:px-8 lg:px-12 overflow-y-auto">
-        <div className="w-full max-w-6xl">
-          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
+      <div className="relative z-10 h-screen flex items-center justify-center px-3 py-3 md:px-4 lg:px-6 overflow-hidden">
+        <div className="w-full max-w-5xl max-h-full">
+          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden max-h-[calc(100vh-24px)] flex flex-col">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
               {/* Left Side - Logo */}
-              <div className="hidden md:flex flex-col items-center justify-center p-12 lg:p-16 bg-white">
+              <div className="hidden md:flex flex-col items-center justify-center p-6 lg:p-10 bg-white overflow-hidden">
                 <img
                   src="https://api.builder.io/api/v1/image/assets/TEMP/ecad5cb9cbb17ee75c4a3aee33c69b88431f60fc?width=1224"
                   alt="Talent.ng Logo"
@@ -158,11 +158,11 @@ const Signup = () => {
               </div>
 
               {/* Right Side - Form */}
-              <div className="flex flex-col justify-center p-8 md:p-12 lg:p-16 bg-white">
-                <div className="flex flex-col gap-8">
+              <div className="flex flex-col justify-center p-6 md:p-8 lg:p-10 bg-white overflow-y-auto">
+                <div className="flex flex-col gap-5 text-sm md:text-base">
                   {/* Header */}
-                  <div className="flex flex-col gap-5">
-                    <h1 className="text-3xl md:text-[30px] font-semibold text-black leading-tight">
+                  <div className="flex flex-col gap-3">
+                    <h1 className="text-2xl md:text-[28px] font-semibold text-black leading-tight">
                       Create Your Account
                     </h1>
                     <p className="text-base md:text-[17px] font-light text-gray-400 capitalize">
@@ -174,11 +174,11 @@ const Signup = () => {
                   <Form {...form}>
                     <form
                       onSubmit={form.handleSubmit(onSubmit)}
-                      className="flex flex-col gap-4"
+                      className="flex flex-col gap-3"
                     >
                       {/* Email Field */}
-                      <div className="flex flex-col gap-3">
-                        <label className="text-sm font-medium text-black">
+                      <div className="flex flex-col gap-2">
+                        <label className="text-xs md:text-sm font-medium text-black">
                           Email Address
                         </label>
                         <FormField
@@ -201,8 +201,8 @@ const Signup = () => {
                       </div>
 
                       {/* Password Field */}
-                      <div className="flex flex-col gap-3">
-                        <label className="text-sm font-medium text-black">
+                      <div className="flex flex-col gap-2">
+                        <label className="text-xs md:text-sm font-medium text-black">
                           Password
                         </label>
                         <FormField
@@ -243,7 +243,7 @@ const Signup = () => {
                       <Button
                         type="submit"
                         disabled={mutation.isPending}
-                        className="w-full h-[53px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-base mt-6"
+                        className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base mt-3"
                       >
                         {mutation.isPending ? (
                           <Loader2 size={18} className="animate-spin" />
@@ -255,7 +255,7 @@ const Signup = () => {
                   </Form>
 
                   {/* Divider */}
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3">
                     <div className="flex-1 h-px bg-gray-300"></div>
                     <span className="text-gray-400 text-sm">or</span>
                     <div className="flex-1 h-px bg-gray-300"></div>
@@ -267,7 +267,7 @@ const Signup = () => {
                     onClick={() => {
                       window.location.href = `${process.env.NEXT_PUBLIC_TALENTNG_API_URL}/auth/google`;
                     }}
-                    className="w-full h-[53px] rounded-[10px] bg-gray-100 hover:bg-gray-200 flex items-center justify-center gap-3 transition-colors"
+                    className="w-full h-[48px] rounded-[10px] bg-gray-100 hover:bg-gray-200 flex items-center justify-center gap-2 transition-colors text-xs md:text-sm"
                   >
                     <img
                       src="https://api.builder.io/api/v1/image/assets/TEMP/c63e31bf35331749ef1f00a4fbaca3a3a5899b7a?width=28"
@@ -282,7 +282,7 @@ const Signup = () => {
                   {/* Apple Button */}
                   <button
                     type="button"
-                    className="w-full h-[53px] rounded-[10px] bg-gray-100 hover:bg-gray-200 flex items-center justify-center gap-3 transition-colors"
+                    className="w-full h-[48px] rounded-[10px] bg-gray-100 hover:bg-gray-200 flex items-center justify-center gap-2 transition-colors text-xs md:text-sm"
                   >
                     <img
                       src="https://api.builder.io/api/v1/image/assets/TEMP/e1e698cf881cba1b63fb95d130a383ba36c4abee?width=34"
