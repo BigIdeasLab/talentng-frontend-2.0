@@ -66,9 +66,7 @@ const SelectRoleStep = ({ onNext }: { onNext: (role: Role) => void }) => {
             key={role.id}
             onClick={() => setSelectedRole(role.id as Role)}
             className={`flex flex-col overflow-hidden transition-all ${
-              selectedRole === role.id
-                ? "ring-2 ring-[#5C30FF]"
-                : ""
+              selectedRole === role.id ? "ring-2 ring-[#5C30FF]" : ""
             }`}
           >
             {/* Image */}
@@ -131,9 +129,10 @@ const CreateProfileStep = ({
     onNext(formData);
   };
 
-  const displayName = formData.firstName && formData.lastName
-    ? `${formData.firstName} ${formData.lastName}`
-    : "Your Name";
+  const displayName =
+    formData.firstName && formData.lastName
+      ? `${formData.firstName} ${formData.lastName}`
+      : "Your Name";
   const displayBio = formData.bio || "Your Bio";
 
   return (
@@ -182,7 +181,10 @@ const CreateProfileStep = ({
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="flex flex-col gap-[13px] flex-shrink-0">
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col gap-[13px] flex-shrink-0"
+            >
               {/* First Name */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
@@ -260,7 +262,10 @@ const CreateProfileStep = ({
         {/* Right side - Profile Preview */}
         <div className="hidden md:flex flex-col items-center justify-center p-6 md:p-10 md:pl-6 bg-white relative overflow-hidden">
           <div className="w-full h-full flex items-center justify-center">
-            <div className="relative w-full max-w-[280px] lg:max-w-[350px]" style={{ aspectRatio: '1 / 1.13' }}>
+            <div
+              className="relative w-full max-w-[280px] lg:max-w-[350px]"
+              style={{ aspectRatio: "1 / 1.13" }}
+            >
               {/* Decorative Star */}
               <svg
                 className="absolute left-0 top-8 w-20 h-20 lg:w-32 lg:h-32 z-0"
@@ -283,10 +288,7 @@ const CreateProfileStep = ({
                   {/* Striped Pattern */}
                   <div className="absolute left-[-19px] top-1/2 w-96 h-56 flex gap-[23px] rotate-[20.779deg]">
                     {Array.from({ length: 18 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="w-[11.663px] h-56 bg-[#03964E]"
-                      />
+                      <div key={i} className="w-[11.663px] h-56 bg-[#03964E]" />
                     ))}
                   </div>
 
@@ -690,7 +692,10 @@ const OnboardingPage = () => {
               </div>
             )}
             {currentStep === 2 && (
-              <CreateProfileStep onNext={handleProfileNext} onBack={handleBack} />
+              <CreateProfileStep
+                onNext={handleProfileNext}
+                onBack={handleBack}
+              />
             )}
             {currentStep === 3 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-0">

@@ -20,11 +20,26 @@ const skills = [
 ];
 
 const stack = [
-  { name: "Figma", icon: "https://api.builder.io/api/v1/image/assets/TEMP/0a2c660d363dc6dd7201ee36e9ceeddd1f726bdd?width=40" },
-  { name: "Rive", icon: "https://api.builder.io/api/v1/image/assets/TEMP/f8c5a221d6ec444ba0283931e0cc6e5bbb3502f6?width=40" },
-  { name: "Webflow", icon: "https://api.builder.io/api/v1/image/assets/TEMP/315e778f2753675e0adddf444221a4bf2e5b1275?width=40" },
-  { name: "Lottie", icon: "https://api.builder.io/api/v1/image/assets/TEMP/04c6a4c6cfe4544abfa760fd941de9a7af534b65?width=40" },
-  { name: "Framer", icon: "https://api.builder.io/api/v1/image/assets/TEMP/77cd743c9e6b1f0fc14e22925b550692f6e2fbdc?width=40" },
+  {
+    name: "Figma",
+    icon: "https://api.builder.io/api/v1/image/assets/TEMP/0a2c660d363dc6dd7201ee36e9ceeddd1f726bdd?width=40",
+  },
+  {
+    name: "Rive",
+    icon: "https://api.builder.io/api/v1/image/assets/TEMP/f8c5a221d6ec444ba0283931e0cc6e5bbb3502f6?width=40",
+  },
+  {
+    name: "Webflow",
+    icon: "https://api.builder.io/api/v1/image/assets/TEMP/315e778f2753675e0adddf444221a4bf2e5b1275?width=40",
+  },
+  {
+    name: "Lottie",
+    icon: "https://api.builder.io/api/v1/image/assets/TEMP/04c6a4c6cfe4544abfa760fd941de9a7af534b65?width=40",
+  },
+  {
+    name: "Framer",
+    icon: "https://api.builder.io/api/v1/image/assets/TEMP/77cd743c9e6b1f0fc14e22925b550692f6e2fbdc?width=40",
+  },
 ];
 
 const socialLinks = [
@@ -79,28 +94,40 @@ export function ProfileInfo() {
 
             <div className="mt-[15px] w-full space-y-[15px]">
               <div className="flex items-center gap-2">
-                <MapPin className="w-[22px] h-[22px] text-[#525866]" strokeWidth={1.375} />
+                <MapPin
+                  className="w-[22px] h-[22px] text-[#525866]"
+                  strokeWidth={1.375}
+                />
                 <span className="text-[15px] text-black font-[Inter_Tight]">
                   Lagos, Nigeria
                 </span>
               </div>
 
               <div className="flex items-center gap-2">
-                <Briefcase className="w-[22px] h-[22px] text-[#525866]" strokeWidth={1.25} />
+                <Briefcase
+                  className="w-[22px] h-[22px] text-[#525866]"
+                  strokeWidth={1.25}
+                />
                 <span className="text-[15px] text-black font-[Inter_Tight]">
                   Ui/Ux Designer
                 </span>
               </div>
 
               <div className="flex items-center gap-2">
-                <Briefcase className="w-[22px] h-[22px] text-[#525866]" strokeWidth={1.25} />
+                <Briefcase
+                  className="w-[22px] h-[22px] text-[#525866]"
+                  strokeWidth={1.25}
+                />
                 <span className="text-[15px] text-black font-[Inter_Tight]">
                   5x Hired
                 </span>
               </div>
 
               <div className="flex items-center gap-2">
-                <DollarSign className="w-[22px] h-[22px] text-[#525866]" strokeWidth={1.375} />
+                <DollarSign
+                  className="w-[22px] h-[22px] text-[#525866]"
+                  strokeWidth={1.375}
+                />
                 <span className="text-[15px] text-black font-[Inter_Tight]">
                   $20,000 Earned
                 </span>
@@ -185,7 +212,10 @@ export function ProfileInfo() {
                         {link.label}
                       </span>
                     </div>
-                    <ExternalLink className="w-[22px] h-[22px] text-[#525866]" strokeWidth={1.375} />
+                    <ExternalLink
+                      className="w-[22px] h-[22px] text-[#525866]"
+                      strokeWidth={1.375}
+                    />
                   </div>
                 );
               })}

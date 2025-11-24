@@ -46,6 +46,7 @@ Business-related TypeScript types are defined in `lib/types/business.ts`:
 ## Styling
 
 The components use:
+
 - Tailwind CSS for responsive layouts
 - Inter Tight font family (matching Figma design)
 - Custom color palette from the design system

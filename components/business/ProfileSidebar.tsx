@@ -76,9 +76,7 @@ export function ProfileSidebar() {
                   key={item.href}
                   href={item.href}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
-                    isActive
-                      ? "bg-white"
-                      : "bg-white hover:bg-gray-50"
+                    isActive ? "bg-white" : "bg-white hover:bg-gray-50"
                   }`}
                 >
                   <Icon className="w-5 h-5 text-[#525866]" strokeWidth={1.25} />
@@ -108,9 +106,7 @@ export function ProfileSidebar() {
                   key={item.href}
                   href={item.href}
                   className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
-                    isActive
-                      ? "bg-white"
-                      : "bg-white hover:bg-gray-50"
+                    isActive ? "bg-white" : "bg-white hover:bg-gray-50"
                   }`}
                 >
                   <Icon className="w-5 h-5 text-[#525866]" strokeWidth={1.25} />

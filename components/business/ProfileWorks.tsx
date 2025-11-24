@@ -41,9 +41,7 @@ export function ProfileWorks() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-5 py-[22px] text-[15px] font-medium font-[Inter_Tight] transition-colors relative ${
-                  activeTab === tab.id
-                    ? "text-black"
-                    : "text-black/30"
+                  activeTab === tab.id ? "text-black" : "text-black/30"
                 }`}
               >
                 {tab.label}
@@ -66,7 +64,10 @@ export function ProfileWorks() {
       <div className="p-[20px] pl-5">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[3px] max-w-[796px]">
           {workImages.map((image, index) => (
-            <div key={index} className="relative aspect-[4/3] overflow-hidden rounded-sm">
+            <div
+              key={index}
+              className="relative aspect-[4/3] overflow-hidden rounded-sm"
+            >
               <Image
                 src={image}
                 alt={`Work ${index + 1}`}

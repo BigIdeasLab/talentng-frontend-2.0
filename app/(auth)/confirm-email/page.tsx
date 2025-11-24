@@ -292,7 +292,6 @@ const ConfirmEmailPage = () => {
                           </FormItem>
                         )}
                       />
-
                     </form>
                   </Form>
 
