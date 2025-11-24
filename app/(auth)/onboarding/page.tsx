@@ -724,9 +724,10 @@ const OnboardingPage = () => {
         <div className="w-full max-w-5xl max-h-full">
           <div className="bg-white rounded-[30px] shadow-lg overflow-hidden max-h-[calc(100vh-24px)]">
             {currentStep === 1 && (
-              <div className="p-8 md:p-16">
-                <SelectRoleStep onNext={handleRoleSelect} />
-              </div>
+              <SelectRoleStep
+                onNext={handleRoleSelect}
+                onBack={handleSelectRoleBack}
+              />
             )}
             {currentStep === 2 && (
               <CreateProfileStep
