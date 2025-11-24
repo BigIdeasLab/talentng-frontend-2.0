@@ -40,6 +40,8 @@ const OnboardingPage = () => {
       details: data,
     };
 
+    console.log("[Onboarding] Sending payload:", finalData);
+
     try {
       await apiClient("/users/me/onboard", {
         method: "POST",
@@ -53,10 +55,24 @@ const OnboardingPage = () => {
       });
       router.push("/dashboard");
     } catch (error: any) {
+      // Extract error message, handling both Error objects and API error responses
+      let errorMessage = "An unknown error occurred.";
+      
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      }
+      
+      // Check if it's a timeout/transaction error and provide actionable feedback
+      const isTimeoutError = errorMessage.toLowerCase().includes("timeout") || 
+                            errorMessage.toLowerCase().includes("transaction");
+      
       toast({
         variant: "destructive",
         title: "Onboarding Failed",
-        description: error.message || "An unknown error occurred.",
+        description: errorMessage,
+        duration: isTimeoutError ? 10000 : 5000, // Show timeout errors longer
       });
     } finally {
       setIsLoading(false);
