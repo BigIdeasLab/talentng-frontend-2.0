@@ -131,97 +131,226 @@ const CreateProfileStep = ({
     onNext(formData);
   };
 
+  const displayName = formData.firstName && formData.lastName
+    ? `${formData.firstName} ${formData.lastName}`
+    : "Your Name";
+  const displayBio = formData.bio || "Your Bio";
+
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex flex-col gap-3">
-        <p className="text-sm text-gray-400 font-light">Step 2/3</p>
-        <h2 className="text-3xl md:text-[30px] font-semibold text-black">
-          Create your profile
-        </h2>
-      </div>
-
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* First Name */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-black">First Name</label>
-          <Input
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleChange}
-            placeholder="Enter first name"
-            className="h-[53px] rounded-[10px] border-0 bg-gray-100 placeholder:text-gray-400"
-          />
-        </div>
-
-        {/* Last Name */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-black">Last Name</label>
-          <Input
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-            placeholder="Enter last name"
-            className="h-[53px] rounded-[10px] border-0 bg-gray-100 placeholder:text-gray-400"
-          />
-        </div>
-
-        {/* Username */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-black">Username</label>
-          <Input
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            placeholder="Enter username"
-            className="h-[53px] rounded-[10px] border-0 bg-gray-100 placeholder:text-gray-400"
-          />
-        </div>
-
-        {/* Location */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-black">Location</label>
-          <Input
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            placeholder="Enter location"
-            className="h-[53px] rounded-[10px] border-0 bg-gray-100 placeholder:text-gray-400"
-          />
-        </div>
-
-        {/* Bio */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-black">Bio</label>
-          <textarea
-            name="bio"
-            value={formData.bio}
-            onChange={handleChange}
-            placeholder="Describe yourself"
-            rows={4}
-            className="rounded-[10px] border-0 bg-gray-100 placeholder:text-gray-400 px-4 py-3 resize-none focus:ring-2 focus:ring-purple-600"
-          />
-        </div>
+    <div className="relative">
+      {/* Top Bar with Logo and Buttons */}
+      <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-8 md:px-16 py-7 z-10">
+        {/* Logo */}
+        <img
+          src="https://api.builder.io/api/v1/image/assets/TEMP/e6cfaabb6014008791cbccd5e74eb9e74ecc352c?width=160"
+          alt="TalentNG Logo"
+          className="w-20 h-auto rounded-[3.457px] shadow-[0.777px_0.777px_24.66px_0_rgba(0,0,0,0.25)]"
+        />
 
         {/* Buttons */}
-        <div className="flex gap-3 pt-4">
-          <Button
+        <div className="flex gap-3">
+          <button
             type="button"
             onClick={onBack}
-            variant="outline"
-            className="flex-1 h-[53px] rounded-[10px] bg-gray-200 hover:bg-gray-300 text-black font-semibold"
+            className="px-[25px] py-[11px] bg-[#A9A9A9] text-white rounded-[60px] text-[15px] font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-[53px]"
           >
             Back
-          </Button>
-          <Button
+          </button>
+          <button
             type="submit"
-            className="flex-1 h-[53px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold"
+            onClick={handleSubmit}
+            className="px-[25px] py-[11px] bg-[#222] text-white rounded-[60px] text-[15px] font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-[53px]"
           >
             Continue
-          </Button>
+          </button>
         </div>
-      </form>
+      </div>
+
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-0 pt-24 md:pt-32">
+        {/* Left side - Form */}
+        <div className="flex flex-col justify-start p-8 md:p-16 md:pr-8 bg-white">
+          <div className="flex flex-col gap-10">
+            {/* Header */}
+            <div className="flex flex-col gap-5">
+              <p className="text-[17px] text-[#919191] font-light font-[Inter_Tight] leading-[120%] capitalize">
+                Step 2/3
+              </p>
+              <h2 className="text-[30px] text-black font-medium font-[Inter_Tight] leading-[105%]">
+                Create your profile
+              </h2>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="flex flex-col gap-[13px]">
+              {/* First Name */}
+              <div className="flex flex-col gap-[13px]">
+                <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
+                  First Name
+                </label>
+                <Input
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  placeholder="Youremail@gmail.com"
+                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px]"
+                />
+              </div>
+
+              {/* Last Name */}
+              <div className="flex flex-col gap-[13px]">
+                <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
+                  Last Name
+                </label>
+                <Input
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  placeholder="Youremail@gmail.com"
+                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px]"
+                />
+              </div>
+
+              {/* Username */}
+              <div className="flex flex-col gap-[13px]">
+                <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
+                  Username
+                </label>
+                <Input
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  placeholder="Your Username"
+                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px]"
+                />
+              </div>
+
+              {/* Location */}
+              <div className="flex flex-col gap-[13px]">
+                <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
+                  Location
+                </label>
+                <Input
+                  name="location"
+                  value={formData.location}
+                  onChange={handleChange}
+                  placeholder="Youremail@gmail.com"
+                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px]"
+                />
+              </div>
+
+              {/* Bio */}
+              <div className="flex flex-col gap-[13px]">
+                <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
+                  Bio
+                </label>
+                <textarea
+                  name="bio"
+                  value={formData.bio}
+                  onChange={handleChange}
+                  placeholder="Desribe yourself"
+                  rows={4}
+                  className="rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] py-[21px] resize-none focus:ring-2 focus:ring-purple-600 focus:outline-none"
+                />
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {/* Right side - Profile Preview */}
+        <div className="hidden md:flex flex-col items-center justify-center p-8 md:p-16 md:pl-8 bg-white relative">
+          <div className="relative w-full max-w-[415px]">
+            {/* Decorative Star */}
+            <svg
+              className="absolute left-0 top-12 w-[131px] h-[131px] z-0"
+              viewBox="0 0 131 131"
+              fill="none"
+            >
+              <path
+                d="M65.3129 0L75.4732 55.1526L130.626 65.3129L75.4732 75.4732L65.3129 130.626L55.1526 75.4732L0 65.3129L55.1526 55.1526L65.3129 0Z"
+                fill="#F6BC3F"
+              />
+            </svg>
+
+            {/* Background Cards */}
+            <div className="relative z-10">
+              <div className="w-[300px] h-[49px] rounded-[58px] bg-[#ECECEC] absolute left-[58px] top-[454px]"></div>
+              <div className="w-[365px] h-[58px] rounded-[58px] bg-[#E0E0E0] absolute left-[26px] top-[427px]"></div>
+
+              {/* Main Green Card (Back Layer) */}
+              <div className="w-full aspect-[415/470] rounded-[30px] bg-[#008B47] shadow-[2.563px_0_30.756px_rgba(0,0,0,0.25)] absolute top-0 left-0 overflow-hidden">
+                {/* Striped Pattern */}
+                <div className="absolute left-[-19px] top-[265px] w-[397px] h-[232px] flex gap-[23px] rotate-[20.779deg]">
+                  {Array.from({ length: 18 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="w-[11.663px] h-[232px] bg-[#03964E]"
+                    />
+                  ))}
+                </div>
+
+                {/* Profile Image Placeholder */}
+                <div className="w-[414px] h-[141px] bg-[#DCDCDC] absolute left-[1px] top-[63px]"></div>
+
+                {/* Status Badge */}
+                <div className="absolute left-[140px] top-[437px] text-white text-[19px] font-normal font-[Inter_Tight] leading-[120%] capitalize">
+                  Status: Available
+                </div>
+
+                {/* Name and Bio */}
+                <div className="absolute left-[21px] top-[269px] flex flex-col gap-[18px]">
+                  <div className="text-black text-[26px] font-medium font-[Inter_Tight] leading-[105%]">
+                    {displayName}
+                  </div>
+                  <div className="text-[#919191] text-[19px] font-light font-[Inter_Tight] leading-[120%] capitalize">
+                    {displayBio}
+                  </div>
+                </div>
+              </div>
+
+              {/* Front White Card */}
+              <div className="w-full aspect-[415/414] rounded-[30px] bg-white relative z-20">
+                {/* Profile Picture Area */}
+                <div className="w-[392px] h-[317px] rounded-[27px] bg-[#F5F5F5] absolute left-[12px] top-[12px] flex flex-col items-center justify-center">
+                  {/* Upload Icon */}
+                  <div className="w-[125px] h-[125px] rounded-full bg-[#D9D9D9] flex items-center justify-center mb-6">
+                    <svg
+                      className="w-[74px] h-[74px]"
+                      viewBox="0 0 74 74"
+                      fill="none"
+                    >
+                      <path
+                        d="M15.4167 64.75C13.7208 64.75 12.2696 64.1467 11.063 62.9401C9.85639 61.7335 9.25206 60.2812 9.25 58.5833V15.4167C9.25 13.7208 9.85433 12.2696 11.063 11.063C12.2717 9.85639 13.7229 9.25206 15.4167 9.25H58.5833C60.2792 9.25 61.7314 9.85433 62.9401 11.063C64.1487 12.2717 64.7521 13.7229 64.75 15.4167V58.5833C64.75 60.2792 64.1467 61.7314 62.9401 62.9401C61.7335 64.1487 60.2812 64.7521 58.5833 64.75H15.4167ZM18.5 52.4167H55.5L43.9375 37L34.6875 49.3333L27.75 40.0833L18.5 52.4167Z"
+                        fill="white"
+                      />
+                    </svg>
+                  </div>
+
+                  {/* Upload Text */}
+                  <div className="flex flex-col items-center gap-[15px]">
+                    <div className="text-[#404040] text-[19px] font-medium font-[Inter_Tight] leading-[105%]">
+                      Upload Profile Picture
+                    </div>
+                    <div className="text-[#919191] text-[15px] font-light font-[Inter_Tight] leading-[120%] capitalize">
+                      Drag And Drop Image here
+                    </div>
+                  </div>
+                </div>
+
+                {/* Name and Bio Preview */}
+                <div className="absolute left-[21px] top-[344px] flex flex-col gap-[15px]">
+                  <div className="text-black text-[23px] font-medium font-[Inter_Tight] leading-[105%]">
+                    {displayName}
+                  </div>
+                  <div className="text-[#919191] text-[19px] font-light font-[Inter_Tight] leading-[120%] capitalize">
+                    {displayBio}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
