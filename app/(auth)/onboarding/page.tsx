@@ -209,10 +209,10 @@ const CreateProfileStep = ({
             </div>
 
             {/* Form */}
-            <form
-              onSubmit={handleSubmit}
-              className="flex flex-col gap-[13px] flex-shrink-0"
-            >
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-[13px]"
+      >
               {/* First Name */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
@@ -464,7 +464,7 @@ const ShowcaseSkillsStep = ({
       {/* Form */}
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 max-h-[500px] overflow-y-auto pr-2"
+        className="space-y-4"
       >
         {/* Category Dropdown */}
         <div className="flex flex-col gap-2">
@@ -630,7 +630,7 @@ const OnboardingPage = () => {
   };
 
   return (
-    <div className="relative h-screen flex items-center justify-center px-3 py-8 md:px-4 lg:px-6 w-full">
+    <div className="relative min-h-screen flex flex-col px-3 py-8 md:px-4 lg:px-6 w-full">
       {/* Gradient Background */}
       <svg
         className="absolute inset-0 w-full h-full"
@@ -698,7 +698,7 @@ const OnboardingPage = () => {
       </svg>
 
       {/* Content */}
-      <div className="bg-white rounded-[30px] shadow-lg overflow-hidden w-full max-w-6xl z-10 h-[90vh]">
+      <div className="bg-white rounded-[30px] shadow-lg overflow-hidden w-full max-w-6xl z-10 my-auto">
         {currentStep === 1 && (
           <SelectRoleStep
             onNext={handleRoleSelect}
@@ -715,7 +715,7 @@ const OnboardingPage = () => {
                 <p className="text-sm">Preview Panel</p>
               </div>
             </div>
-            <div className="flex flex-col justify-start p-8 md:p-12 lg:p-16 bg-white overflow-y-auto max-h-[calc(100vh-60px)]">
+            <div className="flex flex-col justify-start p-8 md:p-12 lg:p-16 bg-white">
               <ShowcaseSkillsStep
                 onNext={handleSkillsNext}
                 onBack={handleBack}
