@@ -13,7 +13,6 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import apiClient from "@/lib/api";
-import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 
 const confirmEmailSchema = z.object({
