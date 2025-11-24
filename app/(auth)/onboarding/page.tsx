@@ -56,12 +56,12 @@ const SelectRoleStep = ({
   return (
     <div className="relative h-full flex flex-col">
       {/* Top Bar with Logo and Back Button */}
-      <div className="flex items-center justify-between px-8 md:px-16 py-4 md:py-7 flex-shrink-0 bg-white">
+      <div className="flex items-center justify-between px-8 md:px-16 py-3 md:py-5 flex-shrink-0 bg-white">
         {/* Logo */}
         <img
           src="https://api.builder.io/api/v1/image/assets/TEMP/4156d71309afdfdb5e60777e82faec84a6a2e8b2?width=160"
           alt="TalentNG Logo"
-          className="w-20 h-auto rounded-[3.457px] shadow-[0.777px_0.777px_24.66px_0_rgba(0,0,0,0.25)]"
+          className="w-16 h-auto rounded-[3.457px] shadow-[0.777px_0.777px_24.66px_0_rgba(0,0,0,0.25)]"
         />
 
         {/* Back Button */}
@@ -75,10 +75,10 @@ const SelectRoleStep = ({
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col gap-8 p-8 md:p-16 justify-center items-center">
+      <div className="flex-1 flex flex-col gap-5 px-6 md:px-12 py-6 md:py-8 justify-center items-center overflow-y-auto">
         {/* Header */}
-        <div className="flex flex-col gap-3 text-center max-w-[470px]">
-          <h2 className="text-3xl md:text-[30px] font-semibold text-black font-[Inter_Tight]">
+        <div className="flex flex-col gap-2 text-center max-w-[470px] flex-shrink-0">
+          <h2 className="text-2xl md:text-[30px] font-semibold text-black font-[Inter_Tight] leading-tight">
             How do you want to use Talent.ng
           </h2>
           <p className="text-sm md:text-[17px] font-light text-[#919191] font-[Inter_Tight]">
@@ -87,7 +87,7 @@ const SelectRoleStep = ({
         </div>
 
         {/* Role Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-[808px]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-[808px] flex-shrink-0">
           {roles.map((role) => (
             <button
               key={role.id}
@@ -116,7 +116,7 @@ const SelectRoleStep = ({
         </div>
 
         {/* Continue Button */}
-        <div className="flex justify-center pt-4">
+        <div className="flex justify-center pt-2 flex-shrink-0">
           <Button
             onClick={() => selectedRole && onNext(selectedRole)}
             disabled={!selectedRole}
