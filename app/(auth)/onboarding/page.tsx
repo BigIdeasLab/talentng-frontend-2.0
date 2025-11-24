@@ -23,7 +23,13 @@ interface SkillsData {
   portfolioLink: string;
 }
 
-const SelectRoleStep = ({ onNext }: { onNext: (role: Role) => void }) => {
+const SelectRoleStep = ({
+  onNext,
+  onBack,
+}: {
+  onNext: (role: Role) => void;
+  onBack?: () => void;
+}) => {
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
 
   const roles = [
@@ -31,7 +37,7 @@ const SelectRoleStep = ({ onNext }: { onNext: (role: Role) => void }) => {
       id: "talent",
       label: "As Talent",
       image:
-        "https://api.builder.io/api/v1/image/assets/TEMP/4b8cd503cd85ff9dcf4440439b7a1a2529624e4a?width=512",
+        "https://api.builder.io/api/v1/image/assets/TEMP/611d63c0306f773058be10af29e0d55cc818b085?width=512",
     },
     {
       id: "employer",
@@ -43,60 +49,82 @@ const SelectRoleStep = ({ onNext }: { onNext: (role: Role) => void }) => {
       id: "mentor",
       label: "Mentor",
       image:
-        "https://api.builder.io/api/v1/image/assets/TEMP/ee967bc86e23b38c64cc1b60aa7d5caa0efafc05?width=512",
+        "https://api.builder.io/api/v1/image/assets/TEMP/6b5c4a37fa26679b6a2b05eb189a80f6bed5b713?width=512",
     },
   ];
 
   return (
-    <div className="flex flex-col gap-8">
-      {/* Header */}
-      <div className="flex flex-col gap-3 text-center">
-        <h2 className="text-3xl md:text-[30px] font-semibold text-black">
-          How do you want to use Talent.ng
-        </h2>
-        <p className="text-sm md:text-[17px] font-light text-[#919191]">
-          Pick the option that best describes you
-        </p>
-      </div>
+    <div className="relative h-full flex flex-col">
+      {/* Top Bar with Logo and Back Button */}
+      <div className="flex items-center justify-between px-8 md:px-16 py-4 md:py-7 flex-shrink-0 bg-white">
+        {/* Logo */}
+        <img
+          src="https://api.builder.io/api/v1/image/assets/TEMP/4156d71309afdfdb5e60777e82faec84a6a2e8b2?width=160"
+          alt="TalentNG Logo"
+          className="w-20 h-auto rounded-[3.457px] shadow-[0.777px_0.777px_24.66px_0_rgba(0,0,0,0.25)]"
+        />
 
-      {/* Role Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {roles.map((role) => (
-          <button
-            key={role.id}
-            onClick={() => setSelectedRole(role.id as Role)}
-            className={`flex flex-col overflow-hidden transition-all ${
-              selectedRole === role.id ? "ring-2 ring-[#5C30FF]" : ""
-            }`}
-          >
-            {/* Image */}
-            <div className="relative w-full aspect-square bg-[#E3E3E3] overflow-hidden">
-              <img
-                src={role.image}
-                alt={role.label}
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            {/* Label */}
-            <div className="bg-white py-[17px] px-2.5 flex items-center justify-center">
-              <span className="text-base font-medium text-black font-[Inter_Tight]">
-                {role.label}
-              </span>
-            </div>
-          </button>
-        ))}
-      </div>
-
-      {/* Continue Button */}
-      <div className="flex justify-center">
-        <Button
-          onClick={() => selectedRole && onNext(selectedRole)}
-          disabled={!selectedRole}
-          className="px-10 py-[21px] h-[53px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-medium text-[15px] font-[Inter_Tight] disabled:bg-gray-400 disabled:cursor-not-allowed"
+        {/* Back Button */}
+        <button
+          type="button"
+          onClick={onBack}
+          className="px-[25px] py-[11px] bg-[#A9A9A9] text-white rounded-[60px] text-[15px] font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-[53px]"
         >
-          Continue
-        </Button>
+          Back
+        </button>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col gap-8 p-8 md:p-16 justify-center items-center">
+        {/* Header */}
+        <div className="flex flex-col gap-3 text-center max-w-[470px]">
+          <h2 className="text-3xl md:text-[30px] font-semibold text-black font-[Inter_Tight]">
+            How do you want to use Talent.ng
+          </h2>
+          <p className="text-sm md:text-[17px] font-light text-[#919191] font-[Inter_Tight]">
+            Pick the option that best describes you
+          </p>
+        </div>
+
+        {/* Role Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full max-w-[808px]">
+          {roles.map((role) => (
+            <button
+              key={role.id}
+              onClick={() => setSelectedRole(role.id as Role)}
+              className={`flex flex-col overflow-hidden transition-all rounded-[10px] ${
+                selectedRole === role.id ? "ring-2 ring-[#5C30FF]" : ""
+              }`}
+            >
+              {/* Image */}
+              <div className="relative w-full aspect-square bg-[#E3E3E3] overflow-hidden">
+                <img
+                  src={role.image}
+                  alt={role.label}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              {/* Label */}
+              <div className="bg-white py-[17px] px-2.5 flex items-center justify-center">
+                <span className="text-base font-medium text-black font-[Inter_Tight]">
+                  {role.label}
+                </span>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {/* Continue Button */}
+        <div className="flex justify-center pt-4">
+          <Button
+            onClick={() => selectedRole && onNext(selectedRole)}
+            disabled={!selectedRole}
+            className="px-10 py-[21px] h-[53px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-medium text-[15px] font-[Inter_Tight] disabled:bg-gray-400 disabled:cursor-not-allowed"
+          >
+            Continue
+          </Button>
+        </div>
       </div>
     </div>
   );
