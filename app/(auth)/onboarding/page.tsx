@@ -17,6 +17,7 @@ const OnboardingPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
   const [profileData, setProfileData] = useState<ProfileData | undefined>();
+  const [profileImage, setProfileImage] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
@@ -27,25 +28,68 @@ const OnboardingPage = () => {
     setCurrentStep(2);
   };
 
-  const handleProfileNext = (data: ProfileData) => {
+  const handleProfileNext = (data: ProfileData, image?: File) => {
     setProfileData(data);
+    if (image) {
+      setProfileImage(image);
+    }
     setCurrentStep(3);
   };
 
   const handleFinalSubmit = async (data: any) => {
     setIsLoading(true);
-    const finalData = {
-      role: selectedRole?.toUpperCase(),
+    
+    // Prepare FormData for multipart/form-data request
+    const formData = new FormData();
+    
+    // Add role - map "employer" to "RECRUITER" for API
+    let roleValue: "TALENT" | "RECRUITER" | "MENTOR";
+    if (selectedRole === "employer") {
+      roleValue = "RECRUITER";
+    } else if (selectedRole) {
+      roleValue = selectedRole.toUpperCase() as "TALENT" | "MENTOR";
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please select a role.",
+      });
+      setIsLoading(false);
+      return;
+    }
+    formData.append("role", roleValue);
+    
+    // Add profile as JSON string
+    if (!profileData) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Profile data is missing.",
+      });
+      setIsLoading(false);
+      return;
+    }
+    formData.append("profile", JSON.stringify(profileData));
+    
+    // Add details as JSON string
+    formData.append("details", JSON.stringify(data));
+    
+    // Add profile image if provided (optional)
+    if (profileImage) {
+      formData.append("profileImage", profileImage);
+    }
+
+    console.log("[Onboarding] Sending payload:", {
+      role: roleValue,
       profile: profileData,
       details: data,
-    };
-
-    console.log("[Onboarding] Sending payload:", finalData);
+      hasProfileImage: !!profileImage,
+    });
 
     try {
       await apiClient("/users/me/onboard", {
         method: "POST",
-        body: finalData,
+        body: formData,
       });
 
       await refetchUser();
@@ -200,7 +244,10 @@ const OnboardingPage = () => {
         )}
         {currentStep === 2 && (
           <div className="h-full flex flex-col overflow-hidden">
-            <CreateProfileStep onNext={handleProfileNext} onBack={handleBack} />
+            <CreateProfileStep 
+              onNext={handleProfileNext} 
+              onBack={handleBack}
+            />
           </div>
         )}
         {currentStep === 3 && (

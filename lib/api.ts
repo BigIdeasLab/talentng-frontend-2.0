@@ -292,3 +292,10 @@ export const getTalents = async (
   const endpoint = `/talent${queryString ? `?${queryString}` : ""}`;
   return apiClient<Talent[]>(endpoint);
 };
+
+export const checkUsernameAvailability = async (
+  username: string,
+): Promise<{ available: boolean; taken: boolean }> => {
+  const endpoint = `/users/me/username-available/${encodeURIComponent(username)}`;
+  return apiClient<{ available: boolean; taken: boolean }>(endpoint);
+};

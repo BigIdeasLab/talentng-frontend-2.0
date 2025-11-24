@@ -1,14 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { ProfileData } from "@/lib/types/onboarding";
+import { checkUsernameAvailability } from "@/lib/api";
+import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
+
+type UsernameStatus = "idle" | "checking" | "available" | "taken" | "invalid";
 
 export const CreateProfileStep = ({
   onNext,
   onBack,
 }: {
-  onNext: (data: ProfileData) => void;
+  onNext: (data: ProfileData, image?: File) => void;
   onBack: () => void;
 }) => {
   const [formData, setFormData] = useState<ProfileData>({
@@ -18,6 +22,63 @@ export const CreateProfileStep = ({
     location: "",
     bio: "",
   });
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [usernameStatus, setUsernameStatus] = useState<UsernameStatus>("idle");
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Username validation pattern: 3-50 characters, letters, numbers, and underscores
+  const usernamePattern = /^[a-zA-Z0-9_]{3,50}$/;
+
+  const validateUsername = (username: string): boolean => {
+    return usernamePattern.test(username);
+  };
+
+  const checkUsername = async (username: string) => {
+    if (!username || username.length < 3) {
+      setUsernameStatus("idle");
+      return;
+    }
+
+    if (!validateUsername(username)) {
+      setUsernameStatus("invalid");
+      return;
+    }
+
+    setUsernameStatus("checking");
+
+    try {
+      const result = await checkUsernameAvailability(username);
+      setUsernameStatus(result.available ? "available" : "taken");
+    } catch (error) {
+      console.error("Error checking username:", error);
+      setUsernameStatus("idle");
+    }
+  };
+
+  useEffect(() => {
+    // Clear previous timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // Set new timer for debouncing
+    debounceTimerRef.current = setTimeout(() => {
+      if (formData.username) {
+        checkUsername(formData.username);
+      } else {
+        setUsernameStatus("idle");
+      }
+    }, 500); // 500ms debounce delay
+
+    // Cleanup function
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [formData.username]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -26,9 +87,67 @@ export const CreateProfileStep = ({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleImageChange = (file: File) => {
+    if (file && file.type.startsWith("image/")) {
+      setProfileImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      alert("Please select a valid image file.");
+    }
+  };
+
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleImageChange(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      handleImageChange(file);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onNext(formData);
+    
+    // Validate username before submitting
+    if (formData.username && !validateUsername(formData.username)) {
+      setUsernameStatus("invalid");
+      return;
+    }
+    
+    if (formData.username && usernameStatus !== "available") {
+      // If username is being checked or is taken, don't submit
+      if (usernameStatus === "checking" || usernameStatus === "taken") {
+        return;
+      }
+      // If status is idle, check it first
+      if (usernameStatus === "idle") {
+        checkUsername(formData.username);
+        return;
+      }
+    }
+    
+    onNext(formData, profileImage || undefined);
   };
 
   const displayName =
@@ -117,13 +236,55 @@ export const CreateProfileStep = ({
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
                   Username
                 </label>
-                <Input
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  placeholder="Your Username"
-                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px]"
-                />
+                <div className="relative">
+                  <Input
+                    name="username"
+                    value={formData.username}
+                    onChange={handleChange}
+                    placeholder="Your Username"
+                    className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] pr-12 ${
+                      usernameStatus === "taken" || usernameStatus === "invalid"
+                        ? "ring-2 ring-red-500"
+                        : usernameStatus === "available"
+                        ? "ring-2 ring-green-500"
+                        : ""
+                    }`}
+                  />
+                  {formData.username && (
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                      {usernameStatus === "checking" && (
+                        <Loader2 className="w-5 h-5 text-gray-400 animate-spin" />
+                      )}
+                      {usernameStatus === "available" && (
+                        <CheckCircle2 className="w-5 h-5 text-green-500" />
+                      )}
+                      {usernameStatus === "taken" && (
+                        <XCircle className="w-5 h-5 text-red-500" />
+                      )}
+                      {usernameStatus === "invalid" && (
+                        <XCircle className="w-5 h-5 text-red-500" />
+                      )}
+                    </div>
+                  )}
+                </div>
+                {formData.username && (
+                  <div className="text-xs font-[Inter_Tight]">
+                    {usernameStatus === "checking" && (
+                      <span className="text-gray-500">Checking availability...</span>
+                    )}
+                    {usernameStatus === "available" && (
+                      <span className="text-green-600">Username is available!</span>
+                    )}
+                    {usernameStatus === "taken" && (
+                      <span className="text-red-600">Username is already taken</span>
+                    )}
+                    {usernameStatus === "invalid" && (
+                      <span className="text-red-600">
+                        3-50 characters, letters, numbers, and underscores only
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Location */}
@@ -213,30 +374,55 @@ export const CreateProfileStep = ({
                 {/* Front White Card */}
                 <div className="w-full h-full rounded-[30px] bg-white relative z-20 flex flex-col">
                   {/* Profile Picture Area */}
-                  <div className="flex-1 flex flex-col items-center justify-center rounded-[27px] bg-[#F5F5F5] m-1">
-                    {/* Upload Icon */}
-                    <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-[#D9D9D9] flex items-center justify-center mb-3">
-                      <svg
-                        className="w-8 h-8 lg:w-10 lg:h-10"
-                        viewBox="0 0 74 74"
-                        fill="none"
-                      >
-                        <path
-                          d="M15.4167 64.75C13.7208 64.75 12.2696 64.1467 11.063 62.9401C9.85639 61.7335 9.25206 60.2812 9.25 58.5833V15.4167C9.25 13.7208 9.85433 12.2696 11.063 11.063C12.2717 9.85639 13.7229 9.25206 15.4167 9.25H58.5833C60.2792 9.25 61.7314 9.85433 62.9401 11.063C64.1487 12.2717 64.7521 13.7229 64.75 15.4167V58.5833C64.75 60.2792 64.1467 61.7314 62.9401 62.9401C61.7335 64.1487 60.2812 64.7521 58.5833 64.75H15.4167ZM18.5 52.4167H55.5L43.9375 37L34.6875 49.3333L27.75 40.0833L18.5 52.4167Z"
-                          fill="white"
-                        />
-                      </svg>
-                    </div>
+                  <div
+                    className={`flex-1 flex flex-col items-center justify-center rounded-[27px] bg-[#F5F5F5] m-1 relative overflow-hidden cursor-pointer transition-colors ${
+                      isDragging ? "bg-[#E0E0E0] border-2 border-dashed border-purple-600" : ""
+                    }`}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={() => document.getElementById("profile-image-input")?.click()}
+                  >
+                    {imagePreview ? (
+                      <img
+                        src={imagePreview}
+                        alt="Profile preview"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <>
+                        {/* Upload Icon */}
+                        <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-[#D9D9D9] flex items-center justify-center mb-3">
+                          <svg
+                            className="w-8 h-8 lg:w-10 lg:h-10"
+                            viewBox="0 0 74 74"
+                            fill="none"
+                          >
+                            <path
+                              d="M15.4167 64.75C13.7208 64.75 12.2696 64.1467 11.063 62.9401C9.85639 61.7335 9.25206 60.2812 9.25 58.5833V15.4167C9.25 13.7208 9.85433 12.2696 11.063 11.063C12.2717 9.85639 13.7229 9.25206 15.4167 9.25H58.5833C60.2792 9.25 61.7314 9.85433 62.9401 11.063C64.1487 12.2717 64.7521 13.7229 64.75 15.4167V58.5833C64.75 60.2792 64.1467 61.7314 62.9401 62.9401C61.7335 64.1487 60.2812 64.7521 58.5833 64.75H15.4167ZM18.5 52.4167H55.5L43.9375 37L34.6875 49.3333L27.75 40.0833L18.5 52.4167Z"
+                              fill="white"
+                            />
+                          </svg>
+                        </div>
 
-                    {/* Upload Text */}
-                    <div className="flex flex-col items-center gap-1 text-center px-2">
-                      <div className="text-[#404040] text-xs lg:text-sm font-medium font-[Inter_Tight] leading-[105%]">
-                        Upload Profile Picture
-                      </div>
-                      <div className="text-[#919191] text-[10px] lg:text-xs font-light font-[Inter_Tight] leading-[120%] capitalize">
-                        Drag And Drop Image here
-                      </div>
-                    </div>
+                        {/* Upload Text */}
+                        <div className="flex flex-col items-center gap-1 text-center px-2">
+                          <div className="text-[#404040] text-xs lg:text-sm font-medium font-[Inter_Tight] leading-[105%]">
+                            Upload Profile Picture
+                          </div>
+                          <div className="text-[#919191] text-[10px] lg:text-xs font-light font-[Inter_Tight] leading-[120%] capitalize">
+                            Drag And Drop Image here
+                          </div>
+                        </div>
+                      </>
+                    )}
+                    <input
+                      id="profile-image-input"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileInput}
+                      className="hidden"
+                    />
                   </div>
 
                   {/* Name and Bio Preview */}
