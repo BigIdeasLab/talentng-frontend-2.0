@@ -137,9 +137,9 @@ const CreateProfileStep = ({
   const displayBio = formData.bio || "Your Bio";
 
   return (
-    <div className="relative">
+    <div className="relative h-full flex flex-col">
       {/* Top Bar with Logo and Buttons */}
-      <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-8 md:px-16 py-7 z-10">
+      <div className="flex items-center justify-between px-8 md:px-16 py-4 md:py-7 flex-shrink-0 bg-white">
         {/* Logo */}
         <img
           src="https://api.builder.io/api/v1/image/assets/TEMP/e6cfaabb6014008791cbccd5e74eb9e74ecc352c?width=160"
@@ -167,12 +167,12 @@ const CreateProfileStep = ({
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-0 pt-24 md:pt-32">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-0 flex-1 overflow-hidden">
         {/* Left side - Form */}
-        <div className="flex flex-col justify-start p-8 md:p-16 md:pr-8 bg-white">
-          <div className="flex flex-col gap-10">
+        <div className="flex flex-col justify-start p-6 md:p-10 md:pr-6 bg-white overflow-y-auto">
+          <div className="flex flex-col gap-8">
             {/* Header */}
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-3 flex-shrink-0">
               <p className="text-[17px] text-[#919191] font-light font-[Inter_Tight] leading-[120%] capitalize">
                 Step 2/3
               </p>
@@ -182,7 +182,7 @@ const CreateProfileStep = ({
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="flex flex-col gap-[13px]">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-[13px] flex-shrink-0">
               {/* First Name */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
