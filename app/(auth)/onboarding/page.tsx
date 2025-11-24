@@ -682,35 +682,26 @@ const OnboardingPage = () => {
       <div className="relative z-10 h-screen flex items-center justify-center px-3 py-3 md:px-4 lg:px-6 overflow-hidden">
         <div className="w-full max-w-5xl max-h-full">
           <div className="bg-white rounded-[30px] shadow-lg overflow-hidden max-h-[calc(100vh-24px)]">
-            {currentStep === 1 ? (
-              // Full width for role selection
+            {currentStep === 1 && (
               <div className="p-8 md:p-16">
                 <SelectRoleStep onNext={handleRoleSelect} />
               </div>
-            ) : (
-              // Side-by-side layout for profile and skills
+            )}
+            {currentStep === 2 && (
+              <CreateProfileStep onNext={handleProfileNext} onBack={handleBack} />
+            )}
+            {currentStep === 3 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-                {/* Left side - Logo/Preview (can be used for future preview cards) */}
                 <div className="hidden md:flex flex-col items-center justify-center p-12 lg:p-16 bg-gray-50">
                   <div className="text-center text-gray-400">
                     <p className="text-sm">Preview Panel</p>
                   </div>
                 </div>
-
-                {/* Right side - Form */}
                 <div className="flex flex-col justify-start p-8 md:p-12 lg:p-16 bg-white overflow-y-auto max-h-[calc(100vh-60px)]">
-                  {currentStep === 2 && (
-                    <CreateProfileStep
-                      onNext={handleProfileNext}
-                      onBack={handleBack}
-                    />
-                  )}
-                  {currentStep === 3 && (
-                    <ShowcaseSkillsStep
-                      onNext={handleSkillsNext}
-                      onBack={handleBack}
-                    />
-                  )}
+                  <ShowcaseSkillsStep
+                    onNext={handleSkillsNext}
+                    onBack={handleBack}
+                  />
                 </div>
               </div>
             )}
