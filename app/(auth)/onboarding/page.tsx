@@ -1,277 +1,486 @@
 'use client';
 
-import React, { useState, Suspense, useEffect } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { useMutation } from '@tanstack/react-query';
-import { toast } from 'sonner';
-import { Loader2 } from 'lucide-react';
-
-import apiClient from '@/lib/api';
-import { useDebounce } from '@/hooks/use-debounce';
+import { Loader2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from '@/components/ui/form';
-import { useAuth } from '@/hooks/use-auth';
 
-const setUsernameSchema = z.object({
-  username: z
-    .string()
-    .min(3, 'Username must be at least 3 characters.')
-    .max(50, 'Username must not exceed 50 characters.')
-    .regex(
-      /^[a-z0-9_.-]+$/,
-      'Username can only contain lowercase letters, numbers, underscores, hyphens, and periods.',
-    )
-    .refine((username) => {
-      const letterCount = (username.match(/[a-z]/g) || []).length;
-      return letterCount >= 3;
-    }, 'Username must contain at least 3 letters.')
-    .refine((username) => {
-      const reservedUsernames = [
-        'admin',
-        'root',
-        'talentng',
-        'support',
-        'moderator',
-      ];
-      return !reservedUsernames.includes(username.toLowerCase());
-    }, 'This username is reserved. Please choose another.'),
-});
+type Role = 'talent' | 'employer' | 'mentor';
 
-type SetUsernameFormValues = z.infer<typeof setUsernameSchema>;
+interface ProfileData {
+  firstName: string;
+  lastName: string;
+  username: string;
+  location: string;
+  bio: string;
+}
 
-const SetUsername = ({
+interface SkillsData {
+  category: string;
+  skills: string[];
+  stack: string[];
+  portfolioLink: string;
+}
+
+const SelectRoleStep = ({
   onNext,
 }: {
-  onNext: (username: string) => void;
+  onNext: (role: Role) => void;
 }) => {
-  const [usernameInput, setUsernameInput] = useState('');
-  const debouncedUsername = useDebounce(usernameInput, 500);
-  const [usernameStatus, setUsernameStatus] = useState<
-    'idle' | 'checking' | 'available' | 'taken'
-  >('idle');
+  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
 
-  const form = useForm<SetUsernameFormValues>({
-    resolver: zodResolver(setUsernameSchema),
-    defaultValues: {
-      username: '',
+  const roles = [
+    {
+      id: 'talent',
+      label: 'As Talent',
+      image: 'https://api.builder.io/api/v1/image/assets/TEMP/4b8cd503cd85ff9dcf4440439b7a1a2529624e4a?width=512',
     },
-  });
-
-  useEffect(() => {
-    const checkUsername = async () => {
-      if (debouncedUsername.length > 0) {
-        const isValid = await form.trigger('username');
-        if (debouncedUsername.length >= 2 && isValid) {
-          setUsernameStatus('checking');
-          try {
-            const isTaken = await apiClient<boolean>(
-              `/users/username-taken/${debouncedUsername}`,
-            );
-            setUsernameStatus(isTaken ? 'taken' : 'available');
-          } catch (error) {
-            setUsernameStatus('idle');
-            toast.error('Failed to check username availability.');
-          }
-        } else {
-          setUsernameStatus('idle');
-        }
-      }
-    };
-
-    checkUsername();
-  }, [debouncedUsername, form]);
-
-  const onSubmit = (data: SetUsernameFormValues) => {
-    if (usernameStatus !== 'available') {
-      toast.error('Please choose an available username.');
-      return;
-    }
-    onNext(data.username);
-  };
+    {
+      id: 'employer',
+      label: 'Employer / Recruiter',
+      image: 'https://api.builder.io/api/v1/image/assets/TEMP/7e75bac5dec4ff1b9249b202c3cdc262e464ad7f?width=512',
+    },
+    {
+      id: 'mentor',
+      label: 'Mentor',
+      image: 'https://api.builder.io/api/v1/image/assets/TEMP/ee967bc86e23b38c64cc1b60aa7d5caa0efafc05?width=512',
+    },
+  ];
 
   return (
-    <div className="flex flex-col items-center gap-8">
+    <div className="flex flex-col gap-8">
       {/* Header */}
-      <div className="flex flex-col gap-5 text-center">
-        <h1 className="text-3xl md:text-[30px] font-semibold text-black leading-tight">
-          Choose a Username
-        </h1>
+      <div className="flex flex-col gap-3 text-center">
+        <h2 className="text-3xl md:text-[30px] font-semibold text-black">
+          How Do You Want To Use Talent.Ng
+        </h2>
         <p className="text-base md:text-[17px] font-light text-gray-400">
-          You're almost there! Please choose a unique username to complete your
-          account setup.
+          Pick the option that best describes you
         </p>
       </div>
 
-      {/* Form */}
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-6 w-full"
-        >
-          {/* Username Field */}
-          <div className="flex flex-col gap-3">
-            <label className="text-sm font-medium text-black">Username</label>
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter username"
-                      {...field}
-                      onChange={(e) => {
-                        const lowercasedValue = e.target.value.toLowerCase();
-                        field.onChange(lowercasedValue);
-                        setUsernameInput(lowercasedValue);
-                      }}
-                      className="h-[53px] rounded-[10px] border-0 bg-gray-100 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-600"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Status Messages */}
-            {usernameStatus === 'checking' && (
-              <p className="text-xs text-gray-500 flex items-center gap-1">
-                <Loader2 className="h-3 w-3 animate-spin" />
-                Checking...
-              </p>
-            )}
-            {usernameStatus === 'taken' && (
-              <p className="text-xs text-red-500">
-                Username is already taken.
-              </p>
-            )}
-            {usernameStatus === 'available' && (
-              <p className="text-xs text-green-600">
-                Username is available.
-              </p>
-            )}
-          </div>
-
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            disabled={usernameStatus !== 'available'}
-            className="w-full h-[53px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-base disabled:bg-gray-400 disabled:cursor-not-allowed"
+      {/* Role Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {roles.map((role) => (
+          <button
+            key={role.id}
+            onClick={() => setSelectedRole(role.id as Role)}
+            className={`flex flex-col rounded-[10px] overflow-hidden transition-all ${
+              selectedRole === role.id
+                ? 'ring-2 ring-[#5C30FF] shadow-lg'
+                : 'border border-gray-200'
+            }`}
           >
-            Continue
-          </Button>
-        </form>
-      </Form>
+            {/* Image */}
+            <div className="relative w-full aspect-square bg-gray-100 overflow-hidden">
+              <img
+                src={role.image}
+                alt={role.label}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Label */}
+            <div className="flex-1 bg-white p-4 flex items-center justify-center text-center">
+              <span className="text-sm md:text-base font-semibold text-black">
+                {role.label}
+              </span>
+            </div>
+
+            {/* Checkmark */}
+            {selectedRole === role.id && (
+              <div className="absolute top-3 right-3 w-6 h-6 bg-[#5C30FF] rounded-full flex items-center justify-center">
+                <svg
+                  className="w-4 h-4 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* Continue Button */}
+      <Button
+        onClick={() => selectedRole && onNext(selectedRole)}
+        disabled={!selectedRole}
+        className="w-full h-[53px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-base disabled:bg-gray-400"
+      >
+        Continue
+      </Button>
     </div>
   );
 };
 
-const SelectRole = ({
-  onRoleSelect,
-  isLoading,
+const CreateProfileStep = ({
+  onNext,
+  onBack,
 }: {
-  onRoleSelect: (role: 'talent' | 'mentor') => void;
-  isLoading: boolean;
+  onNext: (data: ProfileData) => void;
+  onBack: () => void;
 }) => {
-  const [selectedRole, setSelectedRole] = useState<'talent' | 'mentor' | null>(
-    null,
-  );
+  const [formData, setFormData] = useState<ProfileData>({
+    firstName: '',
+    lastName: '',
+    username: '',
+    location: '',
+    bio: '',
+  });
 
-  const handleRoleSelection = (role: 'talent' | 'mentor') => {
-    setSelectedRole(role);
-    onRoleSelect(role);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onNext(formData);
   };
 
   return (
-    <div className="flex flex-col items-center gap-8">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col gap-5 text-center">
-        <h1 className="text-3xl md:text-[30px] font-semibold text-black leading-tight">
-          Select Your Role
-        </h1>
-        <p className="text-base md:text-[17px] font-light text-gray-400">
-          Please choose the role that best describes you.
-        </p>
+      <div className="flex flex-col gap-3">
+        <p className="text-sm text-gray-400 font-light">Step 2/3</p>
+        <h2 className="text-3xl md:text-[30px] font-semibold text-black">
+          Create your profile
+        </h2>
       </div>
 
-      {/* Role Selection */}
-      <div className="flex flex-col gap-4 w-full">
-        <Button
-          onClick={() => handleRoleSelection('talent')}
-          disabled={isLoading}
-          className="w-full h-[53px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-base flex items-center justify-center gap-2"
-        >
-          {isLoading && selectedRole === 'talent' ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : null}
-          I am a Talent
-        </Button>
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* First Name */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-black">First Name</label>
+          <Input
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            placeholder="Enter first name"
+            className="h-[53px] rounded-[10px] border-0 bg-gray-100 placeholder:text-gray-400"
+          />
+        </div>
+
+        {/* Last Name */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-black">Last Name</label>
+          <Input
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            placeholder="Enter last name"
+            className="h-[53px] rounded-[10px] border-0 bg-gray-100 placeholder:text-gray-400"
+          />
+        </div>
+
+        {/* Username */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-black">Username</label>
+          <Input
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            placeholder="Enter username"
+            className="h-[53px] rounded-[10px] border-0 bg-gray-100 placeholder:text-gray-400"
+          />
+        </div>
+
+        {/* Location */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-black">Location</label>
+          <Input
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            placeholder="Enter location"
+            className="h-[53px] rounded-[10px] border-0 bg-gray-100 placeholder:text-gray-400"
+          />
+        </div>
+
+        {/* Bio */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-black">Bio</label>
+          <textarea
+            name="bio"
+            value={formData.bio}
+            onChange={handleChange}
+            placeholder="Describe yourself"
+            rows={4}
+            className="rounded-[10px] border-0 bg-gray-100 placeholder:text-gray-400 px-4 py-3 resize-none focus:ring-2 focus:ring-purple-600"
+          />
+        </div>
+
+        {/* Buttons */}
+        <div className="flex gap-3 pt-4">
+          <Button
+            type="button"
+            onClick={onBack}
+            variant="outline"
+            className="flex-1 h-[53px] rounded-[10px] bg-gray-200 hover:bg-gray-300 text-black font-semibold"
+          >
+            Back
+          </Button>
+          <Button
+            type="submit"
+            className="flex-1 h-[53px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold"
+          >
+            Continue
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+const ShowcaseSkillsStep = ({
+  onNext,
+  onBack,
+}: {
+  onNext: (data: SkillsData) => void;
+  onBack: () => void;
+}) => {
+  const [formData, setFormData] = useState<SkillsData>({
+    category: '',
+    skills: [],
+    stack: [],
+    portfolioLink: '',
+  });
+
+  const [skillInput, setSkillInput] = useState('');
+  const [stackInput, setStackInput] = useState('');
+
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData((prev) => ({ ...prev, category: e.target.value }));
+  };
+
+  const handlePortfolioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({ ...prev, portfolioLink: e.target.value }));
+  };
+
+  const addSkill = () => {
+    if (skillInput.trim() && formData.skills.length < 5) {
+      setFormData((prev) => ({
+        ...prev,
+        skills: [...prev.skills, skillInput.trim()],
+      }));
+      setSkillInput('');
+    }
+  };
+
+  const removeSkill = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      skills: prev.skills.filter((_, i) => i !== index),
+    }));
+  };
+
+  const addStack = () => {
+    if (stackInput.trim() && formData.stack.length < 6) {
+      setFormData((prev) => ({
+        ...prev,
+        stack: [...prev.stack, stackInput.trim()],
+      }));
+      setStackInput('');
+    }
+  };
+
+  const removeStack = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      stack: prev.stack.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onNext(formData);
+  };
+
+  return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex flex-col gap-3">
+        <p className="text-sm text-gray-400 font-light">Step 3/3</p>
+        <h2 className="text-3xl md:text-[30px] font-semibold text-black">
+          Showcase what you do
+        </h2>
       </div>
 
-      {/* Terms */}
-      <p className="text-center text-sm">
-        <span className="text-gray-400">By selecting your role, you agree to our </span>
-        <span className="text-black font-semibold">Terms and Conditions.</span>
-      </p>
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+        {/* Category Dropdown */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-black">What do you do?</label>
+          <select
+            value={formData.category}
+            onChange={handleCategoryChange}
+            className="h-[53px] rounded-[10px] border-0 bg-gray-100 px-4 text-black focus:ring-2 focus:ring-purple-600"
+          >
+            <option value="">Select Category</option>
+            <option value="product-designer">Product Designer</option>
+            <option value="ux-designer">UX Designer</option>
+            <option value="developer">Developer</option>
+            <option value="marketer">Marketer</option>
+          </select>
+        </div>
+
+        {/* Skills */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-black">Your Skills</label>
+          <select
+            value=""
+            onChange={(e) => {
+              if (e.target.value) {
+                addSkill();
+                e.target.value = '';
+              }
+            }}
+            className="h-[53px] rounded-[10px] border-0 bg-gray-100 px-4 text-black focus:ring-2 focus:ring-purple-600"
+          >
+            <option value="">Choose Skills</option>
+            <option value="UI Design">UI Design</option>
+            <option value="UX Design">UX Design</option>
+            <option value="Website Design">Website Design</option>
+            <option value="Interface Design">Interface Design</option>
+            <option value="Interaction Design">Interaction Design</option>
+            <option value="Presentation Design">Presentation Design</option>
+          </select>
+          {/* Selected Skills */}
+          <div className="flex flex-wrap gap-2">
+            {formData.skills.map((skill, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-full text-sm"
+              >
+                <span>{skill}</span>
+                <button
+                  type="button"
+                  onClick={() => removeSkill(index)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Tech Stack */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-black">Your Stack</label>
+          <select
+            value=""
+            onChange={(e) => {
+              if (e.target.value) {
+                addStack();
+                e.target.value = '';
+              }
+            }}
+            className="h-[53px] rounded-[10px] border-0 bg-gray-100 px-4 text-black focus:ring-2 focus:ring-purple-600"
+          >
+            <option value="">Choose Tools</option>
+            <option value="Figma">Figma</option>
+            <option value="Rive">Rive</option>
+            <option value="Webflow">Webflow</option>
+            <option value="Lottie">Lottie</option>
+            <option value="Framer">Framer</option>
+          </select>
+          {/* Selected Stack */}
+          <div className="flex flex-wrap gap-2">
+            {formData.stack.map((tool, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-full text-sm"
+              >
+                <span>{tool}</span>
+                <button
+                  type="button"
+                  onClick={() => removeStack(index)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Portfolio Link */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-medium text-black">Portfolio Link</label>
+          <Input
+            type="url"
+            value={formData.portfolioLink}
+            onChange={handlePortfolioChange}
+            placeholder="Paste your website link"
+            className="h-[53px] rounded-[10px] border-0 bg-gray-100 placeholder:text-gray-400"
+          />
+        </div>
+
+        {/* Buttons */}
+        <div className="flex gap-3 pt-6 sticky bottom-0">
+          <Button
+            type="button"
+            onClick={onBack}
+            variant="outline"
+            className="flex-1 h-[53px] rounded-[10px] bg-gray-200 hover:bg-gray-300 text-black font-semibold"
+          >
+            Back
+          </Button>
+          <Button
+            type="submit"
+            className="flex-1 h-[53px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold"
+          >
+            Continue
+          </Button>
+        </div>
+      </form>
     </div>
   );
 };
 
 const OnboardingPage = () => {
-  const [step, setStep] = useState(1);
-  const [username, setUsername] = useState('');
+  const [currentStep, setCurrentStep] = useState(1);
+  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
   const router = useRouter();
-  const { refetchUser } = useAuth();
 
-  const onBoardMutation = useMutation({
-    mutationFn: (data: { username: string; role: 'talent' | 'mentor' }) => {
-      return apiClient('/users/me/onboard', {
-        method: 'POST',
-        body: data,
-      });
-    },
-    onSuccess: () => {
-      toast.success('Onboarding successful!');
-      refetchUser();
-      router.push('/talent/dashboard');
-    },
-    onError: (error) => {
-      toast.error(
-        error.message || 'Failed to complete onboarding. Please try again.',
-      );
-    },
-  });
-
-  const handleUsernameSet = (newUsername: string) => {
-    setUsername(newUsername);
-    setStep(2);
+  const handleRoleSelect = (role: Role) => {
+    setSelectedRole(role);
+    setCurrentStep(2);
   };
 
-  const handleRoleSelect = (selectedRole: 'talent' | 'mentor') => {
-    onBoardMutation.mutate({ username, role: selectedRole });
+  const handleProfileNext = (data: ProfileData) => {
+    // Store profile data for next step
+    setCurrentStep(3);
+  };
+
+  const handleSkillsNext = (data: SkillsData) => {
+    // Handle final submission
+    router.push('/dashboard');
+  };
+
+  const handleBack = () => {
+    setCurrentStep(currentStep - 1);
   };
 
   const renderStep = () => {
-    switch (step) {
+    switch (currentStep) {
       case 1:
-        return <SetUsername onNext={handleUsernameSet} />;
+        return <SelectRoleStep onNext={handleRoleSelect} />;
       case 2:
-        return (
-          <SelectRole
-            onRoleSelect={handleRoleSelect}
-            isLoading={onBoardMutation.isPending}
-          />
-        );
+        return <CreateProfileStep onNext={handleProfileNext} onBack={handleBack} />;
+      case 3:
+        return <ShowcaseSkillsStep onNext={handleSkillsNext} onBack={handleBack} />;
       default:
         return null;
     }
@@ -346,10 +555,35 @@ const OnboardingPage = () => {
       </svg>
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-8">
-        <div className="w-full max-w-md">
-          <div className="bg-white rounded-[30px] shadow-lg p-8 md:p-12 lg:p-16">
-            {renderStep()}
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-8 md:px-8 lg:px-12">
+        <div className="w-full max-w-6xl">
+          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden">
+            {currentStep === 1 ? (
+              // Full width for role selection
+              <div className="p-8 md:p-16">
+                <SelectRoleStep onNext={handleRoleSelect} />
+              </div>
+            ) : (
+              // Side-by-side layout for profile and skills
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
+                {/* Left side - Logo/Preview (can be used for future preview cards) */}
+                <div className="hidden md:flex flex-col items-center justify-center p-12 lg:p-16 bg-gray-50">
+                  <div className="text-center text-gray-400">
+                    <p className="text-sm">Preview Panel</p>
+                  </div>
+                </div>
+
+                {/* Right side - Form */}
+                <div className="flex flex-col justify-start p-8 md:p-12 lg:p-16 bg-white overflow-y-auto max-h-[calc(100vh-60px)]">
+                  {currentStep === 2 && (
+                    <CreateProfileStep onNext={handleProfileNext} onBack={handleBack} />
+                  )}
+                  {currentStep === 3 && (
+                    <ShowcaseSkillsStep onNext={handleSkillsNext} onBack={handleBack} />
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
