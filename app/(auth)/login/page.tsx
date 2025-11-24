@@ -81,7 +81,7 @@ const Login = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-white overflow-hidden">
+    <div className="relative h-screen bg-white overflow-hidden">
       {/* Gradient Background */}
       <svg
         className="absolute inset-0 w-full h-full"
@@ -149,7 +149,7 @@ const Login = () => {
       </svg>
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-8 md:px-8 lg:px-12">
+      <div className="relative z-10 h-screen flex items-center justify-center px-4 py-8 md:px-8 lg:px-12 overflow-y-auto">
         <div className="w-full max-w-6xl">
           <div className="bg-white rounded-[30px] shadow-lg overflow-hidden">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
