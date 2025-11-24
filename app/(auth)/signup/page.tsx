@@ -1,28 +1,28 @@
-'use client';
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { useMutation } from '@tanstack/react-query';
-import { toast } from 'sonner';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+"use client";
+import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
-import apiClient from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import apiClient from "@/lib/api";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 
 const signUpSchema = z.object({
-  email: z.string().email({ message: 'Please enter a valid email address.' }),
-  password: z.string().min(8, 'Password must be at least 8 characters.'),
+  email: z.string().email({ message: "Please enter a valid email address." }),
+  password: z.string().min(8, "Password must be at least 8 characters."),
 });
 
 type SignUpFormValues = z.infer<typeof signUpSchema>;
@@ -34,40 +34,40 @@ const Signup = () => {
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
 
   const sendVerificationEmailMutation = useMutation({
     mutationFn: (email: string) => {
-      return apiClient('/auth/verify-email/send', {
-        method: 'POST',
+      return apiClient("/auth/verify-email/send", {
+        method: "POST",
         body: { email },
       });
     },
     onSuccess: (_, variables) => {
-      toast.success('Verification email sent!');
+      toast.success("Verification email sent!");
       router.push(`/confirm-email?email=${variables}`);
     },
     onError: (error) => {
-      toast.error(error.message || 'Failed to send verification email.');
+      toast.error(error.message || "Failed to send verification email.");
     },
   });
 
   const mutation = useMutation({
     mutationFn: (data: SignUpFormValues) => {
-      return apiClient('/auth/register', {
-        method: 'POST',
+      return apiClient("/auth/register", {
+        method: "POST",
         body: data,
       });
     },
     onSuccess: (data: any, variables) => {
-      toast.success('Account created successfully!');
+      toast.success("Account created successfully!");
       sendVerificationEmailMutation.mutate(variables.email);
     },
     onError: (error) => {
-      toast.error(error.message || 'An error occurred. Please try again.');
+      toast.error(error.message || "An error occurred. Please try again.");
     },
   });
 
@@ -213,14 +213,16 @@ const Signup = () => {
                               <FormControl>
                                 <div className="relative h-[53px] rounded-[10px] bg-gray-100 flex items-center px-4">
                                   <Input
-                                    type={showPassword ? 'text' : 'password'}
+                                    type={showPassword ? "text" : "password"}
                                     placeholder="Your Password"
                                     {...field}
                                     className="flex-1 bg-transparent border-0 placeholder:text-gray-400 focus:ring-0"
                                   />
                                   <button
                                     type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
+                                    onClick={() =>
+                                      setShowPassword(!showPassword)
+                                    }
                                     className="text-gray-500 hover:text-gray-700"
                                   >
                                     {showPassword ? (
@@ -246,7 +248,7 @@ const Signup = () => {
                         {mutation.isPending ? (
                           <Loader2 size={18} className="animate-spin" />
                         ) : (
-                          'Continue'
+                          "Continue"
                         )}
                       </Button>
                     </form>
@@ -295,7 +297,7 @@ const Signup = () => {
                   {/* Sign In Link */}
                   <p className="text-center text-base">
                     <span className="text-gray-400">
-                      Already have an account?{' '}
+                      Already have an account?{" "}
                     </span>
                     <Link
                       href="/login"

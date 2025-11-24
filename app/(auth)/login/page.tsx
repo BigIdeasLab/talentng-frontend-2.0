@@ -1,31 +1,31 @@
-'use client';
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { useMutation } from '@tanstack/react-query';
-import { toast } from 'sonner';
-import { decodeJwt } from '@/lib/utils';
+"use client";
+import React, { useState } from "react";
+import Link from "next/link";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { decodeJwt } from "@/lib/utils";
 
-import apiClient from '@/lib/api';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import apiClient from "@/lib/api";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 
-import { LoginResponse } from '@/lib/types/auth';
+import { LoginResponse } from "@/lib/types/auth";
 
 const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email address.'),
-  password: z.string().min(1, 'Password is required.'),
+  email: z.string().email("Please enter a valid email address."),
+  password: z.string().min(1, "Password is required."),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -37,15 +37,15 @@ const Login = () => {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
 
   const loginMutation = useMutation<LoginResponse, Error, LoginFormValues>({
     mutationFn: async (data: LoginFormValues) => {
-      const response = await apiClient<LoginResponse>('/auth/login', {
-        method: 'POST',
+      const response = await apiClient<LoginResponse>("/auth/login", {
+        method: "POST",
         body: data,
       });
       return response;
@@ -54,25 +54,25 @@ const Login = () => {
       const { accessToken, user } = response;
       if (accessToken) {
         document.cookie = `accessToken=${accessToken}; path=/; max-age=604800; samesite=lax`;
-        toast.success('Login successful!');
+        toast.success("Login successful!");
 
         const decodedToken = decodeJwt(accessToken);
         if (decodedToken) {
-          if (!user.username || decodedToken.role === 'general') {
-            router.push('/onboarding');
+          if (!user.username || decodedToken.role === "general") {
+            router.push("/onboarding");
           } else {
-            router.push('/dashboard');
+            router.push("/dashboard");
           }
         } else {
-          toast.error('Could not decode token. Please try logging in again.');
-          router.push('/dashboard');
+          toast.error("Could not decode token. Please try logging in again.");
+          router.push("/dashboard");
         }
       } else {
-        toast.error('Login failed: No access token received.');
+        toast.error("Login failed: No access token received.");
       }
     },
     onError: (error) => {
-      toast.error(error.message || 'Login failed. Please try again.');
+      toast.error(error.message || "Login failed. Please try again.");
     },
   });
 
@@ -218,14 +218,16 @@ const Login = () => {
                               <FormControl>
                                 <div className="relative h-[53px] rounded-[10px] bg-gray-100 flex items-center px-4">
                                   <Input
-                                    type={showPassword ? 'text' : 'password'}
+                                    type={showPassword ? "text" : "password"}
                                     placeholder="Your Password"
                                     {...field}
                                     className="flex-1 bg-transparent border-0 placeholder:text-gray-400 focus:ring-0"
                                   />
                                   <button
                                     type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
+                                    onClick={() =>
+                                      setShowPassword(!showPassword)
+                                    }
                                     className="text-gray-500 hover:text-gray-700"
                                   >
                                     {showPassword ? (
@@ -251,7 +253,7 @@ const Login = () => {
                         {loginMutation.isPending ? (
                           <Loader2 size={18} className="animate-spin" />
                         ) : (
-                          'Continue'
+                          "Continue"
                         )}
                       </Button>
                     </form>

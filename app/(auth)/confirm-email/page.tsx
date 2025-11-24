@@ -1,88 +1,92 @@
-'use client';
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { useMutation } from '@tanstack/react-query';
-import { toast } from 'sonner';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
-import apiClient from '@/lib/api';
-import { Button } from '@/components/ui/button';
+"use client";
+import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-} from '@/components/ui/form';
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import apiClient from "@/lib/api";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 
 const confirmEmailSchema = z.object({
-  verificationCode: z.string().min(6, 'Your one-time password must be 6 characters.'),
+  verificationCode: z
+    .string()
+    .min(6, "Your one-time password must be 6 characters."),
 });
 
 type ConfirmEmailFormValues = z.infer<typeof confirmEmailSchema>;
 
 const ConfirmEmailPage = () => {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
   const [resendCountdown, setResendCountdown] = useState(0);
 
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    setEmail(params.get('email') || '');
+    setEmail(params.get("email") || "");
   }, []);
 
   const form = useForm<ConfirmEmailFormValues>({
     resolver: zodResolver(confirmEmailSchema),
     defaultValues: {
-      verificationCode: '',
+      verificationCode: "",
     },
   });
 
   React.useEffect(() => {
     if (resendCountdown > 0) {
-      const timer = setTimeout(() => setResendCountdown(resendCountdown - 1), 1000);
+      const timer = setTimeout(
+        () => setResendCountdown(resendCountdown - 1),
+        1000,
+      );
       return () => clearTimeout(timer);
     }
   }, [resendCountdown]);
 
   const resendMutation = useMutation({
     mutationFn: () => {
-      return apiClient('/auth/verify-email/send', {
-        method: 'POST',
+      return apiClient("/auth/verify-email/send", {
+        method: "POST",
         body: { email },
       });
     },
     onSuccess: () => {
-      toast.success('Verification code resent!');
+      toast.success("Verification code resent!");
       setResendCountdown(30);
     },
     onError: (error) => {
-      toast.error(error.message || 'Failed to resend verification code.');
+      toast.error(error.message || "Failed to resend verification code.");
     },
   });
 
   const mutation = useMutation({
     mutationFn: (data: ConfirmEmailFormValues) => {
-      return apiClient('/auth/verify-email/confirm', {
-        method: 'POST',
+      return apiClient("/auth/verify-email/confirm", {
+        method: "POST",
         body: { ...data, email },
       });
     },
     onSuccess: () => {
-      toast.success('Email verified successfully!');
-      router.push('/login');
+      toast.success("Email verified successfully!");
+      router.push("/login");
     },
     onError: (error: any) => {
-      setError(error.message || 'Invalid verification code');
-      toast.error(error.message || 'An error occurred. Please try again.');
+      setError(error.message || "Invalid verification code");
+      toast.error(error.message || "An error occurred. Please try again.");
     },
   });
 
   const onSubmit = (data: ConfirmEmailFormValues) => {
-    setError('');
+    setError("");
     mutation.mutate(data);
   };
 
@@ -218,8 +222,10 @@ const ConfirmEmailPage = () => {
                       Check your inbox
                     </h1>
                     <p className="text-base md:text-[17px] font-light text-gray-400">
-                      We just sent a 6-digit code to{' '}
-                      <span className="font-semibold text-gray-400">{email}</span>
+                      We just sent a 6-digit code to{" "}
+                      <span className="font-semibold text-gray-400">
+                        {email}
+                      </span>
                     </p>
                   </div>
 
@@ -232,7 +238,9 @@ const ConfirmEmailPage = () => {
                       {/* Error Message */}
                       {error && (
                         <div className="flex flex-col gap-2">
-                          <p className="text-sm font-medium text-red-600">{error}</p>
+                          <p className="text-sm font-medium text-red-600">
+                            {error}
+                          </p>
                         </div>
                       )}
 
@@ -245,7 +253,7 @@ const ConfirmEmailPage = () => {
                             <FormControl>
                               <div
                                 className={`flex gap-2 justify-center rounded-[10px] p-2 ${
-                                  error ? 'bg-red-50' : 'bg-gray-100'
+                                  error ? "bg-red-50" : "bg-gray-100"
                                 }`}
                               >
                                 <InputOTP maxLength={6} {...field}>
@@ -254,48 +262,48 @@ const ConfirmEmailPage = () => {
                                       index={0}
                                       className={`w-12 h-14 text-2xl font-semibold border-0 rounded-[8px] ${
                                         error
-                                          ? 'bg-red-100 text-red-600'
-                                          : 'bg-white text-black'
+                                          ? "bg-red-100 text-red-600"
+                                          : "bg-white text-black"
                                       }`}
                                     />
                                     <InputOTPSlot
                                       index={1}
                                       className={`w-12 h-14 text-2xl font-semibold border-0 rounded-[8px] ${
                                         error
-                                          ? 'bg-red-100 text-red-600'
-                                          : 'bg-white text-black'
+                                          ? "bg-red-100 text-red-600"
+                                          : "bg-white text-black"
                                       }`}
                                     />
                                     <InputOTPSlot
                                       index={2}
                                       className={`w-12 h-14 text-2xl font-semibold border-0 rounded-[8px] ${
                                         error
-                                          ? 'bg-red-100 text-red-600'
-                                          : 'bg-white text-black'
+                                          ? "bg-red-100 text-red-600"
+                                          : "bg-white text-black"
                                       }`}
                                     />
                                     <InputOTPSlot
                                       index={3}
                                       className={`w-12 h-14 text-2xl font-semibold border-0 rounded-[8px] ${
                                         error
-                                          ? 'bg-red-100 text-red-600'
-                                          : 'bg-white text-black'
+                                          ? "bg-red-100 text-red-600"
+                                          : "bg-white text-black"
                                       }`}
                                     />
                                     <InputOTPSlot
                                       index={4}
                                       className={`w-12 h-14 text-2xl font-semibold border-0 rounded-[8px] ${
                                         error
-                                          ? 'bg-red-100 text-red-600'
-                                          : 'bg-white text-black'
+                                          ? "bg-red-100 text-red-600"
+                                          : "bg-white text-black"
                                       }`}
                                     />
                                     <InputOTPSlot
                                       index={5}
                                       className={`w-12 h-14 text-2xl font-semibold border-0 rounded-[8px] ${
                                         error
-                                          ? 'bg-red-100 text-red-600'
-                                          : 'bg-white text-black'
+                                          ? "bg-red-100 text-red-600"
+                                          : "bg-white text-black"
                                       }`}
                                     />
                                   </InputOTPGroup>
@@ -309,10 +317,13 @@ const ConfirmEmailPage = () => {
                       {/* Submit Button */}
                       <Button
                         type="submit"
-                        disabled={mutation.isPending || form.watch('verificationCode').length < 6}
+                        disabled={
+                          mutation.isPending ||
+                          form.watch("verificationCode").length < 6
+                        }
                         className="w-full h-[53px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-base"
                       >
-                        {mutation.isPending ? 'Verifying...' : 'Verify Email'}
+                        {mutation.isPending ? "Verifying..." : "Verify Email"}
                       </Button>
                     </form>
                   </Form>
@@ -327,7 +338,7 @@ const ConfirmEmailPage = () => {
                     >
                       {resendCountdown > 0
                         ? `Resend in ${resendCountdown}s`
-                        : 'Resend code'}
+                        : "Resend code"}
                     </button>
                   </p>
                 </div>

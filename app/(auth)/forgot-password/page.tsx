@@ -1,12 +1,12 @@
-'use client';
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+"use client";
+import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -101,7 +101,10 @@ const ForgotPassword = () => {
               </div>
 
               {/* Form */}
-              <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
+              <form
+                onSubmit={handleSubmit}
+                className="flex flex-col gap-6 w-full"
+              >
                 {/* Email Field */}
                 <div className="flex flex-col gap-3">
                   <label className="text-sm font-medium text-black">

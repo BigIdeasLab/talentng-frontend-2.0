@@ -1,7 +1,7 @@
-'use client';
-import React from 'react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+"use client";
+import React from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const VerifyEmailPage = () => {
   return (
@@ -124,8 +124,8 @@ const VerifyEmailPage = () => {
                   Verify your email
                 </h1>
                 <p className="text-base md:text-[17px] font-light text-gray-400">
-                  We've sent an email to your address. Please check your inbox and
-                  click the verification link to activate your account.
+                  We've sent an email to your address. Please check your inbox
+                  and click the verification link to activate your account.
                 </p>
               </div>
 
@@ -138,7 +138,7 @@ const VerifyEmailPage = () => {
                   <Link href="/login">Back to Login</Link>
                 </Button>
                 <p className="text-gray-400 font-light text-sm">
-                  Didn't receive the email?{' '}
+                  Didn't receive the email?{" "}
                   <button className="text-[#5C30FF] font-semibold hover:underline">
                     Resend verification link
                   </button>

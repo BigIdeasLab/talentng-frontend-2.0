@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import React, { useState, Suspense } from 'react';
-import { useRouter } from 'next/navigation';
-import { Loader2, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import React, { useState, Suspense } from "react";
+import { useRouter } from "next/navigation";
+import { Loader2, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
-type Role = 'talent' | 'employer' | 'mentor';
+type Role = "talent" | "employer" | "mentor";
 
 interface ProfileData {
   firstName: string;
@@ -23,28 +23,27 @@ interface SkillsData {
   portfolioLink: string;
 }
 
-const SelectRoleStep = ({
-  onNext,
-}: {
-  onNext: (role: Role) => void;
-}) => {
+const SelectRoleStep = ({ onNext }: { onNext: (role: Role) => void }) => {
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
 
   const roles = [
     {
-      id: 'talent',
-      label: 'As Talent',
-      image: 'https://api.builder.io/api/v1/image/assets/TEMP/4b8cd503cd85ff9dcf4440439b7a1a2529624e4a?width=512',
+      id: "talent",
+      label: "As Talent",
+      image:
+        "https://api.builder.io/api/v1/image/assets/TEMP/4b8cd503cd85ff9dcf4440439b7a1a2529624e4a?width=512",
     },
     {
-      id: 'employer',
-      label: 'Employer / Recruiter',
-      image: 'https://api.builder.io/api/v1/image/assets/TEMP/7e75bac5dec4ff1b9249b202c3cdc262e464ad7f?width=512',
+      id: "employer",
+      label: "Employer / Recruiter",
+      image:
+        "https://api.builder.io/api/v1/image/assets/TEMP/7e75bac5dec4ff1b9249b202c3cdc262e464ad7f?width=512",
     },
     {
-      id: 'mentor',
-      label: 'Mentor',
-      image: 'https://api.builder.io/api/v1/image/assets/TEMP/ee967bc86e23b38c64cc1b60aa7d5caa0efafc05?width=512',
+      id: "mentor",
+      label: "Mentor",
+      image:
+        "https://api.builder.io/api/v1/image/assets/TEMP/ee967bc86e23b38c64cc1b60aa7d5caa0efafc05?width=512",
     },
   ];
 
@@ -68,8 +67,8 @@ const SelectRoleStep = ({
             onClick={() => setSelectedRole(role.id as Role)}
             className={`flex flex-col rounded-[10px] overflow-hidden transition-all ${
               selectedRole === role.id
-                ? 'ring-2 ring-[#5C30FF] shadow-lg'
-                : 'border border-gray-200'
+                ? "ring-2 ring-[#5C30FF] shadow-lg"
+                : "border border-gray-200"
             }`}
           >
             {/* Image */}
@@ -130,14 +129,16 @@ const CreateProfileStep = ({
   onBack: () => void;
 }) => {
   const [formData, setFormData] = useState<ProfileData>({
-    firstName: '',
-    lastName: '',
-    username: '',
-    location: '',
-    bio: '',
+    firstName: "",
+    lastName: "",
+    username: "",
+    location: "",
+    bio: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -250,14 +251,14 @@ const ShowcaseSkillsStep = ({
   onBack: () => void;
 }) => {
   const [formData, setFormData] = useState<SkillsData>({
-    category: '',
+    category: "",
     skills: [],
     stack: [],
-    portfolioLink: '',
+    portfolioLink: "",
   });
 
-  const [skillInput, setSkillInput] = useState('');
-  const [stackInput, setStackInput] = useState('');
+  const [skillInput, setSkillInput] = useState("");
+  const [stackInput, setStackInput] = useState("");
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFormData((prev) => ({ ...prev, category: e.target.value }));
@@ -273,7 +274,7 @@ const ShowcaseSkillsStep = ({
         ...prev,
         skills: [...prev.skills, skillInput.trim()],
       }));
-      setSkillInput('');
+      setSkillInput("");
     }
   };
 
@@ -290,7 +291,7 @@ const ShowcaseSkillsStep = ({
         ...prev,
         stack: [...prev.stack, stackInput.trim()],
       }));
-      setStackInput('');
+      setStackInput("");
     }
   };
 
@@ -317,10 +318,15 @@ const ShowcaseSkillsStep = ({
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 max-h-[500px] overflow-y-auto pr-2"
+      >
         {/* Category Dropdown */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-black">What do you do?</label>
+          <label className="text-sm font-medium text-black">
+            What do you do?
+          </label>
           <select
             value={formData.category}
             onChange={handleCategoryChange}
@@ -342,7 +348,7 @@ const ShowcaseSkillsStep = ({
             onChange={(e) => {
               if (e.target.value) {
                 addSkill();
-                e.target.value = '';
+                e.target.value = "";
               }
             }}
             className="h-[53px] rounded-[10px] border-0 bg-gray-100 px-4 text-black focus:ring-2 focus:ring-purple-600"
@@ -383,7 +389,7 @@ const ShowcaseSkillsStep = ({
             onChange={(e) => {
               if (e.target.value) {
                 addStack();
-                e.target.value = '';
+                e.target.value = "";
               }
             }}
             className="h-[53px] rounded-[10px] border-0 bg-gray-100 px-4 text-black focus:ring-2 focus:ring-purple-600"
@@ -417,7 +423,9 @@ const ShowcaseSkillsStep = ({
 
         {/* Portfolio Link */}
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-black">Portfolio Link</label>
+          <label className="text-sm font-medium text-black">
+            Portfolio Link
+          </label>
           <Input
             type="url"
             value={formData.portfolioLink}
@@ -466,7 +474,7 @@ const OnboardingPage = () => {
 
   const handleSkillsNext = (data: SkillsData) => {
     // Handle final submission
-    router.push('/dashboard');
+    router.push("/dashboard");
   };
 
   const handleBack = () => {
@@ -478,9 +486,13 @@ const OnboardingPage = () => {
       case 1:
         return <SelectRoleStep onNext={handleRoleSelect} />;
       case 2:
-        return <CreateProfileStep onNext={handleProfileNext} onBack={handleBack} />;
+        return (
+          <CreateProfileStep onNext={handleProfileNext} onBack={handleBack} />
+        );
       case 3:
-        return <ShowcaseSkillsStep onNext={handleSkillsNext} onBack={handleBack} />;
+        return (
+          <ShowcaseSkillsStep onNext={handleSkillsNext} onBack={handleBack} />
+        );
       default:
         return null;
     }
@@ -576,10 +588,16 @@ const OnboardingPage = () => {
                 {/* Right side - Form */}
                 <div className="flex flex-col justify-start p-8 md:p-12 lg:p-16 bg-white overflow-y-auto max-h-[calc(100vh-60px)]">
                   {currentStep === 2 && (
-                    <CreateProfileStep onNext={handleProfileNext} onBack={handleBack} />
+                    <CreateProfileStep
+                      onNext={handleProfileNext}
+                      onBack={handleBack}
+                    />
                   )}
                   {currentStep === 3 && (
-                    <ShowcaseSkillsStep onNext={handleSkillsNext} onBack={handleBack} />
+                    <ShowcaseSkillsStep
+                      onNext={handleSkillsNext}
+                      onBack={handleBack}
+                    />
                   )}
                 </div>
               </div>

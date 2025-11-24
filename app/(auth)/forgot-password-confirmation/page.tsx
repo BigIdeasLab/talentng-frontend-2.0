@@ -1,17 +1,16 @@
-'use client';
-import React, { Suspense } from 'react';
-import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+"use client";
+import React, { Suspense } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 const ConfirmationContent = () => {
   const searchParams = useSearchParams();
-  const email = searchParams.get('email') || 'your email';
+  const email = searchParams.get("email") || "your email";
 
   return (
     <p className="text-base md:text-[17px] font-light text-gray-400 text-center">
-      If the email{' '}
-      <span className="font-semibold text-gray-400">{email}</span>{' '}
+      If the email <span className="font-semibold text-gray-400">{email}</span>{" "}
       exists, you will receive a password recovery link within a few minutes.
     </p>
   );

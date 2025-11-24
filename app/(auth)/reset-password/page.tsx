@@ -1,20 +1,20 @@
-'use client';
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Eye, EyeOff } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+"use client";
+import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const ResetPassword = () => {
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (password && password.length >= 8) {
-      router.push('/login');
+      router.push("/login");
     }
   };
 
@@ -105,7 +105,10 @@ const ResetPassword = () => {
               </div>
 
               {/* Form */}
-              <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
+              <form
+                onSubmit={handleSubmit}
+                className="flex flex-col gap-6 w-full"
+              >
                 {/* Password Field */}
                 <div className="flex flex-col gap-3">
                   <label className="text-sm font-medium text-black">
@@ -113,7 +116,7 @@ const ResetPassword = () => {
                   </label>
                   <div className="relative h-[53px] rounded-[10px] bg-gray-100 flex items-center px-4">
                     <Input
-                      type={showPassword ? 'text' : 'password'}
+                      type={showPassword ? "text" : "password"}
                       placeholder="Enter new password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -125,11 +128,7 @@ const ResetPassword = () => {
                       onClick={() => setShowPassword(!showPassword)}
                       className="text-gray-500 hover:text-gray-700"
                     >
-                      {showPassword ? (
-                        <EyeOff size={20} />
-                      ) : (
-                        <Eye size={20} />
-                      )}
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
                   </div>
                 </div>
@@ -150,7 +149,9 @@ const ResetPassword = () => {
                   </Button>
 
                   <p className="text-center text-sm">
-                    <span className="text-gray-400">Already have an account? </span>
+                    <span className="text-gray-400">
+                      Already have an account?{" "}
+                    </span>
                     <Link
                       href="/login"
                       className="text-[#5C30FF] font-semibold hover:underline"
