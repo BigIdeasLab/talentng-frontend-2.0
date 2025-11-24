@@ -16,6 +16,13 @@ export default {
       fontFamily: {
         geist: ["Geist", "-apple-system", "Roboto", "Helvetica", "sans-serif"],
         sans: ["Geist", "-apple-system", "Roboto", "Helvetica", "sans-serif"],
+        "inter-tight": [
+          "Inter Tight",
+          "-apple-system",
+          "Roboto",
+          "Helvetica",
+          "sans-serif",
+        ],
       },
       colors: {
         // Talent.ng brand colors

@@ -13,7 +13,6 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import apiClient from "@/lib/api";
-import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 
 const confirmEmailSchema = z.object({
@@ -90,8 +89,16 @@ const ConfirmEmailPage = () => {
     mutation.mutate(data);
   };
 
+  // Auto-submit when 6 digits are entered
+  React.useEffect(() => {
+    const code = form.watch("verificationCode");
+    if (code.length === 6) {
+      onSubmit({ verificationCode: code });
+    }
+  }, [form.watch("verificationCode")]);
+
   return (
-    <div className="relative min-h-screen bg-white overflow-hidden">
+    <div className="relative h-screen bg-white overflow-hidden">
       {/* Gradient Background */}
       <svg
         className="absolute inset-0 w-full h-full"
@@ -159,22 +166,22 @@ const ConfirmEmailPage = () => {
       </svg>
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-8 md:px-8 lg:px-12">
-        <div className="w-full max-w-6xl">
-          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden">
+      <div className="relative z-10 h-screen flex items-center justify-center px-3 py-3 md:px-4 lg:px-6 overflow-hidden">
+        <div className="w-full max-w-5xl max-h-full">
+          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden max-h-[calc(100vh-24px)] flex flex-col">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
               {/* Left Side - Logo */}
-              <div className="hidden md:flex flex-col items-center justify-center p-12 lg:p-16 bg-white">
+              <div className="hidden md:flex flex-col items-center justify-center p-8 lg:p-12 bg-white overflow-hidden">
                 <img
                   src="https://api.builder.io/api/v1/image/assets/TEMP/ecad5cb9cbb17ee75c4a3aee33c69b88431f60fc?width=1224"
                   alt="Talent.ng Logo"
-                  className="w-full max-w-sm h-auto rounded-[22px] shadow-md"
+                  className="w-full max-w-md object-contain rounded-[22px] shadow-md"
                 />
               </div>
 
               {/* Right Side - Form */}
-              <div className="flex flex-col justify-center p-8 md:p-12 lg:p-16 bg-white">
-                <div className="flex flex-col gap-8">
+              <div className="flex flex-col justify-center p-6 md:p-8 lg:p-12 bg-white overflow-y-auto">
+                <div className="flex flex-col gap-6">
                   {/* Gmail Icon */}
                   <svg
                     width="60"
@@ -217,11 +224,11 @@ const ConfirmEmailPage = () => {
                   </svg>
 
                   {/* Header */}
-                  <div className="flex flex-col gap-5">
-                    <h1 className="text-3xl md:text-[30px] font-semibold text-black leading-tight">
+                  <div className="flex flex-col gap-4">
+                    <h1 className="text-2xl md:text-[30px] font-semibold text-black leading-tight">
                       Check your inbox
                     </h1>
-                    <p className="text-base md:text-[17px] font-light text-gray-400">
+                    <p className="text-sm md:text-[17px] font-light text-gray-400">
                       We just sent a 6-digit code to{" "}
                       <span className="font-semibold text-gray-400">
                         {email}
@@ -233,7 +240,7 @@ const ConfirmEmailPage = () => {
                   <Form {...form}>
                     <form
                       onSubmit={form.handleSubmit(onSubmit)}
-                      className="flex flex-col gap-6"
+                      className="flex flex-col gap-5"
                     >
                       {/* Error Message */}
                       {error && (
@@ -251,60 +258,32 @@ const ConfirmEmailPage = () => {
                         render={({ field }) => (
                           <FormItem>
                             <FormControl>
-                              <div
-                                className={`flex gap-2 justify-center rounded-[10px] p-2 ${
-                                  error ? "bg-red-50" : "bg-gray-100"
-                                }`}
-                              >
+                              <div className="flex justify-center items-center rounded-[10px] bg-[#F5F5F5] py-[5px] px-[54px]">
                                 <InputOTP maxLength={6} {...field}>
-                                  <InputOTPGroup className="flex gap-0">
+                                  <InputOTPGroup className="flex items-center gap-0">
                                     <InputOTPSlot
                                       index={0}
-                                      className={`w-12 h-14 text-2xl font-semibold border-0 rounded-[8px] ${
-                                        error
-                                          ? "bg-red-100 text-red-600"
-                                          : "bg-white text-black"
-                                      }`}
+                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
                                     />
                                     <InputOTPSlot
                                       index={1}
-                                      className={`w-12 h-14 text-2xl font-semibold border-0 rounded-[8px] ${
-                                        error
-                                          ? "bg-red-100 text-red-600"
-                                          : "bg-white text-black"
-                                      }`}
+                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
                                     />
                                     <InputOTPSlot
                                       index={2}
-                                      className={`w-12 h-14 text-2xl font-semibold border-0 rounded-[8px] ${
-                                        error
-                                          ? "bg-red-100 text-red-600"
-                                          : "bg-white text-black"
-                                      }`}
+                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
                                     />
                                     <InputOTPSlot
                                       index={3}
-                                      className={`w-12 h-14 text-2xl font-semibold border-0 rounded-[8px] ${
-                                        error
-                                          ? "bg-red-100 text-red-600"
-                                          : "bg-white text-black"
-                                      }`}
+                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
                                     />
                                     <InputOTPSlot
                                       index={4}
-                                      className={`w-12 h-14 text-2xl font-semibold border-0 rounded-[8px] ${
-                                        error
-                                          ? "bg-red-100 text-red-600"
-                                          : "bg-white text-black"
-                                      }`}
+                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
                                     />
                                     <InputOTPSlot
                                       index={5}
-                                      className={`w-12 h-14 text-2xl font-semibold border-0 rounded-[8px] ${
-                                        error
-                                          ? "bg-red-100 text-red-600"
-                                          : "bg-white text-black"
-                                      }`}
+                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
                                     />
                                   </InputOTPGroup>
                                 </InputOTP>
@@ -313,23 +292,11 @@ const ConfirmEmailPage = () => {
                           </FormItem>
                         )}
                       />
-
-                      {/* Submit Button */}
-                      <Button
-                        type="submit"
-                        disabled={
-                          mutation.isPending ||
-                          form.watch("verificationCode").length < 6
-                        }
-                        className="w-full h-[53px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-base"
-                      >
-                        {mutation.isPending ? "Verifying..." : "Verify Email"}
-                      </Button>
                     </form>
                   </Form>
 
                   {/* Resend Link */}
-                  <p className="text-center text-sm">
+                  <p className="text-center text-sm md:text-[15px]">
                     <span className="text-gray-400">Didn't get it? </span>
                     <button
                       onClick={() => resendMutation.mutate()}
