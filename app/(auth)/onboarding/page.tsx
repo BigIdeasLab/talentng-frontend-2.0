@@ -567,9 +567,9 @@ const OnboardingPage = () => {
       </svg>
 
       {/* Content */}
-      <div className="relative z-10 h-screen flex items-center justify-center px-4 py-8 md:px-8 lg:px-12 overflow-y-auto">
-        <div className="w-full max-w-6xl">
-          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden">
+      <div className="relative z-10 h-screen flex items-center justify-center px-3 py-3 md:px-4 lg:px-6 overflow-hidden">
+        <div className="w-full max-w-5xl max-h-full">
+          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden max-h-[calc(100vh-24px)]">
             {currentStep === 1 ? (
               // Full width for role selection
               <div className="p-8 md:p-16">

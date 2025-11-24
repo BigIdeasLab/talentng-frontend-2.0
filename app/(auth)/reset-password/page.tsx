@@ -90,9 +90,9 @@ const ResetPassword = () => {
       </svg>
 
       {/* Content */}
-      <div className="relative z-10 h-screen flex items-center justify-center px-4 py-8 overflow-y-auto">
-        <div className="w-full max-w-md">
-          <div className="bg-white rounded-[30px] shadow-lg p-8 md:p-12 lg:p-16">
+      <div className="relative z-10 h-screen flex items-center justify-center px-3 py-3 overflow-hidden">
+        <div className="w-full max-w-md max-h-full">
+          <div className="bg-white rounded-[30px] shadow-lg p-6 md:p-10 overflow-y-auto max-h-[calc(100vh-24px)]">
             <div className="flex flex-col items-center gap-8">
               {/* Header */}
               <div className="flex flex-col gap-5 text-center">
@@ -143,7 +143,7 @@ const ResetPassword = () => {
                   <Button
                     type="submit"
                     disabled={!isPasswordValid}
-                    className="w-full h-[53px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-base disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base disabled:bg-gray-400 disabled:cursor-not-allowed"
                   >
                     Change password
                   </Button>

@@ -159,9 +159,9 @@ const ConfirmEmailPage = () => {
       </svg>
 
       {/* Content */}
-      <div className="relative z-10 h-screen flex items-center justify-center px-4 py-8 md:px-8 lg:px-12 overflow-y-auto">
-        <div className="w-full max-w-6xl">
-          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden">
+      <div className="relative z-10 h-screen flex items-center justify-center px-3 py-3 md:px-4 lg:px-6 overflow-hidden">
+        <div className="w-full max-w-5xl max-h-full">
+          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden max-h-[calc(100vh-24px)] flex flex-col">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
               {/* Left Side - Logo */}
               <div className="hidden md:flex flex-col items-center justify-center p-12 lg:p-16 bg-white">
