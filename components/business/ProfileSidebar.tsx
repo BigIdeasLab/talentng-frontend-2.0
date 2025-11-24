@@ -12,7 +12,9 @@ import {
   Headphones,
   Settings,
   ChevronDown,
+  LogOut,
 } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 const navigationItems = [
   { icon: LayoutGrid, label: "Dashboard", href: "/dashboard" },
@@ -29,6 +31,7 @@ const otherItems = [
 
 export function ProfileSidebar() {
   const pathname = usePathname();
+  const { logout } = useAuth();
 
   return (
     <aside className="w-[271px] h-screen bg-white border-r border-[#E1E4EA] flex flex-col">
@@ -89,7 +92,7 @@ export function ProfileSidebar() {
           </nav>
         </div>
 
-        <div className="mt-[473px] space-y-2.5">
+        <div className="mt-auto space-y-2.5 pb-4">
           <div className="px-3 h-5 flex items-center">
             <span className="text-xs font-medium text-black/30 font-[Inter_Tight]">
               OTHERS
@@ -116,6 +119,15 @@ export function ProfileSidebar() {
                 </Link>
               );
             })}
+            <button
+              onClick={logout}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors bg-white hover:bg-gray-50 w-full"
+            >
+              <LogOut className="w-5 h-5 text-[#525866]" strokeWidth={1.25} />
+              <span className="text-sm text-[#525866] font-[Inter_Tight]">
+                Logout
+              </span>
+            </button>
           </nav>
         </div>
       </div>
