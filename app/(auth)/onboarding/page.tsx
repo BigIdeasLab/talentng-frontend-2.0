@@ -625,10 +625,19 @@ const OnboardingPage = () => {
     setCurrentStep(currentStep - 1);
   };
 
+  const handleSelectRoleBack = () => {
+    router.push("/login");
+  };
+
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return <SelectRoleStep onNext={handleRoleSelect} />;
+        return (
+          <SelectRoleStep
+            onNext={handleRoleSelect}
+            onBack={handleSelectRoleBack}
+          />
+        );
       case 2:
         return (
           <CreateProfileStep onNext={handleProfileNext} onBack={handleBack} />
