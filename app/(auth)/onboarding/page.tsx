@@ -258,92 +258,94 @@ const CreateProfileStep = ({
         </div>
 
         {/* Right side - Profile Preview */}
-        <div className="hidden md:flex flex-col items-center justify-center p-8 md:p-16 md:pl-8 bg-white relative">
-          <div className="relative w-full max-w-[415px]">
-            {/* Decorative Star */}
-            <svg
-              className="absolute left-0 top-12 w-[131px] h-[131px] z-0"
-              viewBox="0 0 131 131"
-              fill="none"
-            >
-              <path
-                d="M65.3129 0L75.4732 55.1526L130.626 65.3129L75.4732 75.4732L65.3129 130.626L55.1526 75.4732L0 65.3129L55.1526 55.1526L65.3129 0Z"
-                fill="#F6BC3F"
-              />
-            </svg>
+        <div className="hidden md:flex flex-col items-center justify-center p-6 md:p-10 md:pl-6 bg-white relative overflow-hidden">
+          <div className="w-full h-full flex items-center justify-center">
+            <div className="relative w-full max-w-[280px] lg:max-w-[350px]" style={{ aspectRatio: '1 / 1.13' }}>
+              {/* Decorative Star */}
+              <svg
+                className="absolute left-0 top-8 w-20 h-20 lg:w-32 lg:h-32 z-0"
+                viewBox="0 0 131 131"
+                fill="none"
+              >
+                <path
+                  d="M65.3129 0L75.4732 55.1526L130.626 65.3129L75.4732 75.4732L65.3129 130.626L55.1526 75.4732L0 65.3129L55.1526 55.1526L65.3129 0Z"
+                  fill="#F6BC3F"
+                />
+              </svg>
 
-            {/* Background Cards */}
-            <div className="relative z-10">
-              <div className="w-[300px] h-[49px] rounded-[58px] bg-[#ECECEC] absolute left-[58px] top-[454px]"></div>
-              <div className="w-[365px] h-[58px] rounded-[58px] bg-[#E0E0E0] absolute left-[26px] top-[427px]"></div>
+              {/* Background Cards */}
+              <div className="relative z-10 w-full h-full">
+                <div className="absolute rounded-[58px] bg-[#ECECEC] w-4/5 h-1/12 left-1/4 bottom-12"></div>
+                <div className="absolute rounded-[58px] bg-[#E0E0E0] w-11/12 h-1/10 left-0 bottom-8"></div>
 
-              {/* Main Green Card (Back Layer) */}
-              <div className="w-full aspect-[415/470] rounded-[30px] bg-[#008B47] shadow-[2.563px_0_30.756px_rgba(0,0,0,0.25)] absolute top-0 left-0 overflow-hidden">
-                {/* Striped Pattern */}
-                <div className="absolute left-[-19px] top-[265px] w-[397px] h-[232px] flex gap-[23px] rotate-[20.779deg]">
-                  {Array.from({ length: 18 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="w-[11.663px] h-[232px] bg-[#03964E]"
-                    />
-                  ))}
-                </div>
-
-                {/* Profile Image Placeholder */}
-                <div className="w-[414px] h-[141px] bg-[#DCDCDC] absolute left-[1px] top-[63px]"></div>
-
-                {/* Status Badge */}
-                <div className="absolute left-[140px] top-[437px] text-white text-[19px] font-normal font-[Inter_Tight] leading-[120%] capitalize">
-                  Status: Available
-                </div>
-
-                {/* Name and Bio */}
-                <div className="absolute left-[21px] top-[269px] flex flex-col gap-[18px]">
-                  <div className="text-black text-[26px] font-medium font-[Inter_Tight] leading-[105%]">
-                    {displayName}
-                  </div>
-                  <div className="text-[#919191] text-[19px] font-light font-[Inter_Tight] leading-[120%] capitalize">
-                    {displayBio}
-                  </div>
-                </div>
-              </div>
-
-              {/* Front White Card */}
-              <div className="w-full aspect-[415/414] rounded-[30px] bg-white relative z-20">
-                {/* Profile Picture Area */}
-                <div className="w-[392px] h-[317px] rounded-[27px] bg-[#F5F5F5] absolute left-[12px] top-[12px] flex flex-col items-center justify-center">
-                  {/* Upload Icon */}
-                  <div className="w-[125px] h-[125px] rounded-full bg-[#D9D9D9] flex items-center justify-center mb-6">
-                    <svg
-                      className="w-[74px] h-[74px]"
-                      viewBox="0 0 74 74"
-                      fill="none"
-                    >
-                      <path
-                        d="M15.4167 64.75C13.7208 64.75 12.2696 64.1467 11.063 62.9401C9.85639 61.7335 9.25206 60.2812 9.25 58.5833V15.4167C9.25 13.7208 9.85433 12.2696 11.063 11.063C12.2717 9.85639 13.7229 9.25206 15.4167 9.25H58.5833C60.2792 9.25 61.7314 9.85433 62.9401 11.063C64.1487 12.2717 64.7521 13.7229 64.75 15.4167V58.5833C64.75 60.2792 64.1467 61.7314 62.9401 62.9401C61.7335 64.1487 60.2812 64.7521 58.5833 64.75H15.4167ZM18.5 52.4167H55.5L43.9375 37L34.6875 49.3333L27.75 40.0833L18.5 52.4167Z"
-                        fill="white"
+                {/* Main Green Card (Back Layer) */}
+                <div className="w-full h-full rounded-[30px] bg-[#008B47] shadow-[2.563px_0_30.756px_rgba(0,0,0,0.25)] absolute top-0 left-0 overflow-hidden flex flex-col">
+                  {/* Striped Pattern */}
+                  <div className="absolute left-[-19px] top-1/2 w-96 h-56 flex gap-[23px] rotate-[20.779deg]">
+                    {Array.from({ length: 18 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="w-[11.663px] h-56 bg-[#03964E]"
                       />
-                    </svg>
+                    ))}
                   </div>
 
-                  {/* Upload Text */}
-                  <div className="flex flex-col items-center gap-[15px]">
-                    <div className="text-[#404040] text-[19px] font-medium font-[Inter_Tight] leading-[105%]">
-                      Upload Profile Picture
+                  {/* Profile Image Placeholder */}
+                  <div className="w-full h-1/4 bg-[#DCDCDC]"></div>
+
+                  {/* Status Badge */}
+                  <div className="absolute bottom-8 right-8 text-white text-sm lg:text-base font-normal font-[Inter_Tight] leading-[120%] capitalize">
+                    Status: Available
+                  </div>
+
+                  {/* Name and Bio */}
+                  <div className="absolute bottom-12 left-4 flex flex-col gap-2 text-white">
+                    <div className="text-base lg:text-xl font-medium font-[Inter_Tight] leading-[105%]">
+                      {displayName}
                     </div>
-                    <div className="text-[#919191] text-[15px] font-light font-[Inter_Tight] leading-[120%] capitalize">
-                      Drag And Drop Image here
+                    <div className="text-xs lg:text-sm font-light font-[Inter_Tight] leading-[120%] capitalize">
+                      {displayBio}
                     </div>
                   </div>
                 </div>
 
-                {/* Name and Bio Preview */}
-                <div className="absolute left-[21px] top-[344px] flex flex-col gap-[15px]">
-                  <div className="text-black text-[23px] font-medium font-[Inter_Tight] leading-[105%]">
-                    {displayName}
+                {/* Front White Card */}
+                <div className="w-full h-full rounded-[30px] bg-white relative z-20 flex flex-col">
+                  {/* Profile Picture Area */}
+                  <div className="flex-1 flex flex-col items-center justify-center rounded-[27px] bg-[#F5F5F5] m-1">
+                    {/* Upload Icon */}
+                    <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-[#D9D9D9] flex items-center justify-center mb-3">
+                      <svg
+                        className="w-8 h-8 lg:w-10 lg:h-10"
+                        viewBox="0 0 74 74"
+                        fill="none"
+                      >
+                        <path
+                          d="M15.4167 64.75C13.7208 64.75 12.2696 64.1467 11.063 62.9401C9.85639 61.7335 9.25206 60.2812 9.25 58.5833V15.4167C9.25 13.7208 9.85433 12.2696 11.063 11.063C12.2717 9.85639 13.7229 9.25206 15.4167 9.25H58.5833C60.2792 9.25 61.7314 9.85433 62.9401 11.063C64.1487 12.2717 64.7521 13.7229 64.75 15.4167V58.5833C64.75 60.2792 64.1467 61.7314 62.9401 62.9401C61.7335 64.1487 60.2812 64.7521 58.5833 64.75H15.4167ZM18.5 52.4167H55.5L43.9375 37L34.6875 49.3333L27.75 40.0833L18.5 52.4167Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </div>
+
+                    {/* Upload Text */}
+                    <div className="flex flex-col items-center gap-1 text-center px-2">
+                      <div className="text-[#404040] text-xs lg:text-sm font-medium font-[Inter_Tight] leading-[105%]">
+                        Upload Profile Picture
+                      </div>
+                      <div className="text-[#919191] text-[10px] lg:text-xs font-light font-[Inter_Tight] leading-[120%] capitalize">
+                        Drag And Drop Image here
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-[#919191] text-[19px] font-light font-[Inter_Tight] leading-[120%] capitalize">
-                    {displayBio}
+
+                  {/* Name and Bio Preview */}
+                  <div className="flex flex-col gap-1 p-3 lg:p-4">
+                    <div className="text-black text-sm lg:text-base font-medium font-[Inter_Tight] leading-[105%]">
+                      {displayName}
+                    </div>
+                    <div className="text-[#919191] text-xs lg:text-sm font-light font-[Inter_Tight] leading-[120%] capitalize">
+                      {displayBio}
+                    </div>
                   </div>
                 </div>
               </div>
