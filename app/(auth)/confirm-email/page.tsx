@@ -90,6 +90,14 @@ const ConfirmEmailPage = () => {
     mutation.mutate(data);
   };
 
+  // Auto-submit when 6 digits are entered
+  React.useEffect(() => {
+    const code = form.watch("verificationCode");
+    if (code.length === 6) {
+      onSubmit({ verificationCode: code });
+    }
+  }, [form.watch("verificationCode")]);
+
   return (
     <div className="relative h-screen bg-white overflow-hidden">
       {/* Gradient Background */}
@@ -173,8 +181,8 @@ const ConfirmEmailPage = () => {
               </div>
 
               {/* Right Side - Form */}
-              <div className="flex flex-col justify-center p-8 md:p-12 lg:p-16 bg-white">
-                <div className="flex flex-col gap-8">
+              <div className="flex flex-col justify-center p-6 md:p-8 lg:p-12 bg-white overflow-y-auto">
+                <div className="flex flex-col gap-6">
                   {/* Gmail Icon */}
                   <svg
                     width="60"
@@ -217,11 +225,11 @@ const ConfirmEmailPage = () => {
                   </svg>
 
                   {/* Header */}
-                  <div className="flex flex-col gap-5">
-                    <h1 className="text-3xl md:text-[30px] font-semibold text-black leading-tight">
+                  <div className="flex flex-col gap-4">
+                    <h1 className="text-2xl md:text-[30px] font-semibold text-black leading-tight">
                       Check your inbox
                     </h1>
-                    <p className="text-base md:text-[17px] font-light text-gray-400">
+                    <p className="text-sm md:text-[17px] font-light text-gray-400">
                       We just sent a 6-digit code to{" "}
                       <span className="font-semibold text-gray-400">
                         {email}
@@ -233,7 +241,7 @@ const ConfirmEmailPage = () => {
                   <Form {...form}>
                     <form
                       onSubmit={form.handleSubmit(onSubmit)}
-                      className="flex flex-col gap-6"
+                      className="flex flex-col gap-5"
                     >
                       {/* Error Message */}
                       {error && (
@@ -314,22 +322,11 @@ const ConfirmEmailPage = () => {
                         )}
                       />
 
-                      {/* Submit Button */}
-                      <Button
-                        type="submit"
-                        disabled={
-                          mutation.isPending ||
-                          form.watch("verificationCode").length < 6
-                        }
-                        className="w-full h-[53px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-base"
-                      >
-                        {mutation.isPending ? "Verifying..." : "Verify Email"}
-                      </Button>
                     </form>
                   </Form>
 
                   {/* Resend Link */}
-                  <p className="text-center text-sm">
+                  <p className="text-center text-sm md:text-[15px]">
                     <span className="text-gray-400">Didn't get it? </span>
                     <button
                       onClick={() => resendMutation.mutate()}
