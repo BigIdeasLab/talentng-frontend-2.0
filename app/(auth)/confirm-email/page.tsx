@@ -168,24 +168,24 @@ const ConfirmEmailPage = () => {
       {/* Content */}
       <div className="relative z-10 h-screen flex items-center justify-center px-3 py-3 md:px-4 lg:px-6 overflow-hidden">
         <div className="w-full max-w-5xl max-h-full">
-          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden max-h-[calc(100vh-24px)] flex flex-col">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
+          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden h-[600px] flex flex-col">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
               {/* Left Side - Logo */}
               <div className="hidden md:flex flex-col items-center justify-center p-8 lg:p-12 bg-white overflow-hidden">
                 <img
-                  src="https://api.builder.io/api/v1/image/assets/TEMP/ecad5cb9cbb17ee75c4a3aee33c69b88431f60fc?width=1224"
+                  src="/logo.png"
                   alt="Talent.ng Logo"
-                  className="w-full max-w-md object-contain rounded-[22px] shadow-md"
+                  className="w-full max-w-sm object-contain"
                 />
               </div>
 
               {/* Right Side - Form */}
-              <div className="flex flex-col justify-center p-6 md:p-8 lg:p-12 bg-white overflow-y-auto">
-                <div className="flex flex-col gap-6">
+              <div className="flex flex-col justify-center p-4 md:p-6 lg:p-8 bg-white overflow-y-auto h-full">
+                <div className="flex flex-col gap-3">
                   {/* Gmail Icon */}
                   <svg
-                    width="60"
-                    height="60"
+                    width="45"
+                    height="45"
                     viewBox="0 0 60 60"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -224,11 +224,11 @@ const ConfirmEmailPage = () => {
                   </svg>
 
                   {/* Header */}
-                  <div className="flex flex-col gap-4">
-                    <h1 className="text-2xl md:text-[30px] font-semibold text-black leading-tight">
+                  <div className="flex flex-col gap-1">
+                    <h1 className="text-xl md:text-2xl font-semibold text-black leading-tight">
                       Check your inbox
                     </h1>
-                    <p className="text-sm md:text-[17px] font-light text-gray-400">
+                    <p className="text-xs md:text-sm font-light text-gray-400">
                       We just sent a 6-digit code to{" "}
                       <span className="font-semibold text-gray-400">
                         {email}
@@ -240,7 +240,7 @@ const ConfirmEmailPage = () => {
                   <Form {...form}>
                     <form
                       onSubmit={form.handleSubmit(onSubmit)}
-                      className="flex flex-col gap-5"
+                      className="flex flex-col gap-2"
                     >
                       {/* Error Message */}
                       {error && (
@@ -296,7 +296,7 @@ const ConfirmEmailPage = () => {
                   </Form>
 
                   {/* Resend Link */}
-                  <p className="text-center text-sm md:text-[15px]">
+                  <p className="text-center text-xs md:text-sm">
                     <span className="text-gray-400">Didn't get it? </span>
                     <button
                       onClick={() => resendMutation.mutate()}

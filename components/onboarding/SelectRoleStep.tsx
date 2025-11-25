@@ -37,38 +37,38 @@ export const SelectRoleStep = ({
   return (
     <div className="relative h-full flex flex-col">
       {/* Top Bar with Logo and Back Button */}
-      <div className="flex items-center justify-between px-4 md:px-6 py-4 md:py-6 flex-shrink-0 bg-white">
+      <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 flex-shrink-0 bg-white">
         {/* Logo */}
         <img
           src="/logo.png"
           alt="TalentNG Logo"
-          className="w-20 h-auto rounded-[3.457px] shadow-[0.777px_0.777px_24.66px_0_rgba(0,0,0,0.25)]"
+          className="w-16 h-auto rounded-[3.457px] shadow-[0.777px_0.777px_24.66px_0_rgba(0,0,0,0.25)]"
         />
 
         {/* Back Button */}
         <button
           type="button"
           onClick={onBack}
-          className="px-[25px] py-[11px] bg-[#A9A9A9] text-white rounded-[60px] text-[15px] font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-[53px]"
+          className="px-5 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-11"
         >
           Back
         </button>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col gap-5 px-6 md:px-12 py-2 md:py-4 justify-center items-center">
+      <div className="flex-1 flex flex-col gap-3 px-5 md:px-8 py-3 justify-center items-center overflow-y-auto">
         {/* Header */}
-        <div className="flex flex-col gap-2 text-center w-full flex-shrink-0">
-          <h2 className="text-2xl md:text-[30px] font-semibold text-black font-[Inter_Tight] leading-tight">
+        <div className="flex flex-col gap-1.5 text-center w-full flex-shrink-0">
+          <h2 className="text-lg md:text-2xl font-semibold text-black font-[Inter_Tight] leading-tight">
             How do you want to use Talent.ng
           </h2>
-          <p className="text-sm md:text-[17px] font-light text-[#919191] font-[Inter_Tight]">
+          <p className="text-xs md:text-sm font-light text-[#919191] font-[Inter_Tight]">
             Pick the option that best describes you
           </p>
         </div>
 
         {/* Role Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-[808px] flex-shrink-0">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full max-w-[640px] flex-shrink-0">
           {roles.map((role) => (
             <button
               key={role.id}
@@ -87,8 +87,8 @@ export const SelectRoleStep = ({
               </div>
 
               {/* Label */}
-              <div className="bg-white py-[17px] px-2.5 flex items-center justify-center">
-                <span className="text-base font-medium text-black font-[Inter_Tight]">
+              <div className="bg-white py-3 px-2 flex items-center justify-center">
+                <span className="text-sm font-medium text-black font-[Inter_Tight]">
                   {role.label}
                 </span>
               </div>
@@ -101,7 +101,7 @@ export const SelectRoleStep = ({
           <Button
             onClick={() => selectedRole && onNext(selectedRole)}
             disabled={!selectedRole}
-            className="px-10 py-[21px] h-[53px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-medium text-[15px] font-[Inter_Tight] disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="px-8 py-2 h-11 rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-medium text-sm font-[Inter_Tight] disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             Continue
           </Button>

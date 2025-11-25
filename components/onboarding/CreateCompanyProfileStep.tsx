@@ -36,21 +36,21 @@ export const CreateCompanyProfileStep = ({
 
   return (
     <div className="relative h-full flex flex-col">
-      <div className="flex items-center justify-between px-4 md:px-6 py-4 md:py-6 flex-shrink-0 bg-white">
-        <img src="/logo.png" alt="TalentNG Logo" className="w-16 h-auto" />
+      <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 flex-shrink-0 bg-white">
+        <img src="/logo.png" alt="TalentNG Logo" className="w-16 h-auto rounded-[3.457px] shadow-[0.777px_0.777px_24.66px_0_rgba(0,0,0,0.25)]" />
         <div className="flex gap-3">
-          <button type="button" onClick={onBack} className="px-[25px] py-[11px] bg-[#A9A9A9] text-white rounded-[60px] text-[15px] font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-[53px]">Back</button>
-          <button type="submit" onClick={handleSubmit} disabled={isLoading} className="px-[25px] py-[11px] bg-[#222] text-white rounded-[60px] text-[15px] font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-[53px] disabled:bg-gray-500 disabled:cursor-not-allowed flex items-center justify-center">
+          <button type="button" onClick={onBack} className="px-5 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-11">Back</button>
+          <button type="submit" onClick={handleSubmit} disabled={isLoading} className="px-5 py-2 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-11 disabled:bg-gray-500 disabled:cursor-not-allowed flex items-center justify-center">
             {isLoading ? <Loader2 className="animate-spin" /> : "Continue"}
           </button>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-0 flex-1 overflow-hidden">
-        <div className="flex flex-col justify-start p-6 md:p-10 md:pr-6 bg-white overflow-y-auto scrollbar-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-0 flex-1 overflow-hidden">
+        <div className="flex flex-col justify-start p-6 md:p-10 md:pr-6 md:pl-12 bg-white overflow-y-auto scrollbar-hidden">
           <div className="flex flex-col gap-8">
-            <div className="flex flex-col gap-[13px] flex-shrink-0">
-              <p className="text-[17px] text-[#919191] font-light font-[Inter_Tight] leading-[120%] capitalize">Step 3/3</p>
-              <h2 className="text-[30px] text-black font-medium font-[Inter_Tight] leading-[105%]">Tell us about your company</h2>
+            <div className="flex flex-col gap-1 flex-shrink-0">
+              <p className="text-[13px] text-[#919191] font-light font-[Inter_Tight] leading-[120%] capitalize">Step 3/3</p>
+              <h2 className="text-[22px] text-black font-medium font-[Inter_Tight] leading-[105%]">Tell us about your company</h2>
             </div>
             <form onSubmit={handleSubmit} className="flex flex-col gap-[13px]">
               <div className="flex flex-col gap-[13px]">
@@ -83,7 +83,7 @@ export const CreateCompanyProfileStep = ({
             </form>
           </div>
         </div>
-        <div className="hidden md:flex flex-col items-center justify-center p-6 md:p-10 md:pl-6 bg-white">
+        <div className="hidden md:flex flex-col items-center justify-center p-6 md:p-10 md:pl-6 bg-white h-full">
           {/* Placeholder for company profile preview */}
           <div className="text-center text-gray-400">Company Profile Preview</div>
         </div>

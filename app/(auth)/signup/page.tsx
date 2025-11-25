@@ -146,7 +146,7 @@ const Signup = () => {
       {/* Content */}
       <div className="relative z-10 h-screen flex items-center justify-center px-3 py-3 md:px-4 lg:px-6 overflow-hidden">
         <div className="w-full max-w-5xl max-h-full">
-          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden max-h-[calc(100vh-24px)] flex flex-col">
+          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden h-[600px] flex flex-col">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
               {/* Left Side - Logo */}
               <div className="hidden md:flex flex-col items-center justify-center p-8 lg:p-12 bg-white overflow-hidden">
@@ -158,14 +158,14 @@ const Signup = () => {
               </div>
 
               {/* Right Side - Form */}
-              <div className="flex flex-col justify-center p-6 md:p-8 lg:p-10 bg-white overflow-y-auto">
-                <div className="flex flex-col gap-5 text-sm md:text-base">
+              <div className="flex flex-col justify-center p-4 md:p-6 lg:p-8 bg-white overflow-y-auto">
+                <div className="flex flex-col gap-3 text-sm md:text-base">
                   {/* Header */}
-                  <div className="flex flex-col gap-3">
-                    <h1 className="text-2xl md:text-[28px] font-semibold text-black leading-tight">
+                  <div className="flex flex-col gap-1">
+                    <h1 className="text-xl md:text-2xl font-semibold text-black leading-tight">
                       Create Your Account
                     </h1>
-                    <p className="text-base md:text-[17px] font-light text-gray-400 capitalize">
+                    <p className="text-sm md:text-base font-light text-gray-400 capitalize">
                       Show the world what you can do
                     </p>
                   </div>
@@ -174,7 +174,7 @@ const Signup = () => {
                   <Form {...form}>
                     <form
                       onSubmit={form.handleSubmit(onSubmit)}
-                      className="flex flex-col gap-3"
+                      className="flex flex-col gap-2"
                     >
                       {/* Email Field */}
                       <div className="flex flex-col gap-2">
@@ -243,7 +243,7 @@ const Signup = () => {
                       <Button
                         type="submit"
                         disabled={mutation.isPending}
-                        className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base mt-3"
+                        className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base mt-1"
                       >
                         {mutation.isPending ? (
                           <Loader2 size={18} className="animate-spin" />
@@ -295,7 +295,7 @@ const Signup = () => {
                   </button>
 
                   {/* Sign In Link */}
-                  <p className="text-center text-base">
+                  <p className="text-center text-xs md:text-sm">
                     <span className="text-gray-400">
                       Already have an account?{" "}
                     </span>

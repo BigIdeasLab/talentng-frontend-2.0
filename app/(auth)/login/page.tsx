@@ -151,8 +151,8 @@ const Login = () => {
       {/* Content */}
       <div className="relative z-10 min-h-screen flex items-center justify-center px-3 py-6 md:py-8 lg:py-12 md:px-4 lg:px-6">
         <div className="w-full max-w-5xl">
-          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden flex flex-col md:flex-row border border-red-900">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-0 w-full">
+          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden flex flex-col md:flex-row h-[600px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0 w-full h-full">
               {/* Left Side - Logo */}
               <div className="hidden md:flex flex-col items-center justify-center p-8 lg:p-12 bg-white min-h-[400px] md:min-h-auto">
                 <img
@@ -163,14 +163,14 @@ const Login = () => {
               </div>
 
               {/* Right Side - Form */}
-              <div className="flex flex-col justify-center p-6 md:p-8 lg:p-10 bg-white">
-                <div className="flex flex-col gap-5 text-sm md:text-base w-full">
+              <div className="flex flex-col justify-center p-4 md:p-6 lg:p-8 bg-white h-full overflow-y-auto">
+                <div className="flex flex-col gap-3 text-sm md:text-base w-full">
                   {/* Header */}
-                  <div className="flex flex-col gap-3">
-                    <h1 className="text-2xl md:text-[28px] font-semibold text-black leading-tight">
+                  <div className="flex flex-col gap-1">
+                    <h1 className="text-xl md:text-2xl font-semibold text-black leading-tight">
                       Welcome Back
                     </h1>
-                    <p className="text-base md:text-[17px] font-light text-gray-400 capitalize">
+                    <p className="text-sm md:text-base font-light text-gray-400 capitalize">
                       let's connect you with opportunities
                     </p>
                   </div>
@@ -179,7 +179,7 @@ const Login = () => {
                   <Form {...form}>
                     <form
                       onSubmit={form.handleSubmit(onSubmit)}
-                      className="flex flex-col gap-3"
+                      className="flex flex-col gap-2"
                     >
                       {/* Email Field */}
                       <div className="flex flex-col gap-2">
@@ -248,7 +248,7 @@ const Login = () => {
                       <Button
                         type="submit"
                         disabled={loginMutation.isPending}
-                        className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base mt-3"
+                        className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base mt-1"
                       >
                         {loginMutation.isPending ? (
                           <Loader2 size={18} className="animate-spin" />

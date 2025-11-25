@@ -62,7 +62,7 @@ export const ShowcaseSkillsStep = ({
   return (
     <div className="relative h-full flex flex-col">
       {/* Top Bar with Logo and Buttons */}
-      <div className="flex items-center justify-between px-4 md:px-6 py-4 md:py-6 flex-shrink-0 bg-white">
+      <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 flex-shrink-0 bg-white">
         {/* Logo */}
         <img
           src="/logo.png"
@@ -75,7 +75,7 @@ export const ShowcaseSkillsStep = ({
           <button
             type="button"
             onClick={onBack}
-            className="px-[25px] py-[11px] bg-[#A9A9A9] text-white rounded-[60px] text-[15px] font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-[53px]"
+            className="px-5 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-11"
             disabled={isLoading}
           >
             Back
@@ -83,7 +83,7 @@ export const ShowcaseSkillsStep = ({
           <button
             type="submit"
             onClick={handleSubmit}
-            className="px-[25px] py-[11px] bg-[#222] text-white rounded-[60px] text-[15px] font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-[53px] flex items-center justify-center"
+            className="px-5 py-2 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-11 flex items-center justify-center"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -96,16 +96,16 @@ export const ShowcaseSkillsStep = ({
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-0 flex-1 overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-0 flex-1 overflow-hidden">
         {/* Left side - Form */}
-        <div className="flex flex-col justify-start p-6 md:p-10 md:pr-6 bg-white overflow-y-auto scrollbar-hidden">
+        <div className="flex flex-col justify-start p-6 md:p-10 md:pr-6 md:pl-12 bg-white overflow-y-auto scrollbar-hidden">
           <div className="flex flex-col gap-8">
             {/* Header */}
-            <div className="flex flex-col gap-[13px] flex-shrink-0">
-              <p className="text-[17px] text-[#919191] font-light font-[Inter_Tight] leading-[120%] capitalize">
+            <div className="flex flex-col gap-1 flex-shrink-0">
+              <p className="text-[13px] text-[#919191] font-light font-[Inter_Tight] leading-[120%] capitalize">
                 Step 3/3
               </p>
-              <h2 className="text-[30px] text-black font-medium font-[Inter_Tight] leading-[105%]">
+              <h2 className="text-[22px] text-black font-medium font-[Inter_Tight] leading-[105%]">
                 Showcase what you do
               </h2>
             </div>
@@ -253,7 +253,7 @@ export const ShowcaseSkillsStep = ({
         </div>
 
         {/* Right side - Profile Preview */}
-        <div className="hidden md:flex flex-col items-center justify-center p-6 md:p-10 md:pl-6 bg-white relative overflow-hidden">
+        <div className="hidden md:flex flex-col items-center justify-center p-6 md:p-10 md:pl-6 bg-white relative overflow-hidden h-full">
           <div className="w-full h-full flex items-center justify-center relative">
             {/* Yellow Star */}
             <svg
@@ -267,21 +267,21 @@ export const ShowcaseSkillsStep = ({
               />
             </svg>
 
-            <div className="relative w-full max-w-[350px] z-10">
+            <div className="relative w-full max-w-[350px] z-10 h-[350px] border border-red-800">
               {/* Background Cards */}
               <div className="relative">
                 <div className="absolute rounded-[58px] bg-[#ECECEC] w-4/5 h-12 left-1/4 -bottom-8"></div>
                 <div className="absolute rounded-[58px] bg-[#E0E0E0] w-11/12 h-14 left-0 -bottom-12"></div>
 
                 {/* Main Profile Card */}
-                <div className="relative w-full rounded-[30px] bg-white shadow-[2.563px_0_30.756px_rgba(0,0,0,0.25)] p-[30px] flex flex-col items-center gap-5">
+                <div className="relative w-full rounded-[30px] bg-white shadow-[2.563px_0_30.756px_rgba(0,0,0,0.25)] p-[16px] flex flex-col items-center gap-3">
                   {/* Profile Picture with Badge */}
-                  <div className="relative flex flex-col items-center gap-4">
+                  <div className="relative flex flex-col items-center gap-2">
                     <div className="text-center">
-                      <h3 className="text-[32px] text-black font-medium font-[Inter_Tight] leading-[105%]">
+                      <h3 className="text-[20px] text-black font-medium font-[Inter_Tight] leading-[105%]">
                         {displayName}
                       </h3>
-                      <p className="text-[22px] text-[#919191] font-light font-[Inter_Tight] leading-[105%] mt-4">
+                      <p className="text-[14px] text-[#919191] font-light font-[Inter_Tight] leading-[105%] mt-2">
                         {displayCategory}
                       </p>
                     </div>
@@ -290,7 +290,7 @@ export const ShowcaseSkillsStep = ({
                     <div className="relative">
                       {/* Purple Star Badge */}
                       <svg
-                        className="w-60 h-60"
+                        className="w-32 h-32"
                         viewBox="0 0 384 286"
                         fill="none"
                       >
@@ -321,7 +321,7 @@ export const ShowcaseSkillsStep = ({
                       </svg>
 
                       {/* User Logo Badge */}
-                      <div className="absolute top-8 right-0 w-[106px] h-[106px] rounded-full overflow-hidden shadow-[0_7.936px_9.92px_0_rgba(0,0,0,0.20)]">
+                      <div className="absolute top-4 right-0 w-[50px] h-[50px] rounded-full overflow-hidden shadow-[0_7.936px_9.92px_0_rgba(0,0,0,0.20)]">
                         <img
                           src="/logo.png"
                           alt="Profile"
@@ -332,14 +332,14 @@ export const ShowcaseSkillsStep = ({
                   </div>
 
                   {/* Skills Display */}
-                  <div className="flex justify-center items-center flex-wrap gap-1 w-full">
+                  <div className="flex justify-center items-center flex-wrap gap-1 w-full px-1">
                     {formData.skills.length > 0 ? (
                       formData.skills.map((skill, index) => (
                         <div
                           key={index}
-                          className="flex px-[13px] py-3 justify-center items-center gap-2.5 rounded-[30px] bg-[#F5F5F5]"
+                          className="flex px-2 py-1 justify-center items-center gap-1.5 rounded-[20px] bg-[#F5F5F5]"
                         >
-                          <span className="text-black text-center font-[Inter_Tight] text-[14px] font-normal leading-[105%]">
+                          <span className="text-black text-center font-[Inter_Tight] text-[11px] font-normal leading-[100%]">
                             {skill}
                           </span>
                         </div>
@@ -349,10 +349,10 @@ export const ShowcaseSkillsStep = ({
                         {[1, 2, 3, 4, 5].map((num) => (
                           <div
                             key={num}
-                            className="flex px-[13px] py-3 justify-center items-center gap-2.5 rounded-[30px] bg-[#F5F5F5]"
+                            className="flex px-2 py-1 justify-center items-center gap-1.5 rounded-[20px] bg-[#F5F5F5]"
                           >
-                            <span className="text-black text-center font-[Inter_Tight] text-[14px] font-normal leading-[105%]">
-                              Add Skill {num}
+                            <span className="text-black text-center font-[Inter_Tight] text-[11px] font-normal leading-[100%]">
+                              Skill {num}
                             </span>
                           </div>
                         ))}

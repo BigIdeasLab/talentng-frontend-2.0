@@ -234,7 +234,7 @@ const OnboardingPage = () => {
       </svg>
 
       {/* Content */}
-      <div className="bg-white rounded-[30px] shadow-lg overflow-hidden w-full max-w-6xl z-10 h-[90vh] flex flex-col">
+      <div className="bg-white rounded-[30px] shadow-lg overflow-hidden w-full max-w-5xl z-10 h-[600px] flex flex-col">
         {currentStep === 1 && (
           <div className="h-full flex flex-col overflow-hidden">
             <SelectRoleStep

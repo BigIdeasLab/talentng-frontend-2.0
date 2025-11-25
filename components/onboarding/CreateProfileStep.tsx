@@ -128,13 +128,13 @@ export const CreateProfileStep = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate username before submitting
     if (formData.username && !validateUsername(formData.username)) {
       setUsernameStatus("invalid");
       return;
     }
-    
+
     if (formData.username && usernameStatus !== "available") {
       // If username is being checked or is taken, don't submit
       if (usernameStatus === "checking" || usernameStatus === "taken") {
@@ -146,7 +146,7 @@ export const CreateProfileStep = ({
         return;
       }
     }
-    
+
     onNext(formData, profileImage || undefined);
   };
 
@@ -159,7 +159,7 @@ export const CreateProfileStep = ({
   return (
     <div className="relative h-full flex flex-col">
       {/* Top Bar with Logo and Buttons */}
-      <div className="flex items-center justify-between px-4 md:px-6 py-4 md:py-6 flex-shrink-0 bg-white">
+      <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 flex-shrink-0 bg-white">
         {/* Logo */}
         <img
           src="/logo.png"
@@ -172,14 +172,14 @@ export const CreateProfileStep = ({
           <button
             type="button"
             onClick={onBack}
-            className="px-[25px] py-[11px] bg-[#A9A9A9] text-white rounded-[60px] text-[15px] font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-[53px]"
+            className="px-5 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-11"
           >
             Back
           </button>
           <button
             type="submit"
             onClick={handleSubmit}
-            className="px-[25px] py-[11px] bg-[#222] text-white rounded-[60px] text-[15px] font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-[53px]"
+            className="px-5 py-2 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-11"
           >
             Continue
           </button>
@@ -187,16 +187,16 @@ export const CreateProfileStep = ({
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-0 flex-1 overflow-hidden border">
+      <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-0 flex-1 overflow-hidden border">
         {/* Left side - Form */}
-        <div className="flex flex-col justify-start p-6 md:p-10 md:pr-6 bg-white overflow-y-auto scrollbar-hidden">
-          <div className="flex flex-col gap-8 min-h-min">
+        <div className="flex flex-col justify-start p-6 md:p-10 md:pr-6 md:pl-12 bg-white overflow-y-auto scrollbar-hidden">
+          <div className="flex flex-col gap-8">
             {/* Header */}
-            <div className="flex flex-col gap-3 flex-shrink-0">
-              <p className="text-[17px] text-[#919191] font-light font-[Inter_Tight] leading-[120%] capitalize">
+            <div className="flex flex-col gap-1 flex-shrink-0">
+              <p className="text-[13px] text-[#919191] font-light font-[Inter_Tight] leading-[120%] capitalize">
                 Step 2/3
               </p>
-              <h2 className="text-[30px] text-black font-medium font-[Inter_Tight] leading-[105%]">
+              <h2 className="text-[22px] text-black font-medium font-[Inter_Tight] leading-[105%]">
                 Create your profile
               </h2>
             </div>
@@ -246,8 +246,8 @@ export const CreateProfileStep = ({
                       usernameStatus === "taken" || usernameStatus === "invalid"
                         ? "ring-2 ring-red-500"
                         : usernameStatus === "available"
-                        ? "ring-2 ring-green-500"
-                        : ""
+                          ? "ring-2 ring-green-500"
+                          : ""
                     }`}
                   />
                   {formData.username && (
@@ -270,13 +270,19 @@ export const CreateProfileStep = ({
                 {formData.username && (
                   <div className="text-xs font-[Inter_Tight]">
                     {usernameStatus === "checking" && (
-                      <span className="text-gray-500">Checking availability...</span>
+                      <span className="text-gray-500">
+                        Checking availability...
+                      </span>
                     )}
                     {usernameStatus === "available" && (
-                      <span className="text-green-600">Username is available!</span>
+                      <span className="text-green-600">
+                        Username is available!
+                      </span>
                     )}
                     {usernameStatus === "taken" && (
-                      <span className="text-red-600">Username is already taken</span>
+                      <span className="text-red-600">
+                        Username is already taken
+                      </span>
                     )}
                     {usernameStatus === "invalid" && (
                       <span className="text-red-600">
@@ -320,15 +326,12 @@ export const CreateProfileStep = ({
         </div>
 
         {/* Right side - Profile Preview */}
-        <div className="hidden md:flex flex-col items-center justify-center p-6 md:p-10 md:pl-6 bg-white relative overflow-hidden">
+        <div className="hidden md:flex flex-col items-center justify-center p-6 md:p-10 md:pl-6 bg-white relative overflow-hidden h-full">
           <div className="w-full h-full flex items-center justify-center">
-            <div
-              className="relative w-full max-w-[280px] lg:max-w-[350px]"
-              style={{ aspectRatio: "1 / 1.13" }}
-            >
+            <div className="relative w-full max-w-[280px] lg:max-w-[350px] h-[350px]">
               {/* Decorative Star */}
               <svg
-                className="absolute left-0 top-8 w-20 h-20 lg:w-32 lg:h-32 z-0"
+                className="absolute left-0 top-8 w-20 h-20 lg:w-32 lg:h-32 z-30"
                 viewBox="0 0 131 131"
                 fill="none"
               >
@@ -376,12 +379,16 @@ export const CreateProfileStep = ({
                   {/* Profile Picture Area */}
                   <div
                     className={`flex-1 flex flex-col items-center justify-center rounded-[27px] bg-[#F5F5F5] m-1 relative overflow-hidden cursor-pointer transition-colors ${
-                      isDragging ? "bg-[#E0E0E0] border-2 border-dashed border-purple-600" : ""
+                      isDragging
+                        ? "bg-[#E0E0E0] border-2 border-dashed border-purple-600"
+                        : ""
                     }`}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
-                    onClick={() => document.getElementById("profile-image-input")?.click()}
+                    onClick={() =>
+                      document.getElementById("profile-image-input")?.click()
+                    }
                   >
                     {imagePreview ? (
                       <img

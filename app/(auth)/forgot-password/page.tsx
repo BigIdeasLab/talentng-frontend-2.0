@@ -85,58 +85,72 @@ const ForgotPassword = () => {
       </svg>
 
       {/* Content */}
-      <div className="relative z-10 h-screen flex items-center justify-center px-3 py-3 overflow-hidden">
-        <div className="w-full max-w-md max-h-full">
-          <div className="bg-white rounded-[30px] shadow-lg p-6 md:p-10 overflow-y-auto max-h-[calc(100vh-24px)]">
-            <div className="flex flex-col items-center gap-8">
-              {/* Header */}
-              <div className="flex flex-col gap-5 text-center">
-                <h1 className="text-3xl md:text-[30px] font-semibold text-black leading-tight">
-                  Reset Password
-                </h1>
-                <p className="text-base md:text-[17px] font-light text-gray-400">
-                  We can help you reset your password using the email address
-                  linked to your account.
-                </p>
+      <div className="relative z-10 h-screen flex items-center justify-center px-3 py-3 md:py-8 lg:py-12 md:px-4 lg:px-6 overflow-hidden">
+        <div className="w-full max-w-5xl max-h-full">
+          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden h-[600px] flex flex-col">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
+              {/* Left Side - Logo */}
+              <div className="hidden md:flex flex-col items-center justify-center p-8 lg:p-12 bg-white min-h-[400px] md:min-h-auto">
+                <img
+                  src="/logo.png"
+                  alt="Talent.ng Logo"
+                  className="w-full max-w-sm object-contain"
+                />
               </div>
 
-              {/* Form */}
-              <form
-                onSubmit={handleSubmit}
-                className="flex flex-col gap-6 w-full"
-              >
-                {/* Email Field */}
-                <div className="flex flex-col gap-3">
-                  <label className="text-sm font-medium text-black">
-                    Email Address
-                  </label>
-                  <Input
-                    type="email"
-                    placeholder="Youremail@gmail.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="h-[53px] rounded-[10px] border-0 bg-gray-100 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-600"
-                  />
-                </div>
+              {/* Right Side - Form */}
+              <div className="flex flex-col justify-center p-4 md:p-6 lg:p-8 bg-white h-full overflow-y-auto">
+                <div className="flex flex-col items-center justify-center gap-4">
+                  {/* Header */}
+                  <div className="flex flex-col gap-2 text-center">
+                    <h1 className="text-xl md:text-2xl font-semibold text-black leading-tight">
+                      Reset Password
+                    </h1>
+                    <p className="text-xs md:text-sm font-light text-gray-400">
+                      We can help you reset your password using the email address
+                      linked to your account.
+                    </p>
+                  </div>
 
-                {/* Action Buttons */}
-                <div className="flex flex-col gap-2 pt-1">
-                  <Button
-                    type="submit"
-                    className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base"
+                  {/* Form */}
+                  <form
+                    onSubmit={handleSubmit}
+                    className="flex flex-col gap-3 w-full"
                   >
-                    Reset my password
-                  </Button>
+                    {/* Email Field */}
+                    <div className="flex flex-col gap-2">
+                      <label className="text-xs md:text-sm font-medium text-black">
+                        Email Address
+                      </label>
+                      <Input
+                        type="email"
+                        placeholder="Youremail@gmail.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        className="h-[53px] rounded-[10px] border-0 bg-gray-100 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-600"
+                      />
+                    </div>
 
-                  <Link
-                    href="/login"
-                    className="w-full h-[48px] rounded-[10px] bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-800 font-medium text-sm md:text-base transition-colors"
-                  >
-                    Cancel
-                  </Link>
+                    {/* Action Buttons */}
+                    <div className="flex flex-col gap-2">
+                      <Button
+                        type="submit"
+                        className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base"
+                      >
+                        Reset my password
+                      </Button>
+
+                      <Link
+                        href="/login"
+                        className="w-full h-[48px] rounded-[10px] bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-800 font-medium text-sm md:text-base transition-colors"
+                      >
+                        Cancel
+                      </Link>
+                    </div>
+                  </form>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
         </div>
