@@ -421,18 +421,22 @@ export const ShowcaseSkillsStep = ({
                     ))
                   ) : (
                     <>
-                      {["Add Skill 1", "Add Skill 2", "Add Skill 3", "Add Skill 4", "Add Skill 5"].map(
-                        (skill) => (
-                          <div
-                            key={skill}
-                            className="flex px-[9px] py-[8px] justify-center items-center gap-[7px] rounded-[20px] bg-[#F5F5F5]"
-                          >
-                            <span className="text-black text-center font-[Inter_Tight] text-[9.5px] font-normal leading-[105%]">
-                              {skill}
-                            </span>
-                          </div>
-                        )
-                      )}
+                      {[
+                        "Add Skill 1",
+                        "Add Skill 2",
+                        "Add Skill 3",
+                        "Add Skill 4",
+                        "Add Skill 5",
+                      ].map((skill) => (
+                        <div
+                          key={skill}
+                          className="flex px-[9px] py-[8px] justify-center items-center gap-[7px] rounded-[20px] bg-[#F5F5F5]"
+                        >
+                          <span className="text-black text-center font-[Inter_Tight] text-[9.5px] font-normal leading-[105%]">
+                            {skill}
+                          </span>
+                        </div>
+                      ))}
                     </>
                   )}
                 </div>
