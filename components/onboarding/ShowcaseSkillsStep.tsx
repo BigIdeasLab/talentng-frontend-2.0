@@ -120,15 +120,23 @@ export const ShowcaseSkillsStep = ({
                 <select
                   value={formData.category}
                   onChange={handleCategoryChange}
-                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight] text-black focus:ring-2 focus:ring-purple-600 focus:outline-none"
+                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight] text-[#99A0AE] focus:ring-2 focus:ring-purple-600 focus:outline-none"
                 >
-                  <option value="" className="text-[#99A0AE]">
+                  <option value="" className="text-black">
                     Select Category
                   </option>
-                  <option value="product-designer">Product Designer</option>
-                  <option value="ux-designer">UX Designer</option>
-                  <option value="developer">Developer</option>
-                  <option value="marketer">Marketer</option>
+                  <option value="product-designer" className="text-black">
+                    Product Designer
+                  </option>
+                  <option value="ux-designer" className="text-black">
+                    UX Designer
+                  </option>
+                  <option value="developer" className="text-black">
+                    Developer
+                  </option>
+                  <option value="marketer" className="text-black">
+                    Marketer
+                  </option>
                 </select>
               </div>
 
@@ -149,17 +157,27 @@ export const ShowcaseSkillsStep = ({
                       setSkillInput("");
                     }
                   }}
-                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight] text-black focus:ring-2 focus:ring-purple-600 focus:outline-none"
+                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight]  text-[#99A0AE] focus:ring-2 focus:ring-purple-600 focus:outline-none"
                 >
                   <option value="" className="text-[#99A0AE]">
                     Choose Skills
                   </option>
-                  <option value="UI Design">UI Design</option>
-                  <option value="UX Design">UX Design</option>
-                  <option value="Website Design">Website Design</option>
-                  <option value="Interface Design">Interface Design</option>
-                  <option value="Interaction Design">Interaction Design</option>
-                  <option value="Presentation Design">
+                  <option value="UI Design" className="text-black">
+                    UI Design
+                  </option>
+                  <option value="UX Design" className="text-black">
+                    UX Design
+                  </option>
+                  <option value="Website Design" className="text-black">
+                    Website Design
+                  </option>
+                  <option value="Interface Design" className="text-black">
+                    Interface Design
+                  </option>
+                  <option value="Interaction Design" className="text-black">
+                    Interaction Design
+                  </option>
+                  <option value="Presentation Design" className="text-black">
                     Presentation Design
                   </option>
                 </select>
@@ -187,7 +205,7 @@ export const ShowcaseSkillsStep = ({
 
               {/* Tech Stack */}
               <div className="flex flex-col gap-[13px]">
-                <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
+                <label className="text-[15px] font-normal  text-black font-[Inter_Tight]">
                   Your Stack
                 </label>
                 <select
@@ -202,16 +220,26 @@ export const ShowcaseSkillsStep = ({
                       setStackInput("");
                     }
                   }}
-                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight] text-black focus:ring-2 focus:ring-purple-600 focus:outline-none"
+                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight]  text-[#99A0AE] focus:ring-2 focus:ring-purple-600 focus:outline-none"
                 >
                   <option value="" className="text-[#99A0AE]">
                     Choose Tools
                   </option>
-                  <option value="Figma">Figma</option>
-                  <option value="Rive">Rive</option>
-                  <option value="Webflow">Webflow</option>
-                  <option value="Lottie">Lottie</option>
-                  <option value="Framer">Framer</option>
+                  <option value="Figma" className="text-black">
+                    Figma
+                  </option>
+                  <option value="Rive" className="text-black">
+                    Rive
+                  </option>
+                  <option value="Webflow" className="text-black">
+                    Webflow
+                  </option>
+                  <option value="Lottie" className="text-black">
+                    Lottie
+                  </option>
+                  <option value="Framer" className="text-black">
+                    Framer
+                  </option>
                 </select>
                 {/* Selected Stack */}
                 {formData.stack.length > 0 && (
