@@ -53,8 +53,7 @@ const Login = () => {
     onSuccess: (response) => {
       const { accessToken, user } = response;
       if (accessToken) {
-        // Set cookie instead of localStorage
-        document.cookie = `accessToken=${accessToken}; path=/; max-age=604800; samesite=lax`; // 7 days
+        document.cookie = `accessToken=${accessToken}; path=/; max-age=604800; samesite=lax`;
         toast.success("Login successful!");
 
         const decodedToken = decodeJwt(accessToken);
@@ -77,189 +76,253 @@ const Login = () => {
     },
   });
 
+  // Handle OAuth callback redirect with userId in query
+  React.useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const userId = searchParams.get("userId");
+    if (userId) {
+      // Clean up the URL and redirect to dashboard
+      router.replace("/dashboard");
+    }
+  }, [router]);
+
   const onSubmit = (data: LoginFormValues) => {
     loginMutation.mutate(data);
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-[320px] flex flex-col gap-16">
-        {/* Main Content */}
-        <div className="flex flex-col items-center gap-6">
-          {/* Header Section */}
-          <div className="flex flex-col gap-11 w-full">
-            <div className="flex flex-col items-center gap-8">
-              {/* Logo and Title */}
-              <div className="flex flex-col items-center gap-6 w-full max-w-[297px]">
+    <div className="relative min-h-screen bg-white overflow-auto">
+      {/* Gradient Background */}
+      <svg
+        className="absolute inset-0 w-full h-full"
+        viewBox="0 0 1440 1024"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        <defs>
+          <filter id="blur1" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="325" />
+          </filter>
+          <filter id="blur2" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="325" />
+          </filter>
+          <filter id="blur3" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="325" />
+          </filter>
+          <filter id="blur4" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="325" />
+          </filter>
+          <filter id="blur5" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="325" />
+          </filter>
+          <filter id="blur6" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="325" />
+          </filter>
+        </defs>
+        <g filter="url(#blur1)">
+          <path
+            d="M332.362 -241.454L441.282 130.988L813.724 239.908L441.282 348.828L332.362 721.27L223.442 348.828L-149 239.908L223.442 130.988L332.362 -241.454Z"
+            fill="#F6BC3F"
+          />
+        </g>
+        <g filter="url(#blur2)">
+          <path
+            d="M332.362 39.8024L441.282 412.245L813.724 521.164L441.282 630.084L332.362 1002.53L223.442 630.084L-149 521.164L223.442 412.245L332.362 39.8024Z"
+            fill="#008B47"
+          />
+        </g>
+        <g filter="url(#blur3)">
+          <path
+            d="M332.362 404.73L441.282 777.172L813.724 886.092L441.282 995.012L332.362 1367.45L223.442 995.012L-149 886.092L223.442 777.172L332.362 404.73Z"
+            fill="#5C30FF"
+          />
+        </g>
+        <g filter="url(#blur4)">
+          <path
+            d="M1114.64 -241.454L1223.56 130.988L1596 239.908L1223.56 348.828L1114.64 721.27L1005.72 348.828L633.276 239.908L1005.72 130.988L1114.64 -241.454Z"
+            fill="#F791C3"
+          />
+        </g>
+        <g filter="url(#blur5)">
+          <path
+            d="M1114.64 39.8024L1223.56 412.245L1596 521.164L1223.56 630.084L1114.64 1002.53L1005.72 630.084L633.276 521.164L1005.72 412.245L1114.64 39.8024Z"
+            fill="#E63C23"
+          />
+        </g>
+        <g filter="url(#blur6)">
+          <path
+            d="M1114.64 404.73L1223.56 777.172L1596 886.092L1223.56 995.012L1114.64 1367.45L1005.72 995.012L633.276 886.092L1005.72 777.172L1114.64 404.73Z"
+            fill="#FFEECA"
+          />
+        </g>
+      </svg>
+
+      {/* Content */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-3 py-6 md:py-8 lg:py-12 md:px-4 lg:px-6">
+        <div className="w-full max-w-5xl">
+          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden flex flex-col md:flex-row h-[600px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0 w-full h-full">
+              {/* Left Side - Logo */}
+              <div className="hidden md:flex flex-col items-center justify-center p-8 lg:p-12 bg-white min-h-[400px] md:min-h-auto">
                 <img
-                  src="https://api.builder.io/api/v1/image/assets/TEMP/95484ffeaace17b0e40815c0aa78c80490650deb?width=168"
+                  src="/logo.png"
                   alt="Talent.ng Logo"
-                  className="w-[84px] h-[64px]"
+                  className="w-full max-w-sm object-contain"
                 />
-                <div className="flex flex-col items-center gap-4 w-full">
-                  <h1 className="text-black font-geist text-[32px] font-semibold leading-[120%]">
-                    Welcome back
-                  </h1>
-                  <p className="text-gray-500 font-geist text-base font-medium leading-[120%] text-center w-full">
-                    Sign in to your Talent.ng account to continue.
+              </div>
+
+              {/* Right Side - Form */}
+              <div className="flex flex-col justify-center p-4 md:p-6 lg:p-8 bg-white h-full overflow-y-auto">
+                <div className="flex flex-col gap-3 text-sm md:text-base w-full">
+                  {/* Header */}
+                  <div className="flex flex-col gap-1">
+                    <h1 className="text-xl md:text-2xl font-semibold text-black leading-tight">
+                      Welcome Back
+                    </h1>
+                    <p className="text-sm md:text-base font-light text-gray-400 capitalize">
+                      let's connect you with opportunities
+                    </p>
+                  </div>
+
+                  {/* Form */}
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="flex flex-col gap-2"
+                    >
+                      {/* Email Field */}
+                      <div className="flex flex-col gap-2">
+                        <label className="text-xs md:text-sm font-medium text-black">
+                          Email Address
+                        </label>
+                        <FormField
+                          control={form.control}
+                          name="email"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  type="email"
+                                  placeholder="Youremail@gmail.com"
+                                  {...field}
+                                  className="h-[53px] rounded-[10px] border-0 bg-gray-100 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-600"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      {/* Password Field */}
+                      <div className="flex flex-col gap-2">
+                        <label className="text-xs md:text-sm font-medium text-black">
+                          Password
+                        </label>
+                        <FormField
+                          control={form.control}
+                          name="password"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <div className="relative h-[53px] rounded-[10px] bg-gray-100 flex items-center px-4">
+                                  <Input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Your Password"
+                                    {...field}
+                                    className="flex-1 bg-transparent border-0 placeholder:text-gray-400 focus:ring-0"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setShowPassword(!showPassword)
+                                    }
+                                    className="text-gray-500 hover:text-gray-700"
+                                  >
+                                    {showPassword ? (
+                                      <EyeOff size={20} />
+                                    ) : (
+                                      <Eye size={20} />
+                                    )}
+                                  </button>
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      {/* Continue Button */}
+                      <Button
+                        type="submit"
+                        disabled={loginMutation.isPending}
+                        className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base mt-1"
+                      >
+                        {loginMutation.isPending ? (
+                          <Loader2 size={18} className="animate-spin" />
+                        ) : (
+                          "Continue"
+                        )}
+                      </Button>
+                    </form>
+                  </Form>
+
+                  {/* Divider */}
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 h-px bg-gray-300"></div>
+                    <span className="text-gray-400 text-sm">or</span>
+                    <div className="flex-1 h-px bg-gray-300"></div>
+                  </div>
+
+                  {/* Google Button */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      window.location.href = `${process.env.NEXT_PUBLIC_TALENTNG_API_URL}/auth/google`;
+                    }}
+                    className="w-full h-[48px] rounded-[10px] bg-gray-100 hover:bg-gray-200 flex items-center justify-center gap-2 transition-colors text-xs md:text-sm"
+                  >
+                    <img
+                      src="https://api.builder.io/api/v1/image/assets/TEMP/c63e31bf35331749ef1f00a4fbaca3a3a5899b7a?width=28"
+                      alt="Google"
+                      className="w-[14px] h-[14px]"
+                    />
+                    <span className="text-gray-800 font-medium text-base">
+                      Continue With Google
+                    </span>
+                  </button>
+
+                  {/* Apple Button */}
+                  <button
+                    type="button"
+                    className="w-full h-[48px] rounded-[10px] bg-gray-100 hover:bg-gray-200 flex items-center justify-center gap-2 transition-colors text-xs md:text-sm"
+                  >
+                    <img
+                      src="https://api.builder.io/api/v1/image/assets/TEMP/e1e698cf881cba1b63fb95d130a383ba36c4abee?width=34"
+                      alt="Apple"
+                      className="w-[17px] h-[17px]"
+                    />
+                    <span className="text-gray-800 font-medium text-base">
+                      Continue With Apple
+                    </span>
+                  </button>
+
+                  {/* Sign Up Link */}
+                  <p className="text-center text-xs md:text-sm">
+                    <span className="text-gray-400">New here? </span>
+                    <Link
+                      href="/signup"
+                      className="text-[#5C30FF] font-medium hover:underline"
+                    >
+                      Create an account
+                    </Link>
                   </p>
                 </div>
               </div>
-
-              {/* Form Fields */}
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="flex flex-col gap-4 w-full"
-                >
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input
-                            type="email"
-                            placeholder="Enter email"
-                            {...field}
-                            className="h-12 rounded-3xl border-gray-300 text-gray-600"
-                            suppressHydrationWarning
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <div className="flex items-center justify-between px-[14px] h-12 rounded-3xl border border-gray-300 bg-white">
-                            <Input
-                              type={showPassword ? "text" : "password"}
-                              placeholder="Enter password"
-                              {...field}
-                              className="flex-1 text-gray-500 font-geist text-base font-medium bg-transparent border-none outline-none placeholder:text-gray-500"
-                              suppressHydrationWarning
-                            />
-                            <button
-                              type="button"
-                              onClick={() => setShowPassword(!showPassword)}
-                              className="ml-2 text-gray-500"
-                            >
-                              {showPassword ? (
-                                <EyeOff size={18} />
-                              ) : (
-                                <Eye size={18} />
-                              )}
-                            </button>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* Forgot Password Link */}
-                  <div className="text-right">
-                    <Link
-                      href="/forgot-password"
-                      className="text-gray-500 font-geist text-sm font-medium hover:text-gray-700 transition-colors underline"
-                    >
-                      Forgot password?
-                    </Link>
-                  </div>
-
-                  <Button
-                    type="submit"
-                    disabled={loginMutation.isPending}
-                    className="flex items-center justify-center gap-2.5 px-[14px] py-[14px] rounded-3xl bg-black text-white font-geist text-base font-medium hover:bg-gray-800 transition-colors"
-                  >
-                    {loginMutation.isPending ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      "Sign in"
-                    )}
-                  </Button>
-                </form>
-              </Form>
-              {/* Divider */}
-              <svg
-                width="320"
-                height="1"
-                viewBox="0 0 320 1"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-full"
-              >
-                <path d="M0 0.5H320" stroke="#EAECF0" />
-              </svg>
             </div>
-
-            {/* Google Sign In */}
-            <button
-              onClick={() => {
-                window.location.href = `${process.env.NEXT_PUBLIC_TALENTNG_API_URL}/auth/google`;
-              }}
-              className="flex items-center justify-center gap-2.5 px-[14px] py-[14px] rounded-3xl border border-gray-300 bg-white hover:bg-gray-50 transition-colors w-full"
-            >
-              <div className="flex items-center gap-2">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M18.1713 8.36791H17.5V8.33332H10V11.6667H14.7096C14.0225 13.6071 12.1763 15 10 15C7.23877 15 5.00002 12.7612 5.00002 9.99999C5.00002 7.23874 7.23877 4.99999 10 4.99999C11.2746 4.99999 12.4342 5.48082 13.3171 6.26624L15.6742 3.90916C14.1859 2.52207 12.195 1.66666 10 1.66666C5.39794 1.66666 1.66669 5.39791 1.66669 9.99999C1.66669 14.6021 5.39794 18.3333 10 18.3333C14.6021 18.3333 18.3334 14.6021 18.3334 9.99999C18.3334 9.44124 18.2759 8.89582 18.1713 8.36791Z"
-                    fill="#FFC107"
-                  />
-                  <path
-                    d="M2.62744 6.12124L5.36536 8.12916C6.10619 6.29499 7.90036 4.99999 9.99994 4.99999C11.2745 4.99999 12.4341 5.48082 13.317 6.26624L15.6741 3.90916C14.1858 2.52207 12.1949 1.66666 9.99994 1.66666C6.79911 1.66666 4.02327 3.47374 2.62744 6.12124Z"
-                    fill="#FF3D00"
-                  />
-                  <path
-                    d="M10 18.3336C12.1525 18.3336 14.1084 17.5099 15.5871 16.1703L13.008 13.9878C12.1433 14.6457 11.0865 15.0015 10 15.0003C7.83255 15.0003 5.99213 13.6182 5.2988 11.6895L2.5813 13.7832C3.96047 16.482 6.7613 18.3336 10 18.3336Z"
-                    fill="#4CAF50"
-                  />
-                  <path
-                    d="M18.1712 8.36793H17.5V8.33334H10V11.6667H14.7096C14.3809 12.5902 13.7889 13.3972 13.0067 13.9879L13.0079 13.9871L15.5871 16.1696C15.4046 16.3354 18.3333 14.1667 18.3333 10C18.3333 9.44126 18.2758 9.39584 18.1712 8.36793Z"
-                    fill="#1976D2"
-                  />
-                </svg>
-                <span className="text-gray-950 font-geist text-base font-medium">
-                  Continue with Google
-                </span>
-              </div>
-            </button>
           </div>
-
-          {/* Sign Up Link */}
-          <div className="text-center w-full">
-            <span className="text-gray-500 font-geist text-base font-normal">
-              Don't have an account?{" "}
-            </span>
-            <Link
-              href="/signup"
-              className="text-gray-950 font-geist text-base font-semibold underline hover:text-gray-700 transition-colors"
-            >
-              Sign up
-            </Link>
-          </div>
-        </div>
-
-        {/* Terms */}
-        <div className="text-center w-full">
-          <span className="text-gray-600 font-geist text-sm font-normal">
-            By signing in, you agree to our{" "}
-          </span>
-          <span className="text-gray-950 font-geist text-sm font-semibold">
-            Terms and Conditions.
-          </span>
         </div>
       </div>
     </div>

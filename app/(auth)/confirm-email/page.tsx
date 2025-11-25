@@ -1,119 +1,317 @@
-
-'use client';
-import React from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { useMutation } from '@tanstack/react-query';
-import { toast } from 'sonner';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
-import apiClient from '@/lib/api';
-import { Button } from '@/components/ui/button';
+"use client";
+import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from '@/components/ui/form';
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import apiClient from "@/lib/api";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 
 const confirmEmailSchema = z.object({
-  verificationCode: z.string().min(6, 'Your one-time password must be 6 characters.'),
+  verificationCode: z
+    .string()
+    .min(6, "Your one-time password must be 6 characters."),
 });
 
 type ConfirmEmailFormValues = z.infer<typeof confirmEmailSchema>;
 
 const ConfirmEmailPage = () => {
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [resendCountdown, setResendCountdown] = useState(0);
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setEmail(params.get("email") || "");
+  }, []);
+
   const form = useForm<ConfirmEmailFormValues>({
     resolver: zodResolver(confirmEmailSchema),
     defaultValues: {
-      verificationCode: '',
+      verificationCode: "",
+    },
+  });
+
+  React.useEffect(() => {
+    if (resendCountdown > 0) {
+      const timer = setTimeout(
+        () => setResendCountdown(resendCountdown - 1),
+        1000,
+      );
+      return () => clearTimeout(timer);
+    }
+  }, [resendCountdown]);
+
+  const resendMutation = useMutation({
+    mutationFn: () => {
+      return apiClient("/auth/verify-email/send", {
+        method: "POST",
+        body: { email },
+      });
+    },
+    onSuccess: () => {
+      toast.success("Verification code resent!");
+      setResendCountdown(30);
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to resend verification code.");
     },
   });
 
   const mutation = useMutation({
     mutationFn: (data: ConfirmEmailFormValues) => {
-      // You might need to get the email from the query params or from a state management library
-      const email = new URLSearchParams(window.location.search).get('email');
-      return apiClient('/auth/verify-email/confirm', {
-        method: 'POST',
+      return apiClient("/auth/verify-email/confirm", {
+        method: "POST",
         body: { ...data, email },
       });
     },
     onSuccess: () => {
-      toast.success('Email verified successfully!');
-      router.push('/login');
+      toast.success("Email verified successfully!");
+      router.push("/login");
     },
-    onError: (error) => {
-      toast.error(error.message || 'An error occurred. Please try again.');
+    onError: (error: any) => {
+      setError(error.message || "Invalid verification code");
+      toast.error(error.message || "An error occurred. Please try again.");
     },
   });
 
   const onSubmit = (data: ConfirmEmailFormValues) => {
+    setError("");
     mutation.mutate(data);
   };
 
+  // Auto-submit when 6 digits are entered
+  React.useEffect(() => {
+    const code = form.watch("verificationCode");
+    if (code.length === 6) {
+      onSubmit({ verificationCode: code });
+    }
+  }, [form.watch("verificationCode")]);
+
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md flex flex-col items-center text-center gap-8">
-        <div className="flex flex-col items-center gap-6 w-full">
-          <img
-            src="https://api.builder.io/api/v1/image/assets/TEMP/95484ffeaace17b0e40815c0aa78c80490650deb?width=168"
-            alt="Talent.ng Logo"
-            className="w-24 h-20"
+    <div className="relative h-screen bg-white overflow-hidden">
+      {/* Gradient Background */}
+      <svg
+        className="absolute inset-0 w-full h-full"
+        viewBox="0 0 1440 1024"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        <defs>
+          <filter id="blur1" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="325" />
+          </filter>
+          <filter id="blur2" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="325" />
+          </filter>
+          <filter id="blur3" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="325" />
+          </filter>
+          <filter id="blur4" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="325" />
+          </filter>
+          <filter id="blur5" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="325" />
+          </filter>
+          <filter id="blur6" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="325" />
+          </filter>
+        </defs>
+        <g filter="url(#blur1)">
+          <path
+            d="M332.362 -241.454L441.282 130.988L813.724 239.908L441.282 348.828L332.362 721.27L223.442 348.828L-149 239.908L223.442 130.988L332.362 -241.454Z"
+            fill="#F6BC3F"
           />
-          <div className="flex flex-col items-center gap-4 w-full">
-            <h1 className="text-black font-geist text-4xl font-semibold leading-tight">
-              Check your email
-            </h1>
-            <p className="text-gray-500 font-geist text-lg font-medium">
-              We sent a verification code to your email address.
-            </p>
+        </g>
+        <g filter="url(#blur2)">
+          <path
+            d="M332.362 39.8024L441.282 412.245L813.724 521.164L441.282 630.084L332.362 1002.53L223.442 630.084L-149 521.164L223.442 412.245L332.362 39.8024Z"
+            fill="#008B47"
+          />
+        </g>
+        <g filter="url(#blur3)">
+          <path
+            d="M332.362 404.73L441.282 777.172L813.724 886.092L441.282 995.012L332.362 1367.45L223.442 995.012L-149 886.092L223.442 777.172L332.362 404.73Z"
+            fill="#5C30FF"
+          />
+        </g>
+        <g filter="url(#blur4)">
+          <path
+            d="M1114.64 -241.454L1223.56 130.988L1596 239.908L1223.56 348.828L1114.64 721.27L1005.72 348.828L633.276 239.908L1005.72 130.988L1114.64 -241.454Z"
+            fill="#F791C3"
+          />
+        </g>
+        <g filter="url(#blur5)">
+          <path
+            d="M1114.64 39.8024L1223.56 412.245L1596 521.164L1223.56 630.084L1114.64 1002.53L1005.72 630.084L633.276 521.164L1005.72 412.245L1114.64 39.8024Z"
+            fill="#E63C23"
+          />
+        </g>
+        <g filter="url(#blur6)">
+          <path
+            d="M1114.64 404.73L1223.56 777.172L1596 886.092L1223.56 995.012L1114.64 1367.45L1005.72 995.012L633.276 886.092L1005.72 777.172L1114.64 404.73Z"
+            fill="#FFEECA"
+          />
+        </g>
+      </svg>
+
+      {/* Content */}
+      <div className="relative z-10 h-screen flex items-center justify-center px-3 py-3 md:px-4 lg:px-6 overflow-hidden">
+        <div className="w-full max-w-5xl max-h-full">
+          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden h-[600px] flex flex-col">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
+              {/* Left Side - Logo */}
+              <div className="hidden md:flex flex-col items-center justify-center p-8 lg:p-12 bg-white overflow-hidden">
+                <img
+                  src="/logo.png"
+                  alt="Talent.ng Logo"
+                  className="w-full max-w-sm object-contain"
+                />
+              </div>
+
+              {/* Right Side - Form */}
+              <div className="flex flex-col justify-center p-4 md:p-6 lg:p-8 bg-white overflow-y-auto h-full">
+                <div className="flex flex-col gap-3">
+                  {/* Gmail Icon */}
+                  <svg
+                    width="45"
+                    height="45"
+                    viewBox="0 0 60 60"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <g clipPath="url(#clip0)">
+                      <path
+                        d="M45.9375 0H14.0625C6.296 0 0 6.296 0 14.0625V45.9375C0 53.704 6.296 60 14.0625 60H45.9375C53.704 60 60 53.704 60 45.9375V14.0625C60 6.296 53.704 0 45.9375 0Z"
+                        fill="#F4F2ED"
+                      />
+                      <path
+                        d="M9.75844 47.5873H17.2158V29.4764L6.5625 21.4866V44.3913C6.5625 46.1597 7.99547 47.5873 9.75844 47.5873Z"
+                        fill="#4285F4"
+                      />
+                      <path
+                        d="M42.7842 47.5873H50.2418C52.0101 47.5873 53.4377 46.1543 53.4377 44.3913V21.4863L42.7842 29.4764"
+                        fill="#34A853"
+                      />
+                      <path
+                        d="M42.7842 15.6269V29.4763L53.4377 21.4865V17.2246C53.4377 13.2724 48.926 11.0191 45.7673 13.3895"
+                        fill="#FBBC04"
+                      />
+                      <path
+                        d="M17.2158 29.4764V15.6272L29.9998 25.2148L42.7838 15.6267V29.4762L29.9998 39.0644"
+                        fill="#EA4335"
+                      />
+                      <path
+                        d="M6.5625 17.2249V21.4863L17.2158 29.4763V15.6271L14.2329 13.3898C11.0688 11.0193 6.5625 13.2726 6.5625 17.2249Z"
+                        fill="#C5221F"
+                      />
+                    </g>
+                    <defs>
+                      <clipPath id="clip0">
+                        <rect width="60" height="60" fill="white" />
+                      </clipPath>
+                    </defs>
+                  </svg>
+
+                  {/* Header */}
+                  <div className="flex flex-col gap-1">
+                    <h1 className="text-xl md:text-2xl font-semibold text-black leading-tight">
+                      Check your inbox
+                    </h1>
+                    <p className="text-xs md:text-sm font-light text-gray-400">
+                      We just sent a 6-digit code to{" "}
+                      <span className="font-semibold text-gray-400">
+                        {email}
+                      </span>
+                    </p>
+                  </div>
+
+                  {/* Form */}
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="flex flex-col gap-2"
+                    >
+                      {/* Error Message */}
+                      {error && (
+                        <div className="flex flex-col gap-2">
+                          <p className="text-sm font-medium text-red-600">
+                            {error}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* OTP Input */}
+                      <FormField
+                        control={form.control}
+                        name="verificationCode"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <div className="flex justify-center items-center rounded-[10px] bg-[#F5F5F5] py-[5px] px-[54px]">
+                                <InputOTP maxLength={6} {...field}>
+                                  <InputOTPGroup className="flex items-center gap-0">
+                                    <InputOTPSlot
+                                      index={0}
+                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
+                                    />
+                                    <InputOTPSlot
+                                      index={1}
+                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
+                                    />
+                                    <InputOTPSlot
+                                      index={2}
+                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
+                                    />
+                                    <InputOTPSlot
+                                      index={3}
+                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
+                                    />
+                                    <InputOTPSlot
+                                      index={4}
+                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
+                                    />
+                                    <InputOTPSlot
+                                      index={5}
+                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
+                                    />
+                                  </InputOTPGroup>
+                                </InputOTP>
+                              </div>
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </form>
+                  </Form>
+
+                  {/* Resend Link */}
+                  <p className="text-center text-xs md:text-sm">
+                    <span className="text-gray-400">Didn't get it? </span>
+                    <button
+                      onClick={() => resendMutation.mutate()}
+                      disabled={resendCountdown > 0 || resendMutation.isPending}
+                      className="text-[#5C30FF] font-medium hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {resendCountdown > 0
+                        ? `Resend in ${resendCountdown}s`
+                        : "Resend code"}
+                    </button>
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-sm flex flex-col gap-8">
-            <FormField
-              control={form.control}
-              name="verificationCode"
-              render={({ field }) => (
-                <FormItem className="flex flex-col items-center">
-                  <FormLabel className="text-lg font-medium">Enter Code</FormLabel>
-                  <FormControl>
-                    <InputOTP maxLength={6} {...field}>
-                      <InputOTPGroup>
-                        <InputOTPSlot index={0} />
-                        <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
-                        <InputOTPSlot index={3} />
-                        <InputOTPSlot index={4} />
-                        <InputOTPSlot index={5} />
-                      </InputOTPGroup>
-                    </InputOTP>
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <Button type="submit" disabled={mutation.isPending} className="w-full rounded-3xl">
-              {mutation.isPending ? 'Verifying...' : 'Verify Email'}
-            </Button>
-          </form>
-        </Form>
-
-        <div className="text-center w-full">
-          <span className="text-gray-500 font-geist text-sm font-normal">
-            Already have an account?{' '}
-          </span>
-          <Link
-            href="/login"
-            className="text-gray-950 font-geist text-sm font-semibold underline hover:text-gray-700 transition-colors"
-          >
-            Sign in
-          </Link>
         </div>
       </div>
     </div>
