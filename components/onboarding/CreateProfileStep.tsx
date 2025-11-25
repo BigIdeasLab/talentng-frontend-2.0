@@ -340,7 +340,10 @@ export const CreateProfileStep = ({
                   {/* Decorative striped pattern */}
                   <div className="absolute left-[-13px] top-[185px] w-[277px] h-[162px] flex gap-[16px] rotate-[20.779deg] overflow-hidden">
                     {Array.from({ length: 18 }).map((_, i) => (
-                      <div key={i} className="w-[8.14px] h-[162px] bg-[#03964E] flex-shrink-0" />
+                      <div
+                        key={i}
+                        className="w-[8.14px] h-[162px] bg-[#03964E] flex-shrink-0"
+                      />
                     ))}
                   </div>
 
@@ -350,21 +353,59 @@ export const CreateProfileStep = ({
                   {/* Activity badge */}
                   <div className="absolute left-[15px] top-[241px] w-[206px] h-[38px] rounded-[54px] bg-white flex items-center px-[5px] gap-[7px] z-20">
                     <div className="w-[27px] h-[27px] rounded-full bg-[#D9D9D9] flex-shrink-0 shadow-[0_3.2px_4px_0_rgba(0,0,0,0.20)]">
-                      <svg className="w-full h-full" viewBox="0 0 50 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg
+                        className="w-full h-full"
+                        viewBox="0 0 50 48"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
                         <defs>
-                          <filter id="filter0_d" x="-0.0001" y="0" width="49.9108" height="49.9108" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-                            <feFlood floodOpacity="0" result="BackgroundImageFix"/>
-                            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                            <feOffset dy="4.58639"/>
-                            <feGaussianBlur stdDeviation="2.8665"/>
-                            <feComposite in2="hardAlpha" operator="out"/>
-                            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"/>
-                            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
-                            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+                          <filter
+                            id="filter0_d"
+                            x="-0.0001"
+                            y="0"
+                            width="49.9108"
+                            height="49.9108"
+                            filterUnits="userSpaceOnUse"
+                            colorInterpolationFilters="sRGB"
+                          >
+                            <feFlood
+                              floodOpacity="0"
+                              result="BackgroundImageFix"
+                            />
+                            <feColorMatrix
+                              in="SourceAlpha"
+                              type="matrix"
+                              values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                              result="hardAlpha"
+                            />
+                            <feOffset dy="4.58639" />
+                            <feGaussianBlur stdDeviation="2.8665" />
+                            <feComposite in2="hardAlpha" operator="out" />
+                            <feColorMatrix
+                              type="matrix"
+                              values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"
+                            />
+                            <feBlend
+                              mode="normal"
+                              in2="BackgroundImageFix"
+                              result="effect1_dropShadow"
+                            />
+                            <feBlend
+                              mode="normal"
+                              in="SourceGraphic"
+                              in2="effect1_dropShadow"
+                              result="shape"
+                            />
                           </filter>
                         </defs>
                         <g filter="url(#filter0_d)">
-                          <circle cx="24.9553" cy="20.369" r="13.43" fill="#E8E8E8"/>
+                          <circle
+                            cx="24.9553"
+                            cy="20.369"
+                            r="13.43"
+                            fill="#E8E8E8"
+                          />
                         </g>
                       </svg>
                     </div>
@@ -385,32 +426,85 @@ export const CreateProfileStep = ({
 
                   {/* Profile image on green card */}
                   <div className="absolute left-[15px] top-[102px] w-[79px] h-[72px] z-20">
-                    <svg className="w-full h-full" viewBox="0 0 119 103" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg
+                      className="w-full h-full"
+                      viewBox="0 0 119 103"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
                       <defs>
-                        <filter id="filter0_d_profile" x="68.5937" y="52.676" width="49.9108" height="49.9108" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-                          <feFlood floodOpacity="0" result="BackgroundImageFix"/>
-                          <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-                          <feOffset dy="4.58639"/>
-                          <feGaussianBlur stdDeviation="2.8665"/>
-                          <feComposite in2="hardAlpha" operator="out"/>
-                          <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"/>
-                          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_profile"/>
-                          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_profile" result="shape"/>
+                        <filter
+                          id="filter0_d_profile"
+                          x="68.5937"
+                          y="52.676"
+                          width="49.9108"
+                          height="49.9108"
+                          filterUnits="userSpaceOnUse"
+                          colorInterpolationFilters="sRGB"
+                        >
+                          <feFlood
+                            floodOpacity="0"
+                            result="BackgroundImageFix"
+                          />
+                          <feColorMatrix
+                            in="SourceAlpha"
+                            type="matrix"
+                            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                            result="hardAlpha"
+                          />
+                          <feOffset dy="4.58639" />
+                          <feGaussianBlur stdDeviation="2.8665" />
+                          <feComposite in2="hardAlpha" operator="out" />
+                          <feColorMatrix
+                            type="matrix"
+                            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"
+                          />
+                          <feBlend
+                            mode="normal"
+                            in2="BackgroundImageFix"
+                            result="effect1_dropShadow_profile"
+                          />
+                          <feBlend
+                            mode="normal"
+                            in="SourceGraphic"
+                            in2="effect1_dropShadow_profile"
+                            result="shape"
+                          />
                         </filter>
                       </defs>
-                      <circle cx="51.26" cy="51.26" r="49.34" fill={imagePreview ? "#F5F5F5" : "#E8E8E8"} stroke="#F5F5F5" strokeWidth="2.69"/>
+                      <circle
+                        cx="51.26"
+                        cy="51.26"
+                        r="49.34"
+                        fill={imagePreview ? "#F5F5F5" : "#E8E8E8"}
+                        stroke="#F5F5F5"
+                        strokeWidth="2.69"
+                      />
                       {imagePreview && (
                         <defs>
                           <clipPath id="profile-clip">
-                            <circle cx="51.26" cy="51.26" r="49.34"/>
+                            <circle cx="51.26" cy="51.26" r="49.34" />
                           </clipPath>
                         </defs>
                       )}
                       {imagePreview && (
-                        <image href={imagePreview} x="1.92" y="1.92" width="98.68" height="98.68" clipPath="url(#profile-clip)" preserveAspectRatio="xMidYMid slice"/>
+                        <image
+                          href={imagePreview}
+                          x="1.92"
+                          y="1.92"
+                          width="98.68"
+                          height="98.68"
+                          clipPath="url(#profile-clip)"
+                          preserveAspectRatio="xMidYMid slice"
+                        />
                       )}
                       <g filter="url(#filter0_d_profile)">
-                        <circle cx="93.55" cy="73.05" r="13.43" fill="#D4D4D4"/>
+                        <circle
+                          cx="93.55"
+                          cy="73.05"
+                          r="13.43"
+                          fill="#D4D4D4"
+                        />
                       </g>
                     </svg>
                   </div>
