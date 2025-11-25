@@ -76,6 +76,16 @@ const Login = () => {
     },
   });
 
+  // Handle OAuth callback redirect with userId in query
+  React.useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const userId = searchParams.get("userId");
+    if (userId) {
+      // Clean up the URL and redirect to dashboard
+      router.replace("/dashboard");
+    }
+  }, [router]);
+
   const onSubmit = (data: LoginFormValues) => {
     loginMutation.mutate(data);
   };

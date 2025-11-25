@@ -95,13 +95,21 @@ export async function middleware(request: NextRequest) {
     if (payload) {
       // Allow access to onboarding for users who haven't completed it
       // (role is "general" or undefined/empty, or roles array is empty)
-      const userRole = payload.role || (Array.isArray(payload.roles) && payload.roles.length > 0 ? payload.roles[0] : undefined);
+      const userRole =
+        payload.role ||
+        (Array.isArray(payload.roles) && payload.roles.length > 0
+          ? payload.roles[0]
+          : undefined);
       const hasCompletedOnboarding = userRole && userRole !== "general";
-      
+
       // Only redirect away from auth pages if user has completed onboarding
       // Always allow /onboarding and /set-username for users who need to complete setup
-      if (hasCompletedOnboarding && pathname !== "/onboarding" && pathname !== "/set-username") {
-        // User is logged in and has completed onboarding, redirect from auth pages to dashboard
+      if (
+        hasCompletedOnboarding &&
+        pathname !== "/onboarding" &&
+        pathname !== "/set-username"
+      ) {
+        // User is logged in and has completed onboarding, redirect from auth pages to their dashboard
         return NextResponse.redirect(new URL("/dashboard", request.url));
       }
     }

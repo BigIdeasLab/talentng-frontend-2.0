@@ -86,6 +86,12 @@ const OnboardingPage = () => {
       hasProfileImage: !!profileImage,
     });
 
+    // Debug: Log FormData contents
+    console.log("[Onboarding] FormData contents:");
+    Array.from(formData.entries()).forEach(([key, value]) => {
+      console.log(`  ${key}:`, typeof value === 'string' ? value : `[${value.constructor.name}]`);
+    });
+
     try {
       await apiClient("/users/me/onboard", {
         method: "POST",
@@ -113,12 +119,21 @@ const OnboardingPage = () => {
         errorMessage.toLowerCase().includes("timeout") ||
         errorMessage.toLowerCase().includes("transaction");
 
-      toast({
-        variant: "destructive",
-        title: "Onboarding Failed",
-        description: errorMessage,
-        duration: isTimeoutError ? 10000 : 5000, // Show timeout errors longer
-      });
+      if (isTimeoutError) {
+        toast({
+          variant: "destructive",
+          title: "Request Timeout",
+          description: "The request took too long to process. Please try again or contact support if the problem persists.",
+          duration: 10000,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Onboarding Failed",
+          description: errorMessage,
+          duration: 5000,
+        });
+      }
     } finally {
       setIsLoading(false);
     }
