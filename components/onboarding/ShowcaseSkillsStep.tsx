@@ -267,7 +267,7 @@ export const ShowcaseSkillsStep = ({
               />
             </svg>
 
-            <div className="relative w-full max-w-[350px] z-10 h-[350px] border border-red-800">
+            <div className="relative w-full max-w-[350px] z-10 h-[350px]">
               {/* Background Cards */}
               <div className="relative">
                 <div className="absolute rounded-[58px] bg-[#ECECEC] w-4/5 h-12 left-1/4 -bottom-8"></div>

@@ -335,6 +335,27 @@ export const CreateProfileStep = ({
 
               {/* Main container for both cards */}
               <div className="relative w-[290px] h-[350px]">
+                {/* Yellow Star */}
+                <svg
+                  className="absolute -left-12 top-24 w-16 h-16 lg:w-24 lg:h-24 z-40"
+                  viewBox="0 0 131 131"
+                  fill="none"
+                >
+                  <path
+                    d="M65.3129 0L75.4732 55.1526L130.626 65.3129L75.4732 75.4732L65.3129 130.626L55.1526 75.4732L0 65.3129L55.1526 55.1526L65.3129 0Z"
+                    fill="#F6BC3F"
+                  />
+                </svg>
+
+                {/* User Logo Badge */}
+                <div className="absolute top-4 -right-8 w-[70px] h-[70px] z-30">
+                  <img
+                    src="/logo-2.png"
+                    alt="Profile"
+                    className="w-full h-full object-cover object-center rounded-full"
+                  />
+                </div>
+
                 {/* Back Card - Green Profile Card */}
                 <div className="absolute w-full h-[328px] top-0 left-0 rounded-[21px] bg-[#008B47] shadow-[1.79px_0_21.48px_rgba(0,0,0,0.25)] overflow-hidden z-10">
                   {/* Decorative striped pattern */}
@@ -510,7 +531,7 @@ export const CreateProfileStep = ({
                   </div>
 
                   {/* Status badge */}
-                  <div className="absolute bottom-[24px] left-[98px] text-white text-[13.4px] font-normal font-[Inter_Tight] leading-[120%] capitalize">
+                  <div className="absolute bottom-[12px] left-[98px] text-white text-[13.4px] font-normal font-[Inter_Tight] leading-[120%] capitalize">
                     Status: Available
                   </div>
                 </div>
