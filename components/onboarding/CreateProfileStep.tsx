@@ -326,59 +326,106 @@ export const CreateProfileStep = ({
         </div>
 
         {/* Right side - Profile Preview */}
-        <div className="hidden md:flex flex-col items-center justify-center p-6 md:p-10 md:pl-6 bg-white relative overflow-hidden h-full">
+        <div className="hidden md:flex flex-col items-center justify-center p-6 md:p-10 md:pl-6 bg-white relative overflow-visible h-full">
           <div className="w-full h-full flex items-center justify-center">
-            <div className="relative w-full max-w-[280px] lg:max-w-[350px] h-[350px]">
-              {/* Decorative Star */}
-              <svg
-                className="absolute left-0 top-8 w-20 h-20 lg:w-32 lg:h-32 z-30"
-                viewBox="0 0 131 131"
-                fill="none"
-              >
-                <path
-                  d="M65.3129 0L75.4732 55.1526L130.626 65.3129L75.4732 75.4732L65.3129 130.626L55.1526 75.4732L0 65.3129L55.1526 55.1526L65.3129 0Z"
-                  fill="#F6BC3F"
-                />
-              </svg>
+            <div className="relative w-full max-w-[290px] h-[350px]">
+              {/* Background decorative cards */}
+              <div className="absolute w-[209px] h-[34px] rounded-[40px] bg-[#ECECEC] left-[40px] bottom-[84px] z-0"></div>
+              <div className="absolute w-[254px] h-[40px] rounded-[40px] bg-[#E0E0E0] left-[18px] bottom-[56px] z-0"></div>
 
-              {/* Background Cards */}
-              <div className="relative z-10 w-full h-full">
-                <div className="absolute rounded-[58px] bg-[#ECECEC] w-4/5 h-1/12 left-1/4 bottom-12"></div>
-                <div className="absolute rounded-[58px] bg-[#E0E0E0] w-11/12 h-1/10 left-0 bottom-8"></div>
-
-                {/* Main Green Card (Back Layer) */}
-                <div className="w-full h-full rounded-[30px] bg-[#008B47] shadow-[2.563px_0_30.756px_rgba(0,0,0,0.25)] absolute top-0 left-0 overflow-hidden flex flex-col">
-                  {/* Striped Pattern */}
-                  <div className="absolute left-[-19px] top-1/2 w-96 h-56 flex gap-[23px] rotate-[20.779deg]">
+              {/* Main container for both cards */}
+              <div className="relative w-[290px] h-[350px]">
+                {/* Back Card - Green Profile Card */}
+                <div className="absolute w-full h-[328px] top-0 left-0 rounded-[21px] bg-[#008B47] shadow-[1.79px_0_21.48px_rgba(0,0,0,0.25)] overflow-hidden z-10">
+                  {/* Decorative striped pattern */}
+                  <div className="absolute left-[-13px] top-[185px] w-[277px] h-[162px] flex gap-[16px] rotate-[20.779deg] overflow-hidden">
                     {Array.from({ length: 18 }).map((_, i) => (
-                      <div key={i} className="w-[11.663px] h-56 bg-[#03964E]" />
+                      <div key={i} className="w-[8.14px] h-[162px] bg-[#03964E] flex-shrink-0" />
                     ))}
                   </div>
 
-                  {/* Profile Image Placeholder */}
-                  <div className="w-full h-1/4 bg-[#DCDCDC]"></div>
+                  {/* Gray header section */}
+                  <div className="absolute w-full h-[98px] bg-[#DCDCDC] top-0 left-0"></div>
 
-                  {/* Status Badge */}
-                  <div className="absolute bottom-8 right-8 text-white text-sm lg:text-base font-normal font-[Inter_Tight] leading-[120%] capitalize">
-                    Status: Available
+                  {/* Activity badge */}
+                  <div className="absolute left-[15px] top-[241px] w-[206px] h-[38px] rounded-[54px] bg-white flex items-center px-[5px] gap-[7px] z-20">
+                    <div className="w-[27px] h-[27px] rounded-full bg-[#D9D9D9] flex-shrink-0 shadow-[0_3.2px_4px_0_rgba(0,0,0,0.20)]">
+                      <svg className="w-full h-full" viewBox="0 0 50 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                          <filter id="filter0_d" x="-0.0001" y="0" width="49.9108" height="49.9108" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+                            <feFlood floodOpacity="0" result="BackgroundImageFix"/>
+                            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                            <feOffset dy="4.58639"/>
+                            <feGaussianBlur stdDeviation="2.8665"/>
+                            <feComposite in2="hardAlpha" operator="out"/>
+                            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"/>
+                            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+                            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+                          </filter>
+                        </defs>
+                        <g filter="url(#filter0_d)">
+                          <circle cx="24.9553" cy="20.369" r="13.43" fill="#E8E8E8"/>
+                        </g>
+                      </svg>
+                    </div>
+                    <div className="text-[13.4px] font-medium font-[Inter_Tight] leading-[105%] bg-gradient-to-r from-[#008B47] via-[#F6BC3F] via-[#5C30FF] via-[#F791C3] to-[#E63C23] bg-clip-text text-transparent flex-1">
+                      David is building his profile
+                    </div>
                   </div>
 
-                  {/* Name and Bio */}
-                  <div className="absolute bottom-12 left-4 flex flex-col gap-2 text-white">
-                    <div className="text-base lg:text-xl font-medium font-[Inter_Tight] leading-[105%]">
+                  {/* Profile info section */}
+                  <div className="absolute left-[15px] top-[188px] flex flex-col gap-[12.5px]">
+                    <div className="text-white text-[17.9px] font-medium font-[Inter_Tight] leading-[105%]">
                       {displayName}
                     </div>
-                    <div className="text-xs lg:text-sm font-light font-[Inter_Tight] leading-[120%] capitalize">
+                    <div className="text-white/80 text-[13.4px] font-light font-[Inter_Tight] leading-[120%] capitalize">
                       {displayBio}
                     </div>
                   </div>
+
+                  {/* Profile image on green card */}
+                  <div className="absolute left-[15px] top-[102px] w-[79px] h-[72px] z-20">
+                    <svg className="w-full h-full" viewBox="0 0 119 103" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                        <filter id="filter0_d_profile" x="68.5937" y="52.676" width="49.9108" height="49.9108" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+                          <feFlood floodOpacity="0" result="BackgroundImageFix"/>
+                          <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                          <feOffset dy="4.58639"/>
+                          <feGaussianBlur stdDeviation="2.8665"/>
+                          <feComposite in2="hardAlpha" operator="out"/>
+                          <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"/>
+                          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_profile"/>
+                          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_profile" result="shape"/>
+                        </filter>
+                      </defs>
+                      <circle cx="51.26" cy="51.26" r="49.34" fill={imagePreview ? "#F5F5F5" : "#E8E8E8"} stroke="#F5F5F5" strokeWidth="2.69"/>
+                      {imagePreview && (
+                        <defs>
+                          <clipPath id="profile-clip">
+                            <circle cx="51.26" cy="51.26" r="49.34"/>
+                          </clipPath>
+                        </defs>
+                      )}
+                      {imagePreview && (
+                        <image href={imagePreview} x="1.92" y="1.92" width="98.68" height="98.68" clipPath="url(#profile-clip)" preserveAspectRatio="xMidYMid slice"/>
+                      )}
+                      <g filter="url(#filter0_d_profile)">
+                        <circle cx="93.55" cy="73.05" r="13.43" fill="#D4D4D4"/>
+                      </g>
+                    </svg>
+                  </div>
+
+                  {/* Status badge */}
+                  <div className="absolute bottom-[24px] left-[98px] text-white text-[13.4px] font-normal font-[Inter_Tight] leading-[120%] capitalize">
+                    Status: Available
+                  </div>
                 </div>
 
-                {/* Front White Card */}
-                <div className="w-full h-full rounded-[30px] bg-white relative z-20 flex flex-col">
-                  {/* Profile Picture Area */}
+                {/* Front Card - White Upload Card */}
+                <div className="absolute w-full h-[289px] top-0 left-0 rounded-[21px] bg-white z-20 flex flex-col shadow-sm">
+                  {/* Profile Picture Upload Area */}
                   <div
-                    className={`flex-1 flex flex-col items-center justify-center rounded-[27px] bg-[#F5F5F5] m-1 relative overflow-hidden cursor-pointer transition-colors ${
+                    className={`flex-1 flex flex-col items-center justify-center rounded-[18.7px] bg-[#F5F5F5] m-[8.4px] relative overflow-hidden cursor-pointer transition-colors ${
                       isDragging
                         ? "bg-[#E0E0E0] border-2 border-dashed border-purple-600"
                         : ""
@@ -394,30 +441,31 @@ export const CreateProfileStep = ({
                       <img
                         src={imagePreview}
                         alt="Profile preview"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover rounded-[18.7px]"
                       />
                     ) : (
                       <>
-                        {/* Upload Icon */}
-                        <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-[#D9D9D9] flex items-center justify-center mb-3">
+                        {/* Upload Icon Circle */}
+                        <div className="w-[87px] h-[87px] rounded-full bg-[#D9D9D9] flex items-center justify-center mb-[11px]">
                           <svg
-                            className="w-8 h-8 lg:w-10 lg:h-10"
+                            className="w-[52px] h-[52px]"
                             viewBox="0 0 74 74"
                             fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
                           >
                             <path
-                              d="M15.4167 64.75C13.7208 64.75 12.2696 64.1467 11.063 62.9401C9.85639 61.7335 9.25206 60.2812 9.25 58.5833V15.4167C9.25 13.7208 9.85433 12.2696 11.063 11.063C12.2717 9.85639 13.7229 9.25206 15.4167 9.25H58.5833C60.2792 9.25 61.7314 9.85433 62.9401 11.063C64.1487 12.2717 64.7521 13.7229 64.75 15.4167V58.5833C64.75 60.2792 64.1467 61.7314 62.9401 62.9401C61.7335 64.1487 60.2812 64.7521 58.5833 64.75H15.4167ZM18.5 52.4167H55.5L43.9375 37L34.6875 49.3333L27.75 40.0833L18.5 52.4167Z"
+                              d="M15.4167 64.75C13.7208 64.75 12.2696 64.1467 11.063 62.9401C9.85639 61.7335 9.25206 60.2812 9.25 58.5833V15.4167C9.25 13.7208 9.85433 12.2696 11.063 11.063C12.2717 9.85639 13.7229 9.25206 15.4167 9.25H58.5833C60.2792 9.25 61.7314 9.85433 62.9401 11.063C64.1488 12.2717 64.7521 13.7229 64.75 15.4167V58.5833C64.75 60.2792 64.1467 61.7314 62.9401 62.9401C61.7335 64.1488 60.2812 64.7521 58.5833 64.75H15.4167ZM18.5 52.4167H55.5L43.9375 37L34.6875 49.3333L27.75 40.0833L18.5 52.4167Z"
                               fill="white"
                             />
                           </svg>
                         </div>
 
                         {/* Upload Text */}
-                        <div className="flex flex-col items-center gap-1 text-center px-2">
-                          <div className="text-[#404040] text-xs lg:text-sm font-medium font-[Inter_Tight] leading-[105%]">
+                        <div className="flex flex-col items-center gap-[11px] text-center px-2">
+                          <div className="text-[#404040] text-[13.3px] font-medium font-[Inter_Tight] leading-[105%]">
                             Upload Profile Picture
                           </div>
-                          <div className="text-[#919191] text-[10px] lg:text-xs font-light font-[Inter_Tight] leading-[120%] capitalize">
+                          <div className="text-[#919191] text-[10.5px] font-light font-[Inter_Tight] leading-[120%] capitalize">
                             Drag And Drop Image here
                           </div>
                         </div>
@@ -432,12 +480,12 @@ export const CreateProfileStep = ({
                     />
                   </div>
 
-                  {/* Name and Bio Preview */}
-                  <div className="flex flex-col gap-1 p-3 lg:p-4">
-                    <div className="text-black text-sm lg:text-base font-medium font-[Inter_Tight] leading-[105%]">
+                  {/* Name and Bio Preview on White Card */}
+                  <div className="flex flex-col justify-center gap-[11px] px-[15px] pb-[15px] pt-0 h-[64px]">
+                    <div className="text-black text-[16.3px] font-medium font-[Inter_Tight] leading-[105%]">
                       {displayName}
                     </div>
-                    <div className="text-[#919191] text-xs lg:text-sm font-light font-[Inter_Tight] leading-[120%] capitalize">
+                    <div className="text-[#919191] text-[13px] font-light font-[Inter_Tight] leading-[120%] capitalize truncate">
                       {displayBio}
                     </div>
                   </div>
