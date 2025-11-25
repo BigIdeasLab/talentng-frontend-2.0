@@ -26,6 +26,11 @@ export const CreateProfileStep = ({
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [usernameStatus, setUsernameStatus] = useState<UsernameStatus>("idle");
+  const [errors, setErrors] = useState<{
+    firstName?: string;
+    lastName?: string;
+    username?: string;
+  }>({});
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Username validation pattern: 3-50 characters, letters, numbers, and underscores
@@ -129,13 +134,34 @@ export const CreateProfileStep = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate username before submitting
-    if (formData.username && !validateUsername(formData.username)) {
+    // Validate required fields
+    const newErrors: typeof errors = {};
+    
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "First name is required";
+    }
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = "Last name is required";
+    }
+    if (!formData.username.trim()) {
+      newErrors.username = "Username is required";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    // Clear errors if validation passed
+    setErrors({});
+
+    // Validate username format
+    if (!validateUsername(formData.username)) {
       setUsernameStatus("invalid");
       return;
     }
 
-    if (formData.username && usernameStatus !== "available") {
+    if (usernameStatus !== "available") {
       // If username is being checked or is taken, don't submit
       if (usernameStatus === "checking" || usernameStatus === "taken") {
         return;
@@ -213,8 +239,13 @@ export const CreateProfileStep = ({
                   value={formData.firstName}
                   onChange={handleChange}
                   placeholder="Youremail@gmail.com"
-                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px]"
+                  className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] ${
+                    errors.firstName ? "ring-2 ring-red-500" : ""
+                  }`}
                 />
+                {errors.firstName && (
+                  <span className="text-xs text-red-600">{errors.firstName}</span>
+                )}
               </div>
 
               {/* Last Name */}
@@ -227,8 +258,13 @@ export const CreateProfileStep = ({
                   value={formData.lastName}
                   onChange={handleChange}
                   placeholder="Youremail@gmail.com"
-                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px]"
+                  className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] ${
+                    errors.lastName ? "ring-2 ring-red-500" : ""
+                  }`}
                 />
+                {errors.lastName && (
+                  <span className="text-xs text-red-600">{errors.lastName}</span>
+                )}
               </div>
 
               {/* Username */}
@@ -243,11 +279,13 @@ export const CreateProfileStep = ({
                     onChange={handleChange}
                     placeholder="Your Username"
                     className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] pr-12 ${
-                      usernameStatus === "taken" || usernameStatus === "invalid"
+                      errors.username
                         ? "ring-2 ring-red-500"
-                        : usernameStatus === "available"
-                          ? "ring-2 ring-green-500"
-                          : ""
+                        : usernameStatus === "taken" || usernameStatus === "invalid"
+                          ? "ring-2 ring-red-500"
+                          : usernameStatus === "available"
+                            ? "ring-2 ring-green-500"
+                            : ""
                     }`}
                   />
                   {formData.username && (
@@ -267,7 +305,15 @@ export const CreateProfileStep = ({
                     </div>
                   )}
                 </div>
-                {formData.username && (
+                {errors.username && (
+                  <span className="text-xs text-red-600">{errors.username}</span>
+                )}
+                {!errors.username && formData.username && formData.username.length < 3 && (
+                  <span className="text-xs text-red-600">
+                    Username must be at least 3 characters long
+                  </span>
+                )}
+                {!errors.username && formData.username && formData.username.length >= 3 && (
                   <div className="text-xs font-[Inter_Tight]">
                     {usernameStatus === "checking" && (
                       <span className="text-gray-500">
