@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { Sidebar } from "../Layout/Sidebar";
-import { MobileSidebar } from "./MobileSidebar";
 import { ProfilePanel } from "./ProfilePanel";
 import { ProfileNav } from "./ProfileNav";
 import { WorksGrid } from "./WorksGrid";
@@ -18,7 +16,6 @@ interface ProfileLayoutProps {
 
 export function ProfileLayout({ profileData }: ProfileLayoutProps) {
   const { user } = useAuth();
-  const [activeNavItem, setActiveNavItem] = useState("dashboard");
   const [activeTab, setActiveTab] = useState("works");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -36,22 +33,7 @@ export function ProfileLayout({ profileData }: ProfileLayoutProps) {
   };
 
   return (
-    <div className="flex h-screen bg-white flex-col md:flex-row">
-      {/* Mobile Sidebar */}
-      <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-[#E1E4EA]">
-        <div className="font-medium text-[18px] text-black font-inter-tight">
-          TalentNG
-        </div>
-        <MobileSidebar
-          activeItem={activeNavItem}
-          onItemSelect={setActiveNavItem}
-        />
-      </div>
-
-      {/* Desktop Sidebar */}
-      <div className="hidden md:flex h-screen overflow-hidden">
-        <Sidebar activeItem={activeNavItem} onItemSelect={setActiveNavItem} />
-      </div>
+    <div className="flex flex-col h-full bg-white md:flex-row">
 
       {/* Profile Panel */}
       <div className="hidden lg:flex h-screen overflow-hidden">
