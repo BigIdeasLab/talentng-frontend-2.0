@@ -33,7 +33,7 @@ export function ProfileLayout({ profileData }: ProfileLayoutProps) {
   };
 
   return (
-    <div className="flex min-h-screen bg-white flex-col md:flex-row">
+    <div className="flex h-screen bg-white flex-col md:flex-row">
       {/* Mobile Sidebar */}
       <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-[#E1E4EA]">
         <div className="font-medium text-[18px] text-black font-inter-tight">
@@ -46,57 +46,61 @@ export function ProfileLayout({ profileData }: ProfileLayoutProps) {
       </div>
 
       {/* Desktop Sidebar */}
-      <Sidebar activeItem={activeNavItem} onItemSelect={setActiveNavItem} />
+      <div className="hidden md:flex h-screen overflow-hidden">
+        <Sidebar activeItem={activeNavItem} onItemSelect={setActiveNavItem} />
+      </div>
 
       {/* Profile Panel */}
-      <ProfilePanel
-        user={{
-          fullName: user?.fullName || "User",
-          headline: "Product & Interaction Designer",
-        }}
-        stats={{
-          earnings: "$20,000 Earned",
-          hired: 5,
-          jobType: "Ui/Ux Designer",
-        }}
-        skills={
-          profileData?.skills || [
-            "Website Design",
-            "Mobile App Design",
-            "Ui/Ux Design",
-            "Interface Design",
-            "Prototyping",
-            "User Research",
-            "Wireframing",
-            "Interaction Design",
-            "Design Systems",
-            "Motion Design",
-          ]
-        }
-        stack={[
-          { name: "Figma" },
-          { name: "Rive" },
-          { name: "Webflow" },
-          { name: "Lottie" },
-          { name: "Framer" },
-          { name: "Adobe XD" },
-          { name: "Sketch" },
-          { name: "Protopie" },
-          { name: "Principle" },
-          { name: "Zeplin" },
-          { name: "Slack" },
-        ]}
-        socialLinks={{
-          telegram: "#",
-          twitter: "#",
-          instagram: "#",
-          linkedin: "#",
-        }}
-        completionPercentage={25}
-      />
+      <div className="hidden lg:flex h-screen overflow-hidden">
+        <ProfilePanel
+          user={{
+            fullName: user?.fullName || "User",
+            headline: "Product & Interaction Designer",
+          }}
+          stats={{
+            earnings: "$20,000 Earned",
+            hired: 5,
+            jobType: "Ui/Ux Designer",
+          }}
+          skills={
+            profileData?.skills || [
+              "Website Design",
+              "Mobile App Design",
+              "Ui/Ux Design",
+              "Interface Design",
+              "Prototyping",
+              "User Research",
+              "Wireframing",
+              "Interaction Design",
+              "Design Systems",
+              "Motion Design",
+            ]
+          }
+          stack={[
+            { name: "Figma" },
+            { name: "Rive" },
+            { name: "Webflow" },
+            { name: "Lottie" },
+            { name: "Framer" },
+            { name: "Adobe XD" },
+            { name: "Sketch" },
+            { name: "Protopie" },
+            { name: "Principle" },
+            { name: "Zeplin" },
+            { name: "Slack" },
+          ]}
+          socialLinks={{
+            telegram: "#",
+            twitter: "#",
+            instagram: "#",
+            linkedin: "#",
+          }}
+          completionPercentage={25}
+        />
+      </div>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col bg-white md:max-h-screen md:overflow-y-auto">
+      <main className="flex-1 flex flex-col bg-white h-screen md:h-screen overflow-hidden">
         {/* Top Navigation */}
         <ProfileNav
           activeTab={activeTab as any}
@@ -105,7 +109,7 @@ export function ProfileLayout({ profileData }: ProfileLayoutProps) {
         />
 
         {/* Content Section */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto scrollbar-styled">
           {/* My Works Tab */}
           {activeTab === "works" && (
             <WorksGrid

@@ -59,26 +59,26 @@ export function Sidebar({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
-    <aside className="hidden md:flex w-[271px] flex-col bg-white border-r border-[#E1E4EA]">
+    <aside className="hidden md:flex w-[250px] flex-col bg-white border-r border-[#E1E4EA] h-screen overflow-hidden">
       {/* Logo Section */}
-      <div className="px-[30px] py-[15px] border-b border-[#E1E4EA]">
+      <div className="px-[30px] py-[12px] flex-shrink-0">
         <div className="flex items-center gap-[10px]">
           <img
-            src="/logo-2.png"
+            src="/logo.png"
             alt="TalentNG Logo"
-            className="w-[45px] h-[34px] rounded-[2.679px] object-cover shadow-[0.602px_0.602px_19.111px_0_rgba(0,0,0,0.25)]"
+            className="w-[40px] h-[30px] rounded-[2.679px] object-cover ]"
           />
-          <span className="font-medium text-[18px] text-black font-inter-tight">
+          <span className="font-medium text-[16px] text-black font-inter-tight">
             TalentNG
           </span>
         </div>
       </div>
 
       {/* Content Container */}
-      <div className="flex-1 px-[20px] py-[10px] overflow-y-auto">
+      <div className="flex-1 px-[20px] py-[8px] overflow-y-auto">
         {/* User Dropdown Section */}
-        <div className="mb-6">
-          <div className="px-[10px] py-[15px] rounded-lg bg-[#F5F5F5]">
+        <div className="mb-4 flex-shrink-0">
+          <div className="px-[10px] py-[12px] rounded-lg bg-[#F5F5F5]">
             <DropdownMenu
               open={isDropdownOpen}
               onOpenChange={setIsDropdownOpen}
@@ -86,17 +86,17 @@ export function Sidebar({
               <DropdownMenuTrigger asChild>
                 <button className="w-full flex items-center justify-between gap-[8px] hover:opacity-80 transition-opacity">
                   <div className="flex items-center gap-[8px] min-w-0">
-                    <div className="w-[30px] h-[30px] rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex-shrink-0" />
+                    <div className="w-[28px] h-[28px] rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex-shrink-0" />
                     <div className="min-w-0">
-                      <div className="text-[15px] font-normal text-black font-inter-tight truncate">
+                      <div className="text-[13px] font-normal text-black font-inter-tight truncate">
                         {user?.fullName || "Akanbi David"}
                       </div>
-                      <div className="text-[13px] text-[rgba(0,0,0,0.30)] font-inter-tight truncate">
+                      <div className="text-[11px] text-[rgba(0,0,0,0.30)] font-inter-tight truncate">
                         Independent Talent
                       </div>
                     </div>
                   </div>
-                  <ChevronDown className="w-4 h-4 text-black flex-shrink-0" />
+                  <ChevronDown className="w-3 h-3 text-black flex-shrink-0" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-[220px]">
@@ -109,7 +109,7 @@ export function Sidebar({
         </div>
 
         {/* Main Navigation Items */}
-        <div className="flex flex-col gap-[8px]">
+        <div className="flex flex-col gap-[6px]">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeItem === item.id;
@@ -118,19 +118,19 @@ export function Sidebar({
                 key={item.id}
                 onClick={() => onItemSelect?.(item.id)}
                 className={cn(
-                  "w-full flex items-center gap-[8px] px-[12px] py-[8px] rounded-lg transition-colors relative",
+                  "w-full flex items-center gap-[8px] px-[12px] py-[6px] rounded-lg transition-colors relative flex-shrink-0",
                   isActive
                     ? "bg-white text-[#525866]"
                     : "text-[#525866] hover:bg-white/50",
                 )}
               >
-                <Icon className="w-5 h-5 flex-shrink-0" />
-                <span className="text-[14px] font-normal font-inter-tight text-left flex-1">
+                <Icon className="w-4 h-4 flex-shrink-0" />
+                <span className="text-[13px] font-normal font-inter-tight text-left flex-1">
                   {item.label}
                 </span>
                 {item.badge !== undefined && item.badge > 0 && (
                   <div className="flex items-center justify-center w-5 h-5 rounded-full bg-[#E63C23] flex-shrink-0">
-                    <span className="text-[13px] font-semibold text-white font-inter-tight">
+                    <span className="text-[11px] font-semibold text-white font-inter-tight">
                       {item.badge}
                     </span>
                   </div>
@@ -139,31 +139,31 @@ export function Sidebar({
             );
           })}
         </div>
+      </div>
 
-        {/* Others Section */}
-        <div className="mt-auto pt-6">
-          <div className="px-[12px] mb-[10px]">
-            <span className="text-[12px] font-medium text-[rgba(0,0,0,0.30)] font-inter-tight">
-              OTHERS
-            </span>
-          </div>
-          <div className="flex flex-col gap-[8px]">
-            {otherItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => onItemSelect?.(item.id)}
-                  className="w-full flex items-center gap-[8px] px-[12px] py-[8px] rounded-lg text-[#525866] hover:bg-white/50 transition-colors"
-                >
-                  <Icon className="w-5 h-5 flex-shrink-0" />
-                  <span className="text-[14px] font-normal font-inter-tight text-left flex-1">
-                    {item.label}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+      {/* Others Section */}
+      <div className=" px-[20px] py-[8px] flex-shrink-0">
+        <div className="px-[12px] mb-[8px]">
+          <span className="text-[11px] font-medium text-[rgba(0,0,0,0.30)] font-inter-tight">
+            OTHERS
+          </span>
+        </div>
+        <div className="flex flex-col gap-[6px]">
+          {otherItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.id}
+                onClick={() => onItemSelect?.(item.id)}
+                className="w-full flex items-center gap-[8px] px-[12px] py-[6px] rounded-lg text-[#525866] hover:bg-white/50 transition-colors flex-shrink-0"
+              >
+                <Icon className="w-4 h-4 flex-shrink-0" />
+                <span className="text-[13px] font-normal font-inter-tight text-left flex-1">
+                  {item.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
     </aside>

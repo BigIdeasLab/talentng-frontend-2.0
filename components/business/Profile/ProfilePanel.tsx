@@ -72,14 +72,14 @@ export function ProfilePanel({
   const stackRemaining = Math.max(0, stack.length - 5);
 
   return (
-    <div className="hidden lg:flex w-[333px] flex-col bg-white border-r border-[#E1E4EA] px-[35px] py-[20px] overflow-y-auto">
+    <div className="hidden lg:flex w-[350px] flex-col bg-white border-r border-[#E1E4EA] px-[25px] py-[15px] overflow-y-auto h-screen scrollbar-hide">
       {/* User Profile Section */}
-      <div className="flex flex-col items-center gap-[28px]">
+      <div className="flex flex-col items-center gap-[20px]">
         {/* Profile Picture with Completion Badge */}
-        <div className="relative w-[118px] h-[110px]">
+        <div className="relative w-[90px] h-[85px]">
           <svg
-            width="118"
-            height="110"
+            width="90"
+            height="85"
             viewBox="0 0 118 110"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -123,23 +123,23 @@ export function ProfilePanel({
         </div>
 
         {/* User Info */}
-        <div className="flex flex-col items-center gap-[15px] w-full">
+        <div className="flex flex-col items-center gap-[12px] w-full">
           <div className="text-center">
-            <h2 className="text-[19px] font-medium text-black font-inter-tight">
+            <h2 className="text-[16px] font-medium text-black font-inter-tight">
               {user.fullName}
             </h2>
-            <p className="text-[17px] font-light text-[rgba(0,0,0,0.30)] font-inter-tight">
+            <p className="text-[13px] font-light text-[rgba(0,0,0,0.30)] font-inter-tight">
               {user.headline}
             </p>
           </div>
 
           {/* Details Container */}
-          <div className="flex flex-col items-start gap-[15px] w-full">
+          <div className="flex flex-col items-start gap-[10px] w-full">
             {/* Location */}
             <div className="flex justify-between items-center w-full">
-              <div className="flex items-center gap-[8px]">
-                <MapPin className="w-[22px] h-[22px] text-[#525866]" />
-                <span className="text-[15px] font-normal text-black font-inter-tight">
+              <div className="flex items-center gap-[6px]">
+                <MapPin className="w-[18px] h-[18px] text-[#525866]" />
+                <span className="text-[12px] font-normal text-black font-inter-tight">
                   Lagos, Nigeria
                 </span>
               </div>
@@ -147,9 +147,9 @@ export function ProfilePanel({
 
             {/* Job Type */}
             <div className="flex justify-between items-center w-full">
-              <div className="flex items-center gap-[8px]">
-                <Briefcase className="w-[22px] h-[22px] text-[#525866]" />
-                <span className="text-[15px] font-normal text-black font-inter-tight">
+              <div className="flex items-center gap-[6px]">
+                <Briefcase className="w-[18px] h-[18px] text-[#525866]" />
+                <span className="text-[12px] font-normal text-black font-inter-tight">
                   {stats.jobType}
                 </span>
               </div>
@@ -157,9 +157,9 @@ export function ProfilePanel({
 
             {/* Hired Count */}
             <div className="flex justify-between items-center w-full">
-              <div className="flex items-center gap-[8px]">
-                <Users className="w-[22px] h-[22px] text-[#525866]" />
-                <span className="text-[15px] font-normal text-black font-inter-tight">
+              <div className="flex items-center gap-[6px]">
+                <Users className="w-[18px] h-[18px] text-[#525866]" />
+                <span className="text-[12px] font-normal text-black font-inter-tight">
                   {stats.hired}x Hired
                 </span>
               </div>
@@ -167,9 +167,9 @@ export function ProfilePanel({
 
             {/* Earnings */}
             <div className="flex justify-between items-center w-full">
-              <div className="flex items-center gap-[8px]">
-                <DollarSign className="w-[22px] h-[22px] text-[#525866]" />
-                <span className="text-[15px] font-normal text-black font-inter-tight">
+              <div className="flex items-center gap-[6px]">
+                <DollarSign className="w-[18px] h-[18px] text-[#525866]" />
+                <span className="text-[12px] font-normal text-black font-inter-tight">
                   {stats.earnings}
                 </span>
               </div>
@@ -179,29 +179,29 @@ export function ProfilePanel({
       </div>
 
       {/* Edit Profile Button */}
-      <Button className="w-full mt-[25px] h-[50px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-aeonik text-[18px] font-normal">
+      <Button className="w-full mt-[15px] h-[40px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-aeonik text-[14px] font-normal flex-shrink-0">
         ✏️ Edit Profile
       </Button>
 
       {/* Skills Section */}
-      <div className="mt-[35px] flex flex-col items-start gap-[20px]">
-        <h3 className="text-[15px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
+      <div className="mt-[20px] flex flex-col items-start gap-[12px] flex-shrink-0">
+        <h3 className="text-[12px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
           Skills
         </h3>
-        <div className="flex flex-wrap gap-[8px] w-full">
+        <div className="flex flex-wrap gap-[6px] w-full">
           {displayedSkills.map((skill, idx) => (
             <div
               key={idx}
-              className="px-[13px] py-[12px] rounded-full bg-[#F5F5F5]"
+              className="px-[10px] py-[6px] rounded-full bg-[#F5F5F5]"
             >
-              <span className="text-[14px] font-normal text-black font-inter-tight">
+              <span className="text-[11px] font-normal text-black font-inter-tight">
                 {skill}
               </span>
             </div>
           ))}
           {skillsRemaining > 0 && (
-            <div className="px-[13px] py-[12px] rounded-full bg-[#F5F5F5]">
-              <span className="text-[14px] font-normal text-black font-inter-tight">
+            <div className="px-[10px] py-[6px] rounded-full bg-[#F5F5F5]">
+              <span className="text-[11px] font-normal text-black font-inter-tight">
                 +{skillsRemaining}
               </span>
             </div>
@@ -210,25 +210,25 @@ export function ProfilePanel({
       </div>
 
       {/* Stack Section */}
-      <div className="mt-[35px] flex flex-col items-start gap-[20px]">
-        <h3 className="text-[15px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
+      <div className="mt-[20px] flex flex-col items-start gap-[12px] flex-shrink-0">
+        <h3 className="text-[12px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
           Stack
         </h3>
-        <div className="flex flex-wrap gap-[8px] w-full">
+        <div className="flex flex-wrap gap-[6px] w-full">
           {displayedStack.map((tool, idx) => (
             <div
               key={idx}
-              className="px-[13px] py-[10px] rounded-full bg-[#F5F5F5] flex items-center gap-[7px]"
+              className="px-[10px] py-[7px] rounded-full bg-[#F5F5F5] flex items-center gap-[5px]"
             >
-              <div className="w-[20px] h-[20px] rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex-shrink-0" />
-              <span className="text-[14px] font-normal text-black font-inter-tight">
+              <div className="w-[16px] h-[16px] rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex-shrink-0" />
+              <span className="text-[11px] font-normal text-black font-inter-tight">
                 {tool.name}
               </span>
             </div>
           ))}
           {stackRemaining > 0 && (
-            <div className="px-[13px] py-[10px] rounded-full bg-[#F5F5F5]">
-              <span className="text-[14px] font-normal text-black font-inter-tight">
+            <div className="px-[10px] py-[7px] rounded-full bg-[#F5F5F5]">
+              <span className="text-[11px] font-normal text-black font-inter-tight">
                 +{stackRemaining}
               </span>
             </div>
@@ -237,11 +237,11 @@ export function ProfilePanel({
       </div>
 
       {/* Social Links Section */}
-      <div className="mt-[35px] flex flex-col items-start gap-[20px]">
-        <h3 className="text-[15px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
+      <div className="mt-[20px] flex flex-col items-start gap-[12px] flex-shrink-0">
+        <h3 className="text-[12px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
           Social Links
         </h3>
-        <div className="flex flex-col gap-[15px] w-full">
+        <div className="flex flex-col gap-[10px] w-full">
           {[
             { name: "Telegram", icon: "📱", url: socialLinks.telegram },
             { name: "X", icon: "𝕏", url: socialLinks.twitter },
@@ -249,8 +249,8 @@ export function ProfilePanel({
             { name: "LinkendIn", icon: "in", url: socialLinks.linkedin },
           ].map((social, idx) => (
             <div key={idx} className="flex justify-between items-center w-full">
-              <div className="flex items-center gap-[8px]">
-                <span className="text-[15px] font-normal text-black font-inter-tight">
+              <div className="flex items-center gap-[6px]">
+                <span className="text-[12px] font-normal text-black font-inter-tight">
                   {social.name}
                 </span>
               </div>
@@ -259,12 +259,12 @@ export function ProfilePanel({
                 className="text-[#525866] hover:text-black transition-colors"
               >
                 <svg
-                  width="22"
-                  height="22"
+                  width="18"
+                  height="18"
                   viewBox="0 0 22 22"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
-                  className="w-[22px] h-[22px]"
+                  className="w-[18px] h-[18px]"
                 >
                   <path
                     d="M10.1739 2.75C6.82897 2.75602 5.0774 2.83816 3.95801 3.95773C2.75 5.16593 2.75 7.11051 2.75 10.9996C2.75 14.8888 2.75 16.8334 3.95801 18.0415C5.16601 19.2498 7.11028 19.2498 10.9989 19.2498C14.8873 19.2498 16.8316 19.2498 18.0396 18.0415C19.1589 16.922 19.2411 15.1701 19.2471 11.8247"

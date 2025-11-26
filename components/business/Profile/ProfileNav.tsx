@@ -39,7 +39,7 @@ export function ProfileNav({
             key={tab.id}
             onClick={() => handleTabChange(tab.id)}
             className={cn(
-              "px-[12px] sm:px-[20px] py-[16px] sm:py-[22px] text-[13px] sm:text-[15px] font-medium font-inter-tight whitespace-nowrap transition-colors relative",
+              "px-[12px] sm:px-[20px] py-[14px] sm:py-[18px] text-[12px] sm:text-[13px] font-medium font-inter-tight whitespace-nowrap transition-colors relative",
               active === tab.id
                 ? "text-black"
                 : "text-[rgba(0,0,0,0.30)] hover:text-[rgba(0,0,0,0.6)]",
@@ -57,9 +57,9 @@ export function ProfileNav({
       {/* CTA Button */}
       <Button
         onClick={onAddNewWork}
-        className="hidden sm:flex h-[46px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a24d6] font-inter-tight text-[15px] font-normal gap-[8px] mr-[20px] flex-shrink-0"
+        className="hidden sm:flex h-[40px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a24d6] font-inter-tight text-[13px] font-normal gap-[8px] mr-[20px] flex-shrink-0"
       >
-        <Plus className="w-5 h-5" />
+        <Plus className="w-4 h-4" />
         Add New Work
       </Button>
 
@@ -68,7 +68,7 @@ export function ProfileNav({
         onClick={onAddNewWork}
         className="sm:hidden p-2 text-[#5C30FF] hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
       >
-        <Plus className="w-6 h-6" />
+        <Plus className="w-5 h-5" />
       </button>
     </div>
   );
