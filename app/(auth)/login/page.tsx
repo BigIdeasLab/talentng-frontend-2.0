@@ -47,7 +47,7 @@ const Login = () => {
     onSuccess: (response) => {
       const { accessToken, user } = response;
       if (accessToken) {
-        document.cookie = `accessToken=${accessToken}; path=/; max-age=604800; samesite=lax`;
+        document.cookie = `accessToken=${accessToken}; path=/; max-age=604800; SameSite=Strict; Secure`;
         toast.success("Login successful!");
 
         const decodedToken = decodeJwt(accessToken);
@@ -67,7 +67,7 @@ const Login = () => {
     },
     onError: (error: any) => {
       const message = error.message || "Login failed. Please try again.";
-      form.setError("email", { message });
+      // Only show API errors in toast, not form
       toast.error(message);
     },
   });

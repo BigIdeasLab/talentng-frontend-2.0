@@ -22,7 +22,12 @@ import {
 
 const signUpSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
-  password: z.string().min(8, "Password must be at least 8 characters."),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters.")
+    .regex(/[A-Z]/, "Password must contain at least 1 uppercase letter.")
+    .regex(/[a-z]/, "Password must contain at least 1 lowercase letter.")
+    .regex(/[0-9]/, "Password must contain at least 1 number."),
 });
 
 type SignUpFormValues = z.infer<typeof signUpSchema>;
@@ -30,6 +35,16 @@ type SignUpFormValues = z.infer<typeof signUpSchema>;
 const Signup = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [password, setPassword] = useState("");
+
+  const passwordChecks = {
+    length: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    number: /[0-9]/.test(password),
+  };
+
+  const isPasswordValid = Object.values(passwordChecks).every(Boolean);
 
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
@@ -58,7 +73,6 @@ const Signup = () => {
     },
     onError: (error: any) => {
       const message = error.message || "An error occurred. Please try again.";
-      form.setError("email", { message });
       toast.error(message);
     },
   });
@@ -198,37 +212,79 @@ const Signup = () => {
                           Password
                         </label>
                         <FormField
-                          control={form.control}
-                          name="password"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <div className="relative h-[53px] rounded-[10px] bg-gray-100 flex items-center px-4">
-                                  <Input
-                                    type={showPassword ? "text" : "password"}
-                                    placeholder="Your Password"
-                                    {...field}
-                                    className="flex-1 bg-transparent border-0 placeholder:text-gray-400 focus:ring-0"
-                                  />
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      setShowPassword(!showPassword)
-                                    }
-                                    className="text-gray-500 hover:text-gray-700"
-                                  >
-                                    {showPassword ? (
-                                      <EyeOff size={20} />
-                                    ) : (
-                                      <Eye size={20} />
-                                    )}
-                                  </button>
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                           control={form.control}
+                           name="password"
+                           render={({ field }) => (
+                             <FormItem>
+                               <FormControl>
+                                 <div className="relative h-[53px] rounded-[10px] bg-gray-100 flex items-center px-4">
+                                   <Input
+                                     type={showPassword ? "text" : "password"}
+                                     placeholder="Your Password"
+                                     {...field}
+                                     onChange={(e) => {
+                                       field.onChange(e);
+                                       setPassword(e.target.value);
+                                     }}
+                                     className="flex-1 bg-transparent border-0 placeholder:text-gray-400 focus:ring-0"
+                                   />
+                                   <button
+                                     type="button"
+                                     onClick={() =>
+                                       setShowPassword(!showPassword)
+                                     }
+                                     className="text-gray-500 hover:text-gray-700"
+                                   >
+                                     {showPassword ? (
+                                       <EyeOff size={20} />
+                                     ) : (
+                                       <Eye size={20} />
+                                     )}
+                                   </button>
+                                 </div>
+                               </FormControl>
+                               <FormMessage />
+                             </FormItem>
+                           )}
+                         />
+                         
+                         {/* Password Requirements Checklist */}
+                         {password && (
+                           <div className="bg-gray-50 p-3 rounded-[10px] flex flex-wrap gap-3">
+                             <div className="flex items-center gap-1 text-xs">
+                               <span className={passwordChecks.length ? "text-green-600" : "text-gray-400"}>
+                                 {passwordChecks.length ? "✓" : "○"}
+                               </span>
+                               <span className={passwordChecks.length ? "text-gray-700" : "text-gray-500"}>
+                                 8 chars
+                               </span>
+                             </div>
+                             <div className="flex items-center gap-1 text-xs">
+                               <span className={passwordChecks.uppercase ? "text-green-600" : "text-gray-400"}>
+                                 {passwordChecks.uppercase ? "✓" : "○"}
+                               </span>
+                               <span className={passwordChecks.uppercase ? "text-gray-700" : "text-gray-500"}>
+                                 A-Z
+                               </span>
+                             </div>
+                             <div className="flex items-center gap-1 text-xs">
+                               <span className={passwordChecks.lowercase ? "text-green-600" : "text-gray-400"}>
+                                 {passwordChecks.lowercase ? "✓" : "○"}
+                               </span>
+                               <span className={passwordChecks.lowercase ? "text-gray-700" : "text-gray-500"}>
+                                 a-z
+                               </span>
+                             </div>
+                             <div className="flex items-center gap-1 text-xs">
+                               <span className={passwordChecks.number ? "text-green-600" : "text-gray-400"}>
+                                 {passwordChecks.number ? "✓" : "○"}
+                               </span>
+                               <span className={passwordChecks.number ? "text-gray-700" : "text-gray-500"}>
+                                 0-9
+                               </span>
+                             </div>
+                           </div>
+                         )}
                       </div>
 
                       {/* Continue Button */}

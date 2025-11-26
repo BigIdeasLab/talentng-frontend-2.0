@@ -46,7 +46,6 @@ const ForgotPassword = () => {
     onError: (error: any) => {
       const message =
         error.message || "Failed to send reset link. Please try again.";
-      form.setError("email", { message });
       toast.error(message);
     },
   });

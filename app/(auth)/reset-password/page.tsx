@@ -25,6 +25,7 @@ const resetPasswordSchema = z.object({
     .string()
     .min(8, "Password must be at least 8 characters.")
     .regex(/[A-Z]/, "Password must contain at least 1 uppercase letter.")
+    .regex(/[a-z]/, "Password must contain at least 1 lowercase letter.")
     .regex(/[0-9]/, "Password must contain at least 1 number."),
 });
 
@@ -35,6 +36,16 @@ const ResetPassword = () => {
   const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [resetToken, setResetToken] = useState("");
+  const [password, setPassword] = useState("");
+
+  const passwordChecks = {
+    length: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    number: /[0-9]/.test(password),
+  };
+
+  const isPasswordValid = Object.values(passwordChecks).every(Boolean);
 
   useEffect(() => {
     const token = searchParams.get("token");
@@ -63,7 +74,6 @@ const ResetPassword = () => {
     onError: (error: any) => {
       const message =
         error.message || "Failed to reset password. Please try again.";
-      form.setError("password", { message });
       toast.error(message);
     },
   });
@@ -181,13 +191,15 @@ const ResetPassword = () => {
                                 type={showPassword ? "text" : "password"}
                                 placeholder="Enter new password"
                                 {...field}
+                                onChange={(e) => {
+                                  field.onChange(e);
+                                  setPassword(e.target.value);
+                                }}
                                 className="flex-1 bg-transparent border-0 placeholder:text-gray-400 focus:ring-0"
                               />
                               <button
                                 type="button"
-                                onClick={() =>
-                                  setShowPassword(!showPassword)
-                                }
+                                onClick={() => setShowPassword(!showPassword)}
                                 className="text-gray-500 hover:text-gray-700"
                               >
                                 {showPassword ? (
@@ -202,13 +214,93 @@ const ResetPassword = () => {
                         </FormItem>
                       )}
                     />
-                  </div>
 
-                  {/* Password Requirements */}
-                  <p className="text-sm text-gray-600 bg-gray-50 p-4 rounded-[10px] text-center">
-                    8 characters minimum, at least 1 uppercase letter and 1
-                    number
-                  </p>
+                    {/* Password Requirements Checklist */}
+                    {password && (
+                      <div className="bg-gray-50 p-3 rounded-[10px] flex flex-wrap gap-3">
+                        <div className="flex items-center gap-1 text-xs">
+                          <span
+                            className={
+                              passwordChecks.length
+                                ? "text-green-600"
+                                : "text-gray-400"
+                            }
+                          >
+                            {passwordChecks.length ? "✓" : "○"}
+                          </span>
+                          <span
+                            className={
+                              passwordChecks.length
+                                ? "text-gray-700"
+                                : "text-gray-500"
+                            }
+                          >
+                            8 chars
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs">
+                          <span
+                            className={
+                              passwordChecks.uppercase
+                                ? "text-green-600"
+                                : "text-gray-400"
+                            }
+                          >
+                            {passwordChecks.uppercase ? "✓" : "○"}
+                          </span>
+                          <span
+                            className={
+                              passwordChecks.uppercase
+                                ? "text-gray-700"
+                                : "text-gray-500"
+                            }
+                          >
+                            A-Z
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs">
+                          <span
+                            className={
+                              passwordChecks.lowercase
+                                ? "text-green-600"
+                                : "text-gray-400"
+                            }
+                          >
+                            {passwordChecks.lowercase ? "✓" : "○"}
+                          </span>
+                          <span
+                            className={
+                              passwordChecks.lowercase
+                                ? "text-gray-700"
+                                : "text-gray-500"
+                            }
+                          >
+                            a-z
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs">
+                          <span
+                            className={
+                              passwordChecks.number
+                                ? "text-green-600"
+                                : "text-gray-400"
+                            }
+                          >
+                            {passwordChecks.number ? "✓" : "○"}
+                          </span>
+                          <span
+                            className={
+                              passwordChecks.number
+                                ? "text-gray-700"
+                                : "text-gray-500"
+                            }
+                          >
+                            0-9
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
 
                   {/* Action Buttons */}
                   <div className="flex flex-col gap-3 pt-2">

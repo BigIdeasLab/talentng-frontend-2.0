@@ -112,19 +112,18 @@ const apiClient = async <T>(
         errorData = { message: errorText || response.statusText };
       }
       
-      // Extract more detailed error information
-      let errorMessage = errorData.message || "An error occurred during the API request.";
+      // Extract error message from backend response
+      let errorMessage = errorData.message || errorData.error || "An error occurred during the API request.";
       
       // Handle specific error types with user-friendly messages
       if (errorMessage.includes("Transaction already closed") || errorMessage.includes("transaction timeout")) {
         errorMessage = "The request took too long to process. Please try again. If the problem persists, the server may be experiencing high load.";
       } else if (errorMessage.includes("Database error")) {
         errorMessage = "A database error occurred. Please try again in a moment.";
-      } else if (response.status === 400) {
-        errorMessage = errorData.message || "Invalid request. Please check your input and try again.";
       } else if (response.status === 500) {
         errorMessage = "Server error. Please try again later.";
       }
+      // Keep other error messages as-is from the backend (400, 401, 404, 429, etc.)
       
       const error = new Error(errorMessage);
       (error as any).status = response.status;

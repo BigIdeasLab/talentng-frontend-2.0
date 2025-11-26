@@ -79,7 +79,6 @@ const ConfirmEmailPage = () => {
       router.push("/login");
     },
     onError: (error: any) => {
-      setError(error.message || "Invalid verification code");
       toast.error(error.message || "An error occurred. Please try again.");
     },
   });
@@ -242,14 +241,7 @@ const ConfirmEmailPage = () => {
                       onSubmit={form.handleSubmit(onSubmit)}
                       className="flex flex-col gap-2"
                     >
-                      {/* Error Message */}
-                      {error && (
-                        <div className="flex flex-col gap-2">
-                          <p className="text-sm font-medium text-red-600">
-                            {error}
-                          </p>
-                        </div>
-                      )}
+
 
                       {/* OTP Input */}
                       <FormField
