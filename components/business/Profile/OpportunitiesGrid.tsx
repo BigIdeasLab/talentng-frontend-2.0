@@ -33,7 +33,12 @@ const defaultOpportunities: Opportunity[] = [
     date: "Nov 16",
     type: "internship",
     title: "Art Director / Senior Art Director Intern",
-    skills: ["Mobile App Design", "User Research", "Visual Design", "Wireframing"],
+    skills: [
+      "Mobile App Design",
+      "User Research",
+      "Visual Design",
+      "Wireframing",
+    ],
     rate: "$250 / Month",
   },
   {
@@ -55,7 +60,12 @@ const defaultOpportunities: Opportunity[] = [
     date: "Nov 16",
     type: "internship",
     title: "Mobile App Designer",
-    skills: ["Mobile App Design", "User Research", "Visual Design", "Wireframing"],
+    skills: [
+      "Mobile App Design",
+      "User Research",
+      "Visual Design",
+      "Wireframing",
+    ],
     rate: "$250 / Month",
   },
   {
@@ -66,7 +76,12 @@ const defaultOpportunities: Opportunity[] = [
     date: "Nov 16",
     type: "internship",
     title: "Art Director / Senior Art Director Intern",
-    skills: ["Mobile App Design", "User Research", "Visual Design", "Wireframing"],
+    skills: [
+      "Mobile App Design",
+      "User Research",
+      "Visual Design",
+      "Wireframing",
+    ],
     rate: "$250 / Month",
   },
 ];
@@ -199,7 +214,11 @@ export function OpportunitiesGrid({
                     onClick={() => onRemove?.(opportunity)}
                     className="flex h-[40px] px-[20px] py-[15px] items-center gap-[4px] rounded-[50px] bg-[#181B25] hover:bg-[#2a2d3a] transition-colors"
                   >
-                    <Bookmark className="w-[18px] h-[18px]" color="white" strokeWidth={1.125} />
+                    <Bookmark
+                      className="w-[18px] h-[18px]"
+                      color="white"
+                      strokeWidth={1.125}
+                    />
                     <span className="text-[14px] font-medium leading-normal font-inter-tight text-white">
                       Remove
                     </span>
@@ -210,7 +229,11 @@ export function OpportunitiesGrid({
                     onClick={() => onApply?.(opportunity)}
                     className="flex h-[40px] px-[20px] py-[15px] items-center gap-[4px] rounded-[50px] border-[0.822px] border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4a24d6] transition-colors"
                   >
-                    <Check className="w-[18px] h-[18px]" color="white" strokeWidth={1.125} />
+                    <Check
+                      className="w-[18px] h-[18px]"
+                      color="white"
+                      strokeWidth={1.125}
+                    />
                     <span className="text-[14px] font-medium leading-normal font-inter-tight text-white">
                       Apply
                     </span>
