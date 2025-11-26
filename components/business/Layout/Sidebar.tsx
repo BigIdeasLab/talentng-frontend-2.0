@@ -132,8 +132,8 @@ export function Sidebar({
         </div>
 
         {/* Others Section */}
-        <div className="mt-8 pt-6 border-t border-[#E1E4EA]">
-          <div className="px-[12px] py-[10px] mb-[8px]">
+        <div className="mt-auto pt-6">
+          <div className="px-[12px] mb-[10px]">
             <span className="text-[12px] font-medium text-[rgba(0,0,0,0.30)] font-inter-tight">
               OTHERS
             </span>
@@ -144,6 +144,7 @@ export function Sidebar({
               return (
                 <button
                   key={item.id}
+                  onClick={() => onItemSelect?.(item.id)}
                   className="w-full flex items-center gap-[8px] px-[12px] py-[8px] rounded-lg text-[#525866] hover:bg-white/50 transition-colors"
                 >
                   <Icon className="w-5 h-5 flex-shrink-0" />
