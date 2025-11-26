@@ -86,16 +86,7 @@ export function Sidebar({
               <DropdownMenuTrigger asChild>
                 <button className="w-full flex items-center justify-between gap-[8px] hover:opacity-80 transition-opacity">
                   <div className="flex items-center gap-[8px] min-w-0">
-                    <div className="w-[30px] h-[30px] rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex-shrink-0 overflow-hidden">
-                      <img
-                        src="/placeholder.svg"
-                        alt="User avatar"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                        }}
-                      />
-                    </div>
+                    <div className="w-[30px] h-[30px] rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex-shrink-0" />
                     <div className="min-w-0">
                       <div className="text-[15px] font-normal text-black font-inter-tight truncate">
                         {user?.fullName || "Akanbi David"}
