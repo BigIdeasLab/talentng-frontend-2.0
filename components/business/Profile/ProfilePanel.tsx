@@ -179,9 +179,11 @@ export function ProfilePanel({
       </div>
 
       {/* Edit Profile Button */}
-      <Button className="w-full mt-[15px] h-[40px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-aeonik text-[14px] font-normal flex-shrink-0">
-        ✏️ Edit Profile
-      </Button>
+      <Link href="/profile/edit" className="w-full mt-[15px]">
+        <Button className="w-full h-[40px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-aeonik text-[14px] font-normal flex-shrink-0">
+          ✏️ Edit Profile
+        </Button>
+      </Link>
 
       {/* Skills Section */}
       <div className="mt-[20px] flex flex-col items-start gap-[12px] flex-shrink-0">
