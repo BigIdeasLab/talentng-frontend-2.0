@@ -10,7 +10,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { decodeJwt } from "@/lib/utils";
 
-import apiClient from "@/lib/api";
+import { login } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -43,13 +43,7 @@ const Login = () => {
   });
 
   const loginMutation = useMutation<LoginResponse, Error, LoginFormValues>({
-    mutationFn: async (data: LoginFormValues) => {
-      const response = await apiClient<LoginResponse>("/auth/login", {
-        method: "POST",
-        body: data,
-      });
-      return response;
-    },
+    mutationFn: (data: LoginFormValues) => login(data.email, data.password),
     onSuccess: (response) => {
       const { accessToken, user } = response;
       if (accessToken) {
@@ -71,8 +65,10 @@ const Login = () => {
         toast.error("Login failed: No access token received.");
       }
     },
-    onError: (error) => {
-      toast.error(error.message || "Login failed. Please try again.");
+    onError: (error: any) => {
+      const message = error.message || "Login failed. Please try again.";
+      form.setError("email", { message });
+      toast.error(message);
     },
   });
 

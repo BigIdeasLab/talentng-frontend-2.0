@@ -14,6 +14,7 @@ type ApiOptions = {
   headers?: Record<string, string>;
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   body?: any;
+  credentials?: RequestCredentials;
 };
 
 let isRefreshing = false;
@@ -59,6 +60,9 @@ const apiClient = async <T>(
   }
 
   try {
+    if (options.credentials) {
+      config.credentials = options.credentials;
+    }
     let response = await fetch(`${baseUrl}${endpoint}`, config);
 
     if (response.status === 401) {
@@ -76,7 +80,10 @@ const apiClient = async <T>(
       isRefreshing = true;
 
       try {
-        const refreshResponse = await fetch(`${baseUrl}/auth/refresh`, { method: 'POST' });
+        const refreshResponse = await fetch(`${baseUrl}/auth/refresh`, { 
+          method: 'POST',
+          credentials: 'include'
+        });
         if (!refreshResponse.ok) {
           throw new Error('Failed to refresh token');
         }
@@ -298,4 +305,76 @@ export const checkUsernameAvailability = async (
 ): Promise<{ available: boolean; taken: boolean }> => {
   const endpoint = `/users/me/username-available/${encodeURIComponent(username)}`;
   return apiClient<{ available: boolean; taken: boolean }>(endpoint);
+};
+
+// AUTH ENDPOINTS
+export const register = async (email: string, password: string) => {
+  return apiClient<any>("/auth/register", {
+    method: "POST",
+    body: { email, password },
+    credentials: "include",
+  });
+};
+
+export const login = async (email: string, password: string) => {
+  return apiClient<any>("/auth/login", {
+    method: "POST",
+    body: { email, password },
+    credentials: "include",
+  });
+};
+
+export const verifyEmailSend = async (email: string) => {
+  return apiClient<void>("/auth/verify-email/send", {
+    method: "POST",
+    body: { email },
+  });
+};
+
+export const verifyEmailConfirm = async (
+  email: string,
+  verificationCode: string,
+) => {
+  return apiClient<void>("/auth/verify-email/confirm", {
+    method: "POST",
+    body: { email, verificationCode },
+  });
+};
+
+export const forgotPassword = async (email: string) => {
+  return apiClient<void>("/auth/forgot-password", {
+    method: "POST",
+    body: { email },
+  });
+};
+
+export const resetPassword = async (
+  resetToken: string,
+  newPassword: string,
+) => {
+  return apiClient<void>("/auth/reset-password", {
+    method: "POST",
+    body: { resetToken, newPassword },
+  });
+};
+
+export const logout = async () => {
+  return apiClient<void>("/auth/logout", {
+    method: "POST",
+    credentials: "include",
+  });
+};
+
+export const createPassword = async (password: string) => {
+  return apiClient<void>("/auth/create-password", {
+    method: "POST",
+    body: { password },
+  });
+};
+
+export const refreshAuthToken = async () => {
+  return apiClient<any>("/auth/refresh", {
+    method: "POST",
+    credentials: "include",
+  });
 };

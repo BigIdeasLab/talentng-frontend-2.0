@@ -1,25 +1,80 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Eye, EyeOff } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+
+import { resetPassword } from "@/lib/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+
+const resetPasswordSchema = z.object({
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters.")
+    .regex(/[A-Z]/, "Password must contain at least 1 uppercase letter.")
+    .regex(/[0-9]/, "Password must contain at least 1 number."),
+});
+
+type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
 
 const ResetPassword = () => {
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [showPassword, setShowPassword] = useState(false);
+  const [resetToken, setResetToken] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password && password.length >= 8) {
-      router.push("/login");
+  useEffect(() => {
+    const token = searchParams.get("token");
+    if (!token) {
+      toast.error("Invalid reset link. Please request a new one.");
+      router.push("/forgot-password");
+    } else {
+      setResetToken(token);
     }
-  };
+  }, [searchParams, router]);
 
-  const isPasswordValid =
-    password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password);
+  const form = useForm<ResetPasswordFormValues>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      password: "",
+    },
+  });
+
+  const mutation = useMutation({
+    mutationFn: (data: ResetPasswordFormValues) =>
+      resetPassword(resetToken, data.password),
+    onSuccess: () => {
+      toast.success("Password reset successfully!");
+      router.push("/login");
+    },
+    onError: (error: any) => {
+      const message =
+        error.message || "Failed to reset password. Please try again.";
+      form.setError("password", { message });
+      toast.error(message);
+    },
+  });
+
+  const handleSubmit = (data: ResetPasswordFormValues) => {
+    if (!resetToken) {
+      toast.error("Invalid reset link. Please request a new one.");
+      return;
+    }
+    mutation.mutate(data);
+  };
 
   return (
     <div className="relative h-screen bg-white overflow-hidden">
@@ -105,62 +160,84 @@ const ResetPassword = () => {
               </div>
 
               {/* Form */}
-              <form
-                onSubmit={handleSubmit}
-                className="flex flex-col gap-6 w-full"
-              >
-                {/* Password Field */}
-                <div className="flex flex-col gap-3">
-                  <label className="text-sm font-medium text-black">
-                    New Password
-                  </label>
-                  <div className="relative h-[53px] rounded-[10px] bg-gray-100 flex items-center px-4">
-                    <Input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Enter new password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      className="flex-1 bg-transparent border-0 placeholder:text-gray-400 focus:ring-0"
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(handleSubmit)}
+                  className="flex flex-col gap-6 w-full"
+                >
+                  {/* Password Field */}
+                  <div className="flex flex-col gap-3">
+                    <label className="text-sm font-medium text-black">
+                      New Password
+                    </label>
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="relative h-[53px] rounded-[10px] bg-gray-100 flex items-center px-4">
+                              <Input
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Enter new password"
+                                {...field}
+                                className="flex-1 bg-transparent border-0 placeholder:text-gray-400 focus:ring-0"
+                              />
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setShowPassword(!showPassword)
+                                }
+                                className="text-gray-500 hover:text-gray-700"
+                              >
+                                {showPassword ? (
+                                  <EyeOff size={20} />
+                                ) : (
+                                  <Eye size={20} />
+                                )}
+                              </button>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="text-gray-500 hover:text-gray-700"
-                    >
-                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                    </button>
                   </div>
-                </div>
 
-                {/* Password Requirements */}
-                <p className="text-sm text-gray-600 bg-gray-50 p-4 rounded-[10px] text-center">
-                  8 characters minimum, at least 1 uppercase letter and 1 number
-                </p>
-
-                {/* Action Buttons */}
-                <div className="flex flex-col gap-3 pt-2">
-                  <Button
-                    type="submit"
-                    disabled={!isPasswordValid}
-                    className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base disabled:bg-gray-400 disabled:cursor-not-allowed"
-                  >
-                    Change password
-                  </Button>
-
-                  <p className="text-center text-sm">
-                    <span className="text-gray-400">
-                      Already have an account?{" "}
-                    </span>
-                    <Link
-                      href="/login"
-                      className="text-[#5C30FF] font-semibold hover:underline"
-                    >
-                      Sign in
-                    </Link>
+                  {/* Password Requirements */}
+                  <p className="text-sm text-gray-600 bg-gray-50 p-4 rounded-[10px] text-center">
+                    8 characters minimum, at least 1 uppercase letter and 1
+                    number
                   </p>
-                </div>
-              </form>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-col gap-3 pt-2">
+                    <Button
+                      type="submit"
+                      disabled={mutation.isPending || !resetToken}
+                      className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    >
+                      {mutation.isPending ? (
+                        <Loader2 size={18} className="animate-spin" />
+                      ) : (
+                        "Change password"
+                      )}
+                    </Button>
+
+                    <p className="text-center text-sm">
+                      <span className="text-gray-400">
+                        Already have an account?{" "}
+                      </span>
+                      <Link
+                        href="/login"
+                        className="text-[#5C30FF] font-semibold hover:underline"
+                      >
+                        Sign in
+                      </Link>
+                    </p>
+                  </div>
+                </form>
+              </Form>
             </div>
           </div>
         </div>

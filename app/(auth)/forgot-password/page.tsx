@@ -2,18 +2,57 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+
+import { forgotPassword } from "@/lib/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+
+const forgotPasswordSchema = z.object({
+  email: z.string().email("Please enter a valid email address."),
+});
+
+type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState("");
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      router.push(`/forgot-password-confirmation?email=${email}`);
-    }
+  const form = useForm<ForgotPasswordFormValues>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
+
+  const mutation = useMutation({
+    mutationFn: (data: ForgotPasswordFormValues) =>
+      forgotPassword(data.email),
+    onSuccess: (_, variables) => {
+      toast.success("Reset link sent to your email!");
+      router.push(`/forgot-password-confirmation?email=${variables.email}`);
+    },
+    onError: (error: any) => {
+      const message =
+        error.message || "Failed to send reset link. Please try again.";
+      form.setError("email", { message });
+      toast.error(message);
+    },
+  });
+
+  const handleSubmit = (data: ForgotPasswordFormValues) => {
+    mutation.mutate(data);
   };
 
   return (
@@ -113,42 +152,58 @@ const ForgotPassword = () => {
                   </div>
 
                   {/* Form */}
-                  <form
-                    onSubmit={handleSubmit}
-                    className="flex flex-col gap-3 w-full"
-                  >
-                    {/* Email Field */}
-                    <div className="flex flex-col gap-2">
-                      <label className="text-xs md:text-sm font-medium text-black">
-                        Email Address
-                      </label>
-                      <Input
-                        type="email"
-                        placeholder="Youremail@gmail.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        className="h-[53px] rounded-[10px] border-0 bg-gray-100 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-600"
-                      />
-                    </div>
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(handleSubmit)}
+                      className="flex flex-col gap-3 w-full"
+                    >
+                      {/* Email Field */}
+                      <div className="flex flex-col gap-2">
+                        <label className="text-xs md:text-sm font-medium text-black">
+                          Email Address
+                        </label>
+                        <FormField
+                          control={form.control}
+                          name="email"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  type="email"
+                                  placeholder="Youremail@gmail.com"
+                                  {...field}
+                                  className="h-[53px] rounded-[10px] border-0 bg-gray-100 placeholder:text-gray-400 focus:ring-2 focus:ring-purple-600"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex flex-col gap-2">
-                      <Button
-                        type="submit"
-                        className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base"
-                      >
-                        Reset my password
-                      </Button>
+                      {/* Action Buttons */}
+                      <div className="flex flex-col gap-2">
+                        <Button
+                          type="submit"
+                          disabled={mutation.isPending}
+                          className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        >
+                          {mutation.isPending ? (
+                            <Loader2 size={18} className="animate-spin" />
+                          ) : (
+                            "Reset my password"
+                          )}
+                        </Button>
 
-                      <Link
-                        href="/login"
-                        className="w-full h-[48px] rounded-[10px] bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-800 font-medium text-sm md:text-base transition-colors"
-                      >
-                        Cancel
-                      </Link>
-                    </div>
-                  </form>
+                        <Link
+                          href="/login"
+                          className="w-full h-[48px] rounded-[10px] bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-800 font-medium text-sm md:text-base transition-colors"
+                        >
+                          Cancel
+                        </Link>
+                      </div>
+                    </form>
+                  </Form>
                 </div>
               </div>
             </div>
