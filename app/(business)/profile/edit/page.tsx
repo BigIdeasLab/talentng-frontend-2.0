@@ -28,7 +28,7 @@ export default function EditProfilePage() {
               "text-[16px] font-medium font-inter-tight transition-colors",
               expandedSection === "personal"
                 ? "text-[#5C30FF]"
-                : "text-[#525866]"
+                : "text-[#525866]",
             )}
           >
             Personal Details
@@ -39,7 +39,7 @@ export default function EditProfilePage() {
               "text-[16px] font-normal font-inter-tight transition-colors",
               expandedSection === "professional"
                 ? "text-[#5C30FF]"
-                : "text-[#525866]"
+                : "text-[#525866]",
             )}
           >
             Professional Details
@@ -50,7 +50,7 @@ export default function EditProfilePage() {
               "text-[16px] font-normal font-inter-tight transition-colors",
               expandedSection === "social"
                 ? "text-[#5C30FF]"
-                : "text-[#525866]"
+                : "text-[#525866]",
             )}
           >
             Social Links
@@ -90,7 +90,7 @@ export default function EditProfilePage() {
                 <ChevronDown
                   className={cn(
                     "w-6 h-6 text-[#B2B2B2] transition-transform",
-                    expandedSection === "personal" && "rotate-180"
+                    expandedSection === "personal" && "rotate-180",
                   )}
                 />
               </button>
@@ -222,7 +222,7 @@ export default function EditProfilePage() {
                 <ChevronDown
                   className={cn(
                     "w-6 h-6 text-[#B2B2B2] transition-transform",
-                    expandedSection === "professional" && "rotate-180"
+                    expandedSection === "professional" && "rotate-180",
                   )}
                 />
               </button>
@@ -379,7 +379,7 @@ export default function EditProfilePage() {
                 <ChevronDown
                   className={cn(
                     "w-6 h-6 text-[#B2B2B2] transition-transform",
-                    expandedSection === "social" && "rotate-180"
+                    expandedSection === "social" && "rotate-180",
                   )}
                 />
               </button>

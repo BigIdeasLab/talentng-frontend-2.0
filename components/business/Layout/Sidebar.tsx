@@ -40,10 +40,31 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-  { id: "discover", label: "Discover Talent", icon: Telescope, href: "/discover-talent" },
-  { id: "opportunities", label: "Opportuities", icon: Briefcase, href: "/opportunities" },
-  { id: "notification", label: "Notification", icon: Bell, badge: 3, href: "/notifications" },
+  {
+    id: "dashboard",
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    href: "/dashboard",
+  },
+  {
+    id: "discover",
+    label: "Discover Talent",
+    icon: Telescope,
+    href: "/discover-talent",
+  },
+  {
+    id: "opportunities",
+    label: "Opportuities",
+    icon: Briefcase,
+    href: "/opportunities",
+  },
+  {
+    id: "notification",
+    label: "Notification",
+    icon: Bell,
+    badge: 3,
+    href: "/notifications",
+  },
   { id: "projects", label: "Projects", icon: FileText, href: "/projects" },
   { id: "mentorship", label: "Mentorship", icon: Users, href: "/mentorship" },
   { id: "learning", label: "Learning", icon: GraduationCap, href: "/learning" },
