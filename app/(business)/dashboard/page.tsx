@@ -1,3 +1,7 @@
-export default function ProfilePage() {
-  return <div className="flex min-h-screen bg-white">Dashboard</div>;
+"use client";
+
+import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
+
+export default function DashboardPage() {
+  return <DashboardLayout />;
 }
