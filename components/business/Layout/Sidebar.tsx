@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface SidebarProps {
   activeItem?: string;
@@ -34,16 +36,38 @@ interface MenuItem {
   label: string;
   icon: any;
   badge?: number;
+  href?: string;
 }
 
 const menuItems: MenuItem[] = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "discover", label: "Discover Talent", icon: Telescope },
-  { id: "opportunities", label: "Opportuities", icon: Briefcase },
-  { id: "notification", label: "Notification", icon: Bell, badge: 3 },
-  { id: "projects", label: "Projects", icon: FileText },
-  { id: "mentorship", label: "Mentorship", icon: Users },
-  { id: "learning", label: "Learning", icon: GraduationCap },
+  {
+    id: "dashboard",
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    href: "/dashboard",
+  },
+  {
+    id: "discover",
+    label: "Discover Talent",
+    icon: Telescope,
+    href: "/discover-talent",
+  },
+  {
+    id: "opportunities",
+    label: "Opportuities",
+    icon: Briefcase,
+    href: "/opportunities",
+  },
+  {
+    id: "notification",
+    label: "Notification",
+    icon: Bell,
+    badge: 3,
+    href: "/notifications",
+  },
+  { id: "projects", label: "Projects", icon: FileText, href: "/projects" },
+  { id: "mentorship", label: "Mentorship", icon: Users, href: "/mentorship" },
+  { id: "learning", label: "Learning", icon: GraduationCap, href: "/learning" },
 ];
 
 const otherItems: Omit<MenuItem, "badge">[] = [
@@ -57,6 +81,7 @@ export function Sidebar({
 }: SidebarProps) {
   const { user } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <aside className="hidden md:flex w-[250px] flex-col bg-white border-r border-[#E1E4EA] h-screen overflow-hidden">
@@ -112,10 +137,12 @@ export function Sidebar({
         <div className="flex flex-col gap-[6px]">
           {menuItems.map((item) => {
             const Icon = item.icon;
-            const isActive = activeItem === item.id;
+            const isActive = pathname === item.href;
+            const MenuComponent = item.href ? Link : "button";
             return (
-              <button
+              <MenuComponent
                 key={item.id}
+                href={item.href || "#"}
                 onClick={() => onItemSelect?.(item.id)}
                 className={cn(
                   "w-full flex items-center gap-[8px] px-[12px] py-[6px] rounded-lg transition-colors relative flex-shrink-0",
@@ -135,7 +162,7 @@ export function Sidebar({
                     </span>
                   </div>
                 )}
-              </button>
+              </MenuComponent>
             );
           })}
         </div>
