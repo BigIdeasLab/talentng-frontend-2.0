@@ -7,6 +7,7 @@ import { MobileSidebar } from "./MobileSidebar";
 import { ProfilePanel } from "./ProfilePanel";
 import { ProfileNav } from "./ProfileNav";
 import { WorksGrid } from "./WorksGrid";
+import { ServicesGrid } from "./ServicesGrid";
 import type { TalentProfile } from "@/lib/types/profile";
 
 interface ProfileLayoutProps {
