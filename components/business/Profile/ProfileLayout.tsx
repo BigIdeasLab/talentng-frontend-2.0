@@ -8,6 +8,7 @@ import { ProfilePanel } from "./ProfilePanel";
 import { ProfileNav } from "./ProfileNav";
 import { WorksGrid } from "./WorksGrid";
 import { ServicesGrid } from "./ServicesGrid";
+import { RecommendationsGrid } from "./RecommendationsGrid";
 import type { TalentProfile } from "@/lib/types/profile";
 
 interface ProfileLayoutProps {
@@ -132,9 +133,12 @@ export function ProfileLayout({ profileData }: ProfileLayoutProps) {
 
           {/* Recommendations Tab */}
           {activeTab === "recommendations" && (
-            <div className="p-[20px] text-center text-gray-400">
-              <p className="text-lg">Recommendations section coming soon</p>
-            </div>
+            <RecommendationsGrid
+              isLoading={isLoading}
+              onRecommendationClick={(recommendation) =>
+                console.log("Recommendation clicked:", recommendation)
+              }
+            />
           )}
 
           {/* Opportunities Tab */}
