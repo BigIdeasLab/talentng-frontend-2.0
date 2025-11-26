@@ -8,7 +8,7 @@ import { Talent } from "./types/talent";
 import { User } from "./types/user";
 
 const baseUrl = "/api/v1";
-// change
+
 type ApiOptions = {
   headers?: Record<string, string>;
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
