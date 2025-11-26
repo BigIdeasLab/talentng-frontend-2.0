@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
-interface DashboardNavProps {
+interface ProfileNavProps {
   activeTab?: "works" | "services" | "recommendations" | "opportunities";
   onTabChange?: (tab: string) => void;
   onAddNewWork?: () => void;
@@ -18,11 +18,11 @@ const tabs = [
   { id: "opportunities", label: "Saved Opportunities" },
 ];
 
-export function DashboardNav({
+export function ProfileNav({
   activeTab = "works",
   onTabChange,
   onAddNewWork,
-}: DashboardNavProps) {
+}: ProfileNavProps) {
   const [active, setActive] = useState(activeTab);
 
   const handleTabChange = (tabId: string) => {
