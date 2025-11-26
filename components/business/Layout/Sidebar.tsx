@@ -63,9 +63,11 @@ export function Sidebar({
       {/* Logo Section */}
       <div className="px-[30px] py-[15px] border-b border-[#E1E4EA]">
         <div className="flex items-center gap-[10px]">
-          <div className="w-[45px] h-[34px] rounded-[2.679px] bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center text-white font-bold text-sm shadow-sm">
-            T
-          </div>
+          <img
+            src="/logo-2.png"
+            alt="TalentNG Logo"
+            className="w-[45px] h-[34px] rounded-[2.679px] object-cover shadow-[0.602px_0.602px_19.111px_0_rgba(0,0,0,0.25)]"
+          />
           <span className="font-medium text-[18px] text-black font-inter-tight">
             TalentNG
           </span>
