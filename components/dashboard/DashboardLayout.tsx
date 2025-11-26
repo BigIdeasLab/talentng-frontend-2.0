@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { Sidebar } from "./Sidebar";
+import { MobileSidebar } from "./MobileSidebar";
 import { ProfilePanel } from "./ProfilePanel";
 import { DashboardNav } from "./DashboardNav";
 import { WorksGrid } from "./WorksGrid";
@@ -32,8 +33,19 @@ export function DashboardLayout({ profileData }: DashboardLayoutProps) {
   };
 
   return (
-    <div className="flex min-h-screen bg-white">
-      {/* Sidebar */}
+    <div className="flex min-h-screen bg-white flex-col md:flex-row">
+      {/* Mobile Sidebar */}
+      <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-[#E1E4EA]">
+        <div className="font-medium text-[18px] text-black font-inter-tight">
+          TalentNG
+        </div>
+        <MobileSidebar
+          activeItem={activeNavItem}
+          onItemSelect={setActiveNavItem}
+        />
+      </div>
+
+      {/* Desktop Sidebar */}
       <Sidebar
         activeItem={activeNavItem}
         onItemSelect={setActiveNavItem}
