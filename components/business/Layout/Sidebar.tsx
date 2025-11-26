@@ -46,7 +46,7 @@ const menuItems: MenuItem[] = [
   { id: "learning", label: "Learning", icon: GraduationCap },
 ];
 
-const otherItems: Omit<MenuItem, 'badge'>[] = [
+const otherItems: Omit<MenuItem, "badge">[] = [
   { id: "support", label: "Support", icon: Headphones },
   { id: "settings", label: "Settings", icon: Settings },
 ];
