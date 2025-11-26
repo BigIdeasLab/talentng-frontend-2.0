@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { EmptyState } from "./EmptyState";
 
 interface WorkItem {
   id: string;
@@ -64,12 +65,12 @@ export function WorksGrid({
 
   if (displayItems.length === 0) {
     return (
-      <div className="w-full h-64 flex items-center justify-center">
-        <div className="text-center text-gray-400">
-          <p className="text-lg">No works yet</p>
-          <p className="text-sm">Start by uploading your first project</p>
-        </div>
-      </div>
+      <EmptyState
+        title="No work added yet"
+        description="Add projects that show what you can do. A strong portfolio helps you get noticed."
+        buttonText="Add Work"
+        onButtonClick={onItemClick as any}
+      />
     );
   }
 

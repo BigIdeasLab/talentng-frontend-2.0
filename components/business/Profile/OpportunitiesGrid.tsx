@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Bookmark, Check } from "lucide-react";
+import { EmptyState } from "./EmptyState";
 
 type OpportunityType = "internship" | "job_listing";
 
@@ -88,14 +89,12 @@ export function OpportunitiesGrid({
 
   if (opportunities.length === 0) {
     return (
-      <div className="w-full h-64 flex items-center justify-center">
-        <div className="text-center text-gray-400">
-          <p className="text-lg">No saved opportunities</p>
-          <p className="text-sm">
-            Opportunities you save will appear here
-          </p>
-        </div>
-      </div>
+      <EmptyState
+        title="No saved opportunities yet"
+        description="Browse opportunities and save the ones that interest you. Build your wishlist here."
+        buttonText="Discover Opportunities"
+        onButtonClick={onApply as any}
+      />
     );
   }
 

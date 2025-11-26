@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { EmptyState } from "./EmptyState";
 
 interface Recommendation {
   id: string;
@@ -92,14 +93,12 @@ export function RecommendationsGrid({
 
   if (recommendations.length === 0) {
     return (
-      <div className="w-full h-64 flex items-center justify-center">
-        <div className="text-center text-gray-400">
-          <p className="text-lg">No recommendations yet</p>
-          <p className="text-sm">
-            Recommendations from clients will appear here
-          </p>
-        </div>
-      </div>
+      <EmptyState
+        title="No recommendations yet"
+        description="Request recommendations from clients you've worked with. Testimonials build trust and credibility."
+        buttonText="Request Recommendation"
+        onButtonClick={onRecommendationClick as any}
+      />
     );
   }
 

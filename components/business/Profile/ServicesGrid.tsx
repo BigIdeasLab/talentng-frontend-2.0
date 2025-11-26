@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Briefcase } from "lucide-react";
+import { EmptyState } from "./EmptyState";
 
 interface ServiceTag {
   label: string;
@@ -83,12 +84,12 @@ export function ServicesGrid({
 
   if (services.length === 0) {
     return (
-      <div className="w-full h-64 flex items-center justify-center">
-        <div className="text-center text-gray-400">
-          <p className="text-lg">No services yet</p>
-          <p className="text-sm">Start by adding your first service</p>
-        </div>
-      </div>
+      <EmptyState
+        title="No services added yet"
+        description="Add services that showcase your expertise. Clear service offerings help clients find you."
+        buttonText="Add Service"
+        onButtonClick={onServiceClick as any}
+      />
     );
   }
 
