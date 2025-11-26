@@ -97,7 +97,7 @@ export function DashboardLayout({ profileData }: DashboardLayoutProps) {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col bg-white max-h-screen overflow-y-auto">
+      <main className="flex-1 flex flex-col bg-white md:max-h-screen md:overflow-y-auto">
         {/* Top Navigation */}
         <DashboardNav
           activeTab={activeTab as any}
