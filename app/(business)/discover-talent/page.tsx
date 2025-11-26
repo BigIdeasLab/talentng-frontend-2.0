@@ -140,80 +140,80 @@ export default function DiscoverTalentPage() {
   return (
     <div className="flex flex-col h-screen bg-white overflow-hidden">
       {/* Header Section */}
-      <div className="flex-shrink-0 px-[50px] pt-[25px] pb-[20px] border-b border-[#E1E4EA]">
+      <div className="flex-shrink-0 px-[25px] pt-[25px] pb-[16px] border-b border-[#E1E4EA]">
         {/* Title */}
-        <h1 className="text-[20px] font-medium text-black font-inter-tight leading-[20px] mb-[25px]">
+        <h1 className="text-[16px] font-medium text-black font-inter-tight leading-[16px] mb-[19px]">
           Discover Talent
         </h1>
 
         {/* Search Bar and Filter */}
-        <div className="flex items-center gap-[10px] mb-[25px]">
-          <div className="flex-1 max-w-[689px] h-[46px] px-[15px] py-[9px] flex items-center gap-[7px] border border-[#E1E4EA] rounded-[10px]">
-            <Search className="w-[18px] h-[18px] text-[#B2B2B2]" />
+        <div className="flex items-center gap-[8px] mb-[19px]">
+          <div className="flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border border-[#E1E4EA] rounded-[8px]">
+            <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
             <input
               type="text"
               placeholder="Search Talent or Services or Location"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 text-[15px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
+              className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
             />
           </div>
-          <button className="h-[46px] px-[18px] py-[9px] flex items-center gap-[6px] bg-[#F5F5F5] rounded-[10px]">
-            <SlidersHorizontal className="w-[18px] h-[18px] text-black" />
-            <span className="text-[15px] font-normal text-black font-inter-tight">
+          <button className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] flex-shrink-0">
+            <SlidersHorizontal className="w-[15px] h-[15px] text-black" />
+            <span className="text-[13px] font-normal text-black font-inter-tight">
               Filter
             </span>
           </button>
         </div>
 
         {/* Category Tabs */}
-        <div className="flex items-center gap-[10px] overflow-x-auto scrollbar-hide">
+        <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
           {categories.map((category) => (
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
               className={cn(
-                "px-[15px] py-[15px] flex justify-center items-center whitespace-nowrap",
+                "px-[12px] flex justify-center items-center whitespace-nowrap flex-shrink-0",
                 selectedCategory === category
                   ? "text-black font-medium"
                   : "text-black/30 font-medium",
               )}
             >
-              <span className="text-[15px] font-inter-tight">{category}</span>
+              <span className="text-[13px] font-inter-tight">{category}</span>
             </button>
           ))}
         </div>
       </div>
 
       {/* Talent Grid */}
-      <div className="flex-1 overflow-y-auto px-[50px] py-[20px]">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-[9px] pb-8">
+      <div className="flex-1 overflow-y-auto scrollbar-styled px-[40px] py-[16px]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px] pb-8">
           {talentData.map((talent) => (
             <div
               key={talent.id}
-              className="p-[15px_12px] flex flex-col gap-[10px] border border-[#E1E4EA] rounded-[20px] bg-white"
+              className="p-[12px_10px] flex flex-col gap-[8px] border border-[#E1E4EA] rounded-[16px] bg-white"
             >
               {/* Header */}
-              <div className="flex flex-col gap-[20px]">
-                <div className="flex flex-col gap-[6px]">
+              <div className="flex flex-col gap-[16px]">
+                <div className="flex flex-col gap-[5px]">
                   <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-[10px]">
+                    <div className="flex items-center gap-[8px]">
                       <img
                         src={talent.avatar}
                         alt={talent.name}
-                        className="w-[40px] h-[40px] rounded-full object-cover"
+                        className="w-[34px] h-[34px] rounded-full object-cover flex-shrink-0"
                       />
-                      <div className="flex flex-col gap-[10px]">
-                        <h3 className="text-[15px] font-medium text-black font-inter-tight">
+                      <div className="flex flex-col gap-[8px]">
+                        <h3 className="text-[13px] font-medium text-black font-inter-tight">
                           {talent.name}
                         </h3>
-                        <p className="text-[14px] font-light text-black/30 font-inter-tight">
+                        <p className="text-[12px] font-light text-black/30 font-inter-tight">
                           {talent.role}
                         </p>
                       </div>
                     </div>
-                    <Button className="h-auto px-[10px] py-[15px] rounded-full bg-[#181B25] hover:bg-[#2a2f3a] border border-[#181B25]">
-                      <span className="text-[13px] font-normal text-white font-inter-tight w-[71px]">
+                    <Button className="h-auto px-[8px] py-[12px] rounded-full bg-[#181B25] hover:bg-[#2a2f3a] border border-[#181B25] flex-shrink-0">
+                      <span className="text-[11px] font-normal text-white font-inter-tight w-[60px]">
                         View Profile
                       </span>
                     </Button>
@@ -221,14 +221,15 @@ export default function DiscoverTalentPage() {
                 </div>
 
                 {/* Stats */}
-                <div className="flex items-center gap-[25px]">
-                  <div className="flex items-center gap-[8px]">
+                <div className="flex items-center gap-[18px] text-[12px]">
+                  <div className="flex items-center gap-[6px] flex-shrink-0">
                     <svg
-                      width="18"
-                      height="18"
+                      width="15"
+                      height="15"
                       viewBox="0 0 18 18"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
+                      className="w-[15px] h-[15px] flex-shrink-0"
                     >
                       <path
                         d="M10.2133 16.0253C9.88807 16.3298 9.4533 16.5 9.00082 16.5C8.54835 16.5 8.11365 16.3298 7.78838 16.0253C4.80977 13.2195 0.81807 10.0852 2.7647 5.53475C3.81722 3.07437 6.34375 1.5 9.00082 1.5C11.6579 1.5 14.1845 3.07437 15.237 5.53475C17.1812 10.0795 13.1992 13.2292 10.2133 16.0253Z"
@@ -241,17 +242,18 @@ export default function DiscoverTalentPage() {
                         strokeWidth="1.125"
                       />
                     </svg>
-                    <span className="text-[14px] font-normal text-[#525866] font-inter-tight leading-[20px]">
+                    <span className="font-normal text-[#525866] font-inter-tight leading-[16px]">
                       {talent.location}
                     </span>
                   </div>
-                  <div className="flex items-center gap-[8px]">
+                  <div className="flex items-center gap-[6px] flex-shrink-0">
                     <svg
-                      width="18"
-                      height="18"
+                      width="15"
+                      height="15"
                       viewBox="0 0 18 18"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
+                      className="w-[15px] h-[15px] flex-shrink-0"
                     >
                       <path
                         d="M1.5 10.5C1.5 8.39333 1.5 7.33996 2.00559 6.58329C2.22447 6.25572 2.50572 5.97447 2.83329 5.75559C3.58996 5.25 4.64331 5.25 6.75 5.25H11.25C13.3567 5.25 14.41 5.25 15.1667 5.75559C15.4942 5.97447 15.7755 6.25572 15.9944 6.58329C16.5 7.33996 16.5 8.39333 16.5 10.5C16.5 12.6067 16.5 13.6601 15.9944 14.4167C15.7755 14.7443 15.4942 15.0255 15.1667 15.2444C14.41 15.75 13.3567 15.75 11.25 15.75H6.75C4.64331 15.75 3.58996 15.75 2.83329 15.2444C2.50572 15.0255 2.22447 14.7443 2.00559 14.4167C1.5 13.6601 1.5 12.6067 1.5 10.5Z"
@@ -275,17 +277,18 @@ export default function DiscoverTalentPage() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <span className="text-[14px] font-normal text-[#525866] font-inter-tight leading-[20px]">
+                    <span className="font-normal text-[#525866] font-inter-tight leading-[16px]">
                       {talent.timesHired}X Hired
                     </span>
                   </div>
-                  <div className="flex items-center gap-[8px]">
+                  <div className="flex items-center gap-[6px] flex-shrink-0">
                     <svg
-                      width="18"
-                      height="18"
+                      width="15"
+                      height="15"
                       viewBox="0 0 18 18"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
+                      className="w-[15px] h-[15px] flex-shrink-0"
                     >
                       <path
                         d="M16.5 9C16.5 13.1421 13.1421 16.5 9 16.5C4.85786 16.5 1.5 13.1421 1.5 9C1.5 4.85786 4.85786 1.5 9 1.5C13.1421 1.5 16.5 4.85786 16.5 9Z"
@@ -299,33 +302,33 @@ export default function DiscoverTalentPage() {
                         strokeLinecap="round"
                       />
                     </svg>
-                    <span className="text-[14px] font-normal text-[#525866] font-inter-tight leading-[20px]">
+                    <span className="font-normal text-[#525866] font-inter-tight leading-[16px]">
                       ${talent.earnings.toLocaleString()} Earned
                     </span>
                   </div>
                 </div>
 
                 {/* Portfolio Images */}
-                <div className="flex flex-col gap-[14px]">
-                  <div className="flex items-center gap-[9px]">
+                <div className="flex flex-col gap-[11px]">
+                  <div className="flex items-center gap-[7px]">
                     {talent.portfolioImages.map((img, idx) => (
                       <img
                         key={idx}
                         src={img}
                         alt={`Portfolio ${idx + 1}`}
-                        className="flex-1 h-[184px] object-cover rounded"
+                        className="flex-1 h-[147px] object-cover rounded"
                       />
                     ))}
                   </div>
 
                   {/* Skills */}
-                  <div className="flex flex-wrap gap-[5px] items-start">
+                  <div className="flex flex-wrap gap-[4px] items-start">
                     {talent.skills.map((skill, idx) => (
                       <div
                         key={idx}
-                        className="px-[13px] py-[12px] flex justify-center items-center rounded-full bg-[#F5F5F5]"
+                        className="px-[11px] py-[9px] flex justify-center items-center rounded-full bg-[#F5F5F5]"
                       >
-                        <span className="text-[14px] font-normal text-black font-inter-tight leading-[105%]">
+                        <span className="text-[11px] font-normal text-black font-inter-tight leading-[105%]">
                           {skill}
                         </span>
                       </div>

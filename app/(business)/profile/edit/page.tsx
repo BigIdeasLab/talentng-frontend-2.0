@@ -16,16 +16,16 @@ export default function EditProfilePage() {
   return (
     <div className="flex h-screen bg-white">
       {/* Left Sidebar Navigation */}
-      <div className="w-[235px] flex flex-col items-start gap-[50px] px-6 pt-[25px] border-r border-[#E1E4EA]">
-        <h1 className="text-[25px] font-semibold text-black font-inter-tight">
+      <div className="w-[250px] flex flex-col items-start gap-[35px] px-5 pt-[20px] border-r border-[#E1E4EA]">
+        <h1 className="text-[20px] font-semibold text-black font-inter-tight">
           Edit Profile
         </h1>
 
-        <div className="flex flex-col items-start gap-[30px] w-full">
+        <div className="flex flex-col items-start gap-[22px] w-full">
           <button
             onClick={() => toggleSection("personal")}
             className={cn(
-              "text-[16px] font-medium font-inter-tight transition-colors",
+              "text-[14px] font-medium font-inter-tight transition-colors",
               expandedSection === "personal"
                 ? "text-[#5C30FF]"
                 : "text-[#525866]",
@@ -36,7 +36,7 @@ export default function EditProfilePage() {
           <button
             onClick={() => toggleSection("professional")}
             className={cn(
-              "text-[16px] font-normal font-inter-tight transition-colors",
+              "text-[14px] font-normal font-inter-tight transition-colors",
               expandedSection === "professional"
                 ? "text-[#5C30FF]"
                 : "text-[#525866]",
@@ -47,7 +47,7 @@ export default function EditProfilePage() {
           <button
             onClick={() => toggleSection("social")}
             className={cn(
-              "text-[16px] font-normal font-inter-tight transition-colors",
+              "text-[14px] font-normal font-inter-tight transition-colors",
               expandedSection === "social"
                 ? "text-[#5C30FF]"
                 : "text-[#525866]",
@@ -61,35 +61,35 @@ export default function EditProfilePage() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Top Action Bar */}
-        <div className="h-[68px] border-b border-[#E1E4EA] flex items-center justify-end px-[107px] gap-2 bg-white">
+        <div className="h-[56px] border-b border-[#E1E4EA] flex items-center justify-end px-[80px] gap-2 bg-white">
           <Link href="/profile">
             <Button
               variant="outline"
-              className="h-[48px] px-[31px] rounded-full border border-[#F5F5F5] bg-[#F5F5F5] text-black hover:bg-[#e5e5e5] font-inter-tight text-[16px] font-normal"
+              className="h-[40px] px-[24px] rounded-full border border-[#F5F5F5] bg-[#F5F5F5] text-black hover:bg-[#e5e5e5] font-inter-tight text-[13px] font-normal"
             >
               Discard
             </Button>
           </Link>
-          <Button className="h-[48px] px-[31px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] font-inter-tight text-[16px] font-normal">
+          <Button className="h-[40px] px-[24px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] font-inter-tight text-[13px] font-normal">
             Save Changes
           </Button>
         </div>
 
         {/* Form Content */}
-        <div className="flex-1 overflow-y-auto px-[107px] pt-[93px] pb-8">
-          <div className="max-w-[691px] mx-auto flex flex-col gap-[15px]">
+        <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[70px] pb-6">
+          <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
             {/* Personal Details Section */}
-            <div className="border border-[#E1E4EA] rounded-[20px] bg-white">
+            <div className="border border-[#E1E4EA] rounded-[16px] bg-white">
               <button
                 onClick={() => toggleSection("personal")}
-                className="w-full flex items-center justify-between px-[20px] py-[17px]"
+                className="w-full flex items-center justify-between px-[16px] py-[14px]"
               >
-                <h2 className="text-[17px] font-medium text-black font-inter-tight">
+                <h2 className="text-[14px] font-medium text-black font-inter-tight">
                   Personal Details
                 </h2>
                 <ChevronDown
                   className={cn(
-                    "w-6 h-6 text-[#B2B2B2] transition-transform",
+                    "w-5 h-5 text-[#B2B2B2] transition-transform",
                     expandedSection === "personal" && "rotate-180",
                   )}
                 />
@@ -98,9 +98,9 @@ export default function EditProfilePage() {
               {expandedSection === "personal" && (
                 <>
                   <div className="h-[1px] bg-[#E1E4EA]" />
-                  <div className="px-[20px] py-[23px] flex flex-col gap-[20px]">
+                  <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
                     {/* Profile Picture */}
-                    <div className="relative w-[110px] h-[110px]">
+                    <div className="relative w-[90px] h-[90px]">
                       <svg
                         width="110"
                         height="110"
@@ -134,25 +134,25 @@ export default function EditProfilePage() {
                     </div>
 
                     {/* Name Fields */}
-                    <div className="flex gap-[11px]">
-                      <div className="flex-1 flex flex-col gap-[12px]">
-                        <label className="text-[15px] font-normal text-black font-inter-tight">
+                    <div className="flex gap-[10px]">
+                      <div className="flex-1 flex flex-col gap-[10px]">
+                        <label className="text-[13px] font-normal text-black font-inter-tight">
                           First Name
                         </label>
-                        <div className="h-[57px] px-[15px] flex items-center justify-between border border-[#E1E4EA] rounded-[10px]">
-                          <span className="text-[15px] font-normal text-black font-inter-tight">
+                        <div className="h-[48px] px-[12px] flex items-center justify-between border border-[#E1E4EA] rounded-[8px]">
+                          <span className="text-[13px] font-normal text-black font-inter-tight">
                             Akanbi
                           </span>
                           <ChevronDown className="w-4 h-4 text-[#B2B2B2]" />
                         </div>
                       </div>
 
-                      <div className="flex-1 flex flex-col gap-[12px]">
-                        <label className="text-[15px] font-normal text-black font-inter-tight">
+                      <div className="flex-1 flex flex-col gap-[10px]">
+                        <label className="text-[13px] font-normal text-black font-inter-tight">
                           Last Name
                         </label>
-                        <div className="h-[57px] px-[15px] flex items-center justify-between border border-[#E1E4EA] rounded-[10px]">
-                          <span className="text-[15px] font-normal text-black font-inter-tight">
+                        <div className="h-[48px] px-[12px] flex items-center justify-between border border-[#E1E4EA] rounded-[8px]">
+                          <span className="text-[13px] font-normal text-black font-inter-tight">
                             David
                           </span>
                           <ChevronDown className="w-4 h-4 text-[#B2B2B2]" />
@@ -161,37 +161,37 @@ export default function EditProfilePage() {
                     </div>
 
                     {/* Headline */}
-                    <div className="flex flex-col gap-[12px]">
-                      <label className="text-[15px] font-normal text-black font-inter-tight">
+                    <div className="flex flex-col gap-[10px]">
+                      <label className="text-[13px] font-normal text-black font-inter-tight">
                         Headline
                       </label>
-                      <div className="px-[15px] py-[23px] flex items-center border border-[#E1E4EA] rounded-[10px]">
-                        <span className="text-[15px] font-normal text-black font-inter-tight">
+                      <div className="px-[12px] py-[18px] flex items-center border border-[#E1E4EA] rounded-[8px]">
+                        <span className="text-[13px] font-normal text-black font-inter-tight">
                           Product & Interaction Designer
                         </span>
                       </div>
                     </div>
 
                     {/* Location Fields */}
-                    <div className="flex gap-[11px]">
-                      <div className="flex-1 flex flex-col gap-[12px]">
-                        <label className="text-[15px] font-normal text-black font-inter-tight">
+                    <div className="flex gap-[10px]">
+                      <div className="flex-1 flex flex-col gap-[10px]">
+                        <label className="text-[13px] font-normal text-black font-inter-tight">
                           Country
                         </label>
-                        <div className="h-[57px] px-[15px] flex items-center justify-between border border-[#E1E4EA] rounded-[10px]">
-                          <span className="text-[15px] font-normal text-black font-inter-tight">
+                        <div className="h-[48px] px-[12px] flex items-center justify-between border border-[#E1E4EA] rounded-[8px]">
+                          <span className="text-[13px] font-normal text-black font-inter-tight">
                             Nigeria
                           </span>
                           <ChevronDown className="w-4 h-4 text-[#B2B2B2]" />
                         </div>
                       </div>
 
-                      <div className="flex-1 flex flex-col gap-[12px]">
-                        <label className="text-[15px] font-normal text-black font-inter-tight">
+                      <div className="flex-1 flex flex-col gap-[10px]">
+                        <label className="text-[13px] font-normal text-black font-inter-tight">
                           City
                         </label>
-                        <div className="h-[57px] px-[15px] flex items-center justify-between border border-[#E1E4EA] rounded-[10px]">
-                          <span className="text-[15px] font-normal text-black font-inter-tight">
+                        <div className="h-[48px] px-[12px] flex items-center justify-between border border-[#E1E4EA] rounded-[8px]">
+                          <span className="text-[13px] font-normal text-black font-inter-tight">
                             Lagos
                           </span>
                           <ChevronDown className="w-4 h-4 text-[#B2B2B2]" />
@@ -201,7 +201,7 @@ export default function EditProfilePage() {
 
                     {/* Next Button */}
                     <div className="flex justify-end">
-                      <Button className="h-[54px] px-[40px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[18px] font-normal">
+                      <Button className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal">
                         Next
                       </Button>
                     </div>
@@ -211,17 +211,17 @@ export default function EditProfilePage() {
             </div>
 
             {/* Professional Details Section */}
-            <div className="border border-[#E1E4EA] rounded-[20px] bg-white">
+            <div className="border border-[#E1E4EA] rounded-[16px] bg-white">
               <button
                 onClick={() => toggleSection("professional")}
-                className="w-full flex items-center justify-between px-[20px] py-[17px]"
+                className="w-full flex items-center justify-between px-[16px] py-[14px]"
               >
-                <h2 className="text-[17px] font-medium text-black font-inter-tight">
+                <h2 className="text-[14px] font-medium text-black font-inter-tight">
                   Professional Details
                 </h2>
                 <ChevronDown
                   className={cn(
-                    "w-6 h-6 text-[#B2B2B2] transition-transform",
+                    "w-5 h-5 text-[#B2B2B2] transition-transform",
                     expandedSection === "professional" && "rotate-180",
                   )}
                 />
@@ -230,14 +230,14 @@ export default function EditProfilePage() {
               {expandedSection === "professional" && (
                 <>
                   <div className="h-[1px] bg-[#E1E4EA]" />
-                  <div className="px-[20px] py-[23px] flex flex-col gap-[20px]">
+                  <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
                     {/* Role / Category */}
-                    <div className="flex flex-col gap-[12px]">
-                      <label className="text-[15px] font-normal text-black font-inter-tight">
+                    <div className="flex flex-col gap-[10px]">
+                      <label className="text-[13px] font-normal text-black font-inter-tight">
                         Role / Category
                       </label>
-                      <div className="px-[15px] py-[23px] flex items-center justify-between border border-[#E1E4EA] rounded-[10px]">
-                        <span className="text-[15px] font-normal text-black font-inter-tight">
+                      <div className="px-[12px] py-[18px] flex items-center justify-between border border-[#E1E4EA] rounded-[8px]">
+                        <span className="text-[13px] font-normal text-black font-inter-tight">
                           Ui/Ux Designer
                         </span>
                         <ChevronDown className="w-4 h-4 text-[#B2B2B2]" />
@@ -245,18 +245,18 @@ export default function EditProfilePage() {
                     </div>
 
                     {/* Skills */}
-                    <div className="flex flex-col gap-[12px]">
-                      <label className="text-[15px] font-normal text-black font-inter-tight">
+                    <div className="flex flex-col gap-[10px]">
+                      <label className="text-[13px] font-normal text-black font-inter-tight">
                         Skills
                       </label>
-                      <div className="px-[15px] py-[23px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[10px]">
-                        <span className="text-[15px] font-normal text-black font-inter-tight">
+                      <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[8px]">
+                        <span className="text-[13px] font-normal text-black font-inter-tight">
                           Product & Interaction Designer
                         </span>
                       </div>
 
                       {/* Skills Tags */}
-                      <div className="flex flex-wrap gap-[5px]">
+                      <div className="flex flex-wrap gap-[4px]">
                         {[
                           "Website Design",
                           "Ui/Ux Design",
@@ -266,9 +266,9 @@ export default function EditProfilePage() {
                         ].map((skill) => (
                           <div
                             key={skill}
-                            className="flex items-center gap-2 px-[13px] py-[12px] rounded-full bg-[#F5F5F5]"
+                            className="flex items-center gap-2 px-[10px] py-[8px] rounded-full bg-[#F5F5F5]"
                           >
-                            <span className="text-[14px] font-normal text-black font-inter-tight leading-[105%]">
+                            <span className="text-[11px] font-normal text-black font-inter-tight leading-[105%]">
                               {skill}
                             </span>
                             <svg
@@ -292,18 +292,18 @@ export default function EditProfilePage() {
                     </div>
 
                     {/* Stack */}
-                    <div className="flex flex-col gap-[12px]">
-                      <label className="text-[15px] font-normal text-black font-inter-tight">
+                    <div className="flex flex-col gap-[10px]">
+                      <label className="text-[13px] font-normal text-black font-inter-tight">
                         Stack
                       </label>
-                      <div className="px-[15px] py-[23px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[10px]">
-                        <span className="text-[15px] font-normal text-black font-inter-tight">
+                      <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[8px]">
+                        <span className="text-[13px] font-normal text-black font-inter-tight">
                           Product & Interaction Designer
                         </span>
                       </div>
 
                       {/* Stack Tags */}
-                      <div className="flex flex-wrap gap-[5px]">
+                      <div className="flex flex-wrap gap-[4px]">
                         {[
                           { name: "Figma", icon: "🎨" },
                           { name: "Rive", icon: "⚡" },
@@ -313,13 +313,13 @@ export default function EditProfilePage() {
                         ].map((tool) => (
                           <div
                             key={tool.name}
-                            className="flex items-center gap-2 px-[13px] py-[10px] rounded-full bg-[#F5F5F5]"
+                            className="flex items-center gap-2 px-[10px] py-[7px] rounded-full bg-[#F5F5F5]"
                           >
-                            <div className="flex items-center gap-[7px]">
-                              <div className="w-5 h-5 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-xs">
+                            <div className="flex items-center gap-[5px]">
+                              <div className="w-4 h-4 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-xs">
                                 {tool.icon}
                               </div>
-                              <span className="text-[14px] font-normal text-black font-inter-tight leading-[105%]">
+                              <span className="text-[11px] font-normal text-black font-inter-tight leading-[105%]">
                                 {tool.name}
                               </span>
                             </div>
@@ -344,12 +344,12 @@ export default function EditProfilePage() {
                     </div>
 
                     {/* Availability */}
-                    <div className="flex flex-col gap-[12px]">
-                      <label className="text-[15px] font-normal text-black font-inter-tight">
+                    <div className="flex flex-col gap-[10px]">
+                      <label className="text-[13px] font-normal text-black font-inter-tight">
                         Availability
                       </label>
-                      <div className="px-[15px] py-[23px] flex items-center justify-between border border-[#E1E4EA] rounded-[10px]">
-                        <span className="text-[15px] font-normal text-black font-inter-tight">
+                      <div className="px-[12px] py-[18px] flex items-center justify-between border border-[#E1E4EA] rounded-[8px]">
+                        <span className="text-[13px] font-normal text-black font-inter-tight">
                           Freelance
                         </span>
                         <ChevronDown className="w-4 h-4 text-[#B2B2B2]" />
@@ -358,7 +358,7 @@ export default function EditProfilePage() {
 
                     {/* Next Button */}
                     <div className="flex justify-end">
-                      <Button className="h-[54px] px-[40px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[18px] font-normal">
+                      <Button className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal">
                         Next
                       </Button>
                     </div>
@@ -368,17 +368,17 @@ export default function EditProfilePage() {
             </div>
 
             {/* Social Links Section */}
-            <div className="border border-[#E1E4EA] rounded-[20px] bg-white">
+            <div className="border border-[#E1E4EA] rounded-[16px] bg-white">
               <button
                 onClick={() => toggleSection("social")}
-                className="w-full flex items-center justify-between px-[20px] py-[17px]"
+                className="w-full flex items-center justify-between px-[16px] py-[14px]"
               >
-                <h2 className="text-[17px] font-medium text-black font-inter-tight">
+                <h2 className="text-[14px] font-medium text-black font-inter-tight">
                   Social Link
                 </h2>
                 <ChevronDown
                   className={cn(
-                    "w-6 h-6 text-[#B2B2B2] transition-transform",
+                    "w-5 h-5 text-[#B2B2B2] transition-transform",
                     expandedSection === "social" && "rotate-180",
                   )}
                 />
@@ -387,13 +387,13 @@ export default function EditProfilePage() {
               {expandedSection === "social" && (
                 <>
                   <div className="h-[1px] bg-[#E1E4EA]" />
-                  <div className="px-[20px] py-[23px] flex flex-col gap-[20px]">
+                  <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
                     {/* Dribbble */}
-                    <div className="flex flex-col gap-[12px]">
-                      <label className="text-[15px] font-normal text-black font-inter-tight">
+                    <div className="flex flex-col gap-[10px]">
+                      <label className="text-[13px] font-normal text-black font-inter-tight">
                         Dribbble
                       </label>
-                      <div className="px-[15px] py-[23px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[10px]">
+                      <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[8px]">
                         <svg
                           width="16"
                           height="16"
@@ -428,17 +428,17 @@ export default function EditProfilePage() {
                         <input
                           type="text"
                           placeholder="Paste Link Here"
-                          className="flex-1 text-[15px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+                          className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
                         />
                       </div>
                     </div>
 
                     {/* Telegram */}
-                    <div className="flex flex-col gap-[12px]">
-                      <label className="text-[15px] font-normal text-black font-inter-tight">
+                    <div className="flex flex-col gap-[10px]">
+                      <label className="text-[13px] font-normal text-black font-inter-tight">
                         Telegram
                       </label>
-                      <div className="px-[15px] py-[23px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[10px]">
+                      <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[8px]">
                         <svg
                           width="16"
                           height="16"
@@ -456,17 +456,17 @@ export default function EditProfilePage() {
                         <input
                           type="text"
                           placeholder="Paste Link Here"
-                          className="flex-1 text-[15px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+                          className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
                         />
                       </div>
                     </div>
 
                     {/* X (Twitter) */}
-                    <div className="flex flex-col gap-[12px]">
-                      <label className="text-[15px] font-normal text-black font-inter-tight">
+                    <div className="flex flex-col gap-[10px]">
+                      <label className="text-[13px] font-normal text-black font-inter-tight">
                         X
                       </label>
-                      <div className="px-[15px] py-[23px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[10px]">
+                      <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[8px]">
                         <svg
                           width="16"
                           height="16"
@@ -484,17 +484,17 @@ export default function EditProfilePage() {
                         <input
                           type="text"
                           placeholder="Paste Link Here"
-                          className="flex-1 text-[15px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+                          className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
                         />
                       </div>
                     </div>
 
                     {/* Instagram */}
-                    <div className="flex flex-col gap-[12px]">
-                      <label className="text-[15px] font-normal text-black font-inter-tight">
+                    <div className="flex flex-col gap-[10px]">
+                      <label className="text-[13px] font-normal text-black font-inter-tight">
                         Instagram
                       </label>
-                      <div className="px-[15px] py-[23px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[10px]">
+                      <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[8px]">
                         <svg
                           width="16"
                           height="16"
@@ -522,17 +522,17 @@ export default function EditProfilePage() {
                         <input
                           type="text"
                           placeholder="Paste Link Here"
-                          className="flex-1 text-[15px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+                          className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
                         />
                       </div>
                     </div>
 
                     {/* LinkedIn */}
-                    <div className="flex flex-col gap-[12px]">
-                      <label className="text-[15px] font-normal text-black font-inter-tight">
+                    <div className="flex flex-col gap-[10px]">
+                      <label className="text-[13px] font-normal text-black font-inter-tight">
                         LinkendIn
                       </label>
-                      <div className="px-[15px] py-[23px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[10px]">
+                      <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[8px]">
                         <svg
                           width="16"
                           height="16"
@@ -557,14 +557,14 @@ export default function EditProfilePage() {
                         <input
                           type="text"
                           placeholder="Paste Link Here"
-                          className="flex-1 text-[15px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+                          className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
                         />
                       </div>
                     </div>
 
                     {/* Next Button */}
                     <div className="flex justify-end">
-                      <Button className="h-[54px] px-[40px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[18px] font-normal">
+                      <Button className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal">
                         Next
                       </Button>
                     </div>
