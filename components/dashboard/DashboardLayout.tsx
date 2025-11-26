@@ -46,10 +46,7 @@ export function DashboardLayout({ profileData }: DashboardLayoutProps) {
       </div>
 
       {/* Desktop Sidebar */}
-      <Sidebar
-        activeItem={activeNavItem}
-        onItemSelect={setActiveNavItem}
-      />
+      <Sidebar activeItem={activeNavItem} onItemSelect={setActiveNavItem} />
 
       {/* Profile Panel */}
       <ProfilePanel
@@ -62,18 +59,20 @@ export function DashboardLayout({ profileData }: DashboardLayoutProps) {
           hired: 5,
           jobType: "Ui/Ux Designer",
         }}
-        skills={profileData?.skills || [
-          "Website Design",
-          "Mobile App Design",
-          "Ui/Ux Design",
-          "Interface Design",
-          "Prototyping",
-          "User Research",
-          "Wireframing",
-          "Interaction Design",
-          "Design Systems",
-          "Motion Design",
-        ]}
+        skills={
+          profileData?.skills || [
+            "Website Design",
+            "Mobile App Design",
+            "Ui/Ux Design",
+            "Interface Design",
+            "Prototyping",
+            "User Research",
+            "Wireframing",
+            "Interaction Design",
+            "Design Systems",
+            "Motion Design",
+          ]
+        }
         stack={[
           { name: "Figma" },
           { name: "Rive" },

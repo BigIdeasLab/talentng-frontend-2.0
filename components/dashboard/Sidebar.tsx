@@ -39,7 +39,10 @@ const otherItems = [
   { id: "settings", label: "Settings", icon: Settings },
 ];
 
-export function Sidebar({ activeItem = "dashboard", onItemSelect }: SidebarProps) {
+export function Sidebar({
+  activeItem = "dashboard",
+  onItemSelect,
+}: SidebarProps) {
   const { user } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -62,7 +65,10 @@ export function Sidebar({ activeItem = "dashboard", onItemSelect }: SidebarProps
         {/* User Dropdown Section */}
         <div className="mb-6">
           <div className="px-[10px] py-[15px] rounded-lg bg-[#F5F5F5]">
-            <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+            <DropdownMenu
+              open={isDropdownOpen}
+              onOpenChange={setIsDropdownOpen}
+            >
               <DropdownMenuTrigger asChild>
                 <button className="w-full flex items-center justify-between gap-[8px] hover:opacity-80 transition-opacity">
                   <div className="flex items-center gap-[8px] min-w-0">
@@ -101,7 +107,7 @@ export function Sidebar({ activeItem = "dashboard", onItemSelect }: SidebarProps
                   "w-full flex items-center gap-[8px] px-[12px] py-[8px] rounded-lg transition-colors",
                   isActive
                     ? "bg-white text-[#525866]"
-                    : "text-[#525866] hover:bg-white/50"
+                    : "text-[#525866] hover:bg-white/50",
                 )}
               >
                 <Icon className="w-5 h-5 flex-shrink-0" />

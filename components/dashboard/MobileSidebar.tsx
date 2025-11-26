@@ -15,7 +15,10 @@ interface MobileSidebarProps {
   onItemSelect?: (item: string) => void;
 }
 
-export function MobileSidebar({ activeItem, onItemSelect }: MobileSidebarProps) {
+export function MobileSidebar({
+  activeItem,
+  onItemSelect,
+}: MobileSidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleItemSelect = (item: string) => {

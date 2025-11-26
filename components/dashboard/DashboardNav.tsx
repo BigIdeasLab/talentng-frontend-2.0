@@ -42,13 +42,11 @@ export function DashboardNav({
               "px-[12px] sm:px-[20px] py-[16px] sm:py-[22px] text-[13px] sm:text-[15px] font-medium font-inter-tight whitespace-nowrap transition-colors relative",
               active === tab.id
                 ? "text-black"
-                : "text-[rgba(0,0,0,0.30)] hover:text-[rgba(0,0,0,0.6)]"
+                : "text-[rgba(0,0,0,0.30)] hover:text-[rgba(0,0,0,0.6)]",
             )}
           >
             <span className="hidden sm:inline">{tab.label}</span>
-            <span className="sm:hidden">
-              {tab.label.split(" ")[0]}
-            </span>
+            <span className="sm:hidden">{tab.label.split(" ")[0]}</span>
             {active === tab.id && (
               <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-black" />
             )}
@@ -66,7 +64,10 @@ export function DashboardNav({
       </Button>
 
       {/* Mobile CTA Icon Button */}
-      <button onClick={onAddNewWork} className="sm:hidden p-2 text-[#5C30FF] hover:bg-gray-100 rounded-full transition-colors flex-shrink-0">
+      <button
+        onClick={onAddNewWork}
+        className="sm:hidden p-2 text-[#5C30FF] hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
+      >
         <Plus className="w-6 h-6" />
       </button>
     </div>

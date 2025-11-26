@@ -33,7 +33,11 @@ const placeholderImages = [
   "https://api.builder.io/api/v1/image/assets/TEMP/ecfd58cb903f5ce81d615b9723f5cbb381a70d3?width=527",
 ];
 
-export function WorksGrid({ items = [], isLoading = false, onItemClick }: WorksGridProps) {
+export function WorksGrid({
+  items = [],
+  isLoading = false,
+  onItemClick,
+}: WorksGridProps) {
   const [displayItems, setDisplayItems] = useState<WorkItem[]>([]);
 
   useEffect(() => {

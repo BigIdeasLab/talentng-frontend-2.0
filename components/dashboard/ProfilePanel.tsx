@@ -1,6 +1,13 @@
 "use client";
 
-import { MapPin, Briefcase, Users, DollarSign, Mail, Linkedin } from "lucide-react";
+import {
+  MapPin,
+  Briefcase,
+  Users,
+  DollarSign,
+  Mail,
+  Linkedin,
+} from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -44,7 +51,10 @@ const defaultStack = [
 ];
 
 export function ProfilePanel({
-  user = { fullName: "Akanbi David", headline: "Product & Interaction Designer" },
+  user = {
+    fullName: "Akanbi David",
+    headline: "Product & Interaction Designer",
+  },
   stats = { earnings: "$20,000 Earned", hired: 5, jobType: "Ui/Ux Designer" },
   skills = defaultSkills,
   stack = defaultStack,
@@ -76,14 +86,28 @@ export function ProfilePanel({
             className="w-full h-full"
           >
             <circle cx="55" cy="55" r="45" fill="#FF563D" opacity="0.2" />
-            <circle cx="55" cy="55" r="54" stroke="#E63C23" strokeWidth="2" strokeOpacity="0.2" />
+            <circle
+              cx="55"
+              cy="55"
+              r="54"
+              stroke="#E63C23"
+              strokeWidth="2"
+              strokeOpacity="0.2"
+            />
             <path
               d="M55 1C62.0914 1 69.1133 2.39675 75.6649 5.1105C82.2165 7.82426 88.1694 11.8019 93.1838 16.8162C98.1981 21.8306 102.176 27.7835 104.889 34.3351C107.603 40.8867 109 47.9086 109 55"
               stroke="#E63C23"
               strokeWidth="2"
               strokeLinecap="round"
             />
-            <rect x="90" y="15" width="28" height="15" rx="7.5" fill="#E63C23" />
+            <rect
+              x="90"
+              y="15"
+              width="28"
+              height="15"
+              rx="7.5"
+              fill="#E63C23"
+            />
             <text
               x="104"
               y="26.2754"
