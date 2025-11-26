@@ -29,7 +29,14 @@ interface SidebarProps {
   onMobileClose?: () => void;
 }
 
-const menuItems = [
+interface MenuItem {
+  id: string;
+  label: string;
+  icon: any;
+  badge?: number;
+}
+
+const menuItems: MenuItem[] = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "discover", label: "Discover Talent", icon: Telescope },
   { id: "opportunities", label: "Opportuities", icon: Briefcase },
@@ -39,7 +46,7 @@ const menuItems = [
   { id: "learning", label: "Learning", icon: GraduationCap },
 ];
 
-const otherItems = [
+const otherItems: Omit<MenuItem, 'badge'>[] = [
   { id: "support", label: "Support", icon: Headphones },
   { id: "settings", label: "Settings", icon: Settings },
 ];
