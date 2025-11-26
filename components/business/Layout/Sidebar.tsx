@@ -4,7 +4,10 @@ import {
   LayoutDashboard,
   Telescope,
   Briefcase,
-  BookOpen,
+  Bell,
+  FileText,
+  Users,
+  GraduationCap,
   Headphones,
   Settings,
   ChevronDown,
@@ -30,8 +33,10 @@ const menuItems = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "discover", label: "Discover Talent", icon: Telescope },
   { id: "opportunities", label: "Opportuities", icon: Briefcase },
-  { id: "mentorship", label: "Mentorship", icon: BookOpen },
-  { id: "learning", label: "Learning", icon: BookOpen },
+  { id: "notification", label: "Notification", icon: Bell, badge: 3 },
+  { id: "projects", label: "Projects", icon: FileText },
+  { id: "mentorship", label: "Mentorship", icon: Users },
+  { id: "learning", label: "Learning", icon: GraduationCap },
 ];
 
 const otherItems = [
