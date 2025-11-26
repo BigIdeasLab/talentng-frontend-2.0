@@ -53,7 +53,7 @@ export default function EditProfilePage() {
                 : "text-[#525866]"
             )}
           >
-            Social Link
+            Social Links
           </button>
         </div>
       </div>
