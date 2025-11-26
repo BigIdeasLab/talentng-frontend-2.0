@@ -8,7 +8,7 @@ import { Talent } from "./types/talent";
 import { User } from "./types/user";
 
 const baseUrl = "/api/v1";
-
+// change
 type ApiOptions = {
   headers?: Record<string, string>;
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
@@ -19,7 +19,7 @@ let isRefreshing = false;
 const failedQueue: any[] = [];
 
 const processQueue = (error: Error | null, token: string | null = null) => {
-  failedQueue.forEach(prom => {
+  failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
     } else {
@@ -45,7 +45,8 @@ const apiClient = async <T>(
   };
 
   if (token) {
-    (config.headers as Record<string, string>)["Authorization"] = `Bearer ${token}`;
+    (config.headers as Record<string, string>)["Authorization"] =
+      `Bearer ${token}`;
   }
 
   if (options.body) {
@@ -65,30 +66,34 @@ const apiClient = async <T>(
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
-        .then(newToken => {
-          (config.headers as Record<string, string>)["Authorization"] = `Bearer ${newToken}`;
-          return fetch(`${baseUrl}${endpoint}`, config);
-        })
-        .then(res => res.json());
+          .then((newToken) => {
+            (config.headers as Record<string, string>)["Authorization"] =
+              `Bearer ${newToken}`;
+            return fetch(`${baseUrl}${endpoint}`, config);
+          })
+          .then((res) => res.json());
       }
 
       isRefreshing = true;
 
       try {
-        const refreshResponse = await fetch(`${baseUrl}/auth/refresh`, { method: 'POST' });
+        const refreshResponse = await fetch(`${baseUrl}/auth/refresh`, {
+          method: "POST",
+        });
         if (!refreshResponse.ok) {
-          throw new Error('Failed to refresh token');
+          throw new Error("Failed to refresh token");
         }
         const { accessToken: newAccessToken } = await refreshResponse.json();
         setCookie("accessToken", newAccessToken);
         processQueue(null, newAccessToken);
-        (config.headers as Record<string, string>)["Authorization"] = `Bearer ${newAccessToken}`;
+        (config.headers as Record<string, string>)["Authorization"] =
+          `Bearer ${newAccessToken}`;
         response = await fetch(`${baseUrl}${endpoint}`, config);
       } catch (error) {
         processQueue(error as Error, null);
         deleteCookie("accessToken");
         deleteCookie("user");
-        window.location.href = '/login';
+        window.location.href = "/login";
         throw error;
       } finally {
         isRefreshing = false;
@@ -103,21 +108,29 @@ const apiClient = async <T>(
       } catch (e) {
         errorData = { message: errorText || response.statusText };
       }
-      
+
       // Extract more detailed error information
-      let errorMessage = errorData.message || "An error occurred during the API request.";
-      
+      let errorMessage =
+        errorData.message || "An error occurred during the API request.";
+
       // Handle specific error types with user-friendly messages
-      if (errorMessage.includes("Transaction already closed") || errorMessage.includes("transaction timeout")) {
-        errorMessage = "The request took too long to process. Please try again. If the problem persists, the server may be experiencing high load.";
+      if (
+        errorMessage.includes("Transaction already closed") ||
+        errorMessage.includes("transaction timeout")
+      ) {
+        errorMessage =
+          "The request took too long to process. Please try again. If the problem persists, the server may be experiencing high load.";
       } else if (errorMessage.includes("Database error")) {
-        errorMessage = "A database error occurred. Please try again in a moment.";
+        errorMessage =
+          "A database error occurred. Please try again in a moment.";
       } else if (response.status === 400) {
-        errorMessage = errorData.message || "Invalid request. Please check your input and try again.";
+        errorMessage =
+          errorData.message ||
+          "Invalid request. Please check your input and try again.";
       } else if (response.status === 500) {
         errorMessage = "Server error. Please try again later.";
       }
-      
+
       const error = new Error(errorMessage);
       (error as any).status = response.status;
       (error as any).data = errorData;
@@ -126,7 +139,6 @@ const apiClient = async <T>(
 
     const responseText = await response.text();
     return responseText ? JSON.parse(responseText) : ({} as T);
-
   } catch (error) {
     console.error("API Client Error:", error);
     throw error;
@@ -134,7 +146,6 @@ const apiClient = async <T>(
 };
 
 export default apiClient;
-
 
 interface GetOpportunitiesParams {
   q?: string;
