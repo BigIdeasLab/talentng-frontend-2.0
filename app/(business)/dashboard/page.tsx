@@ -1,7 +1,7 @@
 "use client";
 
-import { DashboardLayout } from "@/components/business/dashboard/DashboardLayout";
+import { ProfileLayout } from "@/components/business/Profile/ProfileLayout";
 
 export default function DashboardPage() {
-  return <DashboardLayout />;
+  return <ProfileLayout />;
 }

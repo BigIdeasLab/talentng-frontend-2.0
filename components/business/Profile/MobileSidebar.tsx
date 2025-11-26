@@ -8,7 +8,7 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
-import { Sidebar } from "./Sidebar";
+import { Sidebar } from "../Layout/Sidebar";
 
 interface MobileSidebarProps {
   activeItem?: string;

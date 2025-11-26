@@ -2,18 +2,18 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { Sidebar } from "./Sidebar";
+import { Sidebar } from "../Layout/Sidebar";
 import { MobileSidebar } from "./MobileSidebar";
 import { ProfilePanel } from "./ProfilePanel";
-import { DashboardNav } from "./DashboardNav";
+import { ProfileNav } from "./ProfileNav";
 import { WorksGrid } from "./WorksGrid";
 import type { TalentProfile } from "@/lib/types/profile";
 
-interface DashboardLayoutProps {
+interface ProfileLayoutProps {
   profileData?: TalentProfile;
 }
 
-export function DashboardLayout({ profileData }: DashboardLayoutProps) {
+export function ProfileLayout({ profileData }: ProfileLayoutProps) {
   const { user } = useAuth();
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
   const [activeTab, setActiveTab] = useState("works");
@@ -98,7 +98,7 @@ export function DashboardLayout({ profileData }: DashboardLayoutProps) {
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col bg-white md:max-h-screen md:overflow-y-auto">
         {/* Top Navigation */}
-        <DashboardNav
+        <ProfileNav
           activeTab={activeTab as any}
           onTabChange={setActiveTab}
           onAddNewWork={handleAddNewWork}
