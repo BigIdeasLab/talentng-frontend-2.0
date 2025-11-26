@@ -4,7 +4,10 @@ import {
   LayoutDashboard,
   Telescope,
   Briefcase,
-  BookOpen,
+  Bell,
+  FileText,
+  Users,
+  GraduationCap,
   Headphones,
   Settings,
   ChevronDown,
@@ -26,15 +29,24 @@ interface SidebarProps {
   onMobileClose?: () => void;
 }
 
-const menuItems = [
+interface MenuItem {
+  id: string;
+  label: string;
+  icon: any;
+  badge?: number;
+}
+
+const menuItems: MenuItem[] = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "discover", label: "Discover Talent", icon: Telescope },
   { id: "opportunities", label: "Opportuities", icon: Briefcase },
-  { id: "mentorship", label: "Mentorship", icon: BookOpen },
-  { id: "learning", label: "Learning", icon: BookOpen },
+  { id: "notification", label: "Notification", icon: Bell, badge: 3 },
+  { id: "projects", label: "Projects", icon: FileText },
+  { id: "mentorship", label: "Mentorship", icon: Users },
+  { id: "learning", label: "Learning", icon: GraduationCap },
 ];
 
-const otherItems = [
+const otherItems: Omit<MenuItem, "badge">[] = [
   { id: "support", label: "Support", icon: Headphones },
   { id: "settings", label: "Settings", icon: Settings },
 ];
@@ -51,9 +63,11 @@ export function Sidebar({
       {/* Logo Section */}
       <div className="px-[30px] py-[15px] border-b border-[#E1E4EA]">
         <div className="flex items-center gap-[10px]">
-          <div className="w-[45px] h-[34px] rounded-[2.679px] bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center text-white font-bold text-sm shadow-sm">
-            T
-          </div>
+          <img
+            src="/logo-2.png"
+            alt="TalentNG Logo"
+            className="w-[45px] h-[34px] rounded-[2.679px] object-cover shadow-[0.602px_0.602px_19.111px_0_rgba(0,0,0,0.25)]"
+          />
           <span className="font-medium text-[18px] text-black font-inter-tight">
             TalentNG
           </span>
@@ -75,7 +89,7 @@ export function Sidebar({
                     <div className="w-[30px] h-[30px] rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex-shrink-0" />
                     <div className="min-w-0">
                       <div className="text-[15px] font-normal text-black font-inter-tight truncate">
-                        {user?.fullName || "User"}
+                        {user?.fullName || "Akanbi David"}
                       </div>
                       <div className="text-[13px] text-[rgba(0,0,0,0.30)] font-inter-tight truncate">
                         Independent Talent
@@ -104,7 +118,7 @@ export function Sidebar({
                 key={item.id}
                 onClick={() => onItemSelect?.(item.id)}
                 className={cn(
-                  "w-full flex items-center gap-[8px] px-[12px] py-[8px] rounded-lg transition-colors",
+                  "w-full flex items-center gap-[8px] px-[12px] py-[8px] rounded-lg transition-colors relative",
                   isActive
                     ? "bg-white text-[#525866]"
                     : "text-[#525866] hover:bg-white/50",
@@ -114,14 +128,21 @@ export function Sidebar({
                 <span className="text-[14px] font-normal font-inter-tight text-left flex-1">
                   {item.label}
                 </span>
+                {item.badge !== undefined && item.badge > 0 && (
+                  <div className="flex items-center justify-center w-5 h-5 rounded-full bg-[#E63C23] flex-shrink-0">
+                    <span className="text-[13px] font-semibold text-white font-inter-tight">
+                      {item.badge}
+                    </span>
+                  </div>
+                )}
               </button>
             );
           })}
         </div>
 
         {/* Others Section */}
-        <div className="mt-8 pt-6 border-t border-[#E1E4EA]">
-          <div className="px-[12px] py-[10px] mb-[8px]">
+        <div className="mt-auto pt-6">
+          <div className="px-[12px] mb-[10px]">
             <span className="text-[12px] font-medium text-[rgba(0,0,0,0.30)] font-inter-tight">
               OTHERS
             </span>
@@ -132,6 +153,7 @@ export function Sidebar({
               return (
                 <button
                   key={item.id}
+                  onClick={() => onItemSelect?.(item.id)}
                   className="w-full flex items-center gap-[8px] px-[12px] py-[8px] rounded-lg text-[#525866] hover:bg-white/50 transition-colors"
                 >
                   <Icon className="w-5 h-5 flex-shrink-0" />
