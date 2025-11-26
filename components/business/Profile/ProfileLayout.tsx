@@ -122,9 +122,12 @@ export function ProfileLayout({ profileData }: ProfileLayoutProps) {
 
           {/* Services Tab */}
           {activeTab === "services" && (
-            <div className="p-[20px] text-center text-gray-400">
-              <p className="text-lg">Services section coming soon</p>
-            </div>
+            <ServicesGrid
+              isLoading={isLoading}
+              onServiceClick={(service) =>
+                console.log("Service clicked:", service)
+              }
+            />
           )}
 
           {/* Recommendations Tab */}
