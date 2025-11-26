@@ -114,21 +114,21 @@ export function OpportunitiesGrid({
   }
 
   return (
-    <div className="w-full px-[20px] py-[20px]">
-      <div className="flex flex-col items-start gap-[10px] max-w-[560px]">
+    <div className="w-full px-[15px] py-[15px] flex justify-center">
+      <div className="flex flex-col items-center gap-[8px] max-w-[560px] w-full">
         {opportunities.map((opportunity) => (
           <div
             key={opportunity.id}
-            className="flex flex-col items-center gap-[24px] w-full pt-[15px] rounded-[20px] border border-[#E1E4EA] bg-white"
+            className="flex flex-col items-center gap-[18px] w-full pt-[12px] rounded-[16px] border border-[#E1E4EA] bg-white"
           >
             {/* Main Container */}
-            <div className="flex flex-col items-start gap-[21px] w-full px-[12px]">
+            <div className="flex flex-col items-start gap-[16px] w-full px-[10px]">
               {/* Header Section */}
-              <div className="flex flex-col items-start gap-[6px] w-full">
+              <div className="flex flex-col items-start gap-[5px] w-full">
                 <div className="flex justify-between items-center w-full">
                   {/* Profile */}
-                  <div className="flex items-center gap-[10px]">
-                    <div className="relative w-[40px] h-[40px] rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                  <div className="flex items-center gap-[8px]">
+                    <div className="relative w-[36px] h-[36px] rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
                       <Image
                         src={opportunity.companyLogo}
                         alt={opportunity.companyName}
@@ -137,11 +137,11 @@ export function OpportunitiesGrid({
                         unoptimized
                       />
                     </div>
-                    <div className="flex flex-col items-start gap-[10px]">
-                      <h3 className="text-[15px] font-medium leading-normal font-inter-tight text-black">
+                    <div className="flex flex-col items-start gap-[4px]">
+                      <h3 className="text-[13px] font-medium leading-normal font-inter-tight text-black">
                         {opportunity.companyName}
                       </h3>
-                      <span className="text-[14px] font-light leading-normal font-inter-tight text-[#525866]">
+                      <span className="text-[12px] font-light leading-normal font-inter-tight text-[#525866]">
                         {opportunity.date}
                       </span>
                     </div>
@@ -149,21 +149,21 @@ export function OpportunitiesGrid({
 
                   {/* Type Badge */}
                   <div
-                    className={`flex px-[12px] py-[15px] items-center gap-[8px] rounded-[8px] ${
+                    className={`flex px-[10px] py-[8px] items-center gap-[6px] rounded-[6px] ${
                       opportunity.type === "internship"
                         ? "bg-[rgba(0,139,71,0.09)]"
                         : "bg-[rgba(92,48,255,0.10)]"
                     }`}
                   >
                     <div
-                      className={`w-[8px] h-[8px] rounded-full ${
+                      className={`w-[6px] h-[6px] rounded-full ${
                         opportunity.type === "internship"
                           ? "bg-[#008B47]"
                           : "bg-[#5C30FF]"
                       }`}
                     />
                     <span
-                      className={`text-[13px] font-normal leading-normal font-inter-tight ${
+                      className={`text-[11px] font-normal leading-normal font-inter-tight ${
                         opportunity.type === "internship"
                           ? "text-[#008B47]"
                           : "text-[#5C30FF]"
@@ -178,19 +178,19 @@ export function OpportunitiesGrid({
               </div>
 
               {/* Job Title */}
-              <h2 className="text-[18px] font-medium leading-normal font-inter-tight text-black">
+              <h2 className="text-[15px] font-medium leading-normal font-inter-tight text-black">
                 {opportunity.title}
               </h2>
 
               {/* Skills */}
-              <div className="flex flex-col items-start gap-[14px] w-full">
-                <div className="flex h-auto items-start content-start gap-x-[5px] gap-y-[8px] w-full flex-wrap">
+              <div className="flex flex-col items-start gap-[10px] w-full">
+                <div className="flex h-auto items-start content-start gap-x-[4px] gap-y-[6px] w-full flex-wrap">
                   {opportunity.skills.map((skill, idx) => (
                     <div
                       key={idx}
-                      className="flex px-[13px] py-[12px] justify-center items-center rounded-[30px] bg-[#F5F5F5]"
+                      className="flex px-[10px] py-[8px] justify-center items-center rounded-[30px] bg-[#F5F5F5]"
                     >
-                      <span className="text-[14px] font-normal leading-[105%] font-inter-tight text-black">
+                      <span className="text-[11px] font-normal leading-[105%] font-inter-tight text-black">
                         {skill}
                       </span>
                     </div>
@@ -200,26 +200,26 @@ export function OpportunitiesGrid({
             </div>
 
             {/* Bottom Section - Rate and Actions */}
-            <div className="flex flex-col items-start gap-[10px] w-full px-[12px] py-[12px] border-t border-[#E1E4EA]">
-              <div className="flex justify-between items-center w-full">
+            <div className="flex flex-col items-start gap-[8px] w-full px-[10px] py-[10px] border-t border-[#E1E4EA]">
+              <div className="flex justify-between items-center w-full gap-[8px]">
                 {/* Rate */}
-                <span className="text-[18px] font-medium leading-normal font-inter-tight text-black">
+                <span className="text-[15px] font-medium leading-normal font-inter-tight text-black">
                   {opportunity.rate}
                 </span>
 
                 {/* Actions */}
-                <div className="flex justify-end items-center gap-[6px]">
+                <div className="flex justify-end items-center gap-[5px]">
                   {/* Remove Button */}
                   <button
                     onClick={() => onRemove?.(opportunity)}
-                    className="flex h-[40px] px-[20px] py-[15px] items-center gap-[4px] rounded-[50px] bg-[#181B25] hover:bg-[#2a2d3a] transition-colors"
+                    className="flex h-[36px] px-[16px] py-[12px] items-center gap-[3px] rounded-[50px] bg-[#181B25] hover:bg-[#2a2d3a] transition-colors"
                   >
                     <Bookmark
-                      className="w-[18px] h-[18px]"
+                      className="w-[15px] h-[15px]"
                       color="white"
                       strokeWidth={1.125}
                     />
-                    <span className="text-[14px] font-medium leading-normal font-inter-tight text-white">
+                    <span className="text-[12px] font-medium leading-normal font-inter-tight text-white">
                       Remove
                     </span>
                   </button>
@@ -227,14 +227,14 @@ export function OpportunitiesGrid({
                   {/* Apply Button */}
                   <button
                     onClick={() => onApply?.(opportunity)}
-                    className="flex h-[40px] px-[20px] py-[15px] items-center gap-[4px] rounded-[50px] border-[0.822px] border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4a24d6] transition-colors"
+                    className="flex h-[36px] px-[16px] py-[12px] items-center gap-[3px] rounded-[50px] border-[0.822px] border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4a24d6] transition-colors"
                   >
                     <Check
-                      className="w-[18px] h-[18px]"
+                      className="w-[15px] h-[15px]"
                       color="white"
                       strokeWidth={1.125}
                     />
-                    <span className="text-[14px] font-medium leading-normal font-inter-tight text-white">
+                    <span className="text-[12px] font-medium leading-normal font-inter-tight text-white">
                       Apply
                     </span>
                   </button>

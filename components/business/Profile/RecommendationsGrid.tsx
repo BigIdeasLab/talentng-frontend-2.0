@@ -103,21 +103,21 @@ export function RecommendationsGrid({
   }
 
   return (
-    <div className="w-full px-[20px] py-[20px]">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[10px]">
+    <div className="w-full px-[15px] py-[15px]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[8px]">
         {recommendations.map((recommendation) => (
           <button
             key={recommendation.id}
             onClick={() => onRecommendationClick?.(recommendation)}
-            className="flex flex-col items-start gap-[10px] p-[15px_12px] rounded-[15px] border border-[#E1E4EA] text-left hover:shadow-md transition-shadow"
+            className="flex flex-col items-start gap-[8px] p-[12px_10px] rounded-[12px] border border-[#E1E4EA] text-left hover:shadow-md transition-shadow"
           >
-            <div className="flex flex-col items-start gap-[20px] w-full">
+            <div className="flex flex-col items-start gap-[15px] w-full">
               {/* Header with Avatar and Info */}
-              <div className="flex flex-col items-start gap-[6px] w-full">
+              <div className="flex flex-col items-start gap-[5px] w-full">
                 <div className="flex justify-between items-center w-full">
-                  <div className="flex items-center gap-[10px]">
+                  <div className="flex items-center gap-[8px]">
                     {/* Avatar */}
-                    <div className="relative w-[40px] h-[40px] rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                    <div className="relative w-[36px] h-[36px] rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
                       <Image
                         src={recommendation.avatar}
                         alt={recommendation.name}
@@ -128,11 +128,11 @@ export function RecommendationsGrid({
                     </div>
 
                     {/* Name and Date */}
-                    <div className="flex flex-col items-start gap-[10px]">
-                      <h3 className="text-[15px] font-medium leading-normal font-inter-tight text-black">
+                    <div className="flex flex-col items-start gap-[4px]">
+                      <h3 className="text-[13px] font-medium leading-normal font-inter-tight text-black">
                         {recommendation.name}
                       </h3>
-                      <span className="text-[14px] font-light leading-normal font-inter-tight text-[rgba(0,0,0,0.30)]">
+                      <span className="text-[12px] font-light leading-normal font-inter-tight text-[rgba(0,0,0,0.30)]">
                         {recommendation.date}
                       </span>
                     </div>
@@ -141,7 +141,7 @@ export function RecommendationsGrid({
               </div>
 
               {/* Recommendation Text */}
-              <p className="text-[14px] font-normal leading-[20px] font-inter-tight text-[#525866] w-full">
+              <p className="text-[12px] font-normal leading-[18px] font-inter-tight text-[#525866] w-full">
                 {recommendation.text}
               </p>
             </div>

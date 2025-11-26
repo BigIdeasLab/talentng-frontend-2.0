@@ -18,6 +18,13 @@ const tabs = [
   { id: "opportunities", label: "Saved Opportunities" },
 ];
 
+const buttonTexts: Record<string, string> = {
+  works: "Add New Work",
+  services: "Add Service",
+  recommendations: "Request Recommendation",
+  opportunities: "Discover Opportunities",
+};
+
 export function ProfileNav({
   activeTab = "works",
   onTabChange,
@@ -29,6 +36,8 @@ export function ProfileNav({
     setActive(tabId as any);
     onTabChange?.(tabId);
   };
+
+  const buttonText = buttonTexts[active] || "Add New Work";
 
   return (
     <div className="flex items-center justify-between w-full bg-white border-b border-[#E1E4EA] sticky top-0 z-30">
@@ -60,7 +69,7 @@ export function ProfileNav({
         className="hidden sm:flex h-[40px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a24d6] font-inter-tight text-[13px] font-normal gap-[8px] mr-[20px] flex-shrink-0"
       >
         <Plus className="w-4 h-4" />
-        Add New Work
+        {buttonText}
       </Button>
 
       {/* Mobile CTA Icon Button */}

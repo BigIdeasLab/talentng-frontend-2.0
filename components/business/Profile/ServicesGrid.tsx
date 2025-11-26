@@ -94,13 +94,13 @@ export function ServicesGrid({
   }
 
   return (
-    <div className="w-full px-[20px] py-[20px]">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[11px] gap-y-[25px]">
+    <div className="w-full px-[15px] py-[15px]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[10px] gap-y-[20px]">
         {services.map((service) => (
           <button
             key={service.id}
             onClick={() => onServiceClick?.(service)}
-            className="group flex flex-col items-start gap-[10px] text-left hover:opacity-80 transition-opacity"
+            className="group flex flex-col items-start gap-[8px] text-left hover:opacity-80 transition-opacity"
           >
             {/* Service Image */}
             <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-100">
@@ -114,15 +114,15 @@ export function ServicesGrid({
             </div>
 
             {/* Service Details */}
-            <div className="flex flex-col items-start gap-[15px] w-full">
+            <div className="flex flex-col items-start gap-[12px] w-full">
               {/* Tags */}
-              <div className="flex flex-wrap items-center gap-[5px]">
+              <div className="flex flex-wrap items-center gap-[4px]">
                 {service.tags.map((tag, idx) => (
                   <div
                     key={idx}
-                    className="flex px-[13px] py-[12px] justify-center items-center rounded-[30px] bg-[#F5F5F5]"
+                    className="flex px-[10px] py-[8px] justify-center items-center rounded-[30px] bg-[#F5F5F5]"
                   >
-                    <span className="text-[13px] font-normal leading-[105%] font-inter-tight text-black">
+                    <span className="text-[11px] font-normal leading-[105%] font-inter-tight text-black">
                       {tag.label}
                     </span>
                   </div>
@@ -130,18 +130,18 @@ export function ServicesGrid({
               </div>
 
               {/* Title */}
-              <h3 className="text-[18px] font-medium leading-normal font-inter-tight text-black">
+              <h3 className="text-[15px] font-medium leading-normal font-inter-tight text-black">
                 {service.title}
               </h3>
 
               {/* Price */}
-              <div className="flex items-center gap-[5px]">
+              <div className="flex items-center gap-[4px]">
                 <Briefcase
-                  className="w-[18px] h-[18px]"
+                  className="w-[16px] h-[16px]"
                   strokeWidth={1.2}
                   color="rgba(0, 0, 0, 0.3)"
                 />
-                <span className="text-[15px] font-light leading-normal font-inter-tight text-[rgba(0,0,0,0.30)]">
+                <span className="text-[13px] font-light leading-normal font-inter-tight text-[rgba(0,0,0,0.30)]">
                   {service.price}
                 </span>
               </div>
