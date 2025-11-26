@@ -109,7 +109,7 @@ export function Sidebar({
                 key={item.id}
                 onClick={() => onItemSelect?.(item.id)}
                 className={cn(
-                  "w-full flex items-center gap-[8px] px-[12px] py-[8px] rounded-lg transition-colors",
+                  "w-full flex items-center gap-[8px] px-[12px] py-[8px] rounded-lg transition-colors relative",
                   isActive
                     ? "bg-white text-[#525866]"
                     : "text-[#525866] hover:bg-white/50",
@@ -119,6 +119,13 @@ export function Sidebar({
                 <span className="text-[14px] font-normal font-inter-tight text-left flex-1">
                   {item.label}
                 </span>
+                {item.badge !== undefined && item.badge > 0 && (
+                  <div className="flex items-center justify-center w-5 h-5 rounded-full bg-[#E63C23] flex-shrink-0">
+                    <span className="text-[13px] font-semibold text-white font-inter-tight">
+                      {item.badge}
+                    </span>
+                  </div>
+                )}
               </button>
             );
           })}
