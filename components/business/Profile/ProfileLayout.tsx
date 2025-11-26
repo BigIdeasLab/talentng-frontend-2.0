@@ -7,6 +7,9 @@ import { MobileSidebar } from "./MobileSidebar";
 import { ProfilePanel } from "./ProfilePanel";
 import { ProfileNav } from "./ProfileNav";
 import { WorksGrid } from "./WorksGrid";
+import { ServicesGrid } from "./ServicesGrid";
+import { RecommendationsGrid } from "./RecommendationsGrid";
+import { OpportunitiesGrid } from "./OpportunitiesGrid";
 import type { TalentProfile } from "@/lib/types/profile";
 
 interface ProfileLayoutProps {
@@ -121,23 +124,35 @@ export function ProfileLayout({ profileData }: ProfileLayoutProps) {
 
           {/* Services Tab */}
           {activeTab === "services" && (
-            <div className="p-[20px] text-center text-gray-400">
-              <p className="text-lg">Services section coming soon</p>
-            </div>
+            <ServicesGrid
+              isLoading={isLoading}
+              onServiceClick={(service) =>
+                console.log("Service clicked:", service)
+              }
+            />
           )}
 
           {/* Recommendations Tab */}
           {activeTab === "recommendations" && (
-            <div className="p-[20px] text-center text-gray-400">
-              <p className="text-lg">Recommendations section coming soon</p>
-            </div>
+            <RecommendationsGrid
+              isLoading={isLoading}
+              onRecommendationClick={(recommendation) =>
+                console.log("Recommendation clicked:", recommendation)
+              }
+            />
           )}
 
           {/* Opportunities Tab */}
           {activeTab === "opportunities" && (
-            <div className="p-[20px] text-center text-gray-400">
-              <p className="text-lg">Saved opportunities section coming soon</p>
-            </div>
+            <OpportunitiesGrid
+              isLoading={isLoading}
+              onRemove={(opportunity) =>
+                console.log("Remove opportunity:", opportunity)
+              }
+              onApply={(opportunity) =>
+                console.log("Apply to opportunity:", opportunity)
+              }
+            />
           )}
         </div>
       </main>
