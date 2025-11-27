@@ -593,9 +593,16 @@ export default function OpportunitiesPage() {
 
         {/* Opportunities Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-2.5 pb-8">
-          {opportunities.map((opportunity) => (
-            <OpportunityCard key={opportunity.id} opportunity={opportunity} />
-          ))}
+          {filteredOpportunities.length > 0 ? (
+            filteredOpportunities.map((opportunity) => (
+              <OpportunityCard key={opportunity.id} opportunity={opportunity} />
+            ))
+          ) : (
+            <div className="col-span-1 lg:col-span-2 flex flex-col items-center justify-center py-16">
+              <p className="text-lg font-medium text-gray-600 mb-2">No opportunities found</p>
+              <p className="text-sm text-gray-500">Try adjusting your filters or search query</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
