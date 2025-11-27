@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getNotifications } from "@/lib/api";
 import { Notification } from "@/lib/types/notification";
 import { useAuth } from "@/hooks/use-auth";
@@ -12,7 +12,7 @@ export function useNotifications() {
   const [error, setError] = useState<string | null>(null);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     if (user) {
       setLoading(true);
       setError(null);
@@ -24,11 +24,11 @@ export function useNotifications() {
       }
       setLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchNotifications();
-  }, [user]);
+  }, [fetchNotifications]);
 
   const unreadCount = notifications.filter((n) => !n.readAt).length;
 

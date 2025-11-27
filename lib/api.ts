@@ -18,6 +18,7 @@ type ApiOptions = {
 };
 
 let isRefreshing = false;
+let refreshTokenPromise: Promise<string | null> | null = null;
 const failedQueue: any[] = [];
 
 const processQueue = (error: Error | null, token: string | null = null) => {
@@ -66,41 +67,47 @@ const apiClient = async <T>(
     let response = await fetch(`${baseUrl}${endpoint}`, config);
 
     if (response.status === 401) {
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        })
-        .then(newToken => {
-          (config.headers as Record<string, string>)["Authorization"] = `Bearer ${newToken}`;
-          return fetch(`${baseUrl}${endpoint}`, config);
-        })
-        .then(res => res.json());
+      if (isRefreshing && refreshTokenPromise) {
+        return refreshTokenPromise
+          .then(newToken => {
+            if (!newToken) throw new Error('Token refresh failed');
+            (config.headers as Record<string, string>)["Authorization"] = `Bearer ${newToken}`;
+            return fetch(`${baseUrl}${endpoint}`, config);
+          })
+          .then(res => res.json());
       }
 
       isRefreshing = true;
-
-      try {
-        const refreshResponse = await fetch(`${baseUrl}/auth/refresh`, { 
-          method: 'POST',
-          credentials: 'include'
-        });
-        if (!refreshResponse.ok) {
-          throw new Error('Failed to refresh token');
+      refreshTokenPromise = new Promise(async (resolve) => {
+        try {
+          const refreshResponse = await fetch(`${baseUrl}/auth/refresh`, { 
+            method: 'POST',
+            credentials: 'include'
+          });
+          if (!refreshResponse.ok) {
+            throw new Error('Failed to refresh token');
+          }
+          const { accessToken: newAccessToken } = await refreshResponse.json();
+          setCookie("accessToken", newAccessToken);
+          processQueue(null, newAccessToken);
+          (config.headers as Record<string, string>)["Authorization"] = `Bearer ${newAccessToken}`;
+          response = await fetch(`${baseUrl}${endpoint}`, config);
+          resolve(newAccessToken);
+        } catch (error) {
+          processQueue(error as Error, null);
+          deleteCookie("accessToken");
+          deleteCookie("user");
+          isRefreshing = false;
+          refreshTokenPromise = null;
+          window.location.href = '/login';
+          resolve(null);
+        } finally {
+          isRefreshing = false;
+          refreshTokenPromise = null;
         }
-        const { accessToken: newAccessToken } = await refreshResponse.json();
-        setCookie("accessToken", newAccessToken);
-        processQueue(null, newAccessToken);
-        (config.headers as Record<string, string>)["Authorization"] = `Bearer ${newAccessToken}`;
-        response = await fetch(`${baseUrl}${endpoint}`, config);
-      } catch (error) {
-        processQueue(error as Error, null);
-        deleteCookie("accessToken");
-        deleteCookie("user");
-        window.location.href = '/login';
-        throw error;
-      } finally {
-        isRefreshing = false;
-      }
+      });
+
+      return refreshTokenPromise.then(() => response.json());
     }
 
     if (!response.ok) {
