@@ -5,6 +5,7 @@ import { Search, SlidersHorizontal, ChevronDown, Bookmark, Check } from 'lucide-
 
 type OpportunityType = 'internship' | 'job-listing' | 'volunteer' | 'part-time';
 type FilterType = 'all' | 'job-listing' | 'internship' | 'volunteer' | 'applied';
+type ApplicationStatus = 'awaiting-review' | 'hired' | 'not-hired';
 
 interface Opportunity {
   id: string;
@@ -16,6 +17,7 @@ interface Opportunity {
   skills: string[];
   rate: string;
   showActions: boolean;
+  applicationStatus?: ApplicationStatus;
 }
 
 const opportunities: Opportunity[] = [
