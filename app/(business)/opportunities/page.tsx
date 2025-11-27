@@ -499,6 +499,24 @@ export default function OpportunitiesPage() {
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Filter opportunities based on active filter
+  const filteredOpportunities = opportunities.filter((opportunity) => {
+    // Handle filter
+    if (activeFilter !== 'all' && activeFilter !== 'applied') {
+      if (opportunity.type !== activeFilter) return false;
+    }
+    // Handle search
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      return (
+        opportunity.title.toLowerCase().includes(query) ||
+        opportunity.posterName.toLowerCase().includes(query) ||
+        opportunity.skills.some((skill) => skill.toLowerCase().includes(query))
+      );
+    }
+    return true;
+  });
+
   return (
     <div className="h-screen overflow-y-auto bg-white">
       <div className="max-w-[1149px] mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-8">
