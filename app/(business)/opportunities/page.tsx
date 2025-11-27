@@ -769,9 +769,11 @@ function ApplicationStatusBanner({ status }: { status: ApplicationStatus }) {
 
 function OpportunityCard({ opportunity }: { opportunity: Opportunity }) {
   const config = typeConfig[opportunity.type];
+  const hasApplicationStatus = !!opportunity.applicationStatus;
 
   return (
-    <div className="flex flex-col items-center gap-6 pt-[15px] border border-[#E1E4EA] rounded-[20px] bg-white hover:shadow-md transition-shadow">
+    <div className="relative">
+      <div className={`flex flex-col items-center gap-6 pt-[15px] border border-[#E1E4EA] ${hasApplicationStatus ? 'rounded-t-[20px] border-b-0' : 'rounded-[20px]'} bg-white hover:shadow-md transition-shadow`}>
       {/* Card Content */}
       <div className="flex flex-col items-start gap-5 w-full px-3 md:px-6">
         {/* Header Section */}
@@ -880,6 +882,10 @@ function OpportunityCard({ opportunity }: { opportunity: Opportunity }) {
           )}
         </div>
       </div>
+      </div>
+      {hasApplicationStatus && opportunity.applicationStatus && (
+        <ApplicationStatusBanner status={opportunity.applicationStatus} />
+      )}
     </div>
   );
 }
