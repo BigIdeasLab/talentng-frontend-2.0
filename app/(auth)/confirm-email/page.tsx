@@ -13,6 +13,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import apiClient from "@/lib/api";
+import { setCookie } from "@/lib/utils";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 
 const confirmEmailSchema = z.object({
@@ -71,12 +72,30 @@ const ConfirmEmailPage = () => {
     mutationFn: (data: ConfirmEmailFormValues) => {
       return apiClient("/auth/verify-email/confirm", {
         method: "POST",
-        body: { ...data, email },
+        body: { email, verificationCode: data.verificationCode },
+        credentials: "include",
       });
     },
-    onSuccess: () => {
+    onSuccess: (data: any) => {
       toast.success("Email verified successfully!");
-      router.push("/login");
+      
+      // Store access token
+      if (data.accessToken) {
+        localStorage.setItem("accessToken", data.accessToken);
+        setCookie("accessToken", data.accessToken);
+      }
+      
+      // Store user data
+      if (data.user) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
+      
+      // Navigate based on onboarding status
+      if (data.needsOnboarding) {
+        router.push("/onboarding");
+      } else {
+        router.push("/dashboard");
+      }
     },
     onError: (error: any) => {
       toast.error(error.message || "An error occurred. Please try again.");

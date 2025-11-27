@@ -15,6 +15,7 @@ const protectedRoutes = [
 const authRoutes = [
   "/login",
   "/signup",
+  "/confirm-email",
   "/forgot-password",
   "/forgot-password-confirmation",
   "/reset-password",

@@ -341,9 +341,10 @@ export const verifyEmailConfirm = async (
   email: string,
   verificationCode: string,
 ) => {
-  return apiClient<void>("/auth/verify-email/confirm", {
+  return apiClient<any>("/auth/verify-email/confirm", {
     method: "POST",
     body: { email, verificationCode },
+    credentials: "include",
   });
 };
 

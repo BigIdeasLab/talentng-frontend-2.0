@@ -1,7 +1,7 @@
 "use client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { decodeJwt, getCookie, deleteCookie } from "@/lib/utils";
+import { decodeJwt, getCookie, deleteCookie, setCookie } from "@/lib/utils";
 import apiClient from "@/lib/api";
 import { User } from "@/lib/types/auth";
 
@@ -39,10 +39,21 @@ export const useAuth = () => {
     queryFn: fetchUser,
   });
 
-  const logout = () => {
-    deleteCookie("accessToken");
-    queryClient.setQueryData(["user"], null);
-    router.push("/login");
+  const logout = async () => {
+    try {
+      await apiClient<void>("/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      deleteCookie("accessToken");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("user");
+      queryClient.setQueryData(["user"], null);
+      router.push("/login");
+    }
   };
 
   return { user: user ?? null, loading, logout, refetchUser };

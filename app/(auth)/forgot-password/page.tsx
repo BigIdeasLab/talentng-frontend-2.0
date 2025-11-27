@@ -41,7 +41,7 @@ const ForgotPassword = () => {
       forgotPassword(data.email),
     onSuccess: (_, variables) => {
       toast.success("Reset link sent to your email!");
-      router.push(`/forgot-password-confirmation?email=${variables.email}`);
+      router.push(`/forgot-password-confirmation?email=${encodeURIComponent(variables.email)}`);
     },
     onError: (error: any) => {
       const message =

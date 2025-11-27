@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { decodeJwt } from "@/lib/utils";
+import { decodeJwt, setCookie } from "@/lib/utils";
 
 import { login } from "@/lib/api";
 import { Button } from "@/components/ui/button";
@@ -47,7 +47,9 @@ const Login = () => {
     onSuccess: (response) => {
       const { accessToken, user } = response;
       if (accessToken) {
-        document.cookie = `accessToken=${accessToken}; path=/; max-age=604800; SameSite=Strict; Secure`;
+        setCookie("accessToken", accessToken, 7);
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("user", JSON.stringify(user));
         toast.success("Login successful!");
 
         const decodedToken = decodeJwt(accessToken);

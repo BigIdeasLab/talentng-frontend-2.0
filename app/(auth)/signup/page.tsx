@@ -9,7 +9,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
-import { register, verifyEmailSend } from "@/lib/api";
+import { register } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -54,22 +54,11 @@ const Signup = () => {
     },
   });
 
-  const sendVerificationEmailMutation = useMutation({
-    mutationFn: (email: string) => verifyEmailSend(email),
-    onSuccess: (_, variables) => {
-      toast.success("Verification email sent!");
-      router.push(`/confirm-email?email=${variables}`);
-    },
-    onError: (error: any) => {
-      toast.error(error.message || "Failed to send verification email.");
-    },
-  });
-
   const mutation = useMutation({
     mutationFn: (data: SignUpFormValues) => register(data.email, data.password),
     onSuccess: (data: any, variables) => {
-      toast.success("Account created successfully!");
-      sendVerificationEmailMutation.mutate(variables.email);
+      toast.success("Check your email for verification code!");
+      router.push(`/confirm-email?email=${encodeURIComponent(variables.email)}`);
     },
     onError: (error: any) => {
       const message = error.message || "An error occurred. Please try again.";
