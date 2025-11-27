@@ -115,7 +115,7 @@ const ConfirmEmailPage = () => {
                 <img
                   src="/logo.png"
                   alt="Talent.ng Logo"
-                  className="w-full max-w-sm object-contain"
+                  className="w-full max-w-lg object-contain"
                 />
               </div>
 
@@ -182,8 +182,6 @@ const ConfirmEmailPage = () => {
                       onSubmit={form.handleSubmit(onSubmit)}
                       className="flex flex-col gap-2"
                     >
-
-
                       {/* OTP Input */}
                       <FormField
                         control={form.control}

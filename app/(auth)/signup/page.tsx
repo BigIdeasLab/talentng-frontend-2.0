@@ -100,7 +100,7 @@ const Signup = () => {
                 <img
                   src="/logo.png"
                   alt="Talent.ng Logo"
-                  className="w-full max-w-md object-contain rounded-[22px] shadow-md"
+                  className="w-full max-w-lg object-contain"
                 />
               </div>
 
@@ -153,79 +153,127 @@ const Signup = () => {
                           Password
                         </label>
                         <FormField
-                           control={form.control}
-                           name="password"
-                           render={({ field }) => (
-                             <FormItem>
-                               <FormControl>
-                                 <div className="relative h-[53px] rounded-[10px] bg-gray-100 flex items-center px-4">
-                                   <Input
-                                     type={showPassword ? "text" : "password"}
-                                     placeholder="Your Password"
-                                     {...field}
-                                     onChange={(e) => {
-                                       field.onChange(e);
-                                       setPassword(e.target.value);
-                                     }}
-                                     className="flex-1 bg-transparent border-0 placeholder:text-gray-400 focus:ring-0"
-                                   />
-                                   <button
-                                     type="button"
-                                     onClick={() =>
-                                       setShowPassword(!showPassword)
-                                     }
-                                     className="text-gray-500 hover:text-gray-700"
-                                   >
-                                     {showPassword ? (
-                                       <EyeOff size={20} />
-                                     ) : (
-                                       <Eye size={20} />
-                                     )}
-                                   </button>
-                                 </div>
-                               </FormControl>
-                               <FormMessage />
-                             </FormItem>
-                           )}
-                         />
-                         
-                         {/* Password Requirements Checklist */}
-                         {password && (
-                           <div className="bg-gray-50 p-3 rounded-[10px] flex flex-wrap gap-3">
-                             <div className="flex items-center gap-1 text-xs">
-                               <span className={passwordChecks.length ? "text-green-600" : "text-gray-400"}>
-                                 {passwordChecks.length ? "✓" : "○"}
-                               </span>
-                               <span className={passwordChecks.length ? "text-gray-700" : "text-gray-500"}>
-                                 8 chars
-                               </span>
-                             </div>
-                             <div className="flex items-center gap-1 text-xs">
-                               <span className={passwordChecks.uppercase ? "text-green-600" : "text-gray-400"}>
-                                 {passwordChecks.uppercase ? "✓" : "○"}
-                               </span>
-                               <span className={passwordChecks.uppercase ? "text-gray-700" : "text-gray-500"}>
-                                 A-Z
-                               </span>
-                             </div>
-                             <div className="flex items-center gap-1 text-xs">
-                               <span className={passwordChecks.lowercase ? "text-green-600" : "text-gray-400"}>
-                                 {passwordChecks.lowercase ? "✓" : "○"}
-                               </span>
-                               <span className={passwordChecks.lowercase ? "text-gray-700" : "text-gray-500"}>
-                                 a-z
-                               </span>
-                             </div>
-                             <div className="flex items-center gap-1 text-xs">
-                               <span className={passwordChecks.number ? "text-green-600" : "text-gray-400"}>
-                                 {passwordChecks.number ? "✓" : "○"}
-                               </span>
-                               <span className={passwordChecks.number ? "text-gray-700" : "text-gray-500"}>
-                                 0-9
-                               </span>
-                             </div>
-                           </div>
-                         )}
+                          control={form.control}
+                          name="password"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <div className="relative h-[53px] rounded-[10px] bg-gray-100 flex items-center px-4">
+                                  <Input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Your Password"
+                                    {...field}
+                                    onChange={(e) => {
+                                      field.onChange(e);
+                                      setPassword(e.target.value);
+                                    }}
+                                    className="flex-1 bg-transparent border-0 placeholder:text-gray-400 focus:ring-0"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setShowPassword(!showPassword)
+                                    }
+                                    className="text-gray-500 hover:text-gray-700"
+                                  >
+                                    {showPassword ? (
+                                      <EyeOff size={20} />
+                                    ) : (
+                                      <Eye size={20} />
+                                    )}
+                                  </button>
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        {/* Password Requirements Checklist */}
+                        {password && (
+                          <div className="bg-gray-50 p-3 rounded-[10px] flex flex-wrap gap-3">
+                            <div className="flex items-center gap-1 text-xs">
+                              <span
+                                className={
+                                  passwordChecks.length
+                                    ? "text-green-600"
+                                    : "text-gray-400"
+                                }
+                              >
+                                {passwordChecks.length ? "✓" : "○"}
+                              </span>
+                              <span
+                                className={
+                                  passwordChecks.length
+                                    ? "text-gray-700"
+                                    : "text-gray-500"
+                                }
+                              >
+                                8 chars
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1 text-xs">
+                              <span
+                                className={
+                                  passwordChecks.uppercase
+                                    ? "text-green-600"
+                                    : "text-gray-400"
+                                }
+                              >
+                                {passwordChecks.uppercase ? "✓" : "○"}
+                              </span>
+                              <span
+                                className={
+                                  passwordChecks.uppercase
+                                    ? "text-gray-700"
+                                    : "text-gray-500"
+                                }
+                              >
+                                A-Z
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1 text-xs">
+                              <span
+                                className={
+                                  passwordChecks.lowercase
+                                    ? "text-green-600"
+                                    : "text-gray-400"
+                                }
+                              >
+                                {passwordChecks.lowercase ? "✓" : "○"}
+                              </span>
+                              <span
+                                className={
+                                  passwordChecks.lowercase
+                                    ? "text-gray-700"
+                                    : "text-gray-500"
+                                }
+                              >
+                                a-z
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1 text-xs">
+                              <span
+                                className={
+                                  passwordChecks.number
+                                    ? "text-green-600"
+                                    : "text-gray-400"
+                                }
+                              >
+                                {passwordChecks.number ? "✓" : "○"}
+                              </span>
+                              <span
+                                className={
+                                  passwordChecks.number
+                                    ? "text-gray-700"
+                                    : "text-gray-500"
+                                }
+                              >
+                                0-9
+                              </span>
+                            </div>
+                          </div>
+                        )}
                       </div>
 
                       {/* Continue Button */}
