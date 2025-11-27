@@ -601,8 +601,11 @@ export default function OpportunitiesPage() {
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Determine which opportunities to show based on active filter
+  const sourceOpportunities = activeFilter === 'applied' ? appliedOpportunities : opportunities;
+
   // Filter opportunities based on active filter
-  const filteredOpportunities = opportunities.filter((opportunity) => {
+  const filteredOpportunities = sourceOpportunities.filter((opportunity) => {
     // Handle filter
     if (activeFilter !== 'all' && activeFilter !== 'applied') {
       if (opportunity.type !== activeFilter) return false;
