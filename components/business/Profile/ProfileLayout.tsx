@@ -12,12 +12,13 @@ import type { UIProfileData } from "@/lib/profileMapper";
 
 interface ProfileLayoutProps {
   profileData?: UIProfileData;
+  isLoading?: boolean;
 }
 
-export function ProfileLayout({ profileData }: ProfileLayoutProps) {
+export function ProfileLayout({ profileData, isLoading: initialLoading }: ProfileLayoutProps) {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("works");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(initialLoading ?? false);
 
   useEffect(() => {
     // Scroll to top when tab changes

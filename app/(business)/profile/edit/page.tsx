@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { EditProfileSidebar } from "@/components/profile/edit/Sidebar";
 import { EditProfileActionBar } from "@/components/profile/edit/ActionBar";
 import { PersonalDetailsSection } from "@/components/profile/edit/PersonalDetailsSection";
@@ -10,8 +10,8 @@ import { EducationSection } from "@/components/profile/edit/EducationSection";
 import { PortfolioSection } from "@/components/profile/edit/PortfolioSection";
 import { SocialLinksSection } from "@/components/profile/edit/SocialLinksSection";
 import statesCities from "@/lib/states-cities.json";
-import { mapUIToAPI, type UIProfileData } from "@/lib/profileMapper";
-import { dummyUIProfileData } from "@/lib/dummyProfileData";
+import { mapUIToAPI, mapAPIToUI, type UIProfileData } from "@/lib/profileMapper";
+import { getCurrentProfile, updateProfile, updateProfileImageUrl } from "@/lib/api/talent";
 
 const availableSkills = [
   "Website Design",
@@ -39,9 +39,48 @@ const availableStack = [
   { name: "Zeplin", icon: "📐" },
 ];
 
+const DEFAULT_PROFILE_DATA: UIProfileData = {
+  personal: {
+    firstName: "",
+    lastName: "",
+    headline: "",
+    bio: "",
+    phoneNumber: "",
+    state: "",
+    city: "",
+    profileImageUrl: "",
+  },
+  professional: {
+    role: "",
+    company: "",
+    preferredRole: "",
+    description: "",
+    skills: [],
+    stack: [],
+    availability: "",
+  },
+  experience: [],
+  education: [],
+  portfolio: {
+    resumeUrl: "",
+    portfolioItems: [],
+  },
+  social: {
+    dribbble: "",
+    telegram: "",
+    twitter: "",
+    instagram: "",
+    linkedin: "",
+    github: "",
+    portfolio: "",
+  },
+};
+
 export default function EditProfilePage() {
    const [expandedSection, setExpandedSection] = useState<string>("personal");
-   const [formData, setFormData] = useState(dummyUIProfileData);
+   const [formData, setFormData] = useState<UIProfileData>(DEFAULT_PROFILE_DATA);
+   const [isLoading, setIsLoading] = useState(true);
+   const [isSaving, setIsSaving] = useState(false);
   const [editingExperienceIndex, setEditingExperienceIndex] = useState<
     number | null
   >(null);
@@ -51,10 +90,29 @@ export default function EditProfilePage() {
   const [skillsDropdownOpen, setSkillsDropdownOpen] = useState(false);
   const [stackDropdownOpen, setStackDropdownOpen] = useState(false);
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-  const skillsSelectRef = useRef<HTMLSelectElement | null>(null);
-  const stackSelectRef = useRef<HTMLSelectElement | null>(null);
+   const skillsSelectRef = useRef<HTMLSelectElement | null>(null);
+   const stackSelectRef = useRef<HTMLSelectElement | null>(null);
 
-  const toggleSection = (section: string) => {
+   // Load profile data on mount
+   useEffect(() => {
+     const loadProfileData = async () => {
+       try {
+         setIsLoading(true);
+         const apiData = await getCurrentProfile();
+         const uiData = mapAPIToUI(apiData);
+         setFormData(uiData);
+       } catch (error) {
+         console.error("Error loading profile:", error);
+         // Keep default empty form if load fails
+       } finally {
+         setIsLoading(false);
+       }
+     };
+
+     loadProfileData();
+   }, []);
+
+   const toggleSection = (section: string) => {
     setExpandedSection(expandedSection === section ? "" : section);
 
     setTimeout(() => {
@@ -218,26 +276,19 @@ export default function EditProfilePage() {
 
   const handleSaveProfile = async () => {
     try {
+      setIsSaving(true);
       // Convert UI-friendly format to API format
       const apiData = mapUIToAPI(formData as UIProfileData);
 
       // Send to API
-      const response = await fetch("/api/profile", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(apiData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to save profile");
-      }
+      await updateProfile(apiData);
 
       alert("Profile saved successfully!");
     } catch (error) {
       console.error("Error saving profile:", error);
       alert("Failed to save profile. Please try again.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -249,7 +300,7 @@ export default function EditProfilePage() {
       />
 
       <div className="flex-1 flex flex-col">
-        <EditProfileActionBar onSave={handleSaveProfile} />
+         <EditProfileActionBar onSave={handleSaveProfile} isLoading={isSaving} />
 
         <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
