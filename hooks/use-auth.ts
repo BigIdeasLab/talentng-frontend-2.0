@@ -1,24 +1,18 @@
 "use client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { decodeJwt, getCookie, deleteCookie, setCookie } from "@/lib/utils";
+import { getCookie, deleteCookie, setCookie } from "@/lib/utils";
 import { getCurrentUser, logout as logoutAPI } from "@/lib/api";
 import type { User } from "@/lib/types/auth";
 
 const fetchUser = async (): Promise<User | null> => {
   const token = getCookie("accessToken");
   if (token) {
-    const decoded = decodeJwt(token);
-    if (decoded) {
-      try {
-        const userData = await getCurrentUser();
-        return userData;
-      } catch (error) {
-        console.error("Failed to fetch user data:", error);
-        deleteCookie("accessToken");
-        return null;
-      }
-    } else {
+    try {
+      const userData = await getCurrentUser();
+      return userData;
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
       deleteCookie("accessToken");
       return null;
     }

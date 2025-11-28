@@ -10,8 +10,16 @@ import { EducationSection } from "@/components/profile/edit/EducationSection";
 import { PortfolioSection } from "@/components/profile/edit/PortfolioSection";
 import { SocialLinksSection } from "@/components/profile/edit/SocialLinksSection";
 import statesCities from "@/lib/states-cities.json";
-import { mapUIToAPI, mapAPIToUI, type UIProfileData } from "@/lib/profileMapper";
-import { getCurrentProfile, updateProfile, updateProfileImageUrl } from "@/lib/api/talent";
+import {
+  mapUIToAPI,
+  mapAPIToUI,
+  type UIProfileData,
+} from "@/lib/profileMapper";
+import {
+  getCurrentProfile,
+  updateProfile,
+  updateProfileImageUrl,
+} from "@/lib/api/talent";
 
 const availableSkills = [
   "Website Design",
@@ -59,6 +67,7 @@ const DEFAULT_PROFILE_DATA: UIProfileData = {
     stack: [],
     availability: "",
   },
+  gallery: [],
   experience: [],
   education: [],
   portfolio: {
@@ -77,10 +86,10 @@ const DEFAULT_PROFILE_DATA: UIProfileData = {
 };
 
 export default function EditProfilePage() {
-   const [expandedSection, setExpandedSection] = useState<string>("personal");
-   const [formData, setFormData] = useState<UIProfileData>(DEFAULT_PROFILE_DATA);
-   const [isLoading, setIsLoading] = useState(true);
-   const [isSaving, setIsSaving] = useState(false);
+  const [expandedSection, setExpandedSection] = useState<string>("personal");
+  const [formData, setFormData] = useState<UIProfileData>(DEFAULT_PROFILE_DATA);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [editingExperienceIndex, setEditingExperienceIndex] = useState<
     number | null
   >(null);
@@ -90,29 +99,29 @@ export default function EditProfilePage() {
   const [skillsDropdownOpen, setSkillsDropdownOpen] = useState(false);
   const [stackDropdownOpen, setStackDropdownOpen] = useState(false);
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-   const skillsSelectRef = useRef<HTMLSelectElement | null>(null);
-   const stackSelectRef = useRef<HTMLSelectElement | null>(null);
+  const skillsSelectRef = useRef<HTMLSelectElement | null>(null);
+  const stackSelectRef = useRef<HTMLSelectElement | null>(null);
 
-   // Load profile data on mount
-   useEffect(() => {
-     const loadProfileData = async () => {
-       try {
-         setIsLoading(true);
-         const apiData = await getCurrentProfile();
-         const uiData = mapAPIToUI(apiData);
-         setFormData(uiData);
-       } catch (error) {
-         console.error("Error loading profile:", error);
-         // Keep default empty form if load fails
-       } finally {
-         setIsLoading(false);
-       }
-     };
+  // Load profile data on mount
+  useEffect(() => {
+    const loadProfileData = async () => {
+      try {
+        setIsLoading(true);
+        const apiData = await getCurrentProfile();
+        const uiData = mapAPIToUI(apiData);
+        setFormData(uiData);
+      } catch (error) {
+        console.error("Error loading profile:", error);
+        // Keep default empty form if load fails
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-     loadProfileData();
-   }, []);
+    loadProfileData();
+  }, []);
 
-   const toggleSection = (section: string) => {
+  const toggleSection = (section: string) => {
     setExpandedSection(expandedSection === section ? "" : section);
 
     setTimeout(() => {
@@ -223,7 +232,11 @@ export default function EditProfilePage() {
     setEditingExperienceIndex(formData.experience.length);
   };
 
-  const handleEducationUpdate = (index: number, field: string, value: string) => {
+  const handleEducationUpdate = (
+    index: number,
+    field: string,
+    value: string,
+  ) => {
     const updated = [...formData.education];
     updated[index] = {
       ...updated[index],
@@ -300,7 +313,7 @@ export default function EditProfilePage() {
       />
 
       <div className="flex-1 flex flex-col">
-         <EditProfileActionBar onSave={handleSaveProfile} isLoading={isSaving} />
+        <EditProfileActionBar onSave={handleSaveProfile} isLoading={isSaving} />
 
         <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">

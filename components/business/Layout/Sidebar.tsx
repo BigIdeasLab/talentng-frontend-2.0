@@ -23,7 +23,7 @@ import {
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface SidebarProps {
   activeItem?: string;
@@ -79,9 +79,26 @@ export function Sidebar({
   activeItem = "dashboard",
   onItemSelect,
 }: SidebarProps) {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleProfile = () => {
+    setIsDropdownOpen(false);
+    router.push("/profile");
+  };
+
+  const handleSettings = () => {
+    setIsDropdownOpen(false);
+    router.push("/settings");
+  };
+
+  const handleLogout = async () => {
+    setIsDropdownOpen(false);
+    await logout();
+    router.push("/login");
+  };
 
   return (
     <aside className="hidden md:flex w-[250px] flex-col bg-white border-r border-[#E1E4EA] h-screen overflow-hidden">
@@ -125,9 +142,9 @@ export function Sidebar({
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-[220px]">
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuItem>Logout</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleProfile}>Profile</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSettings}>Settings</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

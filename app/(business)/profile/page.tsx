@@ -1,12 +1,8 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { mapAPIToUI, type UIProfileData } from "@/lib/profileMapper";
 import { ProfileLayout } from "@/components/business/Profile/ProfileLayout";
-import { getCurrentProfile, getDashboardStats } from "@/lib/api/talent";
-import type { DashboardStats } from "@/lib/api/talent/types";
+import { getProfilePageData } from "./server-data";
+import { ProfilePageClient } from "./profile-client";
 
-const DEFAULT_PROFILE_DATA: UIProfileData = {
+const DEFAULT_PROFILE_DATA = {
   personal: {
     firstName: "",
     lastName: "",
@@ -44,39 +40,14 @@ const DEFAULT_PROFILE_DATA: UIProfileData = {
   },
 };
 
-export default function ProfilePage() {
-  const [profileData, setProfileData] =
-    useState<UIProfileData>(DEFAULT_PROFILE_DATA);
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setIsLoading(true);
-        const [profileRes, statsRes] = await Promise.all([
-          getCurrentProfile(),
-          getDashboardStats(),
-        ]);
-        setProfileData(mapAPIToUI(profileRes));
-        setStats(statsRes);
-      } catch (error) {
-        console.error("Error loading profile data:", error);
-        setProfileData(DEFAULT_PROFILE_DATA);
-        setStats(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadData();
-  }, []);
+export default async function ProfilePage() {
+  const { profileData, stats, error } = await getProfilePageData();
 
   return (
-    <ProfileLayout
-      profileData={profileData}
+    <ProfilePageClient
+      initialProfileData={profileData || DEFAULT_PROFILE_DATA}
       initialStats={stats}
-      isLoading={isLoading}
+      initialError={error}
     />
   );
 }

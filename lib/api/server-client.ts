@@ -52,7 +52,6 @@ const serverApiClient = async <T>(
 
   try {
     const url = `${baseUrl}${endpoint}`;
-    console.log(`[Server API] ${config.method} ${url}`);
 
     const response = await fetch(url, config);
 
@@ -78,7 +77,6 @@ const serverApiClient = async <T>(
 
     const responseText = await response.text();
     const data = responseText ? JSON.parse(responseText) : ({} as T);
-    console.log(`[Server API Success] ${config.method} ${endpoint}`, data);
     return data;
   } catch (error) {
     console.error("[Server API Client Error]:", error);
