@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -145,9 +145,20 @@ const dummyProfileData = {
 export default function EditProfilePage() {
   const [expandedSection, setExpandedSection] = useState<string>("personal");
   const [formData, setFormData] = useState(dummyProfileData);
+  const [editingExperienceIndex, setEditingExperienceIndex] = useState<number | null>(null);
+  const [editingEducationIndex, setEditingEducationIndex] = useState<number | null>(null);
+  const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   const toggleSection = (section: string) => {
     setExpandedSection(expandedSection === section ? "" : section);
+    
+    // Scroll to section
+    setTimeout(() => {
+      const element = sectionRefs.current[section];
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 0);
   };
 
   const handleInputChange = (
@@ -307,7 +318,12 @@ export default function EditProfilePage() {
         <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
             {/* Personal Details Section */}
-            <div className="border border-[#E1E4EA] rounded-[16px] bg-white">
+            <div
+              ref={(el) => {
+                if (el) sectionRefs.current["personal"] = el;
+              }}
+              className="border border-[#E1E4EA] rounded-[16px] bg-white"
+            >
               <button
                 onClick={() => toggleSection("personal")}
                 className="w-full flex items-center justify-between px-[16px] py-[14px]"
@@ -522,7 +538,12 @@ export default function EditProfilePage() {
             </div>
 
             {/* Professional Details Section */}
-            <div className="border border-[#E1E4EA] rounded-[16px] bg-white">
+            <div
+              ref={(el) => {
+                if (el) sectionRefs.current["professional"] = el;
+              }}
+              className="border border-[#E1E4EA] rounded-[16px] bg-white"
+            >
               <button
                 onClick={() => toggleSection("professional")}
                 className="w-full flex items-center justify-between px-[16px] py-[14px]"
@@ -791,7 +812,12 @@ export default function EditProfilePage() {
             </div>
 
             {/* Work Experience Section */}
-            <div className="border border-[#E1E4EA] rounded-[16px] bg-white">
+            <div
+              ref={(el) => {
+                if (el) sectionRefs.current["experience"] = el;
+              }}
+              className="border border-[#E1E4EA] rounded-[16px] bg-white"
+            >
               <button
                 onClick={() => toggleSection("experience")}
                 className="w-full flex items-center justify-between px-[16px] py-[14px]"
@@ -808,14 +834,14 @@ export default function EditProfilePage() {
               </button>
 
               {expandedSection === "experience" && (
-                <>
-                  <div className="h-[1px] bg-[#E1E4EA]" />
-                  <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
-                    {formData.experience.map((exp, index) => (
-                      <div
-                        key={index}
-                        className="flex flex-col gap-[16px] pb-[16px] border-b border-[#E1E4EA] last:border-0 last:pb-0"
-                      >
+               <>
+                 <div className="h-[1px] bg-[#E1E4EA]" />
+                 <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
+                   {formData.experience.map((exp, index) => (
+                     <div key={index} className="pb-[16px] border-b border-[#E1E4EA] last:border-0 last:pb-0">
+                       {editingExperienceIndex === index ? (
+                         // EDIT VIEW
+                         <div className="flex flex-col gap-[16px]">
                         {/* Company */}
                         <div className="flex flex-col gap-[10px]">
                           <label className="text-[13px] font-normal text-black font-inter-tight">
@@ -823,6 +849,15 @@ export default function EditProfilePage() {
                           </label>
                           <input
                             type="text"
+                            value={exp.company}
+                            onChange={(e) => {
+                              const updated = [...formData.experience];
+                              updated[index].company = e.target.value;
+                              setFormData((prev) => ({
+                                ...prev,
+                                experience: updated,
+                              }));
+                            }}
                             placeholder="Company name"
                             className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                           />
@@ -835,6 +870,15 @@ export default function EditProfilePage() {
                           </label>
                           <input
                             type="text"
+                            value={exp.position}
+                            onChange={(e) => {
+                              const updated = [...formData.experience];
+                              updated[index].position = e.target.value;
+                              setFormData((prev) => ({
+                                ...prev,
+                                experience: updated,
+                              }));
+                            }}
                             placeholder="Your job title"
                             className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                           />
@@ -848,6 +892,15 @@ export default function EditProfilePage() {
                             </label>
                             <input
                               type="date"
+                              value={exp.startDate}
+                              onChange={(e) => {
+                                const updated = [...formData.experience];
+                                updated[index].startDate = e.target.value;
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  experience: updated,
+                                }));
+                              }}
                               className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                             />
                           </div>
@@ -857,6 +910,15 @@ export default function EditProfilePage() {
                             </label>
                             <input
                               type="date"
+                              value={exp.endDate}
+                              onChange={(e) => {
+                                const updated = [...formData.experience];
+                                updated[index].endDate = e.target.value;
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  experience: updated,
+                                }));
+                              }}
                               className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                             />
                           </div>
@@ -868,14 +930,80 @@ export default function EditProfilePage() {
                             Description
                           </label>
                           <textarea
+                            value={exp.description}
+                            onChange={(e) => {
+                              const updated = [...formData.experience];
+                              updated[index].description = e.target.value;
+                              setFormData((prev) => ({
+                                ...prev,
+                                experience: updated,
+                              }));
+                            }}
                             placeholder="Describe your responsibilities and achievements"
                             className="min-h-[80px] px-[12px] py-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent resize-none"
                           />
                         </div>
+
+                        {/* Done Button */}
+                        <div className="flex justify-end gap-[10px]">
+                          <Button
+                            onClick={() => setEditingExperienceIndex(null)}
+                            className="h-[40px] px-[24px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[12px] font-normal"
+                          >
+                            Done
+                          </Button>
+                        </div>
+                        </div>
+                        ) : (
+                          // SUMMARY VIEW
+                          <div className="flex items-start justify-between gap-[16px]">
+                            <div className="flex-1 flex flex-col gap-[8px]">
+                              <h3 className="text-[14px] font-semibold text-black font-inter-tight">
+                                {exp.position}
+                              </h3>
+                              <p className="text-[13px] font-normal text-[#525866] font-inter-tight">
+                                {exp.company}
+                              </p>
+                              <p className="text-[12px] font-normal text-[#898989] font-inter-tight">
+                                {exp.startDate && exp.endDate
+                                  ? `${exp.startDate} - ${exp.endDate}`
+                                  : exp.startDate
+                                    ? `From ${exp.startDate}`
+                                    : "No dates set"}
+                              </p>
+                            </div>
+                            <Button
+                              onClick={() => setEditingExperienceIndex(index)}
+                              className="h-[36px] px-[16px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] font-inter-tight text-[12px] font-normal"
+                            >
+                              Edit
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     ))}
 
-                    <Button className="h-[40px] px-[24px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] font-inter-tight text-[12px] font-normal">
+                    <Button
+                      onClick={() => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          experience: [
+                            ...prev.experience,
+                            {
+                              id: "",
+                              company: "",
+                              position: "",
+                              startDate: "",
+                              endDate: "",
+                              description: "",
+                              isCurrently: false,
+                            },
+                          ],
+                        }));
+                        setEditingExperienceIndex(formData.experience.length);
+                      }}
+                      className="h-[40px] px-[24px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] font-inter-tight text-[12px] font-normal"
+                    >
                       + Add Experience
                     </Button>
 
@@ -891,7 +1019,12 @@ export default function EditProfilePage() {
             </div>
 
             {/* Education Section */}
-            <div className="border border-[#E1E4EA] rounded-[16px] bg-white">
+            <div
+              ref={(el) => {
+                if (el) sectionRefs.current["education"] = el;
+              }}
+              className="border border-[#E1E4EA] rounded-[16px] bg-white"
+            >
               <button
                 onClick={() => toggleSection("education")}
                 className="w-full flex items-center justify-between px-[16px] py-[14px]"
@@ -908,14 +1041,14 @@ export default function EditProfilePage() {
               </button>
 
               {expandedSection === "education" && (
-                <>
-                  <div className="h-[1px] bg-[#E1E4EA]" />
-                  <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
-                    {formData.education.map((edu, index) => (
-                      <div
-                        key={index}
-                        className="flex flex-col gap-[16px] pb-[16px] border-b border-[#E1E4EA] last:border-0 last:pb-0"
-                      >
+               <>
+                 <div className="h-[1px] bg-[#E1E4EA]" />
+                 <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
+                   {formData.education.map((edu, index) => (
+                     <div key={index} className="pb-[16px] border-b border-[#E1E4EA] last:border-0 last:pb-0">
+                       {editingEducationIndex === index ? (
+                         // EDIT VIEW
+                         <div className="flex flex-col gap-[16px]">
                         {/* School */}
                         <div className="flex flex-col gap-[10px]">
                           <label className="text-[13px] font-normal text-black font-inter-tight">
@@ -923,6 +1056,15 @@ export default function EditProfilePage() {
                           </label>
                           <input
                             type="text"
+                            value={edu.school}
+                            onChange={(e) => {
+                              const updated = [...formData.education];
+                              updated[index].school = e.target.value;
+                              setFormData((prev) => ({
+                                ...prev,
+                                education: updated,
+                              }));
+                            }}
                             placeholder="School or university name"
                             className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                           />
@@ -935,6 +1077,15 @@ export default function EditProfilePage() {
                           </label>
                           <input
                             type="text"
+                            value={edu.degree}
+                            onChange={(e) => {
+                              const updated = [...formData.education];
+                              updated[index].degree = e.target.value;
+                              setFormData((prev) => ({
+                                ...prev,
+                                education: updated,
+                              }));
+                            }}
                             placeholder="e.g., Bachelor, Master"
                             className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                           />
@@ -947,6 +1098,15 @@ export default function EditProfilePage() {
                           </label>
                           <input
                             type="text"
+                            value={edu.field}
+                            onChange={(e) => {
+                              const updated = [...formData.education];
+                              updated[index].field = e.target.value;
+                              setFormData((prev) => ({
+                                ...prev,
+                                education: updated,
+                              }));
+                            }}
                             placeholder="e.g., Computer Science"
                             className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                           />
@@ -960,6 +1120,15 @@ export default function EditProfilePage() {
                             </label>
                             <input
                               type="date"
+                              value={edu.startDate}
+                              onChange={(e) => {
+                                const updated = [...formData.education];
+                                updated[index].startDate = e.target.value;
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  education: updated,
+                                }));
+                              }}
                               className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                             />
                           </div>
@@ -969,6 +1138,15 @@ export default function EditProfilePage() {
                             </label>
                             <input
                               type="date"
+                              value={edu.endDate}
+                              onChange={(e) => {
+                                const updated = [...formData.education];
+                                updated[index].endDate = e.target.value;
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  education: updated,
+                                }));
+                              }}
                               className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                             />
                           </div>
@@ -980,14 +1158,83 @@ export default function EditProfilePage() {
                             Description
                           </label>
                           <textarea
+                            value={edu.description}
+                            onChange={(e) => {
+                              const updated = [...formData.education];
+                              updated[index].description = e.target.value;
+                              setFormData((prev) => ({
+                                ...prev,
+                                education: updated,
+                              }));
+                            }}
                             placeholder="Additional details about your studies"
                             className="min-h-[80px] px-[12px] py-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent resize-none"
                           />
                         </div>
+
+                        {/* Done Button */}
+                        <div className="flex justify-end gap-[10px]">
+                          <Button
+                            onClick={() => setEditingEducationIndex(null)}
+                            className="h-[40px] px-[24px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[12px] font-normal"
+                          >
+                            Done
+                          </Button>
+                        </div>
+                        </div>
+                        ) : (
+                          // SUMMARY VIEW
+                          <div className="flex items-start justify-between gap-[16px]">
+                            <div className="flex-1 flex flex-col gap-[8px]">
+                              <h3 className="text-[14px] font-semibold text-black font-inter-tight">
+                                {edu.degree}
+                              </h3>
+                              <p className="text-[13px] font-normal text-[#525866] font-inter-tight">
+                                {edu.school}
+                              </p>
+                              <p className="text-[12px] font-normal text-[#898989] font-inter-tight">
+                                {edu.field}
+                              </p>
+                              <p className="text-[12px] font-normal text-[#898989] font-inter-tight">
+                                {edu.startDate && edu.endDate
+                                  ? `${edu.startDate} - ${edu.endDate}`
+                                  : edu.startDate
+                                    ? `From ${edu.startDate}`
+                                    : "No dates set"}
+                              </p>
+                            </div>
+                            <Button
+                              onClick={() => setEditingEducationIndex(index)}
+                              className="h-[36px] px-[16px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] font-inter-tight text-[12px] font-normal"
+                            >
+                              Edit
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     ))}
 
-                    <Button className="h-[40px] px-[24px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] font-inter-tight text-[12px] font-normal">
+                    <Button
+                      onClick={() => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          education: [
+                            ...prev.education,
+                            {
+                              id: "",
+                              school: "",
+                              degree: "",
+                              field: "",
+                              startDate: "",
+                              endDate: "",
+                              description: "",
+                            },
+                          ],
+                        }));
+                        setEditingEducationIndex(formData.education.length);
+                      }}
+                      className="h-[40px] px-[24px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] font-inter-tight text-[12px] font-normal"
+                    >
                       + Add Education
                     </Button>
 
@@ -1003,7 +1250,12 @@ export default function EditProfilePage() {
             </div>
 
             {/* Portfolio Section */}
-            <div className="border border-[#E1E4EA] rounded-[16px] bg-white">
+            <div
+              ref={(el) => {
+                if (el) sectionRefs.current["portfolio"] = el;
+              }}
+              className="border border-[#E1E4EA] rounded-[16px] bg-white"
+            >
               <button
                 onClick={() => toggleSection("portfolio")}
                 className="w-full flex items-center justify-between px-[16px] py-[14px]"
@@ -1070,7 +1322,12 @@ export default function EditProfilePage() {
             </div>
 
             {/* Social Links Section */}
-            <div className="border border-[#E1E4EA] rounded-[16px] bg-white">
+            <div
+              ref={(el) => {
+                if (el) sectionRefs.current["social"] = el;
+              }}
+              className="border border-[#E1E4EA] rounded-[16px] bg-white"
+            >
               <button
                 onClick={() => toggleSection("social")}
                 className="w-full flex items-center justify-between px-[16px] py-[14px]"
