@@ -49,6 +49,14 @@ export interface UIProfileData {
       technologies: string[];
     }[];
   };
+  gallery: {
+    id: string;
+    key: string;
+    url: string;
+    mime: string;
+    sizeBytes: string;
+    createdAt: string;
+  }[];
   social: {
     dribbble: string;
     telegram: string;
@@ -100,6 +108,14 @@ export interface APIProfileData {
     image: string;
     technologies: string[];
   }[];
+  gallery?: {
+    id: string;
+    key: string;
+    url: string;
+    mime: string;
+    sizeBytes: string;
+    createdAt: string;
+  }[];
   links?: {
     dribbble?: string;
     telegram?: string;
@@ -148,6 +164,7 @@ export function mapUIToAPI(uiData: UIProfileData): APIProfileData {
     })),
     resumeUrl: uiData.portfolio.resumeUrl,
     portfolioItems: uiData.portfolio.portfolioItems,
+    gallery: uiData.gallery,
     links: {
       dribbble: uiData.social.dribbble || undefined,
       telegram: uiData.social.telegram || undefined,
@@ -228,6 +245,14 @@ export function mapAPIToUI(apiData: Partial<APIProfileData> | any): UIProfileDat
         id: item.id || `portfolio-${idx}`,
       })),
     },
+    gallery: (apiData.gallery || []).map((item: any) => ({
+      id: item.id || "",
+      key: item.key || "",
+      url: item.url || "",
+      mime: item.mime || "",
+      sizeBytes: item.sizeBytes || "",
+      createdAt: item.createdAt || "",
+    })),
     social: {
       dribbble: apiData.links?.dribbble || "",
       telegram: apiData.links?.telegram || "",

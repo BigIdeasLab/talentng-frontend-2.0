@@ -27,6 +27,7 @@ const DEFAULT_PROFILE_DATA: UIProfileData = {
     stack: [],
     availability: "",
   },
+  gallery: [],
   experience: [],
   education: [],
   portfolio: {
@@ -46,7 +47,8 @@ const DEFAULT_PROFILE_DATA: UIProfileData = {
 
 export default function ProfilePage() {
   const { user } = useAuth();
-  const [profileData, setProfileData] = useState<UIProfileData>(DEFAULT_PROFILE_DATA);
+  const [profileData, setProfileData] =
+    useState<UIProfileData>(DEFAULT_PROFILE_DATA);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

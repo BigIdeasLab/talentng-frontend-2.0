@@ -42,17 +42,7 @@ export function WorksGrid({
   const [displayItems, setDisplayItems] = useState<WorkItem[]>([]);
 
   useEffect(() => {
-    if (items.length === 0) {
-      // Use placeholder images for demo
-      const demoItems = placeholderImages.map((url, idx) => ({
-        id: `placeholder-${idx}`,
-        url,
-        title: `Work ${idx + 1}`,
-      }));
-      setDisplayItems(demoItems);
-    } else {
-      setDisplayItems(items);
-    }
+    setDisplayItems(items);
   }, [items]);
 
   if (isLoading) {

@@ -23,7 +23,6 @@ export function ProfileLayout({
 }: ProfileLayoutProps) {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("works");
-  const [isLoading] = useState(initialLoading ?? false);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
 
@@ -75,9 +74,7 @@ export function ProfileLayout({
             profileImageUrl: profileData?.personal.profileImageUrl,
           }}
           stats={{
-            earnings: stats
-              ? `${stats.earnings} Earned`
-              : "Loading...",
+            earnings: stats ? `${stats.earnings} Earned` : "Loading...",
             hired: stats?.hired ?? 0,
             jobType:
               profileData?.professional.preferredRole || "Ui/Ux Designer",
@@ -133,18 +130,16 @@ export function ProfileLayout({
         {/* Content Section */}
         <div className="flex-1 overflow-y-auto scrollbar-styled">
           {/* My Works Tab */}
-          {activeTab === "works" && (
-            <WorksGrid
-              items={profileData?.portfolio.portfolioItems || []}
-              isLoading={isLoading}
-              onItemClick={(item) => console.log("Item clicked:", item)}
-            />
-          )}
+           {activeTab === "works" && (
+             <WorksGrid
+               items={profileData?.gallery || []}
+               onItemClick={(item) => console.log("Item clicked:", item)}
+             />
+           )}
 
           {/* Services Tab */}
           {activeTab === "services" && (
             <ServicesGrid
-              isLoading={isLoading}
               onServiceClick={(service) =>
                 console.log("Service clicked:", service)
               }
@@ -154,7 +149,6 @@ export function ProfileLayout({
           {/* Recommendations Tab */}
           {activeTab === "recommendations" && (
             <RecommendationsGrid
-              isLoading={isLoading}
               onRecommendationClick={(recommendation) =>
                 console.log("Recommendation clicked:", recommendation)
               }
@@ -164,7 +158,6 @@ export function ProfileLayout({
           {/* Opportunities Tab */}
           {activeTab === "opportunities" && (
             <OpportunitiesGrid
-              isLoading={isLoading}
               onRemove={(opportunity) =>
                 console.log("Remove opportunity:", opportunity)
               }
