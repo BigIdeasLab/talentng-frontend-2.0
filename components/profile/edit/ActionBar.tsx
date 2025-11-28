@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-export function EditProfileActionBar() {
+interface EditProfileActionBarProps {
+  onSave?: () => void;
+}
+
+export function EditProfileActionBar({ onSave }: EditProfileActionBarProps) {
   return (
     <div className="h-[56px] border-b border-[#E1E4EA] flex items-center justify-end px-[80px] gap-2 bg-white">
       <Link href="/profile">
@@ -12,7 +16,10 @@ export function EditProfileActionBar() {
           Discard
         </Button>
       </Link>
-      <Button className="h-[40px] px-[24px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] font-inter-tight text-[13px] font-normal">
+      <Button
+        onClick={onSave}
+        className="h-[40px] px-[24px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] font-inter-tight text-[13px] font-normal"
+      >
         Save Changes
       </Button>
     </div>

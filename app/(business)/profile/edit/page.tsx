@@ -10,6 +10,7 @@ import { EducationSection } from "@/components/profile/edit/EducationSection";
 import { PortfolioSection } from "@/components/profile/edit/PortfolioSection";
 import { SocialLinksSection } from "@/components/profile/edit/SocialLinksSection";
 import statesCities from "@/lib/states-cities.json";
+import { mapUIToAPI, type UIProfileData } from "@/lib/profileMapper";
 
 const availableSkills = [
   "Website Design",
@@ -81,6 +82,8 @@ const dummyProfileData = {
     twitter: "https://twitter.com/akanbidavid",
     instagram: "https://instagram.com/akanbidavid",
     linkedin: "https://linkedin.com/in/akanbi-david",
+    github: "https://github.com/akanbi-david",
+    portfolio: "https://akanbi-david.com",
   },
   experience: [
     {
@@ -92,6 +95,7 @@ const dummyProfileData = {
       description:
         "Led design for multiple SaaS products, managing a team of 3 designers. Implemented comprehensive design system that reduced design-to-development time by 40%. Conducted user research and usability testing to inform product decisions.",
       isCurrently: true,
+      location: "Lagos, Nigeria",
     },
     {
       id: "2",
@@ -102,6 +106,7 @@ const dummyProfileData = {
       description:
         "Designed and prototyped mobile and web applications for fintech clients. Collaborated with product managers and developers to deliver user-centric solutions. Improved app onboarding flow, increasing user retention by 25%.",
       isCurrently: false,
+      location: "Remote",
     },
     {
       id: "3",
@@ -112,6 +117,7 @@ const dummyProfileData = {
       description:
         "Created UI designs for various client projects across different industries. Learned design fundamentals, brand identity, and visual communication. Assisted in conducting user interviews and creating wireframes.",
       isCurrently: false,
+      location: "Lagos, Nigeria",
     },
   ],
   education: [
@@ -148,7 +154,15 @@ const dummyProfileData = {
   ],
   portfolio: {
     resumeUrl: "https://example.com/resumes/akanbi-david-resume-2024.pdf",
-    portfolioItems: [],
+    portfolioItems: [
+      {
+        title: "E-Commerce Platform",
+        description: "Full-stack e-commerce solution with modern UI/UX",
+        url: "https://example-shop.com",
+        image: "https://example.com/portfolio1.jpg",
+        technologies: ["Figma", "React", "Node.js"],
+      },
+    ],
   },
 };
 
@@ -271,6 +285,7 @@ export default function EditProfilePage() {
           endDate: "",
           description: "",
           isCurrently: false,
+          location: "",
         },
       ],
     }));
@@ -328,6 +343,31 @@ export default function EditProfilePage() {
     }));
   };
 
+  const handleSaveProfile = async () => {
+    try {
+      // Convert UI-friendly format to API format
+      const apiData = mapUIToAPI(formData as UIProfileData);
+
+      // Send to API
+      const response = await fetch("/api/profile", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(apiData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save profile");
+      }
+
+      alert("Profile saved successfully!");
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      alert("Failed to save profile. Please try again.");
+    }
+  };
+
   return (
     <div className="flex h-screen bg-white">
       <EditProfileSidebar
@@ -336,7 +376,7 @@ export default function EditProfilePage() {
       />
 
       <div className="flex-1 flex flex-col">
-        <EditProfileActionBar />
+        <EditProfileActionBar onSave={handleSaveProfile} />
 
         <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
