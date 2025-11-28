@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import type { ChangeEvent } from "react";
+import statesCities from "@/lib/states-cities.json";
 
 const availableSkills = [
   "Website Design",
@@ -37,18 +38,26 @@ const dummyProfileData = {
   personal: {
     firstName: "Akanbi",
     lastName: "David",
-    headline: "Product & Interaction Designer",
-    country: "Nigeria",
-    city: "Lagos",
+    headline: "Product & Interaction Designer | UI/UX Specialist",
+    bio: "Passionate designer with 5+ years of experience creating intuitive and beautiful digital experiences. I specialize in crafting user-centered designs that solve real problems and drive business growth. Proficient in design systems, prototyping, and user research methodologies.",
+    phoneNumber: "+234 (0) 703 456 7890",
+    state: "Lagos",
+    city: "Ikeja",
   },
   professional: {
-    role: "Ui/Ux Designer",
+    role: "Senior UI/UX Designer",
+    company: "Innovate Design Studio",
+    preferredRole: "Lead Product Designer",
+    description: "Senior UI/UX Designer with expertise in designing scalable design systems and leading cross-functional teams. Passionate about accessibility, user research, and creating products that users love. I've led design initiatives from concept to launch, resulting in improved user engagement and retention metrics.",
     skills: [
       "Website Design",
       "Ui/Ux Design",
       "Interface Design",
       "Interaction Design",
       "Presentation Design",
+      "User Research",
+      "Wireframing",
+      "Design Systems",
     ],
     stack: [
       { name: "Figma", icon: "🎨" },
@@ -56,15 +65,80 @@ const dummyProfileData = {
       { name: "Webflow", icon: "🌊" },
       { name: "Lottie", icon: "✨" },
       { name: "Framer", icon: "▲" },
+      { name: "Adobe XD", icon: "🎯" },
+      { name: "Sketch", icon: "✏️" },
+      { name: "InVision", icon: "🎬" },
     ],
-    availability: "Freelance",
+    availability: "Available - Freelance/Contract",
   },
   social: {
-    dribbble: "",
-    telegram: "",
-    twitter: "",
-    instagram: "",
-    linkedin: "",
+    dribbble: "https://dribbble.com/akanbi-david",
+    telegram: "https://t.me/akanbidavid",
+    twitter: "https://twitter.com/akanbidavid",
+    instagram: "https://instagram.com/akanbidavid",
+    linkedin: "https://linkedin.com/in/akanbi-david",
+  },
+  experience: [
+    {
+      id: "1",
+      company: "Innovate Design Studio",
+      position: "Senior UI/UX Designer",
+      startDate: "2022-03-01",
+      endDate: "",
+      description: "Led design for multiple SaaS products, managing a team of 3 designers. Implemented comprehensive design system that reduced design-to-development time by 40%. Conducted user research and usability testing to inform product decisions.",
+      isCurrently: true,
+    },
+    {
+      id: "2",
+      company: "TechFlow Solutions",
+      position: "UI/UX Designer",
+      startDate: "2020-06-15",
+      endDate: "2022-02-28",
+      description: "Designed and prototyped mobile and web applications for fintech clients. Collaborated with product managers and developers to deliver user-centric solutions. Improved app onboarding flow, increasing user retention by 25%.",
+      isCurrently: false,
+    },
+    {
+      id: "3",
+      company: "Creative Agency Partners",
+      position: "Junior UI Designer",
+      startDate: "2019-01-10",
+      endDate: "2020-05-31",
+      description: "Created UI designs for various client projects across different industries. Learned design fundamentals, brand identity, and visual communication. Assisted in conducting user interviews and creating wireframes.",
+      isCurrently: false,
+    },
+  ],
+  education: [
+    {
+      id: "1",
+      school: "University of Lagos",
+      degree: "Bachelor of Science",
+      field: "Mass Communication",
+      startDate: "2015-09-01",
+      endDate: "2019-06-30",
+      description: "Focused on digital media and user communication. Completed thesis on design thinking and user experience in digital platforms. Graduated with Second Class Upper Honours.",
+    },
+    {
+      id: "2",
+      school: "Interaction Design Foundation",
+      degree: "Certification",
+      field: "UX Design",
+      startDate: "2019-03-01",
+      endDate: "2019-08-31",
+      description: "Completed comprehensive online course covering UX fundamentals, user research methods, interaction design principles, and usability testing. Gained practical skills in design tools and methodologies.",
+    },
+    {
+      id: "3",
+      school: "Google Career Certificates",
+      degree: "Professional Certificate",
+      field: "Google UX Design",
+      startDate: "2020-01-01",
+      endDate: "2020-04-30",
+      description: "Completed Google's UX Design specialization program covering wireframing, prototyping, and usability research. Built portfolio projects demonstrating design thinking process.",
+    },
+  ],
+  portfolio: {
+    resumeUrl: "https://example.com/resumes/akanbi-david-resume-2024.pdf",
+    portfolioItems: [],
   },
 };
 
@@ -166,6 +240,39 @@ export default function EditProfilePage() {
             Professional Details
           </button>
           <button
+            onClick={() => toggleSection("experience")}
+            className={cn(
+              "text-[14px] font-normal font-inter-tight transition-colors",
+              expandedSection === "experience"
+                ? "text-[#5C30FF]"
+                : "text-[#525866]",
+            )}
+          >
+            Work Experience
+          </button>
+          <button
+            onClick={() => toggleSection("education")}
+            className={cn(
+              "text-[14px] font-normal font-inter-tight transition-colors",
+              expandedSection === "education"
+                ? "text-[#5C30FF]"
+                : "text-[#525866]",
+            )}
+          >
+            Education
+          </button>
+          <button
+            onClick={() => toggleSection("portfolio")}
+            className={cn(
+              "text-[14px] font-normal font-inter-tight transition-colors",
+              expandedSection === "portfolio"
+                ? "text-[#5C30FF]"
+                : "text-[#525866]",
+            )}
+          >
+            Portfolio
+          </button>
+          <button
             onClick={() => toggleSection("social")}
             className={cn(
               "text-[14px] font-normal font-inter-tight transition-colors",
@@ -222,21 +329,19 @@ export default function EditProfilePage() {
                   <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
                     {/* Profile Picture */}
                     <div className="relative w-[90px] h-[90px]">
+                      <img
+                        src="/lucas-gouvea.jpg"
+                        alt="Profile"
+                        className="w-full h-full object-cover rounded-full p-2"
+                      />
                       <svg
                         width="110"
                         height="110"
                         viewBox="0 0 110 110"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                        className="w-full h-full"
+                        className="absolute inset-0 w-full h-full pointer-events-none"
                       >
-                        <circle
-                          cx="55"
-                          cy="55"
-                          r="45"
-                          fill="#FF563D"
-                          opacity="0.2"
-                        />
                         <circle
                           cx="55"
                           cy="55"
@@ -312,32 +417,72 @@ export default function EditProfilePage() {
                       />
                     </div>
 
+                    {/* Bio */}
+                    <div className="flex flex-col gap-[10px]">
+                      <label className="text-[13px] font-normal text-black font-inter-tight">
+                        Bio
+                      </label>
+                      <textarea
+                        value={formData.personal.bio}
+                        onChange={(e) =>
+                          handleInputChange("personal", "bio", e.target.value)
+                        }
+                        className="min-h-[100px] px-[12px] py-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent resize-none"
+                        placeholder="Tell us about yourself"
+                      />
+                    </div>
+
+                    {/* Phone Number */}
+                    <div className="flex flex-col gap-[10px]">
+                      <label className="text-[13px] font-normal text-black font-inter-tight">
+                        Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        value={formData.personal.phoneNumber}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "personal",
+                            "phoneNumber",
+                            e.target.value,
+                          )
+                        }
+                        className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                        placeholder="+234 (0) 12 345 6789"
+                      />
+                    </div>
+
                     {/* Location Fields */}
                     <div className="flex gap-[10px]">
                       <div className="flex-1 flex flex-col gap-[10px]">
                         <label className="text-[13px] font-normal text-black font-inter-tight">
-                          Country
+                          State
                         </label>
-                        <input
-                          type="text"
-                          value={formData.personal.country}
+                        <select
+                          value={formData.personal.state}
                           onChange={(e) =>
                             handleInputChange(
                               "personal",
-                              "country",
+                              "state",
                               e.target.value,
                             )
                           }
                           className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
-                        />
+                        >
+                          <option value="">Select a state</option>
+                          {Object.keys(statesCities).map((state) => (
+                            <option key={state} value={state}>
+                              {state}
+                            </option>
+                          ))}
+                        </select>
                       </div>
 
                       <div className="flex-1 flex flex-col gap-[10px]">
                         <label className="text-[13px] font-normal text-black font-inter-tight">
                           City
                         </label>
-                        <input
-                          type="text"
+                        <select
                           value={formData.personal.city}
                           onChange={(e) =>
                             handleInputChange(
@@ -347,7 +492,21 @@ export default function EditProfilePage() {
                             )
                           }
                           className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
-                        />
+                        >
+                          <option value="">
+                            {formData.personal.state
+                              ? "Select a city"
+                              : "Select a state first"}
+                          </option>
+                          {formData.personal.state &&
+                            statesCities[
+                              formData.personal.state as keyof typeof statesCities
+                            ]?.major_cities.map((city) => (
+                              <option key={city} value={city}>
+                                {city}
+                              </option>
+                            ))}
+                        </select>
                       </div>
                     </div>
 
@@ -399,6 +558,65 @@ export default function EditProfilePage() {
                           )
                         }
                         className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                      />
+                    </div>
+
+                    {/* Company */}
+                    <div className="flex flex-col gap-[10px]">
+                      <label className="text-[13px] font-normal text-black font-inter-tight">
+                        Company
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.professional.company}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "professional",
+                            "company",
+                            e.target.value,
+                          )
+                        }
+                        className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                        placeholder="Current or recent company"
+                      />
+                    </div>
+
+                    {/* Preferred Role */}
+                    <div className="flex flex-col gap-[10px]">
+                      <label className="text-[13px] font-normal text-black font-inter-tight">
+                        Preferred Role
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.professional.preferredRole}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "professional",
+                            "preferredRole",
+                            e.target.value,
+                          )
+                        }
+                        className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                        placeholder="Desired position"
+                      />
+                    </div>
+
+                    {/* Description */}
+                    <div className="flex flex-col gap-[10px]">
+                      <label className="text-[13px] font-normal text-black font-inter-tight">
+                        Professional Description
+                      </label>
+                      <textarea
+                        value={formData.professional.description}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "professional",
+                            "description",
+                            e.target.value,
+                          )
+                        }
+                        className="min-h-[100px] px-[12px] py-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent resize-none"
+                        placeholder="Tell clients about your professional expertise"
                       />
                     </div>
 
@@ -560,6 +778,285 @@ export default function EditProfilePage() {
                         className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                       />
                     </div>
+
+                    {/* Next Button */}
+                    <div className="flex justify-end">
+                      <Button className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal">
+                        Next
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Work Experience Section */}
+            <div className="border border-[#E1E4EA] rounded-[16px] bg-white">
+              <button
+                onClick={() => toggleSection("experience")}
+                className="w-full flex items-center justify-between px-[16px] py-[14px]"
+              >
+                <h2 className="text-[14px] font-medium text-black font-inter-tight">
+                  Work Experience
+                </h2>
+                <ChevronDown
+                  className={cn(
+                    "w-5 h-5 text-[#B2B2B2] transition-transform",
+                    expandedSection === "experience" && "rotate-180",
+                  )}
+                />
+              </button>
+
+              {expandedSection === "experience" && (
+                <>
+                  <div className="h-[1px] bg-[#E1E4EA]" />
+                  <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
+                    {formData.experience.map((exp, index) => (
+                      <div
+                        key={index}
+                        className="flex flex-col gap-[16px] pb-[16px] border-b border-[#E1E4EA] last:border-0 last:pb-0"
+                      >
+                        {/* Company */}
+                        <div className="flex flex-col gap-[10px]">
+                          <label className="text-[13px] font-normal text-black font-inter-tight">
+                            Company
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Company name"
+                            className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                          />
+                        </div>
+
+                        {/* Position */}
+                        <div className="flex flex-col gap-[10px]">
+                          <label className="text-[13px] font-normal text-black font-inter-tight">
+                            Position / Job Title
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Your job title"
+                            className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                          />
+                        </div>
+
+                        {/* Date Range */}
+                        <div className="flex gap-[10px]">
+                          <div className="flex-1 flex flex-col gap-[10px]">
+                            <label className="text-[13px] font-normal text-black font-inter-tight">
+                              Start Date
+                            </label>
+                            <input
+                              type="date"
+                              className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                            />
+                          </div>
+                          <div className="flex-1 flex flex-col gap-[10px]">
+                            <label className="text-[13px] font-normal text-black font-inter-tight">
+                              End Date
+                            </label>
+                            <input
+                              type="date"
+                              className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Description */}
+                        <div className="flex flex-col gap-[10px]">
+                          <label className="text-[13px] font-normal text-black font-inter-tight">
+                            Description
+                          </label>
+                          <textarea
+                            placeholder="Describe your responsibilities and achievements"
+                            className="min-h-[80px] px-[12px] py-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent resize-none"
+                          />
+                        </div>
+                      </div>
+                    ))}
+
+                    <Button className="h-[40px] px-[24px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] font-inter-tight text-[12px] font-normal">
+                      + Add Experience
+                    </Button>
+
+                    {/* Next Button */}
+                    <div className="flex justify-end">
+                      <Button className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal">
+                        Next
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Education Section */}
+            <div className="border border-[#E1E4EA] rounded-[16px] bg-white">
+              <button
+                onClick={() => toggleSection("education")}
+                className="w-full flex items-center justify-between px-[16px] py-[14px]"
+              >
+                <h2 className="text-[14px] font-medium text-black font-inter-tight">
+                  Education
+                </h2>
+                <ChevronDown
+                  className={cn(
+                    "w-5 h-5 text-[#B2B2B2] transition-transform",
+                    expandedSection === "education" && "rotate-180",
+                  )}
+                />
+              </button>
+
+              {expandedSection === "education" && (
+                <>
+                  <div className="h-[1px] bg-[#E1E4EA]" />
+                  <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
+                    {formData.education.map((edu, index) => (
+                      <div
+                        key={index}
+                        className="flex flex-col gap-[16px] pb-[16px] border-b border-[#E1E4EA] last:border-0 last:pb-0"
+                      >
+                        {/* School */}
+                        <div className="flex flex-col gap-[10px]">
+                          <label className="text-[13px] font-normal text-black font-inter-tight">
+                            School / University
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="School or university name"
+                            className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                          />
+                        </div>
+
+                        {/* Degree */}
+                        <div className="flex flex-col gap-[10px]">
+                          <label className="text-[13px] font-normal text-black font-inter-tight">
+                            Degree
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="e.g., Bachelor, Master"
+                            className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                          />
+                        </div>
+
+                        {/* Field of Study */}
+                        <div className="flex flex-col gap-[10px]">
+                          <label className="text-[13px] font-normal text-black font-inter-tight">
+                            Field of Study
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="e.g., Computer Science"
+                            className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                          />
+                        </div>
+
+                        {/* Date Range */}
+                        <div className="flex gap-[10px]">
+                          <div className="flex-1 flex flex-col gap-[10px]">
+                            <label className="text-[13px] font-normal text-black font-inter-tight">
+                              Start Date
+                            </label>
+                            <input
+                              type="date"
+                              className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                            />
+                          </div>
+                          <div className="flex-1 flex flex-col gap-[10px]">
+                            <label className="text-[13px] font-normal text-black font-inter-tight">
+                              End Date
+                            </label>
+                            <input
+                              type="date"
+                              className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Description */}
+                        <div className="flex flex-col gap-[10px]">
+                          <label className="text-[13px] font-normal text-black font-inter-tight">
+                            Description
+                          </label>
+                          <textarea
+                            placeholder="Additional details about your studies"
+                            className="min-h-[80px] px-[12px] py-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent resize-none"
+                          />
+                        </div>
+                      </div>
+                    ))}
+
+                    <Button className="h-[40px] px-[24px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] font-inter-tight text-[12px] font-normal">
+                      + Add Education
+                    </Button>
+
+                    {/* Next Button */}
+                    <div className="flex justify-end">
+                      <Button className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal">
+                        Next
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Portfolio Section */}
+            <div className="border border-[#E1E4EA] rounded-[16px] bg-white">
+              <button
+                onClick={() => toggleSection("portfolio")}
+                className="w-full flex items-center justify-between px-[16px] py-[14px]"
+              >
+                <h2 className="text-[14px] font-medium text-black font-inter-tight">
+                  Portfolio
+                </h2>
+                <ChevronDown
+                  className={cn(
+                    "w-5 h-5 text-[#B2B2B2] transition-transform",
+                    expandedSection === "portfolio" && "rotate-180",
+                  )}
+                />
+              </button>
+
+              {expandedSection === "portfolio" && (
+                <>
+                  <div className="h-[1px] bg-[#E1E4EA]" />
+                  <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
+                    {/* Resume URL */}
+                    <div className="flex flex-col gap-[10px]">
+                      <label className="text-[13px] font-normal text-black font-inter-tight">
+                        Resume / CV URL
+                      </label>
+                      <input
+                        type="url"
+                        value={formData.portfolio.resumeUrl}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            portfolio: {
+                              ...prev.portfolio,
+                              resumeUrl: e.target.value,
+                            },
+                          }))
+                        }
+                        placeholder="https://example.com/resume.pdf"
+                        className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                      />
+                    </div>
+
+                    {/* Portfolio Items Info */}
+                    <div className="p-[12px] bg-[#F0F7FF] border border-[#ADD8F7] rounded-[8px]">
+                      <p className="text-[12px] font-normal text-black/70 font-inter-tight">
+                        Portfolio items can be added from your gallery or
+                        external links. You can showcase your best work,
+                        projects, and designs here.
+                      </p>
+                    </div>
+
+                    <Button className="h-[40px] px-[24px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] font-inter-tight text-[12px] font-normal">
+                      + Add Portfolio Item
+                    </Button>
 
                     {/* Next Button */}
                     <div className="flex justify-end">
