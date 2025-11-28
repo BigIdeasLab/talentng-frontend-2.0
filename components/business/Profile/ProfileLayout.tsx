@@ -8,10 +8,10 @@ import { WorksGrid } from "./WorksGrid";
 import { ServicesGrid } from "./ServicesGrid";
 import { RecommendationsGrid } from "./RecommendationsGrid";
 import { OpportunitiesGrid } from "./OpportunitiesGrid";
-import type { TalentProfile } from "@/lib/types/profile";
+import type { UIProfileData } from "@/lib/profileMapper";
 
 interface ProfileLayoutProps {
-  profileData?: TalentProfile;
+  profileData?: UIProfileData;
 }
 
 export function ProfileLayout({ profileData }: ProfileLayoutProps) {
@@ -39,16 +39,18 @@ export function ProfileLayout({ profileData }: ProfileLayoutProps) {
       <div className="hidden lg:flex h-screen overflow-hidden">
         <ProfilePanel
           user={{
-            fullName: user?.fullName || "User",
-            headline: "Product & Interaction Designer",
+            fullName: profileData
+              ? `${profileData.personal.firstName} ${profileData.personal.lastName}`.trim() || user?.fullName || "User"
+              : user?.fullName || "User",
+            headline: profileData?.personal.headline || "Product & Interaction Designer",
           }}
           stats={{
             earnings: "$20,000 Earned",
             hired: 5,
-            jobType: "Ui/Ux Designer",
+            jobType: profileData?.professional.preferredRole || "Ui/Ux Designer",
           }}
           skills={
-            profileData?.skills || [
+            profileData?.professional.skills || [
               "Website Design",
               "Mobile App Design",
               "Ui/Ux Design",
@@ -61,24 +63,26 @@ export function ProfileLayout({ profileData }: ProfileLayoutProps) {
               "Motion Design",
             ]
           }
-          stack={[
-            { name: "Figma" },
-            { name: "Rive" },
-            { name: "Webflow" },
-            { name: "Lottie" },
-            { name: "Framer" },
-            { name: "Adobe XD" },
-            { name: "Sketch" },
-            { name: "Protopie" },
-            { name: "Principle" },
-            { name: "Zeplin" },
-            { name: "Slack" },
-          ]}
+          stack={
+            profileData?.professional.stack || [
+              { name: "Figma" },
+              { name: "Rive" },
+              { name: "Webflow" },
+              { name: "Lottie" },
+              { name: "Framer" },
+              { name: "Adobe XD" },
+              { name: "Sketch" },
+              { name: "Protopie" },
+              { name: "Principle" },
+              { name: "Zeplin" },
+              { name: "Slack" },
+            ]
+          }
           socialLinks={{
-            telegram: "#",
-            twitter: "#",
-            instagram: "#",
-            linkedin: "#",
+            telegram: profileData?.social.telegram || "#",
+            twitter: profileData?.social.twitter || "#",
+            instagram: profileData?.social.instagram || "#",
+            linkedin: profileData?.social.linkedin || "#",
           }}
           completionPercentage={25}
         />
@@ -98,7 +102,7 @@ export function ProfileLayout({ profileData }: ProfileLayoutProps) {
           {/* My Works Tab */}
           {activeTab === "works" && (
             <WorksGrid
-              items={profileData?.portfolioItems || profileData?.gallery || []}
+              items={profileData?.portfolio.portfolioItems || []}
               isLoading={isLoading}
               onItemClick={(item) => console.log("Item clicked:", item)}
             />

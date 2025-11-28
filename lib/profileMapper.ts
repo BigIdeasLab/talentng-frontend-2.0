@@ -40,6 +40,7 @@ export interface UIProfileData {
   portfolio: {
     resumeUrl: string;
     portfolioItems: {
+      id: string;
       title: string;
       description: string;
       url: string;
@@ -85,6 +86,7 @@ export interface APIProfileData {
   }[];
   resumeUrl: string;
   portfolioItems: {
+    id?: string;
     title: string;
     description: string;
     url: string;
@@ -206,7 +208,10 @@ export function mapAPIToUI(apiData: Partial<APIProfileData>): UIProfileData {
     })),
     portfolio: {
       resumeUrl: apiData.resumeUrl || "",
-      portfolioItems: apiData.portfolioItems || [],
+      portfolioItems: (apiData.portfolioItems || []).map((item, idx) => ({
+        ...item,
+        id: item.id || `portfolio-${idx}`,
+      })),
     },
     social: {
       dribbble: apiData.links?.dribbble || "",
