@@ -62,32 +62,37 @@ export interface UIProfileData {
 
 // Backend API format
 export interface APIProfileData {
-  fullName: string;
-  headline: string;
-  bio: string;
-  phoneNumber: string;
-  location: string;
-  profileImageUrl: string;
-  skills: string[];
-  stack: string[];
-  workExperience: {
+  fullName?: string | null;
+  headline?: string | null;
+  bio?: string | null;
+  phoneNumber?: string | null;
+  location?: string | null;
+  profileImageUrl?: string | null;
+  skills?: string[];
+  stack?: string[] | Array<{ name: string }>;
+  workExperience?: Array<{
+    id?: string;
     company: string;
-    position: string;
-    startDate: string;
-    endDate: string | null;
-    description: string;
+    position?: string;
+    role?: string;
+    startDate?: string;
+    endDate?: string | null;
+    description?: string;
+    duration?: string;
     location?: string;
-  }[];
-  education: {
-    school: string;
+  }>;
+  education?: Array<{
+    id?: string;
+    school?: string;
+    institution?: string;
     degree: string;
     field: string;
-    startDate: string;
-    endDate: string;
-    description: string;
-  }[];
-  resumeUrl: string;
-  portfolioItems: {
+    startDate?: string;
+    endDate?: string;
+    description?: string;
+  }>;
+  resumeUrl?: string | null;
+  portfolioItems?: {
     id?: string;
     title: string;
     description: string;
@@ -95,7 +100,7 @@ export interface APIProfileData {
     image: string;
     technologies: string[];
   }[];
-  links: {
+  links?: {
     dribbble?: string;
     telegram?: string;
     twitter?: string;
@@ -104,10 +109,10 @@ export interface APIProfileData {
     github?: string;
     portfolio?: string;
   };
-  company: string;
-  preferredRole: string;
-  availability: string;
-  description: string;
+  company?: string | null;
+  preferredRole?: string | null;
+  availability?: string | null;
+  description?: string | null;
 }
 
 /**
@@ -161,8 +166,9 @@ export function mapUIToAPI(uiData: UIProfileData): APIProfileData {
 
 /**
  * Convert API format to UI-friendly format
+ * Accepts both APIProfileData (request format) and TalentProfile (response format)
  */
-export function mapAPIToUI(apiData: Partial<APIProfileData>): UIProfileData {
+export function mapAPIToUI(apiData: Partial<APIProfileData> | any): UIProfileData {
    const [firstName, ...lastNameParts] = (apiData.fullName || "").split(" ");
    const lastName = lastNameParts.join(" ");
 
@@ -180,39 +186,44 @@ export function mapAPIToUI(apiData: Partial<APIProfileData>): UIProfileData {
        profileImageUrl: apiData.profileImageUrl || "",
      },
     professional: {
-      role: apiData.stack?.[0] || "",
+      role: (Array.isArray(apiData.stack) && apiData.stack.length > 0 
+        ? (typeof apiData.stack[0] === 'string' ? apiData.stack[0] : apiData.stack[0].name)
+        : "") || "",
       company: apiData.company || "",
       preferredRole: apiData.preferredRole || "",
       description: apiData.description || "",
       skills: apiData.skills || [],
-      stack: (apiData.stack || []).map((name) => ({
-        name,
-        icon: getIconForTool(name),
-      })),
+      stack: (apiData.stack || []).map((item: any) => {
+        const name = typeof item === 'string' ? item : item.name;
+        return {
+          name,
+          icon: getIconForTool(name),
+        };
+      }),
       availability: apiData.availability || "",
     },
-    experience: (apiData.workExperience || []).map((exp, idx) => ({
-      id: `${idx}`,
+    experience: (apiData.workExperience || []).map((exp: any, idx: number) => ({
+      id: exp.id || `${idx}`,
       company: exp.company,
-      position: exp.position,
-      startDate: exp.startDate,
+      position: exp.position || exp.role || "",
+      startDate: exp.startDate || "",
       endDate: exp.endDate || "",
-      description: exp.description,
+      description: exp.description || "",
       isCurrently: !exp.endDate,
       location: exp.location,
     })),
-    education: (apiData.education || []).map((edu, idx) => ({
-      id: `${idx}`,
-      school: edu.school,
+    education: (apiData.education || []).map((edu: any, idx: number) => ({
+      id: edu.id || `${idx}`,
+      school: edu.school || edu.institution || "",
       degree: edu.degree,
       field: edu.field,
-      startDate: edu.startDate,
-      endDate: edu.endDate,
-      description: edu.description,
+      startDate: edu.startDate || "",
+      endDate: edu.endDate || "",
+      description: edu.description || "",
     })),
     portfolio: {
       resumeUrl: apiData.resumeUrl || "",
-      portfolioItems: (apiData.portfolioItems || []).map((item, idx) => ({
+      portfolioItems: (apiData.portfolioItems || []).map((item: any, idx: number) => ({
         ...item,
         id: item.id || `portfolio-${idx}`,
       })),

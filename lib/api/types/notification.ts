@@ -1,0 +1,9 @@
+export interface Notification {
+  id: string;
+  userId: string;
+  type: string;
+  message: string;
+  isRead: boolean;
+  createdAt: string;
+  updatedAt?: string;
+}

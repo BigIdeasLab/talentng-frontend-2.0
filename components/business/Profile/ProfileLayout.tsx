@@ -9,8 +9,8 @@ import { ServicesGrid } from "./ServicesGrid";
 import { RecommendationsGrid } from "./RecommendationsGrid";
 import { OpportunitiesGrid } from "./OpportunitiesGrid";
 import { getDashboardStats } from "@/lib/api/talent";
+import type { DashboardStats } from "@/lib/api/talent/types";
 import type { UIProfileData } from "@/lib/profileMapper";
-import type { DashboardStats } from "@/lib/api/talent";
 
 interface ProfileLayoutProps {
   profileData?: UIProfileData;
