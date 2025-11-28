@@ -42,15 +42,17 @@ export function EmptyState({
       </div>
 
       {/* CTA Button */}
-      <button
-        onClick={onButtonClick}
-        className="flex h-[40px] px-[20px] py-[14px] justify-center items-center gap-[8px] rounded-[40px] border border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4a24d6] transition-colors"
-      >
-        <Plus className="w-[18px] h-[18px]" color="white" strokeWidth={2} />
-        <span className="text-[15px] font-normal leading-normal font-inter-tight text-white">
-          {buttonText}
-        </span>
-      </button>
+      {buttonText && (
+        <button
+          onClick={onButtonClick}
+          className="flex h-[40px] px-[20px] py-[14px] justify-center items-center gap-[8px] rounded-[40px] border border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4a24d6] transition-colors"
+        >
+          <Plus className="w-[18px] h-[18px]" color="white" strokeWidth={2} />
+          <span className="text-[15px] font-normal leading-normal font-inter-tight text-white">
+            {buttonText}
+          </span>
+        </button>
+      )}
     </div>
   );
 }

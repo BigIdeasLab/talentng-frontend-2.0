@@ -93,7 +93,7 @@ export function ServicesGrid({
     return () => {
       isMounted = false;
     };
-  }, [refreshTrigger, cachedServices.length]);
+  }, [refreshTrigger]);
 
   if (isLoading) {
     return (

@@ -15,7 +15,6 @@ interface Recommendation {
 }
 
 interface RecommendationsGridProps {
-  talentUserId?: string;
   recommendations?: Recommendation[];
   isLoading?: boolean;
   onRecommendationClick?: (recommendation: Recommendation) => void;
@@ -41,7 +40,6 @@ function mapApiRecommendationToUI(
 }
 
 export function RecommendationsGrid({
-  talentUserId,
   recommendations: externalRecommendations,
   isLoading: externalIsLoading = false,
   onRecommendationClick,
@@ -56,8 +54,8 @@ export function RecommendationsGrid({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Use cached recommendations if available
-    if (cachedRecommendations.length > 0) {
+    // Always use server-provided data
+    if (cachedRecommendations) {
       setRecommendations(cachedRecommendations);
       setIsLoading(false);
       onLoadingChange?.(false);
@@ -66,55 +64,16 @@ export function RecommendationsGrid({
 
     if (externalRecommendations) {
       setRecommendations(externalRecommendations);
+      setIsLoading(false);
+      onLoadingChange?.(false);
       return;
     }
 
-    if (!talentUserId) {
-      return;
-    }
-
-    let isMounted = true;
-
-    async function fetchRecommendations() {
-      if (!talentUserId) return;
-
-      try {
-        setIsLoading(true);
-        onLoadingChange?.(true);
-        setError(null);
-        const apiRecommendations = await getTalentRecommendations(
-          talentUserId as string,
-        );
-        
-        if (!isMounted) return;
-        
-        const uiRecommendations = apiRecommendations.map(
-          mapApiRecommendationToUI,
-        );
-        setRecommendations(uiRecommendations);
-        onRecommendationsLoaded?.(uiRecommendations);
-      } catch (err) {
-        if (!isMounted) return;
-        
-        console.error("Failed to fetch recommendations:", err);
-        setError(
-          err instanceof Error ? err.message : "Failed to load recommendations",
-        );
-        setRecommendations([]);
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-          onLoadingChange?.(false);
-        }
-      }
-    }
-
-    fetchRecommendations();
-    
-    return () => {
-      isMounted = false;
-    };
-  }, [talentUserId, externalRecommendations, cachedRecommendations.length]);
+    // No data available
+    setRecommendations([]);
+    setIsLoading(false);
+    onLoadingChange?.(false);
+  }, [cachedRecommendations, externalRecommendations, onLoadingChange]);
 
   if (isLoading) {
     return (
@@ -139,8 +98,7 @@ export function RecommendationsGrid({
       <EmptyState
         title="No recommendations yet"
         description="Request recommendations from clients you've worked with. Testimonials build trust and credibility."
-        buttonText="Request Recommendation"
-        onButtonClick={onRecommendationClick as any}
+        buttonText=""
       />
     );
   }

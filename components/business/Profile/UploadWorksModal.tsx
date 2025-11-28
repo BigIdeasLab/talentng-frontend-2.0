@@ -9,7 +9,7 @@ import type { TalentProfile } from "@/lib/api/talent";
 interface UploadWorksModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: (message?: string) => void;
+  onSuccess?: (message?: string, gallery?: any[]) => void;
 }
 
 export function UploadWorksModal({
@@ -75,6 +75,7 @@ export function UploadWorksModal({
       onClose();
       onSuccess?.(
         `Successfully uploaded ${selectedFiles.length} work${selectedFiles.length > 1 ? "s" : ""}!`,
+        result.gallery || [],
       );
     } catch (err) {
       const errorMessage =

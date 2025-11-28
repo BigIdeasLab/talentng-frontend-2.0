@@ -344,15 +344,13 @@ export async function createRecommendation(
 }
 
 /**
- * 23. Get All Recommendations for a Talent
- * GET /talent/:talentUserId/recommendations
- * Authentication: Not required (Public endpoint)
+ * 23. Get All Recommendations for the Authenticated User
+ * GET /talent/recommendations
+ * Authentication: Required (JWT Bearer token)
  */
-export async function getTalentRecommendations(
-  talentUserId: string,
-): Promise<TalentRecommendationDto[]> {
+export async function getTalentRecommendations(): Promise<TalentRecommendationDto[]> {
   return apiClient<TalentRecommendationDto[]>(
-    `/talent/${talentUserId}/recommendations`,
+    `/talent/recommendations`,
   );
 }
 

@@ -30,7 +30,8 @@ export function ProfileLayout({
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("works");
   const [stats, setStats] = useState<DashboardStats | null>(initialStats);
-  const [isCreateServiceModalOpen, setIsCreateServiceModalOpen] = useState(false);
+  const [isCreateServiceModalOpen, setIsCreateServiceModalOpen] =
+    useState(false);
   const [isUploadWorksModalOpen, setIsUploadWorksModalOpen] = useState(false);
   const [serviceRefreshTrigger, setServiceRefreshTrigger] = useState(0);
   const [worksRefreshTrigger, setWorksRefreshTrigger] = useState(0);
@@ -38,8 +39,10 @@ export function ProfileLayout({
   const [servicesLoading, setServicesLoading] = useState(true);
   const [cachedWorks, setCachedWorks] = useState<any[]>([]);
   const [worksLoading, setWorksLoading] = useState(true);
-  const [cachedRecommendations, setCachedRecommendations] = useState<any[]>([]);
-  const [recommendationsLoading, setRecommendationsLoading] = useState(true);
+  const [cachedRecommendations, setCachedRecommendations] = useState<any[]>(initialRecommendations || []);
+  const [recommendationsLoading, setRecommendationsLoading] = useState(
+    !initialRecommendations || initialRecommendations.length === 0
+  );
 
   useEffect(() => {
     setStats(initialStats);
@@ -49,17 +52,11 @@ export function ProfileLayout({
     // Initialize cached works from profileData.gallery
     if (profileData.gallery && profileData.gallery.length > 0) {
       setCachedWorks(profileData.gallery);
-      setWorksLoading(false);
     }
+    setWorksLoading(false);
   }, [profileData.gallery]);
 
-  useEffect(() => {
-    // Initialize cached recommendations from server data
-    if (initialRecommendations && initialRecommendations.length > 0) {
-      setCachedRecommendations(initialRecommendations);
-      setRecommendationsLoading(false);
-    }
-  }, [initialRecommendations]);
+
 
   useEffect(() => {
     // Scroll to top when tab changes
@@ -81,8 +78,10 @@ export function ProfileLayout({
     setIsUploadWorksModalOpen(false);
   };
 
-  const handleWorksUploaded = () => {
-    setWorksRefreshTrigger((prev) => prev + 1);
+  const handleWorksUploaded = (message?: string, gallery?: any[]) => {
+    if (gallery && gallery.length > 0) {
+      setCachedWorks(gallery);
+    }
   };
 
   const handleWorksDeleted = () => {
@@ -97,8 +96,10 @@ export function ProfileLayout({
     setIsCreateServiceModalOpen(false);
   };
 
-  const handleServiceCreated = () => {
-    setServiceRefreshTrigger((prev) => prev + 1);
+  const handleServiceCreated = (message?: string, services?: any[]) => {
+    if (services && services.length > 0) {
+      setCachedServices(services);
+    }
   };
 
   return (
@@ -179,25 +180,14 @@ export function ProfileLayout({
           {/* My Works Tab */}
           {activeTab === "works" && (
             <WorksGrid
-              items={cachedWorks.length > 0 ? cachedWorks : profileData.gallery || []}
+              items={
+                cachedWorks.length > 0 ? cachedWorks : profileData.gallery || []
+              }
               onAddWork={handleOpenUploadWorksModal}
               onItemClick={(item) => console.log("Item clicked:", item)}
               onItemDeleted={handleWorksDeleted}
               isLoading={worksLoading && cachedWorks.length === 0}
             />
-          )}
-
-          {/* Keep works cached even when tab is not active */}
-          {activeTab !== "works" && (
-            <div className="hidden">
-              <WorksGrid
-                items={cachedWorks.length > 0 ? cachedWorks : profileData.gallery || []}
-                onAddWork={handleOpenUploadWorksModal}
-                onItemClick={(item) => console.log("Item clicked:", item)}
-                onItemDeleted={handleWorksDeleted}
-                isLoading={worksLoading && cachedWorks.length === 0}
-              />
-            </div>
           )}
 
           {/* Services Tab */}
@@ -214,28 +204,10 @@ export function ProfileLayout({
               onLoadingChange={setServicesLoading}
             />
           )}
-          
-          {/* Keep services cached even when tab is not active */}
-          {activeTab !== "services" && (
-            <div className="hidden">
-              <ServicesGrid
-                onAddService={handleOpenCreateServiceModal}
-                onServiceClick={(service) =>
-                  console.log("Service clicked:", service)
-                }
-                refreshTrigger={serviceRefreshTrigger}
-                cachedServices={cachedServices}
-                onServicesLoaded={setCachedServices}
-                isLoading={servicesLoading}
-                onLoadingChange={setServicesLoading}
-              />
-            </div>
-          )}
 
           {/* Recommendations Tab */}
-          {activeTab === "recommendations" && userId && (
+          {activeTab === "recommendations" && (
             <RecommendationsGrid
-              talentUserId={userId}
               onRecommendationClick={(recommendation) =>
                 console.log("Recommendation clicked:", recommendation)
               }
@@ -244,22 +216,6 @@ export function ProfileLayout({
               isLoading={recommendationsLoading}
               onLoadingChange={setRecommendationsLoading}
             />
-          )}
-          
-          {/* Keep recommendations cached even when tab is not active */}
-          {userId && (
-            <div className="hidden">
-              <RecommendationsGrid
-                talentUserId={userId}
-                onRecommendationClick={(recommendation) =>
-                  console.log("Recommendation clicked:", recommendation)
-                }
-                cachedRecommendations={cachedRecommendations}
-                onRecommendationsLoaded={setCachedRecommendations}
-                isLoading={recommendationsLoading}
-                onLoadingChange={setRecommendationsLoading}
-              />
-            </div>
           )}
 
           {/* Opportunities Tab */}

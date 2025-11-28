@@ -5,13 +5,13 @@ import { X, Plus, Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createService } from "@/lib/api/talent";
-import type { CreateServiceInput } from "@/lib/api/talent";
+import { createService, getMyServices } from "@/lib/api/talent";
+import type { CreateServiceInput, Service } from "@/lib/api/talent";
 
 interface CreateServiceModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: (message?: string) => void;
+  onSuccess?: (message?: string, services?: Service[]) => void;
 }
 
 const COMMON_TAGS = [
@@ -109,6 +109,9 @@ export function CreateServiceModal({
       };
 
       await createService(serviceData);
+      
+      // Fetch updated services list
+      const updatedServices = await getMyServices();
 
       setFormData({ title: "", about: "", price: "" });
       setImages([]);
@@ -116,6 +119,7 @@ export function CreateServiceModal({
       onClose();
       onSuccess?.(
         "Service created successfully! It will appear in your services list.",
+        updatedServices,
       );
     } catch (err) {
       const errorMessage =

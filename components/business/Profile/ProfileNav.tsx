@@ -74,21 +74,25 @@ export function ProfileNav({
       </div>
 
       {/* CTA Button */}
-      <Button
-        onClick={handleActionClick}
-        className="hidden sm:flex h-[40px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a24d6] font-inter-tight text-[13px] font-normal gap-[8px] mr-[20px] flex-shrink-0"
-      >
-        <Plus className="w-4 h-4" />
-        {buttonText}
-      </Button>
+      {active !== "recommendations" && active !== "opportunities" && (
+        <>
+          <Button
+            onClick={handleActionClick}
+            className="hidden sm:flex h-[40px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a24d6] font-inter-tight text-[13px] font-normal gap-[8px] mr-[20px] flex-shrink-0"
+          >
+            <Plus className="w-4 h-4" />
+            {buttonText}
+          </Button>
 
-      {/* Mobile CTA Icon Button */}
-      <button
-        onClick={handleActionClick}
-        className="sm:hidden p-2 text-[#5C30FF] hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
-      >
-        <Plus className="w-5 h-5" />
-      </button>
+          {/* Mobile CTA Icon Button */}
+          <button
+            onClick={handleActionClick}
+            className="sm:hidden p-2 text-[#5C30FF] hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
+          >
+            <Plus className="w-5 h-5" />
+          </button>
+        </>
+      )}
     </div>
   );
 }
