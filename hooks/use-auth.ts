@@ -2,8 +2,8 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { decodeJwt, getCookie, deleteCookie, setCookie } from "@/lib/utils";
-import apiClient from "@/lib/api";
-import { User } from "@/lib/types/auth";
+import { getCurrentUser, logout as logoutAPI } from "@/lib/api";
+import type { User } from "@/lib/types/auth";
 
 const fetchUser = async (): Promise<User | null> => {
   const token = getCookie("accessToken");
@@ -11,7 +11,7 @@ const fetchUser = async (): Promise<User | null> => {
     const decoded = decodeJwt(token);
     if (decoded) {
       try {
-        const userData = await apiClient<User>("/users/me");
+        const userData = await getCurrentUser();
         return userData;
       } catch (error) {
         console.error("Failed to fetch user data:", error);
@@ -41,10 +41,7 @@ export const useAuth = () => {
 
   const logout = async () => {
     try {
-      await apiClient<void>("/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
+      await logoutAPI();
     } catch (error) {
       console.error("Logout error:", error);
     } finally {

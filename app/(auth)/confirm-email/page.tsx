@@ -12,7 +12,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import apiClient from "@/lib/api";
+import { verifyEmailSend, verifyEmailConfirm } from "@/lib/api";
 import { setCookie } from "@/lib/utils";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 
@@ -53,29 +53,19 @@ const ConfirmEmailPage = () => {
   }, [resendCountdown]);
 
   const resendMutation = useMutation({
-    mutationFn: () => {
-      return apiClient("/auth/verify-email/send", {
-        method: "POST",
-        body: { email },
-      });
-    },
+    mutationFn: () => verifyEmailSend(email),
     onSuccess: () => {
       toast.success("Verification code resent!");
       setResendCountdown(30);
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast.error(error.message || "Failed to resend verification code.");
     },
   });
 
   const mutation = useMutation({
-    mutationFn: (data: ConfirmEmailFormValues) => {
-      return apiClient("/auth/verify-email/confirm", {
-        method: "POST",
-        body: { email, verificationCode: data.verificationCode },
-        credentials: "include",
-      });
-    },
+    mutationFn: (data: ConfirmEmailFormValues) =>
+      verifyEmailConfirm(email, data.verificationCode),
     onSuccess: (data: any) => {
       toast.success("Email verified successfully!");
       

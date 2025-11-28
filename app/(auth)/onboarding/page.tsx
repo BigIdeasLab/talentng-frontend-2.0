@@ -9,7 +9,7 @@ import { CreateProfileStep } from "@/components/onboarding/CreateProfileStep";
 import { ShowcaseSkillsStep } from "@/components/onboarding/ShowcaseSkillsStep";
 import { CreateCompanyProfileStep } from "@/components/onboarding/CreateCompanyProfileStep";
 import { ShowcaseExpertiseStep } from "@/components/onboarding/ShowcaseExpertiseStep";
-import apiClient from "@/lib/api";
+import { completeOnboarding } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -93,10 +93,7 @@ const OnboardingPage = () => {
     });
 
     try {
-      await apiClient("/users/me/onboard", {
-        method: "POST",
-        body: formData,
-      });
+      await completeOnboarding(formData);
 
       await refetchUser();
       toast({
