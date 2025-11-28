@@ -76,16 +76,20 @@ export function ProfilePanel({
       {/* User Profile Section */}
       <div className="flex flex-col items-center gap-[20px]">
         {/* Profile Picture with Completion Badge */}
-        <div className="relative w-[90px] h-[85px]">
+        <div className="relative w-[110px] h-[110px]">
+          <img
+            src={user.profileImageUrl || "/lucas-gouvea.jpg"}
+            alt={user.fullName}
+            className="w-full h-full object-cover rounded-full p-2"
+          />
           <svg
-            width="90"
-            height="85"
-            viewBox="0 0 118 110"
+            width="110"
+            height="110"
+            viewBox="0 0 110 110"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-full"
+            className="absolute inset-0 w-full h-full pointer-events-none z-10"
           >
-            <circle cx="55" cy="55" r="45" fill="#FF563D" opacity="0.2" />
             <circle
               cx="55"
               cy="55"

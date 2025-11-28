@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { ProfileLayout } from "@/components/business/Profile/ProfileLayout";
 import { mapAPIToUI } from "@/lib/profileMapper";
+import { dummyUIProfileData } from "@/lib/dummyProfileData";
 import type { UIProfileData } from "@/lib/profileMapper";
 
 const DEFAULT_PROFILE_DATA: UIProfileData = {
@@ -15,6 +16,7 @@ const DEFAULT_PROFILE_DATA: UIProfileData = {
     phoneNumber: "",
     state: "",
     city: "",
+    profileImageUrl: "",
   },
   professional: {
     role: "",
@@ -48,34 +50,27 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadProfileData = async () => {
-      try {
-        setIsLoading(true);
-        // Fetch user profile from API
-        const response = await fetch("/api/profile");
-        if (!response.ok) throw new Error("Failed to fetch profile");
-        
-        const apiData = await response.json();
-        const uiData = mapAPIToUI(apiData);
-        setProfileData(uiData);
-      } catch (error) {
-        console.error("Error loading profile:", error);
-        // Set default with user's full name if available
-        setProfileData({
-          ...DEFAULT_PROFILE_DATA,
-          personal: {
-            ...DEFAULT_PROFILE_DATA.personal,
-            firstName: user?.fullName?.split(" ")[0] || "",
-            lastName: user?.fullName?.split(" ").slice(1).join(" ") || "",
-          },
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
+     const loadProfileData = async () => {
+       try {
+         setIsLoading(true);
+         // Fetch user profile from API
+         const response = await fetch("/api/profile");
+         if (!response.ok) throw new Error("Failed to fetch profile");
+         
+         const apiData = await response.json();
+         const uiData = mapAPIToUI(apiData);
+         setProfileData(uiData);
+       } catch (error) {
+         console.error("Error loading profile:", error);
+         // Use dummy data for development/testing
+         setProfileData(dummyUIProfileData);
+       } finally {
+         setIsLoading(false);
+       }
+     };
 
-    loadProfileData();
-  }, [user]);
+     loadProfileData();
+   }, [user]);
 
   return <ProfileLayout profileData={profileData} />;
 }

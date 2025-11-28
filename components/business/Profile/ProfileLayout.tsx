@@ -38,12 +38,13 @@ export function ProfileLayout({ profileData }: ProfileLayoutProps) {
       {/* Profile Panel */}
       <div className="hidden lg:flex h-screen overflow-hidden">
         <ProfilePanel
-          user={{
-            fullName: profileData
-              ? `${profileData.personal.firstName} ${profileData.personal.lastName}`.trim() || user?.fullName || "User"
-              : user?.fullName || "User",
-            headline: profileData?.personal.headline || "Product & Interaction Designer",
-          }}
+           user={{
+             fullName: profileData
+               ? `${profileData.personal.firstName} ${profileData.personal.lastName}`.trim() || user?.fullName || "User"
+               : user?.fullName || "User",
+             headline: profileData?.personal.headline || "Product & Interaction Designer",
+             profileImageUrl: profileData?.personal.profileImageUrl,
+           }}
           stats={{
             earnings: "$20,000 Earned",
             hired: 5,

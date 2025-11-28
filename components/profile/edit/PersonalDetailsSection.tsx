@@ -9,6 +9,7 @@ interface PersonalData {
   phoneNumber: string;
   state: string;
   city: string;
+  profileImageUrl: string;
 }
 
 interface PersonalDetailsSectionProps {
@@ -40,12 +41,12 @@ export function PersonalDetailsSection({
           <div className="h-[1px] bg-[#E1E4EA]" />
           <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
             {/* Profile Picture */}
-            <div className="relative w-[90px] h-[90px]">
-              <img
-                src="/lucas-gouvea.jpg"
-                alt="Profile"
-                className="w-full h-full object-cover rounded-full p-2"
-              />
+              <div className="relative w-[90px] h-[90px]">
+                <img
+                  src={formData.profileImageUrl || "/lucas-gouvea.jpg"}
+                  alt="Profile"
+                  className="w-full h-full object-cover rounded-full p-2"
+                />
               <svg
                 width="110"
                 height="110"
@@ -125,18 +126,32 @@ export function PersonalDetailsSection({
             </div>
 
             {/* Phone Number */}
-            <div className="flex flex-col gap-[10px]">
-              <label className="text-[13px] font-normal text-black font-inter-tight">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                value={formData.phoneNumber}
-                onChange={(e) => onInputChange("phoneNumber", e.target.value)}
-                placeholder="+234 (0) 703 456 7890"
-                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
-              />
-            </div>
+             <div className="flex flex-col gap-[10px]">
+               <label className="text-[13px] font-normal text-black font-inter-tight">
+                 Phone Number
+               </label>
+               <input
+                 type="tel"
+                 value={formData.phoneNumber}
+                 onChange={(e) => onInputChange("phoneNumber", e.target.value)}
+                 placeholder="+234 (0) 703 456 7890"
+                 className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+               />
+             </div>
+
+            {/* Profile Image URL */}
+             <div className="flex flex-col gap-[10px]">
+               <label className="text-[13px] font-normal text-black font-inter-tight">
+                 Profile Image URL
+               </label>
+               <input
+                 type="url"
+                 value={formData.profileImageUrl}
+                 onChange={(e) => onInputChange("profileImageUrl", e.target.value)}
+                 placeholder="https://images.example.com/avatars/your-profile.jpg"
+                 className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+               />
+             </div>
 
             {/* State and City */}
             <div className="flex gap-[10px]">

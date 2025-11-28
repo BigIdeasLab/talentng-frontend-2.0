@@ -8,6 +8,7 @@ export interface UIProfileData {
     phoneNumber: string;
     state: string;
     city: string;
+    profileImageUrl: string;
   };
   professional: {
     role: string;
@@ -66,6 +67,7 @@ export interface APIProfileData {
   bio: string;
   phoneNumber: string;
   location: string;
+  profileImageUrl: string;
   skills: string[];
   stack: string[];
   workExperience: {
@@ -112,15 +114,16 @@ export interface APIProfileData {
  * Convert UI-friendly format to API format
  */
 export function mapUIToAPI(uiData: UIProfileData): APIProfileData {
-  return {
-    fullName: `${uiData.personal.firstName} ${uiData.personal.lastName}`.trim(),
-    headline: uiData.personal.headline,
-    bio: uiData.personal.bio,
-    phoneNumber: uiData.personal.phoneNumber,
-    location: uiData.personal.state && uiData.personal.city 
-      ? `${uiData.personal.city}, ${uiData.personal.state}`
-      : uiData.personal.state || uiData.personal.city || "",
-    skills: uiData.professional.skills,
+   return {
+     fullName: `${uiData.personal.firstName} ${uiData.personal.lastName}`.trim(),
+     headline: uiData.personal.headline,
+     bio: uiData.personal.bio,
+     phoneNumber: uiData.personal.phoneNumber,
+     profileImageUrl: uiData.personal.profileImageUrl,
+     location: uiData.personal.state && uiData.personal.city 
+       ? `${uiData.personal.city}, ${uiData.personal.state}`
+       : uiData.personal.state || uiData.personal.city || "",
+     skills: uiData.professional.skills,
     stack: uiData.professional.stack.map((tool) => tool.name),
     workExperience: uiData.experience.map((exp) => ({
       company: exp.company,
@@ -160,21 +163,22 @@ export function mapUIToAPI(uiData: UIProfileData): APIProfileData {
  * Convert API format to UI-friendly format
  */
 export function mapAPIToUI(apiData: Partial<APIProfileData>): UIProfileData {
-  const [firstName, ...lastNameParts] = (apiData.fullName || "").split(" ");
-  const lastName = lastNameParts.join(" ");
+   const [firstName, ...lastNameParts] = (apiData.fullName || "").split(" ");
+   const lastName = lastNameParts.join(" ");
 
-  const [city, state] = (apiData.location || "").split(", ");
+   const [city, state] = (apiData.location || "").split(", ");
 
-  return {
-    personal: {
-      firstName: firstName || "",
-      lastName: lastName || "",
-      headline: apiData.headline || "",
-      bio: apiData.bio || "",
-      phoneNumber: apiData.phoneNumber || "",
-      state: state || apiData.location || "",
-      city: city || "",
-    },
+   return {
+     personal: {
+       firstName: firstName || "",
+       lastName: lastName || "",
+       headline: apiData.headline || "",
+       bio: apiData.bio || "",
+       phoneNumber: apiData.phoneNumber || "",
+       state: state || apiData.location || "",
+       city: city || "",
+       profileImageUrl: apiData.profileImageUrl || "",
+     },
     professional: {
       role: apiData.stack?.[0] || "",
       company: apiData.company || "",
