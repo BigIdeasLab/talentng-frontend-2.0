@@ -1,31 +1,11 @@
 /**
  * Talent API Client
  * Handles all API calls related to talent profiles
- * Base URL: /talent
+ * Uses centralized apiClient from @/lib/api
  */
 
-import { APIProfileData } from "@/lib/profileMapper";
-
-const BASE_URL = "/api/talent";
-
-// Types
-export interface TalentProfile extends APIProfileData {
-  id: string;
-  userId: string;
-  visibility: "public" | "private";
-  isFeatured: boolean;
-  featuredUntil?: string;
-  views: number;
-  stats: {
-    earnings: string;
-    hired: number;
-    views: number;
-    completionPercentage: number;
-  };
-  coverImageUrl?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import apiClient from "@/lib/api";
+import type { APIProfileData } from "@/lib/profileMapper";
 
 export interface PortfolioItem {
   id: string;
@@ -46,10 +26,12 @@ export interface GalleryItem {
 }
 
 export interface DashboardStats {
-  earnings: string;
+  profileCompletion: number;
+  applicationsSubmitted: number;
+  interviewsScheduled: number;
+  profileViews: number;
   hired: number;
-  views: number;
-  completionPercentage: number;
+  earnings: string;
 }
 
 export interface TalentFilterParams {
@@ -61,48 +43,59 @@ export interface TalentFilterParams {
   isFeatured?: boolean;
 }
 
-// Helper function to get auth token
-function getAuthToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("auth_token");
-}
-
-// Helper function to get headers
-function getHeaders(includeAuth = true): HeadersInit {
-  const headers: HeadersInit = {
-    "Content-Type": "application/json",
+export interface TalentProfile {
+  id: string;
+  userId: string;
+  fullName: string | null;
+  headline: string | null;
+  bio: string | null;
+  profileImageUrl: string | null;
+  coverImageUrl: string | null;
+  skills: string[];
+  stack: Array<{ name: string }>;
+  location: string | null;
+  availability: string | null;
+  phoneNumber: string | null;
+  preferredRole: string | null;
+  company: string | null;
+  duration: string | null;
+  description: string | null;
+  resumeUrl: string | null;
+  visibility: "public" | "private";
+  isFeatured: boolean;
+  featuredUntil: string | null;
+  createdAt: string;
+  updatedAt: string;
+  views: number;
+  stats: {
+    earnings: string;
+    hired: number;
+    views: number;
+    completionPercentage: number;
   };
-
-  if (includeAuth) {
-    const token = getAuthToken();
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
-  }
-
-  return headers;
-}
-
-// Helper function for API calls
-async function apiCall<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const url = `${BASE_URL}${endpoint}`;
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      ...getHeaders(),
-      ...options.headers,
-    },
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || `API Error: ${response.statusText}`);
-  }
-
-  return response.json();
+  workExperience: Array<{
+    id: string;
+    company: string;
+    role: string;
+    duration: string;
+  }>;
+  education: Array<{
+    id: string;
+    institution: string;
+    degree: string;
+    field: string;
+  }>;
+  portfolioItems: PortfolioItem[];
+  gallery: GalleryItem[];
+  socialLinks: {
+    github?: string | null;
+    linkedin?: string | null;
+    twitter?: string | null;
+    instagram?: string | null;
+    telegram?: string | null;
+    dribbble?: string | null;
+    portfolio?: string | null;
+  };
 }
 
 /**
@@ -110,7 +103,7 @@ async function apiCall<T>(
  * GET /talent/me
  */
 export async function getCurrentProfile(): Promise<TalentProfile> {
-  return apiCall<TalentProfile>("/me");
+  return apiClient<TalentProfile>("/talent/me");
 }
 
 /**
@@ -120,9 +113,9 @@ export async function getCurrentProfile(): Promise<TalentProfile> {
 export async function updateProfile(
   data: Partial<APIProfileData>
 ): Promise<TalentProfile> {
-  return apiCall<TalentProfile>("/me", {
+  return apiClient<TalentProfile>("/talent/me", {
     method: "PATCH",
-    body: JSON.stringify(data),
+    body: data,
   });
 }
 
@@ -131,109 +124,61 @@ export async function updateProfile(
  * GET /talent/dashboard
  */
 export async function getDashboardStats(): Promise<DashboardStats> {
-  return apiCall<DashboardStats>("/dashboard");
+  return apiClient<DashboardStats>("/talent/dashboard");
 }
 
 /**
  * 4. Update Profile Image
  * PATCH /talent/profile-image
+ * Returns the entire updated TalentProfile object
  */
-export async function updateProfileImage(file: File): Promise<{
-  id: string;
-  profileImageUrl: string;
-  updatedAt: string;
-}> {
+export async function updateProfileImage(file: File): Promise<TalentProfile> {
   const formData = new FormData();
   formData.append("file", file);
 
-  const token = getAuthToken();
-  const headers: HeadersInit = {};
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-
-  const response = await fetch(`${BASE_URL}/profile-image`, {
+  return apiClient<TalentProfile>("/talent/profile-image", {
     method: "PATCH",
-    headers,
     body: formData,
   });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Failed to upload profile image");
-  }
-
-  return response.json();
 }
 
 /**
  * 5. Update Cover Image
  * PATCH /talent/cover-image
+ * Returns the entire updated TalentProfile object
  */
-export async function updateCoverImage(file: File): Promise<{
-  id: string;
-  coverImageUrl: string;
-  updatedAt: string;
-}> {
+export async function updateCoverImage(file: File): Promise<TalentProfile> {
   const formData = new FormData();
   formData.append("file", file);
 
-  const token = getAuthToken();
-  const headers: HeadersInit = {};
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-
-  const response = await fetch(`${BASE_URL}/cover-image`, {
+  return apiClient<TalentProfile>("/talent/cover-image", {
     method: "PATCH",
-    headers,
     body: formData,
   });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Failed to upload cover image");
-  }
-
-  return response.json();
 }
 
 /**
  * 6. Upload Portfolio Item
  * POST /talent/portfolio
+ * Returns the entire updated TalentProfile object with new portfolio item added
  */
-export async function uploadPortfolioItem(file: File): Promise<PortfolioItem> {
+export async function uploadPortfolioItem(file: File): Promise<TalentProfile> {
   const formData = new FormData();
   formData.append("file", file);
 
-  const token = getAuthToken();
-  const headers: HeadersInit = {};
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-
-  const response = await fetch(`${BASE_URL}/portfolio`, {
+  return apiClient<TalentProfile>("/talent/portfolio", {
     method: "POST",
-    headers,
     body: formData,
   });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Failed to upload portfolio item");
-  }
-
-  return response.json();
 }
 
 /**
  * 7. Delete Portfolio Item
  * DELETE /talent/portfolio/:id
+ * Returns the entire updated TalentProfile object with portfolio item removed
  */
-export async function deletePortfolioItem(itemId: string): Promise<{
-  message: string;
-}> {
-  return apiCall<{ message: string }>(`/portfolio/${itemId}`, {
+export async function deletePortfolioItem(itemId: string): Promise<TalentProfile> {
+  return apiClient<TalentProfile>(`/talent/portfolio/${itemId}`, {
     method: "DELETE",
   });
 }
@@ -241,43 +186,29 @@ export async function deletePortfolioItem(itemId: string): Promise<{
 /**
  * 8. Upload Gallery Images
  * POST /talent/gallery
+ * Returns the entire updated TalentProfile object with new gallery items added
  */
 export async function uploadGalleryImages(
   files: File[]
-): Promise<GalleryItem[]> {
+): Promise<TalentProfile> {
   const formData = new FormData();
   files.forEach((file) => {
     formData.append("files", file);
   });
 
-  const token = getAuthToken();
-  const headers: HeadersInit = {};
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-
-  const response = await fetch(`${BASE_URL}/gallery`, {
+  return apiClient<TalentProfile>("/talent/gallery", {
     method: "POST",
-    headers,
     body: formData,
   });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Failed to upload gallery images");
-  }
-
-  return response.json();
 }
 
 /**
  * 9. Delete Gallery Item
  * DELETE /talent/gallery/:id
+ * Returns the entire updated TalentProfile object with gallery item removed
  */
-export async function deleteGalleryItem(itemId: string): Promise<{
-  message: string;
-}> {
-  return apiCall<{ message: string }>(`/gallery/${itemId}`, {
+export async function deleteGalleryItem(itemId: string): Promise<TalentProfile> {
+  return apiClient<TalentProfile>(`/talent/gallery/${itemId}`, {
     method: "DELETE",
   });
 }
@@ -303,11 +234,9 @@ export async function listTalentProfiles(
   }
 
   const query = queryParams.toString();
-  const endpoint = query ? `/?${query}` : "/";
+  const endpoint = query ? `/talent?${query}` : "/talent";
 
-  return apiCall<TalentProfile[]>(endpoint, {
-    headers: getHeaders(false), // No auth required for public endpoint
-  });
+  return apiClient<TalentProfile[]>(endpoint);
 }
 
 /**
@@ -317,9 +246,7 @@ export async function listTalentProfiles(
 export async function getTalentProfileByUserId(
   userId: string
 ): Promise<TalentProfile> {
-  return apiCall<TalentProfile>(`/${userId}`, {
-    headers: getHeaders(false), // No auth required for public endpoint
-  });
+  return apiClient<TalentProfile>(`/talent/${userId}`);
 }
 
 /**

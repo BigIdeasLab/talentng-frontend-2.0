@@ -8,17 +8,42 @@ import { WorksGrid } from "./WorksGrid";
 import { ServicesGrid } from "./ServicesGrid";
 import { RecommendationsGrid } from "./RecommendationsGrid";
 import { OpportunitiesGrid } from "./OpportunitiesGrid";
+import { getDashboardStats } from "@/lib/api/talent";
 import type { UIProfileData } from "@/lib/profileMapper";
+import type { DashboardStats } from "@/lib/api/talent";
 
 interface ProfileLayoutProps {
   profileData?: UIProfileData;
   isLoading?: boolean;
 }
 
-export function ProfileLayout({ profileData, isLoading: initialLoading }: ProfileLayoutProps) {
+export function ProfileLayout({
+  profileData,
+  isLoading: initialLoading,
+}: ProfileLayoutProps) {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("works");
   const [isLoading] = useState(initialLoading ?? false);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  // Load dashboard stats
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        setStatsLoading(true);
+        const data = await getDashboardStats();
+        setStats(data);
+      } catch (error) {
+        console.error("Error loading dashboard stats:", error);
+        // Keep null if failed to load
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+
+    loadStats();
+  }, []);
 
   useEffect(() => {
     // Scroll to top when tab changes
@@ -35,21 +60,27 @@ export function ProfileLayout({ profileData, isLoading: initialLoading }: Profil
 
   return (
     <div className="flex flex-col h-full bg-white md:flex-row">
-
       {/* Profile Panel */}
       <div className="hidden lg:flex h-screen overflow-hidden">
         <ProfilePanel
-           user={{
-             fullName: profileData
-               ? `${profileData.personal.firstName} ${profileData.personal.lastName}`.trim() || user?.fullName || "User"
-               : user?.fullName || "User",
-             headline: profileData?.personal.headline || "Product & Interaction Designer",
-             profileImageUrl: profileData?.personal.profileImageUrl,
-           }}
+          user={{
+            fullName: profileData
+              ? `${profileData.personal.firstName} ${profileData.personal.lastName}`.trim() ||
+                user?.fullName ||
+                "User"
+              : user?.fullName || "User",
+            headline:
+              profileData?.personal.headline ||
+              "Product & Interaction Designer",
+            profileImageUrl: profileData?.personal.profileImageUrl,
+          }}
           stats={{
-            earnings: "$20,000 Earned",
-            hired: 5,
-            jobType: profileData?.professional.preferredRole || "Ui/Ux Designer",
+            earnings: stats
+              ? `${stats.earnings} Earned`
+              : "Loading...",
+            hired: stats?.hired ?? 0,
+            jobType:
+              profileData?.professional.preferredRole || "Ui/Ux Designer",
           }}
           skills={
             profileData?.professional.skills || [
@@ -86,7 +117,7 @@ export function ProfileLayout({ profileData, isLoading: initialLoading }: Profil
             instagram: profileData?.social.instagram || "#",
             linkedin: profileData?.social.linkedin || "#",
           }}
-          completionPercentage={25}
+          completionPercentage={stats?.profileCompletion ?? 0}
         />
       </div>
 
