@@ -51,20 +51,12 @@ const defaultStack = [
 ];
 
 export function ProfilePanel({
-  user = {
-    fullName: "Akanbi David",
-    headline: "Product & Interaction Designer",
-  },
-  stats = { earnings: "$20,000 Earned", hired: 5, jobType: "Ui/Ux Designer" },
+  user,
+  stats,
   skills = defaultSkills,
   stack = defaultStack,
-  socialLinks = {
-    telegram: "#",
-    twitter: "#",
-    instagram: "#",
-    linkedin: "#",
-  },
-  completionPercentage = 25,
+  socialLinks,
+  completionPercentage = 0,
 }: ProfilePanelProps) {
   const displayedSkills = skills.slice(0, 4);
   const skillsRemaining = Math.max(0, skills.length - 4);
@@ -78,8 +70,8 @@ export function ProfilePanel({
         {/* Profile Picture with Completion Badge */}
         <div className="relative w-[110px] h-[110px]">
           <img
-            src={user.profileImageUrl || "/lucas-gouvea.jpg"}
-            alt={user.fullName}
+            src={user?.profileImageUrl || "/lucas-gouvea.jpg"}
+            alt={user?.fullName || "Profile"}
             className="w-full h-full object-cover rounded-full p-2"
           />
           <svg
@@ -130,54 +122,64 @@ export function ProfilePanel({
         <div className="flex flex-col items-center gap-[12px] w-full">
           <div className="text-center">
             <h2 className="text-[16px] font-medium text-black font-inter-tight">
-              {user.fullName}
+              {user?.fullName || "User"}
             </h2>
-            <p className="text-[13px] font-light text-[rgba(0,0,0,0.30)] font-inter-tight">
-              {user.headline}
-            </p>
+            {user?.headline && (
+              <p className="text-[13px] font-light text-[rgba(0,0,0,0.30)] font-inter-tight">
+                {user.headline}
+              </p>
+            )}
           </div>
 
           {/* Details Container */}
           <div className="flex flex-col items-start gap-[10px] w-full">
             {/* Location */}
-            <div className="flex justify-between items-center w-full">
-              <div className="flex items-center gap-[6px]">
-                <MapPin className="w-[18px] h-[18px] text-[#525866]" />
-                <span className="text-[12px] font-normal text-black font-inter-tight">
-                  Lagos, Nigeria
-                </span>
+            {user?.location && (
+              <div className="flex justify-between items-center w-full">
+                <div className="flex items-center gap-[6px]">
+                  <MapPin className="w-[18px] h-[18px] text-[#525866]" />
+                  <span className="text-[12px] font-normal text-black font-inter-tight">
+                    {user?.location}
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Job Type */}
-            <div className="flex justify-between items-center w-full">
-              <div className="flex items-center gap-[6px]">
-                <Briefcase className="w-[18px] h-[18px] text-[#525866]" />
-                <span className="text-[12px] font-normal text-black font-inter-tight">
-                  {stats.jobType}
-                </span>
+            {stats?.jobType && (
+              <div className="flex justify-between items-center w-full">
+                <div className="flex items-center gap-[6px]">
+                  <Briefcase className="w-[18px] h-[18px] text-[#525866]" />
+                  <span className="text-[12px] font-normal text-black font-inter-tight">
+                    {stats.jobType}
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Hired Count */}
-            <div className="flex justify-between items-center w-full">
-              <div className="flex items-center gap-[6px]">
-                <Users className="w-[18px] h-[18px] text-[#525866]" />
-                <span className="text-[12px] font-normal text-black font-inter-tight">
-                  {stats.hired}x Hired
-                </span>
+            {stats?.hired !== undefined && (
+              <div className="flex justify-between items-center w-full">
+                <div className="flex items-center gap-[6px]">
+                  <Users className="w-[18px] h-[18px] text-[#525866]" />
+                  <span className="text-[12px] font-normal text-black font-inter-tight">
+                    {stats.hired}x Hired
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Earnings */}
-            <div className="flex justify-between items-center w-full">
-              <div className="flex items-center gap-[6px]">
-                <DollarSign className="w-[18px] h-[18px] text-[#525866]" />
-                <span className="text-[12px] font-normal text-black font-inter-tight">
-                  {stats.earnings}
-                </span>
+            {stats?.earnings && (
+              <div className="flex justify-between items-center w-full">
+                <div className="flex items-center gap-[6px]">
+                  <DollarSign className="w-[18px] h-[18px] text-[#525866]" />
+                  <span className="text-[12px] font-normal text-black font-inter-tight">
+                    {stats.earnings}
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -243,17 +245,18 @@ export function ProfilePanel({
       </div>
 
       {/* Social Links Section */}
-      <div className="mt-[20px] flex flex-col items-start gap-[12px] flex-shrink-0">
-        <h3 className="text-[12px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
-          Social Links
-        </h3>
-        <div className="flex flex-col gap-[10px] w-full">
-          {[
-            { name: "Telegram", icon: "📱", url: socialLinks.telegram },
-            { name: "X", icon: "𝕏", url: socialLinks.twitter },
-            { name: "Instagram", icon: "📷", url: socialLinks.instagram },
-            { name: "LinkendIn", icon: "in", url: socialLinks.linkedin },
-          ].map((social, idx) => (
+      {socialLinks && (
+        <div className="mt-[20px] flex flex-col items-start gap-[12px] flex-shrink-0">
+          <h3 className="text-[12px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
+            Social Links
+          </h3>
+          <div className="flex flex-col gap-[10px] w-full">
+            {[
+              { name: "Telegram", icon: "📱", url: socialLinks?.telegram },
+              { name: "X", icon: "𝕏", url: socialLinks?.twitter },
+              { name: "Instagram", icon: "📷", url: socialLinks?.instagram },
+              { name: "LinkendIn", icon: "in", url: socialLinks?.linkedin },
+            ].map((social, idx) => (
             <div key={idx} className="flex justify-between items-center w-full">
               <div className="flex items-center gap-[6px]">
                 <span className="text-[12px] font-normal text-black font-inter-tight">
@@ -290,8 +293,9 @@ export function ProfilePanel({
               </Link>
             </div>
           ))}
-        </div>
-      </div>
-    </div>
-  );
-}
+          </div>
+          </div>
+          )}
+          </div>
+          );
+          }
