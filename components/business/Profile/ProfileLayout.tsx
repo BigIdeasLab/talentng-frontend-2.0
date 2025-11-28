@@ -9,32 +9,57 @@ import { ServicesGrid } from "./ServicesGrid";
 import { RecommendationsGrid } from "./RecommendationsGrid";
 import { OpportunitiesGrid } from "./OpportunitiesGrid";
 import { CreateServiceModal } from "./CreateServiceModal";
+import { UploadWorksModal } from "./UploadWorksModal";
 import type { DashboardStats } from "@/lib/api/talent/types";
 import type { UIProfileData } from "@/lib/profileMapper";
 
 interface ProfileLayoutProps {
   profileData: UIProfileData;
+  userId: string | null;
   initialStats: DashboardStats | null;
+  initialRecommendations: any[];
   isLoading?: boolean;
 }
 
 export function ProfileLayout({
   profileData,
+  userId,
   initialStats,
+  initialRecommendations,
 }: ProfileLayoutProps) {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("works");
   const [stats, setStats] = useState<DashboardStats | null>(initialStats);
   const [isCreateServiceModalOpen, setIsCreateServiceModalOpen] = useState(false);
+  const [isUploadWorksModalOpen, setIsUploadWorksModalOpen] = useState(false);
   const [serviceRefreshTrigger, setServiceRefreshTrigger] = useState(0);
+  const [worksRefreshTrigger, setWorksRefreshTrigger] = useState(0);
   const [cachedServices, setCachedServices] = useState<any[]>([]);
   const [servicesLoading, setServicesLoading] = useState(true);
+  const [cachedWorks, setCachedWorks] = useState<any[]>([]);
+  const [worksLoading, setWorksLoading] = useState(true);
   const [cachedRecommendations, setCachedRecommendations] = useState<any[]>([]);
   const [recommendationsLoading, setRecommendationsLoading] = useState(true);
 
   useEffect(() => {
     setStats(initialStats);
   }, [initialStats]);
+
+  useEffect(() => {
+    // Initialize cached works from profileData.gallery
+    if (profileData.gallery && profileData.gallery.length > 0) {
+      setCachedWorks(profileData.gallery);
+      setWorksLoading(false);
+    }
+  }, [profileData.gallery]);
+
+  useEffect(() => {
+    // Initialize cached recommendations from server data
+    if (initialRecommendations && initialRecommendations.length > 0) {
+      setCachedRecommendations(initialRecommendations);
+      setRecommendationsLoading(false);
+    }
+  }, [initialRecommendations]);
 
   useEffect(() => {
     // Scroll to top when tab changes
@@ -45,8 +70,23 @@ export function ProfileLayout({
   }, [activeTab]);
 
   const handleAddNewWork = () => {
-    // TODO: Open modal or navigate to work upload page
-    console.log("Add new work clicked");
+    setIsUploadWorksModalOpen(true);
+  };
+
+  const handleOpenUploadWorksModal = () => {
+    setIsUploadWorksModalOpen(true);
+  };
+
+  const handleCloseUploadWorksModal = () => {
+    setIsUploadWorksModalOpen(false);
+  };
+
+  const handleWorksUploaded = () => {
+    setWorksRefreshTrigger((prev) => prev + 1);
+  };
+
+  const handleWorksDeleted = () => {
+    setWorksRefreshTrigger((prev) => prev + 1);
   };
 
   const handleOpenCreateServiceModal = () => {
@@ -139,9 +179,25 @@ export function ProfileLayout({
           {/* My Works Tab */}
           {activeTab === "works" && (
             <WorksGrid
-              items={profileData.gallery || []}
+              items={cachedWorks.length > 0 ? cachedWorks : profileData.gallery || []}
+              onAddWork={handleOpenUploadWorksModal}
               onItemClick={(item) => console.log("Item clicked:", item)}
+              onItemDeleted={handleWorksDeleted}
+              isLoading={worksLoading && cachedWorks.length === 0}
             />
+          )}
+
+          {/* Keep works cached even when tab is not active */}
+          {activeTab !== "works" && (
+            <div className="hidden">
+              <WorksGrid
+                items={cachedWorks.length > 0 ? cachedWorks : profileData.gallery || []}
+                onAddWork={handleOpenUploadWorksModal}
+                onItemClick={(item) => console.log("Item clicked:", item)}
+                onItemDeleted={handleWorksDeleted}
+                isLoading={worksLoading && cachedWorks.length === 0}
+              />
+            </div>
           )}
 
           {/* Services Tab */}
@@ -177,8 +233,9 @@ export function ProfileLayout({
           )}
 
           {/* Recommendations Tab */}
-          {activeTab === "recommendations" && (
+          {activeTab === "recommendations" && userId && (
             <RecommendationsGrid
+              talentUserId={userId}
               onRecommendationClick={(recommendation) =>
                 console.log("Recommendation clicked:", recommendation)
               }
@@ -190,9 +247,10 @@ export function ProfileLayout({
           )}
           
           {/* Keep recommendations cached even when tab is not active */}
-          {activeTab !== "recommendations" && (
+          {userId && (
             <div className="hidden">
               <RecommendationsGrid
+                talentUserId={userId}
                 onRecommendationClick={(recommendation) =>
                   console.log("Recommendation clicked:", recommendation)
                 }
@@ -217,6 +275,13 @@ export function ProfileLayout({
           )}
         </div>
       </main>
+
+      {/* Upload Works Modal */}
+      <UploadWorksModal
+        isOpen={isUploadWorksModalOpen}
+        onClose={handleCloseUploadWorksModal}
+        onSuccess={handleWorksUploaded}
+      />
 
       {/* Create Service Modal */}
       <CreateServiceModal

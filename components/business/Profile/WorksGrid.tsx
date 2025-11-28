@@ -2,53 +2,80 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { Trash2, Loader } from "lucide-react";
 import { EmptyState } from "./EmptyState";
-
-interface WorkItem {
-  id: string;
-  url: string;
-  title?: string;
-  mime?: string;
-}
+import { deleteGalleryItem } from "@/lib/api/talent";
+import type { GalleryItem } from "@/lib/api/talent";
 
 interface WorksGridProps {
-  items?: WorkItem[];
+  items?: GalleryItem[];
   isLoading?: boolean;
-  onItemClick?: (item: WorkItem) => void;
+  onItemClick?: (item: GalleryItem) => void;
+  onAddWork?: () => void;
+  onItemDeleted?: () => void;
 }
-
-const placeholderImages = [
-  "https://api.builder.io/api/v1/image/assets/TEMP/8e47aeb4bf8eb4252a294ad2ecc824642c0cfa73?width=527",
-  "https://api.builder.io/api/v1/image/assets/TEMP/a2ace60a3af9adf213b81ceface0c1a1bf65b543?width=527",
-  "https://api.builder.io/api/v1/image/assets/TEMP/24d5c21ec2ebd17e6189e657f3446157c2266c75?width=527",
-  "https://api.builder.io/api/v1/image/assets/TEMP/d51023dfbd4c356b257c150304a020d0089bae2f?width=527",
-  "https://api.builder.io/api/v1/image/assets/TEMP/3764c0e5491c2e760086d695d4e3000de60a6654?width=527",
-  "https://api.builder.io/api/v1/image/assets/TEMP/475942973937d9661cc8dc7b4b2255602469cb95?width=527",
-  "https://api.builder.io/api/v1/image/assets/TEMP/bfbbd4fd1ce22967b4ac9bd719ef245856441a5d?width=527",
-  "https://api.builder.io/api/v1/image/assets/TEMP/527dc1da900b1360812b6c1d26ee8de85d6bcc09?width=527",
-  "https://api.builder.io/api/v1/image/assets/TEMP/3290a5f00028b619afafebe0426a29d08013587e?width=527",
-  "https://api.builder.io/api/v1/image/assets/TEMP/2bdfe1e052f4c7bacc79ae2f9f71f7ab9275e8a1?width=527",
-  "https://api.builder.io/api/v1/image/assets/TEMP/f54e6f2af06a88b4db53b489a0f3095d9efffc1a?width=527",
-  "https://api.builder.io/api/v1/image/assets/TEMP/1bda5a7218351079864215d9ae077d45d8670ef3?width=527",
-  "https://api.builder.io/api/v1/image/assets/TEMP/094de69698afbb6e1415404dc74e95c226b46e88?width=527",
-  "https://api.builder.io/api/v1/image/assets/TEMP/ecfd58cb903f5ce81d615b9723f5cbb381a70d3?width=527",
-];
 
 export function WorksGrid({
   items = [],
   isLoading = false,
   onItemClick,
+  onAddWork,
+  onItemDeleted,
 }: WorksGridProps) {
-  const [displayItems, setDisplayItems] = useState<WorkItem[]>([]);
+  const [displayItems, setDisplayItems] = useState<GalleryItem[]>([]);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setDisplayItems(items);
   }, [items]);
 
+  const handleDelete = async (
+    e: React.MouseEvent,
+    itemId: string,
+  ) => {
+    e.stopPropagation();
+    setError(null);
+
+    if (!confirm("Are you sure you want to delete this work?")) {
+      return;
+    }
+
+    setDeletingId(itemId);
+    try {
+      await deleteGalleryItem(itemId);
+      setDisplayItems((prev) => prev.filter((item) => item.id !== itemId));
+      onItemDeleted?.();
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to delete work";
+      setError(errorMessage);
+      console.error("Error deleting gallery item:", err);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="w-full h-64 flex items-center justify-center">
         <div className="animate-pulse text-gray-400">Loading portfolio...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full p-6 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-3">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
       </div>
     );
   }
@@ -59,7 +86,7 @@ export function WorksGrid({
         title="No work added yet"
         description="Add projects that show what you can do. A strong portfolio helps you get noticed."
         buttonText="Add Work"
-        onButtonClick={onItemClick as any}
+        onButtonClick={onAddWork}
       />
     );
   }
@@ -78,12 +105,25 @@ export function WorksGrid({
           >
             <Image
               src={item.url}
-              alt={item.title || "Portfolio item"}
+              alt={item.key || "Portfolio item"}
               fill
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
               unoptimized
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200" />
+
+            {/* Delete Button */}
+            <button
+              onClick={(e) => handleDelete(e, item.id)}
+              disabled={deletingId === item.id}
+              className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 disabled:opacity-50"
+            >
+              {deletingId === item.id ? (
+                <Loader className="w-4 h-4 animate-spin" />
+              ) : (
+                <Trash2 className="w-4 h-4" />
+              )}
+            </button>
           </button>
         ))}
       </div>

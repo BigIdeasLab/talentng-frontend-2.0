@@ -41,12 +41,14 @@ const DEFAULT_PROFILE_DATA = {
 };
 
 export default async function ProfilePage() {
-  const { profileData, stats, error } = await getProfilePageData();
+  const { profileData, userId, stats, recommendations, error } = await getProfilePageData();
 
   return (
     <ProfilePageClient
       initialProfileData={profileData || DEFAULT_PROFILE_DATA}
+      initialUserId={userId}
       initialStats={stats}
+      initialRecommendations={recommendations || []}
       initialError={error}
     />
   );

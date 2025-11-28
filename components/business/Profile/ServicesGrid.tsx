@@ -42,15 +42,22 @@ export function ServicesGrid({
       return;
     }
 
+    let isMounted = true;
+
     const fetchServices = async () => {
       try {
         setIsLoading(true);
         onLoadingChange?.(true);
         const data = await getMyServices();
+        
+        if (!isMounted) return;
+        
         setServices(data || []);
         onServicesLoaded?.(data || []);
         setError(null);
       } catch (err) {
+        if (!isMounted) return;
+        
         const errorStatus = (err as any)?.status;
         let errorMessage: string | null = null;
 
@@ -74,13 +81,19 @@ export function ServicesGrid({
         setError(errorMessage);
         setServices([]);
       } finally {
-        setIsLoading(false);
-        onLoadingChange?.(false);
+        if (isMounted) {
+          setIsLoading(false);
+          onLoadingChange?.(false);
+        }
       }
     };
 
     fetchServices();
-  }, [refreshTrigger, cachedServices.length, onServicesLoaded, onLoadingChange]);
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [refreshTrigger, cachedServices.length]);
 
   if (isLoading) {
     return (

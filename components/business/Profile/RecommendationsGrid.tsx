@@ -73,6 +73,8 @@ export function RecommendationsGrid({
       return;
     }
 
+    let isMounted = true;
+
     async function fetchRecommendations() {
       if (!talentUserId) return;
 
@@ -83,25 +85,36 @@ export function RecommendationsGrid({
         const apiRecommendations = await getTalentRecommendations(
           talentUserId as string,
         );
+        
+        if (!isMounted) return;
+        
         const uiRecommendations = apiRecommendations.map(
           mapApiRecommendationToUI,
         );
         setRecommendations(uiRecommendations);
         onRecommendationsLoaded?.(uiRecommendations);
       } catch (err) {
+        if (!isMounted) return;
+        
         console.error("Failed to fetch recommendations:", err);
         setError(
           err instanceof Error ? err.message : "Failed to load recommendations",
         );
         setRecommendations([]);
       } finally {
-        setIsLoading(false);
-        onLoadingChange?.(false);
+        if (isMounted) {
+          setIsLoading(false);
+          onLoadingChange?.(false);
+        }
       }
     }
 
     fetchRecommendations();
-  }, [talentUserId, externalRecommendations, cachedRecommendations.length, onRecommendationsLoaded, onLoadingChange]);
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [talentUserId, externalRecommendations, cachedRecommendations.length]);
 
   if (isLoading) {
     return (
