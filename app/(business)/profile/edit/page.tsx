@@ -5,12 +5,133 @@ import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import type { ChangeEvent } from "react";
+
+const availableSkills = [
+  "Website Design",
+  "Ui/Ux Design",
+  "Interface Design",
+  "Interaction Design",
+  "Presentation Design",
+  "Mobile Design",
+  "Prototyping",
+  "User Research",
+  "Wireframing",
+  "Design Systems",
+];
+
+const availableStack = [
+  { name: "Figma", icon: "🎨" },
+  { name: "Rive", icon: "⚡" },
+  { name: "Webflow", icon: "🌊" },
+  { name: "Lottie", icon: "✨" },
+  { name: "Framer", icon: "▲" },
+  { name: "Adobe XD", icon: "🎯" },
+  { name: "Sketch", icon: "✏️" },
+  { name: "InVision", icon: "🎬" },
+  { name: "Principle", icon: "🎪" },
+  { name: "Zeplin", icon: "📐" },
+];
+
+const dummyProfileData = {
+  personal: {
+    firstName: "Akanbi",
+    lastName: "David",
+    headline: "Product & Interaction Designer",
+    country: "Nigeria",
+    city: "Lagos",
+  },
+  professional: {
+    role: "Ui/Ux Designer",
+    skills: [
+      "Website Design",
+      "Ui/Ux Design",
+      "Interface Design",
+      "Interaction Design",
+      "Presentation Design",
+    ],
+    stack: [
+      { name: "Figma", icon: "🎨" },
+      { name: "Rive", icon: "⚡" },
+      { name: "Webflow", icon: "🌊" },
+      { name: "Lottie", icon: "✨" },
+      { name: "Framer", icon: "▲" },
+    ],
+    availability: "Freelance",
+  },
+  social: {
+    dribbble: "",
+    telegram: "",
+    twitter: "",
+    instagram: "",
+    linkedin: "",
+  },
+};
 
 export default function EditProfilePage() {
   const [expandedSection, setExpandedSection] = useState<string>("personal");
+  const [formData, setFormData] = useState(dummyProfileData);
 
   const toggleSection = (section: string) => {
     setExpandedSection(expandedSection === section ? "" : section);
+  };
+
+  const handleInputChange = (
+    section: keyof typeof dummyProfileData,
+    field: string,
+    value: string,
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [field]: value,
+      },
+    }));
+  };
+
+  const handleRemoveSkill = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      professional: {
+        ...prev.professional,
+        skills: prev.professional.skills.filter((_, i) => i !== index),
+      },
+    }));
+  };
+
+  const handleRemoveStack = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      professional: {
+        ...prev.professional,
+        stack: prev.professional.stack.filter((_, i) => i !== index),
+      },
+    }));
+  };
+
+  const handleAddSkill = (skill: string) => {
+    if (!formData.professional.skills.includes(skill)) {
+      setFormData((prev) => ({
+        ...prev,
+        professional: {
+          ...prev.professional,
+          skills: [...prev.professional.skills, skill],
+        },
+      }));
+    }
+  };
+
+  const handleAddStack = (tool: (typeof availableStack)[0]) => {
+    if (!formData.professional.stack.find((s) => s.name === tool.name)) {
+      setFormData((prev) => ({
+        ...prev,
+        professional: {
+          ...prev.professional,
+          stack: [...prev.professional.stack, tool],
+        },
+      }));
+    }
   };
 
   return (
@@ -76,7 +197,7 @@ export default function EditProfilePage() {
         </div>
 
         {/* Form Content */}
-        <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[70px] pb-6">
+        <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
             {/* Personal Details Section */}
             <div className="border border-[#E1E4EA] rounded-[16px] bg-white">
@@ -139,24 +260,36 @@ export default function EditProfilePage() {
                         <label className="text-[13px] font-normal text-black font-inter-tight">
                           First Name
                         </label>
-                        <div className="h-[48px] px-[12px] flex items-center justify-between border border-[#E1E4EA] rounded-[8px]">
-                          <span className="text-[13px] font-normal text-black font-inter-tight">
-                            Akanbi
-                          </span>
-                          <ChevronDown className="w-4 h-4 text-[#B2B2B2]" />
-                        </div>
+                        <input
+                          type="text"
+                          value={formData.personal.firstName}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "personal",
+                              "firstName",
+                              e.target.value,
+                            )
+                          }
+                          className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                        />
                       </div>
 
                       <div className="flex-1 flex flex-col gap-[10px]">
                         <label className="text-[13px] font-normal text-black font-inter-tight">
                           Last Name
                         </label>
-                        <div className="h-[48px] px-[12px] flex items-center justify-between border border-[#E1E4EA] rounded-[8px]">
-                          <span className="text-[13px] font-normal text-black font-inter-tight">
-                            David
-                          </span>
-                          <ChevronDown className="w-4 h-4 text-[#B2B2B2]" />
-                        </div>
+                        <input
+                          type="text"
+                          value={formData.personal.lastName}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "personal",
+                              "lastName",
+                              e.target.value,
+                            )
+                          }
+                          className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                        />
                       </div>
                     </div>
 
@@ -165,11 +298,18 @@ export default function EditProfilePage() {
                       <label className="text-[13px] font-normal text-black font-inter-tight">
                         Headline
                       </label>
-                      <div className="px-[12px] py-[18px] flex items-center border border-[#E1E4EA] rounded-[8px]">
-                        <span className="text-[13px] font-normal text-black font-inter-tight">
-                          Product & Interaction Designer
-                        </span>
-                      </div>
+                      <input
+                        type="text"
+                        value={formData.personal.headline}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "personal",
+                            "headline",
+                            e.target.value,
+                          )
+                        }
+                        className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                      />
                     </div>
 
                     {/* Location Fields */}
@@ -178,24 +318,36 @@ export default function EditProfilePage() {
                         <label className="text-[13px] font-normal text-black font-inter-tight">
                           Country
                         </label>
-                        <div className="h-[48px] px-[12px] flex items-center justify-between border border-[#E1E4EA] rounded-[8px]">
-                          <span className="text-[13px] font-normal text-black font-inter-tight">
-                            Nigeria
-                          </span>
-                          <ChevronDown className="w-4 h-4 text-[#B2B2B2]" />
-                        </div>
+                        <input
+                          type="text"
+                          value={formData.personal.country}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "personal",
+                              "country",
+                              e.target.value,
+                            )
+                          }
+                          className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                        />
                       </div>
 
                       <div className="flex-1 flex flex-col gap-[10px]">
                         <label className="text-[13px] font-normal text-black font-inter-tight">
                           City
                         </label>
-                        <div className="h-[48px] px-[12px] flex items-center justify-between border border-[#E1E4EA] rounded-[8px]">
-                          <span className="text-[13px] font-normal text-black font-inter-tight">
-                            Lagos
-                          </span>
-                          <ChevronDown className="w-4 h-4 text-[#B2B2B2]" />
-                        </div>
+                        <input
+                          type="text"
+                          value={formData.personal.city}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "personal",
+                              "city",
+                              e.target.value,
+                            )
+                          }
+                          className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                        />
                       </div>
                     </div>
 
@@ -236,12 +388,18 @@ export default function EditProfilePage() {
                       <label className="text-[13px] font-normal text-black font-inter-tight">
                         Role / Category
                       </label>
-                      <div className="px-[12px] py-[18px] flex items-center justify-between border border-[#E1E4EA] rounded-[8px]">
-                        <span className="text-[13px] font-normal text-black font-inter-tight">
-                          Ui/Ux Designer
-                        </span>
-                        <ChevronDown className="w-4 h-4 text-[#B2B2B2]" />
-                      </div>
+                      <input
+                        type="text"
+                        value={formData.professional.role}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "professional",
+                            "role",
+                            e.target.value,
+                          )
+                        }
+                        className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                      />
                     </div>
 
                     {/* Skills */}
@@ -249,43 +407,61 @@ export default function EditProfilePage() {
                       <label className="text-[13px] font-normal text-black font-inter-tight">
                         Skills
                       </label>
-                      <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[8px]">
-                        <span className="text-[13px] font-normal text-black font-inter-tight">
-                          Product & Interaction Designer
-                        </span>
-                      </div>
+
+                      {/* Skills Dropdown */}
+                      <select
+                        onChange={(e) => {
+                          if (e.target.value) {
+                            handleAddSkill(e.target.value);
+                            e.target.value = "";
+                          }
+                        }}
+                        className="px-[12px] py-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                      >
+                        <option value="">Select a skill</option>
+                        {availableSkills.map((skill) => (
+                          <option
+                            key={skill}
+                            value={skill}
+                            disabled={formData.professional.skills.includes(
+                              skill,
+                            )}
+                          >
+                            {skill}
+                          </option>
+                        ))}
+                      </select>
 
                       {/* Skills Tags */}
                       <div className="flex flex-wrap gap-[4px]">
-                        {[
-                          "Website Design",
-                          "Ui/Ux Design",
-                          "Interface Design",
-                          "Interaction Design",
-                          "Presentation Design",
-                        ].map((skill) => (
+                        {formData.professional.skills.map((skill, index) => (
                           <div
-                            key={skill}
+                            key={`${skill}-${index}`}
                             className="flex items-center gap-2 px-[10px] py-[8px] rounded-full bg-[#F5F5F5]"
                           >
                             <span className="text-[11px] font-normal text-black font-inter-tight leading-[105%]">
                               {skill}
                             </span>
-                            <svg
-                              width="13"
-                              height="13"
-                              viewBox="0 0 13 13"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
+                            <button
+                              onClick={() => handleRemoveSkill(index)}
+                              className="hover:opacity-70 transition-opacity"
                             >
-                              <path
-                                d="M9.75 3.25L3.25044 9.74957M9.74957 9.75L3.25 3.25046"
-                                stroke="#606060"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
+                              <svg
+                                width="13"
+                                height="13"
+                                viewBox="0 0 13 13"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M9.75 3.25L3.25044 9.74957M9.74957 9.75L3.25 3.25046"
+                                  stroke="#606060"
+                                  strokeWidth="1.5"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            </button>
                           </div>
                         ))}
                       </div>
@@ -296,23 +472,41 @@ export default function EditProfilePage() {
                       <label className="text-[13px] font-normal text-black font-inter-tight">
                         Stack
                       </label>
-                      <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[8px]">
-                        <span className="text-[13px] font-normal text-black font-inter-tight">
-                          Product & Interaction Designer
-                        </span>
-                      </div>
+
+                      {/* Stack Dropdown */}
+                      <select
+                        onChange={(e) => {
+                          if (e.target.value) {
+                            const selectedTool = availableStack.find(
+                              (t) => t.name === e.target.value,
+                            );
+                            if (selectedTool) {
+                              handleAddStack(selectedTool);
+                            }
+                            e.target.value = "";
+                          }
+                        }}
+                        className="px-[12px] py-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                      >
+                        <option value="">Select a tool</option>
+                        {availableStack.map((tool) => (
+                          <option
+                            key={tool.name}
+                            value={tool.name}
+                            disabled={formData.professional.stack.some(
+                              (s) => s.name === tool.name,
+                            )}
+                          >
+                            {tool.name}
+                          </option>
+                        ))}
+                      </select>
 
                       {/* Stack Tags */}
                       <div className="flex flex-wrap gap-[4px]">
-                        {[
-                          { name: "Figma", icon: "🎨" },
-                          { name: "Rive", icon: "⚡" },
-                          { name: "Webflow", icon: "🌊" },
-                          { name: "Lottie", icon: "✨" },
-                          { name: "Framer", icon: "▲" },
-                        ].map((tool) => (
+                        {formData.professional.stack.map((tool, index) => (
                           <div
-                            key={tool.name}
+                            key={`${tool.name}-${index}`}
                             className="flex items-center gap-2 px-[10px] py-[7px] rounded-full bg-[#F5F5F5]"
                           >
                             <div className="flex items-center gap-[5px]">
@@ -323,21 +517,26 @@ export default function EditProfilePage() {
                                 {tool.name}
                               </span>
                             </div>
-                            <svg
-                              width="13"
-                              height="13"
-                              viewBox="0 0 13 13"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
+                            <button
+                              onClick={() => handleRemoveStack(index)}
+                              className="hover:opacity-70 transition-opacity"
                             >
-                              <path
-                                d="M9.75 3.25L3.25044 9.74957M9.74957 9.75L3.25 3.25046"
-                                stroke="#606060"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
+                              <svg
+                                width="13"
+                                height="13"
+                                viewBox="0 0 13 13"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M9.75 3.25L3.25044 9.74957M9.74957 9.75L3.25 3.25046"
+                                  stroke="#606060"
+                                  strokeWidth="1.5"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            </button>
                           </div>
                         ))}
                       </div>
@@ -348,12 +547,18 @@ export default function EditProfilePage() {
                       <label className="text-[13px] font-normal text-black font-inter-tight">
                         Availability
                       </label>
-                      <div className="px-[12px] py-[18px] flex items-center justify-between border border-[#E1E4EA] rounded-[8px]">
-                        <span className="text-[13px] font-normal text-black font-inter-tight">
-                          Freelance
-                        </span>
-                        <ChevronDown className="w-4 h-4 text-[#B2B2B2]" />
-                      </div>
+                      <input
+                        type="text"
+                        value={formData.professional.availability}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "professional",
+                            "availability",
+                            e.target.value,
+                          )
+                        }
+                        className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                      />
                     </div>
 
                     {/* Next Button */}
@@ -393,7 +598,7 @@ export default function EditProfilePage() {
                       <label className="text-[13px] font-normal text-black font-inter-tight">
                         Dribbble
                       </label>
-                      <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[8px]">
+                      <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
                         <svg
                           width="16"
                           height="16"
@@ -428,6 +633,14 @@ export default function EditProfilePage() {
                         <input
                           type="text"
                           placeholder="Paste Link Here"
+                          value={formData.social.dribbble}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "social",
+                              "dribbble",
+                              e.target.value,
+                            )
+                          }
                           className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
                         />
                       </div>
@@ -438,7 +651,7 @@ export default function EditProfilePage() {
                       <label className="text-[13px] font-normal text-black font-inter-tight">
                         Telegram
                       </label>
-                      <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[8px]">
+                      <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
                         <svg
                           width="16"
                           height="16"
@@ -456,6 +669,14 @@ export default function EditProfilePage() {
                         <input
                           type="text"
                           placeholder="Paste Link Here"
+                          value={formData.social.telegram}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "social",
+                              "telegram",
+                              e.target.value,
+                            )
+                          }
                           className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
                         />
                       </div>
@@ -466,7 +687,7 @@ export default function EditProfilePage() {
                       <label className="text-[13px] font-normal text-black font-inter-tight">
                         X
                       </label>
-                      <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[8px]">
+                      <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
                         <svg
                           width="16"
                           height="16"
@@ -484,6 +705,14 @@ export default function EditProfilePage() {
                         <input
                           type="text"
                           placeholder="Paste Link Here"
+                          value={formData.social.twitter}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "social",
+                              "twitter",
+                              e.target.value,
+                            )
+                          }
                           className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
                         />
                       </div>
@@ -494,7 +723,7 @@ export default function EditProfilePage() {
                       <label className="text-[13px] font-normal text-black font-inter-tight">
                         Instagram
                       </label>
-                      <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[8px]">
+                      <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
                         <svg
                           width="16"
                           height="16"
@@ -522,6 +751,14 @@ export default function EditProfilePage() {
                         <input
                           type="text"
                           placeholder="Paste Link Here"
+                          value={formData.social.instagram}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "social",
+                              "instagram",
+                              e.target.value,
+                            )
+                          }
                           className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
                         />
                       </div>
@@ -532,7 +769,7 @@ export default function EditProfilePage() {
                       <label className="text-[13px] font-normal text-black font-inter-tight">
                         LinkendIn
                       </label>
-                      <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#E1E4EA] rounded-[8px]">
+                      <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
                         <svg
                           width="16"
                           height="16"
@@ -557,6 +794,14 @@ export default function EditProfilePage() {
                         <input
                           type="text"
                           placeholder="Paste Link Here"
+                          value={formData.social.linkedin}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "social",
+                              "linkedin",
+                              e.target.value,
+                            )
+                          }
                           className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
                         />
                       </div>
