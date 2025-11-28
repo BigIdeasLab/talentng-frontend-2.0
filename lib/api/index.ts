@@ -6,9 +6,7 @@
 import { getCookie, setCookie, deleteCookie } from "@/lib/utils";
 
 const baseUrl =
-  process.env.NODE_ENV === "production"
-    ? process.env.NEXT_PUBLIC_TALENTNG_API_URL
-    : "/api/v1";
+  process.env.NEXT_PUBLIC_TALENTNG_API_URL || "/api/v1";
 
 type ApiOptions = {
   headers?: Record<string, string>;

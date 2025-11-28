@@ -9,6 +9,7 @@ interface ProfileNavProps {
   activeTab?: "works" | "services" | "recommendations" | "opportunities";
   onTabChange?: (tab: string) => void;
   onAddNewWork?: () => void;
+  onAddService?: () => void;
 }
 
 const tabs = [
@@ -29,12 +30,21 @@ export function ProfileNav({
   activeTab = "works",
   onTabChange,
   onAddNewWork,
+  onAddService,
 }: ProfileNavProps) {
   const [active, setActive] = useState(activeTab);
 
   const handleTabChange = (tabId: string) => {
     setActive(tabId as any);
     onTabChange?.(tabId);
+  };
+
+  const handleActionClick = () => {
+    if (active === "services") {
+      onAddService?.();
+    } else {
+      onAddNewWork?.();
+    }
   };
 
   const buttonText = buttonTexts[active] || "Add New Work";
@@ -65,7 +75,7 @@ export function ProfileNav({
 
       {/* CTA Button */}
       <Button
-        onClick={onAddNewWork}
+        onClick={handleActionClick}
         className="hidden sm:flex h-[40px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a24d6] font-inter-tight text-[13px] font-normal gap-[8px] mr-[20px] flex-shrink-0"
       >
         <Plus className="w-4 h-4" />
@@ -74,7 +84,7 @@ export function ProfileNav({
 
       {/* Mobile CTA Icon Button */}
       <button
-        onClick={onAddNewWork}
+        onClick={handleActionClick}
         className="sm:hidden p-2 text-[#5C30FF] hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
       >
         <Plus className="w-5 h-5" />

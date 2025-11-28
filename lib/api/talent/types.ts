@@ -139,3 +139,85 @@ export interface APIProfileData {
   visibility?: "public" | "private";
   isFeatured?: boolean;
 }
+
+/**
+ * Service Types
+ */
+export interface Review {
+  id: string;
+  reviewerId: string;
+  rating: number;
+  comment?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Service {
+  id: string;
+  talentProfileId: string;
+  title: string;
+  about: string;
+  price?: string;
+  images?: string[];
+  tags?: string[];
+  status: "active" | "inactive" | "archived";
+  averageRating: number;
+  totalReviews: number;
+  reviews?: Review[];
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string | null;
+}
+
+export interface CreateServiceInput {
+  title: string;
+  about: string;
+  price?: string;
+  images?: string[];
+  tags?: string[];
+}
+
+export interface UpdateServiceInput {
+  title?: string;
+  about?: string;
+  price?: string;
+  images?: string[];
+  tags?: string[];
+}
+
+export interface AddReviewInput {
+  rating: number;
+  comment?: string;
+}
+
+/**
+ * Recommendation Types
+ */
+export interface TalentRecommendationDto {
+  id: string;
+  talentProfileId: string;
+  title: string;
+  comment?: string;
+  rating?: number;
+  isVerified: boolean;
+  recommendedBy: {
+    id: string;
+    username?: string;
+    email: string;
+  };
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface RecommendationStatsDto {
+  totalCount: number;
+  averageRating?: number;
+  verifiedCount: number;
+  topSkills?: string[];
+}
+
+export interface CreateRecommendationDto {
+  title: string;
+  comment?: string;
+  rating?: number;
+}

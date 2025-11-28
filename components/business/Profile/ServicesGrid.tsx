@@ -1,83 +1,107 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Briefcase } from "lucide-react";
+import { Briefcase, Star } from "lucide-react";
 import { EmptyState } from "./EmptyState";
-
-interface ServiceTag {
-  label: string;
-}
-
-interface Service {
-  id: string;
-  image: string;
-  tags: ServiceTag[];
-  title: string;
-  price: string;
-}
+import { getMyServices } from "@/lib/api/talent";
+import type { Service } from "@/lib/api/talent";
 
 interface ServicesGridProps {
-  services?: Service[];
-  isLoading?: boolean;
   onServiceClick?: (service: Service) => void;
+  onAddService?: () => void;
+  refreshTrigger?: number;
+  cachedServices?: Service[];
+  onServicesLoaded?: (services: Service[]) => void;
+  isLoading?: boolean;
+  onLoadingChange?: (loading: boolean) => void;
 }
 
-const defaultServices: Service[] = [
-  {
-    id: "1",
-    image:
-      "https://api.builder.io/api/v1/image/assets/TEMP/006e1249db9b7d609ae3b3246ecaa7c825dfa329?width=518",
-    tags: [{ label: "Branding" }, { label: "Logo Design" }],
-    title: "Brand Identity Design",
-    price: "Starting from $200",
-  },
-  {
-    id: "2",
-    image:
-      "https://api.builder.io/api/v1/image/assets/TEMP/743d9e734f8602de97475d6fc1c1d00c06de778e?width=518",
-    tags: [{ label: "Prototyping" }, { label: "Wireframing" }],
-    title: "Mobile App Ui/Ux",
-    price: "Starting from $200",
-  },
-  {
-    id: "3",
-    image:
-      "https://api.builder.io/api/v1/image/assets/TEMP/f8c98e0981eccf4ffb9da93b3d7a21a125ae4e92?width=518",
-    tags: [
-      { label: "Responsive Design" },
-      { label: "Webflow" },
-      { label: "+3" },
-    ],
-    title: "Website Design",
-    price: "Starting from $200",
-  },
-  {
-    id: "4",
-    image:
-      "https://api.builder.io/api/v1/image/assets/TEMP/34d7fe36e40215add8f70c600abebfb4cc8e9bd6?width=518",
-    tags: [{ label: "Character Design" }, { label: "Vector Art" }],
-    title: "Illustration",
-    price: "Starting from $200",
-  },
-  {
-    id: "5",
-    image:
-      "https://api.builder.io/api/v1/image/assets/TEMP/69789ac41455ce764a1265e4ab77e0c74efd3b84?width=518",
-    tags: [{ label: "Branding" }, { label: "Logo Design" }],
-    title: "Icon Animation",
-    price: "Starting from $200",
-  },
-];
+const PLACEHOLDER_IMAGE =
+  "https://api.builder.io/api/v1/image/assets/TEMP/006e1249db9b7d609ae3b3246ecaa7c825dfa329?width=518";
 
 export function ServicesGrid({
-  services = defaultServices,
-  isLoading = false,
   onServiceClick,
+  onAddService,
+  refreshTrigger,
+  cachedServices = [],
+  onServicesLoaded,
+  isLoading: parentIsLoading = false,
+  onLoadingChange,
 }: ServicesGridProps) {
+  const [services, setServices] = useState<Service[]>(cachedServices);
+  const [isLoading, setIsLoading] = useState(parentIsLoading && cachedServices.length === 0);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Use cached services if available
+    if (cachedServices.length > 0) {
+      setServices(cachedServices);
+      setIsLoading(false);
+      onLoadingChange?.(false);
+      return;
+    }
+
+    const fetchServices = async () => {
+      try {
+        setIsLoading(true);
+        onLoadingChange?.(true);
+        const data = await getMyServices();
+        setServices(data || []);
+        onServicesLoaded?.(data || []);
+        setError(null);
+      } catch (err) {
+        const errorStatus = (err as any)?.status;
+        let errorMessage: string | null = null;
+
+        // Handle specific error cases
+        if (errorStatus === 404) {
+          // Services endpoint may not exist yet or talent profile not found
+          // Treat as empty state instead of error
+          setServices([]);
+          onServicesLoaded?.([]);
+          setError(null);
+          return;
+        } else if (errorStatus === 401) {
+          errorMessage = "Please log in to view your services";
+        } else if (errorStatus === 403) {
+          errorMessage = "You don't have permission to view these services";
+        } else {
+          errorMessage =
+            err instanceof Error ? err.message : "Failed to load services";
+        }
+
+        setError(errorMessage);
+        setServices([]);
+      } finally {
+        setIsLoading(false);
+        onLoadingChange?.(false);
+      }
+    };
+
+    fetchServices();
+  }, [refreshTrigger, cachedServices.length, onServicesLoaded, onLoadingChange]);
+
   if (isLoading) {
     return (
       <div className="w-full h-64 flex items-center justify-center">
         <div className="animate-pulse text-gray-400">Loading services...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full p-6 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-3">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
       </div>
     );
   }
@@ -88,7 +112,7 @@ export function ServicesGrid({
         title="No services added yet"
         description="Add services that showcase your expertise. Clear service offerings help clients find you."
         buttonText="Add Service"
-        onButtonClick={onServiceClick as any}
+        onButtonClick={onAddService}
       />
     );
   }
@@ -104,47 +128,83 @@ export function ServicesGrid({
           >
             {/* Service Image */}
             <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-100">
-              <Image
-                src={service.image}
-                alt={service.title}
-                fill
-                className="object-cover"
-                unoptimized
-              />
+              {service.images && service.images.length > 0 ? (
+                <Image
+                  src={service.images[0]}
+                  alt={service.title}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              ) : (
+                <Image
+                  src={PLACEHOLDER_IMAGE}
+                  alt={service.title}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              )}
             </div>
 
             {/* Service Details */}
             <div className="flex flex-col items-start gap-[12px] w-full">
               {/* Tags */}
-              <div className="flex flex-wrap items-center gap-[4px]">
-                {service.tags.map((tag, idx) => (
-                  <div
-                    key={idx}
-                    className="flex px-[10px] py-[8px] justify-center items-center rounded-[30px] bg-[#F5F5F5]"
-                  >
-                    <span className="text-[11px] font-normal leading-[105%] font-inter-tight text-black">
-                      {tag.label}
-                    </span>
-                  </div>
-                ))}
-              </div>
+              {service.tags && service.tags.length > 0 && (
+                <div className="flex flex-wrap items-center gap-[4px]">
+                  {service.tags.slice(0, 3).map((tag, idx) => (
+                    <div
+                      key={idx}
+                      className="flex px-[10px] py-[8px] justify-center items-center rounded-[30px] bg-[#F5F5F5]"
+                    >
+                      <span className="text-[11px] font-normal leading-[105%] font-inter-tight text-black">
+                        {tag}
+                      </span>
+                    </div>
+                  ))}
+                  {service.tags.length > 3 && (
+                    <div className="flex px-[10px] py-[8px] justify-center items-center rounded-[30px] bg-[#F5F5F5]">
+                      <span className="text-[11px] font-normal leading-[105%] font-inter-tight text-black">
+                        +{service.tags.length - 3}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Title */}
               <h3 className="text-[15px] font-medium leading-normal font-inter-tight text-black">
                 {service.title}
               </h3>
 
+              {/* Rating */}
+              {service.totalReviews > 0 && (
+                <div className="flex items-center gap-[4px]">
+                  <div className="flex items-center gap-1">
+                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-[13px] font-medium text-black">
+                      {service.averageRating.toFixed(1)}
+                    </span>
+                  </div>
+                  <span className="text-[12px] text-gray-500">
+                    ({service.totalReviews} reviews)
+                  </span>
+                </div>
+              )}
+
               {/* Price */}
-              <div className="flex items-center gap-[4px]">
-                <Briefcase
-                  className="w-[16px] h-[16px]"
-                  strokeWidth={1.2}
-                  color="rgba(0, 0, 0, 0.3)"
-                />
-                <span className="text-[13px] font-light leading-normal font-inter-tight text-[rgba(0,0,0,0.30)]">
-                  {service.price}
-                </span>
-              </div>
+              {service.price && (
+                <div className="flex items-center gap-[4px]">
+                  <Briefcase
+                    className="w-[16px] h-[16px]"
+                    strokeWidth={1.2}
+                    color="rgba(0, 0, 0, 0.3)"
+                  />
+                  <span className="text-[13px] font-light leading-normal font-inter-tight text-[rgba(0,0,0,0.30)]">
+                    {service.price}
+                  </span>
+                </div>
+              )}
             </div>
           </button>
         ))}

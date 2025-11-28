@@ -1,7 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { EmptyState } from "./EmptyState";
+import { getTalentRecommendations } from "@/lib/api/talent";
+import type { TalentRecommendationDto } from "@/lib/api/talent";
 
 interface Recommendation {
   id: string;
@@ -12,81 +15,108 @@ interface Recommendation {
 }
 
 interface RecommendationsGridProps {
+  talentUserId?: string;
   recommendations?: Recommendation[];
   isLoading?: boolean;
   onRecommendationClick?: (recommendation: Recommendation) => void;
+  cachedRecommendations?: Recommendation[];
+  onRecommendationsLoaded?: (recommendations: Recommendation[]) => void;
+  onLoadingChange?: (loading: boolean) => void;
 }
 
-const defaultRecommendations: Recommendation[] = [
-  {
-    id: "1",
-    name: "Adeola Ogunniyi",
-    date: "Apr 15, 2025",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/01cb677bd95bceffde4832706067054e07742b6d?width=80",
-    text: "Adeola's work on our e-commerce platform transformed the user checkout experience. She integrated user feedback seamlessly, ensuring a smooth transaction flow.",
-  },
-  {
-    id: "2",
-    name: "Chinedu Eze",
-    date: "May 20, 2025",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/17e0f8649d5b2acbdf3b84f9659212f2c54c411f?width=80",
-    text: "Chinedu's innovative approach to our educational app has increased user engagement significantly. His designs are not only visually appealing but also functionally robust.",
-  },
-  {
-    id: "3",
-    name: "Ngozi Okafor",
-    date: "Jun 10, 2025",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/f25e66bac38da7360668fa7a0c3be5e28bf26714?width=80",
-    text: "Ngozi's expertise in UI design made our healthcare application more accessible. She has an exceptional ability to simplify complex information.",
-  },
-  {
-    id: "4",
-    name: "Uche Nwankwo",
-    date: "Jul 5, 2025",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/d2d5c07ec3c8a76d67b41bc18c688b38f8aa3e9c?width=80",
-    text: "Uche's vibrant designs for our travel app captured the essence of adventure. His attention to detail enhances user experience and brand identity.",
-  },
-  {
-    id: "5",
-    name: "Chinonso Obi",
-    date: "Aug 22, 2025",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/bbf2e154aac73c36beae6c0e53a329fb237a4bf3?width=80",
-    text: "Chinonso's creative strategies helped us redefine our music streaming service's interface. His unique style attracts a diverse audience.",
-  },
-  {
-    id: "6",
-    name: "Oluchi Nwosu",
-    date: "Oct 30, 2025",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/1461b9e5fcd47d64b053df42baf38ee3fcbdae04?width=80",
-    text: "Oluchi's work on the social media platform breathed new life into our user interface. Her innovative designs resonate with younger audiences.",
-  },
-  {
-    id: "7",
-    name: "Efe Aruware",
-    date: "Sep 18, 2025",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/87ce74c19b2f896eb0af92f5338b866048bfa1eb?width=80",
-    text: "Efe took charge of our gaming app's UI, making it more interactive and user-friendly. His designs engage players on a deeper level.",
-  },
-];
+function mapApiRecommendationToUI(
+  apiRec: TalentRecommendationDto,
+): Recommendation {
+  return {
+    id: apiRec.id,
+    name: apiRec.recommendedBy.username || apiRec.recommendedBy.email,
+    date: new Date(apiRec.createdAt).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    }),
+    avatar: "", // API doesn't provide avatar - using fallback in rendering
+    text: apiRec.comment || `Recommended for: ${apiRec.title}`,
+  };
+}
 
 export function RecommendationsGrid({
-  recommendations = defaultRecommendations,
-  isLoading = false,
+  talentUserId,
+  recommendations: externalRecommendations,
+  isLoading: externalIsLoading = false,
   onRecommendationClick,
+  cachedRecommendations = [],
+  onRecommendationsLoaded,
+  onLoadingChange,
 }: RecommendationsGridProps) {
+  const [recommendations, setRecommendations] = useState<Recommendation[]>(
+    externalRecommendations || cachedRecommendations || [],
+  );
+  const [isLoading, setIsLoading] = useState(externalIsLoading && cachedRecommendations.length === 0);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Use cached recommendations if available
+    if (cachedRecommendations.length > 0) {
+      setRecommendations(cachedRecommendations);
+      setIsLoading(false);
+      onLoadingChange?.(false);
+      return;
+    }
+
+    if (externalRecommendations) {
+      setRecommendations(externalRecommendations);
+      return;
+    }
+
+    if (!talentUserId) {
+      return;
+    }
+
+    async function fetchRecommendations() {
+      if (!talentUserId) return;
+
+      try {
+        setIsLoading(true);
+        onLoadingChange?.(true);
+        setError(null);
+        const apiRecommendations = await getTalentRecommendations(
+          talentUserId as string,
+        );
+        const uiRecommendations = apiRecommendations.map(
+          mapApiRecommendationToUI,
+        );
+        setRecommendations(uiRecommendations);
+        onRecommendationsLoaded?.(uiRecommendations);
+      } catch (err) {
+        console.error("Failed to fetch recommendations:", err);
+        setError(
+          err instanceof Error ? err.message : "Failed to load recommendations",
+        );
+        setRecommendations([]);
+      } finally {
+        setIsLoading(false);
+        onLoadingChange?.(false);
+      }
+    }
+
+    fetchRecommendations();
+  }, [talentUserId, externalRecommendations, cachedRecommendations.length, onRecommendationsLoaded, onLoadingChange]);
+
   if (isLoading) {
     return (
       <div className="w-full h-64 flex items-center justify-center">
         <div className="animate-pulse text-gray-400">
           Loading recommendations...
         </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full h-64 flex items-center justify-center">
+        <div className="text-red-500 text-sm">{error}</div>
       </div>
     );
   }
@@ -117,14 +147,20 @@ export function RecommendationsGrid({
                 <div className="flex justify-between items-center w-full">
                   <div className="flex items-center gap-[8px]">
                     {/* Avatar */}
-                    <div className="relative w-[36px] h-[36px] rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
-                      <Image
-                        src={recommendation.avatar}
-                        alt={recommendation.name}
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
+                    <div className="relative w-[36px] h-[36px] rounded-full overflow-hidden bg-gradient-to-br from-blue-400 to-purple-500 flex-shrink-0 flex items-center justify-center">
+                      {recommendation.avatar ? (
+                        <Image
+                          src={recommendation.avatar}
+                          alt={recommendation.name}
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
+                      ) : (
+                        <span className="text-white text-xs font-semibold">
+                          {recommendation.name.charAt(0).toUpperCase()}
+                        </span>
+                      )}
                     </div>
 
                     {/* Name and Date */}

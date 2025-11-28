@@ -8,6 +8,7 @@ import { WorksGrid } from "./WorksGrid";
 import { ServicesGrid } from "./ServicesGrid";
 import { RecommendationsGrid } from "./RecommendationsGrid";
 import { OpportunitiesGrid } from "./OpportunitiesGrid";
+import { CreateServiceModal } from "./CreateServiceModal";
 import type { DashboardStats } from "@/lib/api/talent/types";
 import type { UIProfileData } from "@/lib/profileMapper";
 
@@ -24,6 +25,12 @@ export function ProfileLayout({
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("works");
   const [stats, setStats] = useState<DashboardStats | null>(initialStats);
+  const [isCreateServiceModalOpen, setIsCreateServiceModalOpen] = useState(false);
+  const [serviceRefreshTrigger, setServiceRefreshTrigger] = useState(0);
+  const [cachedServices, setCachedServices] = useState<any[]>([]);
+  const [servicesLoading, setServicesLoading] = useState(true);
+  const [cachedRecommendations, setCachedRecommendations] = useState<any[]>([]);
+  const [recommendationsLoading, setRecommendationsLoading] = useState(true);
 
   useEffect(() => {
     setStats(initialStats);
@@ -40,6 +47,18 @@ export function ProfileLayout({
   const handleAddNewWork = () => {
     // TODO: Open modal or navigate to work upload page
     console.log("Add new work clicked");
+  };
+
+  const handleOpenCreateServiceModal = () => {
+    setIsCreateServiceModalOpen(true);
+  };
+
+  const handleCloseCreateServiceModal = () => {
+    setIsCreateServiceModalOpen(false);
+  };
+
+  const handleServiceCreated = () => {
+    setServiceRefreshTrigger((prev) => prev + 1);
   };
 
   return (
@@ -112,6 +131,7 @@ export function ProfileLayout({
           activeTab={activeTab as any}
           onTabChange={setActiveTab}
           onAddNewWork={handleAddNewWork}
+          onAddService={handleOpenCreateServiceModal}
         />
 
         {/* Content Section */}
@@ -127,10 +147,33 @@ export function ProfileLayout({
           {/* Services Tab */}
           {activeTab === "services" && (
             <ServicesGrid
+              onAddService={handleOpenCreateServiceModal}
               onServiceClick={(service) =>
                 console.log("Service clicked:", service)
               }
+              refreshTrigger={serviceRefreshTrigger}
+              cachedServices={cachedServices}
+              onServicesLoaded={setCachedServices}
+              isLoading={servicesLoading}
+              onLoadingChange={setServicesLoading}
             />
+          )}
+          
+          {/* Keep services cached even when tab is not active */}
+          {activeTab !== "services" && (
+            <div className="hidden">
+              <ServicesGrid
+                onAddService={handleOpenCreateServiceModal}
+                onServiceClick={(service) =>
+                  console.log("Service clicked:", service)
+                }
+                refreshTrigger={serviceRefreshTrigger}
+                cachedServices={cachedServices}
+                onServicesLoaded={setCachedServices}
+                isLoading={servicesLoading}
+                onLoadingChange={setServicesLoading}
+              />
+            </div>
           )}
 
           {/* Recommendations Tab */}
@@ -139,7 +182,26 @@ export function ProfileLayout({
               onRecommendationClick={(recommendation) =>
                 console.log("Recommendation clicked:", recommendation)
               }
+              cachedRecommendations={cachedRecommendations}
+              onRecommendationsLoaded={setCachedRecommendations}
+              isLoading={recommendationsLoading}
+              onLoadingChange={setRecommendationsLoading}
             />
+          )}
+          
+          {/* Keep recommendations cached even when tab is not active */}
+          {activeTab !== "recommendations" && (
+            <div className="hidden">
+              <RecommendationsGrid
+                onRecommendationClick={(recommendation) =>
+                  console.log("Recommendation clicked:", recommendation)
+                }
+                cachedRecommendations={cachedRecommendations}
+                onRecommendationsLoaded={setCachedRecommendations}
+                isLoading={recommendationsLoading}
+                onLoadingChange={setRecommendationsLoading}
+              />
+            </div>
           )}
 
           {/* Opportunities Tab */}
@@ -155,6 +217,13 @@ export function ProfileLayout({
           )}
         </div>
       </main>
+
+      {/* Create Service Modal */}
+      <CreateServiceModal
+        isOpen={isCreateServiceModalOpen}
+        onClose={handleCloseCreateServiceModal}
+        onSuccess={handleServiceCreated}
+      />
     </div>
   );
 }

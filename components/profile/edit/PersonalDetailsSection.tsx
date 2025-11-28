@@ -1,5 +1,9 @@
+"use client";
+
+import { useRef, useState } from "react";
 import { SmoothCollapse } from "@/components/SmoothCollapse";
 import { SectionHeader } from "./SectionHeader";
+import { updateProfileImage } from "@/lib/api/talent";
 
 interface PersonalData {
   firstName: string;
@@ -29,6 +33,36 @@ export function PersonalDetailsSection({
   sectionRef,
   statesCities,
 }: PersonalDetailsSectionProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleProfileImageClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const response = await updateProfileImage(file);
+      if (response.profileImageUrl !== null && response.profileImageUrl !== undefined) {
+        onInputChange("profileImageUrl", response.profileImageUrl);
+      }
+    } catch (error) {
+      console.error("Failed to upload profile image:", error);
+    } finally {
+      setIsUploading(false);
+      // Reset input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
   return (
     <div
       ref={sectionRef}
@@ -42,11 +76,26 @@ export function PersonalDetailsSection({
           <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
             {/* Profile Picture */}
               <div className="relative w-[90px] h-[90px]">
-                <img
-                  src={formData.profileImageUrl || "/lucas-gouvea.jpg"}
-                  alt="Profile"
-                  className="w-full h-full object-cover rounded-full p-2"
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
                 />
+                <button
+                  type="button"
+                  onClick={handleProfileImageClick}
+                  disabled={isUploading}
+                  className="absolute inset-0 w-full h-full rounded-full cursor-pointer hover:opacity-80 transition-opacity disabled:opacity-50"
+                  title="Click to change profile picture"
+                >
+                  <img
+                    src={formData.profileImageUrl || "/lucas-gouvea.jpg"}
+                    alt="Profile"
+                    className="w-full h-full object-cover rounded-full p-2"
+                  />
+                </button>
               <svg
                 width="110"
                 height="110"
