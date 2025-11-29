@@ -21,9 +21,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { getCurrentProfile } from "@/lib/api/talent";
+import type { TalentProfile } from "@/lib/api/talent/types";
 
 interface SidebarProps {
   activeItem?: string;
@@ -84,6 +87,12 @@ export function Sidebar({
   const pathname = usePathname();
   const router = useRouter();
 
+  const { data: talentProfile } = useQuery({
+    queryKey: ["talentProfile"],
+    queryFn: getCurrentProfile,
+    // enabled: user?.role === "TALENT",
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
   const handleProfile = () => {
     setIsDropdownOpen(false);
     router.push("/profile");
@@ -128,10 +137,14 @@ export function Sidebar({
               <DropdownMenuTrigger asChild>
                 <button className="w-full flex items-center justify-between gap-[8px] hover:opacity-80 transition-opacity">
                   <div className="flex items-center gap-[8px] min-w-0">
-                    <div className="w-[28px] h-[28px] rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex-shrink-0" />
+                    <img
+                      src={talentProfile?.profileImageUrl || "/logo.png"}
+                      alt={talentProfile?.fullName || "Profile"}
+                      className="w-[28px] h-[28px] rounded-full object-cover flex-shrink-0"
+                    />
                     <div className="min-w-0">
                       <div className="text-[13px] font-normal text-black font-inter-tight truncate">
-                        {user?.fullName || "Akanbi David"}
+                        {talentProfile?.fullName || "User"}
                       </div>
                       <div className="text-[11px] text-[rgba(0,0,0,0.30)] font-inter-tight truncate">
                         Independent Talent
@@ -142,9 +155,15 @@ export function Sidebar({
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-[220px]">
-                <DropdownMenuItem onClick={handleProfile}>Profile</DropdownMenuItem>
-                <DropdownMenuItem onClick={handleSettings}>Settings</DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleProfile}>
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSettings}>
+                  Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
+                  Logout
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

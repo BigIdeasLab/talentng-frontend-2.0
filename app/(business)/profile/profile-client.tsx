@@ -10,6 +10,7 @@ interface ProfilePageClientProps {
   initialUserId: string | null;
   initialStats: DashboardStats | null;
   initialRecommendations: any[];
+  initialServices?: any[];
   initialError: string | null;
 }
 
@@ -18,6 +19,7 @@ export function ProfilePageClient({
   initialUserId,
   initialStats,
   initialRecommendations,
+  initialServices,
   initialError,
 }: ProfilePageClientProps) {
   const [profileData, setProfileData] =
@@ -30,6 +32,7 @@ export function ProfilePageClient({
       userId={initialUserId}
       initialStats={stats}
       initialRecommendations={initialRecommendations}
+      initialServices={initialServices}
       isLoading={false}
     />
   );

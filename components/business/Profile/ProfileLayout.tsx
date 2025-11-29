@@ -18,6 +18,7 @@ interface ProfileLayoutProps {
   userId: string | null;
   initialStats: DashboardStats | null;
   initialRecommendations: any[];
+  initialServices?: any[];
   isLoading?: boolean;
 }
 
@@ -26,6 +27,7 @@ export function ProfileLayout({
   userId,
   initialStats,
   initialRecommendations,
+  initialServices,
 }: ProfileLayoutProps) {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("works");
@@ -35,8 +37,8 @@ export function ProfileLayout({
   const [isUploadWorksModalOpen, setIsUploadWorksModalOpen] = useState(false);
   const [serviceRefreshTrigger, setServiceRefreshTrigger] = useState(0);
   const [worksRefreshTrigger, setWorksRefreshTrigger] = useState(0);
-  const [cachedServices, setCachedServices] = useState<any[]>([]);
-  const [servicesLoading, setServicesLoading] = useState(true);
+  const [cachedServices, setCachedServices] = useState<any[]>(initialServices || []);
+  const [servicesLoading, setServicesLoading] = useState(!initialServices || initialServices.length === 0);
   const [cachedWorks, setCachedWorks] = useState<any[]>([]);
   const [worksLoading, setWorksLoading] = useState(true);
   const [cachedRecommendations, setCachedRecommendations] = useState<any[]>(initialRecommendations || []);
@@ -97,8 +99,10 @@ export function ProfileLayout({
   };
 
   const handleServiceCreated = (message?: string, services?: any[]) => {
-    if (services && services.length > 0) {
-      setCachedServices(services);
+    // Only cache services with valid IDs
+    const validServices = services?.filter(s => s.id && s.id !== "0") || [];
+    if (validServices.length > 0) {
+      setCachedServices(validServices);
     }
   };
 

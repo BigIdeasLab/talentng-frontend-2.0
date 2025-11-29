@@ -49,7 +49,10 @@ export function PersonalDetailsSection({
     setIsUploading(true);
     try {
       const response = await updateProfileImage(file);
-      if (response.profileImageUrl !== null && response.profileImageUrl !== undefined) {
+      if (
+        response.profileImageUrl !== null &&
+        response.profileImageUrl !== undefined
+      ) {
         onInputChange("profileImageUrl", response.profileImageUrl);
       }
     } catch (error) {
@@ -68,34 +71,38 @@ export function PersonalDetailsSection({
       ref={sectionRef}
       className="border border-[#E1E4EA] rounded-[16px] bg-white"
     >
-      <SectionHeader title="Personal Details" isOpen={isOpen} onToggle={onToggle} />
+      <SectionHeader
+        title="Personal Details"
+        isOpen={isOpen}
+        onToggle={onToggle}
+      />
 
       <SmoothCollapse isOpen={isOpen}>
         <>
           <div className="h-[1px] bg-[#E1E4EA]" />
           <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
             {/* Profile Picture */}
-              <div className="relative w-[90px] h-[90px]">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="hidden"
+            <div className="relative w-[90px] h-[90px]">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={handleProfileImageClick}
+                disabled={isUploading}
+                className="absolute inset-0 w-full h-full rounded-full cursor-pointer hover:opacity-80 transition-opacity disabled:opacity-50"
+                title="Click to change profile picture"
+              >
+                <img
+                  src={formData.profileImageUrl || "/logo.png"}
+                  alt="Profile"
+                  className="w-full h-full object-cover rounded-full p-2"
                 />
-                <button
-                  type="button"
-                  onClick={handleProfileImageClick}
-                  disabled={isUploading}
-                  className="absolute inset-0 w-full h-full rounded-full cursor-pointer hover:opacity-80 transition-opacity disabled:opacity-50"
-                  title="Click to change profile picture"
-                >
-                  <img
-                    src={formData.profileImageUrl || "/lucas-gouvea.jpg"}
-                    alt="Profile"
-                    className="w-full h-full object-cover rounded-full p-2"
-                  />
-                </button>
+              </button>
               <svg
                 width="110"
                 height="110"
@@ -175,32 +182,34 @@ export function PersonalDetailsSection({
             </div>
 
             {/* Phone Number */}
-             <div className="flex flex-col gap-[10px]">
-               <label className="text-[13px] font-normal text-black font-inter-tight">
-                 Phone Number
-               </label>
-               <input
-                 type="tel"
-                 value={formData.phoneNumber}
-                 onChange={(e) => onInputChange("phoneNumber", e.target.value)}
-                 placeholder="+234 (0) 703 456 7890"
-                 className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
-               />
-             </div>
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-[13px] font-normal text-black font-inter-tight">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                value={formData.phoneNumber}
+                onChange={(e) => onInputChange("phoneNumber", e.target.value)}
+                placeholder="+234 (0) 703 456 7890"
+                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+              />
+            </div>
 
             {/* Profile Image URL */}
-             <div className="flex flex-col gap-[10px]">
-               <label className="text-[13px] font-normal text-black font-inter-tight">
-                 Profile Image URL
-               </label>
-               <input
-                 type="url"
-                 value={formData.profileImageUrl}
-                 onChange={(e) => onInputChange("profileImageUrl", e.target.value)}
-                 placeholder="https://images.example.com/avatars/your-profile.jpg"
-                 className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
-               />
-             </div>
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-[13px] font-normal text-black font-inter-tight">
+                Profile Image URL
+              </label>
+              <input
+                type="url"
+                value={formData.profileImageUrl}
+                onChange={(e) =>
+                  onInputChange("profileImageUrl", e.target.value)
+                }
+                placeholder="https://images.example.com/avatars/your-profile.jpg"
+                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+              />
+            </div>
 
             {/* State and City */}
             <div className="flex gap-[10px]">

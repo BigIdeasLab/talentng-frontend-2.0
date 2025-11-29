@@ -34,9 +34,18 @@ export function ServicesGrid({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Use cached services if available
-    if (cachedServices.length > 0) {
-      setServices(cachedServices);
+    // Use cached services if available (only if they have valid IDs)
+    const validServices = cachedServices.filter(s => s.id && s.id !== "0");
+    if (validServices.length > 0) {
+      setServices(validServices);
+      setIsLoading(false);
+      onLoadingChange?.(false);
+      return;
+    }
+
+    // If we have empty cache and not loading, show empty state
+    if (cachedServices.length === 0 && !parentIsLoading) {
+      setServices([]);
       setIsLoading(false);
       onLoadingChange?.(false);
       return;
@@ -93,7 +102,7 @@ export function ServicesGrid({
     return () => {
       isMounted = false;
     };
-  }, [refreshTrigger]);
+  }, [refreshTrigger, parentIsLoading]);
 
   if (isLoading) {
     return (
