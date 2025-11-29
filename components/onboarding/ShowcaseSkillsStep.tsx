@@ -285,12 +285,31 @@ export const ShowcaseSkillsStep = ({
           <div className="w-full h-full flex items-center justify-center relative">
             {/* Container with exact height of 350px */}
             <div className="relative w-full max-w-[280px] h-[350px] flex items-center justify-center">
+              {/* Yellow Star */}
+              <svg
+                className="absolute -left-12 top-24 w-16 h-16 lg:w-24 lg:h-24 z-40"
+                viewBox="0 0 131 131"
+                fill="none"
+              >
+                <path
+                  d="M65.3129 0L75.4732 55.1526L130.626 65.3129L75.4732 75.4732L65.3129 130.626L55.1526 75.4732L0 65.3129L55.1526 55.1526L65.3129 0Z"
+                  fill="#F6BC3F"
+                />
+              </svg>
+              {/* User Logo Badge */}
+              <div className="absolute top-4 -right-8 w-[70px] h-[70px] z-30">
+                <img
+                  src="/logo-2.png"
+                  alt="Profile"
+                  className="w-full h-full object-cover object-center rounded-full"
+                />
+              </div>
               {/* Stack of cards - Background layers */}
               <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full flex flex-col items-center">
                 {/* Back card */}
-                <div className="absolute bottom-0 w-[203px] h-[33px] rounded-[39.5px] bg-[#ECECEC]"></div>
+                <div className="absolute -bottom-4 w-[203px] h-[33px] rounded-[39.5px] bg-[#ECECEC]"></div>
                 {/* Middle card */}
-                <div className="absolute bottom-[-10px] w-[247px] h-[39px] rounded-[39.5px] bg-[#E0E0E0]"></div>
+                <div className="absolute bottom-[-2px] w-[247px] h-[39px] rounded-[39.5px] bg-[#E0E0E0]"></div>
               </div>
 
               {/* Main Profile Card */}
@@ -313,6 +332,8 @@ export const ShowcaseSkillsStep = ({
                     viewBox="0 0 384 286"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
+                    width="420"
+                    height="315"
                   >
                     <path
                       d="M282.448 117.72H384.002L351.36 143.109L384.002 168.497H282.448V117.72Z"

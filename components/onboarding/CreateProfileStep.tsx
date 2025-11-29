@@ -5,25 +5,47 @@ import { Input } from "@/components/ui/input";
 import { ProfileData } from "@/lib/types/onboarding";
 import { checkUsernameAvailability } from "@/lib/api";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
+import statesCitiesData from "@/lib/states-cities.json";
 
 type UsernameStatus = "idle" | "checking" | "available" | "taken" | "invalid";
 
 export const CreateProfileStep = ({
   onNext,
   onBack,
+  initialData,
+  initialImage,
 }: {
   onNext: (data: ProfileData, image?: File) => void;
   onBack: () => void;
+  initialData?: ProfileData;
+  initialImage?: File;
 }) => {
-  const [formData, setFormData] = useState<ProfileData>({
-    firstName: "",
-    lastName: "",
-    username: "",
-    location: "",
-    bio: "",
+  // Parse location into state and city if provided
+  const parseLocation = (location: string) => {
+    if (!location) return { state: "", city: "" };
+    const parts = location.split(", ");
+    return {
+      city: parts[0] || "",
+      state: parts[1] || "",
+    };
+  };
+
+  const initialLocation = parseLocation(initialData?.location || "");
+
+  const [formData, setFormData] = useState<ProfileData & { state: string; city: string }>({
+    firstName: initialData?.firstName || "",
+    lastName: initialData?.lastName || "",
+    username: initialData?.username || "",
+    location: initialData?.location || "",
+    bio: initialData?.bio || "",
+    state: initialLocation.state,
+    city: initialLocation.city,
   });
-  const [profileImage, setProfileImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  
+  const [profileImage, setProfileImage] = useState<File | null>(initialImage || null);
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    initialImage ? URL.createObjectURL(initialImage) : null
+  );
   const [isDragging, setIsDragging] = useState(false);
   const [usernameStatus, setUsernameStatus] = useState<UsernameStatus>("idle");
   const [errors, setErrors] = useState<{
@@ -173,7 +195,19 @@ export const CreateProfileStep = ({
       }
     }
 
-    onNext(formData, profileImage || undefined);
+    // Build location string from state and city
+    const location = formData.city && formData.state 
+      ? `${formData.city}, ${formData.state}`
+      : formData.state || "";
+
+    // Pass location in the correct format to onNext
+    const { state, city, ...profileDataToPass } = formData;
+    const finalData: ProfileData = {
+      ...profileDataToPass,
+      location,
+    };
+
+    onNext(finalData, profileImage || undefined);
   };
 
   const displayName =
@@ -339,18 +373,53 @@ export const CreateProfileStep = ({
                 )}
               </div>
 
-              {/* Location */}
-              <div className="flex flex-col gap-[13px]">
-                <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Location
-                </label>
-                <Input
-                  name="location"
-                  value={formData.location}
-                  onChange={handleChange}
-                  placeholder="Youremail@gmail.com"
-                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px]"
-                />
+              {/* State and City */}
+              <div className="flex gap-[13px]">
+                <div className="flex-1 flex flex-col gap-[13px]">
+                  <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
+                    State
+                  </label>
+                  <select
+                    value={formData.state}
+                    onChange={(e) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        state: e.target.value,
+                        city: "", // Reset city when state changes
+                      }));
+                    }}
+                    className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] focus:ring-2 focus:ring-purple-600 focus:outline-none appearance-none cursor-pointer"
+                  >
+                    <option value="">Select State</option>
+                    {Object.keys(statesCitiesData).map((state) => (
+                      <option key={state} value={state}>
+                        {state}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex-1 flex flex-col gap-[13px]">
+                  <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
+                    City
+                  </label>
+                  <select
+                    value={formData.city}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, city: e.target.value }))
+                    }
+                    disabled={!formData.state}
+                    className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] focus:ring-2 focus:ring-purple-600 focus:outline-none appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <option value="">Select City</option>
+                    {formData.state &&
+                      statesCitiesData[formData.state as keyof typeof statesCitiesData]?.major_cities?.map((city) => (
+                        <option key={city} value={city}>
+                          {city}
+                        </option>
+                      ))}
+                  </select>
+                </div>
               </div>
 
               {/* Bio */}
