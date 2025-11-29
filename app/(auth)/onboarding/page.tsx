@@ -79,19 +79,6 @@ const OnboardingPage = () => {
       formData.append("profileImage", profileImage);
     }
 
-    console.log("[Onboarding] Sending payload:", {
-      role: roleValue,
-      profile: profileData,
-      details: data,
-      hasProfileImage: !!profileImage,
-    });
-
-    // Debug: Log FormData contents
-    console.log("[Onboarding] FormData contents:");
-    Array.from(formData.entries()).forEach(([key, value]) => {
-      console.log(`  ${key}:`, typeof value === 'string' ? value : `[${value.constructor.name}]`);
-    });
-
     try {
       await completeOnboarding(formData);
 
