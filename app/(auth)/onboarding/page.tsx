@@ -153,6 +153,7 @@ const OnboardingPage = () => {
             onBack={handleBack}
             profileData={profileData}
             isLoading={isLoading}
+            profileImage={profileImage || undefined}
           />
         );
       case "employer":

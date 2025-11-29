@@ -32,7 +32,9 @@ export const CreateProfileStep = ({
 
   const initialLocation = parseLocation(initialData?.location || "");
 
-  const [formData, setFormData] = useState<ProfileData & { state: string; city: string }>({
+  const [formData, setFormData] = useState<
+    ProfileData & { state: string; city: string }
+  >({
     firstName: initialData?.firstName || "",
     lastName: initialData?.lastName || "",
     username: initialData?.username || "",
@@ -41,10 +43,12 @@ export const CreateProfileStep = ({
     state: initialLocation.state,
     city: initialLocation.city,
   });
-  
-  const [profileImage, setProfileImage] = useState<File | null>(initialImage || null);
+
+  const [profileImage, setProfileImage] = useState<File | null>(
+    initialImage || null,
+  );
   const [imagePreview, setImagePreview] = useState<string | null>(
-    initialImage ? URL.createObjectURL(initialImage) : null
+    initialImage ? URL.createObjectURL(initialImage) : null,
   );
   const [isDragging, setIsDragging] = useState(false);
   const [usernameStatus, setUsernameStatus] = useState<UsernameStatus>("idle");
@@ -158,7 +162,7 @@ export const CreateProfileStep = ({
 
     // Validate required fields
     const newErrors: typeof errors = {};
-    
+
     if (!formData.firstName.trim()) {
       newErrors.firstName = "First name is required";
     }
@@ -196,9 +200,10 @@ export const CreateProfileStep = ({
     }
 
     // Build location string from state and city
-    const location = formData.city && formData.state 
-      ? `${formData.city}, ${formData.state}`
-      : formData.state || "";
+    const location =
+      formData.city && formData.state
+        ? `${formData.city}, ${formData.state}`
+        : formData.state || "";
 
     // Pass location in the correct format to onNext
     const { state, city, ...profileDataToPass } = formData;
@@ -278,7 +283,9 @@ export const CreateProfileStep = ({
                   }`}
                 />
                 {errors.firstName && (
-                  <span className="text-xs text-red-600">{errors.firstName}</span>
+                  <span className="text-xs text-red-600">
+                    {errors.firstName}
+                  </span>
                 )}
               </div>
 
@@ -297,7 +304,9 @@ export const CreateProfileStep = ({
                   }`}
                 />
                 {errors.lastName && (
-                  <span className="text-xs text-red-600">{errors.lastName}</span>
+                  <span className="text-xs text-red-600">
+                    {errors.lastName}
+                  </span>
                 )}
               </div>
 
@@ -315,7 +324,8 @@ export const CreateProfileStep = ({
                     className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] pr-12 ${
                       errors.username
                         ? "ring-2 ring-red-500"
-                        : usernameStatus === "taken" || usernameStatus === "invalid"
+                        : usernameStatus === "taken" ||
+                            usernameStatus === "invalid"
                           ? "ring-2 ring-red-500"
                           : usernameStatus === "available"
                             ? "ring-2 ring-green-500"
@@ -340,37 +350,44 @@ export const CreateProfileStep = ({
                   )}
                 </div>
                 {errors.username && (
-                  <span className="text-xs text-red-600">{errors.username}</span>
-                )}
-                {!errors.username && formData.username && formData.username.length < 3 && (
                   <span className="text-xs text-red-600">
-                    Username must be at least 3 characters long
+                    {errors.username}
                   </span>
                 )}
-                {!errors.username && formData.username && formData.username.length >= 3 && (
-                  <div className="text-xs font-[Inter_Tight]">
-                    {usernameStatus === "checking" && (
-                      <span className="text-gray-500">
-                        Checking availability...
-                      </span>
-                    )}
-                    {usernameStatus === "available" && (
-                      <span className="text-green-600">
-                        Username is available!
-                      </span>
-                    )}
-                    {usernameStatus === "taken" && (
-                      <span className="text-red-600">
-                        Username is already taken
-                      </span>
-                    )}
-                    {usernameStatus === "invalid" && (
-                      <span className="text-red-600">
-                        3-50 characters, letters, numbers, and underscores only
-                      </span>
-                    )}
-                  </div>
-                )}
+                {!errors.username &&
+                  formData.username &&
+                  formData.username.length < 3 && (
+                    <span className="text-xs text-red-600">
+                      Username must be at least 3 characters long
+                    </span>
+                  )}
+                {!errors.username &&
+                  formData.username &&
+                  formData.username.length >= 3 && (
+                    <div className="text-xs font-[Inter_Tight]">
+                      {usernameStatus === "checking" && (
+                        <span className="text-gray-500">
+                          Checking availability...
+                        </span>
+                      )}
+                      {usernameStatus === "available" && (
+                        <span className="text-green-600">
+                          Username is available!
+                        </span>
+                      )}
+                      {usernameStatus === "taken" && (
+                        <span className="text-red-600">
+                          Username is already taken
+                        </span>
+                      )}
+                      {usernameStatus === "invalid" && (
+                        <span className="text-red-600">
+                          3-50 characters, letters, numbers, and underscores
+                          only
+                        </span>
+                      )}
+                    </div>
+                  )}
               </div>
 
               {/* State and City */}
@@ -413,7 +430,9 @@ export const CreateProfileStep = ({
                   >
                     <option value="">Select City</option>
                     {formData.state &&
-                      statesCitiesData[formData.state as keyof typeof statesCitiesData]?.major_cities?.map((city) => (
+                      statesCitiesData[
+                        formData.state as keyof typeof statesCitiesData
+                      ]?.major_cities?.map((city) => (
                         <option key={city} value={city}>
                           {city}
                         </option>
@@ -461,7 +480,6 @@ export const CreateProfileStep = ({
                     fill="#F6BC3F"
                   />
                 </svg>
-
                 {/* User Logo Badge */}
                 <div className="absolute top-4 -right-8 w-[70px] h-[70px] z-30">
                   <img
@@ -469,6 +487,13 @@ export const CreateProfileStep = ({
                     alt="Profile"
                     className="w-full h-full object-cover object-center rounded-full"
                   />
+                </div>
+                {/* Stack of cards - Background layers */}
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-full flex flex-col items-center">
+                  {/* Back card */}
+                  <div className="absolute -bottom-4 w-[203px] h-[33px] rounded-[39.5px] bg-[#ECECEC]"></div>
+                  {/* Middle card */}
+                  <div className="absolute bottom-[-2px] w-[247px] h-[39px] rounded-[39.5px] bg-[#E0E0E0]"></div>
                 </div>
 
                 {/* Back Card - Green Profile Card */}
@@ -481,168 +506,6 @@ export const CreateProfileStep = ({
                         className="w-[8.14px] h-[162px] bg-[#03964E] flex-shrink-0"
                       />
                     ))}
-                  </div>
-
-                  {/* Gray header section */}
-                  <div className="absolute w-full h-[98px] bg-[#DCDCDC] top-0 left-0"></div>
-
-                  {/* Activity badge */}
-                  <div className="absolute left-[15px] top-[241px] w-[206px] h-[38px] rounded-[54px] bg-white flex items-center px-[5px] gap-[7px] z-20">
-                    <div className="w-[27px] h-[27px] rounded-full bg-[#D9D9D9] flex-shrink-0 shadow-[0_3.2px_4px_0_rgba(0,0,0,0.20)]">
-                      <svg
-                        className="w-full h-full"
-                        viewBox="0 0 50 48"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <defs>
-                          <filter
-                            id="filter0_d"
-                            x="-0.0001"
-                            y="0"
-                            width="49.9108"
-                            height="49.9108"
-                            filterUnits="userSpaceOnUse"
-                            colorInterpolationFilters="sRGB"
-                          >
-                            <feFlood
-                              floodOpacity="0"
-                              result="BackgroundImageFix"
-                            />
-                            <feColorMatrix
-                              in="SourceAlpha"
-                              type="matrix"
-                              values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                              result="hardAlpha"
-                            />
-                            <feOffset dy="4.58639" />
-                            <feGaussianBlur stdDeviation="2.8665" />
-                            <feComposite in2="hardAlpha" operator="out" />
-                            <feColorMatrix
-                              type="matrix"
-                              values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"
-                            />
-                            <feBlend
-                              mode="normal"
-                              in2="BackgroundImageFix"
-                              result="effect1_dropShadow"
-                            />
-                            <feBlend
-                              mode="normal"
-                              in="SourceGraphic"
-                              in2="effect1_dropShadow"
-                              result="shape"
-                            />
-                          </filter>
-                        </defs>
-                        <g filter="url(#filter0_d)">
-                          <circle
-                            cx="24.9553"
-                            cy="20.369"
-                            r="13.43"
-                            fill="#E8E8E8"
-                          />
-                        </g>
-                      </svg>
-                    </div>
-                    <div className="text-[13.4px] font-medium font-[Inter_Tight] leading-[105%] bg-gradient-to-r from-[#008B47] via-[#F6BC3F] via-[#5C30FF] via-[#F791C3] to-[#E63C23] bg-clip-text text-transparent flex-1">
-                      David is building his profile
-                    </div>
-                  </div>
-
-                  {/* Profile info section */}
-                  <div className="absolute left-[15px] top-[188px] flex flex-col gap-[12.5px]">
-                    <div className="text-white text-[17.9px] font-medium font-[Inter_Tight] leading-[105%]">
-                      {displayName}
-                    </div>
-                    <div className="text-white/80 text-[13.4px] font-light font-[Inter_Tight] leading-[120%] capitalize">
-                      {displayBio}
-                    </div>
-                  </div>
-
-                  {/* Profile image on green card */}
-                  <div className="absolute left-[15px] top-[102px] w-[79px] h-[72px] z-20">
-                    <svg
-                      className="w-full h-full"
-                      viewBox="0 0 119 103"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <defs>
-                        <filter
-                          id="filter0_d_profile"
-                          x="68.5937"
-                          y="52.676"
-                          width="49.9108"
-                          height="49.9108"
-                          filterUnits="userSpaceOnUse"
-                          colorInterpolationFilters="sRGB"
-                        >
-                          <feFlood
-                            floodOpacity="0"
-                            result="BackgroundImageFix"
-                          />
-                          <feColorMatrix
-                            in="SourceAlpha"
-                            type="matrix"
-                            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                            result="hardAlpha"
-                          />
-                          <feOffset dy="4.58639" />
-                          <feGaussianBlur stdDeviation="2.8665" />
-                          <feComposite in2="hardAlpha" operator="out" />
-                          <feColorMatrix
-                            type="matrix"
-                            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"
-                          />
-                          <feBlend
-                            mode="normal"
-                            in2="BackgroundImageFix"
-                            result="effect1_dropShadow_profile"
-                          />
-                          <feBlend
-                            mode="normal"
-                            in="SourceGraphic"
-                            in2="effect1_dropShadow_profile"
-                            result="shape"
-                          />
-                        </filter>
-                      </defs>
-                      <circle
-                        cx="51.26"
-                        cy="51.26"
-                        r="49.34"
-                        fill={imagePreview ? "#F5F5F5" : "#E8E8E8"}
-                        stroke="#F5F5F5"
-                        strokeWidth="2.69"
-                      />
-                      {imagePreview && (
-                        <defs>
-                          <clipPath id="profile-clip">
-                            <circle cx="51.26" cy="51.26" r="49.34" />
-                          </clipPath>
-                        </defs>
-                      )}
-                      {imagePreview && (
-                        <image
-                          href={imagePreview}
-                          x="1.92"
-                          y="1.92"
-                          width="98.68"
-                          height="98.68"
-                          clipPath="url(#profile-clip)"
-                          preserveAspectRatio="xMidYMid slice"
-                        />
-                      )}
-                      <g filter="url(#filter0_d_profile)">
-                        <circle
-                          cx="93.55"
-                          cy="73.05"
-                          r="13.43"
-                          fill="#D4D4D4"
-                        />
-                      </g>
-                    </svg>
                   </div>
 
                   {/* Status badge */}

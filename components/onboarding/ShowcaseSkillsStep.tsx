@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Loader2, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ProfileData, SkillsData } from "@/lib/types/onboarding";
@@ -10,11 +10,13 @@ export const ShowcaseSkillsStep = ({
   onBack,
   profileData,
   isLoading,
+  profileImage,
 }: {
   onNext: (data: SkillsData) => void;
   onBack: () => void;
   profileData?: ProfileData;
   isLoading?: boolean;
+  profileImage?: File;
 }) => {
   const [formData, setFormData] = useState<SkillsData>({
     category: "",
@@ -25,6 +27,22 @@ export const ShowcaseSkillsStep = ({
 
   const [skillInput, setSkillInput] = useState("");
   const [stackInput, setStackInput] = useState("");
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [errors, setErrors] = useState<{
+    category?: string;
+    skills?: string;
+    stack?: string;
+  }>({});
+
+  useEffect(() => {
+    if (profileImage) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(profileImage);
+    }
+  }, [profileImage]);
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFormData((prev) => ({ ...prev, category: e.target.value }));
@@ -50,6 +68,27 @@ export const ShowcaseSkillsStep = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const newErrors: typeof errors = {};
+
+    if (!formData.category.trim()) {
+      newErrors.category = "Category is required";
+    }
+
+    if (formData.skills.length === 0) {
+      newErrors.skills = "At least one skill is required";
+    }
+
+    if (formData.stack.length === 0) {
+      newErrors.stack = "At least one tool/stack is required";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
     onNext(formData);
   };
 
@@ -120,7 +159,9 @@ export const ShowcaseSkillsStep = ({
                 <select
                   value={formData.category}
                   onChange={handleCategoryChange}
-                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight] text-[#99A0AE] focus:ring-2 focus:ring-purple-600 focus:outline-none"
+                  className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight] text-[#99A0AE] focus:ring-2 focus:ring-purple-600 focus:outline-none ${
+                    errors.category ? "ring-2 ring-red-500" : ""
+                  }`}
                 >
                   <option value="" className="text-black">
                     Select Category
@@ -138,6 +179,11 @@ export const ShowcaseSkillsStep = ({
                     Marketer
                   </option>
                 </select>
+                {errors.category && (
+                  <span className="text-xs text-red-600">
+                    {errors.category}
+                  </span>
+                )}
               </div>
 
               {/* Skills */}
@@ -149,36 +195,110 @@ export const ShowcaseSkillsStep = ({
                   value={skillInput}
                   onChange={(e) => {
                     const value = e.target.value;
-                    if (value && formData.skills.length < 5) {
+                    if (
+                      value &&
+                      formData.skills.length < 5 &&
+                      !formData.skills.includes(value)
+                    ) {
                       setFormData((prev) => ({
                         ...prev,
                         skills: [...prev.skills, value],
                       }));
                       setSkillInput("");
+                      setErrors((prev) => ({ ...prev, skills: "" }));
                     }
                   }}
-                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight]  text-[#99A0AE] focus:ring-2 focus:ring-purple-600 focus:outline-none"
+                  disabled={formData.skills.length >= 5}
+                  className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight]  text-[#99A0AE] focus:ring-2 focus:ring-purple-600 focus:outline-none ${
+                    errors.skills ? "ring-2 ring-red-500" : ""
+                  } ${formData.skills.length >= 5 ? "opacity-50 cursor-not-allowed disabled:opacity-50" : ""}`}
                 >
                   <option value="" className="text-[#99A0AE]">
                     Choose Skills
                   </option>
-                  <option value="UI Design" className="text-black">
-                    UI Design
+                  <option
+                    value="UI Design"
+                    disabled={formData.skills.includes("UI Design")}
+                    style={
+                      formData.skills.includes("UI Design")
+                        ? { color: "#999999" }
+                        : {}
+                    }
+                    className="text-black"
+                  >
+                    {formData.skills.includes("UI Design")
+                      ? "✓ UI Design"
+                      : "UI Design"}
                   </option>
-                  <option value="UX Design" className="text-black">
-                    UX Design
+                  <option
+                    value="UX Design"
+                    disabled={formData.skills.includes("UX Design")}
+                    style={
+                      formData.skills.includes("UX Design")
+                        ? { color: "#999999" }
+                        : {}
+                    }
+                    className="text-black"
+                  >
+                    {formData.skills.includes("UX Design")
+                      ? "✓ UX Design"
+                      : "UX Design"}
                   </option>
-                  <option value="Website Design" className="text-black">
-                    Website Design
+                  <option
+                    value="Website Design"
+                    disabled={formData.skills.includes("Website Design")}
+                    style={
+                      formData.skills.includes("Website Design")
+                        ? { color: "#999999" }
+                        : {}
+                    }
+                    className="text-black"
+                  >
+                    {formData.skills.includes("Website Design")
+                      ? "✓ Website Design"
+                      : "Website Design"}
                   </option>
-                  <option value="Interface Design" className="text-black">
-                    Interface Design
+                  <option
+                    value="Interface Design"
+                    disabled={formData.skills.includes("Interface Design")}
+                    style={
+                      formData.skills.includes("Interface Design")
+                        ? { color: "#999999" }
+                        : {}
+                    }
+                    className="text-black"
+                  >
+                    {formData.skills.includes("Interface Design")
+                      ? "✓ Interface Design"
+                      : "Interface Design"}
                   </option>
-                  <option value="Interaction Design" className="text-black">
-                    Interaction Design
+                  <option
+                    value="Interaction Design"
+                    disabled={formData.skills.includes("Interaction Design")}
+                    style={
+                      formData.skills.includes("Interaction Design")
+                        ? { color: "#999999" }
+                        : {}
+                    }
+                    className="text-black"
+                  >
+                    {formData.skills.includes("Interaction Design")
+                      ? "✓ Interaction Design"
+                      : "Interaction Design"}
                   </option>
-                  <option value="Presentation Design" className="text-black">
-                    Presentation Design
+                  <option
+                    value="Presentation Design"
+                    disabled={formData.skills.includes("Presentation Design")}
+                    style={
+                      formData.skills.includes("Presentation Design")
+                        ? { color: "#999999" }
+                        : {}
+                    }
+                    className="text-black"
+                  >
+                    {formData.skills.includes("Presentation Design")
+                      ? "✓ Presentation Design"
+                      : "Presentation Design"}
                   </option>
                 </select>
                 {/* Selected Skills */}
@@ -201,6 +321,9 @@ export const ShowcaseSkillsStep = ({
                     ))}
                   </div>
                 )}
+                {errors.skills && (
+                  <span className="text-xs text-red-600">{errors.skills}</span>
+                )}
               </div>
 
               {/* Tech Stack */}
@@ -212,33 +335,88 @@ export const ShowcaseSkillsStep = ({
                   value={stackInput}
                   onChange={(e) => {
                     const value = e.target.value;
-                    if (value && formData.stack.length < 6) {
+                    if (
+                      value &&
+                      formData.stack.length < 6 &&
+                      !formData.stack.includes(value)
+                    ) {
                       setFormData((prev) => ({
                         ...prev,
                         stack: [...prev.stack, value],
                       }));
                       setStackInput("");
+                      setErrors((prev) => ({ ...prev, stack: "" }));
                     }
                   }}
-                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight]  text-[#99A0AE] focus:ring-2 focus:ring-purple-600 focus:outline-none"
+                  disabled={formData.stack.length >= 6}
+                  className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight]  text-[#99A0AE] focus:ring-2 focus:ring-purple-600 focus:outline-none ${
+                    errors.stack ? "ring-2 ring-red-500" : ""
+                  } ${formData.stack.length >= 6 ? "opacity-50 cursor-not-allowed disabled:opacity-50" : ""}`}
                 >
                   <option value="" className="text-[#99A0AE]">
                     Choose Tools
                   </option>
-                  <option value="Figma" className="text-black">
-                    Figma
+                  <option
+                    value="Figma"
+                    disabled={formData.stack.includes("Figma")}
+                    style={
+                      formData.stack.includes("Figma")
+                        ? { color: "#999999" }
+                        : {}
+                    }
+                    className="text-black"
+                  >
+                    {formData.stack.includes("Figma") ? "✓ Figma" : "Figma"}
                   </option>
-                  <option value="Rive" className="text-black">
-                    Rive
+                  <option
+                    value="Rive"
+                    disabled={formData.stack.includes("Rive")}
+                    style={
+                      formData.stack.includes("Rive")
+                        ? { color: "#999999" }
+                        : {}
+                    }
+                    className="text-black"
+                  >
+                    {formData.stack.includes("Rive") ? "✓ Rive" : "Rive"}
                   </option>
-                  <option value="Webflow" className="text-black">
-                    Webflow
+                  <option
+                    value="Webflow"
+                    disabled={formData.stack.includes("Webflow")}
+                    style={
+                      formData.stack.includes("Webflow")
+                        ? { color: "#999999" }
+                        : {}
+                    }
+                    className="text-black"
+                  >
+                    {formData.stack.includes("Webflow")
+                      ? "✓ Webflow"
+                      : "Webflow"}
                   </option>
-                  <option value="Lottie" className="text-black">
-                    Lottie
+                  <option
+                    value="Lottie"
+                    disabled={formData.stack.includes("Lottie")}
+                    style={
+                      formData.stack.includes("Lottie")
+                        ? { color: "#999999" }
+                        : {}
+                    }
+                    className="text-black"
+                  >
+                    {formData.stack.includes("Lottie") ? "✓ Lottie" : "Lottie"}
                   </option>
-                  <option value="Framer" className="text-black">
-                    Framer
+                  <option
+                    value="Framer"
+                    disabled={formData.stack.includes("Framer")}
+                    style={
+                      formData.stack.includes("Framer")
+                        ? { color: "#999999" }
+                        : {}
+                    }
+                    className="text-black"
+                  >
+                    {formData.stack.includes("Framer") ? "✓ Framer" : "Framer"}
                   </option>
                 </select>
                 {/* Selected Stack */}
@@ -260,6 +438,9 @@ export const ShowcaseSkillsStep = ({
                       </div>
                     ))}
                   </div>
+                )}
+                {errors.stack && (
+                  <span className="text-xs text-red-600">{errors.stack}</span>
                 )}
               </div>
 
@@ -284,7 +465,7 @@ export const ShowcaseSkillsStep = ({
         <div className="hidden md:flex flex-col items-center justify-center p-6 md:p-10 md:pl-6 bg-white relative overflow-hidden h-full">
           <div className="w-full h-full flex items-center justify-center relative">
             {/* Container with exact height of 350px */}
-            <div className="relative w-full max-w-[280px] h-[350px] flex items-center justify-center">
+            <div className="relative w-full max-w-[290px] h-[350px] flex items-start justify-center">
               {/* Yellow Star */}
               <svg
                 className="absolute -left-12 top-24 w-16 h-16 lg:w-24 lg:h-24 z-40"
@@ -305,7 +486,7 @@ export const ShowcaseSkillsStep = ({
                 />
               </div>
               {/* Stack of cards - Background layers */}
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full flex flex-col items-center">
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-full flex flex-col items-center">
                 {/* Back card */}
                 <div className="absolute -bottom-4 w-[203px] h-[33px] rounded-[39.5px] bg-[#ECECEC]"></div>
                 {/* Middle card */}
@@ -313,7 +494,7 @@ export const ShowcaseSkillsStep = ({
               </div>
 
               {/* Main Profile Card */}
-              <div className="relative w-[280px] h-[322px] rounded-[20px] bg-white shadow-[1.74px_0_20.88px_0_rgba(0,0,0,0.25)] p-[20px_10px] flex flex-col items-center gap-[14px]">
+              <div className="relative w-[290px] h-[330px] rounded-[20px] bg-white shadow-[1.74px_0_20.88px_0_rgba(0,0,0,0.25)] p-[20px_10px] flex flex-col items-center">
                 {/* Name and Category */}
                 <div className="flex flex-col items-center gap-[11px] w-full">
                   <h3 className="text-[21.7px] text-black font-medium font-[Inter_Tight] leading-[105%]">
@@ -325,7 +506,7 @@ export const ShowcaseSkillsStep = ({
                 </div>
 
                 {/* Badge with decorative stars and profile photo */}
-                <div className="relative w-[280px] h-[150px] flex items-center justify-center">
+                <div className="relative w-[290px] h-[195px] flex items-center justify-center">
                   {/* Complete SVG from Figma with stars and badge */}
                   <svg
                     className="w-full h-full"
@@ -419,7 +600,9 @@ export const ShowcaseSkillsStep = ({
                         id="image0_2026_6807"
                         width="810"
                         height="1080"
-                        xlinkHref="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop"
+                        className="border"
+                        xlinkHref={imagePreview || "/default.png"}
+                        preserveAspectRatio="xMidYMid slice"
                       />
                     </defs>
                   </svg>
