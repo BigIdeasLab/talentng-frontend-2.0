@@ -325,15 +325,13 @@ export const ShowcaseSkillsStep = ({
                 </div>
 
                 {/* Badge with decorative stars and profile photo */}
-                <div className="relative w-[260px] h-[166px] flex items-center justify-center">
+                <div className="relative w-[280px] h-[150px] flex items-center justify-center">
                   {/* Complete SVG from Figma with stars and badge */}
                   <svg
                     className="w-full h-full"
-                    viewBox="0 0 384 286"
+                    viewBox="0 0 380 280"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                    width="420"
-                    height="315"
                   >
                     <path
                       d="M282.448 117.72H384.002L351.36 143.109L384.002 168.497H282.448V117.72Z"
