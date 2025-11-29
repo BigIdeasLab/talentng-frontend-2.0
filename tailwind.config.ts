@@ -120,6 +120,13 @@ export default {
     require("tailwindcss-animate"),
     function ({ addUtilities }: any) {
       addUtilities({
+        ".scrollbar-hidden": {
+          "-ms-overflow-style": "none",
+          "scrollbar-width": "none",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+        },
         ".scrollbar-hide": {
           "-ms-overflow-style": "none",
           "scrollbar-width": "none",

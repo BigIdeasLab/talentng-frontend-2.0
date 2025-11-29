@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
 interface TalentData {
@@ -10,7 +11,7 @@ interface TalentData {
   timesHired: number;
   earnings: number;
   avatar: string;
-  portfolioImages: string[];
+  gallery: string[];
   skills: string[];
 }
 
@@ -26,9 +27,11 @@ export function TalentCard({ talent }: TalentCardProps) {
         <div className="flex flex-col gap-[5px]">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-[8px]">
-              <img
+              <Image
                 src={talent.avatar}
                 alt={talent.name}
+                width={34}
+                height={34}
                 className="w-[34px] h-[34px] rounded-full object-cover flex-shrink-0"
               />
               <div className="flex flex-col gap-[8px]">
@@ -136,15 +139,17 @@ export function TalentCard({ talent }: TalentCardProps) {
           </div>
         </div>
 
-        {/* Portfolio Images */}
+        {/* Gallery */}
         <div className="flex flex-col gap-[11px]">
-          <div className="flex items-center gap-[7px]">
-            {talent.portfolioImages.map((img, idx) => (
-              <img
+          <div className="flex items-center gap-[7px] overflow-x-auto scrollbar-hidden">
+            {talent.gallery.map((img, idx) => (
+              <Image
                 key={idx}
                 src={img}
-                alt={`Portfolio ${idx + 1}`}
-                className="flex-1 h-[147px] object-cover rounded"
+                alt={`Gallery ${idx + 1}`}
+                width={147}
+                height={147}
+                className="h-[147px] w-[147px] object-cover rounded flex-shrink-0"
               />
             ))}
           </div>

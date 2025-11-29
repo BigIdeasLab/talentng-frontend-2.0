@@ -10,7 +10,7 @@ interface TalentData {
   timesHired: number;
   earnings: number;
   avatar: string;
-  portfolioImages: string[];
+  gallery: string[];
   skills: string[];
 }
 

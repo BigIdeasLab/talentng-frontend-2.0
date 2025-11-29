@@ -1,25 +1,13 @@
-"use client";
+import { DiscoverTalentClient } from "./discover-talent-client";
+import { getDiscoverTalentData } from "./server-data";
 
-import { useState } from "react";
-import {
-  DiscoverTalentHeader,
-  TalentGrid,
-  talentData,
-} from "@/components/business/DiscoverTalent";
-
-export default function DiscoverTalentPage() {
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [searchQuery, setSearchQuery] = useState("");
+export default async function DiscoverTalentPage() {
+  const { talents, error } = await getDiscoverTalentData();
 
   return (
-    <div className="flex flex-col h-screen bg-white overflow-hidden">
-      <DiscoverTalentHeader
-        selectedCategory={selectedCategory}
-        onCategoryChange={setSelectedCategory}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-      />
-      <TalentGrid talents={talentData} />
-    </div>
+    <DiscoverTalentClient
+      initialTalents={talents}
+      initialError={error}
+    />
   );
 }
