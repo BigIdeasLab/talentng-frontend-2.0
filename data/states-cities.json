@@ -1,0 +1,42 @@
+[
+  {
+    "state": "Lagos",
+    "cities": ["Ikeja", "Victoria Island", "Lekki", "Surulere", "Ikoyi", "Yaba", "Ajah", "Maryland"]
+  },
+  {
+    "state": "Abuja",
+    "cities": ["Garki", "Wuse", "Maitama", "Asokoro", "Gwarinpa", "Kubwa", "Jabi", "Lugbe"]
+  },
+  {
+    "state": "Kano",
+    "cities": ["Kano Municipal", "Nassarawa", "Fagge", "Dala", "Gwale", "Tarauni", "Kumbotso"]
+  },
+  {
+    "state": "Kaduna",
+    "cities": ["Kaduna North", "Kaduna South", "Zaria", "Kafanchan", "Sabon Gari"]
+  },
+  {
+    "state": "Port Harcourt",
+    "cities": ["Port Harcourt City", "Obio-Akpor", "Eleme", "Okrika", "Bonny"]
+  },
+  {
+    "state": "Ibadan",
+    "cities": ["Ibadan North", "Ibadan South", "Ibadan North-East", "Ibadan South-West", "Ibadan North-West"]
+  },
+  {
+    "state": "Enugu",
+    "cities": ["Enugu North", "Enugu South", "Enugu East", "Nsukka", "Udi"]
+  },
+  {
+    "state": "Benin City",
+    "cities": ["Benin City", "Oredo", "Egor", "Ikpoba-Okha", "Ovia North-East"]
+  },
+  {
+    "state": "Owerri",
+    "cities": ["Owerri Municipal", "Owerri North", "Owerri West", "Mbaitoli", "Ikeduru"]
+  },
+  {
+    "state": "Jos",
+    "cities": ["Jos North", "Jos South", "Jos East", "Bassa", "Barkin Ladi"]
+  }
+]
