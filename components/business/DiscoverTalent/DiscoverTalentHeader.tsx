@@ -22,6 +22,7 @@ interface DiscoverTalentHeaderProps {
   onCategoryChange: (category: string) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  onFilterClick?: () => void;
 }
 
 export function DiscoverTalentHeader({
@@ -29,6 +30,7 @@ export function DiscoverTalentHeader({
   onCategoryChange,
   searchQuery,
   onSearchChange,
+  onFilterClick,
 }: DiscoverTalentHeaderProps) {
   return (
     <div className="flex-shrink-0 px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA]">
@@ -49,7 +51,10 @@ export function DiscoverTalentHeader({
             className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
           />
         </div>
-        <button className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] flex-shrink-0">
+        <button
+          onClick={onFilterClick}
+          className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] flex-shrink-0"
+        >
           <SlidersHorizontal className="w-[15px] h-[15px] text-black" />
           <span className="text-[13px] font-normal text-black font-inter-tight">
             Filter
