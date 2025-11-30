@@ -115,7 +115,7 @@ export function FilterModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20">
       <div className="w-[290px] flex flex-col gap-[15px] rounded-[15px] bg-white shadow-[0_0_15px_0_rgba(0,0,0,0.15)] p-[15px_10px] max-h-[90vh]">
-        <div className="flex flex-col gap-[15px] overflow-y-auto max-h-[510px] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent pr-1">
+        <div className="flex flex-col gap-[15px] overflow-y-auto max-h-[510px] scrollbar-styled pr-1">
           {/* Category Dropdown */}
           <div className="flex flex-col gap-[10px] w-[250px]">
             <div className="flex justify-between items-center">

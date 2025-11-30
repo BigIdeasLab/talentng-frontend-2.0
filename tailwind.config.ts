@@ -23,6 +23,22 @@ export default {
           "Helvetica",
           "sans-serif",
         ],
+        "aeonik-trial": [
+          "Aeonik TRIAL",
+          "Inter Tight",
+          "-apple-system",
+          "Roboto",
+          "Helvetica",
+          "sans-serif",
+        ],
+        aeonik: [
+          "Aeonik TRIAL",
+          "Inter Tight",
+          "-apple-system",
+          "Roboto",
+          "Helvetica",
+          "sans-serif",
+        ],
       },
       colors: {
         // Talent.ng brand colors
