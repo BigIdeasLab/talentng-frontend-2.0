@@ -44,18 +44,18 @@ export function FilterModal({
       location: "",
       availability: "All",
       experienceLevel: null,
-    }
+    },
   );
 
   const filteredCategories = useMemo(() => {
     return categoriesData.filter((category) =>
-      category.toLowerCase().includes(categorySearch.toLowerCase())
+      category.toLowerCase().includes(categorySearch.toLowerCase()),
     );
   }, [categorySearch]);
 
   const filteredSkills = useMemo(() => {
     return skillsData.filter((skill) =>
-      skill.toLowerCase().includes(skillSearch.toLowerCase())
+      skill.toLowerCase().includes(skillSearch.toLowerCase()),
     );
   }, [skillSearch]);
 
@@ -304,7 +304,7 @@ export function FilterModal({
                       {option}
                     </span>
                   </button>
-                )
+                ),
               )}
             </div>
           </div>

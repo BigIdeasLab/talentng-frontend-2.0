@@ -1,19 +1,51 @@
 [
   {
     "state": "Lagos",
-    "cities": ["Ikeja", "Victoria Island", "Lekki", "Surulere", "Ikoyi", "Yaba", "Ajah", "Maryland"]
+    "cities": [
+      "Ikeja",
+      "Victoria Island",
+      "Lekki",
+      "Surulere",
+      "Ikoyi",
+      "Yaba",
+      "Ajah",
+      "Maryland"
+    ]
   },
   {
     "state": "Abuja",
-    "cities": ["Garki", "Wuse", "Maitama", "Asokoro", "Gwarinpa", "Kubwa", "Jabi", "Lugbe"]
+    "cities": [
+      "Garki",
+      "Wuse",
+      "Maitama",
+      "Asokoro",
+      "Gwarinpa",
+      "Kubwa",
+      "Jabi",
+      "Lugbe"
+    ]
   },
   {
     "state": "Kano",
-    "cities": ["Kano Municipal", "Nassarawa", "Fagge", "Dala", "Gwale", "Tarauni", "Kumbotso"]
+    "cities": [
+      "Kano Municipal",
+      "Nassarawa",
+      "Fagge",
+      "Dala",
+      "Gwale",
+      "Tarauni",
+      "Kumbotso"
+    ]
   },
   {
     "state": "Kaduna",
-    "cities": ["Kaduna North", "Kaduna South", "Zaria", "Kafanchan", "Sabon Gari"]
+    "cities": [
+      "Kaduna North",
+      "Kaduna South",
+      "Zaria",
+      "Kafanchan",
+      "Sabon Gari"
+    ]
   },
   {
     "state": "Port Harcourt",
@@ -21,7 +53,13 @@
   },
   {
     "state": "Ibadan",
-    "cities": ["Ibadan North", "Ibadan South", "Ibadan North-East", "Ibadan South-West", "Ibadan North-West"]
+    "cities": [
+      "Ibadan North",
+      "Ibadan South",
+      "Ibadan North-East",
+      "Ibadan South-West",
+      "Ibadan North-West"
+    ]
   },
   {
     "state": "Enugu",
@@ -33,7 +71,13 @@
   },
   {
     "state": "Owerri",
-    "cities": ["Owerri Municipal", "Owerri North", "Owerri West", "Mbaitoli", "Ikeduru"]
+    "cities": [
+      "Owerri Municipal",
+      "Owerri North",
+      "Owerri West",
+      "Mbaitoli",
+      "Ikeduru"
+    ]
   },
   {
     "state": "Jos",
