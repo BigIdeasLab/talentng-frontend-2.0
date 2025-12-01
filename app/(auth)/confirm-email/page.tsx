@@ -102,6 +102,11 @@ const ConfirmEmailPage = () => {
   // Auto-submit when 6 digits are entered
   const verificationCode = form.watch("verificationCode");
   React.useEffect(() => {
+    // Clear error when user starts typing
+    if (verificationCode.length > 0 && error) {
+      setError("");
+    }
+
     if (verificationCode.length === 6) {
       onSubmit({ verificationCode });
     }
