@@ -20,11 +20,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCurrentProfile } from "@/hooks/useProfileData";
+import { useProfile } from "@/hooks/useProfile";
 
 interface SidebarProps {
   activeItem?: string;
@@ -85,7 +86,18 @@ export function Sidebar({
   const pathname = usePathname();
   const router = useRouter();
 
-  const { data: talentProfile } = useCurrentProfile();
+  // Get initial profile from context (server-fetched)
+  const { initialProfileRaw } = useProfile();
+
+  // Get live profile data from React Query
+  const { data: liveProfileData } = useCurrentProfile();
+
+  // Use live data if available, otherwise use initial data
+  const talentProfile = useMemo(() => {
+    if (liveProfileData) return liveProfileData;
+    return initialProfileRaw;
+  }, [liveProfileData, initialProfileRaw]);
+
   const handleProfile = () => {
     setIsDropdownOpen(false);
     router.push("/profile");
