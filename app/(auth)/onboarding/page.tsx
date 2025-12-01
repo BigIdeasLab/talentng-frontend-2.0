@@ -79,6 +79,17 @@ const OnboardingPage = () => {
       formData.append("profileImage", profileImage);
     }
 
+    // Log what we're sending
+    console.log("=== ONBOARDING SUBMIT ===");
+    console.log("Role:", roleValue);
+    console.log("Profile:", profileData);
+    console.log("Details:", data);
+    console.log("Profile Image:", profileImage ? `File: ${profileImage.name}` : "None");
+    console.log("FormData entries:", Array.from(formData.entries()).map(([key, value]) => ({
+      key,
+      value: value instanceof File ? `File: ${value.name}` : value
+    })));
+
     try {
       await completeOnboarding(formData);
 

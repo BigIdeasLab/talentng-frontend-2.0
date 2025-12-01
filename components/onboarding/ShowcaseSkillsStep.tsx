@@ -20,22 +20,22 @@ export const ShowcaseSkillsStep = ({
   profileImage?: File;
 }) => {
   const [formData, setFormData] = useState<SkillsData>({
-     category: "",
-     headline: "",
-     skills: [],
-     stack: [],
-     portfolioLink: "",
-   });
+    category: "",
+    headline: "",
+    skills: [],
+    stack: [],
+    portfolioLink: "",
+  });
 
-   const [skillInput, setSkillInput] = useState("");
-   const [stackInput, setStackInput] = useState("");
-   const [imagePreview, setImagePreview] = useState<string | null>(null);
-   const [errors, setErrors] = useState<{
-     category?: string;
-     headline?: string;
-     skills?: string;
-     stack?: string;
-   }>({});
+  const [skillInput, setSkillInput] = useState("");
+  const [stackInput, setStackInput] = useState("");
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [errors, setErrors] = useState<{
+    category?: string;
+    headline?: string;
+    skills?: string;
+    stack?: string;
+  }>({});
 
   useEffect(() => {
     if (profileImage) {
@@ -161,54 +161,61 @@ export const ShowcaseSkillsStep = ({
               {/* Category Dropdown */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  What do you do?
+                  Choose a Category?
                 </label>
                 <select
-                   value={formData.category}
-                   onChange={handleCategoryChange}
-                   className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight] text-[#99A0AE] focus:ring-2 focus:ring-purple-600 focus:outline-none ${
-                     errors.category ? "ring-2 ring-red-500" : ""
-                   }`}
-                 >
-                   <option value="" className="text-black">
-                     Select Category
-                   </option>
-                   {categories.map((category) => (
-                     <option key={category} value={category} className="text-black">
-                       {category}
-                     </option>
-                   ))}
-                 </select>
+                  value={formData.category}
+                  onChange={handleCategoryChange}
+                  className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight] text-[#99A0AE] focus:ring-2 focus:ring-purple-600 focus:outline-none ${
+                    errors.category ? "ring-2 ring-red-500" : ""
+                  }`}
+                >
+                  <option value="" className="text-black">
+                    Select Category
+                  </option>
+                  {categories.map((category) => (
+                    <option
+                      key={category}
+                      value={category}
+                      className="text-black"
+                    >
+                      {category}
+                    </option>
+                  ))}
+                </select>
                 {errors.category && (
-                    <span className="text-xs text-red-600">
-                      {errors.category}
-                    </span>
-                  )}
-                </div>
+                  <span className="text-xs text-red-600">
+                    {errors.category}
+                  </span>
+                )}
+              </div>
 
-                {/* Headline */}
-                <div className="flex flex-col gap-[13px]">
-                  <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                    Your Headline
-                  </label>
-                  <Input
-                    type="text"
-                    value={formData.headline}
-                    onChange={(e) => {
-                      setFormData((prev) => ({ ...prev, headline: e.target.value }));
-                      setErrors((prev) => ({ ...prev, headline: "" }));
-                    }}
-                    placeholder="e.g., Singer, Software Engineer, Graphic Designer"
-                    className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px]"
-                  />
-                  {errors.headline && (
-                    <span className="text-xs text-red-600">
-                      {errors.headline}
-                    </span>
-                  )}
-                </div>
+              {/* Headline */}
+              <div className="flex flex-col gap-[13px]">
+                <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
+                  What do you do?
+                </label>
+                <Input
+                  type="text"
+                  value={formData.headline}
+                  onChange={(e) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      headline: e.target.value,
+                    }));
+                    setErrors((prev) => ({ ...prev, headline: "" }));
+                  }}
+                  placeholder="e.g., Singer, Software Engineer, Graphic Designer"
+                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px]"
+                />
+                {errors.headline && (
+                  <span className="text-xs text-red-600">
+                    {errors.headline}
+                  </span>
+                )}
+              </div>
 
-                {/* Skills */}
+              {/* Skills */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
                   Your Skills

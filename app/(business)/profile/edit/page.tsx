@@ -15,11 +15,7 @@ import {
   mapAPIToUI,
   type UIProfileData,
 } from "@/lib/profileMapper";
-import {
-  getCurrentProfile,
-  updateProfile,
-  updateProfileImageUrl,
-} from "@/lib/api/talent";
+import { useCurrentProfile, useUpdateProfile } from "@/hooks/useProfileData";
 
 const availableSkills = [
   "Website Design",
@@ -88,8 +84,6 @@ const DEFAULT_PROFILE_DATA: UIProfileData = {
 export default function EditProfilePage() {
   const [expandedSection, setExpandedSection] = useState<string>("personal");
   const [formData, setFormData] = useState<UIProfileData>(DEFAULT_PROFILE_DATA);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
   const [editingExperienceIndex, setEditingExperienceIndex] = useState<
     number | null
   >(null);
@@ -102,24 +96,17 @@ export default function EditProfilePage() {
   const skillsSelectRef = useRef<HTMLSelectElement | null>(null);
   const stackSelectRef = useRef<HTMLSelectElement | null>(null);
 
-  // Load profile data on mount
-  useEffect(() => {
-    const loadProfileData = async () => {
-      try {
-        setIsLoading(true);
-        const apiData = await getCurrentProfile();
-        const uiData = mapAPIToUI(apiData);
-        setFormData(uiData);
-      } catch (error) {
-        console.error("Error loading profile:", error);
-        // Keep default empty form if load fails
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  // Fetch profile data with React Query hook
+  const { data: profileData, isLoading } = useCurrentProfile();
+  const updateProfileMutation = useUpdateProfile();
 
-    loadProfileData();
-  }, []);
+  // Load profile data when it becomes available
+  useEffect(() => {
+    if (profileData) {
+      const uiData = mapAPIToUI(profileData);
+      setFormData(uiData);
+    }
+  }, [profileData]);
 
   const toggleSection = (section: string) => {
     setExpandedSection(expandedSection === section ? "" : section);
@@ -289,19 +276,16 @@ export default function EditProfilePage() {
 
   const handleSaveProfile = async () => {
     try {
-      setIsSaving(true);
       // Convert UI-friendly format to API format
       const apiData = mapUIToAPI(formData as UIProfileData);
 
-      // Send to API
-      await updateProfile(apiData);
+      // Send to API using mutation
+      await updateProfileMutation.mutateAsync(apiData);
 
       alert("Profile saved successfully!");
     } catch (error) {
       console.error("Error saving profile:", error);
       alert("Failed to save profile. Please try again.");
-    } finally {
-      setIsSaving(false);
     }
   };
 
@@ -313,7 +297,7 @@ export default function EditProfilePage() {
       />
 
       <div className="flex-1 flex flex-col">
-        <EditProfileActionBar onSave={handleSaveProfile} isLoading={isSaving} />
+        <EditProfileActionBar onSave={handleSaveProfile} isLoading={updateProfileMutation.isPending} />
 
         <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">

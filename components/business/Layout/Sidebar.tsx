@@ -21,12 +21,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { getCurrentProfile } from "@/lib/api/talent";
-import type { TalentProfile } from "@/lib/api/talent/types";
+import { useCurrentProfile } from "@/hooks/useProfileData";
 
 interface SidebarProps {
   activeItem?: string;
@@ -87,12 +85,7 @@ export function Sidebar({
   const pathname = usePathname();
   const router = useRouter();
 
-  const { data: talentProfile } = useQuery({
-    queryKey: ["talentProfile"],
-    queryFn: getCurrentProfile,
-    // enabled: user?.role === "TALENT",
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+  const { data: talentProfile } = useCurrentProfile();
   const handleProfile = () => {
     setIsDropdownOpen(false);
     router.push("/profile");
