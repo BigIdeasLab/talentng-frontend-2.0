@@ -202,7 +202,7 @@ const ConfirmEmailPage = () => {
                             <FormControl>
                               <div className="flex flex-col gap-2.5">
                                 {error && (
-                                  <p className="text-[#E63C23] text-center text-[15px] font-normal">
+                                  <p className="text-[#E63C23] text-center text-[15px] font-normal font-inter-tight">
                                     {error}
                                   </p>
                                 )}
@@ -221,7 +221,7 @@ const ConfirmEmailPage = () => {
                                         <InputOTPSlot
                                           key={index}
                                           index={index}
-                                          className={`w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center text-[30px] font-semibold ${
+                                          className={`w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center text-[30px] font-semibold font-inter-tight ${
                                             error
                                               ? "text-[#E63C23]"
                                               : mutation.isSuccess
