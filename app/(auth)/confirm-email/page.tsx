@@ -200,35 +200,39 @@ const ConfirmEmailPage = () => {
                         render={({ field }) => (
                           <FormItem>
                             <FormControl>
-                              <div className="flex justify-center items-center rounded-[10px] bg-[#F5F5F5] py-[5px] px-[54px]">
-                                <InputOTP maxLength={6} {...field}>
-                                  <InputOTPGroup className="flex items-center gap-0">
-                                    <InputOTPSlot
-                                      index={0}
-                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
-                                    />
-                                    <InputOTPSlot
-                                      index={1}
-                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
-                                    />
-                                    <InputOTPSlot
-                                      index={2}
-                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
-                                    />
-                                    <InputOTPSlot
-                                      index={3}
-                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
-                                    />
-                                    <InputOTPSlot
-                                      index={4}
-                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
-                                    />
-                                    <InputOTPSlot
-                                      index={5}
-                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
-                                    />
-                                  </InputOTPGroup>
-                                </InputOTP>
+                              <div className="flex flex-col gap-2.5">
+                                {error && (
+                                  <p className="text-[#E63C23] text-center text-[15px] font-normal">
+                                    {error}
+                                  </p>
+                                )}
+                                <div
+                                  className={`flex justify-center items-center rounded-[10px] py-[5px] px-[54px] ${
+                                    error
+                                      ? "bg-[#E63C231A]"
+                                      : mutation.isSuccess
+                                      ? "bg-[#008B471A]"
+                                      : "bg-[#F5F5F5]"
+                                  }`}
+                                >
+                                  <InputOTP maxLength={6} {...field}>
+                                    <InputOTPGroup className="flex items-center gap-0">
+                                      {[0, 1, 2, 3, 4, 5].map((index) => (
+                                        <InputOTPSlot
+                                          key={index}
+                                          index={index}
+                                          className={`w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center text-[30px] font-semibold ${
+                                            error
+                                              ? "text-[#E63C23]"
+                                              : mutation.isSuccess
+                                              ? "text-[#008B47]"
+                                              : "text-black"
+                                          }`}
+                                        />
+                                      ))}
+                                    </InputOTPGroup>
+                                  </InputOTP>
+                                </div>
                               </div>
                             </FormControl>
                           </FormItem>
