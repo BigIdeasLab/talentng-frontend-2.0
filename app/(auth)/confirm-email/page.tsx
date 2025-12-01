@@ -67,19 +67,20 @@ const ConfirmEmailPage = () => {
     mutationFn: (data: ConfirmEmailFormValues) =>
       verifyEmailConfirm(email, data.verificationCode),
     onSuccess: (data: any) => {
+      setError("");
       toast.success("Email verified successfully!");
-      
+
       // Store access token
       if (data.accessToken) {
         localStorage.setItem("accessToken", data.accessToken);
         setCookie("accessToken", data.accessToken);
       }
-      
+
       // Store user data
       if (data.user) {
         localStorage.setItem("user", JSON.stringify(data.user));
       }
-      
+
       // Navigate based on onboarding status
       if (data.needsOnboarding) {
         router.push("/onboarding");
@@ -88,6 +89,7 @@ const ConfirmEmailPage = () => {
       }
     },
     onError: (error: any) => {
+      setError("Wrong Code");
       toast.error(error.message || "An error occurred. Please try again.");
     },
   });
