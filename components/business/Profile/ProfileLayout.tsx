@@ -37,13 +37,19 @@ export function ProfileLayout({
   const [isUploadWorksModalOpen, setIsUploadWorksModalOpen] = useState(false);
   const [serviceRefreshTrigger, setServiceRefreshTrigger] = useState(0);
   const [worksRefreshTrigger, setWorksRefreshTrigger] = useState(0);
-  const [cachedServices, setCachedServices] = useState<any[]>(initialServices || []);
-  const [servicesLoading, setServicesLoading] = useState(!initialServices || initialServices.length === 0);
+  const [cachedServices, setCachedServices] = useState<any[]>(
+    initialServices || [],
+  );
+  const [servicesLoading, setServicesLoading] = useState(
+    !initialServices || initialServices.length === 0,
+  );
   const [cachedWorks, setCachedWorks] = useState<any[]>([]);
   const [worksLoading, setWorksLoading] = useState(true);
-  const [cachedRecommendations, setCachedRecommendations] = useState<any[]>(initialRecommendations || []);
+  const [cachedRecommendations, setCachedRecommendations] = useState<any[]>(
+    initialRecommendations || [],
+  );
   const [recommendationsLoading, setRecommendationsLoading] = useState(
-    !initialRecommendations || initialRecommendations.length === 0
+    !initialRecommendations || initialRecommendations.length === 0,
   );
 
   useEffect(() => {
@@ -57,8 +63,6 @@ export function ProfileLayout({
     }
     setWorksLoading(false);
   }, [profileData.gallery]);
-
-
 
   useEffect(() => {
     // Scroll to top when tab changes
@@ -100,7 +104,7 @@ export function ProfileLayout({
 
   const handleServiceCreated = (message?: string, services?: any[]) => {
     // Only cache services with valid IDs
-    const validServices = services?.filter(s => s.id && s.id !== "0") || [];
+    const validServices = services?.filter((s) => s.id && s.id !== "0") || [];
     if (validServices.length > 0) {
       setCachedServices(validServices);
     }
@@ -128,7 +132,7 @@ export function ProfileLayout({
           stats={{
             earnings: stats ? `${stats.earnings} Earned` : "—",
             hired: stats?.hired ?? 0,
-            jobType: profileData.professional.preferredRole || "—",
+            jobType: profileData.professional.category || "—",
           }}
           skills={
             profileData.professional.skills || [

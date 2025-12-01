@@ -47,7 +47,7 @@ export interface TalentProfile {
   location: string | null;
   availability: string | null;
   phoneNumber: string | null;
-  preferredRole: string | null;
+  category: string | null;
   company: string | null;
   duration: string | null;
   description: string | null;
@@ -133,7 +133,7 @@ export interface APIProfileData {
     portfolio?: string;
   };
   company?: string;
-  preferredRole?: string;
+  category?: string;
   availability?: string;
   description?: string;
   visibility?: "public" | "private";

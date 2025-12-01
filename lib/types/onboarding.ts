@@ -10,6 +10,7 @@ export interface ProfileData {
 
 export interface SkillsData {
   category: string;
+  headline: string;
   skills: string[];
   stack: string[];
   portfolioLink: string;

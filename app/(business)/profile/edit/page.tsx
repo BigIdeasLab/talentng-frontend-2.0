@@ -9,7 +9,7 @@ import { WorkExperienceSection } from "@/components/business/Profile/edit/WorkEx
 import { EducationSection } from "@/components/business/Profile/edit/EducationSection";
 import { PortfolioSection } from "@/components/business/Profile/edit/PortfolioSection";
 import { SocialLinksSection } from "@/components/business/Profile/edit/SocialLinksSection";
-import statesCities from "@/lib/states-cities.json";
+import statesCities from "@/lib/data/states-cities.json";
 import {
   mapUIToAPI,
   mapAPIToUI,
@@ -61,7 +61,7 @@ const DEFAULT_PROFILE_DATA: UIProfileData = {
   professional: {
     role: "",
     company: "",
-    preferredRole: "",
+    category: "",
     description: "",
     skills: [],
     stack: [],

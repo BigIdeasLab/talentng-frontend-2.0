@@ -109,7 +109,7 @@ export const dummyAPIProfileData: APIProfileData = {
     portfolio: "https://akanbi-david.com",
   },
   company: "Innovate Design Studio",
-  preferredRole: "Lead Product Designer",
+  category: "Lead Product Designer",
   availability: "Available - Freelance/Contract",
   description:
     "Senior UI/UX Designer with expertise in designing scalable design systems and leading cross-functional teams. Passionate about accessibility, user research, and creating products that users love. I've led design initiatives from concept to launch, resulting in improved user engagement and retention metrics.",

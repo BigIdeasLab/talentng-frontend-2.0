@@ -16,7 +16,7 @@ const DEFAULT_PROFILE_DATA = {
   professional: {
     role: "",
     company: "",
-    preferredRole: "",
+    category: "",
     description: "",
     skills: [],
     stack: [],

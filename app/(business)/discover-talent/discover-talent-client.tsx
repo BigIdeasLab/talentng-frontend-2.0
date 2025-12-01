@@ -8,6 +8,7 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { getDiscoverTalentData } from "./server-data";
 import type { TalentData } from "./server-data";
+import type { FilterState } from "@/components/business/DiscoverTalent";
 
 interface DiscoverTalentClientProps {
   initialTalents: TalentData[];
@@ -23,6 +24,7 @@ export function DiscoverTalentClient({
   const [talents, setTalents] = useState<TalentData[]>(initialTalents);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(initialError);
+  const [filters, setFilters] = useState<FilterState | null>(null);
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
@@ -41,6 +43,13 @@ export function DiscoverTalentClient({
     }
   };
 
+  const handleFilterApply = (appliedFilters: FilterState) => {
+    setFilters(appliedFilters);
+    // Trigger search with applied filters
+    // You can add additional filtering logic here based on skills, location, availability, etc.
+    handleSearch(searchQuery);
+  };
+
   return (
     <div className="flex flex-col h-screen bg-white overflow-hidden">
       <DiscoverTalentHeader
@@ -48,6 +57,7 @@ export function DiscoverTalentClient({
         onCategoryChange={setSelectedCategory}
         searchQuery={searchQuery}
         onSearchChange={handleSearch}
+        onFilterApply={handleFilterApply}
       />
       {loading && (
         <div className="flex-1 flex items-center justify-center">

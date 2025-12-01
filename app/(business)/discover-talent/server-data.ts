@@ -19,16 +19,16 @@ export interface TalentData {
 }
 
 const mapTalentToUI = (profile: TalentProfile, index: number): TalentData => ({
-  id: index + 1,
-  name: profile.fullName || profile.headline || "Talent",
-  role: profile.headline || profile.preferredRole || "Professional",
-  location: profile.location || "Not specified",
-  timesHired: profile.stats?.hired || 0,
-  earnings: parseInt(profile.stats?.earnings || "0"),
-  avatar: profile.profileImageUrl || "/default-avatar.jpg",
-  gallery: profile.gallery?.map((item) => item.url) || [],
-  skills: profile.skills || [],
-});
+   id: index + 1,
+   name: profile.fullName || profile.headline || "Talent",
+   role: profile.headline || profile.category || "Professional",
+   location: profile.location || "Not specified",
+   timesHired: profile.stats?.hired || 0,
+   earnings: parseInt(profile.stats?.earnings || "0"),
+   avatar: profile.profileImageUrl || "/default-avatar.jpg",
+   gallery: profile.gallery?.map((item) => item.url) || [],
+   skills: profile.skills || [],
+ });
 
 export async function getDiscoverTalentData(searchQuery?: string) {
   try {

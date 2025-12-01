@@ -19,23 +19,25 @@ const mapRecommendationToUI = (apiRec: any) => ({
 });
 
 export async function getProfilePageData() {
-  try {
-    const profileRes = await getServerCurrentProfile();
-    
-    const [statsRes, recommendationsRes, servicesRes] = await Promise.all([
-      getServerDashboardStats(),
-      getServerTalentRecommendations(profileRes.userId),
-      getServerMyServices(),
-    ]);
+   try {
+     const profileRes = await getServerCurrentProfile();
+     
+     const mappedUIData = mapAPIToUI(profileRes);
+     
+     const [statsRes, recommendationsRes, servicesRes] = await Promise.all([
+       getServerDashboardStats(),
+       getServerTalentRecommendations(profileRes.userId),
+       getServerMyServices(),
+     ]);
 
-    return {
-      profileData: mapAPIToUI(profileRes),
-      userId: profileRes.userId,
-      stats: statsRes,
-      recommendations: recommendationsRes.map(mapRecommendationToUI),
-      services: servicesRes || [],
-      error: null,
-    };
+     return {
+       profileData: mappedUIData,
+       userId: profileRes.userId,
+       stats: statsRes,
+       recommendations: recommendationsRes.map(mapRecommendationToUI),
+       services: servicesRes || [],
+       error: null,
+     };
   } catch (error) {
     console.error("Error loading profile data on server:", error);
     return {

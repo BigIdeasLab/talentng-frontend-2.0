@@ -11,14 +11,14 @@ export interface UIProfileData {
     profileImageUrl: string;
   };
   professional: {
-    role: string;
-    company: string;
-    preferredRole: string;
-    description: string;
-    skills: string[];
-    stack: { name: string; icon: string }[];
-    availability: string;
-  };
+     role: string;
+     company: string;
+     category: string;
+     description: string;
+     skills: string[];
+     stack: { name: string; icon: string }[];
+     availability: string;
+   };
   experience: {
     id: string;
     company: string;
@@ -126,7 +126,7 @@ export interface APIProfileData {
     portfolio?: string;
   };
   company?: string | null;
-  preferredRole?: string | null;
+  category?: string | null;
   availability?: string | null;
   description?: string | null;
 }
@@ -175,7 +175,7 @@ export function mapUIToAPI(uiData: UIProfileData): APIProfileData {
       portfolio: uiData.social.portfolio || undefined,
     },
     company: uiData.professional.company,
-    preferredRole: uiData.professional.preferredRole,
+    category: uiData.professional.category,
     availability: uiData.professional.availability,
     description: uiData.professional.description,
   };
@@ -186,28 +186,17 @@ export function mapUIToAPI(uiData: UIProfileData): APIProfileData {
  * Accepts both APIProfileData (request format) and TalentProfile (response format)
  */
 export function mapAPIToUI(apiData: Partial<APIProfileData> | any): UIProfileData {
-   const [firstName, ...lastNameParts] = (apiData.fullName || "").split(" ");
-   const lastName = lastNameParts.join(" ");
+    const [firstName, ...lastNameParts] = (apiData.fullName || "").split(" ");
+    const lastName = lastNameParts.join(" ");
 
-   const [city, state] = (apiData.location || "").split(", ");
+    const [city, state] = (apiData.location || "").split(", ");
 
-   return {
-     personal: {
-       firstName: firstName || "",
-       lastName: lastName || "",
-       headline: apiData.headline || "",
-       bio: apiData.bio || "",
-       phoneNumber: apiData.phoneNumber || "",
-       state: state || apiData.location || "",
-       city: city || "",
-       profileImageUrl: apiData.profileImageUrl || "",
-     },
-    professional: {
+    const mappedProfessional = {
       role: (Array.isArray(apiData.stack) && apiData.stack.length > 0 
         ? (typeof apiData.stack[0] === 'string' ? apiData.stack[0] : apiData.stack[0].name)
         : "") || "",
       company: apiData.company || "",
-      preferredRole: apiData.preferredRole || "",
+      category: apiData.category || "",
       description: apiData.description || "",
       skills: apiData.skills || [],
       stack: (apiData.stack || []).map((item: any) => {
@@ -218,7 +207,20 @@ export function mapAPIToUI(apiData: Partial<APIProfileData> | any): UIProfileDat
         };
       }),
       availability: apiData.availability || "",
-    },
+    };
+
+    return {
+     personal: {
+       firstName: firstName || "",
+       lastName: lastName || "",
+       headline: apiData.headline || "",
+       bio: apiData.bio || "",
+       phoneNumber: apiData.phoneNumber || "",
+       state: state || apiData.location || "",
+       city: city || "",
+       profileImageUrl: apiData.profileImageUrl || "",
+     },
+    professional: mappedProfessional,
     experience: (apiData.workExperience || []).map((exp: any, idx: number) => ({
       id: exp.id || `${idx}`,
       company: exp.company,
@@ -261,9 +263,9 @@ export function mapAPIToUI(apiData: Partial<APIProfileData> | any): UIProfileDat
       linkedin: apiData.links?.linkedin || "",
       github: apiData.links?.github || "",
       portfolio: apiData.links?.portfolio || "",
-    },
-  };
-}
+      },
+      };
+      }
 
 /**
  * Get icon emoji for a tool name

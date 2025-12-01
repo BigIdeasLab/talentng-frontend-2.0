@@ -10,14 +10,14 @@ interface StackTool {
 }
 
 interface ProfessionalData {
-  role: string;
-  company: string;
-  preferredRole: string;
-  description: string;
-  skills: string[];
-  stack: StackTool[];
-  availability: string;
-}
+   role: string;
+   company: string;
+   category: string;
+   description: string;
+   skills: string[];
+   stack: StackTool[];
+   availability: string;
+ }
 
 interface ProfessionalDetailsSectionProps {
   isOpen: boolean;
@@ -99,15 +99,15 @@ export function ProfessionalDetailsSection({
               />
             </div>
 
-            {/* Preferred Role */}
+            {/* Category */}
             <div className="flex flex-col gap-[10px]">
               <label className="text-[13px] font-normal text-black font-inter-tight">
-                Preferred Role
+                Category
               </label>
               <input
                 type="text"
-                value={formData.preferredRole}
-                onChange={(e) => onInputChange("preferredRole", e.target.value)}
+                value={formData.category}
+                onChange={(e) => onInputChange("category", e.target.value)}
                 placeholder="e.g., Lead Product Designer"
                 className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
               />

@@ -6,11 +6,11 @@ export interface AccountSettings {
 }
 
 export interface ProfileSettings {
-  visibility: "public" | "private";
-  location: string;
-  preferredRole: string;
-  availability: "full-time" | "part-time" | "contract";
-}
+   visibility: "public" | "private";
+   location: string;
+   category: string;
+   availability: "full-time" | "part-time" | "contract";
+ }
 
 export interface NotificationSettings {
   email: boolean;

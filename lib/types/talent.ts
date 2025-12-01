@@ -25,7 +25,7 @@ export interface Talent {
   updatedAt: string;
   deletedAt: string | null;
   availability: string | null;
-  preferredRole: string | null;
+  category: string | null;
   phoneNumber: string | null;
   user: {
     id: string;

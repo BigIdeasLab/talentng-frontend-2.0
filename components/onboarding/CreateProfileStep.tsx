@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { ProfileData } from "@/lib/types/onboarding";
 import { checkUsernameAvailability } from "@/lib/api";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
-import statesCitiesData from "@/lib/states-cities.json";
+import statesCitiesData from "@/lib/data/states-cities.json";
 
 type UsernameStatus = "idle" | "checking" | "available" | "taken" | "invalid";
 
