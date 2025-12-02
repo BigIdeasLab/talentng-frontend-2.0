@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Loader2, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { MentorExpertiseData } from "@/lib/types/onboarding";
@@ -80,12 +80,25 @@ export const MentorExpertiseStep = ({
   onBack,
   isLoading,
   profileData,
+  profileImage,
 }: {
   onNext: (data: MentorExpertiseFormData) => void;
   onBack: () => void;
   isLoading?: boolean;
   profileData?: { firstName?: string; lastName?: string };
+  profileImage?: File;
 }) => {
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (profileImage) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(profileImage);
+    }
+  }, [profileImage]);
   const [formData, setFormData] = useState<MentorExpertiseFormData>({
     industries: [],
     headline: "",
@@ -552,7 +565,7 @@ export const MentorExpertiseStep = ({
                         id="image0_2026_6807"
                         width="810"
                         height="1080"
-                        xlinkHref="/default.png"
+                        xlinkHref={imagePreview || "/default.png"}
                         preserveAspectRatio="xMidYMid slice"
                       />
                     </defs>

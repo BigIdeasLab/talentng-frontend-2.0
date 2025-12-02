@@ -505,7 +505,7 @@ export const MentorProfileStep = ({
 
                   {/* Status badge */}
                   <div className="absolute bottom-[12px] left-[78px] text-white text-[13.4px] font-normal font-[Inter_Tight] leading-[120%] capitalize">
-                    Mentor
+                    Status: Available
                   </div>
                 </div>
 

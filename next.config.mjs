@@ -5,7 +5,7 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "s3.us-east-1.amazonaws.com",
-        pathname: "/talent.ng/profile-images/**",
+        pathname: "/talent.ng/**",
       },
       {
         protocol: "https",

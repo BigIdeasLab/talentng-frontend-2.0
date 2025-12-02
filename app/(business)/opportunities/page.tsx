@@ -5,6 +5,7 @@ import { OpportunitiesHeader } from "./components/header";
 import { SearchBar } from "./components/search-bar";
 import { FilterTabs } from "./components/filter-tabs";
 import { OpportunitiesGrid } from "./components/opportunities-grid";
+import Link from "next/link";
 import type { Opportunity, FilterType } from "./components/types";
 
 const opportunities: Opportunity[] = [
@@ -644,7 +645,7 @@ const opportunities: Opportunity[] = [
 ];
 
 const appliedOpportunities = opportunities.filter(
-  (opp) => opp.applicationStatus
+  (opp) => opp.applicationStatus,
 );
 
 export default function OpportunitiesPage() {
@@ -674,27 +675,39 @@ export default function OpportunitiesPage() {
   });
 
   return (
-    <div className="h-screen overflow-y-auto overflow-x-hidden bg-white">
-      <div className="w-full px-[25px] pt-[19px]">
-        {/* Header */}
-        <div className="mb-4">
-          <OpportunitiesHeader />
+    // <div className="h-screen overflow-y-auto overflow-x-hidden bg-white">
+    //   <div className="w-full px-[25px] pt-[19px]">
+    //     {/* Header */}
+    //     <div className="mb-4">
+    //       <OpportunitiesHeader />
 
-          {/* Search and Filters */}
-          <SearchBar
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-          />
+    //       {/* Search and Filters */}
+    //       <SearchBar
+    //         searchQuery={searchQuery}
+    //         onSearchChange={setSearchQuery}
+    //       />
 
-          {/* Filter Tabs */}
-          <FilterTabs
-            activeFilter={activeFilter}
-            onFilterChange={setActiveFilter}
-          />
-        </div>
+    //       {/* Filter Tabs */}
+    //       <FilterTabs
+    //         activeFilter={activeFilter}
+    //         onFilterChange={setActiveFilter}
+    //       />
+    //     </div>
 
-        {/* Opportunities Grid */}
-        <OpportunitiesGrid opportunities={filteredOpportunities} />
+    //     {/* Opportunities Grid */}
+    //     <OpportunitiesGrid opportunities={filteredOpportunities} />
+    //   </div>
+    // </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold mb-4">404</h1>
+        <p className="text-xl text-gray-600 mb-4">NOT IMPLEMENTED YET</p>
+        <Link
+          href="/profile"
+          className="text-blue-500 hover:text-blue-700 underline"
+        >
+          GO TO PROFILE PAGE
+        </Link>
       </div>
     </div>
   );

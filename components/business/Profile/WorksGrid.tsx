@@ -95,22 +95,26 @@ export function WorksGrid({
     <div className="w-full px-[20px] py-[20px]">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[15px] auto-rows-max">
         {displayItems.map((item) => (
-          <button
+          <div
             key={item.id}
-            onClick={() => onItemClick?.(item)}
-            className="group relative w-full overflow-hidden rounded-lg bg-gray-100 hover:shadow-lg transition-all duration-200"
+            className="group relative w-full overflow-hidden rounded-lg bg-gray-100"
             style={{
               aspectRatio: "4/3",
             }}
           >
-            <Image
-              src={item.url}
-              alt={item.key || "Portfolio item"}
-              fill
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-              unoptimized
-            />
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200" />
+            <button
+              onClick={() => onItemClick?.(item)}
+              className="relative w-full h-full overflow-hidden hover:shadow-lg transition-all duration-200"
+            >
+              <Image
+                src={item.url}
+                alt={item.key || "Portfolio item"}
+                fill
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                unoptimized
+              />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200" />
+            </button>
 
             {/* Delete Button */}
             <button
@@ -124,7 +128,7 @@ export function WorksGrid({
                 <Trash2 className="w-4 h-4" />
               )}
             </button>
-          </button>
+          </div>
         ))}
       </div>
     </div>

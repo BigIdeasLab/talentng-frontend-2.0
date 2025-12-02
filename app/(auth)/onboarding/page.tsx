@@ -416,6 +416,7 @@ const OnboardingPage = () => {
                 onBack={handleBack}
                 isLoading={isLoading}
                 profileData={mentorData}
+                profileImage={profileImage as File | undefined}
               />
             ) : (
               renderStepThree()
