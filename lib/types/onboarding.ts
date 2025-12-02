@@ -18,10 +18,10 @@ export interface SkillsData {
 
 export interface CompanyProfileData {
   companyName: string;
-  companyWebsite: string;
-  companyIndustry: string;
-  companySize: string;
-  companyBio: string;
+  industry: string;
+  username: string;
+  location: string;
+  bio: string;
 }
 
 export interface MentorExpertiseData {

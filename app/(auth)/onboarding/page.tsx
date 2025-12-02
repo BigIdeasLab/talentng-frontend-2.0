@@ -7,8 +7,9 @@ import { Role, ProfileData } from "@/lib/types/onboarding";
 import { SelectRoleStep } from "@/components/onboarding/SelectRoleStep";
 import { CreateProfileStep } from "@/components/onboarding/CreateProfileStep";
 import { ShowcaseSkillsStep } from "@/components/onboarding/ShowcaseSkillsStep";
-import { CreateCompanyProfileStep } from "@/components/onboarding/CreateCompanyProfileStep";
 import { ShowcaseExpertiseStep } from "@/components/onboarding/ShowcaseExpertiseStep";
+import { CompanyProfileStep } from "@/components/onboarding/CompanyProfileStep";
+import { CompanyDetailsStep } from "@/components/onboarding/CompanyDetailsStep";
 import { completeOnboarding } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
@@ -17,6 +18,8 @@ const OnboardingPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
   const [profileData, setProfileData] = useState<ProfileData | undefined>();
+  const [companyData, setCompanyData] = useState<any | undefined>();
+  const [companyDetailsData, setCompanyDetailsData] = useState<any | undefined>();
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -34,6 +37,88 @@ const OnboardingPage = () => {
       setProfileImage(image);
     }
     setCurrentStep(3);
+  };
+
+  const handleCompanyProfileNext = (data: any) => {
+    setCompanyData(data);
+    setCurrentStep(3);
+  };
+
+  const handleCompanyDetailsNext = async (data: any, logo?: File) => {
+    setCompanyDetailsData(data);
+    if (logo) {
+      setProfileImage(logo);
+    }
+    // Trigger final submission for employer
+    setIsLoading(true);
+    try {
+      // Prepare FormData for multipart/form-data request
+      const formData = new FormData();
+
+      // Add role - map "employer" to "RECRUITER" for API
+      let roleValue: "TALENT" | "RECRUITER" | "MENTOR";
+      if (selectedRole === "employer") {
+        roleValue = "RECRUITER";
+      } else {
+        roleValue = selectedRole?.toUpperCase() as "TALENT" | "MENTOR";
+      }
+      formData.append("role", roleValue);
+
+      // Merge company data with company details data
+      if (!companyData) {
+        throw new Error("Company profile data is missing");
+      }
+      const mergedCompanyData = {
+        ...companyData,
+        ...data,
+      };
+      formData.append("profile", JSON.stringify(mergedCompanyData));
+      formData.append("details", JSON.stringify({}));
+
+      // Add company logo if provided (optional)
+      if (logo) {
+        formData.append("profileImage", logo);
+      }
+
+      await completeOnboarding(formData);
+
+      await refetchUser();
+      toast({
+        title: "Success",
+        description: "Your profile has been successfully created.",
+      });
+      router.push("/dashboard");
+    } catch (error: any) {
+      let errorMessage = "An unknown error occurred.";
+
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      }
+
+      const isTimeoutError =
+        errorMessage.toLowerCase().includes("timeout") ||
+        errorMessage.toLowerCase().includes("transaction");
+
+      if (isTimeoutError) {
+        toast({
+          variant: "destructive",
+          title: "Request Timeout",
+          description: "The request took too long to process. Please try again or contact support if the problem persists.",
+          duration: 10000,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Onboarding Failed",
+          description: errorMessage,
+          duration: 5000,
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleFinalSubmit = async (data: any) => {
@@ -60,16 +145,34 @@ const OnboardingPage = () => {
     formData.append("role", roleValue);
 
     // Add profile as JSON string
-    if (!profileData) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Profile data is missing.",
-      });
-      setIsLoading(false);
-      return;
+    if (selectedRole === "employer") {
+      if (!companyData || !companyDetailsData) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Company data is missing.",
+        });
+        setIsLoading(false);
+        return;
+      }
+      // Merge company data with company details data
+      const mergedCompanyData = {
+        ...companyData,
+        ...companyDetailsData,
+      };
+      formData.append("profile", JSON.stringify(mergedCompanyData));
+    } else {
+      if (!profileData) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Profile data is missing.",
+        });
+        setIsLoading(false);
+        return;
+      }
+      formData.append("profile", JSON.stringify(profileData));
     }
-    formData.append("profile", JSON.stringify(profileData));
 
     // Add details as JSON string
     formData.append("details", JSON.stringify(data));
@@ -156,8 +259,8 @@ const OnboardingPage = () => {
         );
       case "employer":
         return (
-          <CreateCompanyProfileStep
-            onNext={handleFinalSubmit}
+          <CompanyDetailsStep
+            onNext={handleCompanyDetailsNext}
             onBack={handleBack}
             isLoading={isLoading}
           />
@@ -197,17 +300,35 @@ const OnboardingPage = () => {
         )}
         {currentStep === 2 && (
           <div className="h-full flex flex-col overflow-hidden">
-            <CreateProfileStep 
-              onNext={handleProfileNext} 
-              onBack={handleBack}
-              initialData={profileData}
-              initialImage={profileImage as File | undefined}
-            />
+            {selectedRole === "employer" ? (
+              <CompanyProfileStep
+                onNext={handleCompanyProfileNext}
+                onBack={handleBack}
+                initialData={companyData}
+                initialLogo={profileImage as File | undefined}
+              />
+            ) : (
+              <CreateProfileStep 
+                onNext={handleProfileNext} 
+                onBack={handleBack}
+                initialData={profileData}
+                initialImage={profileImage as File | undefined}
+              />
+            )}
           </div>
         )}
         {currentStep === 3 && (
           <div className="h-full flex flex-col overflow-hidden">
-            {renderStepThree()}
+            {selectedRole === "employer" ? (
+              <CompanyDetailsStep
+                onNext={handleCompanyDetailsNext}
+                onBack={handleBack}
+                isLoading={isLoading}
+                logoImage={profileImage as File | undefined}
+              />
+            ) : (
+              renderStepThree()
+            )}
           </div>
         )}
       </div>
