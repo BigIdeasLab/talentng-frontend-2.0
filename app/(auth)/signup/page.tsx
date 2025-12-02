@@ -27,7 +27,11 @@ const signUpSchema = z.object({
     .min(8, "Password must be at least 8 characters.")
     .regex(/[A-Z]/, "Password must contain at least 1 uppercase letter.")
     .regex(/[a-z]/, "Password must contain at least 1 lowercase letter.")
-    .regex(/[0-9]/, "Password must contain at least 1 number."),
+    .regex(/[0-9]/, "Password must contain at least 1 number.")
+    .regex(
+      /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/,
+      "Password must contain at least 1 special character.",
+    ),
 });
 
 type SignUpFormValues = z.infer<typeof signUpSchema>;
@@ -42,6 +46,7 @@ const Signup = () => {
     uppercase: /[A-Z]/.test(password),
     lowercase: /[a-z]/.test(password),
     number: /[0-9]/.test(password),
+    special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
   };
 
   const isPasswordValid = Object.values(passwordChecks).every(Boolean);
@@ -58,7 +63,9 @@ const Signup = () => {
     mutationFn: (data: SignUpFormValues) => register(data.email, data.password),
     onSuccess: (data: any, variables) => {
       toast.success("Check your email for verification code!");
-      router.push(`/confirm-email?email=${encodeURIComponent(variables.email)}`);
+      router.push(
+        `/confirm-email?email=${encodeURIComponent(variables.email)}`,
+      );
     },
     onError: (error: any) => {
       const message = error.message || "An error occurred. Please try again.";
@@ -186,7 +193,7 @@ const Signup = () => {
                                 className={
                                   passwordChecks.length
                                     ? "text-green-600"
-                                    : "text-gray-400"
+                                    : "text-red-600"
                                 }
                               >
                                 {passwordChecks.length ? "✓" : "○"}
@@ -206,7 +213,7 @@ const Signup = () => {
                                 className={
                                   passwordChecks.uppercase
                                     ? "text-green-600"
-                                    : "text-gray-400"
+                                    : "text-red-600"
                                 }
                               >
                                 {passwordChecks.uppercase ? "✓" : "○"}
@@ -226,7 +233,7 @@ const Signup = () => {
                                 className={
                                   passwordChecks.lowercase
                                     ? "text-green-600"
-                                    : "text-gray-400"
+                                    : "text-red-600"
                                 }
                               >
                                 {passwordChecks.lowercase ? "✓" : "○"}
@@ -246,7 +253,7 @@ const Signup = () => {
                                 className={
                                   passwordChecks.number
                                     ? "text-green-600"
-                                    : "text-gray-400"
+                                    : "text-red-600"
                                 }
                               >
                                 {passwordChecks.number ? "✓" : "○"}
@@ -259,6 +266,26 @@ const Signup = () => {
                                 }
                               >
                                 0-9
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1 text-xs">
+                              <span
+                                className={
+                                  passwordChecks.special
+                                    ? "text-green-600"
+                                    : "text-red-600"
+                                }
+                              >
+                                {passwordChecks.special ? "✓" : "○"}
+                              </span>
+                              <span
+                                className={
+                                  passwordChecks.special
+                                    ? "text-gray-700"
+                                    : "text-gray-500"
+                                }
+                              >
+                                !@#$%
                               </span>
                             </div>
                           </div>
