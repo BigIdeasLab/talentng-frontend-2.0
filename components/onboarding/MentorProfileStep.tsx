@@ -1,68 +1,66 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
+import statesCitiesData from "@/lib/data/states-cities.json";
+import { checkUsernameAvailability } from "@/lib/api";
 
-type CompanyFormData = {
-  companyName: string;
-  industry: string;
+type MentorProfileFormData = {
+  firstName: string;
+  lastName: string;
   username: string;
+  location: string;
   bio: string;
+  state: string;
+  city: string;
 };
 
 type UsernameStatus = "idle" | "checking" | "available" | "taken" | "invalid";
 
-const industries = [
-  "Technology",
-  "Finance",
-  "Healthcare",
-  "Education",
-  "Retail",
-  "Manufacturing",
-  "Agriculture",
-  "Hospitality",
-  "Transportation",
-  "Construction",
-  "Real Estate",
-  "Media & Entertainment",
-  "Telecommunications",
-  "Energy",
-  "Consulting",
-  "Legal Services",
-  "Human Resources",
-  "Marketing & Advertising",
-  "E-commerce",
-  "Other",
-];
-
-export const CompanyProfileStep = ({
+export const MentorProfileStep = ({
   onNext,
   onBack,
   initialData,
   initialLogo,
 }: {
-  onNext: (data: CompanyFormData, logo?: File) => void;
+  onNext: (data: MentorProfileFormData, logo?: File) => void;
   onBack: () => void;
-  initialData?: CompanyFormData;
+  initialData?: MentorProfileFormData;
   initialLogo?: File;
 }) => {
-  const [formData, setFormData] = useState<CompanyFormData>({
-    companyName: initialData?.companyName || "",
-    industry: initialData?.industry || "",
+  const parseLocation = (location: string) => {
+    if (!location) return { state: "", city: "" };
+    const parts = location.split(", ");
+    return {
+      city: parts[0] || "",
+      state: parts[1] || "",
+    };
+  };
+
+  const initialLocation = parseLocation(initialData?.location || "");
+
+  const [formData, setFormData] = useState<MentorProfileFormData>({
+    firstName: initialData?.firstName || "",
+    lastName: initialData?.lastName || "",
     username: initialData?.username || "",
+    location: initialData?.location || "",
     bio: initialData?.bio || "",
+    state: initialLocation.state,
+    city: initialLocation.city,
   });
 
-  const [profileLogo, setProfileLogo] = useState<File | null>(initialLogo || null);
+  const [profileLogo, setProfileLogo] = useState<File | null>(
+    initialLogo || null,
+  );
   const [logoPreview, setLogoPreview] = useState<string | null>(
     initialLogo ? URL.createObjectURL(initialLogo) : null,
   );
   const [isDragging, setIsDragging] = useState(false);
   const [usernameStatus, setUsernameStatus] = useState<UsernameStatus>("idle");
   const [errors, setErrors] = useState<{
-    companyName?: string;
-    industry?: string;
+    firstName?: string;
+    lastName?: string;
     username?: string;
   }>({});
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -87,17 +85,15 @@ export const CompanyProfileStep = ({
     setUsernameStatus("checking");
 
     try {
-      // Simulating username check - replace with actual API call
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      // For now, always mark as available - replace with actual API call
-      setUsernameStatus("available");
+      const result = await checkUsernameAvailability(username);
+      setUsernameStatus(result.available ? "available" : "taken");
     } catch (error) {
       console.error("Error checking username:", error);
       setUsernameStatus("idle");
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
     }
@@ -118,7 +114,9 @@ export const CompanyProfileStep = ({
   }, [formData.username]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -166,11 +164,11 @@ export const CompanyProfileStep = ({
 
     const newErrors: typeof errors = {};
 
-    if (!formData.companyName.trim()) {
-      newErrors.companyName = "Company name is required";
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "First name is required";
     }
-    if (!formData.industry.trim()) {
-      newErrors.industry = "Industry is required";
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = "Last name is required";
     }
     if (!formData.username.trim()) {
       newErrors.username = "Username is required";
@@ -198,11 +196,25 @@ export const CompanyProfileStep = ({
       }
     }
 
-    onNext(formData, profileLogo || undefined);
+    const location =
+      formData.city && formData.state
+        ? `${formData.city}, ${formData.state}`
+        : formData.state || "";
+
+    const { state, city, ...profileDataToPass } = formData;
+    const finalData: MentorProfileFormData = {
+      ...profileDataToPass,
+      location,
+    };
+
+    onNext(finalData, profileLogo || undefined);
   };
 
-  const displayCompanyName = formData.companyName || "Company Name";
-  const displayBio = formData.bio || "Company Bio";
+  const displayName =
+    formData.firstName && formData.lastName
+      ? `${formData.firstName} ${formData.lastName}`
+      : "Your Name";
+  const displayBio = formData.bio || "Your Bio";
 
   return (
     <div className="relative h-full flex flex-col">
@@ -245,56 +257,50 @@ export const CompanyProfileStep = ({
                 Step 2/3
               </p>
               <h2 className="text-[22px] text-black font-medium font-[Inter_Tight] leading-[105%]">
-                Create your company profile
+                Create your profile
               </h2>
             </div>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="flex flex-col gap-[13px]">
-              {/* Company Name */}
+              {/* First Name */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Company Name
+                  First Name
                 </label>
                 <Input
-                  name="companyName"
-                  value={formData.companyName}
+                  name="firstName"
+                  value={formData.firstName}
                   onChange={handleChange}
-                  placeholder="Enter company name"
+                  placeholder="First name"
                   className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] ${
-                    errors.companyName ? "ring-2 ring-red-500" : ""
+                    errors.firstName ? "ring-2 ring-red-500" : ""
                   }`}
                 />
-                {errors.companyName && (
+                {errors.firstName && (
                   <span className="text-xs text-red-600">
-                    {errors.companyName}
+                    {errors.firstName}
                   </span>
                 )}
               </div>
 
-              {/* Industry Dropdown */}
+              {/* Last Name */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Industry
+                  Last Name
                 </label>
-                <select
-                  name="industry"
-                  value={formData.industry}
+                <Input
+                  name="lastName"
+                  value={formData.lastName}
                   onChange={handleChange}
-                  className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] focus:ring-2 focus:ring-purple-600 focus:outline-none appearance-none cursor-pointer ${
-                    errors.industry ? "ring-2 ring-red-500" : ""
+                  placeholder="Last name"
+                  className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] ${
+                    errors.lastName ? "ring-2 ring-red-500" : ""
                   }`}
-                >
-                  <option value="">Select Industry</option>
-                  {industries.map((industry) => (
-                    <option key={industry} value={industry}>
-                      {industry}
-                    </option>
-                  ))}
-                </select>
-                {errors.industry && (
+                />
+                {errors.lastName && (
                   <span className="text-xs text-red-600">
-                    {errors.industry}
+                    {errors.lastName}
                   </span>
                 )}
               </div>
@@ -379,18 +385,67 @@ export const CompanyProfileStep = ({
                   )}
               </div>
 
+              {/* State and City */}
+              <div className="flex gap-[13px]">
+                <div className="flex-1 flex flex-col gap-[13px]">
+                  <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
+                    State
+                  </label>
+                  <select
+                    value={formData.state}
+                    onChange={(e) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        state: e.target.value,
+                        city: "",
+                      }));
+                    }}
+                    className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] focus:ring-2 focus:ring-purple-600 focus:outline-none appearance-none cursor-pointer"
+                  >
+                    <option value="">Select State</option>
+                    {Object.keys(statesCitiesData).map((state) => (
+                      <option key={state} value={state}>
+                        {state}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
+                <div className="flex-1 flex flex-col gap-[13px]">
+                  <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
+                    City
+                  </label>
+                  <select
+                    value={formData.city}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, city: e.target.value }))
+                    }
+                    disabled={!formData.state}
+                    className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] focus:ring-2 focus:ring-purple-600 focus:outline-none appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <option value="">Select City</option>
+                    {formData.state &&
+                      statesCitiesData[
+                        formData.state as keyof typeof statesCitiesData
+                      ]?.major_cities?.map((city) => (
+                        <option key={city} value={city}>
+                          {city}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              </div>
 
-              {/* Company Bio */}
+              {/* Bio */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Company Bio/About
+                  Bio
                 </label>
                 <textarea
                   name="bio"
                   value={formData.bio}
                   onChange={handleChange}
-                  placeholder="Tell us about your company"
+                  placeholder="Tell us about yourself"
                   rows={4}
                   className="rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] py-[21px] resize-none focus:ring-2 focus:ring-purple-600 focus:outline-none"
                 />
@@ -409,7 +464,7 @@ export const CompanyProfileStep = ({
 
               {/* Main container for both cards */}
               <div className="relative w-[290px] h-[350px]">
-                {/* Blue Star for company */}
+                {/* Purple Star for Mentor */}
                 <svg
                   className="absolute -left-12 top-24 w-16 h-16 lg:w-24 lg:h-24 z-40"
                   viewBox="0 0 131 131"
@@ -417,14 +472,14 @@ export const CompanyProfileStep = ({
                 >
                   <path
                     d="M65.3129 0L75.4732 55.1526L130.626 65.3129L75.4732 75.4732L65.3129 130.626L55.1526 75.4732L0 65.3129L55.1526 55.1526L65.3129 0Z"
-                    fill="#4A90E2"
+                    fill="#805DFF"
                   />
                 </svg>
-                {/* Company Logo Badge */}
+                {/* User Logo Badge */}
                 <div className="absolute top-4 -right-8 w-[70px] h-[70px] z-30">
                   <img
-                    src="/logo-2.png"
-                    alt="Company Logo"
+                    src={"/logo-2.png"}
+                    alt="Profile"
                     className="w-full h-full object-cover object-center rounded-full"
                   />
                 </div>
@@ -436,49 +491,51 @@ export const CompanyProfileStep = ({
                   <div className="absolute bottom-[-2px] w-[247px] h-[39px] rounded-[39.5px] bg-[#E0E0E0]"></div>
                 </div>
 
-                {/* Back Card - Blue Company Card */}
-                <div className="absolute w-full h-[328px] top-0 left-0 rounded-[21px] bg-[#1E5BA8] shadow-[1.79px_0_21.48px_rgba(0,0,0,0.25)] overflow-hidden z-10">
+                {/* Back Card - Purple Profile Card */}
+                <div className="absolute w-full h-[328px] top-0 left-0 rounded-[21px] bg-[#805DFF] shadow-[1.79px_0_21.48px_rgba(0,0,0,0.25)] overflow-hidden z-10">
                   {/* Decorative striped pattern */}
                   <div className="absolute left-[-13px] top-[185px] w-[277px] h-[162px] flex gap-[16px] rotate-[20.779deg] overflow-hidden">
                     {Array.from({ length: 18 }).map((_, i) => (
                       <div
                         key={i}
-                        className="w-[8.14px] h-[162px] bg-[#2A6BA8] flex-shrink-0"
+                        className="w-[8.14px] h-[162px] bg-[#6C45FF] flex-shrink-0"
                       />
                     ))}
                   </div>
 
                   {/* Status badge */}
                   <div className="absolute bottom-[12px] left-[78px] text-white text-[13.4px] font-normal font-[Inter_Tight] leading-[120%] capitalize">
-                    Hiring Now
+                    Mentor
                   </div>
                 </div>
 
-                {/* Front Card - White Company Card */}
+                {/* Front Card - White Upload Card */}
                 <div className="absolute w-full h-[289px] top-0 left-0 rounded-[21px] bg-white z-20 flex flex-col shadow-sm">
-                  {/* Company Logo Upload Area */}
+                  {/* Profile Picture Upload Area */}
                   <div
                     className={`flex-1 flex flex-col items-center justify-center rounded-[18.7px] bg-[#F5F5F5] m-[8.4px] relative overflow-hidden cursor-pointer transition-colors ${
                       isDragging
-                        ? "bg-[#E0E0E0] border-2 border-dashed border-blue-600"
+                        ? "bg-[#E0E0E0] border-2 border-dashed border-purple-600"
                         : ""
                     }`}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                     onClick={() =>
-                      document.getElementById("company-logo-input")?.click()
+                      document
+                        .getElementById("mentor-profile-image-input")
+                        ?.click()
                     }
                   >
                     {logoPreview ? (
                       <img
                         src={logoPreview}
-                        alt="Company logo preview"
+                        alt="Profile preview"
                         className="w-full h-full object-cover rounded-[18.7px]"
                       />
                     ) : (
                       <>
-                        {/* Logo placeholder */}
+                        {/* Upload Icon Circle */}
                         <div className="w-[87px] h-[87px] rounded-full bg-[#D9D9D9] flex items-center justify-center mb-[11px]">
                           <svg
                             className="w-[52px] h-[52px]"
@@ -496,16 +553,16 @@ export const CompanyProfileStep = ({
                         {/* Upload Text */}
                         <div className="flex flex-col items-center gap-[11px] text-center px-2">
                           <div className="text-[#404040] text-[13.3px] font-medium font-[Inter_Tight] leading-[105%]">
-                            Company Logo
+                            Upload Profile Picture
                           </div>
                           <div className="text-[#919191] text-[10.5px] font-light font-[Inter_Tight] leading-[120%] capitalize">
-                            Upload your logo
+                            Drag And Drop Image here
                           </div>
                         </div>
                       </>
                     )}
                     <input
-                      id="company-logo-input"
+                      id="mentor-profile-image-input"
                       type="file"
                       accept="image/*"
                       onChange={handleFileInput}
@@ -513,10 +570,10 @@ export const CompanyProfileStep = ({
                     />
                   </div>
 
-                  {/* Company Name and Bio Preview on White Card */}
+                  {/* Name and Bio Preview on White Card */}
                   <div className="flex flex-col justify-center gap-[11px] px-[15px] pb-[15px] pt-0 h-[64px]">
                     <div className="text-black text-[16.3px] font-medium font-[Inter_Tight] leading-[105%]">
-                      {displayCompanyName}
+                      {displayName}
                     </div>
                     <div className="text-[#919191] text-[13px] font-light font-[Inter_Tight] leading-[120%] capitalize truncate">
                       {displayBio}

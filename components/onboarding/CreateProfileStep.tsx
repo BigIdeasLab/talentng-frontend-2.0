@@ -116,6 +116,8 @@ export const CreateProfileStep = ({
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear error for this field when user starts typing
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleImageChange = (file: File) => {

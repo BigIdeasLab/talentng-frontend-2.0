@@ -10,6 +10,8 @@ import { ShowcaseSkillsStep } from "@/components/onboarding/ShowcaseSkillsStep";
 import { ShowcaseExpertiseStep } from "@/components/onboarding/ShowcaseExpertiseStep";
 import { CompanyProfileStep } from "@/components/onboarding/CompanyProfileStep";
 import { CompanyDetailsStep } from "@/components/onboarding/CompanyDetailsStep";
+import { MentorProfileStep } from "@/components/onboarding/MentorProfileStep";
+import { MentorExpertiseStep } from "@/components/onboarding/MentorExpertiseStep";
 import { completeOnboarding } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
@@ -20,6 +22,8 @@ const OnboardingPage = () => {
   const [profileData, setProfileData] = useState<ProfileData | undefined>();
   const [companyData, setCompanyData] = useState<any | undefined>();
   const [companyDetailsData, setCompanyDetailsData] = useState<any | undefined>();
+  const [mentorData, setMentorData] = useState<any | undefined>();
+  const [mentorExpertiseData, setMentorExpertiseData] = useState<any | undefined>();
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -42,6 +46,79 @@ const OnboardingPage = () => {
   const handleCompanyProfileNext = (data: any) => {
     setCompanyData(data);
     setCurrentStep(3);
+  };
+
+  const handleMentorProfileNext = (data: any, logo?: File) => {
+    setMentorData(data);
+    if (logo) {
+      setProfileImage(logo);
+    }
+    setCurrentStep(3);
+  };
+
+  const handleMentorExpertiseNext = async (data: any) => {
+    setMentorExpertiseData(data);
+    setIsLoading(true);
+    try {
+      const formData = new FormData();
+
+      let roleValue: "TALENT" | "RECRUITER" | "MENTOR" = "MENTOR";
+      formData.append("role", roleValue);
+
+      if (!mentorData) {
+        throw new Error("Mentor profile data is missing");
+      }
+
+      const mergedMentorData = {
+        ...mentorData,
+        ...data,
+      };
+      formData.append("profile", JSON.stringify(mergedMentorData));
+      formData.append("details", JSON.stringify({}));
+
+      if (profileImage) {
+        formData.append("profileImage", profileImage);
+      }
+
+      await completeOnboarding(formData);
+
+      await refetchUser();
+      toast({
+        title: "Success",
+        description: "Your profile has been successfully created.",
+      });
+      router.push("/dashboard");
+    } catch (error: any) {
+      let errorMessage = "An unknown error occurred.";
+
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      }
+
+      const isTimeoutError =
+        errorMessage.toLowerCase().includes("timeout") ||
+        errorMessage.toLowerCase().includes("transaction");
+
+      if (isTimeoutError) {
+        toast({
+          variant: "destructive",
+          title: "Request Timeout",
+          description: "The request took too long to process. Please try again or contact support if the problem persists.",
+          duration: 10000,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Onboarding Failed",
+          description: errorMessage,
+          duration: 5000,
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCompanyDetailsNext = async (data: any, logo?: File) => {
@@ -307,6 +384,13 @@ const OnboardingPage = () => {
                 initialData={companyData}
                 initialLogo={profileImage as File | undefined}
               />
+            ) : selectedRole === "mentor" ? (
+              <MentorProfileStep
+                onNext={handleMentorProfileNext}
+                onBack={handleBack}
+                initialData={mentorData}
+                initialLogo={profileImage as File | undefined}
+              />
             ) : (
               <CreateProfileStep 
                 onNext={handleProfileNext} 
@@ -325,6 +409,13 @@ const OnboardingPage = () => {
                 onBack={handleBack}
                 isLoading={isLoading}
                 logoImage={profileImage as File | undefined}
+              />
+            ) : selectedRole === "mentor" ? (
+              <MentorExpertiseStep
+                onNext={handleMentorExpertiseNext}
+                onBack={handleBack}
+                isLoading={isLoading}
+                profileData={mentorData}
               />
             ) : (
               renderStepThree()
