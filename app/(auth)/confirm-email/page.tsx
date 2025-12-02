@@ -67,19 +67,20 @@ const ConfirmEmailPage = () => {
     mutationFn: (data: ConfirmEmailFormValues) =>
       verifyEmailConfirm(email, data.verificationCode),
     onSuccess: (data: any) => {
+      setError("");
       toast.success("Email verified successfully!");
-      
+
       // Store access token
       if (data.accessToken) {
         localStorage.setItem("accessToken", data.accessToken);
         setCookie("accessToken", data.accessToken);
       }
-      
+
       // Store user data
       if (data.user) {
         localStorage.setItem("user", JSON.stringify(data.user));
       }
-      
+
       // Navigate based on onboarding status
       if (data.needsOnboarding) {
         router.push("/onboarding");
@@ -88,6 +89,7 @@ const ConfirmEmailPage = () => {
       }
     },
     onError: (error: any) => {
+      setError("Wrong Code");
       toast.error(error.message || "An error occurred. Please try again.");
     },
   });
@@ -100,6 +102,11 @@ const ConfirmEmailPage = () => {
   // Auto-submit when 6 digits are entered
   const verificationCode = form.watch("verificationCode");
   React.useEffect(() => {
+    // Clear error when user starts typing
+    if (verificationCode.length > 0 && error) {
+      setError("");
+    }
+
     if (verificationCode.length === 6) {
       onSubmit({ verificationCode });
     }
@@ -198,35 +205,39 @@ const ConfirmEmailPage = () => {
                         render={({ field }) => (
                           <FormItem>
                             <FormControl>
-                              <div className="flex justify-center items-center rounded-[10px] bg-[#F5F5F5] py-[5px] px-[54px]">
-                                <InputOTP maxLength={6} {...field}>
-                                  <InputOTPGroup className="flex items-center gap-0">
-                                    <InputOTPSlot
-                                      index={0}
-                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
-                                    />
-                                    <InputOTPSlot
-                                      index={1}
-                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
-                                    />
-                                    <InputOTPSlot
-                                      index={2}
-                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
-                                    />
-                                    <InputOTPSlot
-                                      index={3}
-                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
-                                    />
-                                    <InputOTPSlot
-                                      index={4}
-                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
-                                    />
-                                    <InputOTPSlot
-                                      index={5}
-                                      className="w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center relative after:content-[''] after:absolute after:w-[15px] after:h-[15px] after:rounded-full after:bg-[#D9D9D9] data-[active=true]:after:bg-black text-transparent caret-transparent"
-                                    />
-                                  </InputOTPGroup>
-                                </InputOTP>
+                              <div className="flex flex-col gap-2.5">
+                                {error && (
+                                  <p className="text-[#E63C23] text-center text-[15px] font-normal font-inter-tight">
+                                    {error}
+                                  </p>
+                                )}
+                                <div
+                                  className={`flex justify-center items-center rounded-[10px] py-[5px] px-[54px] ${
+                                    error
+                                      ? "bg-[#E63C231A]"
+                                      : mutation.isSuccess
+                                      ? "bg-[#008B471A]"
+                                      : "bg-[#F5F5F5]"
+                                  }`}
+                                >
+                                  <InputOTP maxLength={6} {...field}>
+                                    <InputOTPGroup className="flex items-center gap-0">
+                                      {[0, 1, 2, 3, 4, 5].map((index) => (
+                                        <InputOTPSlot
+                                          key={index}
+                                          index={index}
+                                          className={`w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center text-[30px] font-semibold font-inter-tight ${
+                                            error
+                                              ? "text-[#E63C23]"
+                                              : mutation.isSuccess
+                                              ? "text-[#008B47]"
+                                              : "text-black"
+                                          }`}
+                                        />
+                                      ))}
+                                    </InputOTPGroup>
+                                  </InputOTP>
+                                </div>
                               </div>
                             </FormControl>
                           </FormItem>
