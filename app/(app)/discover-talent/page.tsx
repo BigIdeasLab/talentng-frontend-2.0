@@ -1,13 +1,42 @@
+"use client";
+
 import { DiscoverTalentClient } from "./discover-talent-client";
-import { getDiscoverTalentData } from "./server-data";
+import { useProfile } from "@/hooks/useProfile";
+import { useEffect, useState } from "react";
 
-export default async function DiscoverTalentPage() {
-  const { talents, error } = await getDiscoverTalentData();
+export default function DiscoverTalentPage() {
+  const { userRoles } = useProfile();
+  const role = userRoles?.[0] || "talent";
+  const [talents, setTalents] = useState([]);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  return (
-    <DiscoverTalentClient
-      initialTalents={talents}
-      initialError={error}
-    />
-  );
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // TODO: Add actual API call to fetch talents
+        setTalents([]);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  switch (role) {
+    case "employer":
+      return <DiscoverTalentClient initialTalents={talents} initialError={error} />;
+    case "agency":
+      return <DiscoverTalentClient initialTalents={talents} initialError={error} />;
+    case "talent":
+    default:
+      return <DiscoverTalentClient initialTalents={talents} initialError={error} />;
+  }
 }

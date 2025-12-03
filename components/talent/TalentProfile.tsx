@@ -1,12 +1,295 @@
 "use client";
 
-export function TalentProfile() {
+import { useState, useEffect } from "react";
+import { useAuth } from "@/hooks/use-auth";
+import { ProfilePanel } from "@/components/profile/ProfilePanel";
+import { ProfileNav } from "@/components/profile/ProfileNav";
+import { WorksGrid } from "@/components/profile/WorksGrid";
+import { ServicesGrid } from "@/components/profile/ServicesGrid";
+import { RecommendationsGrid } from "@/components/profile/RecommendationsGrid";
+import { OpportunitiesGrid } from "@/components/profile/OpportunitiesGrid";
+import { CreateServiceModal } from "@/components/profile/CreateServiceModal";
+import { UploadWorksModal } from "@/components/profile/UploadWorksModal";
+import type { DashboardStats } from "@/lib/api/talent/types";
+import type { UIProfileData } from "@/lib/profileMapper";
+
+interface TalentProfileProps {
+  initialProfileData?: UIProfileData;
+  initialUserId?: string | null;
+  initialStats?: DashboardStats | null;
+  initialRecommendations?: any[];
+  initialServices?: any[];
+  initialError?: string | null;
+}
+
+const DEFAULT_PROFILE_DATA: UIProfileData = {
+  personal: {
+    firstName: "",
+    lastName: "",
+    headline: "",
+    bio: "",
+    phoneNumber: "",
+    state: "",
+    city: "",
+    profileImageUrl: "",
+  },
+  professional: {
+    role: "",
+    company: "",
+    category: "",
+    description: "",
+    skills: [],
+    stack: [],
+    availability: "",
+  },
+  gallery: [],
+  experience: [],
+  education: [],
+  portfolio: {
+    resumeUrl: "",
+    portfolioItems: [],
+  },
+  social: {
+    dribbble: "",
+    telegram: "",
+    twitter: "",
+    instagram: "",
+    linkedin: "",
+    github: "",
+    portfolio: "",
+  },
+};
+
+export function TalentProfile({
+  initialProfileData = DEFAULT_PROFILE_DATA,
+  initialUserId = null,
+  initialStats = null,
+  initialRecommendations = [],
+  initialServices = [],
+  initialError = null,
+}: TalentProfileProps) {
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState("works");
+  const [profileData, setProfileData] = useState<UIProfileData>(initialProfileData);
+  const [stats, setStats] = useState<DashboardStats | null>(initialStats);
+  const [isCreateServiceModalOpen, setIsCreateServiceModalOpen] = useState(false);
+  const [isUploadWorksModalOpen, setIsUploadWorksModalOpen] = useState(false);
+  const [serviceRefreshTrigger, setServiceRefreshTrigger] = useState(0);
+  const [worksRefreshTrigger, setWorksRefreshTrigger] = useState(0);
+  const [cachedServices, setCachedServices] = useState<any[]>(initialServices || []);
+  const [servicesLoading, setServicesLoading] = useState(
+    !initialServices || initialServices.length === 0
+  );
+  const [cachedWorks, setCachedWorks] = useState<any[]>([]);
+  const [worksLoading, setWorksLoading] = useState(true);
+  const [cachedRecommendations, setCachedRecommendations] = useState<any[]>(
+    initialRecommendations || []
+  );
+  const [recommendationsLoading, setRecommendationsLoading] = useState(
+    !initialRecommendations || initialRecommendations.length === 0
+  );
+
+  useEffect(() => {
+    setStats(initialStats);
+  }, [initialStats]);
+
+  useEffect(() => {
+    // Initialize cached works from profileData.gallery
+    if (profileData.gallery && profileData.gallery.length > 0) {
+      setCachedWorks(profileData.gallery);
+    }
+    setWorksLoading(false);
+  }, [profileData.gallery]);
+
+  useEffect(() => {
+    // Scroll to top when tab changes
+    const mainContent = document.querySelector("main");
+    if (mainContent) {
+      mainContent.scrollTop = 0;
+    }
+  }, [activeTab]);
+
+  const handleAddNewWork = () => {
+    setIsUploadWorksModalOpen(true);
+  };
+
+  const handleOpenUploadWorksModal = () => {
+    setIsUploadWorksModalOpen(true);
+  };
+
+  const handleCloseUploadWorksModal = () => {
+    setIsUploadWorksModalOpen(false);
+  };
+
+  const handleWorksUploaded = (message?: string, gallery?: any[]) => {
+    if (gallery && gallery.length > 0) {
+      setCachedWorks(gallery);
+    }
+  };
+
+  const handleWorksDeleted = () => {
+    setWorksRefreshTrigger((prev) => prev + 1);
+  };
+
+  const handleOpenCreateServiceModal = () => {
+    setIsCreateServiceModalOpen(true);
+  };
+
+  const handleCloseCreateServiceModal = () => {
+    setIsCreateServiceModalOpen(false);
+  };
+
+  const handleServiceCreated = (message?: string, services?: any[]) => {
+    // Only cache services with valid IDs
+    const validServices = services?.filter((s) => s.id && s.id !== "0") || [];
+    if (validServices.length > 0) {
+      setCachedServices(validServices);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center bg-white p-8 rounded-lg shadow">
-        <h1 className="text-4xl font-bold mb-4">Talent Profile</h1>
-        <p className="text-xl text-gray-600 mb-4">Coming soon...</p>
+    <div className="flex flex-col h-full bg-white md:flex-row">
+      {/* Profile Panel */}
+      <div className="hidden lg:flex h-screen overflow-hidden">
+        <ProfilePanel
+          user={{
+            fullName:
+              `${profileData.personal.firstName} ${profileData.personal.lastName}`.trim() ||
+              user?.fullName ||
+              "User",
+            headline:
+              profileData.personal.headline || "Product & Interaction Designer",
+            profileImageUrl: profileData.personal.profileImageUrl,
+            location:
+              (profileData.personal.city && profileData.personal.state
+                ? `${profileData.personal.city}, ${profileData.personal.state}`
+                : profileData.personal.city || profileData.personal.state) ||
+              "—",
+          }}
+          stats={{
+            earnings: stats ? `${stats.earnings} Earned` : "—",
+            hired: stats?.hired ?? 0,
+            jobType: profileData.professional.category || "—",
+          }}
+          skills={
+            profileData.professional.skills || [
+              "Website Design",
+              "Mobile App Design",
+              "Ui/Ux Design",
+              "Interface Design",
+              "Prototyping",
+              "User Research",
+              "Wireframing",
+              "Interaction Design",
+              "Design Systems",
+              "Motion Design",
+            ]
+          }
+          stack={
+            profileData.professional.stack || [
+              { name: "Figma" },
+              { name: "Rive" },
+              { name: "Webflow" },
+              { name: "Lottie" },
+              { name: "Framer" },
+              { name: "Adobe XD" },
+              { name: "Sketch" },
+              { name: "Protopie" },
+              { name: "Principle" },
+              { name: "Zeplin" },
+              { name: "Slack" },
+            ]
+          }
+          socialLinks={{
+            telegram: profileData.social.telegram || "#",
+            twitter: profileData.social.twitter || "#",
+            instagram: profileData.social.instagram || "#",
+            linkedin: profileData.social.linkedin || "#",
+          }}
+          completionPercentage={stats?.profileCompletion ?? 0}
+        />
       </div>
+
+      {/* Main Content Area */}
+      <main className="flex-1 flex flex-col bg-white h-screen md:h-screen overflow-hidden">
+        {/* Top Navigation */}
+        <ProfileNav
+          activeTab={activeTab as any}
+          onTabChange={setActiveTab}
+          onAddNewWork={handleAddNewWork}
+          onAddService={handleOpenCreateServiceModal}
+        />
+
+        {/* Content Section */}
+        <div className="flex-1 overflow-y-auto scrollbar-styled">
+          {/* My Works Tab */}
+          {activeTab === "works" && (
+            <WorksGrid
+              items={
+                cachedWorks.length > 0 ? cachedWorks : profileData.gallery || []
+              }
+              onAddWork={handleOpenUploadWorksModal}
+              onItemClick={(item) => console.log("Item clicked:", item)}
+              onItemDeleted={handleWorksDeleted}
+              isLoading={worksLoading && cachedWorks.length === 0}
+            />
+          )}
+
+          {/* Services Tab */}
+          {activeTab === "services" && (
+            <ServicesGrid
+              onAddService={handleOpenCreateServiceModal}
+              onServiceClick={(service) =>
+                console.log("Service clicked:", service)
+              }
+              refreshTrigger={serviceRefreshTrigger}
+              cachedServices={cachedServices}
+              onServicesLoaded={setCachedServices}
+              isLoading={servicesLoading}
+              onLoadingChange={setServicesLoading}
+            />
+          )}
+
+          {/* Recommendations Tab */}
+          {activeTab === "recommendations" && (
+            <RecommendationsGrid
+              onRecommendationClick={(recommendation) =>
+                console.log("Recommendation clicked:", recommendation)
+              }
+              cachedRecommendations={cachedRecommendations}
+              onRecommendationsLoaded={setCachedRecommendations}
+              isLoading={recommendationsLoading}
+              onLoadingChange={setRecommendationsLoading}
+            />
+          )}
+
+          {/* Opportunities Tab */}
+          {activeTab === "opportunities" && (
+            <OpportunitiesGrid
+              onRemove={(opportunity) =>
+                console.log("Remove opportunity:", opportunity)
+              }
+              onApply={(opportunity) =>
+                console.log("Apply to opportunity:", opportunity)
+              }
+            />
+          )}
+        </div>
+      </main>
+
+      {/* Upload Works Modal */}
+      <UploadWorksModal
+        isOpen={isUploadWorksModalOpen}
+        onClose={handleCloseUploadWorksModal}
+        onSuccess={handleWorksUploaded}
+      />
+
+      {/* Create Service Modal */}
+      <CreateServiceModal
+        isOpen={isCreateServiceModalOpen}
+        onClose={handleCloseCreateServiceModal}
+        onSuccess={handleServiceCreated}
+      />
     </div>
   );
 }

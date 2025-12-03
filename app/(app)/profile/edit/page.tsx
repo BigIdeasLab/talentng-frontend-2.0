@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { EditProfileSidebar } from "@/components/business/Profile/edit/Sidebar";
-import { EditProfileActionBar } from "@/components/business/Profile/edit/ActionBar";
-import { PersonalDetailsSection } from "@/components/business/Profile/edit/PersonalDetailsSection";
-import { ProfessionalDetailsSection } from "@/components/business/Profile/edit/ProfessionalDetailsSection";
-import { WorkExperienceSection } from "@/components/business/Profile/edit/WorkExperienceSection";
-import { EducationSection } from "@/components/business/Profile/edit/EducationSection";
-import { PortfolioSection } from "@/components/business/Profile/edit/PortfolioSection";
-import { SocialLinksSection } from "@/components/business/Profile/edit/SocialLinksSection";
+import { EditProfileSidebar } from "@/components/profile/edit/Sidebar";
+import { EditProfileActionBar } from "@/components/profile/edit/ActionBar";
+import { PersonalDetailsSection } from "@/components/profile/edit/PersonalDetailsSection";
+import { ProfessionalDetailsSection } from "@/components/profile/edit/ProfessionalDetailsSection";
+import { WorkExperienceSection } from "@/components/profile/edit/WorkExperienceSection";
+import { EducationSection } from "@/components/profile/edit/EducationSection";
+import { PortfolioSection } from "@/components/profile/edit/PortfolioSection";
+import { SocialLinksSection } from "@/components/profile/edit/SocialLinksSection";
 import statesCities from "@/lib/data/states-cities.json";
 import {
   mapUIToAPI,
