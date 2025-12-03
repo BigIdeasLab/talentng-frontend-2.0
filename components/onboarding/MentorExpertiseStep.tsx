@@ -116,10 +116,11 @@ export const MentorExpertiseStep = ({
   }>({});
 
   const handleAddItem = (field: keyof MentorExpertiseFormData, value: string) => {
-    if (value && !formData[field].includes(value)) {
+    const fieldValue = formData[field];
+    if (value && Array.isArray(fieldValue) && !fieldValue.includes(value)) {
       setFormData((prev) => ({
         ...prev,
-        [field]: [...prev[field], value],
+        [field]: [...(prev[field] as string[]), value],
       }));
       setErrors((prev) => ({ ...prev, [field]: "" }));
     }
@@ -128,7 +129,7 @@ export const MentorExpertiseStep = ({
   const handleRemoveItem = (field: keyof MentorExpertiseFormData, index: number) => {
     setFormData((prev) => ({
       ...prev,
-      [field]: prev[field].filter((_, i) => i !== index),
+      [field]: (prev[field] as string[]).filter((_, i) => i !== index),
     }));
   };
 

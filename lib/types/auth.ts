@@ -3,7 +3,8 @@ export type User = {
   fullName: string;
   email: string;
   username: string;
-  role: string;
+  role?: string;
+  roles?: string[];
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;

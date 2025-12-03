@@ -16,10 +16,10 @@ export const CreateCompanyProfileStep = ({
 }) => {
   const [formData, setFormData] = useState<CompanyProfileData>({
     companyName: "",
-    companyWebsite: "",
-    companyIndustry: "",
-    companySize: "",
-    companyBio: "",
+    industry: "",
+    username: "",
+    location: "",
+    bio: "",
   });
 
   const handleChange = (
@@ -58,28 +58,21 @@ export const CreateCompanyProfileStep = ({
                 <Input name="companyName" value={formData.companyName} onChange={handleChange} placeholder="Your Company Name" className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px]" />
               </div>
               <div className="flex flex-col gap-[13px]">
-                <label className="text-[15px] font-normal text-black font-[Inter_Tight]">Company Website</label>
-                <Input name="companyWebsite" value={formData.companyWebsite} onChange={handleChange} placeholder="https://example.com" className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px]" />
-              </div>
-              <div className="flex flex-col gap-[13px]">
-                <label className="text-[15px] font-normal text-black font-[Inter_Tight]">Industry</label>
-                <Input name="companyIndustry" value={formData.companyIndustry} onChange={handleChange} placeholder="e.g., Technology, Finance" className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px]" />
-              </div>
-              <div className="flex flex-col gap-[13px]">
-                <label className="text-[15px] font-normal text-black font-[Inter_Tight]">Company Size</label>
-                <select name="companySize" value={formData.companySize} onChange={handleChange} className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight] text-black focus:ring-2 focus:ring-purple-600 focus:outline-none">
-                  <option value="">Select Size</option>
-                  <option value="1-10">1-10 employees</option>
-                  <option value="11-50">11-50 employees</option>
-                  <option value="51-200">51-200 employees</option>
-                  <option value="201-500">201-500 employees</option>
-                  <option value="500+">500+ employees</option>
-                </select>
-              </div>
-              <div className="flex flex-col gap-[13px]">
-                <label className="text-[15px] font-normal text-black font-[Inter_Tight]">Company Bio</label>
-                <textarea name="companyBio" value={formData.companyBio} onChange={handleChange} placeholder="What does your company do?" rows={4} className="rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] py-[21px] resize-none focus:ring-2 focus:ring-purple-600 focus:outline-none" />
-              </div>
+                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">Username</label>
+                 <Input name="username" value={formData.username} onChange={handleChange} placeholder="your.username" className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px]" />
+               </div>
+               <div className="flex flex-col gap-[13px]">
+                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">Industry</label>
+                 <Input name="industry" value={formData.industry} onChange={handleChange} placeholder="e.g., Technology, Finance" className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px]" />
+               </div>
+               <div className="flex flex-col gap-[13px]">
+                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">Location</label>
+                 <Input name="location" value={formData.location} onChange={handleChange} placeholder="City, Country" className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px]" />
+               </div>
+               <div className="flex flex-col gap-[13px]">
+                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">Company Bio</label>
+                 <textarea name="bio" value={formData.bio} onChange={handleChange} placeholder="What does your company do?" rows={4} className="rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] py-[21px] resize-none focus:ring-2 focus:ring-purple-600 focus:outline-none" />
+               </div>
             </form>
           </div>
         </div>

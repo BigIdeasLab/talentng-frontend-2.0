@@ -205,6 +205,8 @@ export const MentorProfileStep = ({
     const finalData: MentorProfileFormData = {
       ...profileDataToPass,
       location,
+      state: formData.state,
+      city: formData.city,
     };
 
     onNext(finalData, profileLogo || undefined);

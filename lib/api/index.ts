@@ -92,13 +92,15 @@ const apiClient = async <T>(
           response = await fetch(`${baseUrl}${endpoint}`, config);
           resolve(newAccessToken);
         } catch (error) {
-          processQueue(error as Error, null);
-          deleteCookie("accessToken");
-          deleteCookie("user");
-          isRefreshing = false;
-          refreshTokenPromise = null;
-          window.location.href = "/login";
-          resolve(null);
+           processQueue(error as Error, null);
+           deleteCookie("accessToken");
+           deleteCookie("user");
+           isRefreshing = false;
+           refreshTokenPromise = null;
+           if (typeof window !== "undefined") {
+             window.location.href = "/login";
+           }
+           resolve(null);
         } finally {
           isRefreshing = false;
           refreshTokenPromise = null;
