@@ -1,7 +1,7 @@
 "use client";
 
 import { useProfile } from "@/hooks/useProfile";
-import { TalentSettings } from "@/components/talent/TalentSettings";
+import { TalentSettings } from "@/components/talent/settings/TalentSettings";
 import { EmployerSettings } from "@/components/employer/EmployerSettings";
 import { AgencySettings } from "@/components/agency/AgencySettings";
 

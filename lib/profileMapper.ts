@@ -27,7 +27,7 @@ export interface UIProfileData {
     endDate: string;
     description: string;
     isCurrently: boolean;
-    location?: string;
+    location: string;
   }[];
   education: {
     id: string;
@@ -229,7 +229,7 @@ export function mapAPIToUI(apiData: Partial<APIProfileData> | any): UIProfileDat
       endDate: exp.endDate || "",
       description: exp.description || "",
       isCurrently: !exp.endDate,
-      location: exp.location,
+      location: exp.location || "",
     })),
     education: (apiData.education || []).map((edu: any, idx: number) => ({
       id: edu.id || `${idx}`,

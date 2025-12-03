@@ -1,7 +1,7 @@
 "use client";
 
 import { useProfile } from "@/hooks/useProfile";
-import { TalentDashboard } from "@/components/talent/TalentDashboard";
+import { TalentDashboard } from "@/components/talent/dashboard/TalentDashboard";
 import { EmployerDashboard } from "@/components/employer/EmployerDashboard";
 import { AgencyDashboard } from "@/components/agency/AgencyDashboard";
 

@@ -5,13 +5,9 @@ import { useProfile } from "@/hooks/useProfile";
 import { TalentSidebar } from "@/components/layouts/sidebars/TalentSidebar";
 import { EmployerSidebar } from "@/components/layouts/sidebars/EmployerSidebar";
 import { AgencySidebar } from "@/components/layouts/sidebars/AgencySidebar";
-import { MobileSidebar } from "@/components/business/Profile/MobileSidebar";
+import { MobileSidebar } from "@/components/talent/profile/components/MobileSidebar";
 
-export function AppLayoutClient({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
   const { userRoles } = useProfile();
   const role = userRoles?.[0] || "talent";
@@ -63,9 +59,7 @@ export function AppLayoutClient({
       </div>
 
       {/* Children Content */}
-      <div className="flex-1 overflow-hidden">
-        {children}
-      </div>
+      <div className="flex-1 overflow-hidden">{children}</div>
     </div>
   );
 }

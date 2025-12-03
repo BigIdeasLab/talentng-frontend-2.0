@@ -2,35 +2,76 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { ProfilePanel } from "./ProfilePanel";
-import { ProfileNav } from "./ProfileNav";
-import { WorksGrid } from "./WorksGrid";
-import { ServicesGrid } from "./ServicesGrid";
-import { RecommendationsGrid } from "./RecommendationsGrid";
-import { OpportunitiesGrid } from "./OpportunitiesGrid";
-import { CreateServiceModal } from "./CreateServiceModal";
-import { UploadWorksModal } from "./UploadWorksModal";
+import { ProfilePanel } from "@/components/talent/profile/components/ProfilePanel";
+import { ProfileNav } from "@/components/talent/profile/components/ProfileNav";
+import { WorksGrid } from "@/components/talent/profile/components/WorksGrid";
+import { ServicesGrid } from "@/components/talent/profile/components/ServicesGrid";
+import { RecommendationsGrid } from "@/components/talent/profile/components/RecommendationsGrid";
+import { OpportunitiesGrid } from "@/components/talent/profile/components/OpportunitiesGrid";
+import { CreateServiceModal } from "@/components/talent/profile/components/CreateServiceModal";
+import { UploadWorksModal } from "@/components/talent/profile/components/UploadWorksModal";
 import type { DashboardStats } from "@/lib/api/talent/types";
 import type { UIProfileData } from "@/lib/profileMapper";
 
-interface ProfileLayoutProps {
-  profileData: UIProfileData;
-  userId: string | null;
-  initialStats: DashboardStats | null;
-  initialRecommendations: any[];
+interface TalentProfileProps {
+  initialProfileData?: UIProfileData;
+  initialUserId?: string | null;
+  initialStats?: DashboardStats | null;
+  initialRecommendations?: any[];
   initialServices?: any[];
-  isLoading?: boolean;
+  initialError?: string | null;
 }
 
-export function ProfileLayout({
-  profileData,
-  userId,
-  initialStats,
-  initialRecommendations,
-  initialServices,
-}: ProfileLayoutProps) {
+const DEFAULT_PROFILE_DATA: UIProfileData = {
+  personal: {
+    firstName: "",
+    lastName: "",
+    headline: "",
+    bio: "",
+    phoneNumber: "",
+    state: "",
+    city: "",
+    profileImageUrl: "",
+  },
+  professional: {
+    role: "",
+    company: "",
+    category: "",
+    description: "",
+    skills: [],
+    stack: [],
+    availability: "",
+  },
+  gallery: [],
+  experience: [],
+  education: [],
+  portfolio: {
+    resumeUrl: "",
+    portfolioItems: [],
+  },
+  social: {
+    dribbble: "",
+    telegram: "",
+    twitter: "",
+    instagram: "",
+    linkedin: "",
+    github: "",
+    portfolio: "",
+  },
+};
+
+export function TalentProfile({
+  initialProfileData = DEFAULT_PROFILE_DATA,
+  initialUserId = null,
+  initialStats = null,
+  initialRecommendations = [],
+  initialServices = [],
+  initialError = null,
+}: TalentProfileProps) {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("works");
+  const [profileData, setProfileData] =
+    useState<UIProfileData>(initialProfileData);
   const [stats, setStats] = useState<DashboardStats | null>(initialStats);
   const [isCreateServiceModalOpen, setIsCreateServiceModalOpen] =
     useState(false);

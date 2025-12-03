@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { EditProfileSidebar } from "@/components/profile/edit/Sidebar";
-import { EditProfileActionBar } from "@/components/profile/edit/ActionBar";
-import { PersonalDetailsSection } from "@/components/profile/edit/PersonalDetailsSection";
-import { ProfessionalDetailsSection } from "@/components/profile/edit/ProfessionalDetailsSection";
-import { WorkExperienceSection } from "@/components/profile/edit/WorkExperienceSection";
-import { EducationSection } from "@/components/profile/edit/EducationSection";
-import { PortfolioSection } from "@/components/profile/edit/PortfolioSection";
-import { SocialLinksSection } from "@/components/profile/edit/SocialLinksSection";
+import { EditProfileSidebar } from "@/components/talent/profile/components/edit/Sidebar";
+import { EditProfileActionBar } from "@/components/talent/profile/components/edit/ActionBar";
+import { PersonalDetailsSection } from "@/components/talent/profile/components/edit/PersonalDetailsSection";
+import { ProfessionalDetailsSection } from "@/components/talent/profile/components/edit/ProfessionalDetailsSection";
+import { WorkExperienceSection } from "@/components/talent/profile/components/edit/WorkExperienceSection";
+import { EducationSection } from "@/components/talent/profile/components/edit/EducationSection";
+import { PortfolioSection } from "@/components/talent/profile/components/edit/PortfolioSection";
+import { SocialLinksSection } from "@/components/talent/profile/components/edit/SocialLinksSection";
 import statesCities from "@/lib/data/states-cities.json";
 import {
   mapUIToAPI,
@@ -297,7 +297,10 @@ export default function EditProfilePage() {
       />
 
       <div className="flex-1 flex flex-col">
-        <EditProfileActionBar onSave={handleSaveProfile} isLoading={updateProfileMutation.isPending} />
+        <EditProfileActionBar
+          onSave={handleSaveProfile}
+          isLoading={updateProfileMutation.isPending}
+        />
 
         <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">

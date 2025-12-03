@@ -1,6 +1,6 @@
 "use client";
 
-import { TalentProfile } from "@/components/talent/TalentProfile";
+import { TalentProfile } from "@/components/talent/profile/TalentProfile";
 import { useProfile } from "@/hooks/useProfile";
 import { useEffect, useState } from "react";
 
@@ -45,7 +45,9 @@ const DEFAULT_PROFILE_DATA = {
 export default function ProfilePage() {
   const { userRoles } = useProfile();
   const role = userRoles?.[0] || "talent";
-  const [profileData, setProfileData] = useState<typeof DEFAULT_PROFILE_DATA | null>(null);
+  const [profileData, setProfileData] = useState<
+    typeof DEFAULT_PROFILE_DATA | null
+  >(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -65,18 +67,49 @@ export default function ProfilePage() {
   }, []);
 
   if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
   }
 
   switch (role) {
     case "employer":
       // TODO: Implement employer profile component
-      return <TalentProfile initialProfileData={profileData || DEFAULT_PROFILE_DATA} initialUserId="" initialStats={{} as any} initialRecommendations={[]} initialServices={[]} initialError={null} />;
+      return (
+        <TalentProfile
+          initialProfileData={profileData || DEFAULT_PROFILE_DATA}
+          initialUserId=""
+          initialStats={{} as any}
+          initialRecommendations={[]}
+          initialServices={[]}
+          initialError={null}
+        />
+      );
     case "agency":
       // TODO: Implement agency profile component
-      return <TalentProfile initialProfileData={profileData || DEFAULT_PROFILE_DATA} initialUserId="" initialStats={{} as any} initialRecommendations={[]} initialServices={[]} initialError={null} />;
+      return (
+        <TalentProfile
+          initialProfileData={profileData || DEFAULT_PROFILE_DATA}
+          initialUserId=""
+          initialStats={{} as any}
+          initialRecommendations={[]}
+          initialServices={[]}
+          initialError={null}
+        />
+      );
     case "talent":
     default:
-      return <TalentProfile initialProfileData={profileData || DEFAULT_PROFILE_DATA} initialUserId="" initialStats={{} as any} initialRecommendations={[]} initialServices={[]} initialError={null} />;
+      return (
+        <TalentProfile
+          initialProfileData={profileData || DEFAULT_PROFILE_DATA}
+          initialUserId=""
+          initialStats={{} as any}
+          initialRecommendations={[]}
+          initialServices={[]}
+          initialError={null}
+        />
+      );
   }
 }
