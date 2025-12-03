@@ -1,14 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import {
-  DiscoverTalentHeader,
-  TalentGrid,
-} from "@/components/business/DiscoverTalent";
+import { DiscoverTalentHeader, TalentGrid } from "@/components/DiscoverTalent";
 import { Spinner } from "@/components/ui/spinner";
 import { getDiscoverTalentData } from "./server-data";
 import type { TalentData } from "./server-data";
-import type { FilterState } from "@/components/business/DiscoverTalent";
+import type { FilterState } from "@/components/DiscoverTalent";
 
 interface DiscoverTalentClientProps {
   initialTalents: TalentData[];
@@ -69,9 +66,7 @@ export function DiscoverTalentClient({
           <p className="text-red-500">Error: {error}</p>
         </div>
       )}
-      {!loading && !error && (
-        <TalentGrid talents={talents} />
-      )}
+      {!loading && !error && <TalentGrid talents={talents} />}
     </div>
   );
 }

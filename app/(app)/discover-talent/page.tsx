@@ -33,7 +33,7 @@ export default function DiscoverTalentPage() {
   switch (role) {
     case "employer":
       return <DiscoverTalentClient initialTalents={talents} initialError={error} />;
-    case "agency":
+    case "mentor":
       return <DiscoverTalentClient initialTalents={talents} initialError={error} />;
     case "talent":
     default:

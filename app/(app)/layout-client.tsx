@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useProfile } from "@/hooks/useProfile";
 import { TalentSidebar } from "@/components/layouts/sidebars/TalentSidebar";
 import { EmployerSidebar } from "@/components/layouts/sidebars/EmployerSidebar";
-import { AgencySidebar } from "@/components/layouts/sidebars/AgencySidebar";
+import { MentorSidebar } from "@/components/layouts/sidebars/MentorSidebar";
 import { MobileSidebar } from "@/components/talent/profile/components/MobileSidebar";
 
 export function AppLayoutClient({ children }: { children: React.ReactNode }) {
@@ -22,9 +22,9 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
             onItemSelect={setActiveNavItem}
           />
         );
-      case "agency":
+      case "mentor":
         return (
-          <AgencySidebar
+          <MentorSidebar
             activeItem={activeNavItem}
             onItemSelect={setActiveNavItem}
           />

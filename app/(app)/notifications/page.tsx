@@ -2,8 +2,8 @@
 
 import { useProfile } from "@/hooks/useProfile";
 import { TalentNotifications } from "@/components/talent/notification/TalentNotifications";
-import { EmployerNotifications } from "@/components/employer/EmployerNotifications";
-import { AgencyNotifications } from "@/components/agency/AgencyNotifications";
+import { EmployerNotifications } from "@/components/employer/notification/EmployerNotifications";
+import { MentorNotifications } from "@/components/mentor/notification/MentorNotifications";
 
 export default function NotificationsPage() {
   const { userRoles } = useProfile();
@@ -12,8 +12,8 @@ export default function NotificationsPage() {
   switch (role) {
     case "employer":
       return <EmployerNotifications />;
-    case "agency":
-      return <AgencyNotifications />;
+    case "mentor":
+      return <MentorNotifications />;
     case "talent":
     default:
       return <TalentNotifications />;

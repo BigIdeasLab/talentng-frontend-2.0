@@ -2,8 +2,8 @@
 
 import { useProfile } from "@/hooks/useProfile";
 import { TalentDashboard } from "@/components/talent/dashboard/TalentDashboard";
-import { EmployerDashboard } from "@/components/employer/EmployerDashboard";
-import { AgencyDashboard } from "@/components/agency/AgencyDashboard";
+import { EmployerDashboard } from "@/components/employer/dashboard/EmployerDashboard";
+import { MentorDashboard } from "@/components/mentor/dashboard/MentorDashboard";
 
 export default function DashboardPage() {
   const { userRoles } = useProfile();
@@ -12,8 +12,8 @@ export default function DashboardPage() {
   switch (role) {
     case "employer":
       return <EmployerDashboard />;
-    case "agency":
-      return <AgencyDashboard />;
+    case "mentor":
+      return <MentorDashboard />;
     case "talent":
     default:
       return <TalentDashboard />;

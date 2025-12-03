@@ -2,8 +2,8 @@
 
 import { useProfile } from "@/hooks/useProfile";
 import { TalentSettings } from "@/components/talent/settings/TalentSettings";
-import { EmployerSettings } from "@/components/employer/EmployerSettings";
-import { AgencySettings } from "@/components/agency/AgencySettings";
+import { EmployerSettings } from "@/components/employer/settings/EmployerSettings";
+import { MentorSettings } from "@/components/mentor/settings/MentorSettings";
 
 export default function SettingsPage() {
   const { userRoles } = useProfile();
@@ -12,8 +12,8 @@ export default function SettingsPage() {
   switch (role) {
     case "employer":
       return <EmployerSettings />;
-    case "agency":
-      return <AgencySettings />;
+    case "mentor":
+      return <MentorSettings />;
     case "talent":
     default:
       return <TalentSettings />;

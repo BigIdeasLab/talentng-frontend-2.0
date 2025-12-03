@@ -28,7 +28,7 @@ export default function SupportPage() {
   switch (role) {
     case "employer":
       return renderContent();
-    case "agency":
+    case "mentor":
       return renderContent();
     case "talent":
     default:

@@ -83,7 +83,7 @@ const otherItems: Omit<MenuItem, "badge">[] = [
   { id: "settings", label: "Settings", icon: Settings, href: "/settings" },
 ];
 
-export function AgencySidebar({
+export function MentorSidebar({
   activeItem = "dashboard",
   onItemSelect,
 }: SidebarProps) {
@@ -154,7 +154,7 @@ export function AgencySidebar({
                         {profile?.fullName || "User"}
                       </div>
                       <div className="text-[11px] text-[rgba(0,0,0,0.30)] font-inter-tight truncate">
-                        Agency
+                        Mentor
                       </div>
                     </div>
                   </div>

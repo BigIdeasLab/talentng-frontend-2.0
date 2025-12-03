@@ -28,7 +28,7 @@ export default function ProjectsPage() {
   switch (role) {
     case "employer":
       return renderContent();
-    case "agency":
+    case "mentor":
       return renderContent();
     case "talent":
     default:

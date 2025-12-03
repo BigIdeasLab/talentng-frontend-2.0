@@ -87,8 +87,8 @@ export default function ProfilePage() {
           initialError={null}
         />
       );
-    case "agency":
-      // TODO: Implement agency profile component
+    case "mentor":
+      // TODO: Implement mentor profile component
       return (
         <TalentProfile
           initialProfileData={profileData || DEFAULT_PROFILE_DATA}
