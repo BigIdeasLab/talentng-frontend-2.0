@@ -299,18 +299,16 @@ const otherItems: Omit<MenuItem, "badge">[] = [
   },
 ];
 
-export function EmployerSidebar({
+export function RecruiterSidebar({
   activeItem = "dashboard",
   onItemSelect,
 }: SidebarProps) {
   const pathname = usePathname();
-  const { initialProfileRaw } = useProfile();
-  const { data: liveProfileData } = useCurrentProfile();
+  const { currentProfile, currentProfileUI } = useProfile();
 
   const profile = useMemo(() => {
-    if (liveProfileData) return liveProfileData;
-    return initialProfileRaw;
-  }, [liveProfileData, initialProfileRaw]);
+    return currentProfileUI || currentProfile;
+  }, [currentProfileUI, currentProfile]);
 
   return (
     <aside className="hidden md:flex w-[250px] flex-col bg-white border-r border-[#E1E4EA] h-screen overflow-hidden">

@@ -57,7 +57,10 @@ export function setCookie(name: string, value: string, days: number = 7) {
     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
     expires = "; expires=" + date.toUTCString();
   }
-  document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+  // Make cookie accessible to server-side code by not setting HttpOnly
+  // SameSite=Lax allows the cookie to be sent with same-site requests
+  document.cookie = name + "=" + (value || "")  + expires + "; path=/; SameSite=Lax";
+  console.log("[setCookie] Set", name, "cookie");
 }
 
 export function formatDateForDisplay(dateString: string): string {

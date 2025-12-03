@@ -1,12 +1,19 @@
 /**
  * Server-side data fetching for app layout
- * Fetches profile data once at layout level to avoid redundant requests
+ * Fetches all profile data once at layout level (talent, recruiter, mentor)
  * Data is passed to ProfileProvider and available to all app pages
  */
 
 import { getServerCurrentProfile, getServerDashboardStats, getServerTalentRecommendations } from "@/lib/api/talent/server";
+import { getServerCurrentRecruiterProfile } from "@/lib/api/recruiter/server";
+import { getServerCurrentMentorProfile } from "@/lib/api/mentor/server";
 import { mapAPIToUI } from "@/lib/profileMapper";
 import { getCurrentUser } from "@/lib/api/users";
+import type { TalentProfile } from "@/lib/api/talent/types";
+import type { RecruiterProfile } from "@/lib/api/recruiter/types";
+import type { MentorProfile } from "@/lib/api/mentor/types";
+import type { UIProfileData } from "@/lib/profileMapper";
+import type { DashboardStats } from "@/lib/api/talent/types";
 
 const mapRecommendationToUI = (apiRec: any) => ({
   id: apiRec.id,
@@ -21,38 +28,20 @@ const mapRecommendationToUI = (apiRec: any) => ({
 });
 
 export async function getBusinessLayoutData() {
-  try {
-    const [profileRes, userRes] = await Promise.all([
-      getServerCurrentProfile(),
-      getCurrentUser(),
-    ]);
-    
-    const mappedUIData = mapAPIToUI(profileRes);
-    
-    const [statsRes, recommendationsRes] = await Promise.all([
-      getServerDashboardStats(),
-      getServerTalentRecommendations(profileRes.userId),
-    ]);
-
-    return {
-      profileData: mappedUIData,
-      profileRaw: profileRes,
-      userId: profileRes.userId,
-      userRoles: userRes.roles || ["talent"],
-      stats: statsRes,
-      recommendations: recommendationsRes.map(mapRecommendationToUI),
-      error: null,
-    };
-  } catch (error) {
-    console.error("Error loading app layout data on server:", error);
-    return {
-      profileData: null,
-      profileRaw: null,
-      userId: null,
-      userRoles: ["talent"],
-      stats: null,
-      recommendations: [],
-      error: error instanceof Error ? error.message : "Failed to load profile data",
-    };
-  }
+  // Return empty initial state - client will fetch profile data
+  // This avoids server-side auth token issues in Next.js
+  console.log("[Layout Data] Returning empty initial state - profile will be fetched client-side");
+  
+  return {
+    profiles: {},
+    profilesUI: {},
+    stats: {},
+    activeRole: "talent",
+    profileData: null,
+    profileRaw: null,
+    userId: null,
+    userRoles: ["talent"],
+    recommendations: [],
+    error: null,
+  };
 }

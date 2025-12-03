@@ -3,16 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
+import { useProfile } from "@/hooks/useProfile";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-interface ProfileSwitcherProps {
-  profile: any;
-  userRole: string;
-}
 
 const CaretIcon = () => (
   <svg
@@ -165,10 +161,11 @@ const LogoutIcon = () => (
   </svg>
 );
 
-export function ProfileSwitcher({ profile, userRole }: ProfileSwitcherProps) {
+export function ProfileSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const { logout } = useAuth();
+  const { profiles, profilesUI, userRoles, activeRole, setActiveRole, currentProfile, currentProfileUI } = useProfile();
 
   const handleProfile = () => {
     setIsOpen(false);
@@ -180,14 +177,9 @@ export function ProfileSwitcher({ profile, userRole }: ProfileSwitcherProps) {
     router.push("/settings");
   };
 
-  const handleSwitchToEmployer = () => {
+  const handleSwitchRole = (role: string) => {
     setIsOpen(false);
-    router.push("/dashboard?role=employer");
-  };
-
-  const handleSwitchToMentor = () => {
-    setIsOpen(false);
-    router.push("/dashboard?role=mentor");
+    setActiveRole(role);
   };
 
   const handleLogout = async () => {
@@ -196,26 +188,64 @@ export function ProfileSwitcher({ profile, userRole }: ProfileSwitcherProps) {
     router.push("/login");
   };
 
+  // Get display profile (use UI version if available, fallback to raw)
+  const displayProfile = currentProfileUI || currentProfile;
+
+  // Get profile image URL safely
+  const getProfileImageUrl = (role: string, profile: any): string => {
+    if (!profile) return "https://api.builder.io/api/v1/image/assets/TEMP/9e59309e54ab614513d0fec9ab4424784f78258b?width=60";
+    
+    // For UI profiles, use profileImageUrl directly
+    if (profile.profileImageUrl) {
+      return profile.profileImageUrl;
+    }
+    
+    // For raw profiles, check role-specific locations
+    if (role === "talent" && profile.personal?.profileImageUrl) {
+      return profile.personal.profileImageUrl;
+    }
+    
+    return "https://api.builder.io/api/v1/image/assets/TEMP/9e59309e54ab614513d0fec9ab4424784f78258b?width=60";
+  };
+
+  // Get display name based on role
+  const getDisplayName = (role: string, profile: any) => {
+    if (role === "recruiter") {
+      return profile?.companyName || profile?.fullName || "Company";
+    }
+    if (role === "mentor") {
+      return profile?.fullName || profile?.companyName || "Mentor";
+    }
+    // talent
+    const firstName = profile?.personal?.firstName || profile?.firstName || "";
+    const lastName = profile?.personal?.lastName || profile?.lastName || "";
+    return `${firstName} ${lastName}`.trim() || "User";
+  };
+
+  // Get available roles (only those with profiles loaded)
+  const availableRoles = userRoles.filter(role => profiles[role] !== null && profiles[role] !== undefined);
+
+  // Get other roles to show in switcher (exclude current active role)
+  const switchableRoles = availableRoles.filter(role => role !== activeRole);
+
   return (
-    <div className="w-full px-[10px] py-[15px] rounded-lg bg-[#F5F5F5]">
+    <div className="w-full px-[10px] py-[12px] rounded-lg bg-[#F5F5F5]">
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
-          <button className="w-full flex items-center justify-between hover:opacity-80 transition-opacity">
+          <button className="w-full flex items-center justify-between gap-[8px] hover:opacity-80 transition-opacity">
             <div className="flex items-center gap-[8px] min-w-0">
               <div
-                className="w-[30px] h-[30px] rounded-full bg-cover bg-center flex-shrink-0"
+                className="w-[28px] h-[28px] rounded-full bg-cover bg-center flex-shrink-0"
                 style={{
-                  backgroundImage: profile?.profileImageUrl
-                    ? `url(${profile.profileImageUrl})`
-                    : "url(https://api.builder.io/api/v1/image/assets/TEMP/9e59309e54ab614513d0fec9ab4424784f78258b?width=60)",
+                  backgroundImage: `url(${getProfileImageUrl(activeRole, displayProfile)})`,
                 }}
               />
-              <div className="flex flex-col gap-[10px] min-w-0 text-left">
-                <div className="text-[15px] font-normal text-black font-['Inter_Tight'] truncate">
-                  {profile?.fullName || "User Name"}
+              <div className="min-w-0">
+                <div className="text-[13px] font-normal text-black font-inter-tight truncate">
+                  {getDisplayName(activeRole, displayProfile)}
                 </div>
-                <div className="text-[13px] text-[rgba(0,0,0,0.30)] font-['Inter_Tight'] truncate">
-                  {userRole}
+                <div className="text-[11px] text-[rgba(0,0,0,0.30)] font-inter-tight truncate">
+                  {activeRole.charAt(0).toUpperCase() + activeRole.slice(1)}
                 </div>
               </div>
             </div>
@@ -224,129 +254,114 @@ export function ProfileSwitcher({ profile, userRole }: ProfileSwitcherProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="start"
-          className="w-[332px] p-[20px_14px] rounded-[20px] bg-white shadow-[0_0_15px_0_rgba(0,0,0,0.15)] border-0"
-          sideOffset={8}
+          className="w-[220px] rounded-lg bg-white border-0"
+          sideOffset={4}
         >
           {/* Profile Info */}
-          <div className="flex items-center gap-[10px] mb-[18px]">
+          <div className="flex items-center gap-[8px] px-[14px] py-[10px]">
             <div
-              className="w-[42px] h-[42px] rounded-full bg-cover bg-center flex-shrink-0"
+              className="w-[32px] h-[32px] rounded-full bg-cover bg-center flex-shrink-0"
               style={{
-                backgroundImage: profile?.profileImageUrl
-                  ? `url(${profile.profileImageUrl})`
-                  : "url(https://api.builder.io/api/v1/image/assets/TEMP/e1692b6d1a7ac011b334889f33c4fab122cab305?width=84)",
+                backgroundImage: `url(${getProfileImageUrl(activeRole, displayProfile)})`,
               }}
             />
-            <div className="flex flex-col gap-[10px]">
-              <div className="text-[16px] font-medium text-black font-['Inter_Tight']">
-                {profile?.fullName || "Akanbi David"}
+            <div className="flex flex-col gap-[2px] min-w-0">
+              <div className="text-[12px] font-normal text-black font-inter-tight truncate">
+                {getDisplayName(activeRole, displayProfile)}
               </div>
-              <div className="text-[15px] font-light text-[#525866] font-['Inter_Tight']">
-                Independent Talent
+              <div className="text-[11px] font-light text-[#525866] font-inter-tight truncate">
+                {activeRole.charAt(0).toUpperCase() + activeRole.slice(1)}
               </div>
             </div>
           </div>
 
           {/* Divider */}
-          <div className="h-[0px] bg-[#E1E4EA] mb-[18px] -mx-[14px]" />
+          <div className="h-px bg-[#E1E4EA] my-[6px]" />
 
           {/* Your Profile & Settings */}
-          <div className="flex flex-col gap-[18px] mb-[18px]">
+          <div className="flex flex-col gap-[4px] px-[14px] py-[6px]">
             <button
               onClick={handleProfile}
-              className="flex items-center gap-[8px] hover:opacity-70 transition-opacity"
+              className="flex items-center gap-[8px] hover:opacity-70 transition-opacity py-[6px]"
             >
               <UserIcon />
-              <span className="text-[15px] leading-[20px] text-black font-['Inter_Tight']">
+              <span className="text-[12px] text-black font-inter-tight">
                 Your Profile
               </span>
             </button>
             <button
               onClick={handleSettings}
-              className="flex items-center gap-[8px] hover:opacity-70 transition-opacity"
+              className="flex items-center gap-[8px] hover:opacity-70 transition-opacity py-[6px]"
             >
               <SettingsIconMenu />
-              <span className="text-[15px] leading-[20px] text-black font-['Inter_Tight']">
+              <span className="text-[12px] text-black font-inter-tight">
                 Settings
               </span>
             </button>
           </div>
 
           {/* Divider */}
-          <div className="h-[0px] bg-[#E1E4EA] mb-[18px] -mx-[14px]" />
+          <div className="h-px bg-[#E1E4EA] my-[6px]" />
 
           {/* Switch Profile */}
-          <div className="mb-[20px]">
-            <div className="text-[12px] leading-[20px] font-medium text-[rgba(0,0,0,0.30)] font-['Inter_Tight'] mb-[18px]">
-              SWITCH PROFILE
+          {switchableRoles.length > 0 && (
+            <div className="px-[14px] py-[6px]">
+              <div className="text-[10px] font-medium text-[rgba(0,0,0,0.30)] font-inter-tight mb-[6px]">
+                SWITCH PROFILE
+              </div>
+              <div className="flex flex-col gap-[8px]">
+                {switchableRoles.map((role) => {
+                   const profile = profiles[role];
+                   const displayName = getDisplayName(role, profile);
+                   const profileImage = getProfileImageUrl(role, profile);
+                  
+                  return (
+                    <button
+                      key={role}
+                      onClick={() => handleSwitchRole(role)}
+                      className="flex items-center justify-between hover:opacity-70 transition-opacity"
+                    >
+                      <div className="flex items-center gap-[8px] min-w-0">
+                        <div
+                          className="w-[28px] h-[28px] rounded-full bg-cover bg-center flex-shrink-0"
+                          style={{
+                            backgroundImage: `url(${profileImage})`,
+                          }}
+                        />
+                        <div className="flex flex-col gap-[2px] text-left min-w-0">
+                          <div className="text-[12px] font-normal text-black font-inter-tight truncate">
+                            {displayName}
+                          </div>
+                          <div className="text-[11px] font-light text-[#525866] font-inter-tight truncate">
+                            {role.charAt(0).toUpperCase() + role.slice(1)}
+                          </div>
+                        </div>
+                      </div>
+                      <ArrowRightIcon />
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-            <div className="flex flex-col gap-[20px]">
-              <button
-                onClick={handleSwitchToEmployer}
-                className="flex items-center justify-between hover:opacity-70 transition-opacity"
-              >
-                <div className="flex items-center gap-[10px]">
-                  <div
-                    className="w-[42px] h-[42px] rounded-full bg-cover bg-center flex-shrink-0"
-                    style={{
-                      backgroundImage:
-                        "url(https://api.builder.io/api/v1/image/assets/TEMP/e1692b6d1a7ac011b334889f33c4fab122cab305?width=84)",
-                    }}
-                  />
-                  <div className="flex flex-col gap-[10px] text-left">
-                    <div className="text-[16px] font-medium text-black font-['Inter_Tight']">
-                      Akanbi David
-                    </div>
-                    <div className="text-[15px] font-light text-[#525866] font-['Inter_Tight']">
-                      Employer
-                    </div>
-                  </div>
-                </div>
-                <ArrowRightIcon />
-              </button>
-              <button
-                onClick={handleSwitchToMentor}
-                className="flex items-center justify-between hover:opacity-70 transition-opacity"
-              >
-                <div className="flex items-center gap-[10px]">
-                  <div
-                    className="w-[42px] h-[42px] rounded-full bg-cover bg-center flex-shrink-0"
-                    style={{
-                      backgroundImage:
-                        "url(https://api.builder.io/api/v1/image/assets/TEMP/e1692b6d1a7ac011b334889f33c4fab122cab305?width=84)",
-                    }}
-                  />
-                  <div className="flex flex-col gap-[10px] text-left">
-                    <div className="text-[16px] font-medium text-black font-['Inter_Tight']">
-                      Akanbi David
-                    </div>
-                    <div className="text-[15px] font-light text-[#525866] font-['Inter_Tight']">
-                      Mentor
-                    </div>
-                  </div>
-                </div>
-                <ArrowRightIcon />
-              </button>
-            </div>
-          </div>
+          )}
 
           {/* Divider */}
-          <div className="h-[0px] bg-[#E1E4EA] mb-[18px] -mx-[14px]" />
+          <div className="h-px bg-[#E1E4EA] my-[6px]" />
 
           {/* Help & Logout */}
-          <div className="flex flex-col gap-[18px]">
-            <button className="flex items-center gap-[8px] hover:opacity-70 transition-opacity h-[22px]">
+          <div className="flex flex-col gap-[4px] px-[14px] py-[6px]">
+            <button className="flex items-center gap-[8px] hover:opacity-70 transition-opacity py-[6px]">
               <HelpIcon />
-              <span className="text-[15px] leading-[20px] text-black font-['Inter_Tight']">
+              <span className="text-[12px] text-black font-inter-tight">
                 Help
               </span>
             </button>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-[8px] hover:opacity-70 transition-opacity h-[22px]"
+              className="flex items-center gap-[8px] hover:opacity-70 transition-opacity py-[6px]"
             >
               <LogoutIcon />
-              <span className="text-[15px] leading-[20px] text-black font-['Inter_Tight']">
+              <span className="text-[12px] text-black font-inter-tight">
                 Log Out
               </span>
             </button>

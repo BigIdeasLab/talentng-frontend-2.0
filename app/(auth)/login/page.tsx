@@ -44,12 +44,25 @@ const Login = () => {
 
   const loginMutation = useMutation<LoginResponse, Error, LoginFormValues>({
     mutationFn: (data: LoginFormValues) => login(data.email, data.password),
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       const { accessToken, user } = response;
       if (accessToken) {
+        // Set cookie on client side
         setCookie("accessToken", accessToken, 7);
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("user", JSON.stringify(user));
+        
+        // Also set cookie server-side via API
+        try {
+          await fetch("/api/auth/set-cookie", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token: accessToken }),
+          });
+        } catch (error) {
+          console.warn("Failed to set server-side cookie:", error);
+        }
+        
         toast.success("Login successful!");
 
         const decodedToken = decodeJwt(accessToken);

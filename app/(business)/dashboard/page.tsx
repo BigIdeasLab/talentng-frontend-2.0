@@ -10,7 +10,7 @@ export default function DashboardPage() {
   const role = userRoles?.[0] || "talent";
 
   switch (role) {
-    case "employer":
+    case "recruiter":
       return <EmployerDashboard />;
     case "mentor":
       return <MentorDashboard />;

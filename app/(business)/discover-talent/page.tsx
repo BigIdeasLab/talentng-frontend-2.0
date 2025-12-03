@@ -27,16 +27,26 @@ export default function DiscoverTalentPage() {
   }, []);
 
   if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
   }
 
   switch (role) {
-    case "employer":
-      return <DiscoverTalentClient initialTalents={talents} initialError={error} />;
+    case "recruiter":
+      return (
+        <DiscoverTalentClient initialTalents={talents} initialError={error} />
+      );
     case "mentor":
-      return <DiscoverTalentClient initialTalents={talents} initialError={error} />;
+      return (
+        <DiscoverTalentClient initialTalents={talents} initialError={error} />
+      );
     case "talent":
     default:
-      return <DiscoverTalentClient initialTalents={talents} initialError={error} />;
+      return (
+        <DiscoverTalentClient initialTalents={talents} initialError={error} />
+      );
   }
 }

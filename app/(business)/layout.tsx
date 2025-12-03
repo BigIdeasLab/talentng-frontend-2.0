@@ -7,15 +7,29 @@ export default async function AppLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { profileData, profileRaw, userId, userRoles, stats, recommendations, error } = await getBusinessLayoutData();
+  const { 
+    profiles,
+    profilesUI,
+    stats,
+    activeRole,
+    profileData, 
+    profileRaw, 
+    userId, 
+    userRoles, 
+    recommendations, 
+    error 
+  } = await getBusinessLayoutData();
 
   return (
     <ProfileProvider
+      profiles={profiles}
+      profilesUI={profilesUI}
+      stats={stats}
+      activeRole={activeRole}
       initialProfileData={profileData}
       initialProfileRaw={profileRaw}
       userId={userId}
       userRoles={userRoles}
-      stats={stats}
       recommendations={recommendations}
       error={error}
     >

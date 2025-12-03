@@ -1,6 +1,6 @@
 export type User = {
   id: string;
-  fullName: string;
+  fullName?: string;
   email: string;
   username: string;
   role?: string;
@@ -14,6 +14,9 @@ export type User = {
   oneSignalPlayerId: string | null;
   status: string;
   verificationLevel: string;
+  talentProfile?: any;
+  recruiterProfile?: any;
+  mentorProfile?: any;
 };
 
 export type LoginResponse = {

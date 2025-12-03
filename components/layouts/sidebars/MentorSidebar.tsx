@@ -314,7 +314,7 @@ export function MentorSidebar({
       <div className="flex-1 px-[20px] py-[10px] flex flex-col gap-[477px] overflow-y-auto">
         <div className="flex flex-col gap-[12px]">
           {/* Profile Switcher */}
-          <ProfileSwitcher profile={profile} userRole="Mentor" />
+          <ProfileSwitcher />
 
           {/* Main Navigation */}
           <div className="flex flex-col gap-[8px]">

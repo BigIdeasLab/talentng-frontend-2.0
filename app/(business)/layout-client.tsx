@@ -3,21 +3,20 @@
 import { useState } from "react";
 import { useProfile } from "@/hooks/useProfile";
 import { TalentSidebar } from "@/components/layouts/sidebars/TalentSidebar";
-import { EmployerSidebar } from "@/components/layouts/sidebars/EmployerSidebar";
+import { RecruiterSidebar } from "@/components/layouts/sidebars/RecruiterSidebar";
 import { MentorSidebar } from "@/components/layouts/sidebars/MentorSidebar";
 import { MobileSidebar } from "@/components/talent/profile/components/MobileSidebar";
 
 export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
-  const { userRoles } = useProfile();
-  const role = userRoles?.[0] || "talent";
+  const { activeRole } = useProfile();
 
-  // Select sidebar based on role
+  // Select sidebar based on active role
   const renderSidebar = () => {
-    switch (role) {
-      case "employer":
+    switch (activeRole) {
+      case "recruiter":
         return (
-          <EmployerSidebar
+          <RecruiterSidebar
             activeItem={activeNavItem}
             onItemSelect={setActiveNavItem}
           />
