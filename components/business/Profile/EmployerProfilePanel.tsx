@@ -1,0 +1,232 @@
+"use client";
+
+import {
+  MapPin,
+  Briefcase,
+  Users,
+  DollarSign,
+  Mail,
+  Linkedin,
+} from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+interface EmployerProfilePanelProps {
+  company?: {
+    name: string;
+    logo?: string;
+    location?: string;
+    tagline?: string;
+  };
+  stats?: {
+    jobsPosted?: number;
+    talentsHired?: number;
+    responseTime?: string;
+  };
+  socialLinks?: {
+    telegram?: string;
+    twitter?: string;
+    instagram?: string;
+    linkedin?: string;
+  };
+  completionPercentage?: number;
+}
+
+export function EmployerProfilePanel({
+  company = {
+    name: "Company Name",
+    location: "—",
+    tagline: "Employer",
+  },
+  stats = {
+    jobsPosted: 0,
+    talentsHired: 0,
+    responseTime: "—",
+  },
+  socialLinks,
+  completionPercentage = 0,
+}: EmployerProfilePanelProps) {
+  return (
+    <div className="hidden lg:flex w-[350px] flex-col bg-white border-r border-[#E1E4EA] px-[25px] py-[15px] overflow-y-auto h-screen scrollbar-hide">
+      {/* Company Profile Section */}
+      <div className="flex flex-col items-center gap-[20px]">
+        {/* Company Logo with Completion Badge */}
+        <div className="relative w-[110px] h-[110px]">
+          <img
+            src={company?.logo || "/placeholder.svg"}
+            alt={company?.name || "Company"}
+            className="w-full h-full object-cover rounded-full p-2"
+          />
+          <svg
+            width="110"
+            height="110"
+            viewBox="0 0 110 110"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="absolute inset-0 w-full h-full pointer-events-none z-10"
+          >
+            <circle
+              cx="55"
+              cy="55"
+              r="54"
+              stroke="#E63C23"
+              strokeWidth="2"
+              strokeOpacity="0.2"
+            />
+            <path
+              d="M55 1C62.0914 1 69.1133 2.39675 75.6649 5.1105C82.2165 7.82426 88.1694 11.8019 93.1838 16.8162C98.1981 21.8306 102.176 27.7835 104.889 34.3351C107.603 40.8867 109 47.9086 109 55"
+              stroke="#E63C23"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            <rect
+              x="90"
+              y="15"
+              width="28"
+              height="15"
+              rx="7.5"
+              fill="#E63C23"
+            />
+            <text
+              x="104"
+              y="26.2754"
+              fill="white"
+              fontSize="10"
+              fontFamily="Inter Tight"
+              textAnchor="middle"
+              dominantBaseline="middle"
+            >
+              {completionPercentage}%
+            </text>
+          </svg>
+        </div>
+
+        {/* Company Info */}
+        <div className="flex flex-col items-center gap-[12px] w-full">
+          <div className="text-center">
+            <h2 className="text-[16px] font-medium text-black font-inter-tight">
+              {company?.name || "Company Name"}
+            </h2>
+            {company?.tagline && (
+              <p className="text-[13px] font-light text-[rgba(0,0,0,0.30)] font-inter-tight">
+                {company.tagline}
+              </p>
+            )}
+          </div>
+
+          {/* Details Container */}
+          <div className="flex flex-col items-start gap-[10px] w-full">
+            {/* Location */}
+            {company?.location && (
+              <div className="flex justify-between items-center w-full">
+                <div className="flex items-center gap-[6px]">
+                  <MapPin className="w-[18px] h-[18px] text-[#525866]" />
+                  <span className="text-[12px] font-normal text-black font-inter-tight">
+                    {company.location}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Jobs Posted */}
+            {stats?.jobsPosted !== undefined && (
+              <div className="flex justify-between items-center w-full">
+                <div className="flex items-center gap-[6px]">
+                  <Briefcase className="w-[18px] h-[18px] text-[#525866]" />
+                  <span className="text-[12px] font-normal text-black font-inter-tight">
+                    {stats.jobsPosted} Jobs Posted
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Talents Hired */}
+            {stats?.talentsHired !== undefined && (
+              <div className="flex justify-between items-center w-full">
+                <div className="flex items-center gap-[6px]">
+                  <Users className="w-[18px] h-[18px] text-[#525866]" />
+                  <span className="text-[12px] font-normal text-black font-inter-tight">
+                    {stats.talentsHired} Talents Hired
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Response Time */}
+            {stats?.responseTime && (
+              <div className="flex justify-between items-center w-full">
+                <div className="flex items-center gap-[6px]">
+                  <DollarSign className="w-[18px] h-[18px] text-[#525866]" />
+                  <span className="text-[12px] font-normal text-black font-inter-tight">
+                    {stats.responseTime}
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Edit Profile Button */}
+      <Link href="/profile/edit" className="w-full mt-[15px]">
+        <Button className="w-full h-[40px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-aeonik text-[14px] font-normal flex-shrink-0">
+          ✏️ Edit Profile
+        </Button>
+      </Link>
+
+      {/* Social Links Section */}
+      {socialLinks && (
+        <div className="mt-[20px] flex flex-col items-start gap-[12px] flex-shrink-0">
+          <h3 className="text-[12px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
+            Social Links
+          </h3>
+          <div className="flex flex-col gap-[10px] w-full">
+            {[
+              { name: "Telegram", icon: "📱", url: socialLinks?.telegram },
+              { name: "X", icon: "𝕏", url: socialLinks?.twitter },
+              { name: "Instagram", icon: "📷", url: socialLinks?.instagram },
+              { name: "LinkedIn", icon: "in", url: socialLinks?.linkedin },
+            ].map((social, idx) => (
+              <div key={idx} className="flex justify-between items-center w-full">
+                <div className="flex items-center gap-[6px]">
+                  <span className="text-[12px] font-normal text-black font-inter-tight">
+                    {social.name}
+                  </span>
+                </div>
+                <Link
+                  href={social.url || "#"}
+                  className="text-[#525866] hover:text-black transition-colors"
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 22 22"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-[18px] h-[18px]"
+                  >
+                    <path
+                      d="M10.1739 2.75C6.82897 2.75602 5.0774 2.83816 3.95801 3.95773C2.75 5.16593 2.75 7.11051 2.75 10.9996C2.75 14.8888 2.75 16.8334 3.95801 18.0415C5.16601 19.2498 7.11028 19.2498 10.9989 19.2498C14.8873 19.2498 16.8316 19.2498 18.0396 18.0415C19.1589 16.922 19.2411 15.1701 19.2471 11.8247"
+                      stroke="currentColor"
+                      strokeWidth="1.375"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M18.8432 3.20458L10.1282 11.9702M18.8432 3.20458C18.3904 2.75119 15.34 2.79345 14.6951 2.80262M18.8432 3.20458C19.296 3.65798 19.2538 6.71231 19.2446 7.35802"
+                      stroke="currentColor"
+                      strokeWidth="1.375"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
