@@ -188,7 +188,10 @@ export function EmployerProfilePanel({
               { name: "Instagram", icon: "📷", url: socialLinks?.instagram },
               { name: "LinkedIn", icon: "in", url: socialLinks?.linkedin },
             ].map((social, idx) => (
-              <div key={idx} className="flex justify-between items-center w-full">
+              <div
+                key={idx}
+                className="flex justify-between items-center w-full"
+              >
                 <div className="flex items-center gap-[6px]">
                   <span className="text-[12px] font-normal text-black font-inter-tight">
                     {social.name}
