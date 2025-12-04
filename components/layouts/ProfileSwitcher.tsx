@@ -217,38 +217,52 @@ export function ProfileSwitcher() {
   // Get display profile (use UI version if available, fallback to raw)
   const displayProfile = currentProfileUI || currentProfile;
 
-  // Debug: Log display profile for mentor
-  if (activeRole === "mentor") {
-    console.log("Display Profile (Mentor):", displayProfile);
-    console.log("CurrentProfileUI:", currentProfileUI);
-    console.log("CurrentProfile:", currentProfile);
-  }
+  const DEFAULT_AVATAR = "https://api.builder.io/api/v1/image/assets/TEMP/9e59309e54ab614513d0fec9ab4424784f78258b?width=60";
 
   // Get profile image URL safely
   const getProfileImageUrl = (role: string, profile: any): string => {
-    if (!profile)
-      return "https://api.builder.io/api/v1/image/assets/TEMP/9e59309e54ab614513d0fec9ab4424784f78258b?width=60";
+    if (!profile) return DEFAULT_AVATAR;
 
-    // For UI profiles, use profileImageUrl directly
+    // Check UI format first (personal.profileImageUrl) - used for currentProfileUI
+    if (profile.personal?.profileImageUrl) {
+      return profile.personal.profileImageUrl;
+    }
+
+    // Check camelCase at root level
     if (profile.profileImageUrl) {
       return profile.profileImageUrl;
     }
 
-    // For raw profiles, check role-specific locations
-    if (role === "talent" && profile.personal?.profileImageUrl) {
-      return profile.personal.profileImageUrl;
+    // Check snake_case (API response format for recruiter)
+    if (role === "recruiter" && profile.profile_image_url) {
+      return profile.profile_image_url;
     }
 
-    return "https://api.builder.io/api/v1/image/assets/TEMP/9e59309e54ab614513d0fec9ab4424784f78258b?width=60";
+    return DEFAULT_AVATAR;
   };
+
+  // Get current active profile image
+  const getCurrentProfileImageUrl = (): string =>
+    getProfileImageUrl(activeRole, displayProfile);
 
   // Get display name based on role
   const getDisplayName = (role: string, profile: any) => {
     if (role === "recruiter") {
-      return profile?.companyName || profile?.professional?.company || profile?.company || profile?.fullName || "Company";
+      return (
+        profile?.companyName ||
+        profile?.professional?.company ||
+        profile?.company ||
+        profile?.fullName ||
+        "Company"
+      );
     }
     if (role === "mentor") {
-      return profile?.fullName || profile?.companyName || "Mentor";
+      return (
+        profile?.fullName ||
+        `${profile?.personal?.firstName || ""} ${profile?.personal?.lastName || ""}`.trim() ||
+        profile?.companyName ||
+        "Mentor"
+      );
     }
     // talent - try fullName first, then firstName + lastName
     if (profile?.fullName) {
@@ -289,7 +303,7 @@ export function ProfileSwitcher() {
               <div
                 className="w-[28px] h-[28px] rounded-full bg-cover bg-center flex-shrink-0"
                 style={{
-                  backgroundImage: `url(${getProfileImageUrl(activeRole, displayProfile)})`,
+                  backgroundImage: `url(${getCurrentProfileImageUrl()})`,
                 }}
               />
               <div className="min-w-0">
@@ -316,7 +330,7 @@ export function ProfileSwitcher() {
             <div
               className="w-[32px] h-[32px] rounded-full bg-cover bg-center flex-shrink-0"
               style={{
-                backgroundImage: `url(${getProfileImageUrl(activeRole, displayProfile)})`,
+                backgroundImage: `url(${getCurrentProfileImageUrl()})`,
               }}
             />
             <div className="flex flex-col gap-[2px] min-w-0">

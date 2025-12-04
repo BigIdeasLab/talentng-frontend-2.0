@@ -122,11 +122,7 @@ export function ProfileProvider({
 
   // Compute current profile based on active role
   const currentProfile = useMemo(() => {
-    const profile = profiles[activeRole] || null;
-    if (activeRole === "mentor" && profile) {
-      console.log("Mentor Profile:", profile);
-    }
-    return profile;
+    return profiles[activeRole] || null;
   }, [activeRole, profiles]);
 
   // Compute current profile UI based on active role

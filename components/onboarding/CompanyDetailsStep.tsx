@@ -38,7 +38,7 @@ export const CompanyDetailsStep = ({
   isLoading,
   logoImage,
 }: {
-  onNext: (data: CompanyDetailsData) => void;
+  onNext: (data: CompanyDetailsData, logo?: File) => void;
   onBack: () => void;
   isLoading?: boolean;
   logoImage?: File;
@@ -116,7 +116,7 @@ export const CompanyDetailsStep = ({
       location,
     };
 
-    onNext(dataToSubmit);
+    onNext(dataToSubmit, logoImage);
   };
 
   return (
