@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, Suspense, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { Role, ProfileData } from "@/lib/types/onboarding";
 import { SelectRoleStep } from "@/components/onboarding/SelectRoleStep";
@@ -27,8 +27,18 @@ const OnboardingPage = () => {
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
-  const { refetchUser } = useAuth();
+  const { refetchUser, user } = useAuth();
+  
+  // Check if we're in "add role" mode
+  const isAddingRole = searchParams.get("mode") === "add-role";
+  
+  // Get existing roles from query params (passed from ProfileSwitcher) or user data
+  const rolesFromParams = searchParams.get("roles");
+  const existingRoles = rolesFromParams
+    ? rolesFromParams.split(",").map(role => role.toLowerCase())
+    : (user?.roles || []).map(role => role.toLowerCase());
 
   const handleRoleSelect = (role: Role) => {
     setSelectedRole(role);
@@ -85,9 +95,15 @@ const OnboardingPage = () => {
       await refetchUser();
       toast({
         title: "Success",
-        description: "Your profile has been successfully created.",
+        description: isAddingRole ? "Your new role has been successfully added." : "Your profile has been successfully created.",
       });
-      router.push("/dashboard");
+      
+      // If adding a role, redirect with the new role selected
+      if (isAddingRole) {
+        router.push("/dashboard?switchRole=mentor");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (error: any) {
       let errorMessage = "An unknown error occurred.";
 
@@ -111,7 +127,7 @@ const OnboardingPage = () => {
       } else {
         toast({
           variant: "destructive",
-          title: "Onboarding Failed",
+          title: isAddingRole ? "Failed to add role" : "Onboarding Failed",
           description: errorMessage,
           duration: 5000,
         });
@@ -162,9 +178,15 @@ const OnboardingPage = () => {
       await refetchUser();
       toast({
         title: "Success",
-        description: "Your profile has been successfully created.",
+        description: isAddingRole ? "Your new role has been successfully added." : "Your profile has been successfully created.",
       });
-      router.push("/dashboard");
+      
+      // If adding a role, redirect with the new role selected
+      if (isAddingRole) {
+        router.push("/dashboard?switchRole=recruiter");
+      } else {
+        router.push("/dashboard");
+      }
     } catch (error: any) {
       let errorMessage = "An unknown error occurred.";
 
@@ -188,7 +210,7 @@ const OnboardingPage = () => {
       } else {
         toast({
           variant: "destructive",
-          title: "Onboarding Failed",
+          title: isAddingRole ? "Failed to add role" : "Onboarding Failed",
           description: errorMessage,
           duration: 5000,
         });
@@ -276,9 +298,21 @@ const OnboardingPage = () => {
       await refetchUser();
       toast({
         title: "Success",
-        description: "Your profile has been successfully created.",
+        description: isAddingRole ? "Your new role has been successfully added." : "Your profile has been successfully created.",
       });
-      router.push("/dashboard");
+      
+      // Get the role value for redirect
+      let redirectRole = selectedRole;
+      if (selectedRole === "employer") {
+        redirectRole = "recruiter";
+      }
+      
+      // If adding a role, redirect with the new role selected
+      if (isAddingRole) {
+        router.push(`/dashboard?switchRole=${redirectRole}`);
+      } else {
+        router.push("/dashboard");
+      }
     } catch (error: any) {
       // Extract error message, handling both Error objects and API error responses
       let errorMessage = "An unknown error occurred.";
@@ -304,7 +338,7 @@ const OnboardingPage = () => {
       } else {
         toast({
           variant: "destructive",
-          title: "Onboarding Failed",
+          title: isAddingRole ? "Failed to add role" : "Onboarding Failed",
           description: errorMessage,
           duration: 5000,
         });
@@ -319,7 +353,11 @@ const OnboardingPage = () => {
   };
 
   const handleSelectRoleBack = () => {
-    router.push("/login");
+    if (isAddingRole) {
+      router.push("/dashboard");
+    } else {
+      router.push("/login");
+    }
   };
 
   const renderStepThree = () => {
@@ -372,6 +410,8 @@ const OnboardingPage = () => {
             <SelectRoleStep
               onNext={handleRoleSelect}
               onBack={handleSelectRoleBack}
+              existingRoles={existingRoles}
+              isAddingRole={isAddingRole}
             />
           </div>
         )}

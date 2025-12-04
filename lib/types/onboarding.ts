@@ -1,4 +1,4 @@
-export type Role = "talent" | "employer" | "mentor";
+export type Role = "talent" | "employer" | "recruiter" | "mentor";
 
 export interface ProfileData {
   firstName: string;

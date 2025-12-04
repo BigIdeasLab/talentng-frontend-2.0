@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import { useProfile } from "@/hooks/useProfile";
@@ -165,7 +165,29 @@ export function ProfileSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const { logout } = useAuth();
-  const { profiles, profilesUI, userRoles, activeRole, setActiveRole, currentProfile, currentProfileUI } = useProfile();
+  const {
+    profiles,
+    profilesUI,
+    userRoles,
+    activeRole,
+    setActiveRole,
+    currentProfile,
+    currentProfileUI,
+  } = useProfile();
+
+  // Restore active role from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== "undefined" && activeRole) {
+      localStorage.setItem("lastActiveRole", activeRole);
+    }
+  }, [activeRole]);
+
+  // Restore last active role when switching roles
+  const handleSwitchRole = (role: string) => {
+    setIsOpen(false);
+    localStorage.setItem("lastActiveRole", role);
+    setActiveRole(role);
+  };
 
   const handleProfile = () => {
     setIsOpen(false);
@@ -177,13 +199,17 @@ export function ProfileSwitcher() {
     router.push("/settings");
   };
 
-  const handleSwitchRole = (role: string) => {
+  const handleAddNewRole = () => {
     setIsOpen(false);
-    setActiveRole(role);
+    // Pass existing roles as query params to avoid stale data issues
+    const rolesParam = userRoles.join(",");
+    router.push(`/onboarding?mode=add-role&roles=${rolesParam}`);
   };
 
   const handleLogout = async () => {
     setIsOpen(false);
+    // Save the current active role before logging out
+    localStorage.setItem("lastActiveRole", activeRole);
     await logout();
     router.push("/login");
   };
@@ -193,18 +219,19 @@ export function ProfileSwitcher() {
 
   // Get profile image URL safely
   const getProfileImageUrl = (role: string, profile: any): string => {
-    if (!profile) return "https://api.builder.io/api/v1/image/assets/TEMP/9e59309e54ab614513d0fec9ab4424784f78258b?width=60";
-    
+    if (!profile)
+      return "https://api.builder.io/api/v1/image/assets/TEMP/9e59309e54ab614513d0fec9ab4424784f78258b?width=60";
+
     // For UI profiles, use profileImageUrl directly
     if (profile.profileImageUrl) {
       return profile.profileImageUrl;
     }
-    
+
     // For raw profiles, check role-specific locations
     if (role === "talent" && profile.personal?.profileImageUrl) {
       return profile.personal.profileImageUrl;
     }
-    
+
     return "https://api.builder.io/api/v1/image/assets/TEMP/9e59309e54ab614513d0fec9ab4424784f78258b?width=60";
   };
 
@@ -216,17 +243,30 @@ export function ProfileSwitcher() {
     if (role === "mentor") {
       return profile?.fullName || profile?.companyName || "Mentor";
     }
-    // talent
+    // talent - try fullName first, then firstName + lastName
+    if (profile?.fullName) {
+      return profile.fullName;
+    }
     const firstName = profile?.personal?.firstName || profile?.firstName || "";
     const lastName = profile?.personal?.lastName || profile?.lastName || "";
     return `${firstName} ${lastName}`.trim() || "User";
   };
 
+  // Get display label based on role
+  const getRoleLabel = (role: string) => {
+    if (role === "talent") return "Independent Talent";
+    if (role === "recruiter") return "Recruiter";
+    if (role === "mentor") return "Mentor";
+    return role.charAt(0).toUpperCase() + role.slice(1);
+  };
+
   // Get available roles (only those with profiles loaded)
-  const availableRoles = userRoles.filter(role => profiles[role] !== null && profiles[role] !== undefined);
+  const availableRoles = userRoles.filter(
+    (role) => profiles[role] !== null && profiles[role] !== undefined,
+  );
 
   // Get other roles to show in switcher (exclude current active role)
-  const switchableRoles = availableRoles.filter(role => role !== activeRole);
+  const switchableRoles = availableRoles.filter((role) => role !== activeRole);
 
   return (
     <div className="w-full px-[10px] py-[12px] rounded-lg bg-[#F5F5F5]">
@@ -245,7 +285,7 @@ export function ProfileSwitcher() {
                   {getDisplayName(activeRole, displayProfile)}
                 </div>
                 <div className="text-[11px] text-[rgba(0,0,0,0.30)] font-inter-tight truncate">
-                  {activeRole.charAt(0).toUpperCase() + activeRole.slice(1)}
+                  {getRoleLabel(activeRole)}
                 </div>
               </div>
             </div>
@@ -253,9 +293,11 @@ export function ProfileSwitcher() {
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
+          side="right"
           align="start"
-          className="w-[220px] rounded-lg bg-white border-0"
-          sideOffset={4}
+          className="w-[220px] rounded-lg bg-white border-0 shadow-lg"
+          sideOffset={31}
+          alignOffset={-14}
         >
           {/* Profile Info */}
           <div className="flex items-center gap-[8px] px-[14px] py-[10px]">
@@ -270,7 +312,7 @@ export function ProfileSwitcher() {
                 {getDisplayName(activeRole, displayProfile)}
               </div>
               <div className="text-[11px] font-light text-[#525866] font-inter-tight truncate">
-                {activeRole.charAt(0).toUpperCase() + activeRole.slice(1)}
+                {getRoleLabel(activeRole)}
               </div>
             </div>
           </div>
@@ -311,10 +353,10 @@ export function ProfileSwitcher() {
               </div>
               <div className="flex flex-col gap-[8px]">
                 {switchableRoles.map((role) => {
-                   const profile = profiles[role];
-                   const displayName = getDisplayName(role, profile);
-                   const profileImage = getProfileImageUrl(role, profile);
-                  
+                  const profile = profiles[role];
+                  const displayName = getDisplayName(role, profile);
+                  const profileImage = getProfileImageUrl(role, profile);
+
                   return (
                     <button
                       key={role}
@@ -333,7 +375,7 @@ export function ProfileSwitcher() {
                             {displayName}
                           </div>
                           <div className="text-[11px] font-light text-[#525866] font-inter-tight truncate">
-                            {role.charAt(0).toUpperCase() + role.slice(1)}
+                            {getRoleLabel(role)}
                           </div>
                         </div>
                       </div>
@@ -343,6 +385,38 @@ export function ProfileSwitcher() {
                 })}
               </div>
             </div>
+          )}
+
+          {/* Add New Role */}
+          {userRoles.length < 3 && (
+            <>
+              <div className="h-px bg-[#E1E4EA] my-[6px]" />
+              <div className="px-[14px] py-[6px]">
+                <button
+                  onClick={handleAddNewRole}
+                  className="w-full flex items-center justify-center gap-[8px] px-[12px] py-[8px] rounded-[8px] bg-purple-50 hover:bg-purple-100 transition-colors"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M8 3V13M3 8H13"
+                      stroke="#5C30FF"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span className="text-[12px] text-[#5C30FF] font-medium font-inter-tight">
+                    Add New Role
+                  </span>
+                </button>
+              </div>
+            </>
           )}
 
           {/* Divider */}

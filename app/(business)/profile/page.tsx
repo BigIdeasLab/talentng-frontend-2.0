@@ -1,7 +1,14 @@
 "use client";
 
 import { TalentProfile } from "@/components/talent/profile/TalentProfile";
+import { EmployerProfile } from "@/components/employer/profile/EmployerProfile";
+import { MentorProfile } from "@/components/mentor/profile/MentorProfile";
+import { Spinner } from "@/components/ui/spinner";
 import { useProfile } from "@/hooks/useProfile";
+import { mapAPIToUI } from "@/lib/profileMapper";
+import { getCurrentProfile as getTalentProfile } from "@/lib/api/talent";
+import { getCurrentRecruiterProfile } from "@/lib/api/recruiter";
+import { getCurrentMentorProfile } from "@/lib/api/mentor";
 import { useEffect, useState } from "react";
 
 const DEFAULT_PROFILE_DATA = {
@@ -43,72 +50,95 @@ const DEFAULT_PROFILE_DATA = {
 };
 
 export default function ProfilePage() {
-  const { userRoles } = useProfile();
-  const role = userRoles?.[0] || "talent";
-  const [profileData, setProfileData] = useState<
-    typeof DEFAULT_PROFILE_DATA | null
-  >(null);
+  const { activeRole } = useProfile();
+  const role = activeRole || "talent";
   const [isLoading, setIsLoading] = useState(true);
+  const [profileData, setProfileData] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
+  // Fetch profile data based on active role
   useEffect(() => {
-    // Fetch profile data
-    const fetchData = async () => {
+    const fetchProfileByRole = async () => {
+      setIsLoading(true);
+      setError(null);
       try {
-        // TODO: Add actual API call to fetch profile data based on role
+        let profile = null;
+
+        switch (role) {
+          case "recruiter":
+            profile = await getCurrentRecruiterProfile();
+            break;
+          case "mentor":
+            profile = await getCurrentMentorProfile();
+            break;
+          case "talent":
+          default:
+            profile = await getTalentProfile();
+            break;
+        }
+
+        if (profile) {
+          // Transform to UI format
+          const uiProfile = mapAPIToUI(profile);
+          setProfileData(uiProfile);
+        } else {
+          setProfileData(DEFAULT_PROFILE_DATA);
+        }
+      } catch (err) {
+        console.error(`[ProfilePage] Failed to fetch ${role} profile:`, err);
+        setError(err instanceof Error ? err.message : "Failed to load profile");
         setProfileData(DEFAULT_PROFILE_DATA);
-      } catch (error) {
-        console.error("Failed to load profile data:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchData();
-  }, []);
+    fetchProfileByRole();
+  }, [role]);
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        Loading...
+        <Spinner size="lg" className="text-blue-600" />
       </div>
     );
   }
 
+  const displayProfile = profileData || DEFAULT_PROFILE_DATA;
+
   switch (role) {
-    case "employer":
-      // TODO: Implement employer profile component
+    case "recruiter":
       return (
-        <TalentProfile
-          initialProfileData={profileData || DEFAULT_PROFILE_DATA}
+        <EmployerProfile
+          initialProfileData={displayProfile}
           initialUserId=""
-          initialStats={{} as any}
+          initialStats={null}
           initialRecommendations={[]}
           initialServices={[]}
-          initialError={null}
+          initialError={error}
         />
       );
     case "mentor":
-      // TODO: Implement mentor profile component
       return (
-        <TalentProfile
-          initialProfileData={profileData || DEFAULT_PROFILE_DATA}
+        <MentorProfile
+          initialProfileData={displayProfile}
           initialUserId=""
-          initialStats={{} as any}
+          initialStats={null}
           initialRecommendations={[]}
           initialServices={[]}
-          initialError={null}
+          initialError={error}
         />
       );
     case "talent":
     default:
       return (
         <TalentProfile
-          initialProfileData={profileData || DEFAULT_PROFILE_DATA}
+          initialProfileData={displayProfile}
           initialUserId=""
-          initialStats={{} as any}
+          initialStats={null}
           initialRecommendations={[]}
           initialServices={[]}
-          initialError={null}
+          initialError={error}
         />
       );
   }

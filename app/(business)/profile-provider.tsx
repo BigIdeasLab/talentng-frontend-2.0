@@ -2,10 +2,13 @@
 
 import { createContext, ReactNode, useState, useMemo, useEffect } from "react";
 import type { UIProfileData } from "@/lib/profileMapper";
+import { mapAPIToUI } from "@/lib/profileMapper";
 import type { TalentProfile, DashboardStats } from "@/lib/api/talent/types";
 import type { RecruiterProfile } from "@/lib/api/recruiter/types";
 import type { MentorProfile } from "@/lib/api/mentor/types";
-import { getCurrentUser } from "@/lib/api/users";
+import { getCurrentProfile as getTalentProfile, getDashboardStats } from "@/lib/api/talent";
+import { getCurrentRecruiterProfile } from "@/lib/api/recruiter";
+import { getCurrentMentorProfile } from "@/lib/api/mentor";
 
 export interface ProfileContextType {
   // User info
@@ -89,64 +92,74 @@ export function ProfileProvider({
   recommendations: initialRecommendations,
   error: initialError,
 }: ProfileProviderProps) {
+  // Initialize with default role first to avoid hydration mismatch
   const [activeRole, setActiveRole] = useState(initialActiveRole);
   const [profiles, setProfiles] = useState<Record<string, TalentProfile | RecruiterProfile | MentorProfile | null>>(initialProfiles as any);
   const [profilesUI, setProfilesUI] = useState<Record<string, UIProfileData | null>>(initialProfilesUI as any);
   const [userId, setUserId] = useState(initialUserId);
   const [userRoles, setUserRoles] = useState(initialUserRoles);
   const [error, setError] = useState(initialError);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Mark hydration complete and restore saved role from localStorage
+  useEffect(() => {
+    setIsHydrated(true);
+    
+    // Restore last active role from localStorage after hydration
+    const savedRole = localStorage.getItem("lastActiveRole");
+    if (savedRole && userRoles.includes(savedRole)) {
+      setActiveRole(savedRole);
+    }
+  }, [userRoles]);
 
   // Fetch user data on client side where we have access to auth token
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const user = await (getCurrentUser as any)();
-        
-        if (!user || user.message === "Unauthorized") {
-          console.warn("[ProfileProvider] Unauthorized - user data not available");
+        // Fetch all profiles in parallel from dedicated endpoints
+        const [talentProfile, recruiterProfile, mentorProfile] = await Promise.all([
+          getTalentProfile().catch(() => null),
+          getCurrentRecruiterProfile().catch(() => null),
+          getCurrentMentorProfile().catch(() => null),
+        ]);
+
+        if (!talentProfile && !recruiterProfile && !mentorProfile) {
           return;
         }
 
-        setUserId(user.id);
-        setUserRoles(user.roles || ["talent"]);
-
-        // Build profiles from user response
+        // Build profiles and UI from responses
         const newProfiles: Record<string, any> = {};
         const newProfilesUI: Record<string, UIProfileData | null> = {};
+        const availableRoles: string[] = [];
 
-        if (user.talentProfile) {
-          newProfiles.talent = user.talentProfile;
-          newProfilesUI.talent = user.talentProfile; // mapAPIToUI can be added later
+        if (talentProfile) {
+          newProfiles.talent = talentProfile;
+          newProfilesUI.talent = mapAPIToUI(talentProfile);
+          availableRoles.push("talent");
         }
 
-        if (user.recruiterProfile) {
-          newProfiles.recruiter = user.recruiterProfile;
-          newProfilesUI.recruiter = user.recruiterProfile;
+        if (recruiterProfile) {
+          newProfiles.recruiter = recruiterProfile;
+          newProfilesUI.recruiter = mapAPIToUI(recruiterProfile);
+          availableRoles.push("recruiter");
         }
 
-        if (user.mentorProfile) {
-          newProfiles.mentor = user.mentorProfile;
-          newProfilesUI.mentor = user.mentorProfile;
+        if (mentorProfile) {
+          newProfiles.mentor = mentorProfile;
+          newProfilesUI.mentor = mapAPIToUI(mentorProfile);
+          availableRoles.push("mentor");
         }
 
+        const userId = talentProfile?.userId || recruiterProfile?.userId || mentorProfile?.userId;
+        setUserId(userId || null);
+        setUserRoles(availableRoles);
         setProfiles(newProfiles);
         setProfilesUI(newProfilesUI);
 
-        // Set to first role with a profile, or first role
-        const defaultRole = Object.keys(newProfiles).find(role => newProfiles[role]) || user.roles?.[0] || "talent";
+        // Fallback to first available role if no saved role
+        const defaultRole = availableRoles[0] || "talent";
         setActiveRole(defaultRole);
-
-        console.log("[ProfileProvider] Loaded user data:", {
-          userId: user.id,
-          roles: user.roles,
-          hasProfiles: {
-            talent: !!user.talentProfile,
-            recruiter: !!user.recruiterProfile,
-            mentor: !!user.mentorProfile,
-          },
-        });
       } catch (err) {
-        console.error("[ProfileProvider] Failed to fetch user data:", err);
         setError(err instanceof Error ? err.message : "Failed to load profile data");
       }
     };

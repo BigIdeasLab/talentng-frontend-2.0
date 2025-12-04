@@ -316,7 +316,7 @@ export function RecruiterSidebar({
       <div className="px-[30px] py-[12px] flex-shrink-0">
         <div className="flex items-center gap-[10px]">
           <img
-            src="https://api.builder.io/api/v1/image/assets/TEMP/f6838e60fd1de6b7148b2370f51f6b0c9c23136e?width=90"
+            src="/logo.png"
             alt="TalentNG Logo"
             className="w-[40px] h-[30px] rounded-[2.679px] object-cover"
           />

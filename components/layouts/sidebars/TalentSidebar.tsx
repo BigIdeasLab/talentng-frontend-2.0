@@ -10,22 +10,11 @@ import {
   GraduationCap,
   Headphones,
   Settings,
-  ChevronDown,
 } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useCurrentProfile } from "@/hooks/useProfileData";
-import { useProfile } from "@/hooks/useProfile";
+import { usePathname } from "next/navigation";
+import { ProfileSwitcher } from "@/components/layouts/ProfileSwitcher";
 
 interface SidebarProps {
   activeItem?: string;
@@ -81,38 +70,7 @@ export function TalentSidebar({
   activeItem = "dashboard",
   onItemSelect,
 }: SidebarProps) {
-  const { user, logout } = useAuth();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
-
-  // Get initial profile from context (server-fetched)
-  const { initialProfileRaw } = useProfile();
-
-  // Get live profile data from React Query
-  const { data: liveProfileData } = useCurrentProfile();
-
-  // Use live data if available, otherwise use initial data
-  const talentProfile = useMemo(() => {
-    if (liveProfileData) return liveProfileData;
-    return initialProfileRaw;
-  }, [liveProfileData, initialProfileRaw]);
-
-  const handleProfile = () => {
-    setIsDropdownOpen(false);
-    router.push("/profile");
-  };
-
-  const handleSettings = () => {
-    setIsDropdownOpen(false);
-    router.push("/settings");
-  };
-
-  const handleLogout = async () => {
-    setIsDropdownOpen(false);
-    await logout();
-    router.push("/login");
-  };
 
   return (
     <aside className="hidden md:flex w-[250px] flex-col bg-white border-r border-[#E1E4EA] h-screen overflow-hidden">
@@ -132,46 +90,9 @@ export function TalentSidebar({
 
       {/* Content Container */}
       <div className="flex-1 px-[20px] py-[8px] overflow-y-auto">
-        {/* User Dropdown Section */}
+        {/* Profile Switcher Section */}
         <div className="mb-4 flex-shrink-0">
-          <div className="px-[10px] py-[12px] rounded-lg bg-[#F5F5F5]">
-            <DropdownMenu
-              open={isDropdownOpen}
-              onOpenChange={setIsDropdownOpen}
-            >
-              <DropdownMenuTrigger asChild>
-                <button className="w-full flex items-center justify-between gap-[8px] hover:opacity-80 transition-opacity">
-                  <div className="flex items-center gap-[8px] min-w-0">
-                    <img
-                      src={talentProfile?.profileImageUrl || "/logo.png"}
-                      alt={talentProfile?.fullName || "Profile"}
-                      className="w-[28px] h-[28px] rounded-full object-cover flex-shrink-0"
-                    />
-                    <div className="min-w-0">
-                      <div className="text-[13px] font-normal text-black font-inter-tight truncate">
-                        {talentProfile?.fullName || "User"}
-                      </div>
-                      <div className="text-[11px] text-[rgba(0,0,0,0.30)] font-inter-tight truncate">
-                        Independent Talent
-                      </div>
-                    </div>
-                  </div>
-                  <ChevronDown className="w-3 h-3 text-black flex-shrink-0" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-[220px]">
-                <DropdownMenuItem onClick={handleProfile}>
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleSettings}>
-                  Settings
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout}>
-                  Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <ProfileSwitcher />
         </div>
 
         {/* Main Navigation Items */}

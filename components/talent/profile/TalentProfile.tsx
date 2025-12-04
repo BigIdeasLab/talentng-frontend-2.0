@@ -71,7 +71,7 @@ export function TalentProfile({
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("works");
   const [profileData, setProfileData] =
-    useState<UIProfileData>(initialProfileData);
+    useState<UIProfileData>(initialProfileData || DEFAULT_PROFILE_DATA);
   const [stats, setStats] = useState<DashboardStats | null>(initialStats);
   const [isCreateServiceModalOpen, setIsCreateServiceModalOpen] =
     useState(false);
@@ -98,12 +98,18 @@ export function TalentProfile({
   }, [initialStats]);
 
   useEffect(() => {
+    if (initialProfileData && initialProfileData.personal) {
+      setProfileData(initialProfileData);
+    }
+  }, [initialProfileData]);
+
+  useEffect(() => {
     // Initialize cached works from profileData.gallery
-    if (profileData.gallery && profileData.gallery.length > 0) {
+    if (profileData?.gallery && profileData.gallery.length > 0) {
       setCachedWorks(profileData.gallery);
     }
     setWorksLoading(false);
-  }, [profileData.gallery]);
+  }, [profileData?.gallery]);
 
   useEffect(() => {
     // Scroll to top when tab changes
@@ -156,27 +162,27 @@ export function TalentProfile({
       {/* Profile Panel */}
       <div className="hidden lg:flex h-screen overflow-hidden">
         <ProfilePanel
-          user={{
-            fullName:
-              `${profileData.personal.firstName} ${profileData.personal.lastName}`.trim() ||
-              user?.fullName ||
-              "User",
-            headline:
-              profileData.personal.headline || "Product & Interaction Designer",
-            profileImageUrl: profileData.personal.profileImageUrl,
-            location:
-              (profileData.personal.city && profileData.personal.state
-                ? `${profileData.personal.city}, ${profileData.personal.state}`
-                : profileData.personal.city || profileData.personal.state) ||
-              "—",
-          }}
+           user={{
+             fullName:
+               (profileData?.personal?.firstName || "") && (profileData?.personal?.lastName || "")
+                 ? `${profileData.personal.firstName} ${profileData.personal.lastName}`.trim()
+                 : user?.fullName || "User",
+             headline:
+               profileData?.personal?.headline || "Product & Interaction Designer",
+             profileImageUrl: profileData?.personal?.profileImageUrl,
+             location:
+               (profileData?.personal?.city && profileData?.personal?.state
+                 ? `${profileData.personal.city}, ${profileData.personal.state}`
+                 : profileData?.personal?.city || profileData?.personal?.state) ||
+               "—",
+           }}
           stats={{
-            earnings: stats ? `${stats.earnings} Earned` : "—",
-            hired: stats?.hired ?? 0,
-            jobType: profileData.professional.category || "—",
-          }}
-          skills={
-            profileData.professional.skills || [
+             earnings: stats ? `${stats.earnings} Earned` : "—",
+             hired: stats?.hired ?? 0,
+             jobType: profileData?.professional?.category || "—",
+           }}
+           skills={
+             profileData?.professional?.skills || [
               "Website Design",
               "Mobile App Design",
               "Ui/Ux Design",
@@ -189,8 +195,8 @@ export function TalentProfile({
               "Motion Design",
             ]
           }
-          stack={
-            profileData.professional.stack || [
+           stack={
+             profileData?.professional?.stack || [
               { name: "Figma" },
               { name: "Rive" },
               { name: "Webflow" },
@@ -205,10 +211,10 @@ export function TalentProfile({
             ]
           }
           socialLinks={{
-            telegram: profileData.social.telegram || "#",
-            twitter: profileData.social.twitter || "#",
-            instagram: profileData.social.instagram || "#",
-            linkedin: profileData.social.linkedin || "#",
+            telegram: profileData?.social?.telegram || "#",
+            twitter: profileData?.social?.twitter || "#",
+            instagram: profileData?.social?.instagram || "#",
+            linkedin: profileData?.social?.linkedin || "#",
           }}
           completionPercentage={stats?.profileCompletion ?? 0}
         />

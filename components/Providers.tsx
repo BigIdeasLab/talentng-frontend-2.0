@@ -3,7 +3,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
 
 const queryClient = new QueryClient({
@@ -14,23 +13,30 @@ const queryClient = new QueryClient({
   },
 });
 
-const localStoragePersister = createSyncStoragePersister({
-  storage: typeof window !== "undefined" ? window.localStorage : undefined,
-});
+// Only create persister on client side
+let localStoragePersister: any;
+if (typeof window !== "undefined") {
+  localStoragePersister = createSyncStoragePersister({
+    storage: window.localStorage,
+  });
+}
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  // Only use persister if it was created on client
+  const persistOptions = localStoragePersister
+    ? {
+        persister: localStoragePersister,
+        maxAge: 1000 * 60 * 60 * 24, // 24 hours
+      }
+    : undefined;
+
   return (
     <PersistQueryClientProvider
       client={queryClient}
-      persistOptions={{
-        persister: localStoragePersister,
-        maxAge: 1000 * 60 * 60 * 24, // 24 hours
-      }}
+      persistOptions={persistOptions}
     >
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        {children}
-        <Toaster position="top-right" richColors />
-      </ThemeProvider>
+      {children}
+      <Toaster position="top-right" richColors />
     </PersistQueryClientProvider>
   );
 }
