@@ -6,13 +6,24 @@ import { TalentSidebar } from "@/components/layouts/sidebars/TalentSidebar";
 import { RecruiterSidebar } from "@/components/layouts/sidebars/RecruiterSidebar";
 import { MentorSidebar } from "@/components/layouts/sidebars/MentorSidebar";
 import { MobileSidebar } from "@/components/talent/profile/components/MobileSidebar";
+import { LoadingScreen } from "@/components/layouts/LoadingScreen";
 
 export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
-  const { activeRole } = useProfile();
+  const { activeRole, isLoading } = useProfile();
+
+  // Show loading screen while profile data is being fetched
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   // Select sidebar based on active role
   const renderSidebar = () => {
+    // Don't render sidebar until we know the actual activeRole
+    if (!activeRole) {
+      return null;
+    }
+
     switch (activeRole) {
       case "recruiter":
         return (

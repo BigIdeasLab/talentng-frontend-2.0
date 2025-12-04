@@ -26,9 +26,9 @@ export default async function AppLayout({
       profilesUI={profilesUI}
       stats={stats}
       activeRole={activeRole}
-      initialProfileData={profileData}
-      initialProfileRaw={profileRaw}
-      userId={userId}
+      initialProfileData={profileData as any}
+      initialProfileRaw={profileRaw as any}
+      userId={userId ?? null}
       userRoles={userRoles}
       recommendations={recommendations}
       error={error}

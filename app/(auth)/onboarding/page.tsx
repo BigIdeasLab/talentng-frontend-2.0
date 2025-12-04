@@ -53,8 +53,11 @@ const OnboardingPage = () => {
     setCurrentStep(3);
   };
 
-  const handleCompanyProfileNext = (data: any) => {
+  const handleCompanyProfileNext = (data: any, logo?: File) => {
     setCompanyData(data);
+    if (logo) {
+      setProfileImage(logo);
+    }
     setCurrentStep(3);
   };
 
@@ -79,16 +82,36 @@ const OnboardingPage = () => {
         throw new Error("Mentor profile data is missing");
       }
 
-      const mergedMentorData = {
-        ...mentorData,
-        ...data,
+      // Profile contains: username, firstName, lastName, location, bio
+      const profileData = {
+        username: mentorData.username,
+        firstName: mentorData.firstName,
+        lastName: mentorData.lastName,
+        location: mentorData.location,
+        bio: mentorData.bio,
       };
-      formData.append("profile", JSON.stringify(mergedMentorData));
-      formData.append("details", JSON.stringify({}));
+      
+      // Details contains: expertise, experience, mentorshipStyle, linkedIn
+      const detailsData = {
+        expertise: Array.isArray(data.expertise) ? data.expertise : [data.expertise],
+        experience: data.experience,
+        mentorshipStyle: data.mentorshipStyle,
+        linkedIn: data.linkedIn,
+      };
+      
+      formData.append("profile", JSON.stringify(profileData));
+      formData.append("details", JSON.stringify(detailsData));
 
       if (profileImage) {
         formData.append("profileImage", profileImage);
       }
+
+      // Log complete submission data
+      console.log("=== ONBOARDING SUBMISSION ===", {
+        role: roleValue,
+        profile: profileData,
+        details: detailsData,
+      });
 
       await completeOnboarding(formData);
 
@@ -157,16 +180,29 @@ const OnboardingPage = () => {
       }
       formData.append("role", roleValue);
 
-      // Merge company data with company details data
+      // Separate profile and company details
       if (!companyData) {
         throw new Error("Company profile data is missing");
       }
-      const mergedCompanyData = {
-        ...companyData,
-        ...data,
+      
+      // Profile contains: username, location, bio
+      const profileData = {
+        username: companyData.username,
+        location: companyData.location,
+        bio: companyData.bio,
       };
-      formData.append("profile", JSON.stringify(mergedCompanyData));
-      formData.append("details", JSON.stringify({}));
+      
+      // Details contains: companyName, industry, companySize, companyStage, operatingModel
+      const detailsData = {
+        companyName: companyData.companyName,
+        industry: companyData.industry,
+        companySize: data.companySize,
+        companyStage: data.companyStage,
+        operatingModel: data.operatingModel,
+      };
+      
+      formData.append("profile", JSON.stringify(profileData));
+      formData.append("details", JSON.stringify(detailsData));
 
       // Add company logo if provided (optional)
       if (logo) {
@@ -254,12 +290,23 @@ const OnboardingPage = () => {
         setIsLoading(false);
         return;
       }
-      // Merge company data with company details data
-      const mergedCompanyData = {
-        ...companyData,
-        ...companyDetailsData,
+      // Profile contains: username, location, bio
+      const profileDataForSubmit = {
+        username: companyData.username,
+        location: companyData.location,
+        bio: companyData.bio,
       };
-      formData.append("profile", JSON.stringify(mergedCompanyData));
+      formData.append("profile", JSON.stringify(profileDataForSubmit));
+      
+      // Details contains: companyName, industry, companySize, companyStage, operatingModel
+      const detailsDataForSubmit = {
+        companyName: companyData.companyName,
+        industry: companyData.industry,
+        companySize: companyDetailsData.companySize,
+        companyStage: companyDetailsData.companyStage,
+        operatingModel: companyDetailsData.operatingModel,
+      };
+      formData.append("details", JSON.stringify(detailsDataForSubmit));
     } else {
       if (!profileData) {
         toast({
@@ -271,26 +318,29 @@ const OnboardingPage = () => {
         return;
       }
       formData.append("profile", JSON.stringify(profileData));
+      formData.append("details", JSON.stringify(data));
     }
-
-    // Add details as JSON string
-    formData.append("details", JSON.stringify(data));
 
     // Add profile image if provided (optional)
     if (profileImage) {
       formData.append("profileImage", profileImage);
     }
 
-    // Log what we're sending
-    console.log("=== ONBOARDING SUBMIT ===");
-    console.log("Role:", roleValue);
-    console.log("Profile:", profileData);
-    console.log("Details:", data);
-    console.log("Profile Image:", profileImage ? `File: ${profileImage.name}` : "None");
-    console.log("FormData entries:", Array.from(formData.entries()).map(([key, value]) => ({
-      key,
-      value: value instanceof File ? `File: ${value.name}` : value
-    })));
+    // Log complete submission data
+    if (selectedRole === "employer") {
+      console.log("=== ONBOARDING SUBMISSION ===", {
+        role: roleValue,
+        profile: profileData,
+        details: { ...data, profileImage: profileImage ? profileImage.name : null },
+      });
+    } else {
+      console.log("=== ONBOARDING SUBMISSION ===", {
+        role: roleValue,
+        profile: profileData,
+        details: data,
+        profileImage: profileImage ? profileImage.name : null,
+      });
+    }
 
     try {
       await completeOnboarding(formData);
@@ -378,6 +428,7 @@ const OnboardingPage = () => {
             onNext={handleCompanyDetailsNext}
             onBack={handleBack}
             isLoading={isLoading}
+            logoImage={profileImage || undefined}
           />
         );
       case "mentor":

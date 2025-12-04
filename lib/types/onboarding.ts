@@ -25,7 +25,7 @@ export interface CompanyProfileData {
 }
 
 export interface MentorExpertiseData {
-  expertise: string;
+  expertise: string | string[];
   experience: string;
   mentorshipStyle: string;
   linkedIn: string;

@@ -2,13 +2,9 @@
 
 import { createContext, ReactNode, useState, useMemo, useEffect } from "react";
 import type { UIProfileData } from "@/lib/profileMapper";
-import { mapAPIToUI } from "@/lib/profileMapper";
 import type { TalentProfile, DashboardStats } from "@/lib/api/talent/types";
 import type { RecruiterProfile } from "@/lib/api/recruiter/types";
 import type { MentorProfile } from "@/lib/api/mentor/types";
-import { getCurrentProfile as getTalentProfile, getDashboardStats } from "@/lib/api/talent";
-import { getCurrentRecruiterProfile } from "@/lib/api/recruiter";
-import { getCurrentMentorProfile } from "@/lib/api/mentor";
 
 export interface ProfileContextType {
   // User info
@@ -33,9 +29,12 @@ export interface ProfileContextType {
   currentProfileUI: UIProfileData | null;
   currentStats: DashboardStats | any | null;
 
+  // Loading state
+  isLoading: boolean;
+
   // Legacy fields for backward compatibility
   initialProfileData: UIProfileData | null;
-  initialProfileRaw: TalentProfile | null;
+  initialProfileRaw: TalentProfile | RecruiterProfile | MentorProfile | null;
   recommendations: any[];
   error: string | null;
 }
@@ -72,7 +71,7 @@ interface ProfileProviderProps {
   activeRole: string;
   // Legacy fields
   initialProfileData: UIProfileData | null;
-  initialProfileRaw: TalentProfile | null;
+  initialProfileRaw: TalentProfile | RecruiterProfile | MentorProfile | null;
   userId: string | null;
   userRoles: string[];
   recommendations: any[];
@@ -100,76 +99,34 @@ export function ProfileProvider({
   const [userRoles, setUserRoles] = useState(initialUserRoles);
   const [error, setError] = useState(initialError);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Mark hydration complete and restore saved role from localStorage
+  // Mark hydration complete and restore active role from localStorage
   useEffect(() => {
     setIsHydrated(true);
-    
+
     // Restore last active role from localStorage after hydration
-    const savedRole = localStorage.getItem("lastActiveRole");
-    if (savedRole && userRoles.includes(savedRole)) {
-      setActiveRole(savedRole);
-    }
-  }, [userRoles]);
-
-  // Fetch user data on client side where we have access to auth token
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        // Fetch all profiles in parallel from dedicated endpoints
-        const [talentProfile, recruiterProfile, mentorProfile] = await Promise.all([
-          getTalentProfile().catch(() => null),
-          getCurrentRecruiterProfile().catch(() => null),
-          getCurrentMentorProfile().catch(() => null),
-        ]);
-
-        if (!talentProfile && !recruiterProfile && !mentorProfile) {
-          return;
-        }
-
-        // Build profiles and UI from responses
-        const newProfiles: Record<string, any> = {};
-        const newProfilesUI: Record<string, UIProfileData | null> = {};
-        const availableRoles: string[] = [];
-
-        if (talentProfile) {
-          newProfiles.talent = talentProfile;
-          newProfilesUI.talent = mapAPIToUI(talentProfile);
-          availableRoles.push("talent");
-        }
-
-        if (recruiterProfile) {
-          newProfiles.recruiter = recruiterProfile;
-          newProfilesUI.recruiter = mapAPIToUI(recruiterProfile);
-          availableRoles.push("recruiter");
-        }
-
-        if (mentorProfile) {
-          newProfiles.mentor = mentorProfile;
-          newProfilesUI.mentor = mapAPIToUI(mentorProfile);
-          availableRoles.push("mentor");
-        }
-
-        const userId = talentProfile?.userId || recruiterProfile?.userId || mentorProfile?.userId;
-        setUserId(userId || null);
-        setUserRoles(availableRoles);
-        setProfiles(newProfiles);
-        setProfilesUI(newProfilesUI);
-
-        // Fallback to first available role if no saved role
-        const defaultRole = availableRoles[0] || "talent";
-        setActiveRole(defaultRole);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load profile data");
+    if (userRoles.length > 0) {
+      const savedRole = localStorage.getItem("lastActiveRole");
+      if (savedRole && userRoles.includes(savedRole)) {
+        setActiveRole(savedRole);
+      } else if (!activeRole && userRoles.length > 0) {
+        // Set to first available role if no saved role exists
+        setActiveRole(userRoles[0]);
       }
-    };
+    }
 
-    fetchUserData();
-  }, []);
+    // Mark loading as complete - server-side fetching means data is already available
+    setIsLoading(false);
+  }, [userRoles, activeRole]);
 
   // Compute current profile based on active role
   const currentProfile = useMemo(() => {
-    return profiles[activeRole] || null;
+    const profile = profiles[activeRole] || null;
+    if (activeRole === "mentor" && profile) {
+      console.log("Mentor Profile:", profile);
+    }
+    return profile;
   }, [activeRole, profiles]);
 
   // Compute current profile UI based on active role
@@ -188,6 +145,7 @@ export function ProfileProvider({
     currentProfile,
     currentProfileUI,
     currentStats: null,
+    isLoading,
     initialProfileData,
     initialProfileRaw,
     recommendations: initialRecommendations,

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Role } from "@/lib/types/onboarding";
 import { Check } from "lucide-react";
@@ -34,9 +34,13 @@ export const SelectRoleStep = ({
   existingRoles?: string[];
   isAddingRole?: boolean;
 }) => {
-  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
+   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
 
-  const roles = [
+   useEffect(() => {
+     console.log("User roles:", existingRoles);
+   }, [existingRoles]);
+
+   const roles = [
     {
       id: "talent",
       label: "As Talent",
@@ -65,13 +69,13 @@ export const SelectRoleStep = ({
       employer: ["recruiter"], // employer role maps to recruiter in API
       mentor: ["mentor"],
     };
-    
+
     const apiRoles = roleMap[roleId] || [roleId];
-    return apiRoles.some(role => existingRoles.includes(role));
+    return apiRoles.some((role) => existingRoles.includes(role));
   };
 
   // Count completed roles for progress badge
-  const completedCount = roles.filter(r => isRoleCompleted(r.id)).length;
+  const completedCount = roles.filter((r) => isRoleCompleted(r.id)).length;
 
   return (
     <div className="relative h-full flex flex-col">
@@ -100,7 +104,9 @@ export const SelectRoleStep = ({
         <div className="flex flex-col gap-1.5 text-center w-full flex-shrink-0">
           <div className="flex items-center justify-center gap-2">
             <h2 className="text-lg md:text-2xl font-semibold text-black font-[Inter_Tight] leading-tight">
-              {isAddingRole ? "Add a New Role" : "How do you want to use Talent.ng"}
+              {isAddingRole
+                ? "Add a New Role"
+                : "How do you want to use Talent.ng"}
             </h2>
             {isAddingRole && completedCount > 0 && (
               <span className="text-xs font-medium bg-purple-100 text-purple-700 px-2.5 py-1 rounded-full">
@@ -109,7 +115,9 @@ export const SelectRoleStep = ({
             )}
           </div>
           <p className="text-xs md:text-sm font-light text-[#919191] font-[Inter_Tight]">
-            {isAddingRole ? "Choose another role to expand your opportunities" : "Pick the option that best describes you"}
+            {isAddingRole
+              ? "Choose another role to expand your opportunities"
+              : "Pick the option that best describes you"}
           </p>
         </div>
 
@@ -126,10 +134,12 @@ export const SelectRoleStep = ({
                   completed
                     ? "opacity-50 cursor-not-allowed"
                     : selectedRole === role.id
-                    ? "ring-2 ring-[#5C30FF]"
-                    : "hover:shadow-md"
+                      ? "ring-2 ring-[#5C30FF]"
+                      : "hover:shadow-md"
                 }`}
-                title={completed ? `You're already onboarded as ${role.label}` : ""}
+                title={
+                  completed ? `You're already onboarded as ${role.label}` : ""
+                }
               >
                 {/* Image */}
                 <div className="relative w-full aspect-square bg-[#E3E3E3] overflow-hidden">
@@ -138,13 +148,15 @@ export const SelectRoleStep = ({
                     alt={role.label}
                     className="w-full h-full object-cover"
                   />
-                  
+
                   {/* Completed Badge */}
                   {completed && (
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                       <div className="flex flex-col items-center gap-1">
                         <CheckIcon />
-                        <span className="text-white text-xs font-medium">Completed</span>
+                        <span className="text-white text-xs font-medium">
+                          Completed
+                        </span>
                       </div>
                     </div>
                   )}
@@ -152,7 +164,9 @@ export const SelectRoleStep = ({
 
                 {/* Label */}
                 <div className="bg-white py-3 px-2 flex items-center justify-center">
-                  <span className={`text-sm font-medium font-[Inter_Tight] ${completed ? "text-gray-500 line-through" : "text-black"}`}>
+                  <span
+                    className={`text-sm font-medium font-[Inter_Tight] ${completed ? "text-gray-500 line-through" : "text-black"}`}
+                  >
                     {role.label}
                   </span>
                 </div>

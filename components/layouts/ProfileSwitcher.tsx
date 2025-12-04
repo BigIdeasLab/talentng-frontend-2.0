@@ -217,6 +217,13 @@ export function ProfileSwitcher() {
   // Get display profile (use UI version if available, fallback to raw)
   const displayProfile = currentProfileUI || currentProfile;
 
+  // Debug: Log display profile for mentor
+  if (activeRole === "mentor") {
+    console.log("Display Profile (Mentor):", displayProfile);
+    console.log("CurrentProfileUI:", currentProfileUI);
+    console.log("CurrentProfile:", currentProfile);
+  }
+
   // Get profile image URL safely
   const getProfileImageUrl = (role: string, profile: any): string => {
     if (!profile)
@@ -238,7 +245,7 @@ export function ProfileSwitcher() {
   // Get display name based on role
   const getDisplayName = (role: string, profile: any) => {
     if (role === "recruiter") {
-      return profile?.companyName || profile?.fullName || "Company";
+      return profile?.companyName || profile?.professional?.company || profile?.company || profile?.fullName || "Company";
     }
     if (role === "mentor") {
       return profile?.fullName || profile?.companyName || "Mentor";
@@ -267,6 +274,11 @@ export function ProfileSwitcher() {
 
   // Get other roles to show in switcher (exclude current active role)
   const switchableRoles = availableRoles.filter((role) => role !== activeRole);
+
+  // Don't render until we have an active role (prevents showing wrong role during initial load)
+  if (!activeRole) {
+    return null;
+  }
 
   return (
     <div className="w-full px-[10px] py-[12px] rounded-lg bg-[#F5F5F5]">

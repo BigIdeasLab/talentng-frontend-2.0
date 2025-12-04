@@ -115,7 +115,10 @@ export const MentorExpertiseStep = ({
     languages?: string;
   }>({});
 
-  const handleAddItem = (field: keyof MentorExpertiseFormData, value: string) => {
+  const handleAddItem = (
+    field: keyof MentorExpertiseFormData,
+    value: string,
+  ) => {
     const fieldValue = formData[field];
     if (value && Array.isArray(fieldValue) && !fieldValue.includes(value)) {
       setFormData((prev) => ({
@@ -126,7 +129,10 @@ export const MentorExpertiseStep = ({
     }
   };
 
-  const handleRemoveItem = (field: keyof MentorExpertiseFormData, index: number) => {
+  const handleRemoveItem = (
+    field: keyof MentorExpertiseFormData,
+    index: number,
+  ) => {
     setFormData((prev) => ({
       ...prev,
       [field]: (prev[field] as string[]).filter((_, i) => i !== index),
@@ -268,7 +274,9 @@ export const MentorExpertiseStep = ({
                   </div>
                 )}
                 {errors.industries && (
-                  <span className="text-xs text-red-600">{errors.industries}</span>
+                  <span className="text-xs text-red-600">
+                    {errors.industries}
+                  </span>
                 )}
               </div>
 
@@ -287,7 +295,9 @@ export const MentorExpertiseStep = ({
                   }`}
                 />
                 {errors.headline && (
-                  <span className="text-xs text-red-600">{errors.headline}</span>
+                  <span className="text-xs text-red-600">
+                    {errors.headline}
+                  </span>
                 )}
               </div>
 
@@ -334,7 +344,9 @@ export const MentorExpertiseStep = ({
                   </div>
                 )}
                 {errors.expertise && (
-                  <span className="text-xs text-red-600">{errors.expertise}</span>
+                  <span className="text-xs text-red-600">
+                    {errors.expertise}
+                  </span>
                 )}
               </div>
 
@@ -428,7 +440,9 @@ export const MentorExpertiseStep = ({
                   </div>
                 )}
                 {errors.languages && (
-                  <span className="text-xs text-red-600">{errors.languages}</span>
+                  <span className="text-xs text-red-600">
+                    {errors.languages}
+                  </span>
                 )}
               </div>
             </form>
@@ -450,6 +464,14 @@ export const MentorExpertiseStep = ({
                   fill="#805DFF"
                 />
               </svg>
+              {/* Company Logo Badge */}
+              <div className="absolute top-4 -right-8 w-[70px] h-[70px] z-30">
+                <img
+                  src="/logo-2.png"
+                  alt="Company Logo"
+                  className="w-full h-full object-cover object-center rounded-full"
+                />
+              </div>
 
               {/* Stack of cards - Background layers */}
               <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-full flex flex-col items-center">

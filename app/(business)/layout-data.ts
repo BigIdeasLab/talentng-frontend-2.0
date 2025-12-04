@@ -28,20 +28,104 @@ const mapRecommendationToUI = (apiRec: any) => ({
 });
 
 export async function getBusinessLayoutData() {
-  // Return empty initial state - client will fetch profile data
-  // This avoids server-side auth token issues in Next.js
-  console.log("[Layout Data] Returning empty initial state - profile will be fetched client-side");
-  
-  return {
-    profiles: {},
-    profilesUI: {},
-    stats: {},
-    activeRole: "talent",
-    profileData: null,
-    profileRaw: null,
-    userId: null,
-    userRoles: ["talent"],
-    recommendations: [],
-    error: null,
-  };
+  try {
+    console.log("[Layout Data] Fetching profile data on server...");
+
+    // Fetch all profiles in parallel on server
+    // Note: Some profiles may not exist (404), which is expected and handled gracefully
+    const [talentProfile, recruiterProfile, mentorProfile] = await Promise.all([
+      getServerCurrentProfile().catch(() => null),
+      getServerCurrentRecruiterProfile().catch(() => null),
+      getServerCurrentMentorProfile().catch(() => null),
+    ]);
+
+    // If no profiles found, return empty state
+    if (!talentProfile && !recruiterProfile && !mentorProfile) {
+      console.log("[Layout Data] No profiles found - returning empty state");
+      return {
+        profiles: {},
+        profilesUI: {},
+        stats: {},
+        activeRole: "",
+        profileData: null,
+        profileRaw: null,
+        userId: null,
+        userRoles: [],
+        recommendations: [],
+        error: null,
+      };
+    }
+
+    // Build profiles and UI from responses
+    const profiles: AllProfiles = {};
+    const profilesUI: AllProfilesUI = {};
+    const userRoles: string[] = [];
+
+    if (talentProfile) {
+      profiles.talent = talentProfile;
+      profilesUI.talent = mapAPIToUI(talentProfile);
+      userRoles.push("talent");
+    }
+
+    if (recruiterProfile) {
+      profiles.recruiter = recruiterProfile;
+      profilesUI.recruiter = mapAPIToUI(recruiterProfile);
+      userRoles.push("recruiter");
+    }
+
+    if (mentorProfile) {
+      profiles.mentor = mentorProfile;
+      profilesUI.mentor = mapAPIToUI(mentorProfile);
+      userRoles.push("mentor");
+    }
+
+    // Get user ID from any profile
+    const userId = talentProfile?.userId || recruiterProfile?.userId || mentorProfile?.userId || null;
+
+    // Set default active role to first available
+    const activeRole = userRoles[0] || "";
+
+    console.log("[Layout Data] Profiles loaded. Available roles:", userRoles.join(", "));
+
+    return {
+      profiles,
+      profilesUI,
+      stats: {},
+      activeRole,
+      profileData: profilesUI[activeRole] || null,
+      profileRaw: profiles[activeRole] || null,
+      userId,
+      userRoles,
+      recommendations: [],
+      error: null,
+    };
+  } catch (error) {
+    console.error("[Layout Data] Error fetching profile data:", error);
+    return {
+      profiles: {},
+      profilesUI: {},
+      stats: {},
+      activeRole: "",
+      profileData: null,
+      profileRaw: null,
+      userId: null,
+      userRoles: [],
+      recommendations: [],
+      error: "Failed to load profile data",
+    };
+  }
+}
+
+interface AllProfiles {
+  [key: string]: TalentProfile | RecruiterProfile | MentorProfile | null | undefined;
+  talent?: TalentProfile | null;
+  recruiter?: RecruiterProfile | null;
+  mentor?: MentorProfile | null;
+}
+
+interface AllProfilesUI {
+  [key: string]: UIProfileData | null | undefined;
+  talent?: UIProfileData | null;
+  recruiter?: UIProfileData | null;
+  mentor?: UIProfileData | null;
 }

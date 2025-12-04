@@ -67,7 +67,10 @@ const serverApiClient = async <T>(
       let errorMessage =
         errorData.message || errorData.error || `API Error: ${response.statusText}`;
 
-      console.error(`[Server API Error] ${response.status}: ${errorMessage}`);
+      // Only log errors in development, and skip 404s (which are often expected)
+      if (process.env.NODE_ENV === "development" && response.status !== 404) {
+        console.error(`[Server API Error] ${response.status}: ${errorMessage}`);
+      }
 
       const error = new Error(errorMessage);
       (error as any).status = response.status;
@@ -79,7 +82,11 @@ const serverApiClient = async <T>(
     const data = responseText ? JSON.parse(responseText) : ({} as T);
     return data;
   } catch (error) {
-    console.error("[Server API Client Error]:", error);
+    // Only log unexpected errors (not 404s)
+    const status = (error as any).status;
+    if (process.env.NODE_ENV === "development" && status !== 404) {
+      console.error("[Server API Client Error]:", error);
+    }
     throw error;
   }
 };
