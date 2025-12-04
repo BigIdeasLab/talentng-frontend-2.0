@@ -3,19 +3,23 @@
 import { DiscoverTalentClient } from "./discover-talent-client";
 import { useProfile } from "@/hooks/useProfile";
 import { useEffect, useState } from "react";
+import { getDiscoverTalentData } from "./server-data";
+import type { TalentData } from "./server-data";
 
 export default function DiscoverTalentPage() {
   const { userRoles } = useProfile();
   const role = userRoles?.[0] || "talent";
-  const [talents, setTalents] = useState([]);
-  const [error, setError] = useState(null);
+  const [talents, setTalents] = useState<TalentData[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // TODO: Add actual API call to fetch talents
-        setTalents([]);
+        const { talents: fetchedTalents, error: fetchError } =
+          await getDiscoverTalentData();
+        setTalents(fetchedTalents);
+        setError(fetchError);
       } catch (err: any) {
         setError(err.message);
       } finally {
