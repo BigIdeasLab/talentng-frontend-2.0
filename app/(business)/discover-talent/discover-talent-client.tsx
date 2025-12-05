@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { DiscoverTalentHeader, TalentGrid } from "@/components/DiscoverTalent";
-import { Spinner } from "@/components/ui/spinner";
+import { useState, useRef } from "react";
+import { DiscoverTalentHeader, TalentGrid, TalentGridSkeleton } from "@/components/DiscoverTalent";
 import { getDiscoverTalentData } from "./server-data";
 import type { TalentData } from "./server-data";
 import type { FilterState } from "@/components/DiscoverTalent";
@@ -24,6 +23,7 @@ export function DiscoverTalentClient({
   const [filters, setFilters] = useState<FilterState | null>(null);
   const [offset, setOffset] = useState(0);
   const LIMIT = 20;
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const fetchTalents = async (
     query: string,
@@ -57,7 +57,17 @@ export function DiscoverTalentClient({
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
-    fetchTalents(query, selectedCategory, filters, 0);
+    setLoading(true);
+
+    // Clear previous timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    // Set new timeout for debouncing
+    searchTimeoutRef.current = setTimeout(() => {
+      fetchTalents(query, selectedCategory, filters, 0);
+    }, 500);
   };
 
   const handleCategoryChange = (category: string) => {
@@ -88,12 +98,9 @@ export function DiscoverTalentClient({
         searchQuery={searchQuery}
         onSearchChange={handleSearch}
         onFilterApply={handleFilterApply}
+        isLoading={loading}
       />
-      {loading && (
-        <div className="flex-1 flex items-center justify-center">
-          <Spinner size="lg" />
-        </div>
-      )}
+      {loading && <TalentGridSkeleton />}
       {error && !loading && (
         <div className="flex-1 flex items-center justify-center">
           <p className="text-red-500">Error: {error}</p>

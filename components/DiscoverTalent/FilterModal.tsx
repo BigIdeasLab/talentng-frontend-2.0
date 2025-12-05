@@ -78,15 +78,18 @@ export function FilterModal({
   }, [locationSearch]);
 
   const handleClearFilter = () => {
-    setFilters({
+    const emptyFilters: FilterState = {
       categories: [],
       skills: [],
       location: "",
       availability: "All",
-    });
+    };
+    setFilters(emptyFilters);
     setCategorySearch("");
     setSkillSearch("");
     setLocationSearch("");
+    onApply(emptyFilters);
+    onClose();
   };
 
   const handleApplyFilter = () => {

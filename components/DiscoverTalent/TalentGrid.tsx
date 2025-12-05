@@ -23,6 +23,13 @@ export function TalentGrid({
 }: TalentGridProps) {
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
+      {/* Result Count */}
+      <div className="flex-shrink-0 px-[25px] py-[12px] border-b border-[#E1E4EA]">
+        <p className="text-[12px] text-gray-600">
+          {talents.length} talent{talents.length !== 1 ? "s" : ""} found
+        </p>
+      </div>
+
       <div className="flex-1 overflow-y-auto scrollbar-styled px-[25px] py-[16px]">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px] pb-8">
           {talents.length > 0 ? (
