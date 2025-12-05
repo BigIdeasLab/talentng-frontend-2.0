@@ -91,14 +91,7 @@ export function EmployerProfile({
           )}
 
           {/* Past Hires Tab */}
-          {activeTab === "hires" && (
-            <div className="flex flex-col items-center justify-center h-full gap-4 p-6">
-              <h2 className="text-xl font-semibold text-black">Past Hires</h2>
-              <p className="text-sm text-[rgba(0,0,0,0.30)]">
-                No past hires yet
-              </p>
-            </div>
-          )}
+          {activeTab === "hires" && <PastHiresTab />}
 
           {/* About Tab */}
           {activeTab === "about" && (
