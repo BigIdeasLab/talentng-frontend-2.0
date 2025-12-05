@@ -354,3 +354,93 @@ function PastHiresTab() {
     </div>
   );
 }
+
+function AboutTab() {
+  return (
+    <div className="flex flex-col gap-10 p-4 md:p-6 lg:p-[25px] w-full max-w-[667px]">
+      {/* About Section */}
+      <div className="flex flex-col gap-5">
+        <h2 className="text-2xl font-semibold text-black font-inter-tight">
+          About Chowdeck Nigeria
+        </h2>
+        <div className="flex flex-col gap-4 text-[15px] font-normal text-black font-inter-tight leading-[26px]">
+          <p>
+            Chowdeck is Nigeria's premier on-demand delivery service, connecting
+            customers with a wide array of restaurants and stores. Since our
+            founding in 2021, we've been dedicated to providing fast, reliable,
+            and convenient delivery solutions across Lagos, Abuja, and Port
+            Harcourt.
+          </p>
+          <p>
+            We partner with over 500 restaurants and retailers, offering
+            everything from local cuisine to everyday essentials. Our mission is
+            to simplify life for our customers, empower local businesses, and
+            create job opportunities for riders. Whether you're craving a meal or
+            need groceries delivered, Chowdeck is here to serve you.
+          </p>
+          <p>
+            At Chowdeck, we are committed to innovation, customer satisfaction,
+            and community development. Join us as we continue to revolutionize
+            the delivery landscape in Nigeria.
+          </p>
+        </div>
+      </div>
+
+      {/* Company Details Section */}
+      <div className="flex flex-col gap-5">
+        <h2 className="text-2xl font-semibold text-black font-inter-tight">
+          Company Details
+        </h2>
+        <div className="flex flex-col gap-2.5">
+          {/* Industry */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-4 px-4 py-3 rounded-[10px] border border-[#E1E4EA]">
+            <div className="text-base font-normal text-black font-inter-tight leading-[26px]">
+              Industry
+            </div>
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-[15px] font-normal text-black font-inter-tight leading-[26px]">
+                Logistics & Delivery
+              </span>
+              <span className="text-[15px] font-normal text-black font-inter-tight leading-[26px]">
+                SaaS
+              </span>
+              <span className="text-[15px] font-normal text-black font-inter-tight leading-[26px]">
+                Food
+              </span>
+            </div>
+          </div>
+
+          {/* Company Size */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-4 px-4 py-3 rounded-[10px] border border-[#E1E4EA]">
+            <div className="text-base font-normal text-black font-inter-tight leading-[26px]">
+              Company Size
+            </div>
+            <div className="text-[15px] font-normal text-black font-inter-tight leading-[26px]">
+              1 - 10
+            </div>
+          </div>
+
+          {/* Company Stage */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-4 px-4 py-3 rounded-[10px] border border-[#E1E4EA]">
+            <div className="text-base font-normal text-black font-inter-tight leading-[26px]">
+              Company Stage
+            </div>
+            <div className="text-[15px] font-normal text-black font-inter-tight leading-[26px]">
+              Early Startup
+            </div>
+          </div>
+
+          {/* Operating Model */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-4 px-4 py-3 rounded-[10px] border border-[#E1E4EA]">
+            <div className="text-base font-normal text-black font-inter-tight leading-[26px]">
+              Operating Model
+            </div>
+            <div className="text-[15px] font-normal text-black font-inter-tight leading-[26px]">
+              Remote
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
