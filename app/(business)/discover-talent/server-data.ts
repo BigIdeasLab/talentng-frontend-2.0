@@ -36,18 +36,40 @@ const mapTalentToUI = (profile: TalentProfile, index: number): TalentData => ({
   skills: profile.skills || [],
 });
 
-export async function getDiscoverTalentData(
-  searchQuery?: string,
-  category?: string,
-) {
-  try {
-    const filters: any = {};
-    if (searchQuery) filters.bio = searchQuery;
-    if (category && category !== "All") filters.category = category;
+export interface GetDiscoverTalentDataParams {
+  searchQuery?: string;
+  category?: string;
+  skills?: string[];
+  location?: string;
+  availability?: string;
+  limit?: number;
+  offset?: number;
+}
 
-    const profiles = await talentDiscoveryApi.listTalentProfiles(
-      Object.keys(filters).length > 0 ? filters : undefined,
-    );
+export async function getDiscoverTalentData(params: GetDiscoverTalentDataParams = {}) {
+  try {
+    const {
+      searchQuery,
+      category,
+      skills,
+      location,
+      availability,
+      limit = 20,
+      offset = 0,
+    } = params;
+
+    const filters: any = {};
+    
+    if (searchQuery) filters.q = searchQuery;
+    if (category && category !== "All") filters.category = category;
+    if (skills && skills.length > 0) filters.skills = skills.join(",");
+    if (location) filters.location = location;
+    if (availability && availability !== "All") filters.availability = availability;
+    
+    filters.limit = limit;
+    filters.offset = offset;
+
+    const profiles = await talentDiscoveryApi.listTalentProfiles(filters);
 
     const talents = profiles.map(mapTalentToUI);
 

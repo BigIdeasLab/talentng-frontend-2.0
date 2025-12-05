@@ -31,7 +31,6 @@ export function DiscoverTalentHeader({
     if (appliedFilters.skills.length > 0) count += appliedFilters.skills.length;
     if (appliedFilters.location) count += 1;
     if (appliedFilters.availability !== "All") count += 1;
-    if (appliedFilters.experienceLevel) count += 1;
     return count;
   };
 

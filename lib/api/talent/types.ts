@@ -26,13 +26,13 @@ export interface DashboardStats {
 }
 
 export interface TalentFilterParams {
-  headline?: string;
-  bio?: string;
+  q?: string;
+  category?: string;
   skills?: string;
   location?: string;
-  category?: string;
-  visibility?: "public" | "private";
-  isFeatured?: boolean;
+  availability?: string;
+  limit?: number;
+  offset?: number;
 }
 
 export interface TalentProfile {
