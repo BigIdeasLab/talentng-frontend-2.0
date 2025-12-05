@@ -80,16 +80,7 @@ export function EmployerProfile({
         {/* Content Section */}
         <div className="flex-1 overflow-y-auto scrollbar-styled">
           {/* Open Opportunities Tab */}
-          {activeTab === "opportunities" && (
-            <div className="flex flex-col items-center justify-center h-full gap-4 p-6">
-              <h2 className="text-xl font-semibold text-black">
-                Open Opportunities
-              </h2>
-              <p className="text-sm text-[rgba(0,0,0,0.30)]">
-                No opportunities posted yet
-              </p>
-            </div>
-          )}
+          {activeTab === "opportunities" && <OpportunitiesTab />}
 
           {/* Past Hires Tab */}
           {activeTab === "hires" && <PastHiresTab />}
