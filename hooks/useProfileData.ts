@@ -2,16 +2,12 @@
 
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import {
-  getCurrentProfile,
-  getDashboardStats,
-  getTalentRecommendations,
-  getMyServices,
-  updateProfile,
-  updateProfileImage,
-  updateCoverImage,
-} from "@/lib/api/talent";
+  talentProfileApi,
+  talentRecommendationsApi,
+  talentServicesApi,
+} from "@/lib/api/talent-service";
 import { mapAPIToUI } from "@/lib/profileMapper";
-import type { TalentProfile } from "@/lib/api/talent/types";
+import type { TalentProfile } from "@/lib/api/talent-service";
 import type { UIProfileData } from "@/lib/profileMapper";
 
 // Query keys for consistency
@@ -30,7 +26,7 @@ export const profileQueryKeys = {
 export function useCurrentProfile() {
   return useQuery({
     queryKey: profileQueryKeys.current(),
-    queryFn: getCurrentProfile,
+    queryFn: talentProfileApi.getCurrentProfile,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
   });
@@ -42,7 +38,7 @@ export function useCurrentProfile() {
 export function useDashboardStats() {
   return useQuery({
     queryKey: profileQueryKeys.stats(),
-    queryFn: getDashboardStats,
+    queryFn: talentProfileApi.getDashboardStats,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
   });
@@ -54,7 +50,7 @@ export function useDashboardStats() {
 export function useTalentRecommendations() {
   return useQuery({
     queryKey: profileQueryKeys.recommendations(),
-    queryFn: getTalentRecommendations,
+    queryFn: talentRecommendationsApi.getTalentRecommendations,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
   });
@@ -66,7 +62,7 @@ export function useTalentRecommendations() {
 export function useMyServices() {
   return useQuery({
     queryKey: profileQueryKeys.services(),
-    queryFn: getMyServices,
+    queryFn: talentServicesApi.getMyServices,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
   });
@@ -107,7 +103,7 @@ export function useUpdateProfile() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: updateProfile,
+    mutationFn: talentProfileApi.updateProfile,
     onSuccess: (updatedProfile) => {
       // Invalidate and refetch profile query
       queryClient.setQueryData(profileQueryKeys.current(), updatedProfile);
@@ -122,7 +118,7 @@ export function useUpdateProfileImage() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: updateProfileImage,
+    mutationFn: talentProfileApi.updateProfileImage,
     onSuccess: (updatedProfile) => {
       queryClient.setQueryData(profileQueryKeys.current(), updatedProfile);
     },
@@ -136,7 +132,7 @@ export function useUpdateCoverImage() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: updateCoverImage,
+    mutationFn: talentProfileApi.updateCoverImage,
     onSuccess: (updatedProfile) => {
       queryClient.setQueryData(profileQueryKeys.current(), updatedProfile);
     },

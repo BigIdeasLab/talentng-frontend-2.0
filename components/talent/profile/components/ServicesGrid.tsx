@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Briefcase, Star } from "lucide-react";
 import { EmptyState } from "./EmptyState";
-import { getMyServices } from "@/lib/api/talent";
-import type { Service } from "@/lib/api/talent";
+import { useMyServices } from "@/hooks/useTalentApi";
+import type { Service } from "@/lib/api/talent-service";
 
 interface ServicesGridProps {
   onServiceClick?: (service: Service) => void;
@@ -29,80 +29,46 @@ export function ServicesGrid({
   isLoading: parentIsLoading = false,
   onLoadingChange,
 }: ServicesGridProps) {
+  const { data: hookServices, isLoading: hookIsLoading, error: hookError } = useMyServices();
   const [services, setServices] = useState<Service[]>(cachedServices);
   const [isLoading, setIsLoading] = useState(parentIsLoading && cachedServices.length === 0);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Use cached services if available (only if they have valid IDs)
-    const validServices = cachedServices.filter(s => s.id && s.id !== "0");
-    if (validServices.length > 0) {
-      setServices(validServices);
+    if (hookServices) {
+      setServices(hookServices);
+      onServicesLoaded?.(hookServices);
+      setError(null);
+    }
+    if (hookIsLoading) {
+      setIsLoading(true);
+      onLoadingChange?.(true);
+    } else {
       setIsLoading(false);
       onLoadingChange?.(false);
-      return;
     }
+    if (hookError) {
+      const errorStatus = (hookError as any)?.status;
+      let errorMessage = "";
 
-    // If we have empty cache and not loading, show empty state
-    if (cachedServices.length === 0 && !parentIsLoading) {
-      setServices([]);
-      setIsLoading(false);
-      onLoadingChange?.(false);
-      return;
-    }
-
-    let isMounted = true;
-
-    const fetchServices = async () => {
-      try {
-        setIsLoading(true);
-        onLoadingChange?.(true);
-        const data = await getMyServices();
-        
-        if (!isMounted) return;
-        
-        setServices(data || []);
-        onServicesLoaded?.(data || []);
-        setError(null);
-      } catch (err) {
-        if (!isMounted) return;
-        
-        const errorStatus = (err as any)?.status;
-        let errorMessage: string | null = null;
-
-        // Handle specific error cases
-        if (errorStatus === 404) {
-          // Services endpoint may not exist yet or talent profile not found
-          // Treat as empty state instead of error
-          setServices([]);
-          onServicesLoaded?.([]);
-          setError(null);
-          return;
-        } else if (errorStatus === 401) {
-          errorMessage = "Please log in to view your services";
-        } else if (errorStatus === 403) {
-          errorMessage = "You don't have permission to view these services";
-        } else {
-          errorMessage =
-            err instanceof Error ? err.message : "Failed to load services";
-        }
-
-        setError(errorMessage);
+      if (errorStatus === 404) {
+        // Services endpoint may not exist yet or talent profile not found
         setServices([]);
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-          onLoadingChange?.(false);
-        }
+        onServicesLoaded?.([]);
+        setError(null);
+        return;
+      } else if (errorStatus === 401) {
+        errorMessage = "Please log in to view your services";
+      } else if (errorStatus === 403) {
+        errorMessage = "You don't have permission to view these services";
+      } else {
+        errorMessage =
+          hookError instanceof Error ? hookError.message : "Failed to load services";
       }
-    };
-
-    fetchServices();
-    
-    return () => {
-      isMounted = false;
-    };
-  }, [refreshTrigger, parentIsLoading]);
+      setError(errorMessage);
+      setServices([]);
+    }
+  }, [hookServices, hookIsLoading, hookError, onLoadingChange, onServicesLoaded]);
 
   if (isLoading) {
     return (

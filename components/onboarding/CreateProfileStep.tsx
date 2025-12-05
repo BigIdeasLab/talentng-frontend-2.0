@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { ProfileData } from "@/lib/types/onboarding";
-import { checkUsernameAvailability } from "@/lib/api";
+import { useCheckUsernameAvailability } from "@/hooks/useUserApi";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import statesCitiesData from "@/lib/data/states-cities.json";
 
@@ -66,50 +66,32 @@ export const CreateProfileStep = ({
     return usernamePattern.test(username);
   };
 
-  const checkUsername = async (username: string) => {
-    if (!username || username.length < 3) {
+  // Use React Query hook for username availability with debounce
+  const {
+    data: usernameAvailabilityData,
+    isLoading: checkingUsername,
+    error: usernameError,
+  } = useCheckUsernameAvailability(formData.username);
+
+  useEffect(() => {
+    if (!formData.username || formData.username.length < 3) {
       setUsernameStatus("idle");
       return;
     }
 
-    if (!validateUsername(username)) {
+    if (!validateUsername(formData.username)) {
       setUsernameStatus("invalid");
       return;
     }
 
-    setUsernameStatus("checking");
-
-    try {
-      const result = await checkUsernameAvailability(username);
-      setUsernameStatus(result.available ? "available" : "taken");
-    } catch (error) {
-      console.error("Error checking username:", error);
+    if (checkingUsername) {
+      setUsernameStatus("checking");
+    } else if (usernameError) {
       setUsernameStatus("idle");
+    } else if (usernameAvailabilityData) {
+      setUsernameStatus(usernameAvailabilityData.available ? "available" : "taken");
     }
-  };
-
-  useEffect(() => {
-    // Clear previous timer
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
-    // Set new timer for debouncing
-    debounceTimerRef.current = setTimeout(() => {
-      if (formData.username) {
-        checkUsername(formData.username);
-      } else {
-        setUsernameStatus("idle");
-      }
-    }, 500); // 500ms debounce delay
-
-    // Cleanup function
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, [formData.username]);
+  }, [formData.username, checkingUsername, usernameError, usernameAvailabilityData]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -194,9 +176,8 @@ export const CreateProfileStep = ({
       if (usernameStatus === "checking" || usernameStatus === "taken") {
         return;
       }
-      // If status is idle, check it first
-      if (usernameStatus === "idle") {
-        checkUsername(formData.username);
+      // If status is idle or invalid, can't submit
+      if (usernameStatus === "idle" || usernameStatus === "invalid") {
         return;
       }
     }

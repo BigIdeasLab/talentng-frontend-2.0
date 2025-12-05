@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import statesCitiesData from "@/lib/data/states-cities.json";
-import { checkUsernameAvailability } from "@/lib/api";
+import { useCheckUsernameAvailability } from "@/hooks/useUserApi";
 
 type MentorProfileFormData = {
   firstName: string;
@@ -71,47 +71,32 @@ export const MentorProfileStep = ({
     return usernamePattern.test(username);
   };
 
-  const checkUsername = async (username: string) => {
-    if (!username || username.length < 3) {
+  // Use React Query hook for username availability
+  const {
+    data: usernameAvailabilityData,
+    isLoading: checkingUsername,
+    error: usernameError,
+  } = useCheckUsernameAvailability(formData.username);
+
+  useEffect(() => {
+    if (!formData.username || formData.username.length < 3) {
       setUsernameStatus("idle");
       return;
     }
 
-    if (!validateUsername(username)) {
+    if (!validateUsername(formData.username)) {
       setUsernameStatus("invalid");
       return;
     }
 
-    setUsernameStatus("checking");
-
-    try {
-      const result = await checkUsernameAvailability(username);
-      setUsernameStatus(result.available ? "available" : "taken");
-    } catch (error) {
-      console.error("Error checking username:", error);
+    if (checkingUsername) {
+      setUsernameStatus("checking");
+    } else if (usernameError) {
       setUsernameStatus("idle");
+    } else if (usernameAvailabilityData) {
+      setUsernameStatus(usernameAvailabilityData.available ? "available" : "taken");
     }
-  };
-
-  useEffect(() => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
-    debounceTimerRef.current = setTimeout(() => {
-      if (formData.username) {
-        checkUsername(formData.username);
-      } else {
-        setUsernameStatus("idle");
-      }
-    }, 500);
-
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, [formData.username]);
+  }, [formData.username, checkingUsername, usernameError, usernameAvailabilityData]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -187,11 +172,7 @@ export const MentorProfileStep = ({
     }
 
     if (usernameStatus !== "available") {
-      if (usernameStatus === "checking" || usernameStatus === "taken") {
-        return;
-      }
-      if (usernameStatus === "idle") {
-        checkUsername(formData.username);
+      if (usernameStatus === "checking" || usernameStatus === "taken" || usernameStatus === "idle" || usernameStatus === "invalid") {
         return;
       }
     }

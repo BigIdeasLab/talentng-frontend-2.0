@@ -1,6 +1,10 @@
 import type { FilterState } from "@/components/DiscoverTalent";
 import type { TalentData } from "@/app/(business)/discover-talent/server-data";
 
+/**
+ * Filter talents based on search query and filter state
+ * Search fields: fullName, headline, skills, location
+ */
 export function filterTalents(
   talents: TalentData[],
   filters: FilterState,
@@ -9,11 +13,11 @@ export function filterTalents(
   const searchLower = searchQuery?.toLowerCase();
 
   return talents.filter((talent) => {
-    // Search filter
+    // Search filter - searches: fullName, headline, skills, location
     if (searchLower) {
       const searchableFields = [
-        talent.name,
-        talent.role,
+        talent.fullName,
+        talent.headline,
         talent.location,
         ...talent.skills,
       ]
@@ -44,20 +48,6 @@ export function filterTalents(
     ) {
       return false;
     }
-
-    // Availability filter (would need to be added to TalentData)
-    // if (
-    //   filters.availability !== "All" &&
-    //   talent.availability?.toLowerCase() !==
-    //     filters.availability.toLowerCase()
-    // ) {
-    //   return false;
-    // }
-
-    // Experience level filter (would need to be added to TalentData)
-    // if (filters.experienceLevel) {
-    //   // Implementation depends on adding experience level to TalentData
-    // }
 
     return true;
   });

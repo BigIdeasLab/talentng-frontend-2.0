@@ -2,18 +2,7 @@
 
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-
-interface TalentData {
-  id: number;
-  name: string;
-  role: string;
-  location: string;
-  timesHired: number;
-  earnings: number;
-  avatar: string;
-  gallery: string[];
-  skills: string[];
-}
+import type { TalentData } from "@/app/(business)/discover-talent/server-data";
 
 interface TalentCardProps {
   talent: TalentData;
@@ -29,17 +18,17 @@ export function TalentCard({ talent }: TalentCardProps) {
             <div className="flex items-center gap-[8px]">
               <Image
                 src={talent.avatar}
-                alt={talent.name}
+                alt={talent.fullName}
                 width={34}
                 height={34}
                 className="w-[34px] h-[34px] rounded-full object-cover flex-shrink-0"
               />
               <div className="flex flex-col gap-[8px]">
                 <h3 className="text-[13px] font-medium text-black font-inter-tight">
-                  {talent.name}
+                  {talent.fullName}
                 </h3>
                 <p className="text-[12px] font-light text-black/30 font-inter-tight">
-                  {talent.role}
+                  {talent.headline}
                 </p>
               </div>
             </div>

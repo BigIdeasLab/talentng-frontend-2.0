@@ -1,18 +1,7 @@
 "use client";
 
 import { TalentCard } from "./TalentCard";
-
-interface TalentData {
-  id: number;
-  name: string;
-  role: string;
-  location: string;
-  timesHired: number;
-  earnings: number;
-  avatar: string;
-  gallery: string[];
-  skills: string[];
-}
+import type { TalentData } from "@/app/(business)/discover-talent/server-data";
 
 interface TalentGridProps {
   talents: TalentData[];
