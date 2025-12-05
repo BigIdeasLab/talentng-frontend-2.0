@@ -4,20 +4,7 @@ import { useState } from "react";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FilterModal, type FilterState } from "./FilterModal";
-
-const categories = [
-  "All",
-  "Designer",
-  "Developer",
-  "Writer",
-  "Illustrator",
-  "Animator",
-  "Marketing",
-  "Photographer",
-  "Music & Audio",
-  "Content Creation",
-  "Videography",
-];
+import categories from "@/lib/data/categories.json";
 
 interface DiscoverTalentHeaderProps {
   selectedCategory: string;
@@ -97,7 +84,7 @@ export function DiscoverTalentHeader({
 
       {/* Category Tabs */}
       <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
-        {categories.map((category) => (
+        {["All", ...categories].map((category) => (
           <button
             key={category}
             onClick={() => onCategoryChange(category)}

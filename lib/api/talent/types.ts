@@ -30,6 +30,7 @@ export interface TalentFilterParams {
   bio?: string;
   skills?: string;
   location?: string;
+  category?: string;
   visibility?: "public" | "private";
   isFeatured?: boolean;
 }

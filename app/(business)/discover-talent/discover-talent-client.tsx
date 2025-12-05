@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { DiscoverTalentHeader, TalentGrid } from "@/components/DiscoverTalent";
 import { Spinner } from "@/components/ui/spinner";
 import { getDiscoverTalentData } from "./server-data";
+import { filterTalents } from "@/lib/filters/talent-filter";
 import type { TalentData } from "./server-data";
 import type { FilterState } from "@/components/DiscoverTalent";
 
@@ -23,14 +24,14 @@ export function DiscoverTalentClient({
   const [error, setError] = useState<string | null>(initialError);
   const [filters, setFilters] = useState<FilterState | null>(null);
 
-  const handleSearch = async (query: string) => {
+  const handleSearch = async (query: string, category?: string) => {
     setSearchQuery(query);
     setLoading(true);
     setError(null);
 
     try {
       const { talents: newTalents, error: fetchError } =
-        await getDiscoverTalentData(query);
+        await getDiscoverTalentData(query, category);
       setTalents(newTalents);
       setError(fetchError);
     } catch (err) {
@@ -40,18 +41,25 @@ export function DiscoverTalentClient({
     }
   };
 
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    handleSearch(searchQuery, category);
+  };
+
   const handleFilterApply = (appliedFilters: FilterState) => {
     setFilters(appliedFilters);
-    // Trigger search with applied filters
-    // You can add additional filtering logic here based on skills, location, availability, etc.
-    handleSearch(searchQuery);
   };
+
+  const filteredTalents = useMemo(() => {
+    if (!filters) return talents;
+    return filterTalents(talents, filters, searchQuery);
+  }, [talents, filters, searchQuery]);
 
   return (
     <div className="flex flex-col h-screen bg-white overflow-hidden">
       <DiscoverTalentHeader
         selectedCategory={selectedCategory}
-        onCategoryChange={setSelectedCategory}
+        onCategoryChange={handleCategoryChange}
         searchQuery={searchQuery}
         onSearchChange={handleSearch}
         onFilterApply={handleFilterApply}
@@ -66,7 +74,7 @@ export function DiscoverTalentClient({
           <p className="text-red-500">Error: {error}</p>
         </div>
       )}
-      {!loading && !error && <TalentGrid talents={talents} />}
+      {!loading && !error && <TalentGrid talents={filteredTalents} />}
     </div>
   );
 }

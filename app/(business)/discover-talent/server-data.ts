@@ -30,10 +30,18 @@ const mapTalentToUI = (profile: TalentProfile, index: number): TalentData => ({
    skills: profile.skills || [],
  });
 
-export async function getDiscoverTalentData(searchQuery?: string) {
+export async function getDiscoverTalentData(
+  searchQuery?: string,
+  category?: string,
+) {
   try {
-    const filters = searchQuery ? { bio: searchQuery } : undefined;
-    const profiles = await listTalentProfiles(filters);
+    const filters: any = {};
+    if (searchQuery) filters.bio = searchQuery;
+    if (category && category !== "All") filters.category = category;
+
+    const profiles = await listTalentProfiles(
+      Object.keys(filters).length > 0 ? filters : undefined,
+    );
 
     const talents = profiles.map(mapTalentToUI);
 

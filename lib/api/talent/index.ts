@@ -150,14 +150,11 @@ export async function listTalentProfiles(
   const queryParams = new URLSearchParams();
 
   if (filters) {
-    if (filters.headline) queryParams.append("headline", filters.headline);
-    if (filters.bio) queryParams.append("bio", filters.bio);
-    if (filters.skills) queryParams.append("skills", filters.skills);
-    if (filters.location) queryParams.append("location", filters.location);
-    if (filters.visibility)
-      queryParams.append("visibility", filters.visibility);
-    if (filters.isFeatured !== undefined)
-      queryParams.append("isFeatured", String(filters.isFeatured));
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, String(value));
+      }
+    });
   }
 
   const query = queryParams.toString();
