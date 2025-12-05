@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import type { TalentData } from "@/app/(business)/discover-talent/server-data";
@@ -9,6 +10,12 @@ interface TalentCardProps {
 }
 
 export function TalentCard({ talent }: TalentCardProps) {
+  const router = useRouter();
+
+  const handleViewProfile = () => {
+    router.push(`/talent-profile/${talent.userId}`);
+  };
+
   return (
     <div className="p-[12px_10px] flex flex-col gap-[8px] border border-[#E1E4EA] rounded-[16px] bg-white">
       {/* Header */}
@@ -32,7 +39,10 @@ export function TalentCard({ talent }: TalentCardProps) {
                 </p>
               </div>
             </div>
-            <Button className="h-auto px-[8px] py-[12px] rounded-full bg-[#181B25] hover:bg-[#2a2f3a] border border-[#181B25] flex-shrink-0">
+            <Button
+              onClick={handleViewProfile}
+              className="h-auto px-[8px] py-[12px] rounded-full bg-[#181B25] hover:bg-[#2a2f3a] border border-[#181B25] flex-shrink-0"
+            >
               <span className="text-[11px] font-normal text-white font-inter-tight w-[60px]">
                 View Profile
               </span>

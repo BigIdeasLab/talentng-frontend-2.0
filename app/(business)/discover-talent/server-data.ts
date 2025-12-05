@@ -14,6 +14,7 @@ import type { TalentProfile } from "@/lib/api/talent-service";
  */
 export interface TalentData {
   id: number;
+  userId: string;
   fullName: string;
   headline: string;
   location: string;
@@ -26,6 +27,7 @@ export interface TalentData {
 
 const mapTalentToUI = (profile: TalentProfile, index: number): TalentData => ({
   id: index + 1,
+  userId: profile.userId,
   fullName: profile.fullName || "Talent",
   headline: profile.headline || profile.category || "Professional",
   location: profile.location || "Not specified",
