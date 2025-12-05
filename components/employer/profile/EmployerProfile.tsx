@@ -95,14 +95,7 @@ export function EmployerProfile({
           {activeTab === "hires" && <PastHiresTab />}
 
           {/* About Tab */}
-          {activeTab === "about" && (
-            <div className="flex flex-col items-center justify-center h-full gap-4 p-6">
-              <h2 className="text-xl font-semibold text-black">About</h2>
-              <p className="text-sm text-[rgba(0,0,0,0.30)]">
-                Company information will be displayed here
-              </p>
-            </div>
-          )}
+          {activeTab === "about" && <AboutTab />}
         </div>
       </main>
     </div>
