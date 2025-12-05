@@ -93,6 +93,195 @@ export function EmployerProfile({
   );
 }
 
+interface Opportunity {
+  id: number;
+  companyName: string;
+  companyLogo: string;
+  datePosted: string;
+  type: "Job Listing" | "Internship";
+  title: string;
+  skills: string[];
+  rate: string;
+  applicantCount: number;
+  applicantAvatars: string[];
+}
+
+const mockOpportunities: Opportunity[] = [
+  {
+    id: 1,
+    companyName: "Chowdeck",
+    companyLogo: "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6",
+    datePosted: "Nov 25",
+    type: "Job Listing",
+    title: "Product Designer",
+    skills: ["E-commerce", "Market Research", "User Interface Design", "A/B Testing"],
+    rate: "$350 / Month",
+    applicantCount: 254,
+    applicantAvatars: [
+      "https://api.builder.io/api/v1/image/assets/TEMP/4489b61f18d60d40a2b95b65f27d3dc37af77141",
+      "https://api.builder.io/api/v1/image/assets/TEMP/212208d7b867ab37dca0e63ad5b3246d2fad53a6",
+      "https://api.builder.io/api/v1/image/assets/TEMP/98e3bf6d1fcfd7f32c737ff00aaa0c0e6b9c1c25",
+    ],
+  },
+  {
+    id: 2,
+    companyName: "Chowdeck",
+    companyLogo: "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6",
+    datePosted: "Nov 22",
+    type: "Internship",
+    title: "Graphic Designer",
+    skills: ["Brand Identity", "Typography", "Illustration", "Layout Design"],
+    rate: "$400 / Month",
+    applicantCount: 254,
+    applicantAvatars: [
+      "https://api.builder.io/api/v1/image/assets/TEMP/4489b61f18d60d40a2b95b65f27d3dc37af77141",
+      "https://api.builder.io/api/v1/image/assets/TEMP/212208d7b867ab37dca0e63ad5b3246d2fad53a6",
+      "https://api.builder.io/api/v1/image/assets/TEMP/98e3bf6d1fcfd7f32c737ff00aaa0c0e6b9c1c25",
+    ],
+  },
+  {
+    id: 3,
+    companyName: "Chowdeck",
+    companyLogo: "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6",
+    datePosted: "Nov 20",
+    type: "Job Listing",
+    title: "UX/UI Designer",
+    skills: ["Web Design", "User Testing", "Interaction Design", "Prototyping"],
+    rate: "$300 / Month",
+    applicantCount: 254,
+    applicantAvatars: [
+      "https://api.builder.io/api/v1/image/assets/TEMP/4489b61f18d60d40a2b95b65f27d3dc37af77141",
+      "https://api.builder.io/api/v1/image/assets/TEMP/212208d7b867ab37dca0e63ad5b3246d2fad53a6",
+      "https://api.builder.io/api/v1/image/assets/TEMP/98e3bf6d1fcfd7f32c737ff00aaa0c0e6b9c1c25",
+    ],
+  },
+];
+
+function OpportunitiesTab() {
+  return (
+    <div className="flex flex-col gap-2.5 p-4 md:p-6 w-full max-w-[560px]">
+      {mockOpportunities.map((opportunity) => (
+        <div key={opportunity.id} className="flex flex-col">
+          {/* Job Card */}
+          <div className="flex flex-col gap-6 p-3 md:p-6 rounded-t-[20px] border border-[#E1E4EA]">
+            {/* Header */}
+            <div className="flex flex-col gap-5">
+              {/* Company Info and Type Badge */}
+              <div className="flex justify-between items-start gap-2">
+                {/* Company Profile */}
+                <div className="flex items-center gap-2.5">
+                  <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-gray-100">
+                    <img
+                      src={opportunity.companyLogo}
+                      alt={opportunity.companyName}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <div className="text-[15px] font-medium text-black font-inter-tight">
+                      {opportunity.companyName}
+                    </div>
+                    <div className="text-[14px] font-light text-[#525866] font-inter-tight">
+                      {opportunity.datePosted}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Type Badge */}
+                <div
+                  className={`flex items-center gap-2 px-3 py-[15px] rounded-lg ${
+                    opportunity.type === "Job Listing"
+                      ? "bg-[rgba(92,48,255,0.10)]"
+                      : "bg-[rgba(0,139,71,0.09)]"
+                  }`}
+                >
+                  <div
+                    className={`w-2 h-2 rounded-full ${
+                      opportunity.type === "Job Listing"
+                        ? "bg-[#5C30FF]"
+                        : "bg-[#008B47]"
+                    }`}
+                  />
+                  <span
+                    className={`text-[13px] font-normal font-inter-tight whitespace-nowrap ${
+                      opportunity.type === "Job Listing"
+                        ? "text-[#5C30FF]"
+                        : "text-[#008B47]"
+                    }`}
+                  >
+                    {opportunity.type}
+                  </span>
+                </div>
+              </div>
+
+              {/* Job Title */}
+              <h3 className="text-lg font-medium text-black font-inter-tight">
+                {opportunity.title}
+              </h3>
+
+              {/* Skills */}
+              <div className="flex flex-wrap gap-2">
+                {opportunity.skills.map((skill, index) => (
+                  <span
+                    key={index}
+                    className="text-[14px] font-normal text-black font-inter-tight"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Rate and Actions */}
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 pt-2.5 border-t border-[#E1E4EA]">
+              <div className="text-lg font-medium text-black font-inter-tight">
+                {opportunity.rate}
+              </div>
+              <div className="flex items-center gap-1.5">
+                <button className="flex items-center gap-1 h-10 px-4 rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] transition-colors">
+                  <Check className="w-[18px] h-[18px]" strokeWidth={1.5} />
+                  <span className="text-[14px] font-medium font-inter-tight">
+                    Mark As Filled
+                  </span>
+                </button>
+                <button className="w-6 h-6 flex items-center justify-center hover:bg-gray-100 rounded transition-colors">
+                  <MoreVertical className="w-6 h-6 text-black" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Applicants Section */}
+          <div className="flex items-center gap-2.5 px-3 py-4 rounded-b-[20px] border border-t-0 border-[#E1E4EA] bg-[#FFFBF0]">
+            {/* Avatars */}
+            <div className="flex -space-x-2">
+              {opportunity.applicantAvatars.map((avatar, index) => (
+                <div
+                  key={index}
+                  className="w-[30px] h-[30px] rounded-full overflow-hidden border-2 border-white bg-gray-100"
+                >
+                  <img
+                    src={avatar}
+                    alt=""
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+            {/* Text */}
+            <div className="text-[16px] font-medium font-inter-tight">
+              <span className="text-black">{opportunity.applicantCount} talents already applied to this opportunity. </span>
+              <button className="text-[#E39B00] underline hover:text-[#c58600] transition-colors">
+                View
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 interface PastHire {
   id: number;
   name: string;
