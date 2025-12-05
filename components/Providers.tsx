@@ -28,7 +28,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         persister: localStoragePersister,
         maxAge: 1000 * 60 * 60 * 24, // 24 hours
       }
-    : undefined;
+    : ({} as any);
 
   return (
     <PersistQueryClientProvider
