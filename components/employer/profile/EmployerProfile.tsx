@@ -110,11 +110,17 @@ const mockOpportunities: Opportunity[] = [
   {
     id: 1,
     companyName: "Chowdeck",
-    companyLogo: "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6",
+    companyLogo:
+      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6",
     datePosted: "Nov 25",
     type: "Job Listing",
     title: "Product Designer",
-    skills: ["E-commerce", "Market Research", "User Interface Design", "A/B Testing"],
+    skills: [
+      "E-commerce",
+      "Market Research",
+      "User Interface Design",
+      "A/B Testing",
+    ],
     rate: "$350 / Month",
     applicantCount: 254,
     applicantAvatars: [
@@ -126,7 +132,8 @@ const mockOpportunities: Opportunity[] = [
   {
     id: 2,
     companyName: "Chowdeck",
-    companyLogo: "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6",
+    companyLogo:
+      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6",
     datePosted: "Nov 22",
     type: "Internship",
     title: "Graphic Designer",
@@ -142,7 +149,8 @@ const mockOpportunities: Opportunity[] = [
   {
     id: 3,
     companyName: "Chowdeck",
-    companyLogo: "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6",
+    companyLogo:
+      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6",
     datePosted: "Nov 20",
     type: "Job Listing",
     title: "UX/UI Designer",
@@ -270,7 +278,10 @@ function OpportunitiesTab() {
             </div>
             {/* Text */}
             <div className="text-[16px] font-medium font-inter-tight">
-              <span className="text-black">{opportunity.applicantCount} talents already applied to this opportunity. </span>
+              <span className="text-black">
+                {opportunity.applicantCount} talents already applied to this
+                opportunity.{" "}
+              </span>
               <button className="text-[#E39B00] underline hover:text-[#c58600] transition-colors">
                 View
               </button>
@@ -295,7 +306,8 @@ const mockPastHires: PastHire[] = [
   {
     id: 1,
     name: "Elias Johnson",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/4489b61f18d60d40a2b95b65f27d3dc37af77141",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/4489b61f18d60d40a2b95b65f27d3dc37af77141",
     primarySkill: "Product Designer",
     location: "California, US",
     dateHired: "Dec 25 2025",
@@ -303,7 +315,8 @@ const mockPastHires: PastHire[] = [
   {
     id: 2,
     name: "Sophie Lee",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/ac599d21a164f89cc53bcd2c3803d8c7e443bb16",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/ac599d21a164f89cc53bcd2c3803d8c7e443bb16",
     primarySkill: "UX Designer",
     location: "New York, US",
     dateHired: "Jan 15 2024",
@@ -311,7 +324,8 @@ const mockPastHires: PastHire[] = [
   {
     id: 3,
     name: "Michael Brown",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/212208d7b867ab37dca0e63ad5b3246d2fad53a6",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/212208d7b867ab37dca0e63ad5b3246d2fad53a6",
     primarySkill: "UI Designer",
     location: "Texas, US",
     dateHired: "Feb 10 2023",
@@ -319,7 +333,8 @@ const mockPastHires: PastHire[] = [
   {
     id: 4,
     name: "Emily Davis",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/98e3bf6d1fcfd7f32c737ff00aaa0c0e6b9c1c25",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/98e3bf6d1fcfd7f32c737ff00aaa0c0e6b9c1c25",
     primarySkill: "Graphic Designer",
     location: "Florida, US",
     dateHired: "Mar 5 2024",
@@ -327,7 +342,8 @@ const mockPastHires: PastHire[] = [
   {
     id: 5,
     name: "Daniel Garcia",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/455fcd9600095c754eeaffb8827fd5e890ac94cf",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/455fcd9600095c754eeaffb8827fd5e890ac94cf",
     primarySkill: "Interaction Designer",
     location: "Washington, US",
     dateHired: "Apr 20 2023",
@@ -335,7 +351,8 @@ const mockPastHires: PastHire[] = [
   {
     id: 6,
     name: "Olivia Martinez",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/17e0f8649d5b2acbdf3b84f9659212f2c54c411f",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/17e0f8649d5b2acbdf3b84f9659212f2c54c411f",
     primarySkill: "Visual Designer",
     location: "Oregon, US",
     dateHired: "May 30 2024",
@@ -343,7 +360,8 @@ const mockPastHires: PastHire[] = [
   {
     id: 7,
     name: "James Wilson",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/e00a7d8c459efb178454a164267b6b5d418308a4",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/e00a7d8c459efb178454a164267b6b5d418308a4",
     primarySkill: "Product Manager",
     location: "Illinois, US",
     dateHired: "Jun 15 2023",
@@ -351,7 +369,8 @@ const mockPastHires: PastHire[] = [
   {
     id: 8,
     name: "Ava Anderson",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/1461b9e5fcd47d64b053df42baf38ee3fcbdae04",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/1461b9e5fcd47d64b053df42baf38ee3fcbdae04",
     primarySkill: "Web Designer",
     location: "Nevada, US",
     dateHired: "Jul 10 2024",
@@ -359,7 +378,8 @@ const mockPastHires: PastHire[] = [
   {
     id: 9,
     name: "Lucas Thomas",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/f25e66bac38da7360668fa7a0c3be5e28bf26714",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/f25e66bac38da7360668fa7a0c3be5e28bf26714",
     primarySkill: "Motion Designer",
     location: "Colorado, US",
     dateHired: "Aug 25 2023",
@@ -367,7 +387,8 @@ const mockPastHires: PastHire[] = [
   {
     id: 10,
     name: "Mia Jackson",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/52cd7411e700d6427cb4097ede0436c16b0e4b3a",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/52cd7411e700d6427cb4097ede0436c16b0e4b3a",
     primarySkill: "Industrial Designer",
     location: "Massachusetts, US",
     dateHired: "Sep 30 2024",
@@ -375,7 +396,8 @@ const mockPastHires: PastHire[] = [
   {
     id: 11,
     name: "Ethan White",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/a227b791b8d836bd9c83846d5c563de1bf8e9070",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/a227b791b8d836bd9c83846d5c563de1bf8e9070",
     primarySkill: "Service Designer",
     location: "Virginia, US",
     dateHired: "Oct 20 2023",
@@ -383,7 +405,8 @@ const mockPastHires: PastHire[] = [
   {
     id: 12,
     name: "Isabella Harris",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/77a2d0f5eaf5e0f9f0f0c283d2661d2eaacaca2e",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/77a2d0f5eaf5e0f9f0f0c283d2661d2eaacaca2e",
     primarySkill: "Game Designer",
     location: "Georgia, US",
     dateHired: "Nov 14 2024",
@@ -403,7 +426,7 @@ function PastHiresTab() {
         (hire) =>
           hire.name.toLowerCase().includes(query) ||
           hire.primarySkill.toLowerCase().includes(query) ||
-          hire.location.toLowerCase().includes(query)
+          hire.location.toLowerCase().includes(query),
       );
       setFilteredHires(filtered);
     }
@@ -555,8 +578,8 @@ function AboutTab() {
             We partner with over 500 restaurants and retailers, offering
             everything from local cuisine to everyday essentials. Our mission is
             to simplify life for our customers, empower local businesses, and
-            create job opportunities for riders. Whether you're craving a meal or
-            need groceries delivered, Chowdeck is here to serve you.
+            create job opportunities for riders. Whether you're craving a meal
+            or need groceries delivered, Chowdeck is here to serve you.
           </p>
           <p>
             At Chowdeck, we are committed to innovation, customer satisfaction,
