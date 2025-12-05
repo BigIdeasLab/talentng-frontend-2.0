@@ -108,14 +108,37 @@ export default function ProfilePage() {
 
   switch (role) {
     case "recruiter":
+      // Calculate profile completion percentage
+      const recruiterProfile = profileData as any;
+      const completionFields = [
+        recruiterProfile?.professional?.company,
+        recruiterProfile?.personal?.state,
+        recruiterProfile?.professional?.description,
+        recruiterProfile?.personal?.profileImageUrl,
+        recruiterProfile?.professional?.category,
+      ].filter(Boolean);
+      const completionPercentage = Math.round(
+        (completionFields.length / 5) * 100,
+      );
+
       return (
         <EmployerProfile
-          initialProfileData={displayProfile}
-          initialUserId=""
-          initialStats={null}
-          initialRecommendations={[]}
-          initialServices={[]}
-          initialError={error}
+          companyData={{
+            name:
+              recruiterProfile?.professional?.company ||
+              "Company Name",
+            location:
+              recruiterProfile?.personal?.state || "—",
+            tagline:
+              recruiterProfile?.professional?.description ||
+              "Employer",
+          }}
+          stats={{
+            jobsPosted: 0,
+            talentsHired: 0,
+            responseTime: "—",
+          }}
+          completionPercentage={completionPercentage}
         />
       );
     case "mentor":
