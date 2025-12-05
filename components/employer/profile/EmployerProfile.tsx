@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { EmployerProfilePanel } from "./EmployerProfilePanel";
 import { EmployerProfileNav } from "./EmployerProfileNav";
+import { Search, SlidersHorizontal } from "lucide-react";
 
 interface EmployerProfileProps {
   companyData?: {
