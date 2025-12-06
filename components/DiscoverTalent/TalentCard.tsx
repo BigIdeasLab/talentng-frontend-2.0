@@ -1,25 +1,21 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-
-interface TalentData {
-  id: number;
-  name: string;
-  role: string;
-  location: string;
-  timesHired: number;
-  earnings: number;
-  avatar: string;
-  gallery: string[];
-  skills: string[];
-}
+import type { TalentData } from "@/app/(business)/discover-talent/server-data";
 
 interface TalentCardProps {
   talent: TalentData;
 }
 
 export function TalentCard({ talent }: TalentCardProps) {
+  const router = useRouter();
+
+  const handleViewProfile = () => {
+    router.push(`/talent-profile/${talent.userId}`);
+  };
+
   return (
     <div className="p-[12px_10px] flex flex-col gap-[8px] border border-[#E1E4EA] rounded-[16px] bg-white">
       {/* Header */}
@@ -29,21 +25,24 @@ export function TalentCard({ talent }: TalentCardProps) {
             <div className="flex items-center gap-[8px]">
               <Image
                 src={talent.avatar}
-                alt={talent.name}
+                alt={talent.fullName}
                 width={34}
                 height={34}
                 className="w-[34px] h-[34px] rounded-full object-cover flex-shrink-0"
               />
               <div className="flex flex-col gap-[8px]">
                 <h3 className="text-[13px] font-medium text-black font-inter-tight">
-                  {talent.name}
+                  {talent.fullName}
                 </h3>
                 <p className="text-[12px] font-light text-black/30 font-inter-tight">
-                  {talent.role}
+                  {talent.headline}
                 </p>
               </div>
             </div>
-            <Button className="h-auto px-[8px] py-[12px] rounded-full bg-[#181B25] hover:bg-[#2a2f3a] border border-[#181B25] flex-shrink-0">
+            <Button
+              onClick={handleViewProfile}
+              className="h-auto px-[8px] py-[12px] rounded-full bg-[#181B25] hover:bg-[#2a2f3a] border border-[#181B25] flex-shrink-0"
+            >
               <span className="text-[11px] font-normal text-white font-inter-tight w-[60px]">
                 View Profile
               </span>

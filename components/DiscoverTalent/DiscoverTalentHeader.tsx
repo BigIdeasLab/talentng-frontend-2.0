@@ -1,23 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Search, SlidersHorizontal, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FilterModal, type FilterState } from "./FilterModal";
-
-const categories = [
-  "All",
-  "Designer",
-  "Developer",
-  "Writer",
-  "Illustrator",
-  "Animator",
-  "Marketing",
-  "Photographer",
-  "Music & Audio",
-  "Content Creation",
-  "Videography",
-];
+import categories from "@/lib/data/categories.json";
 
 interface DiscoverTalentHeaderProps {
   selectedCategory: string;
@@ -25,6 +12,7 @@ interface DiscoverTalentHeaderProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   onFilterApply?: (filters: FilterState) => void;
+  isLoading?: boolean;
 }
 
 export function DiscoverTalentHeader({
@@ -33,9 +21,16 @@ export function DiscoverTalentHeader({
   searchQuery,
   onSearchChange,
   onFilterApply,
+  isLoading = false,
 }: DiscoverTalentHeaderProps) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<FilterState | null>(null);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Escape" && searchQuery) {
+      onSearchChange("");
+    }
+  };
 
   const getFilterCount = (): number => {
     if (!appliedFilters) return 0;
@@ -44,7 +39,6 @@ export function DiscoverTalentHeader({
     if (appliedFilters.skills.length > 0) count += appliedFilters.skills.length;
     if (appliedFilters.location) count += 1;
     if (appliedFilters.availability !== "All") count += 1;
-    if (appliedFilters.experienceLevel) count += 1;
     return count;
   };
 
@@ -58,14 +52,28 @@ export function DiscoverTalentHeader({
       {/* Search Bar and Filter */}
       <div className="flex items-center gap-[8px] mb-[19px]">
         <div className="flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border border-[#E1E4EA] rounded-[8px]">
-          <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
+          {isLoading ? (
+            <div className="w-[15px] h-[15px] border-2 border-[#B2B2B2] border-t-transparent rounded-full animate-spin flex-shrink-0" />
+          ) : (
+            <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
+          )}
           <input
             type="text"
-            placeholder="Search Talent or Services or Location"
+            placeholder="Search talents, skills, or services"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
           />
+          {searchQuery && !isLoading && (
+            <button
+              onClick={() => onSearchChange("")}
+              className="flex-shrink-0 text-[#B2B2B2] hover:text-black transition-colors"
+              aria-label="Clear search"
+            >
+              <X className="w-[15px] h-[15px]" />
+            </button>
+          )}
         </div>
         <div className="relative">
           <button
@@ -97,7 +105,7 @@ export function DiscoverTalentHeader({
 
       {/* Category Tabs */}
       <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
-        {categories.map((category) => (
+        {["All", ...categories].map((category) => (
           <button
             key={category}
             onClick={() => onCategoryChange(category)}

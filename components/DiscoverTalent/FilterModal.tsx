@@ -7,14 +7,12 @@ import skillsData from "@/lib/data/skills.json";
 import statesCitiesData from "@/lib/data/states-cities.json";
 
 type AvailabilityType = "All" | "Contract" | "Part Time" | "Full Time";
-type ExperienceLevelType = "Entry" | "Intermediate" | "Senior";
 
 interface FilterState {
   categories: string[];
   skills: string[];
   location: string;
   availability: AvailabilityType;
-  experienceLevel: ExperienceLevelType | null;
 }
 
 interface FilterModalProps {
@@ -47,7 +45,6 @@ export function FilterModal({
       skills: [],
       location: "",
       availability: "All",
-      experienceLevel: null,
     },
   );
 
@@ -81,16 +78,18 @@ export function FilterModal({
   }, [locationSearch]);
 
   const handleClearFilter = () => {
-    setFilters({
+    const emptyFilters: FilterState = {
       categories: [],
       skills: [],
       location: "",
       availability: "All",
-      experienceLevel: null,
-    });
+    };
+    setFilters(emptyFilters);
     setCategorySearch("");
     setSkillSearch("");
     setLocationSearch("");
+    onApply(emptyFilters);
+    onClose();
   };
 
   const handleApplyFilter = () => {
@@ -343,32 +342,7 @@ export function FilterModal({
             </div>
           </div>
 
-          {/* Experience Level */}
-          <div className="flex flex-col gap-[8px] w-full">
-            <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
-              Experience Level
-            </span>
-            <div className="flex flex-col gap-[10px] p-[8px] border border-[#E1E4EA] rounded-[8px] bg-white">
-              {(["Entry", "Intermediate", "Senior"] as const).map((option) => (
-                <button
-                  key={option}
-                  onClick={() =>
-                    setFilters((prev) => ({ ...prev, experienceLevel: option }))
-                  }
-                  className="flex items-center gap-[4px]"
-                >
-                  <div className="w-3 h-3 rounded-full border border-[#B2B2B2] flex items-center justify-center">
-                    {filters.experienceLevel === option && (
-                      <div className="w-[9px] h-[9px] rounded-full bg-[#5C30FF]" />
-                    )}
-                  </div>
-                  <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
-                    {option}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
+
         </div>
 
         {/* Action Buttons */}
@@ -396,4 +370,4 @@ export function FilterModal({
 }
 
 
-export type { FilterState, AvailabilityType, ExperienceLevelType };
+export type { FilterState, AvailabilityType };

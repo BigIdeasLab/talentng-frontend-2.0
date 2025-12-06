@@ -1,107 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Briefcase, Star } from "lucide-react";
-import { EmptyState } from "./EmptyState";
-import { useMyServices } from "@/hooks/useTalentApi";
-import type { Service } from "@/lib/api/talent-service";
+import type { Service } from "@/lib/api/talent/types";
 
-interface ServicesGridProps {
-  onServiceClick?: (service: Service) => void;
-  onAddService?: () => void;
-  refreshTrigger?: number;
-  cachedServices?: Service[];
-  onServicesLoaded?: (services: Service[]) => void;
-  isLoading?: boolean;
-  onLoadingChange?: (loading: boolean) => void;
+interface TalentServicesGridProps {
+  services: Service[];
 }
 
 const PLACEHOLDER_IMAGE =
   "https://api.builder.io/api/v1/image/assets/TEMP/006e1249db9b7d609ae3b3246ecaa7c825dfa329?width=518";
 
-export function ServicesGrid({
-  onServiceClick,
-  onAddService,
-  refreshTrigger,
-  cachedServices = [],
-  onServicesLoaded,
-  isLoading: parentIsLoading = false,
-  onLoadingChange,
-}: ServicesGridProps) {
-  const { data: hookServices, isLoading: hookIsLoading, error: hookError } = useMyServices();
-  const [services, setServices] = useState<Service[]>(cachedServices);
-  const [isLoading, setIsLoading] = useState(parentIsLoading && cachedServices.length === 0);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (hookServices) {
-      setServices(hookServices);
-      onServicesLoaded?.(hookServices);
-      setError(null);
-    }
-    if (hookIsLoading) {
-      setIsLoading(true);
-      onLoadingChange?.(true);
-    } else {
-      setIsLoading(false);
-      onLoadingChange?.(false);
-    }
-    if (hookError) {
-      const errorStatus = (hookError as any)?.status;
-      let errorMessage = "";
-
-      if (errorStatus === 404) {
-        // Services endpoint may not exist yet or talent profile not found
-        setServices([]);
-        onServicesLoaded?.([]);
-        setError(null);
-        return;
-      } else if (errorStatus === 401) {
-        errorMessage = "Please log in to view your services";
-      } else if (errorStatus === 403) {
-        errorMessage = "You don't have permission to view these services";
-      } else {
-        errorMessage =
-          hookError instanceof Error ? hookError.message : "Failed to load services";
-      }
-      setError(errorMessage);
-      setServices([]);
-    }
-  }, [hookServices, hookIsLoading, hookError, onLoadingChange, onServicesLoaded]);
-
-  if (isLoading) {
+export function TalentServicesGrid({ services }: TalentServicesGridProps) {
+  if (!services || services.length === 0) {
     return (
-      <div className="w-full h-64 flex items-center justify-center">
-        <div className="animate-pulse text-gray-400">Loading services...</div>
+      <div className="flex items-center justify-center p-[25px] min-h-[400px]">
+        <p className="text-gray-500">No services offered yet</p>
       </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="w-full p-6 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-600 mb-3">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (services.length === 0) {
-    return (
-      <EmptyState
-        title="No services added yet"
-        description="Add services that showcase your expertise. Clear service offerings help clients find you."
-        buttonText="Add Service"
-        onButtonClick={onAddService}
-      />
     );
   }
 
@@ -109,10 +24,9 @@ export function ServicesGrid({
     <div className="w-full px-[15px] py-[15px]">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[10px] gap-y-[20px]">
         {services.map((service) => (
-          <button
+          <div
             key={service.id}
-            onClick={() => onServiceClick?.(service)}
-            className="group flex flex-col items-start gap-[8px] text-left hover:opacity-80 transition-opacity"
+            className="group flex flex-col items-start gap-[8px] text-left hover:opacity-80 transition-opacity cursor-pointer"
           >
             {/* Service Image */}
             <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-100">
@@ -194,7 +108,7 @@ export function ServicesGrid({
                 </div>
               )}
             </div>
-          </button>
+          </div>
         ))}
       </div>
     </div>

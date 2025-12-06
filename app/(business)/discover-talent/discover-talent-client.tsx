@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { DiscoverTalentHeader, TalentGrid } from "@/components/DiscoverTalent";
-import { Spinner } from "@/components/ui/spinner";
+import { useState, useRef } from "react";
+import { DiscoverTalentHeader, TalentGrid, TalentGridSkeleton } from "@/components/DiscoverTalent";
 import { getDiscoverTalentData } from "./server-data";
 import type { TalentData } from "./server-data";
 import type { FilterState } from "@/components/DiscoverTalent";
@@ -22,17 +21,33 @@ export function DiscoverTalentClient({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(initialError);
   const [filters, setFilters] = useState<FilterState | null>(null);
+  const [offset, setOffset] = useState(0);
+  const LIMIT = 20;
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleSearch = async (query: string) => {
-    setSearchQuery(query);
+  const fetchTalents = async (
+    query: string,
+    category: string,
+    appliedFilters: FilterState | null,
+    pageOffset: number = 0,
+  ) => {
     setLoading(true);
     setError(null);
 
     try {
       const { talents: newTalents, error: fetchError } =
-        await getDiscoverTalentData(query);
+        await getDiscoverTalentData({
+          searchQuery: query,
+          category,
+          skills: appliedFilters?.skills || [],
+          location: appliedFilters?.location,
+          availability: appliedFilters?.availability,
+          limit: LIMIT,
+          offset: pageOffset,
+        });
       setTalents(newTalents);
       setError(fetchError);
+      setOffset(pageOffset);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch talents");
     } finally {
@@ -40,33 +55,67 @@ export function DiscoverTalentClient({
     }
   };
 
+  const handleSearch = async (query: string) => {
+    setSearchQuery(query);
+    setLoading(true);
+
+    // Clear previous timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    // Set new timeout for debouncing
+    searchTimeoutRef.current = setTimeout(() => {
+      fetchTalents(query, selectedCategory, filters, 0);
+    }, 500);
+  };
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    fetchTalents(searchQuery, category, filters, 0);
+  };
+
   const handleFilterApply = (appliedFilters: FilterState) => {
     setFilters(appliedFilters);
-    // Trigger search with applied filters
-    // You can add additional filtering logic here based on skills, location, availability, etc.
-    handleSearch(searchQuery);
+    fetchTalents(searchQuery, selectedCategory, appliedFilters, 0);
+  };
+
+  const handleNextPage = () => {
+    fetchTalents(searchQuery, selectedCategory, filters, offset + LIMIT);
+  };
+
+  const handlePreviousPage = () => {
+    if (offset > 0) {
+      fetchTalents(searchQuery, selectedCategory, filters, offset - LIMIT);
+    }
   };
 
   return (
     <div className="flex flex-col h-screen bg-white overflow-hidden">
       <DiscoverTalentHeader
         selectedCategory={selectedCategory}
-        onCategoryChange={setSelectedCategory}
+        onCategoryChange={handleCategoryChange}
         searchQuery={searchQuery}
         onSearchChange={handleSearch}
         onFilterApply={handleFilterApply}
+        isLoading={loading}
       />
-      {loading && (
-        <div className="flex-1 flex items-center justify-center">
-          <Spinner size="lg" />
-        </div>
-      )}
+      {loading && <TalentGridSkeleton />}
       {error && !loading && (
         <div className="flex-1 flex items-center justify-center">
           <p className="text-red-500">Error: {error}</p>
         </div>
       )}
-      {!loading && !error && <TalentGrid talents={talents} />}
+      {!loading && !error && (
+        <TalentGrid
+          talents={talents}
+          onNextPage={handleNextPage}
+          onPreviousPage={handlePreviousPage}
+          hasNextPage={talents.length >= LIMIT}
+          hasPreviousPage={offset > 0}
+          currentPage={Math.floor(offset / LIMIT) + 1}
+        />
+      )}
     </div>
   );
 }

@@ -2,14 +2,14 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { getCookie, deleteCookie, setCookie } from "@/lib/utils";
-import { getCurrentUser, logout as logoutAPI } from "@/lib/api";
-import type { User } from "@/lib/types/auth";
+import { userProfileApi, type User } from "@/lib/api/user-service";
+import { logout as logoutAPI } from "@/lib/api";
 
 const fetchUser = async (): Promise<User | null> => {
   const token = getCookie("accessToken");
   if (token) {
     try {
-      const userData = await getCurrentUser();
+      const userData = await userProfileApi.getCurrentUser();
       return userData;
     } catch (error) {
       console.error("Failed to fetch user data:", error);
