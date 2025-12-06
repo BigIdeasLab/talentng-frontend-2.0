@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { EmployerProfilePanel } from "./EmployerProfilePanel";
 import { EmployerProfileNav } from "./EmployerProfileNav";
+import { OpportunitiesTab } from "./tabs/OpportunitiesTab";
+import { PastHiresTab } from "./tabs/PastHiresTab";
+import { AboutTab } from "./tabs/AboutTab";
 
 interface EmployerProfileProps {
   companyData?: {
@@ -79,38 +82,17 @@ export function EmployerProfile({
         {/* Content Section */}
         <div className="flex-1 overflow-y-auto scrollbar-styled">
           {/* Open Opportunities Tab */}
-          {activeTab === "opportunities" && (
-            <div className="flex flex-col items-center justify-center h-full gap-4 p-6">
-              <h2 className="text-xl font-semibold text-black">
-                Open Opportunities
-              </h2>
-              <p className="text-sm text-[rgba(0,0,0,0.30)]">
-                No opportunities posted yet
-              </p>
-            </div>
-          )}
+          {activeTab === "opportunities" && <OpportunitiesTab />}
 
           {/* Past Hires Tab */}
-          {activeTab === "hires" && (
-            <div className="flex flex-col items-center justify-center h-full gap-4 p-6">
-              <h2 className="text-xl font-semibold text-black">Past Hires</h2>
-              <p className="text-sm text-[rgba(0,0,0,0.30)]">
-                No past hires yet
-              </p>
-            </div>
-          )}
+          {activeTab === "hires" && <PastHiresTab />}
 
           {/* About Tab */}
-          {activeTab === "about" && (
-            <div className="flex flex-col items-center justify-center h-full gap-4 p-6">
-              <h2 className="text-xl font-semibold text-black">About</h2>
-              <p className="text-sm text-[rgba(0,0,0,0.30)]">
-                Company information will be displayed here
-              </p>
-            </div>
-          )}
+          {activeTab === "about" && <AboutTab />}
         </div>
       </main>
     </div>
   );
 }
+
+

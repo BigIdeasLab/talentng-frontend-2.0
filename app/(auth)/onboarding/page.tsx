@@ -12,7 +12,7 @@ import { CompanyProfileStep } from "@/components/onboarding/CompanyProfileStep";
 import { CompanyDetailsStep } from "@/components/onboarding/CompanyDetailsStep";
 import { MentorProfileStep } from "@/components/onboarding/MentorProfileStep";
 import { MentorExpertiseStep } from "@/components/onboarding/MentorExpertiseStep";
-import { completeOnboarding } from "@/lib/api";
+import { useCompleteOnboarding } from "@/hooks/useUserApi";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -30,6 +30,7 @@ const OnboardingPage = () => {
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const { refetchUser, user } = useAuth();
+  const completeOnboardingMutation = useCompleteOnboarding();
   
   // Check if we're in "add role" mode
   const isAddingRole = searchParams.get("mode") === "add-role";
@@ -113,7 +114,7 @@ const OnboardingPage = () => {
         details: detailsData,
       });
 
-      await completeOnboarding(formData);
+      await completeOnboardingMutation.mutateAsync(formData);
 
       await refetchUser();
       toast({
@@ -209,7 +210,7 @@ const OnboardingPage = () => {
         formData.append("profileImage", logo);
       }
 
-      await completeOnboarding(formData);
+      await completeOnboardingMutation.mutateAsync(formData);
 
       await refetchUser();
       toast({
@@ -343,7 +344,7 @@ const OnboardingPage = () => {
     }
 
     try {
-      await completeOnboarding(formData);
+      await completeOnboardingMutation.mutateAsync(formData);
 
       await refetchUser();
       toast({

@@ -28,7 +28,7 @@ function mapApiRecommendationToUI(
 ): Recommendation {
   return {
     id: apiRec.id,
-    name: apiRec.recommendedBy.username || apiRec.recommendedBy.email,
+    name: apiRec.recommendedBy?.username || apiRec.recommendedBy?.email || "Anonymous",
     date: new Date(apiRec.createdAt).toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",

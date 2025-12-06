@@ -1,0 +1,715 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                         String                  @id @default(uuid()) @map("id")
+  username                   String?                 @map("username")
+  email                      String                  @unique @map("email")
+  passwordHash               String?                 @map("password_hash")
+  passwordHistory            String[]                @default([]) @map("password_history") // JSON array of previous password hashes
+  roles                      UserRole[]              @map("roles")
+  status                     Status                  @default(active) @map("status")
+  isVerified                 Boolean                 @default(false) @map("is_verified")
+  verificationLevel          VerificationLevel       @default(basic) @map("verification_level")
+  emailVerifiedAt            DateTime?               @map("email_verified_at")
+  lastLoginAt                DateTime?               @map("last_login_at")
+  createdAt                  DateTime                @default(now()) @map("created_at")
+  updatedAt                  DateTime                @updatedAt @map("updated_at")
+  deletedAt                  DateTime?               @map("deleted_at")
+  oneSignalPlayerId          String?                 @unique @map("one_signal_player_id")
+  applications               Application[]
+  auditLogs                  AuditLog[]
+  badges                     Badge[]
+  bookings                   Booking[]               @relation("MenteeBookings")
+  createdResources           LearningResource[]      @relation("LearningResourceCreatedBy")
+  reviewedResources          LearningResource[]      @relation("LearningResourceReviewedBy")
+  mediaAssets                MediaAsset[]            @relation("UserMediaAssets")
+  mentorProfile              MentorProfile?
+  mentorshipRequestsSent     MentorshipRequest[]     @relation("MentorshipRequestsSent")
+  mentorshipRequestsReceived MentorshipRequest[]     @relation("MentorshipRequestsReceived")
+  notificationPrefs          NotificationPreference?
+  notifications              Notification[]
+  postedOpportunities        Opportunity[]           @relation("UserPostedOpportunities")
+  paymentTransactions        PaymentTransaction[]
+  recruiterProfile           RecruiterProfile?
+  refreshTokens              RefreshToken[]
+  reports                    Report[]
+  savedSearches              SavedSearch[]
+  subscriptions              Subscription[]
+  talentProfile              TalentProfile?
+  learningProgress           UserLearning[]
+  reviewedVerifications      VerificationRequest[]   @relation("VerificationReviewedBy")
+  verificationRequests       VerificationRequest[]   @relation("VerificationRequestedBy")
+  serviceReviews             ServiceReview[]         @relation("UserServiceReviews")
+  recommendationsGiven       TalentRecommendation[]  @relation("RecommendationsGiven")
+
+  @@index([status])
+  @@index([username])
+  @@map("users")
+}
+
+model TalentProfile {
+  id              String     @id @default(uuid()) @map("id")
+  userId          String     @unique @map("user_id")
+  fullName        String?    @map("full_name")
+  headline        String?    @map("headline")
+  bio             String?    @map("bio")
+  skills          String[]   @map("skills")
+  stack           String[]   @default([]) @map("stack")
+  workExperience  Json[]     @map("work_experience")
+  education       Json[]     @map("education")
+  location        String?    @map("location")
+  links           Json?      @map("links")
+  portfolioItems  Json[]     @map("portfolio_items")
+  resumeUrl       String?    @map("resume_url")
+  visibility      Visibility @default(public) @map("visibility")
+  isFeatured      Boolean    @default(false) @map("is_featured")
+  featuredUntil   DateTime?  @map("featured_until")
+  views           Int        @default(0) @map("views")
+  coverImageUrl   String?    @map("cover_image_url")
+  profileImageUrl String?    @map("profile_image_url")
+  company         String?    @map("company")
+  duration        String?    @map("duration")
+  description     String?    @map("description")
+  gallery         Json[]     @map("gallery")
+  earnings        Decimal    @default(0) @map("earnings")
+  hiredCount      Int        @default(0) @map("hired_count")
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+  deletedAt       DateTime?  @map("deleted_at")
+  availability    String?    @map("availability")
+  phoneNumber     String?    @map("phone_number")
+  category        String?    @map("category")
+  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  services        Service[]
+  recommendations TalentRecommendation[] @relation("TalentRecommendations")
+
+  @@map("talent_profiles")
+}
+
+model Service {
+  id               String           @id @default(uuid()) @map("id")
+  talentProfileId  String           @map("talent_profile_id")
+  title            String           @map("title")
+  about            String           @map("about")
+  price            String?          @map("price")
+  images           String[]         @default([]) @map("images")
+  tags             String[]         @default([]) @map("tags")
+  status           ServiceStatus    @default(active) @map("status")
+  averageRating    Decimal          @default(0) @map("average_rating")
+  totalReviews     Int              @default(0) @map("total_reviews")
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+  deletedAt        DateTime?        @map("deleted_at")
+  talentProfile    TalentProfile    @relation(fields: [talentProfileId], references: [id], onDelete: Cascade)
+  reviews          ServiceReview[]
+
+  @@index([talentProfileId])
+  @@index([status])
+  @@map("services")
+}
+
+model ServiceReview {
+  id        String   @id @default(uuid()) @map("id")
+  serviceId String   @map("service_id")
+  reviewerId String  @map("reviewer_id")
+  rating    Int      @map("rating") // 1-5 stars
+  comment   String?  @map("comment")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  reviewer  User     @relation("UserServiceReviews", fields: [reviewerId], references: [id], onDelete: Cascade)
+
+  @@unique([serviceId, reviewerId])
+  @@index([serviceId])
+  @@index([reviewerId])
+  @@map("service_reviews")
+}
+
+model TalentRecommendation {
+  id              String   @id @default(uuid()) @map("id")
+  talentProfileId String   @map("talent_profile_id")
+  recommendedById String   @map("recommended_by_id")
+  title           String   @map("title") // e.g., "UI Design", "Backend Development"
+  comment         String?  @map("comment")
+  rating          Int?     @map("rating") // Optional 1-5 stars
+  isVerified      Boolean  @default(false) @map("is_verified") // Verified past work relationship
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  talentProfile TalentProfile @relation("TalentRecommendations", fields: [talentProfileId], references: [id], onDelete: Cascade)
+  recommendedBy User          @relation("RecommendationsGiven", fields: [recommendedById], references: [id], onDelete: Cascade)
+
+  @@unique([talentProfileId, recommendedById])
+  @@index([talentProfileId])
+  @@index([recommendedById])
+  @@map("talent_recommendations")
+}
+
+model RecruiterProfile {
+  id              String     @id @default(uuid()) @map("id")
+  userId          String     @unique @map("user_id")
+  bio             String?    @map("bio")
+  company         String?    @map("company")
+  industry        String?    @map("industry")
+  location        String?    @map("location")
+  companySize     String?    @map("company_size")
+  companyStage    String?    @map("company_stage")
+  operatingModel  String?    @map("operating_model")
+  links           Json?      @map("links")
+  visibility      Visibility @default(public) @map("visibility")
+  isFeatured      Boolean    @default(false) @map("is_featured")
+  featuredUntil   DateTime?  @map("featured_until")
+  views           Int        @default(0) @map("views")
+  coverImageUrl   String?    @map("cover_image_url")
+  profileImageUrl String?    @map("profile_image_url")
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+  deletedAt       DateTime?  @map("deleted_at")
+  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("recruiter_profiles")
+}
+
+model MentorProfile {
+  id                 String               @id @default(uuid()) @map("id")
+  userId             String               @unique @map("user_id")
+  fullName           String?              @map("full_name")
+  headline           String?              @map("headline")
+  bio                String?              @map("bio")
+  expertise          String[]             @map("expertise")
+  experience         Json[]               @map("experience")
+  industries         String[]             @default([]) @map("industries")
+  stack              String[]             @default([]) @map("stack")
+  languages          String[]             @default([]) @map("languages")
+  location           String?              @map("location")
+  links              Json?                @map("links")
+  visibility         Visibility           @default(public) @map("visibility")
+  isFeatured         Boolean              @default(false) @map("is_featured")
+  featuredUntil      DateTime?            @map("featured_until")
+  views              Int                  @default(0) @map("views")
+  coverImageUrl      String?              @map("cover_image_url")
+  profileImageUrl    String?              @default("https://api.builder.io/api/v1/image/assets/TEMP/e6c405f1f8a640a9e5d63adf52ea7849f582c532?width=128") @map("profile_image_url")
+  company            String?              @map("company")
+  description        String?              @map("description")
+  createdAt          DateTime             @default(now()) @map("created_at")
+  updatedAt          DateTime             @updatedAt @map("updated_at")
+  deletedAt          DateTime?            @map("deleted_at")
+  mentorshipTopics   String[]             @map("mentorship_topics")
+  bookings           Booking[]            @relation("MentorBookings")
+  mentorAvailability MentorAvailability[]
+  user               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("mentor_profiles")
+}
+
+model Opportunity {
+  id                  String               @id @default(uuid()) @map("id")
+  type                OpportunityType      @map("type")
+  title               String               @map("title")
+  description         String               @map("description")
+  requirements        String[]             @map("requirements")
+  company             String?              @map("company")
+  logo                String?              @map("logo")
+  keyResponsibilities String[]             @map("key_responsibilities")
+  employmentType      String?              @map("employment_type")
+  location            String?              @map("location")
+  compensation        String?              @map("compensation")
+  tags                String[]             @map("tags")
+  status              OpportunityStatus    @default(active) @map("status")
+  postedById          String?              @map("posted_by_id")
+  isFeatured          Boolean              @default(false) @map("is_featured")
+  featuredUntil       DateTime?            @map("featured_until")
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
+  deletedAt           DateTime?            @map("deleted_at")
+  applications        Application[]
+  postedBy            User?                @relation("UserPostedOpportunities", fields: [postedById], references: [id])
+  payments            PaymentTransaction[] @relation("OpportunityPayments")
+
+  @@index([status])
+  @@index([type])
+  @@index([postedById])
+  @@map("opportunities")
+}
+
+model Application {
+  id            String            @id @default(uuid()) @map("id")
+  userId        String            @map("user_id")
+  opportunityId String            @map("opportunity_id")
+  status        ApplicationStatus @default(applied) @map("status")
+  note          String?           @map("note")
+  attachments   Json[]            @map("attachments")
+  createdAt     DateTime          @default(now()) @map("created_at")
+  updatedAt     DateTime          @updatedAt @map("updated_at")
+  opportunity   Opportunity       @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, opportunityId])
+  @@index([opportunityId, status])
+  @@map("applications")
+}
+
+model MentorshipRequest {
+  id        String                  @id @default(uuid()) @map("id")
+  menteeId  String                  @map("mentee_id")
+  mentorId  String                  @map("mentor_id")
+  status    MentorshipRequestStatus @default(pending) @map("status")
+  createdAt DateTime                @default(now()) @map("created_at")
+  updatedAt DateTime                @updatedAt @map("updated_at")
+  mentee    User                    @relation("MentorshipRequestsSent", fields: [menteeId], references: [id], onDelete: Cascade)
+  mentor    User                    @relation("MentorshipRequestsReceived", fields: [mentorId], references: [id], onDelete: Cascade)
+
+  @@unique([menteeId, mentorId])
+  @@map("mentorship_requests")
+}
+
+model LearningResource {
+  id              String                 @id @default(uuid()) @map("id")
+  title           String                 @map("title")
+  category        String                 @map("category")
+  provider        String                 @map("provider")
+  url             String                 @map("url")
+  tags            String[]               @map("tags")
+  featured        Boolean                @default(false) @map("featured")
+  status          LearningResourceStatus @default(pending) @map("status")
+  createdById     String                 @map("created_by_id")
+  reviewedById    String?                @map("reviewed_by_id")
+  reviewedAt      DateTime?              @map("reviewed_at")
+  createdAt       DateTime               @default(now()) @map("created_at")
+  updatedAt       DateTime               @updatedAt @map("updated_at")
+  deletedAt       DateTime?              @map("deleted_at")
+  backgroundImage String?                @map("background_image")
+  duration        String?                @map("duration")
+  createdBy       User                   @relation("LearningResourceCreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
+  reviewedBy      User?                  @relation("LearningResourceReviewedBy", fields: [reviewedById], references: [id])
+  userLearning    UserLearning[]
+
+  @@index([status])
+  @@index([featured])
+  @@map("learning_resources")
+}
+
+model UserLearning {
+  userId       String           @map("user_id")
+  resourceId   String           @map("resource_id")
+  progress     Int              @default(0) @map("progress")
+  bookmarked   Boolean          @default(false) @map("bookmarked")
+  lastViewedAt DateTime?        @map("last_viewed_at")
+  createdAt    DateTime         @default(now()) @map("created_at")
+  updatedAt    DateTime         @updatedAt @map("updated_at")
+  resource     LearningResource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, resourceId])
+  @@map("user_learning")
+}
+
+model VerificationRequest {
+  id           String             @id @default(uuid()) @map("id")
+  userId       String             @map("user_id")
+  type         VerificationType   @map("type")
+  documents    Json[]             @map("documents")
+  status       VerificationStatus @default(pending) @map("status")
+  reviewNotes  String?            @map("review_notes")
+  reviewedById String?            @map("reviewed_by_id")
+  reviewedAt   DateTime?          @map("reviewed_at")
+  createdAt    DateTime           @default(now()) @map("created_at")
+  updatedAt    DateTime           @updatedAt @map("updated_at")
+  reviewedBy   User?              @relation("VerificationReviewedBy", fields: [reviewedById], references: [id])
+  user         User               @relation("VerificationRequestedBy", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([userId])
+  @@map("verification_requests")
+}
+
+model Notification {
+  id             String                @id @default(uuid()) @map("id")
+  userId         String                @map("user_id")
+  type           NotificationType      @map("type")
+  payload        Json                  @map("payload")
+  channels       NotificationChannel[] @map("channels")
+  deliveryStatus DeliveryStatus        @default(queued) @map("delivery_status")
+  readAt         DateTime?             @map("read_at")
+  createdAt      DateTime              @default(now()) @map("created_at")
+  updatedAt      DateTime              @updatedAt @map("updated_at")
+  user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, deliveryStatus])
+  @@map("notifications")
+}
+
+model NotificationPreference {
+  userId    String          @id @map("user_id")
+  email     Boolean         @default(true) @map("email")
+  push      Boolean         @default(true) @map("push")
+  inapp     Boolean         @default(true) @map("inapp")
+  digest    DigestFrequency @default(daily) @map("digest")
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notification_preferences")
+}
+
+model Badge {
+  id       String   @id @default(uuid()) @map("id")
+  userId   String   @map("user_id")
+  type     String   @map("type")
+  issuedAt DateTime @default(now()) @map("issued_at")
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type])
+  @@map("badges")
+}
+
+model SavedSearch {
+  id        String          @id @default(uuid()) @map("id")
+  userId    String          @map("user_id")
+  type      SavedSearchType @map("type")
+  name      String          @map("name")
+  filters   Json            @map("filters")
+  notify    Boolean         @default(false) @map("notify")
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, name])
+  @@map("saved_searches")
+}
+
+model Report {
+  id         String       @id @default(uuid()) @map("id")
+  reporterId String       @map("reporter_id")
+  entity     ReportEntity @map("entity")
+  entityId   String       @map("entity_id")
+  reason     String       @map("reason")
+  notes      String?      @map("notes")
+  status     ReportStatus @default(pending) @map("status")
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
+  reporter   User         @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+
+  @@index([entity, entityId])
+  @@map("reports")
+}
+
+model AuditLog {
+  id        String      @id @default(uuid()) @map("id")
+  userId    String?     @map("user_id")
+  action    String      @map("action")
+  entity    AuditEntity @map("entity")
+  entityId  String?     @map("entity_id")
+  message   String?     @map("message")
+  ip        String?     @map("ip")
+  ua        String?     @map("ua")
+  meta      Json?       @map("meta")
+  createdAt DateTime    @default(now()) @map("created_at")
+  user      User?       @relation(fields: [userId], references: [id])
+
+  @@index([entity, entityId])
+  @@map("audit_logs")
+}
+
+model MediaAsset {
+  id          String       @id @default(uuid()) @map("id")
+  ownerUserId String       @map("owner_user_id")
+  url         String       @map("url")
+  mime        String       @map("mime")
+  sizeBytes   BigInt       @map("size_bytes")
+  purpose     MediaPurpose @map("purpose")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  key         String       @unique @map("key")
+  owner       User         @relation("UserMediaAssets", fields: [ownerUserId], references: [id], onDelete: Cascade)
+
+  @@index([ownerUserId, purpose])
+  @@map("media_assets")
+}
+
+model PaymentTransaction {
+  id            String        @id @default(uuid()) @map("id")
+  userId        String        @map("user_id")
+  amount        Decimal       @map("amount")
+  currency      Currency      @map("currency")
+  status        PaymentStatus @default(pending) @map("status")
+  method        PaymentMethod @map("method")
+  reference     String        @unique @map("reference")
+  description   String?       @map("description")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  opportunityId String?       @map("opportunity_id")
+  opportunity   Opportunity?  @relation("OpportunityPayments", fields: [opportunityId], references: [id])
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([opportunityId])
+  @@map("payment_transactions")
+}
+
+model Subscription {
+  id            String   @id @default(uuid()) @map("id")
+  userId        String   @map("user_id")
+  plan          String   @map("plan")
+  provider      String   @map("provider")
+  providerSubId String   @unique @map("provider_sub_id")
+  status        String   @map("status")
+  entityType    String?  @map("entity_type")
+  entityId      String?  @map("entity_id")
+  startedAt     DateTime @map("started_at")
+  endsAt        DateTime @map("ends_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+model RefreshToken {
+  id          String   @id @default(uuid())
+  hashedToken String   @map("hashed_token")
+  userId      String   @map("user_id")
+  revoked     Boolean  @default(false)
+  expiresAt   DateTime @map("expires_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model MentorAvailability {
+  id          String        @id @default(uuid())
+  mentorId    String
+  startTime   DateTime
+  endTime     DateTime
+  isRecurring Boolean       @default(false)
+  dayOfWeek   Int?
+  mentor      MentorProfile @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+
+  @@index([mentorId])
+  @@map("mentor_availabilities")
+}
+
+model Booking {
+  id        String        @id @default(uuid())
+  menteeId  String
+  mentorId  String
+  startTime DateTime
+  endTime   DateTime
+  status    BookingStatus @default(confirmed)
+  note      String?
+  topic     String?
+  mentee    User          @relation("MenteeBookings", fields: [menteeId], references: [id], onDelete: Cascade)
+  mentor    MentorProfile @relation("MentorBookings", fields: [mentorId], references: [id], onDelete: Cascade)
+
+  @@map("bookings")
+}
+
+enum UserRole {
+  admin
+  talent
+  recruiter
+  mentor
+}
+
+enum Status {
+  active
+  suspended
+  banned
+}
+
+enum ServiceStatus {
+  active
+  inactive
+  archived
+}
+
+enum VerificationLevel {
+  basic
+  kyc
+  org
+}
+
+enum InviteStatus {
+  pending
+  accepted
+  rejected
+  expired
+}
+
+enum Visibility {
+  public
+  private
+}
+
+enum OpportunityType {
+  Internship
+  Volunteer
+  Job
+}
+
+enum OpportunityStatus {
+  active
+  closed
+  draft
+}
+
+enum ApplicationStatus {
+  applied
+  shortlisted
+  rejected
+  hired
+}
+
+enum MentorshipRequestStatus {
+  pending
+  accepted
+  rejected
+  cancelled
+}
+
+enum LearningResourceStatus {
+  pending
+  approved
+  rejected
+}
+
+enum VerificationType {
+  kyc
+  org
+}
+
+enum VerificationStatus {
+  pending
+  approved
+  rejected
+}
+
+enum NotificationType {
+  application_status
+  new_invite
+  verification_result
+  mentorship_request
+  saved_search_match
+  admin_notice
+  payment_succeeded
+  payment_failed
+  feature_expired
+  user_registered
+  email_verified
+  profile_updated
+  password_changed
+  user_suspended
+  user_unsuspended
+  opportunity_created
+  opportunity_updated
+  opportunity_featured
+  opportunity_unfeatured
+  booking_confirmed
+  new_application
+  application_submitted
+}
+
+enum NotificationChannel {
+  email
+  push
+  inapp
+}
+
+enum DeliveryStatus {
+  queued
+  sent
+  failed
+  read
+}
+
+enum DigestFrequency {
+  none
+  daily
+  weekly
+}
+
+enum SavedSearchType {
+  opportunity
+  profile
+}
+
+enum ReportEntity {
+  users
+  talent_profiles
+  recruiter_profiles
+  mentor_profiles
+  opportunities
+  learning_resources
+}
+
+enum ReportStatus {
+  pending
+  reviewed
+  resolved
+  dismissed
+}
+
+enum MediaPurpose {
+  avatar
+  portfolio
+  resume
+  verification
+  listing
+  PROFILE_IMAGE
+  COVER_IMAGE
+  PORTFOLIO_ITEM
+  GALLERY_ITEM
+}
+
+enum AuditEntity {
+  users
+  talent_profiles
+  recruiter_profiles
+  mentor_profiles
+  opportunities
+  learning_resources
+  applications
+  verification_requests
+  notifications
+  payment_transactions
+  subscriptions
+  services
+  service_reviews
+}
+
+enum Currency {
+  NGN
+  USD
+  EUR
+  GBP
+}
+
+enum PaymentStatus {
+  pending
+  completed
+  failed
+  refunded
+}
+
+enum PaymentMethod {
+  card
+  bank_transfer
+  paypal
+  crypto
+  paystack
+}
+
+enum BookingStatus {
+  confirmed
+  cancelled
+}

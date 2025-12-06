@@ -26,12 +26,13 @@ export interface DashboardStats {
 }
 
 export interface TalentFilterParams {
-  headline?: string;
-  bio?: string;
+  q?: string;
+  category?: string;
   skills?: string;
   location?: string;
-  visibility?: "public" | "private";
-  isFeatured?: boolean;
+  availability?: string;
+  limit?: number;
+  offset?: number;
 }
 
 export interface TalentProfile {
@@ -43,7 +44,7 @@ export interface TalentProfile {
   profileImageUrl: string | null;
   coverImageUrl: string | null;
   skills: string[];
-  stack: Array<{ name: string }>;
+  stack: string[];
   location: string | null;
   availability: string | null;
   phoneNumber: string | null;
@@ -58,27 +59,29 @@ export interface TalentProfile {
   createdAt: string;
   updatedAt: string;
   views: number;
-  stats: {
+  earnings: string | number;
+  hiredCount: number;
+  stats?: {
     earnings: string;
     hired: number;
     views: number;
     completionPercentage: number;
   };
-  workExperience: Array<{
-    id: string;
+  workExperience?: Array<{
+    id?: string;
     company: string;
     role: string;
     duration: string;
   }>;
-  education: Array<{
-    id: string;
+  education?: Array<{
+    id?: string;
     institution: string;
     degree: string;
     field: string;
   }>;
-  portfolioItems: PortfolioItem[];
-  gallery: GalleryItem[];
-  socialLinks: {
+  portfolioItems?: PortfolioItem[];
+  gallery?: GalleryItem[];
+  socialLinks?: {
     github?: string | null;
     linkedin?: string | null;
     twitter?: string | null;
@@ -87,6 +90,8 @@ export interface TalentProfile {
     dribbble?: string | null;
     portfolio?: string | null;
   };
+  services?: Service[];
+  recommendations?: TalentRecommendationDto[];
 }
 
 export interface APIProfileData {
@@ -158,15 +163,25 @@ export interface Service {
   title: string;
   about: string;
   price?: string;
-  images?: string[];
-  tags?: string[];
+  images: string[];
+  tags: string[];
   status: "active" | "inactive" | "archived";
   averageRating: number;
   totalReviews: number;
-  reviews?: Review[];
+  reviews?: ServiceReview[];
   createdAt: string;
   updatedAt: string;
   deletedAt?: string | null;
+}
+
+export interface ServiceReview {
+  id: string;
+  serviceId: string;
+  reviewerId: string;
+  rating: number;
+  comment?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateServiceInput {
@@ -198,15 +213,16 @@ export interface TalentRecommendationDto {
   talentProfileId: string;
   title: string;
   comment?: string;
-  rating?: number;
+  rating?: number | null;
   isVerified: boolean;
-  recommendedBy: {
+  recommendedBy?: {
     id: string;
     username?: string;
     email: string;
   };
-  createdAt: Date;
-  updatedAt: Date;
+  recommendedById?: string;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 }
 
 export interface RecommendationStatsDto {

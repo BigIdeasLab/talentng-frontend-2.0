@@ -5,8 +5,8 @@ import { X, Plus, Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createService, getMyServices } from "@/lib/api/talent";
-import type { CreateServiceInput, Service } from "@/lib/api/talent";
+import { useCreateService, useMyServices } from "@/hooks/useTalentApi";
+import type { CreateServiceInput, Service } from "@/lib/api/talent-service";
 
 interface CreateServiceModalProps {
   isOpen: boolean;
@@ -98,6 +98,9 @@ export function CreateServiceModal({
       return;
     }
 
+    const createServiceMutation = useCreateService();
+    const { refetch } = useMyServices();
+
     setIsLoading(true);
     try {
       const serviceData: CreateServiceInput = {
@@ -108,10 +111,10 @@ export function CreateServiceModal({
         tags: selectedTags.length > 0 ? selectedTags : undefined,
       };
 
-      await createService(serviceData);
+      await createServiceMutation.mutateAsync(serviceData);
       
-      // Fetch updated services list
-      const updatedServices = await getMyServices();
+      // Refetch updated services list
+      const { data: updatedServices } = await refetch();
 
       setFormData({ title: "", about: "", price: "" });
       setImages([]);
