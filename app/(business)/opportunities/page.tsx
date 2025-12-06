@@ -80,7 +80,12 @@ const mockClosedOpportunities: Opportunity[] = [
     date: "Dec 15",
     type: "job-listing",
     title: "UI/UX Designer",
-    skills: ["User Research", "Wireframing", "Prototyping", "Usability Testing"],
+    skills: [
+      "User Research",
+      "Wireframing",
+      "Prototyping",
+      "Usability Testing",
+    ],
     rate: "$6000 / Year",
     applicantsCount: 1200,
   },
@@ -116,7 +121,12 @@ const mockClosedOpportunities: Opportunity[] = [
     date: "Feb 5",
     type: "job-listing",
     title: "Content Strategist",
-    skills: ["Copywriting", "SEO Strategy", "Social Media", "Content Management"],
+    skills: [
+      "Copywriting",
+      "SEO Strategy",
+      "Social Media",
+      "Content Management",
+    ],
     rate: "$4500 / Project",
     applicantsCount: 90,
   },
@@ -143,7 +153,12 @@ const mockDraftOpportunities: Opportunity[] = [
     date: "Dec 15",
     type: "job-listing",
     title: "UI/UX Designer",
-    skills: ["User Research", "Wireframing", "Prototyping", "Usability Testing"],
+    skills: [
+      "User Research",
+      "Wireframing",
+      "Prototyping",
+      "Usability Testing",
+    ],
     rate: "$6000 / Year",
     applicantsCount: 0,
   },
@@ -183,7 +198,10 @@ export default function OpportunitiesPage() {
           <p className="text-gray-600 mb-4">
             This page is only available for recruiters/employers.
           </p>
-          <Link href="/dashboard" className="text-brand-primary hover:underline">
+          <Link
+            href="/dashboard"
+            className="text-brand-primary hover:underline"
+          >
             Go to Dashboard
           </Link>
         </div>
@@ -343,9 +361,7 @@ export default function OpportunitiesPage() {
           <DropdownMenuContent align="end">
             <DropdownMenuItem>Edit</DropdownMenuItem>
             <DropdownMenuItem>View Applications</DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600">
-              Delete
-            </DropdownMenuItem>
+            <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
