@@ -27,7 +27,7 @@ interface Opportunity {
   applicantsCount: number;
 }
 
-const mockOpportunities: Opportunity[] = [
+const mockOpenOpportunities: Opportunity[] = [
   {
     id: "1",
     companyName: "Chowdeck",
@@ -68,6 +68,96 @@ const mockOpportunities: Opportunity[] = [
     ],
     rate: "$350 / Month",
     applicantsCount: 254,
+  },
+];
+
+const mockClosedOpportunities: Opportunity[] = [
+  {
+    id: "c1",
+    companyName: "Chowdeck",
+    companyLogo:
+      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6?width=80",
+    date: "Dec 15",
+    type: "job-listing",
+    title: "UI/UX Designer",
+    skills: ["User Research", "Wireframing", "Prototyping", "Usability Testing"],
+    rate: "$6000 / Year",
+    applicantsCount: 1200,
+  },
+  {
+    id: "c2",
+    companyName: "Chowdeck",
+    companyLogo:
+      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6?width=80",
+    date: "Nov 22",
+    type: "job-listing",
+    title: "Graphic Designer",
+    skills: ["Brand Identity", "Typography", "Illustration", "Layout Design"],
+    rate: "$400 / Month",
+    applicantsCount: 245,
+  },
+  {
+    id: "c3",
+    companyName: "Chowdeck",
+    companyLogo:
+      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6?width=80",
+    date: "Jan 10",
+    type: "internship",
+    title: "Web Developer",
+    skills: ["Frontend Development", "Responsive Design", "SEO Optimization"],
+    rate: "$2000 / Month",
+    applicantsCount: 350,
+  },
+  {
+    id: "c4",
+    companyName: "Chowdeck",
+    companyLogo:
+      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6?width=80",
+    date: "Feb 5",
+    type: "job-listing",
+    title: "Content Strategist",
+    skills: ["Copywriting", "SEO Strategy", "Social Media", "Content Management"],
+    rate: "$4500 / Project",
+    applicantsCount: 90,
+  },
+  {
+    id: "c5",
+    companyName: "Chowdeck",
+    companyLogo:
+      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6?width=80",
+    date: "Mar 3",
+    type: "job-listing",
+    title: "Video Editor",
+    skills: ["Video Production", "Motion Graphics", "Storyboarding", "Editing"],
+    rate: "$300 / Month",
+    applicantsCount: 150,
+  },
+];
+
+const mockDraftOpportunities: Opportunity[] = [
+  {
+    id: "d1",
+    companyName: "Chowdeck",
+    companyLogo:
+      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6?width=80",
+    date: "Dec 15",
+    type: "job-listing",
+    title: "UI/UX Designer",
+    skills: ["User Research", "Wireframing", "Prototyping", "Usability Testing"],
+    rate: "$6000 / Year",
+    applicantsCount: 0,
+  },
+  {
+    id: "d2",
+    companyName: "Chowdeck",
+    companyLogo:
+      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6?width=80",
+    date: "Nov 22",
+    type: "job-listing",
+    title: "Graphic Designer",
+    skills: ["Brand Identity", "Typography", "Illustration", "Layout Design"],
+    rate: "$400 / Month",
+    applicantsCount: 0,
   },
 ];
 
