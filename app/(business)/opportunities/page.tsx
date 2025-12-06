@@ -191,7 +191,19 @@ export default function OpportunitiesPage() {
     );
   }
 
-  const filteredOpportunities = mockOpportunities.filter((opp) => {
+  const getOpportunitiesByTab = () => {
+    switch (activeTab) {
+      case "closed":
+        return mockClosedOpportunities;
+      case "draft":
+        return mockDraftOpportunities;
+      case "open":
+      default:
+        return mockOpenOpportunities;
+    }
+  };
+
+  const filteredOpportunities = getOpportunitiesByTab().filter((opp) => {
     const matchesSearch =
       searchQuery === "" ||
       opp.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
