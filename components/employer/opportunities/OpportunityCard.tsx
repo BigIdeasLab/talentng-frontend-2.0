@@ -266,9 +266,12 @@ export function OpportunityCard({
               {opportunity.applicantsCount} talents already applied to this
               opportunity.{" "}
             </span>
-            <button className="text-[#E39B00] underline hover:no-underline">
+            <a
+              href={`/opportunities/${opportunity.id}/applicants`}
+              className="text-[#E39B00] underline hover:no-underline"
+            >
               View
-            </button>
+            </a>
           </p>
         </div>
       )}
