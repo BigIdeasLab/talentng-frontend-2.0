@@ -128,8 +128,8 @@ export function ApplicantsTable({ searchQuery, sortBy }: ApplicantsTableProps) {
 
   return (
     <div className="border border-[#E1E4EA] rounded-[20px] overflow-hidden">
-      {/* Table Header */}
-      <div className="px-4 py-5 border-b border-[#E1E4EA]">
+      {/* Table Header - Hidden on mobile */}
+      <div className="hidden lg:block px-4 py-5 border-b border-[#E1E4EA]">
         <div className="grid grid-cols-[40px_1fr_120px_140px_140px_120px_200px] gap-4 items-center">
           <div className="font-inter-tight text-[15px] font-medium text-[#525866]">
             S/N
@@ -162,7 +162,8 @@ export function ApplicantsTable({ searchQuery, sortBy }: ApplicantsTableProps) {
             key={applicant.id}
             className="px-4 py-6 hover:bg-gray-50/50 transition-colors"
           >
-            <div className="grid grid-cols-[40px_1fr_120px_140px_140px_120px_200px] gap-4 items-center">
+            {/* Desktop Layout */}
+            <div className="hidden lg:grid grid-cols-[40px_1fr_120px_140px_140px_120px_200px] gap-4 items-center">
               {/* S/N */}
               <div className="font-inter-tight text-[15px] font-normal text-black">
                 {index + 1}.
@@ -211,6 +212,74 @@ export function ApplicantsTable({ searchQuery, sortBy }: ApplicantsTableProps) {
                   View Profile
                 </button>
                 <button className="px-4 py-2.5 bg-[#5C30FF] text-white rounded-full font-inter-tight text-[14px] font-medium border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors">
+                  Hire
+                </button>
+              </div>
+            </div>
+
+            {/* Mobile Layout */}
+            <div className="lg:hidden flex flex-col gap-4">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="font-inter-tight text-[15px] font-normal text-black">
+                    {index + 1}.
+                  </div>
+                  <img
+                    src={applicant.avatar}
+                    alt={applicant.name}
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                  <div className="flex flex-col gap-1">
+                    <div className="font-inter-tight text-[15px] font-medium text-black">
+                      {applicant.name}
+                    </div>
+                    <div className="font-inter-tight text-[14px] font-light text-[#525866]">
+                      {applicant.role}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <div className="font-inter-tight text-[13px] text-[#525866] mb-1">
+                    Hires
+                  </div>
+                  <div className="font-inter-tight text-[14px] text-black">
+                    {applicant.hires}
+                  </div>
+                </div>
+                <div>
+                  <div className="font-inter-tight text-[13px] text-[#525866] mb-1">
+                    Earnings
+                  </div>
+                  <div className="font-inter-tight text-[14px] text-black">
+                    {applicant.earnings}
+                  </div>
+                </div>
+                <div>
+                  <div className="font-inter-tight text-[13px] text-[#525866] mb-1">
+                    Location
+                  </div>
+                  <div className="font-inter-tight text-[14px] text-black">
+                    {applicant.location}
+                  </div>
+                </div>
+                <div>
+                  <div className="font-inter-tight text-[13px] text-[#525866] mb-1">
+                    Date Applied
+                  </div>
+                  <div className="font-inter-tight text-[14px] text-black">
+                    {applicant.dateApplied}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button className="flex-1 px-4 py-2.5 bg-[#181B25] text-white rounded-full font-inter-tight text-[14px] font-medium hover:bg-[#2a2d35] transition-colors">
+                  View Profile
+                </button>
+                <button className="flex-1 px-4 py-2.5 bg-[#5C30FF] text-white rounded-full font-inter-tight text-[14px] font-medium border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors">
                   Hire
                 </button>
               </div>
