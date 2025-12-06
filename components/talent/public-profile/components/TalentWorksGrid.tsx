@@ -1,43 +1,46 @@
 "use client";
 
+import Image from "next/image";
 import type { GalleryItem } from "@/lib/api/talent/types";
 
 interface TalentWorksGridProps {
   gallery: GalleryItem[];
+  onItemClick?: (item: GalleryItem) => void;
 }
 
-export function TalentWorksGrid({ gallery }: TalentWorksGridProps) {
+export function TalentWorksGrid({ gallery, onItemClick }: TalentWorksGridProps) {
   if (!gallery || gallery.length === 0) {
     return (
-      <div className="flex-1 flex items-center justify-center p-[25px]">
+      <div className="flex items-center justify-center p-[25px] min-h-[400px]">
         <p className="text-gray-500">No portfolio items yet</p>
       </div>
     );
   }
 
   return (
-    <div className="p-[25px]">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px]">
+    <div className="w-full px-[20px] py-[20px]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[15px] auto-rows-max">
         {gallery.map((item) => (
           <div
             key={item.id}
-            className="relative group cursor-pointer overflow-hidden rounded-[12px] bg-gray-100"
+            className="group relative w-full overflow-hidden rounded-lg bg-gray-100"
+            style={{
+              aspectRatio: "4/3",
+            }}
           >
-            {/* Image Container */}
-            <div className="aspect-square overflow-hidden">
-              <img
+            <button
+              onClick={() => onItemClick?.(item)}
+              className="relative w-full h-full overflow-hidden hover:shadow-lg transition-all duration-200"
+            >
+              <Image
                 src={item.url}
-                alt="Portfolio item"
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                alt={item.key || "Portfolio item"}
+                fill
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                unoptimized
               />
-            </div>
-
-            {/* Hover Overlay */}
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-              <button className="px-[20px] py-[10px] bg-white text-black rounded-[8px] font-medium text-[14px]">
-                View
-              </button>
-            </div>
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200" />
+            </button>
           </div>
         ))}
       </div>

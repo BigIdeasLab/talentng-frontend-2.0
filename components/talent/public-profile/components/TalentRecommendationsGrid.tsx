@@ -1,12 +1,15 @@
 "use client";
 
-import { Star } from "lucide-react";
+import Image from "next/image";
 
 interface RecommendationData {
+  id: string;
   title: string;
   comment?: string;
   rating?: number | null;
   isVerified: boolean;
+  avatar?: string;
+  date?: string;
 }
 
 interface TalentRecommendationsGridProps {
@@ -25,49 +28,82 @@ export function TalentRecommendationsGrid({
   }
 
   return (
-    <div className="p-[25px]">
-      <div className="space-y-[16px] max-w-[800px]">
-        {recommendations.map((rec, index) => (
+    <div className="w-full px-[15px] py-[15px]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[8px]">
+        {recommendations.map((rec) => (
           <div
-            key={index}
-            className="border border-[#E1E4EA] rounded-[12px] p-[16px]"
+            key={rec.id}
+            className="flex flex-col items-start gap-[8px] p-[12px_10px] rounded-[12px] border border-[#E1E4EA] text-left hover:shadow-md transition-shadow cursor-pointer"
           >
-            <div className="flex items-start justify-between gap-[12px] mb-[12px]">
-              {/* Title & Rating */}
-              <div className="flex-1">
-                <h3 className="text-[14px] font-semibold text-black mb-[8px]">
-                  {rec.title}
-                </h3>
-                {rec.rating && (
-                   <div className="flex items-center gap-[6px]">
-                     {Array.from({ length: 5 }).map((_, i) => (
-                       <Star
-                         key={i}
-                         className={`w-4 h-4 ${
-                           i < rec.rating!
-                             ? "fill-[#FFC107] text-[#FFC107]"
-                             : "text-gray-300"
-                         }`}
-                       />
-                     ))}
-                   </div>
-                 )}
+            <div className="flex flex-col items-start gap-[15px] w-full">
+              {/* Header with Avatar and Info */}
+              <div className="flex flex-col items-start gap-[5px] w-full">
+                <div className="flex justify-between items-center w-full">
+                  <div className="flex items-center gap-[8px]">
+                    {/* Avatar */}
+                    <div className="relative w-[36px] h-[36px] rounded-full overflow-hidden bg-gradient-to-br from-blue-400 to-purple-500 flex-shrink-0 flex items-center justify-center">
+                      {rec.avatar ? (
+                        <Image
+                          src={rec.avatar}
+                          alt={rec.title}
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
+                      ) : (
+                        <span className="text-white text-xs font-semibold">
+                          {rec.title.charAt(0).toUpperCase()}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Name and Date */}
+                    <div className="flex flex-col items-start gap-[4px]">
+                      <h3 className="text-[13px] font-medium leading-normal font-inter-tight text-black">
+                        {rec.title}
+                      </h3>
+                      {rec.date && (
+                        <span className="text-[12px] font-light leading-normal font-inter-tight text-[rgba(0,0,0,0.30)]">
+                          {rec.date}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Verified Badge */}
+                  {rec.isVerified && (
+                    <div className="px-[8px] py-[4px] bg-green-100 rounded text-[11px] text-green-700 font-medium flex-shrink-0">
+                      ✓ Verified
+                    </div>
+                  )}
+                </div>
               </div>
 
-              {/* Verified Badge */}
-              {rec.isVerified && (
-                <div className="px-[8px] py-[4px] bg-green-100 rounded text-[11px] text-green-700 font-medium flex-shrink-0">
-                  ✓ Verified
+              {/* Recommendation Text */}
+              {rec.comment && (
+                <p className="text-[12px] font-normal leading-[18px] font-inter-tight text-[#525866] w-full">
+                  {rec.comment}
+                </p>
+              )}
+
+              {/* Rating */}
+              {rec.rating && (
+                <div className="flex items-center gap-[4px]">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span
+                      key={i}
+                      className={`text-sm ${
+                        i < rec.rating!
+                          ? "text-yellow-400"
+                          : "text-gray-300"
+                      }`}
+                    >
+                      ★
+                    </span>
+                  ))}
                 </div>
               )}
             </div>
-
-            {/* Content */}
-            {rec.comment && (
-              <p className="text-[14px] text-gray-700 leading-relaxed">
-                {rec.comment}
-              </p>
-            )}
           </div>
         ))}
       </div>

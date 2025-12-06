@@ -1,10 +1,15 @@
 "use client";
 
+import Image from "next/image";
+import { Briefcase, Star } from "lucide-react";
 import type { Service } from "@/lib/api/talent/types";
 
 interface TalentServicesGridProps {
   services: Service[];
 }
+
+const PLACEHOLDER_IMAGE =
+  "https://api.builder.io/api/v1/image/assets/TEMP/006e1249db9b7d609ae3b3246ecaa7c825dfa329?width=518";
 
 export function TalentServicesGrid({ services }: TalentServicesGridProps) {
   if (!services || services.length === 0) {
@@ -16,45 +21,92 @@ export function TalentServicesGrid({ services }: TalentServicesGridProps) {
   }
 
   return (
-    <div className="p-[25px]">
-      <div className="space-y-[16px] max-w-[800px]">
-        {services.map((service, idx) => (
+    <div className="w-full px-[15px] py-[15px]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[10px] gap-y-[20px]">
+        {services.map((service) => (
           <div
-            key={service.id || `service-${idx}`}
-            className="border border-[#E1E4EA] rounded-[12px] p-[16px] hover:shadow-md transition-shadow cursor-pointer"
+            key={service.id}
+            className="group flex flex-col items-start gap-[8px] text-left hover:opacity-80 transition-opacity cursor-pointer"
           >
-            <div className="flex items-start justify-between gap-[16px]">
-              <div className="flex-1">
-                <h3 className="text-[16px] font-semibold text-black mb-[8px]">
-                  {service.title}
-                </h3>
-                <p className="text-[14px] text-gray-600 mb-[12px]">
-                  {service.about}
-                </p>
-                {service.tags && service.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-[8px]">
-                    {service.tags.map((tag, idx) => (
-                      <span
-                        key={`${service.id}-tag-${idx}`}
-                        className="px-[8px] py-[4px] bg-[#F5F5F5] rounded-full text-[11px] text-gray-600"
-                      >
+            {/* Service Image */}
+            <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-100">
+              {service.images && service.images.length > 0 ? (
+                <Image
+                  src={service.images[0]}
+                  alt={service.title}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              ) : (
+                <Image
+                  src={PLACEHOLDER_IMAGE}
+                  alt={service.title}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              )}
+            </div>
+
+            {/* Service Details */}
+            <div className="flex flex-col items-start gap-[12px] w-full">
+              {/* Tags */}
+              {service.tags && service.tags.length > 0 && (
+                <div className="flex flex-wrap items-center gap-[4px]">
+                  {service.tags.slice(0, 3).map((tag, idx) => (
+                    <div
+                      key={idx}
+                      className="flex px-[10px] py-[8px] justify-center items-center rounded-[30px] bg-[#F5F5F5]"
+                    >
+                      <span className="text-[11px] font-normal leading-[105%] font-inter-tight text-black">
                         {tag}
                       </span>
-                    ))}
+                    </div>
+                  ))}
+                  {service.tags.length > 3 && (
+                    <div className="flex px-[10px] py-[8px] justify-center items-center rounded-[30px] bg-[#F5F5F5]">
+                      <span className="text-[11px] font-normal leading-[105%] font-inter-tight text-black">
+                        +{service.tags.length - 3}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Title */}
+              <h3 className="text-[15px] font-medium leading-normal font-inter-tight text-black">
+                {service.title}
+              </h3>
+
+              {/* Rating */}
+              {service.totalReviews > 0 && (
+                <div className="flex items-center gap-[4px]">
+                  <div className="flex items-center gap-1">
+                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-[13px] font-medium text-black">
+                      {service.averageRating.toFixed(1)}
+                    </span>
                   </div>
-                )}
-              </div>
-              <div className="flex-shrink-0 text-right">
-                <p className="text-[18px] font-semibold text-[#5C30FF]">
-                  ₦{service.price || "0"}
-                </p>
-                <p className="text-[12px] text-gray-500">per service</p>
-                {service.averageRating > 0 && (
-                  <p className="text-[12px] text-yellow-500 mt-[4px]">
-                    ★ {service.averageRating.toFixed(1)} ({service.totalReviews})
-                  </p>
-                )}
-              </div>
+                  <span className="text-[12px] text-gray-500">
+                    ({service.totalReviews} reviews)
+                  </span>
+                </div>
+              )}
+
+              {/* Price */}
+              {service.price && (
+                <div className="flex items-center gap-[4px]">
+                  <Briefcase
+                    className="w-[16px] h-[16px]"
+                    strokeWidth={1.2}
+                    color="rgba(0, 0, 0, 0.3)"
+                  />
+                  <span className="text-[13px] font-light leading-normal font-inter-tight text-[rgba(0,0,0,0.30)]">
+                    {service.price}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         ))}
