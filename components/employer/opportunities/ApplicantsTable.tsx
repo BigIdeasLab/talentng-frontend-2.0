@@ -18,7 +18,8 @@ const mockApplicants: Applicant[] = [
     id: 1,
     name: "Elias Johnson",
     role: "Product Designer",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/77a2d0f5eaf5e0f9f0f0c283d2661d2eaacaca2e?width=80",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/77a2d0f5eaf5e0f9f0f0c283d2661d2eaacaca2e?width=80",
     hires: "5x Hired",
     earnings: "$20,000 Earned",
     location: "California, US",
@@ -28,7 +29,8 @@ const mockApplicants: Applicant[] = [
     id: 2,
     name: "Michael Chen",
     role: "UI/UX Designer",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/52cd7411e700d6427cb4097ede0436c16b0e4b3a?width=80",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/52cd7411e700d6427cb4097ede0436c16b0e4b3a?width=80",
     hires: "3x Hired",
     earnings: "$15,500 Earned",
     location: "Texas, US",
@@ -38,7 +40,8 @@ const mockApplicants: Applicant[] = [
     id: 3,
     name: "Oluwatobi Adeyemi",
     role: "Interaction Designer",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/a227b791b8d836bd9c83846d5c563de1bf8e9070?width=80",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/a227b791b8d836bd9c83846d5c563de1bf8e9070?width=80",
     hires: "8x Hired",
     earnings: "$35,000 Earned",
     location: "New York, US",
@@ -48,7 +51,8 @@ const mockApplicants: Applicant[] = [
     id: 4,
     name: "Sophia Taylor",
     role: "Interaction Designer",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/f25e66bac38da7360668fa7a0c3be5e28bf26714?width=80",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/f25e66bac38da7360668fa7a0c3be5e28bf26714?width=80",
     hires: "2x Hired",
     earnings: "$8,000 Earned",
     location: "Florida, US",
@@ -58,7 +62,8 @@ const mockApplicants: Applicant[] = [
     id: 5,
     name: "Olivia Brown",
     role: "Motion Designer",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/d2d5c07ec3c8a76d67b41bc18c688b38f8aa3e9c?width=80",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/d2d5c07ec3c8a76d67b41bc18c688b38f8aa3e9c?width=80",
     hires: "4x Hired",
     earnings: "$12,000 Earned",
     location: "Illinois, US",
@@ -68,7 +73,8 @@ const mockApplicants: Applicant[] = [
     id: 6,
     name: "Ethan Garcia",
     role: "Design Researcher",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/1461b9e5fcd47d64b053df42baf38ee3fcbdae04?width=80",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/1461b9e5fcd47d64b053df42baf38ee3fcbdae04?width=80",
     hires: "6x Hired",
     earnings: "$28,000 Earned",
     location: "Washington, US",
@@ -78,7 +84,8 @@ const mockApplicants: Applicant[] = [
     id: 7,
     name: "Isabella Martinez",
     role: "Prototype Specialist",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/bbf2e154aac73c36beae6c0e53a329fb237a4bf3?width=80",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/bbf2e154aac73c36beae6c0e53a329fb237a4bf3?width=80",
     hires: "1x Hired",
     earnings: "$5,000 Earned",
     location: "Oregon, US",
@@ -88,7 +95,8 @@ const mockApplicants: Applicant[] = [
     id: 8,
     name: "Noah White",
     role: "Design Systems Architect",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/87ce74c19b2f896eb0af92f5338b866048bfa1eb?width=80",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/87ce74c19b2f896eb0af92f5338b866048bfa1eb?width=80",
     hires: "7x Hired",
     earnings: "$22,500 Earned",
     location: "Ohio, US",
@@ -98,7 +106,8 @@ const mockApplicants: Applicant[] = [
     id: 9,
     name: "Liam Johnson",
     role: "Graphic Designer",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/17e0f8649d5b2acbdf3b84f9659212f2c54c411f?width=80",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/17e0f8649d5b2acbdf3b84f9659212f2c54c411f?width=80",
     hires: "9x Hired",
     earnings: "$40,000 Earned",
     location: "Nevada, US",
@@ -108,7 +117,8 @@ const mockApplicants: Applicant[] = [
     id: 10,
     name: "Ava Patel",
     role: "Product Designer",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/01cb677bd95bceffde4832706067054e07742b6d?width=80",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/01cb677bd95bceffde4832706067054e07742b6d?width=80",
     hires: "10x Hired",
     earnings: "$50,000 Earned",
     location: "Massachusetts, US",
@@ -123,7 +133,7 @@ interface ApplicantsTableProps {
 
 export function ApplicantsTable({ searchQuery, sortBy }: ApplicantsTableProps) {
   const filteredApplicants = mockApplicants.filter((applicant) =>
-    applicant.name.toLowerCase().includes(searchQuery.toLowerCase())
+    applicant.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (

@@ -160,9 +160,7 @@ export function OpportunityCard({
           <DropdownMenuContent align="end">
             <DropdownMenuItem>Edit</DropdownMenuItem>
             <DropdownMenuItem>View Applications</DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600">
-              Delete
-            </DropdownMenuItem>
+            <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
