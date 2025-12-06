@@ -111,6 +111,145 @@ export default function OpportunitiesPage() {
     return matchesSearch;
   });
 
+  const renderOpportunityActions = (opportunity: Opportunity) => {
+    if (activeTab === "closed") {
+      return (
+        <div className="flex items-center gap-3">
+          <div className="flex -space-x-3">
+            <div className="w-[30px] h-[30px] rounded-full bg-gray-300 border-2 border-white" />
+            <div className="w-[30px] h-[30px] rounded-full bg-gray-400 border-2 border-white" />
+            <div className="w-[30px] h-[30px] rounded-full bg-gray-500 border-2 border-white" />
+          </div>
+          <div className="text-[18px] font-medium font-inter-tight text-black">
+            {opportunity.applicantsCount} Talent Applied
+          </div>
+        </div>
+      );
+    }
+
+    if (activeTab === "draft") {
+      return (
+        <div className="flex items-center gap-2">
+          <button className="flex items-center gap-1 h-10 px-4 bg-[#181B25] text-white rounded-full hover:bg-[#2a2d35] transition-colors">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M11.4106 4.48679L12.4619 3.43547C13.0425 2.85484 13.9839 2.85484 14.5645 3.43547C15.1451 4.0161 15.1451 4.95748 14.5645 5.53811L13.5132 6.58943M11.4106 4.48679L5.23517 10.6622C4.4512 11.4462 4.05919 11.8381 3.79228 12.3158C3.52535 12.7935 3.2568 13.9214 3 15C4.07857 14.7432 5.20649 14.4746 5.68417 14.2077C6.16184 13.9408 6.55383 13.5488 7.33781 12.7648L13.5132 6.58943M11.4106 4.48679L13.5132 6.58943"
+                stroke="white"
+                strokeWidth="1.125"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M8.25 15H12.75"
+                stroke="white"
+                strokeWidth="1.125"
+                strokeLinecap="round"
+              />
+            </svg>
+            <span className="text-[14px] font-medium font-inter-tight">
+              Edit
+            </span>
+          </button>
+
+          <button className="flex items-center gap-1 h-10 px-4 bg-[#5C30FF] text-white rounded-full border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M3.75 10.5L6.375 13.125L14.25 4.875"
+                stroke="white"
+                strokeWidth="1.125"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span className="text-[14px] font-medium font-inter-tight">
+              Post
+            </span>
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex items-center gap-2">
+        <button className="flex items-center gap-1 h-10 px-4 bg-[#5C30FF] text-white rounded-full border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 18 18"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3.75 10.5L6.375 13.125L14.25 4.875"
+              stroke="white"
+              strokeWidth="1.125"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span className="text-[14px] font-medium font-inter-tight">
+            Mark As Filled
+          </span>
+        </button>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11.992 12H11.9995"
+                  stroke="black"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M11.9842 18H11.9917"
+                  stroke="black"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M11.9998 6H12.0073"
+                  stroke="black"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <DropdownMenuItem>View Applications</DropdownMenuItem>
+            <DropdownMenuItem className="text-red-600">
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    );
+  };
+
   return (
     <div className="h-screen overflow-y-auto bg-white">
       <div className="max-w-[1149px] mx-auto px-4 py-6 md:px-6 md:py-8">
