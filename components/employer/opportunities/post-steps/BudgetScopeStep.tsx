@@ -25,9 +25,7 @@ export function BudgetScopeStep({
     "weekly" | "monthly" | "hourly" | ""
   >(formData.paymentType);
 
-  const handlePaymentTypeSelect = (
-    type: "weekly" | "monthly" | "hourly"
-  ) => {
+  const handlePaymentTypeSelect = (type: "weekly" | "monthly" | "hourly") => {
     setSelectedPayment(type);
     updateFormData({ paymentType: type });
   };

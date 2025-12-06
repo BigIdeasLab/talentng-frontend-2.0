@@ -82,7 +82,7 @@ export function DescriptionStep({
               onChange={(e) => {
                 const selected = Array.from(
                   e.target.selectedOptions,
-                  (option) => option.value
+                  (option) => option.value,
                 );
                 updateFormData({ skills: selected });
               }}
@@ -126,7 +126,7 @@ export function DescriptionStep({
               onChange={(e) => {
                 const selected = Array.from(
                   e.target.selectedOptions,
-                  (option) => option.value
+                  (option) => option.value,
                 );
                 updateFormData({ tools: selected });
               }}

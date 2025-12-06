@@ -160,14 +160,18 @@ export function PostOpportunityForm() {
                 >
                   <path
                     d="M13.875 9H3.75"
-                    stroke={currentStep === "description" ? "#141B34" : "#525866"}
+                    stroke={
+                      currentStep === "description" ? "#141B34" : "#525866"
+                    }
                     strokeWidth="1.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M9.75 13.5C9.75 13.5 14.25 10.1858 14.25 9C14.25 7.8141 9.75 4.5 9.75 4.5"
-                    stroke={currentStep === "description" ? "#141B34" : "#525866"}
+                    stroke={
+                      currentStep === "description" ? "#141B34" : "#525866"
+                    }
                     strokeWidth="1.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -201,14 +205,18 @@ export function PostOpportunityForm() {
                 >
                   <path
                     d="M13.875 9H3.75"
-                    stroke={currentStep === "budget-scope" ? "#141B34" : "#525866"}
+                    stroke={
+                      currentStep === "budget-scope" ? "#141B34" : "#525866"
+                    }
                     strokeWidth="1.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
                   <path
                     d="M9.75 13.5C9.75 13.5 14.25 10.1858 14.25 9C14.25 7.8141 9.75 4.5 9.75 4.5"
-                    stroke={currentStep === "budget-scope" ? "#141B34" : "#525866"}
+                    stroke={
+                      currentStep === "budget-scope" ? "#141B34" : "#525866"
+                    }
                     strokeWidth="1.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"

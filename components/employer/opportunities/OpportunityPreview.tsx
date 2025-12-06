@@ -79,19 +79,22 @@ export function OpportunityPreview() {
 
               {/* Skills */}
               <div className="flex flex-wrap gap-1.5">
-                {["Mobile App Design", "User Research", "Visual Design", "Wireframing"].map(
-                  (skill, index) => (
-                    <span
-                      key={index}
-                      className="font-inter-tight text-[14px] font-normal text-black"
-                    >
-                      {skill}
-                      {index < 3 && (
-                        <span className="ml-1.5 text-gray-300">•</span>
-                      )}
-                    </span>
-                  )
-                )}
+                {[
+                  "Mobile App Design",
+                  "User Research",
+                  "Visual Design",
+                  "Wireframing",
+                ].map((skill, index) => (
+                  <span
+                    key={index}
+                    className="font-inter-tight text-[14px] font-normal text-black"
+                  >
+                    {skill}
+                    {index < 3 && (
+                      <span className="ml-1.5 text-gray-300">•</span>
+                    )}
+                  </span>
+                ))}
               </div>
             </div>
 
