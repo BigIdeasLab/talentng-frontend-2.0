@@ -51,7 +51,7 @@ export function PostOpportunityForm() {
 
   const handleSubmit = () => {
     console.log("Form submitted:", formData);
-    router.push("/opportunities");
+    router.push("/opportunities/preview");
   };
 
   const updateFormData = (data: Partial<typeof formData>) => {

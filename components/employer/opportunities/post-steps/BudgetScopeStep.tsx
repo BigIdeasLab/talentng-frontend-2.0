@@ -209,7 +209,7 @@ export function BudgetScopeStep({
         onClick={onSubmit}
         className="w-full h-[54px] bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[18px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
       >
-        Next
+        Preview
       </button>
     </div>
   );
