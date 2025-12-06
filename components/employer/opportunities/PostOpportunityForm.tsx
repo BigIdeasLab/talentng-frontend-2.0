@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { BasicInfoStep } from "./post-steps/BasicInfoStep";
+import { DescriptionStep } from "./post-steps/DescriptionStep";
+import { BudgetScopeStep } from "./post-steps/BudgetScopeStep";
 
 type FormStep = "basic-info" | "description" | "budget-scope";
 
@@ -17,6 +19,18 @@ export function PostOpportunityForm() {
     workType: "",
     location: "",
     compensationType: "",
+    roleOverview: "",
+    responsibilities: "",
+    requirements: "",
+    skills: [] as string[],
+    tools: [] as string[],
+    paymentType: "" as "weekly" | "monthly" | "hourly" | "",
+    minBudget: "",
+    maxBudget: "",
+    maxHours: "",
+    duration: "",
+    startDate: "",
+    experienceLevel: "",
   });
 
   const handleCancel = () => {
@@ -33,6 +47,11 @@ export function PostOpportunityForm() {
 
   const handleNext = () => {
     handleContinue();
+  };
+
+  const handleSubmit = () => {
+    console.log("Form submitted:", formData);
+    router.push("/opportunities");
   };
 
   const updateFormData = (data: Partial<typeof formData>) => {
@@ -203,20 +222,46 @@ export function PostOpportunityForm() {
           <div className="flex-1 w-full max-w-[681px]">
             {currentStep === "basic-info" && (
               <BasicInfoStep
-                formData={formData}
+                formData={{
+                  title: formData.title,
+                  company: formData.company,
+                  opportunityType: formData.opportunityType,
+                  category: formData.category,
+                  workType: formData.workType,
+                  location: formData.location,
+                  compensationType: formData.compensationType,
+                }}
                 updateFormData={updateFormData}
                 onNext={handleNext}
               />
             )}
             {currentStep === "description" && (
-              <div className="text-center py-12 text-gray-500">
-                Description step coming soon...
-              </div>
+              <DescriptionStep
+                formData={{
+                  roleOverview: formData.roleOverview,
+                  responsibilities: formData.responsibilities,
+                  requirements: formData.requirements,
+                  skills: formData.skills,
+                  tools: formData.tools,
+                }}
+                updateFormData={updateFormData}
+                onNext={handleNext}
+              />
             )}
             {currentStep === "budget-scope" && (
-              <div className="text-center py-12 text-gray-500">
-                Budget & Scope step coming soon...
-              </div>
+              <BudgetScopeStep
+                formData={{
+                  paymentType: formData.paymentType,
+                  minBudget: formData.minBudget,
+                  maxBudget: formData.maxBudget,
+                  maxHours: formData.maxHours,
+                  duration: formData.duration,
+                  startDate: formData.startDate,
+                  experienceLevel: formData.experienceLevel,
+                }}
+                updateFormData={updateFormData}
+                onSubmit={handleSubmit}
+              />
             )}
           </div>
         </div>
