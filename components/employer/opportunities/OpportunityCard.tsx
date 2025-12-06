@@ -160,9 +160,7 @@ export function OpportunityCard({
           <DropdownMenuContent align="end">
             <DropdownMenuItem>Edit</DropdownMenuItem>
             <DropdownMenuItem>View Applications</DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600">
-              Delete
-            </DropdownMenuItem>
+            <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -266,9 +264,12 @@ export function OpportunityCard({
               {opportunity.applicantsCount} talents already applied to this
               opportunity.{" "}
             </span>
-            <button className="text-[#E39B00] underline hover:no-underline">
+            <a
+              href={`/opportunities/${opportunity.id}/applicants`}
+              className="text-[#E39B00] underline hover:no-underline"
+            >
               View
-            </button>
+            </a>
           </p>
         </div>
       )}

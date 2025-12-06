@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { OpportunitiesHeader } from "./OpportunitiesHeader";
 import { SearchAndFilters } from "./SearchAndFilters";
 import { OpportunitiesTabs } from "./OpportunitiesTabs";
@@ -171,9 +172,14 @@ const mockDraftOpportunities: Opportunity[] = [
 ];
 
 export function EmployerOpportunities() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabType>("open");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortType>("newest");
+
+  const handlePostClick = () => {
+    router.push("/opportunities/post");
+  };
 
   const getOpportunitiesByTab = () => {
     switch (activeTab) {
@@ -202,7 +208,7 @@ export function EmployerOpportunities() {
       <div className="w-full mx-auto px-3 py-5 md:px-5 md:py-6">
         {/* Header */}
         <div className="flex flex-col gap-4 mb-6">
-          <OpportunitiesHeader onPostClick={() => {}} />
+          <OpportunitiesHeader onPostClick={handlePostClick} />
           <SearchAndFilters
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
