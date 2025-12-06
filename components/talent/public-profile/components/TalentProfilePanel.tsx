@@ -49,14 +49,14 @@ export function TalentProfilePanel({ profile }: TalentProfilePanelProps) {
             <DollarSign className="w-5 h-5 text-gray-600" />
             <p className="text-[12px] text-gray-600">Earnings</p>
             <p className="text-[14px] font-semibold text-black">
-              ₦{profile.stats?.earnings || "0"}
+              ₦{profile.earnings || profile.stats?.earnings || "0"}
             </p>
           </div>
           <div className="flex flex-col items-center gap-[4px]">
             <Users className="w-5 h-5 text-gray-600" />
             <p className="text-[12px] text-gray-600">Times Hired</p>
             <p className="text-[14px] font-semibold text-black">
-              {profile.stats?.hired || 0}
+              {profile.hiredCount || profile.stats?.hired || 0}
             </p>
           </div>
         </div>
@@ -93,12 +93,12 @@ export function TalentProfilePanel({ profile }: TalentProfilePanelProps) {
             Tech Stack
           </h3>
           <div className="flex flex-col gap-[8px]">
-            {displayedStack.map((tech) => (
+            {displayedStack.map((tech, idx) => (
               <div
-                key={tech.name}
+                key={`tech-${idx}`}
                 className="px-[12px] py-[8px] bg-[#F5F5F5] rounded-full text-[12px] text-black"
               >
-                {tech.name}
+                {typeof tech === "string" ? tech : (tech as any)?.name || "Unknown"}
               </div>
             ))}
             {stackRemaining > 0 && (

@@ -52,6 +52,6 @@ export default function TalentProfilePage() {
       </div>
     );
   }
-  console.log(profile);
+
   return <TalentProfileView profile={profile} />;
 }
