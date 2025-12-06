@@ -449,9 +449,14 @@ export default function OpportunitiesPage() {
         {/* Opportunities Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {filteredOpportunities.map((opportunity) => (
-            <div key={opportunity.id} className="flex flex-col">
+            <div
+              key={opportunity.id}
+              className={`flex flex-col border border-[#E1E4EA] ${
+                activeTab === "open" ? "rounded-t-[20px]" : "rounded-[20px]"
+              }`}
+            >
               {/* Opportunity Card */}
-              <div className="flex flex-col gap-6 p-6 border border-[#E1E4EA] rounded-t-[20px]">
+              <div className="flex flex-col gap-6 p-6">
                 {/* Header */}
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center gap-3">
@@ -519,96 +524,34 @@ export default function OpportunitiesPage() {
                 </div>
 
                 {/* Rate and Actions */}
-                <div className="flex items-center justify-between pt-4 border-t border-[#E1E4EA]">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 border-t border-[#E1E4EA]">
                   <div className="text-[18px] font-medium font-inter-tight text-black">
                     {opportunity.rate}
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <button className="flex items-center gap-1 h-10 px-4 bg-[#5C30FF] text-white rounded-full border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors">
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 18 18"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M3.75 10.5L6.375 13.125L14.25 4.875"
-                          stroke="white"
-                          strokeWidth="1.125"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      <span className="text-[14px] font-medium font-inter-tight">
-                        Mark As Filled
-                      </span>
-                    </button>
+                  {renderOpportunityActions(opportunity)}
+                </div>
+              </div>
 
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                          <svg
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M11.992 12H11.9995"
-                              stroke="black"
-                              strokeWidth="2.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M11.9842 18H11.9917"
-                              stroke="black"
-                              strokeWidth="2.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M11.9998 6H12.0073"
-                              stroke="black"
-                              strokeWidth="2.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem>View Applications</DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+              {/* Applicants Section - Only for Open Opportunities */}
+              {activeTab === "open" && (
+                <div className="flex items-center gap-3 p-4 border-t border-[#E1E4EA] rounded-b-[20px]">
+                  <div className="flex -space-x-3">
+                    <div className="w-[30px] h-[30px] rounded-full bg-gray-300 border-2 border-white" />
+                    <div className="w-[30px] h-[30px] rounded-full bg-gray-400 border-2 border-white" />
+                    <div className="w-[30px] h-[30px] rounded-full bg-gray-500 border-2 border-white" />
                   </div>
+                  <p className="text-[16px] font-medium font-inter-tight">
+                    <span className="text-black">
+                      {opportunity.applicantsCount} talents already applied to
+                      this opportunity.{" "}
+                    </span>
+                    <button className="text-[#E39B00] underline hover:no-underline">
+                      View
+                    </button>
+                  </p>
                 </div>
-              </div>
-
-              {/* Applicants Section */}
-              <div className="flex items-center gap-3 p-4 border border-t-0 border-[#E1E4EA] rounded-b-[20px]">
-                <div className="flex -space-x-3">
-                  <div className="w-[30px] h-[30px] rounded-full bg-gray-300 border-2 border-white" />
-                  <div className="w-[30px] h-[30px] rounded-full bg-gray-400 border-2 border-white" />
-                  <div className="w-[30px] h-[30px] rounded-full bg-gray-500 border-2 border-white" />
-                </div>
-                <p className="text-[16px] font-medium font-inter-tight">
-                  <span className="text-black">
-                    {opportunity.applicantsCount} talents already applied to
-                    this opportunity.{" "}
-                  </span>
-                  <button className="text-[#E39B00] underline hover:no-underline">
-                    View
-                  </button>
-                </p>
-              </div>
+              )}
             </div>
           ))}
         </div>
