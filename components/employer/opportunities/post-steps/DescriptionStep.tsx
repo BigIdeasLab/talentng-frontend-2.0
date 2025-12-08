@@ -2,10 +2,10 @@
 
 interface DescriptionStepProps {
   formData: {
-    roleOverview: string;
-    responsibilities: string;
-    requirements: string;
-    skills: string[];
+    description: string;
+    keyResponsibilities: string[];
+    requirements: string[];
+    tags: string[];
     tools: string[];
   };
   updateFormData: (data: Partial<DescriptionStepProps["formData"]>) => void;
@@ -26,65 +26,67 @@ export function DescriptionStep({
 
       {/* Form Fields */}
       <div className="flex flex-col gap-4">
-        {/* Role overview */}
+        {/* Description */}
         <div className="flex flex-col gap-2.5">
           <label className="font-inter-tight text-[13px] font-normal text-black">
-            Role overview
+            Description
           </label>
           <textarea
-            placeholder="About the Internship"
-            value={formData.roleOverview}
-            onChange={(e) => updateFormData({ roleOverview: e.target.value })}
+            placeholder="Describe the opportunity in detail"
+            value={formData.description}
+            onChange={(e) => updateFormData({ description: e.target.value })}
             rows={5}
             className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors resize-none"
           />
         </div>
 
-        {/* Responsibilities */}
+        {/* Key Responsibilities */}
         <div className="flex flex-col gap-2.5">
           <label className="font-inter-tight text-[13px] font-normal text-black">
-            Responsibilities
+            Key Responsibilities
           </label>
           <textarea
-            placeholder="What talents will do"
-            value={formData.responsibilities}
+            placeholder="List key responsibilities (one per line)"
+            value={formData.keyResponsibilities.join('\n')}
             onChange={(e) =>
-              updateFormData({ responsibilities: e.target.value })
+              updateFormData({ keyResponsibilities: e.target.value.split('\n').filter(r => r.trim()) })
             }
             rows={5}
             className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors resize-none"
           />
         </div>
 
-        {/* Requirement */}
+        {/* Requirements */}
         <div className="flex flex-col gap-2.5">
           <label className="font-inter-tight text-[13px] font-normal text-black">
-            Requirement
+            Requirements
           </label>
           <textarea
-            placeholder="What talents must have"
-            value={formData.requirements}
-            onChange={(e) => updateFormData({ requirements: e.target.value })}
+            placeholder="List requirements (one per line)"
+            value={formData.requirements.join('\n')}
+            onChange={(e) =>
+              updateFormData({ requirements: e.target.value.split('\n').filter(r => r.trim()) })
+            }
             rows={5}
             className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors resize-none"
           />
         </div>
 
-        {/* Skills */}
+        {/* Tags (Skills) */}
         <div className="flex flex-col gap-2.5">
           <label className="font-inter-tight text-[13px] font-normal text-black">
-            Skills
+            Tags (Skills)
           </label>
           <div className="relative">
             <select
               multiple
-              value={formData.skills}
+              value={formData.tags}
               onChange={(e) => {
                 const selected = Array.from(
                   e.target.selectedOptions,
                   (option) => option.value,
                 );
-                updateFormData({ skills: selected });
+                updateFormData({ tags: selected });
               }}
               className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
             >

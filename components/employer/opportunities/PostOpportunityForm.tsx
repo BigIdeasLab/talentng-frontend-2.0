@@ -13,18 +13,17 @@ export function PostOpportunityForm() {
   const [expandedSection, setExpandedSection] = useState<string>("basic-info");
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const [formData, setFormData] = useState({
+    type: "Job",
     title: "",
-    company: "",
-    opportunityType: "",
+    description: "",
+    keyResponsibilities: [] as string[],
+    requirements: [] as string[],
+    tags: [] as string[],
+    tools: [] as string[],
     category: "",
     workType: "",
     location: "",
     compensationType: "",
-    roleOverview: "",
-    responsibilities: "",
-    requirements: "",
-    skills: [] as string[],
-    tools: [] as string[],
     paymentType: "" as "weekly" | "monthly" | "hourly" | "",
     minBudget: "",
     maxBudget: "",
@@ -32,6 +31,9 @@ export function PostOpportunityForm() {
     duration: "",
     startDate: "",
     experienceLevel: "",
+    compensation: "",
+    employmentType: "",
+    status: "active" as const,
   });
 
   const handleCancel = () => {
@@ -159,13 +161,13 @@ export function PostOpportunityForm() {
                   <div className="p-5">
                     <BasicInfoStep
                       formData={{
+                        type: formData.type,
                         title: formData.title,
-                        company: formData.company,
-                        opportunityType: formData.opportunityType,
                         category: formData.category,
                         workType: formData.workType,
                         location: formData.location,
                         compensationType: formData.compensationType,
+                        employmentType: formData.employmentType,
                       }}
                       updateFormData={updateFormData}
                       onNext={() => toggleSection("description")}
@@ -211,10 +213,10 @@ export function PostOpportunityForm() {
                   <div className="p-5">
                     <DescriptionStep
                       formData={{
-                        roleOverview: formData.roleOverview,
-                        responsibilities: formData.responsibilities,
+                        description: formData.description,
+                        keyResponsibilities: formData.keyResponsibilities,
                         requirements: formData.requirements,
-                        skills: formData.skills,
+                        tags: formData.tags,
                         tools: formData.tools,
                       }}
                       updateFormData={updateFormData}
@@ -268,6 +270,7 @@ export function PostOpportunityForm() {
                         duration: formData.duration,
                         startDate: formData.startDate,
                         experienceLevel: formData.experienceLevel,
+                        compensation: formData.compensation,
                       }}
                       updateFormData={updateFormData}
                       onSubmit={handleSave}
