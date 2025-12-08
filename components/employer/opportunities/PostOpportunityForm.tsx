@@ -12,6 +12,8 @@ export function PostOpportunityForm() {
   const router = useRouter();
   const pathname = usePathname();
   const [expandedSection, setExpandedSection] = useState<string>("basic-info");
+  const [showExitModal, setShowExitModal] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState<(() => void) | null>(null);
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   
   const [formData, setFormData] = useState(() => {
@@ -73,10 +75,63 @@ export function PostOpportunityForm() {
     sessionStorage.setItem('opportunityFormData', JSON.stringify(formData));
   }, [formData]);
 
-  // Clear sessionStorage when navigating away
+  // Warn before leaving the page
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+      return "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, []);
+
+  // Handle save as draft
+  const handleSaveAsDraft = async () => {
+    try {
+      const { createOpportunity } = await import("@/lib/api/opportunities");
+      
+      const draftData = {
+        ...formData,
+        minBudget: formData.minBudget ? Number(formData.minBudget) : 0,
+        maxBudget: formData.maxBudget ? Number(formData.maxBudget) : 0,
+        startDate: formData.startDate ? new Date(formData.startDate).toISOString() : undefined,
+        status: "draft",
+      };
+
+      await createOpportunity(draftData);
+      sessionStorage.removeItem('opportunityFormData');
+      setShowExitModal(false);
+      if (pendingNavigation) {
+        pendingNavigation();
+      }
+    } catch (error) {
+      console.error("Error saving draft:", error);
+      alert("Failed to save draft. Please try again.");
+    }
+  };
+
+  // Handle navigation with confirmation
   const handleCancel = () => {
+    setShowExitModal(true);
+    setPendingNavigation(() => () => {
+      sessionStorage.removeItem('opportunityFormData');
+      router.push("/opportunities");
+    });
+  };
+
+  const handleDiscard = () => {
     sessionStorage.removeItem('opportunityFormData');
-    router.push("/opportunities");
+    setShowExitModal(false);
+    if (pendingNavigation) {
+      pendingNavigation();
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowExitModal(false);
+    setPendingNavigation(null);
   };
 
   return (
@@ -299,6 +354,43 @@ export function PostOpportunityForm() {
           </div>
         </div>
       </div>
+
+      {/* Exit Modal */}
+      {showExitModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-[16px] p-6 max-w-[400px] w-full mx-4 flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+              <h2 className="font-inter-tight text-[17px] font-medium text-black">
+                Save Changes?
+              </h2>
+              <p className="font-inter-tight text-[13px] text-[#525866]">
+                You have unsaved changes. Would you like to save them as a draft before leaving?
+              </p>
+            </div>
+
+            <div className="flex gap-2 pt-4">
+              <button
+                onClick={handleCloseModal}
+                className="flex-1 px-4 py-2.5 border border-gray-200 rounded-full font-inter-tight text-[13px] font-normal text-black hover:bg-gray-50 transition-colors"
+              >
+                Continue Editing
+              </button>
+              <button
+                onClick={handleDiscard}
+                className="flex-1 px-4 py-2.5 border border-gray-200 rounded-full font-inter-tight text-[13px] font-normal text-[#E63C23] hover:bg-red-50 transition-colors"
+              >
+                Discard
+              </button>
+              <button
+                onClick={handleSaveAsDraft}
+                className="flex-1 px-4 py-2.5 bg-[#5C30FF] border border-[#5C30FF] rounded-full font-inter-tight text-[13px] font-normal text-white hover:bg-[#4a26cc] transition-colors"
+              >
+                Save Draft
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

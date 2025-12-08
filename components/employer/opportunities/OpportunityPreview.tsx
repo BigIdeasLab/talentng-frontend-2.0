@@ -148,6 +148,9 @@ export function OpportunityPreview() {
       
       const draftData = {
         ...formData,
+        minBudget: formData.minBudget ? Number(formData.minBudget) : 0,
+        maxBudget: formData.maxBudget ? Number(formData.maxBudget) : 0,
+        startDate: formData.startDate ? new Date(formData.startDate).toISOString() : undefined,
         status: "draft",
       };
 
@@ -166,6 +169,9 @@ export function OpportunityPreview() {
       
       const opportunityData = {
         ...formData,
+        minBudget: formData.minBudget ? Number(formData.minBudget) : 0,
+        maxBudget: formData.maxBudget ? Number(formData.maxBudget) : 0,
+        startDate: formData.startDate ? new Date(formData.startDate).toISOString() : undefined,
         status: "active",
       };
 
