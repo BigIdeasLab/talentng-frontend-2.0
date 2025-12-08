@@ -3,137 +3,48 @@
 import { useState } from "react";
 
 interface Applicant {
-  id: number;
-  name: string;
-  role: string;
-  avatar: string;
-  hires: string;
-  earnings: string;
-  location: string;
-  dateApplied: string;
+  id: string;
+  userId: string;
+  opportunityId: string;
+  status: string;
+  note?: string;
+  createdAt: string;
+  updatedAt: string;
+  user: {
+    id: string;
+    username: string;
+    email: string;
+    talentProfile: {
+      id: string;
+      fullName: string;
+      headline: string;
+      bio?: string;
+      skills: string[];
+      location: string;
+      profileImageUrl: string;
+      category: string;
+    };
+  };
 }
-
-const mockApplicants: Applicant[] = [
-  {
-    id: 1,
-    name: "Elias Johnson",
-    role: "Product Designer",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/77a2d0f5eaf5e0f9f0f0c283d2661d2eaacaca2e?width=80",
-    hires: "5x Hired",
-    earnings: "$20,000 Earned",
-    location: "California, US",
-    dateApplied: "Dec 25 2025",
-  },
-  {
-    id: 2,
-    name: "Michael Chen",
-    role: "UI/UX Designer",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/52cd7411e700d6427cb4097ede0436c16b0e4b3a?width=80",
-    hires: "3x Hired",
-    earnings: "$15,500 Earned",
-    location: "Texas, US",
-    dateApplied: "Jan 10 2026",
-  },
-  {
-    id: 3,
-    name: "Oluwatobi Adeyemi",
-    role: "Interaction Designer",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/a227b791b8d836bd9c83846d5c563de1bf8e9070?width=80",
-    hires: "8x Hired",
-    earnings: "$35,000 Earned",
-    location: "New York, US",
-    dateApplied: "Feb 20 2026",
-  },
-  {
-    id: 4,
-    name: "Sophia Taylor",
-    role: "Interaction Designer",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/f25e66bac38da7360668fa7a0c3be5e28bf26714?width=80",
-    hires: "2x Hired",
-    earnings: "$8,000 Earned",
-    location: "Florida, US",
-    dateApplied: "Mar 05 2026",
-  },
-  {
-    id: 5,
-    name: "Olivia Brown",
-    role: "Motion Designer",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/d2d5c07ec3c8a76d67b41bc18c688b38f8aa3e9c?width=80",
-    hires: "4x Hired",
-    earnings: "$12,000 Earned",
-    location: "Illinois, US",
-    dateApplied: "Apr 12 2026",
-  },
-  {
-    id: 6,
-    name: "Ethan Garcia",
-    role: "Design Researcher",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/1461b9e5fcd47d64b053df42baf38ee3fcbdae04?width=80",
-    hires: "6x Hired",
-    earnings: "$28,000 Earned",
-    location: "Washington, US",
-    dateApplied: "May 30 2026",
-  },
-  {
-    id: 7,
-    name: "Isabella Martinez",
-    role: "Prototype Specialist",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/bbf2e154aac73c36beae6c0e53a329fb237a4bf3?width=80",
-    hires: "1x Hired",
-    earnings: "$5,000 Earned",
-    location: "Oregon, US",
-    dateApplied: "Jun 15 2026",
-  },
-  {
-    id: 8,
-    name: "Noah White",
-    role: "Design Systems Architect",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/87ce74c19b2f896eb0af92f5338b866048bfa1eb?width=80",
-    hires: "7x Hired",
-    earnings: "$22,500 Earned",
-    location: "Ohio, US",
-    dateApplied: "Jul 22 2026",
-  },
-  {
-    id: 9,
-    name: "Liam Johnson",
-    role: "Graphic Designer",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/17e0f8649d5b2acbdf3b84f9659212f2c54c411f?width=80",
-    hires: "9x Hired",
-    earnings: "$40,000 Earned",
-    location: "Nevada, US",
-    dateApplied: "Aug 18 2026",
-  },
-  {
-    id: 10,
-    name: "Ava Patel",
-    role: "Product Designer",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/01cb677bd95bceffde4832706067054e07742b6d?width=80",
-    hires: "10x Hired",
-    earnings: "$50,000 Earned",
-    location: "Massachusetts, US",
-    dateApplied: "Sep 12 2026",
-  },
-];
 
 interface ApplicantsTableProps {
   searchQuery: string;
   sortBy: string;
+  applicants: Applicant[];
 }
 
-export function ApplicantsTable({ searchQuery, sortBy }: ApplicantsTableProps) {
-  const filteredApplicants = mockApplicants.filter((applicant) =>
-    applicant.name.toLowerCase().includes(searchQuery.toLowerCase()),
+export function ApplicantsTable({ searchQuery, sortBy, applicants }: ApplicantsTableProps) {
+  const formatDate = (isoDate: string) => {
+    const date = new Date(isoDate);
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  const filteredApplicants = (applicants || []).filter((applicant) =>
+    applicant.user?.talentProfile?.fullName?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
@@ -182,38 +93,38 @@ export function ApplicantsTable({ searchQuery, sortBy }: ApplicantsTableProps) {
               {/* Talent Info */}
               <div className="flex items-center gap-2">
                 <img
-                  src={applicant.avatar}
-                  alt={applicant.name}
+                  src={applicant.user?.talentProfile?.profileImageUrl || ""}
+                  alt={applicant.user?.talentProfile?.fullName || ""}
                   className="w-8 h-8 rounded-full object-cover flex-shrink-0"
                 />
                 <div className="flex flex-col gap-0.5">
                   <div className="font-inter-tight text-[13px] font-medium text-black">
-                    {applicant.name}
+                    {applicant.user?.talentProfile?.fullName || "Unknown"}
                   </div>
                   <div className="font-inter-tight text-[12px] font-light text-[#525866]">
-                    {applicant.role}
+                    {applicant.user?.talentProfile?.headline || applicant.user?.talentProfile?.category || ""}
                   </div>
                 </div>
               </div>
 
               {/* Hires */}
               <div className="font-inter-tight text-[13px] font-normal text-black">
-                {applicant.hires}
+                -
               </div>
 
               {/* Earnings */}
               <div className="font-inter-tight text-[13px] font-normal text-black">
-                {applicant.earnings}
+                -
               </div>
 
               {/* Location */}
               <div className="font-inter-tight text-[13px] font-normal text-black">
-                {applicant.location}
+                {applicant.user?.talentProfile?.location || ""}
               </div>
 
               {/* Date Applied */}
               <div className="font-inter-tight text-[13px] font-normal text-black">
-                {applicant.dateApplied}
+                {formatDate(applicant.createdAt)}
               </div>
 
               {/* Actions */}
@@ -235,16 +146,16 @@ export function ApplicantsTable({ searchQuery, sortBy }: ApplicantsTableProps) {
                     {index + 1}.
                   </div>
                   <img
-                    src={applicant.avatar}
-                    alt={applicant.name}
+                    src={applicant.user?.talentProfile?.profileImageUrl || ""}
+                    alt={applicant.user?.talentProfile?.fullName || ""}
                     className="w-8 h-8 rounded-full object-cover flex-shrink-0"
                   />
                   <div className="flex flex-col gap-0.5">
                     <div className="font-inter-tight text-[13px] font-medium text-black">
-                      {applicant.name}
+                      {applicant.user?.talentProfile?.fullName || "Unknown"}
                     </div>
                     <div className="font-inter-tight text-[12px] font-light text-[#525866]">
-                      {applicant.role}
+                      {applicant.user?.talentProfile?.headline || applicant.user?.talentProfile?.category || ""}
                     </div>
                   </div>
                 </div>
@@ -252,37 +163,37 @@ export function ApplicantsTable({ searchQuery, sortBy }: ApplicantsTableProps) {
 
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div>
-                  <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
-                    Hires
+                    <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
+                      Category
+                    </div>
+                    <div className="font-inter-tight text-[12px] text-black">
+                      {applicant.user?.talentProfile?.category || "-"}
+                    </div>
                   </div>
-                  <div className="font-inter-tight text-[12px] text-black">
-                    {applicant.hires}
+                  <div>
+                    <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
+                      Skills
+                    </div>
+                    <div className="font-inter-tight text-[12px] text-black">
+                      {applicant.user?.talentProfile?.skills?.slice(0, 2).join(", ") || "-"}
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
-                    Earnings
+                  <div>
+                    <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
+                      Location
+                    </div>
+                    <div className="font-inter-tight text-[12px] text-black">
+                      {applicant.user?.talentProfile?.location || "-"}
+                    </div>
                   </div>
-                  <div className="font-inter-tight text-[12px] text-black">
-                    {applicant.earnings}
+                  <div>
+                    <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
+                      Date Applied
+                    </div>
+                    <div className="font-inter-tight text-[12px] text-black">
+                      {formatDate(applicant.createdAt)}
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
-                    Location
-                  </div>
-                  <div className="font-inter-tight text-[12px] text-black">
-                    {applicant.location}
-                  </div>
-                </div>
-                <div>
-                  <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
-                    Date Applied
-                  </div>
-                  <div className="font-inter-tight text-[12px] text-black">
-                    {applicant.dateApplied}
-                  </div>
-                </div>
               </div>
 
               <div className="flex items-center gap-1.5">

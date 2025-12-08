@@ -1,9 +1,34 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ApplicantsTable } from "./ApplicantsTable";
 import { ApplicantsHeader } from "./ApplicantsHeader";
+
+interface Applicant {
+  id: string;
+  userId: string;
+  opportunityId: string;
+  status: string;
+  note?: string;
+  createdAt: string;
+  updatedAt: string;
+  user: {
+    id: string;
+    username: string;
+    email: string;
+    talentProfile: {
+      id: string;
+      fullName: string;
+      headline: string;
+      bio?: string;
+      skills: string[];
+      location: string;
+      profileImageUrl: string;
+      category: string;
+    };
+  };
+}
 
 interface ApplicantsViewProps {
   opportunityId: string;
@@ -20,6 +45,30 @@ export function ApplicantsView({
 }: ApplicantsViewProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
+  const [applicants, setApplicants] = useState<Applicant[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchApplicants();
+  }, [opportunityId]);
+
+  const fetchApplicants = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const { getApplications } = await import("@/lib/api/applications");
+      const data = await getApplications({ opportunityId });
+      console.log("Applicants data:", data);
+      setApplicants(data || []);
+    } catch (err) {
+      console.error("Error fetching applicants:", err);
+      setError("Failed to load applicants");
+      setApplicants([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const getProgressPercentage = () => {
     if (!applicationCap || applicationCap === 0) return 0;
@@ -128,7 +177,21 @@ export function ApplicantsView({
 
         {/* Applicants Table */}
         <div className="mt-4 overflow-y-auto flex-1">
-          <ApplicantsTable searchQuery={searchQuery} sortBy={sortBy} />
+          {isLoading ? (
+            <div className="flex items-center justify-center h-64">
+              <p className="text-gray-500">Loading applicants...</p>
+            </div>
+          ) : error ? (
+            <div className="flex items-center justify-center h-64">
+              <p className="text-red-500">{error}</p>
+            </div>
+          ) : (
+            <ApplicantsTable 
+              searchQuery={searchQuery} 
+              sortBy={sortBy}
+              applicants={applicants}
+            />
+          )}
         </div>
       </div>
     </div>
