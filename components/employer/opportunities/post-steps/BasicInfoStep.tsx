@@ -20,17 +20,17 @@ export function BasicInfoStep({
   onNext,
 }: BasicInfoStepProps) {
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       {/* Section Title */}
-      <h2 className="font-inter-tight text-[20px] font-medium text-black">
+      <h2 className="font-inter-tight text-[17px] font-medium text-black">
         Basic Information
       </h2>
 
       {/* Form Fields */}
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-4">
         {/* Title */}
-        <div className="flex flex-col gap-3">
-          <label className="font-inter-tight text-[15px] font-normal text-black">
+        <div className="flex flex-col gap-2.5">
+          <label className="font-inter-tight text-[13px] font-normal text-black">
             Title
           </label>
           <input
@@ -38,13 +38,13 @@ export function BasicInfoStep({
             placeholder="Add A descriptive Title"
             value={formData.title}
             onChange={(e) => updateFormData({ title: e.target.value })}
-            className="w-full px-4 py-4 border border-[#E1E4EA] rounded-[10px] font-inter-tight text-[15px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
+            className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
           />
         </div>
 
         {/* Company */}
-        <div className="flex flex-col gap-3">
-          <label className="font-inter-tight text-[15px] font-normal text-black">
+        <div className="flex flex-col gap-2.5">
+          <label className="font-inter-tight text-[13px] font-normal text-black">
             Company
           </label>
           <input
@@ -52,14 +52,14 @@ export function BasicInfoStep({
             placeholder="Enter Company Name"
             value={formData.company}
             onChange={(e) => updateFormData({ company: e.target.value })}
-            className="w-full px-4 py-4 border border-[#E1E4EA] rounded-[10px] font-inter-tight text-[15px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
+            className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
           />
         </div>
 
         {/* Opportunity Type & Category */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="flex flex-col gap-3">
-            <label className="font-inter-tight text-[15px] font-normal text-black">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-2.5">
+            <label className="font-inter-tight text-[13px] font-normal text-black">
               Opportunity Type
             </label>
             <div className="relative">
@@ -68,7 +68,7 @@ export function BasicInfoStep({
                 onChange={(e) =>
                   updateFormData({ opportunityType: e.target.value })
                 }
-                className="w-full h-[57px] px-4 py-4 border border-[#E1E4EA] rounded-[10px] font-inter-tight text-[15px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
+                className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
               >
                 <option value="" disabled className="text-[#99A0AE]">
                   Select
@@ -78,9 +78,9 @@ export function BasicInfoStep({
                 <option value="freelance">Freelance</option>
               </select>
               <svg
-                className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"
-                width="16"
-                height="16"
+                className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                width="14"
+                height="14"
                 viewBox="0 0 16 16"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -93,15 +93,15 @@ export function BasicInfoStep({
             </div>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <label className="font-inter-tight text-[15px] font-normal text-black">
+          <div className="flex flex-col gap-2.5">
+            <label className="font-inter-tight text-[13px] font-normal text-black">
               Category / Role
             </label>
             <div className="relative">
               <select
                 value={formData.category}
                 onChange={(e) => updateFormData({ category: e.target.value })}
-                className="w-full h-[57px] px-4 py-4 border border-[#E1E4EA] rounded-[10px] font-inter-tight text-[15px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
+                className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
               >
                 <option value="" disabled className="text-[#99A0AE]">
                   Select
@@ -112,9 +112,9 @@ export function BasicInfoStep({
                 <option value="sales">Sales</option>
               </select>
               <svg
-                className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"
-                width="16"
-                height="16"
+                className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                width="14"
+                height="14"
                 viewBox="0 0 16 16"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -129,16 +129,16 @@ export function BasicInfoStep({
         </div>
 
         {/* Work Type & Location */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="flex flex-col gap-3">
-            <label className="font-inter-tight text-[15px] font-normal text-black">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-2.5">
+            <label className="font-inter-tight text-[13px] font-normal text-black">
               Work Type
             </label>
             <div className="relative">
               <select
                 value={formData.workType}
                 onChange={(e) => updateFormData({ workType: e.target.value })}
-                className="w-full h-[57px] px-4 py-4 border border-[#E1E4EA] rounded-[10px] font-inter-tight text-[15px] appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
+                className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
               >
                 <option value="" disabled className="text-[#99A0AE]">
                   Remote / Hybrid / On-Site
@@ -148,9 +148,9 @@ export function BasicInfoStep({
                 <option value="on-site">On-Site</option>
               </select>
               <svg
-                className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"
-                width="16"
-                height="16"
+                className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                width="14"
+                height="14"
                 viewBox="0 0 16 16"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -163,8 +163,8 @@ export function BasicInfoStep({
             </div>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <label className="font-inter-tight text-[15px] font-normal text-black">
+          <div className="flex flex-col gap-2.5">
+            <label className="font-inter-tight text-[13px] font-normal text-black">
               Location
             </label>
             <input
@@ -172,14 +172,14 @@ export function BasicInfoStep({
               placeholder="Select"
               value={formData.location}
               onChange={(e) => updateFormData({ location: e.target.value })}
-              className="w-full px-4 py-4 border border-[#E1E4EA] rounded-[10px] font-inter-tight text-[15px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
+              className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
             />
           </div>
         </div>
 
         {/* Compensation Type */}
-        <div className="flex flex-col gap-3">
-          <label className="font-inter-tight text-[15px] font-normal text-black">
+        <div className="flex flex-col gap-2.5">
+          <label className="font-inter-tight text-[13px] font-normal text-black">
             Compensation Type
           </label>
           <input
@@ -189,7 +189,7 @@ export function BasicInfoStep({
             onChange={(e) =>
               updateFormData({ compensationType: e.target.value })
             }
-            className="w-full px-4 py-4 border border-[#E1E4EA] rounded-[10px] font-inter-tight text-[15px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
+            className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
           />
         </div>
       </div>
@@ -197,7 +197,7 @@ export function BasicInfoStep({
       {/* Next Button */}
       <button
         onClick={onNext}
-        className="w-full h-[54px] bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[18px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
+        className="w-full h-[44px] bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
       >
         Next
       </button>

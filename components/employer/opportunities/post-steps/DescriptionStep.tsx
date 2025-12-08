@@ -18,31 +18,31 @@ export function DescriptionStep({
   onNext,
 }: DescriptionStepProps) {
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       {/* Section Title */}
-      <h2 className="font-inter-tight text-[20px] font-medium text-black">
+      <h2 className="font-inter-tight text-[17px] font-medium text-black">
         Describe Your Opportunity
       </h2>
 
       {/* Form Fields */}
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-4">
         {/* Role overview */}
-        <div className="flex flex-col gap-3">
-          <label className="font-inter-tight text-[15px] font-normal text-black">
+        <div className="flex flex-col gap-2.5">
+          <label className="font-inter-tight text-[13px] font-normal text-black">
             Role overview
           </label>
           <textarea
             placeholder="About the Internship"
             value={formData.roleOverview}
             onChange={(e) => updateFormData({ roleOverview: e.target.value })}
-            rows={6}
-            className="w-full px-4 py-4 border border-[#E1E4EA] rounded-[10px] font-inter-tight text-[15px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors resize-none"
+            rows={5}
+            className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors resize-none"
           />
         </div>
 
         {/* Responsibilities */}
-        <div className="flex flex-col gap-3">
-          <label className="font-inter-tight text-[15px] font-normal text-black">
+        <div className="flex flex-col gap-2.5">
+          <label className="font-inter-tight text-[13px] font-normal text-black">
             Responsibilities
           </label>
           <textarea
@@ -51,28 +51,28 @@ export function DescriptionStep({
             onChange={(e) =>
               updateFormData({ responsibilities: e.target.value })
             }
-            rows={6}
-            className="w-full px-4 py-4 border border-[#E1E4EA] rounded-[10px] font-inter-tight text-[15px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors resize-none"
+            rows={5}
+            className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors resize-none"
           />
         </div>
 
         {/* Requirement */}
-        <div className="flex flex-col gap-3">
-          <label className="font-inter-tight text-[15px] font-normal text-black">
+        <div className="flex flex-col gap-2.5">
+          <label className="font-inter-tight text-[13px] font-normal text-black">
             Requirement
           </label>
           <textarea
             placeholder="What talents must have"
             value={formData.requirements}
             onChange={(e) => updateFormData({ requirements: e.target.value })}
-            rows={6}
-            className="w-full px-4 py-4 border border-[#E1E4EA] rounded-[10px] font-inter-tight text-[15px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors resize-none"
+            rows={5}
+            className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors resize-none"
           />
         </div>
 
         {/* Skills */}
-        <div className="flex flex-col gap-3">
-          <label className="font-inter-tight text-[15px] font-normal text-black">
+        <div className="flex flex-col gap-2.5">
+          <label className="font-inter-tight text-[13px] font-normal text-black">
             Skills
           </label>
           <div className="relative">
@@ -86,7 +86,7 @@ export function DescriptionStep({
                 );
                 updateFormData({ skills: selected });
               }}
-              className="w-full px-4 py-4 border border-[#E1E4EA] rounded-[10px] font-inter-tight text-[15px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
+              className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
             >
               <option value="" disabled className="text-[#99A0AE]">
                 Select Skills
@@ -99,9 +99,9 @@ export function DescriptionStep({
               <option value="prototyping">Prototyping</option>
             </select>
             <svg
-              className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"
-              width="16"
-              height="16"
+              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+              width="14"
+              height="14"
               viewBox="0 0 16 16"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -115,8 +115,8 @@ export function DescriptionStep({
         </div>
 
         {/* Tools */}
-        <div className="flex flex-col gap-3">
-          <label className="font-inter-tight text-[15px] font-normal text-black">
+        <div className="flex flex-col gap-2.5">
+          <label className="font-inter-tight text-[13px] font-normal text-black">
             Tools
           </label>
           <div className="relative">
@@ -130,7 +130,7 @@ export function DescriptionStep({
                 );
                 updateFormData({ tools: selected });
               }}
-              className="w-full px-4 py-4 border border-[#E1E4EA] rounded-[10px] font-inter-tight text-[15px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
+              className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
             >
               <option value="" disabled className="text-[#99A0AE]">
                 Select Tools
@@ -143,9 +143,9 @@ export function DescriptionStep({
               <option value="invision">InVision</option>
             </select>
             <svg
-              className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"
-              width="16"
-              height="16"
+              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+              width="14"
+              height="14"
               viewBox="0 0 16 16"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -162,7 +162,7 @@ export function DescriptionStep({
       {/* Next Button */}
       <button
         onClick={onNext}
-        className="w-full h-[54px] bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[18px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
+        className="w-full h-[44px] bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
       >
         Next
       </button>

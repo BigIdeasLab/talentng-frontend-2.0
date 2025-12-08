@@ -16,24 +16,24 @@ export function OpportunityPreview() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-[1169px] mx-auto px-4 py-6 md:px-6 md:py-8">
+    <div className="h-screen bg-white overflow-hidden flex flex-col">
+      <div className="max-w-[990px] mx-auto w-full px-4 py-4 md:px-5 md:py-5 flex flex-col flex-1 overflow-y-auto">
         {/* Header */}
-        <div className="flex flex-col gap-4 pb-6 border-b border-gray-100 mb-12">
-          <div className="flex items-center justify-between gap-4">
-            <h1 className="font-inter-tight text-[20px] font-medium text-black">
+        <div className="flex flex-col gap-3 pb-4 border-b border-gray-100 mb-9 flex-shrink-0">
+          <div className="flex items-center justify-between gap-3">
+            <h1 className="font-inter-tight text-[17px] font-medium text-black">
               Post An Opportunity
             </h1>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <button
                 onClick={handleCancel}
-                className="px-6 py-2.5 border border-[#F5F5F5] rounded-full font-inter-tight text-[16px] font-normal text-black hover:bg-gray-50 transition-colors"
+                className="px-5 py-2 border border-[#F5F5F5] rounded-full font-inter-tight text-[13px] font-normal text-black hover:bg-gray-50 transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handlePost}
-                className="px-6 py-2.5 bg-[#5C30FF] border border-[#5C30FF] rounded-full font-inter-tight text-[16px] font-normal text-white hover:bg-[#4a26cc] transition-colors"
+                className="px-5 py-2 bg-[#5C30FF] border border-[#5C30FF] rounded-full font-inter-tight text-[13px] font-normal text-white hover:bg-[#4a26cc] transition-colors"
               >
                 Post
               </button>
@@ -42,43 +42,43 @@ export function OpportunityPreview() {
         </div>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_560px] gap-8 lg:gap-9">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_460px] gap-6 lg:gap-7 overflow-y-auto flex-1">
           {/* Left Column - Job Details */}
-          <div className="flex flex-col gap-12">
+          <div className="flex flex-col gap-9">
             {/* Job Header */}
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4">
                 <img
                   src="https://api.builder.io/api/v1/image/assets/TEMP/ac611f16c20ce30fd01ad9af988e5821beb576eb?width=180"
                   alt="Company Logo"
-                  className="w-[90px] h-[90px] rounded-full object-cover"
+                  className="w-[75px] h-[75px] rounded-full object-cover"
                 />
-                <div className="flex flex-col gap-4">
-                  <h2 className="font-inter-tight text-[20px] font-medium text-black leading-5">
+                <div className="flex flex-col gap-3">
+                  <h2 className="font-inter-tight text-[17px] font-medium text-black leading-5">
                     Mobile App Designer Intern
                   </h2>
-                  <div className="flex items-center gap-2">
-                    <span className="font-inter-tight text-[18px] font-normal text-black/30">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-inter-tight text-[15px] font-normal text-black/30">
                       Favro
                     </span>
-                    <span className="font-inter-tight text-[18px] font-normal text-black/30">
+                    <span className="font-inter-tight text-[15px] font-normal text-black/30">
                       •
                     </span>
-                    <span className="font-inter-tight text-[18px] font-normal text-black/30">
+                    <span className="font-inter-tight text-[15px] font-normal text-black/30">
                       Nov 17
                     </span>
                   </div>
                 </div>
-                <div className="inline-flex items-center gap-2 px-3 py-3.5 rounded-lg bg-[#008B47]/[0.09] w-fit">
-                  <div className="w-2 h-2 rounded-full bg-[#008B47]" />
-                  <span className="font-inter-tight text-[14px] font-normal text-[#008B47]">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-2.5 rounded-lg bg-[#008B47]/[0.09] w-fit">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#008B47]" />
+                  <span className="font-inter-tight text-[12px] font-normal text-[#008B47]">
                     Internship
                   </span>
                 </div>
               </div>
 
               {/* Skills */}
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-1">
                 {[
                   "Mobile App Design",
                   "User Research",
@@ -87,11 +87,11 @@ export function OpportunityPreview() {
                 ].map((skill, index) => (
                   <span
                     key={index}
-                    className="font-inter-tight text-[14px] font-normal text-black"
+                    className="font-inter-tight text-[12px] font-normal text-black"
                   >
                     {skill}
                     {index < 3 && (
-                      <span className="ml-1.5 text-gray-300">•</span>
+                      <span className="ml-1 text-gray-300">•</span>
                     )}
                   </span>
                 ))}
@@ -99,11 +99,11 @@ export function OpportunityPreview() {
             </div>
 
             {/* About the Internship */}
-            <div className="flex flex-col gap-6">
-              <h3 className="font-inter-tight text-[18px] font-medium text-black leading-[105%]">
+            <div className="flex flex-col gap-4">
+              <h3 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
                 About the Internship
               </h3>
-              <p className="font-inter-tight text-[15px] font-normal text-black leading-[170%]">
+              <p className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
                 Favro is looking for a creative Mobile App Designer Intern to
                 help improve and reimagine core experiences across our shopping
                 app. You'll be working with senior designers to explore
@@ -112,11 +112,11 @@ export function OpportunityPreview() {
             </div>
 
             {/* What You'll Do */}
-            <div className="flex flex-col gap-6">
-              <h3 className="font-inter-tight text-[18px] font-medium text-black leading-[105%]">
+            <div className="flex flex-col gap-4">
+              <h3 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
                 What You'll Do
               </h3>
-              <div className="font-inter-tight text-[15px] font-normal text-black leading-[170%] whitespace-pre-line">
+              <div className="font-inter-tight text-[13px] font-normal text-black leading-[165%] whitespace-pre-line">
                 {`Basic experience with Figma
 Strong interest in mobile UI/UX
 Understanding of visual hierarchy and layout
@@ -125,11 +125,11 @@ Ability to learn quickly and work with feedback`}
             </div>
 
             {/* Requirements */}
-            <div className="flex flex-col gap-6">
-              <h3 className="font-inter-tight text-[18px] font-medium text-black leading-[105%]">
+            <div className="flex flex-col gap-4">
+              <h3 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
                 Requirements
               </h3>
-              <div className="font-inter-tight text-[15px] font-normal text-black leading-[170%] whitespace-pre-line">
+              <div className="font-inter-tight text-[13px] font-normal text-black leading-[165%] whitespace-pre-line">
                 {`Basic experience with Figma
 Strong interest in mobile UI/UX
 Understanding of visual hierarchy and layout
@@ -138,11 +138,11 @@ Ability to learn quickly and work with feedback`}
             </div>
 
             {/* Tools Needed */}
-            <div className="flex flex-col gap-6">
-              <h3 className="font-inter-tight text-[18px] font-medium text-black leading-[105%]">
+            <div className="flex flex-col gap-4">
+              <h3 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
                 Tools Needed
               </h3>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-1">
                 {[
                   {
                     name: "Figma",
@@ -167,21 +167,21 @@ Ability to learn quickly and work with feedback`}
                 ].map((tool, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-2 rounded-full"
+                    className="flex items-center gap-1.5 rounded-full"
                   >
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1">
                       <img
                         src={tool.icon}
                         alt={tool.name}
-                        className="w-5 h-5 rounded-full object-cover"
+                        className="w-4 h-4 rounded-full object-cover flex-shrink-0"
                       />
-                      <span className="font-inter-tight text-[14px] font-normal text-black">
+                      <span className="font-inter-tight text-[12px] font-normal text-black">
                         {tool.name}
                       </span>
                     </div>
                     <svg
-                      width="13"
-                      height="13"
+                      width="11"
+                      height="11"
                       viewBox="0 0 13 13"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
@@ -201,32 +201,32 @@ Ability to learn quickly and work with feedback`}
           </div>
 
           {/* Right Column - Job Card */}
-          <div className="flex flex-col gap-2.5">
-            <div className="border border-[#E1E4EA] rounded-[20px] p-6 flex flex-col gap-5">
+          <div className="flex flex-col gap-2">
+            <div className="border border-[#E1E4EA] rounded-[16px] p-5 flex flex-col gap-4 sticky top-0">
               {/* Budget */}
-              <div className="flex flex-col gap-3.5">
-                <div className="flex items-center gap-2">
-                  <span className="font-inter-tight text-[20px] font-medium text-black">
+              <div className="flex flex-col gap-2.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-inter-tight text-[17px] font-medium text-black">
                     $50 - $70 / hr
                   </span>
-                  <span className="font-inter-tight text-[20px] font-medium text-black">
+                  <span className="font-inter-tight text-[17px] font-medium text-black">
                     •
                   </span>
-                  <span className="font-inter-tight text-[20px] font-medium text-black">
+                  <span className="font-inter-tight text-[17px] font-medium text-black">
                     2 Weeks
                   </span>
                 </div>
-                <span className="font-inter-tight text-[14px] font-light text-[#525866]">
+                <span className="font-inter-tight text-[12px] font-light text-[#525866]">
                   Budget
                 </span>
               </div>
 
               {/* Job Type */}
-              <div className="flex items-center gap-2.5">
-                <div className="w-[35px] h-[35px] rounded-full bg-[#F5F5F5] flex items-center justify-center">
+              <div className="flex items-center gap-2">
+                <div className="w-[30px] h-[30px] rounded-full bg-[#F5F5F5] flex items-center justify-center flex-shrink-0">
                   <svg
-                    width="20"
-                    height="20"
+                    width="17"
+                    height="17"
                     viewBox="0 0 20 20"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -254,22 +254,22 @@ Ability to learn quickly and work with feedback`}
                     />
                   </svg>
                 </div>
-                <div className="flex flex-col gap-2.5">
-                  <span className="font-inter-tight text-[15px] font-medium text-black">
+                <div className="flex flex-col gap-1.5">
+                  <span className="font-inter-tight text-[13px] font-medium text-black">
                     Full - Time
                   </span>
-                  <span className="font-inter-tight text-[14px] font-light text-[#525866]">
+                  <span className="font-inter-tight text-[12px] font-light text-[#525866]">
                     Internship
                   </span>
                 </div>
               </div>
 
               {/* Start Date */}
-              <div className="flex items-center gap-2.5">
-                <div className="w-[35px] h-[35px] rounded-full bg-[#F5F5F5] flex items-center justify-center">
+              <div className="flex items-center gap-2">
+                <div className="w-[30px] h-[30px] rounded-full bg-[#F5F5F5] flex items-center justify-center flex-shrink-0">
                   <svg
-                    width="20"
-                    height="20"
+                    width="17"
+                    height="17"
                     viewBox="0 0 20 20"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -304,22 +304,22 @@ Ability to learn quickly and work with feedback`}
                     />
                   </svg>
                 </div>
-                <div className="flex flex-col gap-2.5">
-                  <span className="font-inter-tight text-[15px] font-medium text-black">
+                <div className="flex flex-col gap-1.5">
+                  <span className="font-inter-tight text-[13px] font-medium text-black">
                     Nov 18 2025
                   </span>
-                  <span className="font-inter-tight text-[14px] font-light text-[#525866]">
+                  <span className="font-inter-tight text-[12px] font-light text-[#525866]">
                     Start Date
                   </span>
                 </div>
               </div>
 
               {/* Location */}
-              <div className="flex items-center gap-2.5">
-                <div className="w-[35px] h-[35px] rounded-full bg-[#F5F5F5] flex items-center justify-center">
+              <div className="flex items-center gap-2">
+                <div className="w-[30px] h-[30px] rounded-full bg-[#F5F5F5] flex items-center justify-center flex-shrink-0">
                   <svg
-                    width="20"
-                    height="20"
+                    width="17"
+                    height="17"
                     viewBox="0 0 20 20"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -336,22 +336,22 @@ Ability to learn quickly and work with feedback`}
                     />
                   </svg>
                 </div>
-                <div className="flex flex-col gap-2.5">
-                  <span className="font-inter-tight text-[15px] font-medium text-black">
+                <div className="flex flex-col gap-1.5">
+                  <span className="font-inter-tight text-[13px] font-medium text-black">
                     Remote
                   </span>
-                  <span className="font-inter-tight text-[14px] font-light text-[#525866]">
+                  <span className="font-inter-tight text-[12px] font-light text-[#525866]">
                     Location
                   </span>
                 </div>
               </div>
 
               {/* Experience Level */}
-              <div className="flex items-center gap-2.5">
-                <div className="w-[35px] h-[35px] rounded-full bg-[#F5F5F5] flex items-center justify-center">
+              <div className="flex items-center gap-2">
+                <div className="w-[30px] h-[30px] rounded-full bg-[#F5F5F5] flex items-center justify-center flex-shrink-0">
                   <svg
-                    width="20"
-                    height="20"
+                    width="17"
+                    height="17"
                     viewBox="0 0 20 20"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -406,22 +406,22 @@ Ability to learn quickly and work with feedback`}
                     />
                   </svg>
                 </div>
-                <div className="flex flex-col gap-2.5">
-                  <span className="font-inter-tight text-[15px] font-medium text-black">
+                <div className="flex flex-col gap-1.5">
+                  <span className="font-inter-tight text-[13px] font-medium text-black">
                     Experience Level
                   </span>
-                  <span className="font-inter-tight text-[14px] font-light text-[#525866]">
+                  <span className="font-inter-tight text-[12px] font-light text-[#525866]">
                     Junior
                   </span>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row items-stretch gap-2.5 pt-5">
-                <button className="flex-1 h-[60px] flex items-center justify-center gap-2 bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[18px] font-normal text-white hover:bg-[#2a2d35] transition-colors">
+              <div className="flex flex-col sm:flex-row items-stretch gap-2 pt-4">
+                <button className="flex-1 h-[48px] flex items-center justify-center gap-1.5 bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors">
                   <svg
-                    width="24"
-                    height="24"
+                    width="20"
+                    height="20"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -435,11 +435,11 @@ Ability to learn quickly and work with feedback`}
                     />
                   </svg>
                   Save
-                </button>
-                <button className="flex-1 h-[60px] flex items-center justify-center gap-2.5 bg-[#5C30FF] border border-[#5C30FF] rounded-full font-inter-tight text-[18px] font-normal text-white hover:bg-[#4a26cc] transition-colors">
+                  </button>
+                  <button className="flex-1 h-[48px] flex items-center justify-center gap-2 bg-[#5C30FF] border border-[#5C30FF] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#4a26cc] transition-colors">
                   <svg
-                    width="24"
-                    height="24"
+                   width="20"
+                   height="20"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"

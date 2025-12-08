@@ -14,16 +14,16 @@ export function ApplicantsView({ opportunityId }: ApplicantsViewProps) {
   const [sortBy, setSortBy] = useState("newest");
 
   return (
-    <div className="min-h-screen bg-white p-6 md:p-8">
-      <div className="max-w-[1129px] mx-auto">
+    <div className="h-screen bg-white p-4 md:p-6 overflow-hidden flex flex-col">
+      <div className="mx-auto w-full flex flex-col flex-shrink-0">
         {/* Back Button */}
         <Link
           href="/opportunities"
-          className="inline-flex items-center gap-2.5 mb-6 text-black/30 hover:text-black/50 transition-colors"
+          className="inline-flex items-center gap-2 mb-4 text-black/30 hover:text-black/50 transition-colors"
         >
           <svg
-            width="16"
-            height="16"
+            width="14"
+            height="14"
             viewBox="0 0 16 16"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -33,13 +33,13 @@ export function ApplicantsView({ opportunityId }: ApplicantsViewProps) {
               fill="currentColor"
             />
           </svg>
-          <span className="font-inter-tight text-[15px] font-normal">
+          <span className="font-inter-tight text-[13px] font-normal">
             Back to opportunities
           </span>
         </Link>
 
         {/* Page Title */}
-        <h1 className="font-inter-tight text-[25px] font-medium text-black mb-6">
+        <h1 className="font-inter-tight text-[21px] font-medium text-black mb-4">
           Applicants
         </h1>
 
@@ -52,7 +52,7 @@ export function ApplicantsView({ opportunityId }: ApplicantsViewProps) {
         />
 
         {/* Applicants Table */}
-        <div className="mt-6">
+        <div className="mt-4 overflow-y-auto flex-1">
           <ApplicantsTable searchQuery={searchQuery} sortBy={sortBy} />
         </div>
       </div>

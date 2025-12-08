@@ -31,24 +31,24 @@ export function BudgetScopeStep({
   };
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       {/* Section Title */}
-      <h2 className="font-inter-tight text-[20px] font-medium text-black">
+      <h2 className="font-inter-tight text-[17px] font-medium text-black">
         Opportunity Budget & Scope
       </h2>
 
       {/* Form Fields */}
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-4">
         {/* Payment Type */}
-        <div className="flex flex-col gap-4">
-          <label className="font-inter-tight text-[15px] font-normal text-black">
+        <div className="flex flex-col gap-3">
+          <label className="font-inter-tight text-[13px] font-normal text-black">
             How do you want to pay talents
           </label>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             <button
               type="button"
               onClick={() => handlePaymentTypeSelect("weekly")}
-              className={`flex items-center justify-center px-4 py-4 border rounded-[10px] font-inter-tight text-[15px] transition-colors ${
+              className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors ${
                 selectedPayment === "weekly"
                   ? "border-[#5C30FF] bg-[#5C30FF]/5 text-black"
                   : "border-[#E1E4EA] text-[#99A0AE] hover:border-[#5C30FF]/50"
@@ -59,7 +59,7 @@ export function BudgetScopeStep({
             <button
               type="button"
               onClick={() => handlePaymentTypeSelect("monthly")}
-              className={`flex items-center justify-center px-4 py-4 border rounded-[10px] font-inter-tight text-[15px] transition-colors ${
+              className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors ${
                 selectedPayment === "monthly"
                   ? "border-[#5C30FF] bg-[#5C30FF]/5 text-black"
                   : "border-[#E1E4EA] text-[#99A0AE] hover:border-[#5C30FF]/50"
@@ -70,7 +70,7 @@ export function BudgetScopeStep({
             <button
               type="button"
               onClick={() => handlePaymentTypeSelect("hourly")}
-              className={`flex items-center justify-center px-4 py-4 border rounded-[10px] font-inter-tight text-[15px] transition-colors ${
+              className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors ${
                 selectedPayment === "hourly"
                   ? "border-[#5C30FF] bg-[#5C30FF]/5 text-black"
                   : "border-[#E1E4EA] text-[#99A0AE] hover:border-[#5C30FF]/50"
@@ -82,45 +82,45 @@ export function BudgetScopeStep({
         </div>
 
         {/* Pricing */}
-        <div className="flex flex-col gap-3">
-          <label className="font-inter-tight text-[15px] font-normal text-black">
+        <div className="flex flex-col gap-2.5">
+          <label className="font-inter-tight text-[13px] font-normal text-black">
             Pricing
           </label>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             <input
               type="text"
               placeholder="Min Budget:"
               value={formData.minBudget}
               onChange={(e) => updateFormData({ minBudget: e.target.value })}
-              className="w-full px-4 py-4 border border-[#E1E4EA] rounded-[10px] font-inter-tight text-[15px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
+              className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
             />
             <input
               type="text"
               placeholder="Max Budget:"
               value={formData.maxBudget}
               onChange={(e) => updateFormData({ maxBudget: e.target.value })}
-              className="w-full px-4 py-4 border border-[#E1E4EA] rounded-[10px] font-inter-tight text-[15px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
+              className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
             />
             <input
               type="text"
               placeholder="Max Hours:"
               value={formData.maxHours}
               onChange={(e) => updateFormData({ maxHours: e.target.value })}
-              className="w-full px-4 py-4 border border-[#E1E4EA] rounded-[10px] font-inter-tight text-[15px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
+              className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
             />
           </div>
         </div>
 
         {/* Duration */}
-        <div className="flex flex-col gap-3">
-          <label className="font-inter-tight text-[15px] font-normal text-black">
+        <div className="flex flex-col gap-2.5">
+          <label className="font-inter-tight text-[13px] font-normal text-black">
             Duration
           </label>
           <div className="relative">
             <select
               value={formData.duration}
               onChange={(e) => updateFormData({ duration: e.target.value })}
-              className="w-full h-[57px] px-4 py-4 border border-[#E1E4EA] rounded-[10px] font-inter-tight text-[15px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
+              className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
             >
               <option value="" disabled className="text-[#99A0AE]">
                 Select Duration
@@ -134,9 +134,9 @@ export function BudgetScopeStep({
               <option value="ongoing">Ongoing</option>
             </select>
             <svg
-              className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"
-              width="16"
-              height="16"
+              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+              width="14"
+              height="14"
               viewBox="0 0 16 16"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -150,8 +150,8 @@ export function BudgetScopeStep({
         </div>
 
         {/* Start Date */}
-        <div className="flex flex-col gap-3">
-          <label className="font-inter-tight text-[15px] font-normal text-black">
+        <div className="flex flex-col gap-2.5">
+          <label className="font-inter-tight text-[13px] font-normal text-black">
             Start date
           </label>
           <div className="relative">
@@ -160,14 +160,14 @@ export function BudgetScopeStep({
               placeholder="MM / DD / YYYY"
               value={formData.startDate}
               onChange={(e) => updateFormData({ startDate: e.target.value })}
-              className="w-full h-[57px] px-4 py-4 border border-[#E1E4EA] rounded-[10px] font-inter-tight text-[15px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
+              className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
             />
           </div>
         </div>
 
         {/* Experience Level */}
-        <div className="flex flex-col gap-3">
-          <label className="font-inter-tight text-[15px] font-normal text-black">
+        <div className="flex flex-col gap-2.5">
+          <label className="font-inter-tight text-[13px] font-normal text-black">
             Experience Level
           </label>
           <div className="relative">
@@ -176,7 +176,7 @@ export function BudgetScopeStep({
               onChange={(e) =>
                 updateFormData({ experienceLevel: e.target.value })
               }
-              className="w-full h-[57px] px-4 py-4 border border-[#E1E4EA] rounded-[10px] font-inter-tight text-[15px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
+              className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
             >
               <option value="" disabled className="text-[#99A0AE]">
                 Select
@@ -186,9 +186,9 @@ export function BudgetScopeStep({
               <option value="expert">Expert</option>
             </select>
             <svg
-              className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"
-              width="16"
-              height="16"
+              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+              width="14"
+              height="14"
               viewBox="0 0 16 16"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -205,7 +205,7 @@ export function BudgetScopeStep({
       {/* Submit Button */}
       <button
         onClick={onSubmit}
-        className="w-full h-[54px] bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[18px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
+        className="w-full h-[44px] bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
       >
         Preview
       </button>

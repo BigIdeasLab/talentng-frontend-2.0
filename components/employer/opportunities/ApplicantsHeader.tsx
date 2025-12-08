@@ -18,13 +18,13 @@ export function ApplicantsHeader({
   const [showFilters, setShowFilters] = useState(false);
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2.5">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
       {/* Search Container */}
-      <div className="flex-1 w-full sm:max-w-[689px]">
-        <div className="flex items-center gap-1.5 px-3 py-2.5 border border-[#E1E4EA] rounded-[10px] bg-white">
+      <div className="flex-1 w-full sm:max-w-[570px]">
+        <div className="flex items-center gap-1 px-2 py-2 border border-[#E1E4EA] rounded-[8px] bg-white">
           <svg
-            width="18"
-            height="18"
+            width="15"
+            height="15"
             viewBox="0 0 18 18"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -49,7 +49,7 @@ export function ApplicantsHeader({
             placeholder="Search name or username"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 outline-none font-inter-tight text-[15px] font-normal text-black placeholder:text-black/30 bg-transparent"
+            className="flex-1 outline-none font-inter-tight text-[13px] font-normal text-black placeholder:text-black/30 bg-transparent"
           />
         </div>
       </div>
@@ -57,11 +57,11 @@ export function ApplicantsHeader({
       {/* Filter Button */}
       <button
         onClick={() => setShowFilters(!showFilters)}
-        className="flex items-center gap-1.5 px-3 py-2.5 hover:bg-gray-50 rounded-[10px] transition-colors"
+        className="flex items-center gap-1 px-2 py-2 hover:bg-gray-50 rounded-[8px] transition-colors"
       >
         <svg
-          width="18"
-          height="18"
+          width="15"
+          height="15"
           viewBox="0 0 18 18"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -105,20 +105,20 @@ export function ApplicantsHeader({
             strokeWidth="1.125"
           />
         </svg>
-        <span className="font-inter-tight text-[15px] font-normal text-black">
+        <span className="font-inter-tight text-[13px] font-normal text-black">
           Filter
         </span>
       </button>
 
       {/* Sort Dropdown */}
       <div className="relative">
-        <button className="flex items-center gap-1.5 px-3 py-2.5 hover:bg-gray-50 rounded-[10px] transition-colors">
-          <span className="font-inter-tight text-[15px] font-normal text-black">
+        <button className="flex items-center gap-1 px-2 py-2 hover:bg-gray-50 rounded-[8px] transition-colors">
+          <span className="font-inter-tight text-[13px] font-normal text-black">
             {sortBy === "newest" ? "Newest" : "Oldest"}
           </span>
           <svg
-            width="16"
-            height="16"
+            width="14"
+            height="14"
             viewBox="0 0 16 16"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
