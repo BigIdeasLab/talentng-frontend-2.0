@@ -123,16 +123,12 @@ export default function ProfilePage() {
 
       return (
         <EmployerProfile
-          companyData={{
-            name:
-              recruiterProfile?.professional?.company ||
-              "Company Name",
-            location:
-              recruiterProfile?.personal?.state || "—",
-            tagline:
-              recruiterProfile?.professional?.description ||
-              "Employer",
-          }}
+           companyData={{
+             name: recruiterProfile?.professional?.company || "Company Name",
+             logo: recruiterProfile?.personal?.profileImageUrl,
+             location: recruiterProfile?.personal?.state || "—",
+             tagline: recruiterProfile?.professional?.description || "Employer",
+           }}
           stats={{
             jobsPosted: 0,
             talentsHired: 0,

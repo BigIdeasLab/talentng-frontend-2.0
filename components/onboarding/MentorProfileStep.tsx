@@ -23,11 +23,15 @@ export const MentorProfileStep = ({
   onBack,
   initialData,
   initialLogo,
+  isAddingRole,
+  currentUsername,
 }: {
   onNext: (data: MentorProfileFormData, logo?: File) => void;
   onBack: () => void;
   initialData?: MentorProfileFormData;
   initialLogo?: File;
+  isAddingRole?: boolean;
+  currentUsername?: string;
 }) => {
   const parseLocation = (location: string) => {
     if (!location) return { state: "", city: "" };
@@ -43,7 +47,7 @@ export const MentorProfileStep = ({
   const [formData, setFormData] = useState<MentorProfileFormData>({
     firstName: initialData?.firstName || "",
     lastName: initialData?.lastName || "",
-    username: initialData?.username || "",
+    username: initialData?.username || (isAddingRole && currentUsername ? currentUsername : ""),
     location: initialData?.location || "",
     bio: initialData?.bio || "",
     state: initialLocation.state,
@@ -166,14 +170,17 @@ export const MentorProfileStep = ({
 
     setErrors({});
 
-    if (!validateUsername(formData.username)) {
-      setUsernameStatus("invalid");
-      return;
-    }
-
-    if (usernameStatus !== "available") {
-      if (usernameStatus === "checking" || usernameStatus === "taken" || usernameStatus === "idle" || usernameStatus === "invalid") {
+    // Skip username validation when adding a role (username is pre-filled and disabled)
+    if (!isAddingRole) {
+      if (!validateUsername(formData.username)) {
+        setUsernameStatus("invalid");
         return;
+      }
+
+      if (usernameStatus !== "available") {
+        if (usernameStatus === "checking" || usernameStatus === "taken" || usernameStatus === "idle" || usernameStatus === "invalid") {
+          return;
+        }
       }
     }
 
@@ -288,85 +295,87 @@ export const MentorProfileStep = ({
                 )}
               </div>
 
-              {/* Username */}
-              <div className="flex flex-col gap-[13px]">
-                <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Username
-                </label>
-                <div className="relative">
-                  <Input
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    placeholder="Your Username"
-                    className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] pr-12 ${
-                      errors.username
-                        ? "ring-2 ring-red-500"
-                        : usernameStatus === "taken" ||
-                            usernameStatus === "invalid"
+              {/* Username - only show during initial onboarding */}
+              {!isAddingRole && (
+                <div className="flex flex-col gap-[13px]">
+                  <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
+                    Username
+                  </label>
+                  <div className="relative">
+                    <Input
+                      name="username"
+                      value={formData.username}
+                      onChange={handleChange}
+                      placeholder="Your Username"
+                      className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] pr-12 ${
+                        errors.username
                           ? "ring-2 ring-red-500"
-                          : usernameStatus === "available"
-                            ? "ring-2 ring-green-500"
-                            : ""
-                    }`}
-                  />
-                  {formData.username && (
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                      {usernameStatus === "checking" && (
-                        <Loader2 className="w-5 h-5 text-gray-400 animate-spin" />
-                      )}
-                      {usernameStatus === "available" && (
-                        <CheckCircle2 className="w-5 h-5 text-green-500" />
-                      )}
-                      {usernameStatus === "taken" && (
-                        <XCircle className="w-5 h-5 text-red-500" />
-                      )}
-                      {usernameStatus === "invalid" && (
-                        <XCircle className="w-5 h-5 text-red-500" />
-                      )}
-                    </div>
-                  )}
-                </div>
-                {errors.username && (
-                  <span className="text-xs text-red-600">
-                    {errors.username}
-                  </span>
-                )}
-                {!errors.username &&
-                  formData.username &&
-                  formData.username.length < 3 && (
+                          : usernameStatus === "taken" ||
+                              usernameStatus === "invalid"
+                            ? "ring-2 ring-red-500"
+                            : usernameStatus === "available"
+                              ? "ring-2 ring-green-500"
+                              : ""
+                      }`}
+                    />
+                    {formData.username && (
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                        {usernameStatus === "checking" && (
+                          <Loader2 className="w-5 h-5 text-gray-400 animate-spin" />
+                        )}
+                        {usernameStatus === "available" && (
+                          <CheckCircle2 className="w-5 h-5 text-green-500" />
+                        )}
+                        {usernameStatus === "taken" && (
+                          <XCircle className="w-5 h-5 text-red-500" />
+                        )}
+                        {usernameStatus === "invalid" && (
+                          <XCircle className="w-5 h-5 text-red-500" />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  {errors.username && (
                     <span className="text-xs text-red-600">
-                      Username must be at least 3 characters long
+                      {errors.username}
                     </span>
                   )}
-                {!errors.username &&
-                  formData.username &&
-                  formData.username.length >= 3 && (
-                    <div className="text-xs font-[Inter_Tight]">
-                      {usernameStatus === "checking" && (
-                        <span className="text-gray-500">
-                          Checking availability...
-                        </span>
-                      )}
-                      {usernameStatus === "available" && (
-                        <span className="text-green-600">
-                          Username is available!
-                        </span>
-                      )}
-                      {usernameStatus === "taken" && (
-                        <span className="text-red-600">
-                          Username is already taken
-                        </span>
-                      )}
-                      {usernameStatus === "invalid" && (
-                        <span className="text-red-600">
-                          3-50 characters, letters, numbers, and underscores
-                          only
-                        </span>
-                      )}
-                    </div>
-                  )}
-              </div>
+                  {!errors.username &&
+                    formData.username &&
+                    formData.username.length < 3 && (
+                      <span className="text-xs text-red-600">
+                        Username must be at least 3 characters long
+                      </span>
+                    )}
+                  {!errors.username &&
+                    formData.username &&
+                    formData.username.length >= 3 && (
+                      <div className="text-xs font-[Inter_Tight]">
+                        {usernameStatus === "checking" && (
+                          <span className="text-gray-500">
+                            Checking availability...
+                          </span>
+                        )}
+                        {usernameStatus === "available" && (
+                          <span className="text-green-600">
+                            Username is available!
+                          </span>
+                        )}
+                        {usernameStatus === "taken" && (
+                          <span className="text-red-600">
+                            Username is already taken
+                          </span>
+                        )}
+                        {usernameStatus === "invalid" && (
+                          <span className="text-red-600">
+                            3-50 characters, letters, numbers, and underscores
+                            only
+                          </span>
+                        )}
+                      </div>
+                    )}
+                </div>
+              )}
 
               {/* State and City */}
               <div className="flex gap-[13px]">

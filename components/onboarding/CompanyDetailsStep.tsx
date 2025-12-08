@@ -2,15 +2,12 @@
 
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
-import statesCitiesData from "@/lib/data/states-cities.json";
 
 type CompanyDetailsData = {
   companySize: string;
-  location: string;
-  state: string;
-  city: string;
   companyStage: string;
   operatingModel: string;
+  website?: string;
 };
 
 const companySizes = [
@@ -37,19 +34,19 @@ export const CompanyDetailsStep = ({
   onBack,
   isLoading,
   logoImage,
+  companyData,
 }: {
   onNext: (data: CompanyDetailsData, logo?: File) => void;
   onBack: () => void;
   isLoading?: boolean;
   logoImage?: File;
+  companyData?: { companyName?: string };
 }) => {
   const [formData, setFormData] = useState<CompanyDetailsData>({
     companySize: "",
-    location: "",
-    state: "",
-    city: "",
     companyStage: "",
     operatingModel: "",
+    website: "",
   });
 
   const [logoPreview, setLogoPreview] = React.useState<string | null>(
@@ -58,23 +55,13 @@ export const CompanyDetailsStep = ({
 
   const [errors, setErrors] = useState<{
     companySize?: string;
-    state?: string;
-    city?: string;
     companyStage?: string;
     operatingModel?: string;
   }>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
-    if (name === "state") {
-      setFormData((prev) => ({
-        ...prev,
-        state: value,
-        city: "", // Reset city when state changes
-      }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -84,12 +71,6 @@ export const CompanyDetailsStep = ({
 
     if (!formData.companySize.trim()) {
       newErrors.companySize = "Company size is required";
-    }
-    if (!formData.state.trim()) {
-      newErrors.state = "State is required";
-    }
-    if (!formData.city.trim()) {
-      newErrors.city = "City is required";
     }
     if (!formData.companyStage.trim()) {
       newErrors.companyStage = "Company stage is required";
@@ -105,18 +86,7 @@ export const CompanyDetailsStep = ({
 
     setErrors({});
 
-    // Build location string
-    const location =
-      formData.city && formData.state
-        ? `${formData.city}, ${formData.state}`
-        : "";
-
-    const dataToSubmit: CompanyDetailsData = {
-      ...formData,
-      location,
-    };
-
-    onNext(dataToSubmit, logoImage);
+    onNext(formData, logoImage);
   };
 
   return (
@@ -199,61 +169,6 @@ export const CompanyDetailsStep = ({
                 )}
               </div>
 
-              {/* State and City */}
-              <div className="flex gap-[13px]">
-                <div className="flex-1 flex flex-col gap-[13px]">
-                  <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                    State
-                  </label>
-                  <select
-                    name="state"
-                    value={formData.state}
-                    onChange={handleChange}
-                    className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight] text-black focus:ring-2 focus:ring-purple-600 focus:outline-none appearance-none cursor-pointer ${
-                      errors.state ? "ring-2 ring-red-500" : ""
-                    }`}
-                  >
-                    <option value="">Select State</option>
-                    {Object.keys(statesCitiesData).map((state) => (
-                      <option key={state} value={state}>
-                        {state}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.state && (
-                    <span className="text-xs text-red-600">{errors.state}</span>
-                  )}
-                </div>
-
-                <div className="flex-1 flex flex-col gap-[13px]">
-                  <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                    City
-                  </label>
-                  <select
-                    name="city"
-                    value={formData.city}
-                    onChange={handleChange}
-                    disabled={!formData.state}
-                    className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight] text-black focus:ring-2 focus:ring-purple-600 focus:outline-none appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
-                      errors.city ? "ring-2 ring-red-500" : ""
-                    }`}
-                  >
-                    <option value="">Select City</option>
-                    {formData.state &&
-                      statesCitiesData[
-                        formData.state as keyof typeof statesCitiesData
-                      ]?.major_cities?.map((city) => (
-                        <option key={city} value={city}>
-                          {city}
-                        </option>
-                      ))}
-                  </select>
-                  {errors.city && (
-                    <span className="text-xs text-red-600">{errors.city}</span>
-                  )}
-                </div>
-              </div>
-
               {/* Company Stage */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
@@ -307,9 +222,24 @@ export const CompanyDetailsStep = ({
                   </span>
                 )}
               </div>
-            </form>
-          </div>
-        </div>
+
+              {/* Website */}
+              <div className="flex flex-col gap-[13px]">
+                <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
+                  Website <span className="text-[13px] text-[#919191]">(optional)</span>
+                </label>
+                <input
+                  type="url"
+                  name="website"
+                  value={formData.website || ""}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, website: e.target.value }))}
+                  placeholder="https://company.com"
+                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight] text-black focus:ring-2 focus:ring-purple-600 focus:outline-none"
+                />
+              </div>
+              </form>
+              </div>
+              </div>
 
         {/* Right side - Profile Preview */}
         <div className="hidden md:flex flex-col items-center justify-center p-6 md:p-10 md:pl-6 bg-white relative overflow-hidden h-full">
@@ -346,10 +276,10 @@ export const CompanyDetailsStep = ({
               {/* Main Profile Card */}
               <div className="relative w-[290px] h-[330px] rounded-[20px] bg-white shadow-[1.74px_0_20.88px_0_rgba(0,0,0,0.25)] p-[20px_10px] flex flex-col items-center">
                 {/* Company Name and Stage */}
-                <div className="flex flex-col items-center gap-[11px] w-full">
-                  <h3 className="text-[21.7px] text-black font-medium font-[Inter_Tight] leading-[105%]">
-                    Company
-                  </h3>
+                  <div className="flex flex-col items-center gap-[11px] w-full">
+                    <h3 className="text-[21.7px] text-black font-medium font-[Inter_Tight] leading-[105%]">
+                      {companyData?.companyName || "Company"}
+                    </h3>
                   <p className="text-[14.9px] text-[#919191] text-center font-light font-[Inter_Tight] leading-[105%]">
                     {formData.companyStage || "Company Stage"}
                   </p>
@@ -458,35 +388,8 @@ export const CompanyDetailsStep = ({
                   </svg>
                 </div>
 
-                {/* Location Pills */}
+                {/* Operating Model Pill */}
                 <div className="flex justify-center items-center flex-wrap gap-[6px] w-full px-2">
-                  {formData.city && formData.state ? (
-                    <>
-                      <div className="flex px-[12px] py-[8px] justify-center items-center gap-[7px] rounded-[20px] bg-[#E8F0FF] border border-[#4A90E2]">
-                        <span className="text-black text-center font-[Inter_Tight] text-[10px] font-normal leading-[105%]">
-                          {formData.city}
-                        </span>
-                      </div>
-                      <div className="flex px-[12px] py-[8px] justify-center items-center gap-[7px] rounded-[20px] bg-[#E8F0FF] border border-[#4A90E2]">
-                        <span className="text-black text-center font-[Inter_Tight] text-[10px] font-normal leading-[105%]">
-                          {formData.state}
-                        </span>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex px-[12px] py-[8px] justify-center items-center gap-[7px] rounded-[20px] bg-[#F5F5F5]">
-                        <span className="text-black text-center font-[Inter_Tight] text-[10px] font-normal leading-[105%]">
-                          Add City
-                        </span>
-                      </div>
-                      <div className="flex px-[12px] py-[8px] justify-center items-center gap-[7px] rounded-[20px] bg-[#F5F5F5]">
-                        <span className="text-black text-center font-[Inter_Tight] text-[10px] font-normal leading-[105%]">
-                          Add State
-                        </span>
-                      </div>
-                    </>
-                  )}
                   {formData.operatingModel && (
                     <div className="flex px-[12px] py-[8px] justify-center items-center gap-[7px] rounded-[20px] bg-[#F0FFF0] border border-[#008B47]">
                       <span className="text-black text-center font-[Inter_Tight] text-[9px] font-normal leading-[105%]">

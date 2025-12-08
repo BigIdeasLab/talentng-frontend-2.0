@@ -193,14 +193,19 @@ const OnboardingPage = () => {
         bio: companyData.bio,
       };
       
-      // Details contains: companyName, industry, companySize, companyStage, operatingModel
-      const detailsData = {
+      // Details contains: companyName, industry, companySize, companyStage, operatingModel, website
+      const detailsData: any = {
         companyName: companyData.companyName,
         industry: companyData.industry,
         companySize: data.companySize,
         companyStage: data.companyStage,
         operatingModel: data.operatingModel,
       };
+      
+      // Add website if provided
+      if (data.website) {
+        detailsData.website = data.website;
+      }
       
       formData.append("profile", JSON.stringify(profileData));
       formData.append("details", JSON.stringify(detailsData));
@@ -475,6 +480,8 @@ const OnboardingPage = () => {
                 onBack={handleBack}
                 initialData={companyData}
                 initialLogo={profileImage as File | undefined}
+                isAddingRole={isAddingRole}
+                currentUsername={user?.username}
               />
             ) : selectedRole === "mentor" ? (
               <MentorProfileStep
@@ -482,6 +489,8 @@ const OnboardingPage = () => {
                 onBack={handleBack}
                 initialData={mentorData}
                 initialLogo={profileImage as File | undefined}
+                isAddingRole={isAddingRole}
+                currentUsername={user?.username}
               />
             ) : (
               <CreateProfileStep 
@@ -489,10 +498,12 @@ const OnboardingPage = () => {
                 onBack={handleBack}
                 initialData={profileData}
                 initialImage={profileImage as File | undefined}
+                isAddingRole={isAddingRole}
+                currentUsername={user?.username}
               />
             )}
-          </div>
-        )}
+            </div>
+            )}
         {currentStep === 3 && (
           <div className="h-full flex flex-col overflow-hidden">
             {selectedRole === "employer" ? (
@@ -501,6 +512,7 @@ const OnboardingPage = () => {
                 onBack={handleBack}
                 isLoading={isLoading}
                 logoImage={profileImage as File | undefined}
+                companyData={companyData}
               />
             ) : selectedRole === "mentor" ? (
               <MentorExpertiseStep

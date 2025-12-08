@@ -3,12 +3,16 @@
 import React, { useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
+import statesCitiesData from "@/lib/data/states-cities.json";
 
 type CompanyFormData = {
   companyName: string;
   industry: string;
   username: string;
+  location: string;
   bio: string;
+  state?: string;
+  city?: string;
 };
 
 type UsernameStatus = "idle" | "checking" | "available" | "taken" | "invalid";
@@ -41,17 +45,35 @@ export const CompanyProfileStep = ({
   onBack,
   initialData,
   initialLogo,
+  isAddingRole,
+  currentUsername,
 }: {
   onNext: (data: CompanyFormData, logo?: File) => void;
   onBack: () => void;
   initialData?: CompanyFormData;
   initialLogo?: File;
+  isAddingRole?: boolean;
+  currentUsername?: string;
 }) => {
+  const parseLocation = (location: string) => {
+    if (!location) return { state: "", city: "" };
+    const parts = location.split(", ");
+    return {
+      city: parts[0] || "",
+      state: parts[1] || "",
+    };
+  };
+
+  const initialLocation = parseLocation(initialData?.location || "");
+
   const [formData, setFormData] = useState<CompanyFormData>({
     companyName: initialData?.companyName || "",
     industry: initialData?.industry || "",
-    username: initialData?.username || "",
+    username: initialData?.username || (isAddingRole && currentUsername ? currentUsername : ""),
+    location: initialData?.location || "",
     bio: initialData?.bio || "",
+    state: initialLocation.state,
+    city: initialLocation.city,
   });
 
   const [profileLogo, setProfileLogo] = useState<File | null>(initialLogo || null);
@@ -183,22 +205,37 @@ export const CompanyProfileStep = ({
 
     setErrors({});
 
-    if (!validateUsername(formData.username)) {
-      setUsernameStatus("invalid");
-      return;
-    }
-
-    if (usernameStatus !== "available") {
-      if (usernameStatus === "checking" || usernameStatus === "taken") {
+    // Skip username validation when adding a role (username is pre-filled and disabled)
+    if (!isAddingRole) {
+      if (!validateUsername(formData.username)) {
+        setUsernameStatus("invalid");
         return;
       }
-      if (usernameStatus === "idle") {
-        checkUsername(formData.username);
-        return;
+
+      if (usernameStatus !== "available") {
+        if (usernameStatus === "checking" || usernameStatus === "taken") {
+          return;
+        }
+        if (usernameStatus === "idle") {
+          checkUsername(formData.username);
+          return;
+        }
       }
     }
 
-    onNext(formData, profileLogo || undefined);
+    // Build location string from state and city
+    const location =
+      formData.city && formData.state
+        ? `${formData.city}, ${formData.state}`
+        : formData.state || "";
+
+    // Pass location in the correct format to onNext
+    const finalData: CompanyFormData = {
+      ...formData,
+      location,
+    };
+
+    onNext(finalData, profileLogo || undefined);
   };
 
   const displayCompanyName = formData.companyName || "Company Name";
@@ -299,87 +336,138 @@ export const CompanyProfileStep = ({
                 )}
               </div>
 
-              {/* Username */}
-              <div className="flex flex-col gap-[13px]">
-                <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Username
-                </label>
-                <div className="relative">
-                  <Input
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    placeholder="Your Username"
-                    className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] pr-12 ${
-                      errors.username
-                        ? "ring-2 ring-red-500"
-                        : usernameStatus === "taken" ||
-                            usernameStatus === "invalid"
+              {/* Username - only show during initial onboarding */}
+              {!isAddingRole && (
+                <div className="flex flex-col gap-[13px]">
+                  <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
+                    Username
+                  </label>
+                  <div className="relative">
+                    <Input
+                      name="username"
+                      value={formData.username}
+                      onChange={handleChange}
+                      placeholder="Your Username"
+                      className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] pr-12 ${
+                        errors.username
                           ? "ring-2 ring-red-500"
-                          : usernameStatus === "available"
-                            ? "ring-2 ring-green-500"
-                            : ""
-                    }`}
-                  />
-                  {formData.username && (
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                      {usernameStatus === "checking" && (
-                        <Loader2 className="w-5 h-5 text-gray-400 animate-spin" />
-                      )}
-                      {usernameStatus === "available" && (
-                        <CheckCircle2 className="w-5 h-5 text-green-500" />
-                      )}
-                      {usernameStatus === "taken" && (
-                        <XCircle className="w-5 h-5 text-red-500" />
-                      )}
-                      {usernameStatus === "invalid" && (
-                        <XCircle className="w-5 h-5 text-red-500" />
-                      )}
-                    </div>
-                  )}
-                </div>
-                {errors.username && (
-                  <span className="text-xs text-red-600">
-                    {errors.username}
-                  </span>
-                )}
-                {!errors.username &&
-                  formData.username &&
-                  formData.username.length < 3 && (
+                          : usernameStatus === "taken" ||
+                              usernameStatus === "invalid"
+                            ? "ring-2 ring-red-500"
+                            : usernameStatus === "available"
+                              ? "ring-2 ring-green-500"
+                              : ""
+                      }`}
+                    />
+                    {formData.username && (
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                        {usernameStatus === "checking" && (
+                          <Loader2 className="w-5 h-5 text-gray-400 animate-spin" />
+                        )}
+                        {usernameStatus === "available" && (
+                          <CheckCircle2 className="w-5 h-5 text-green-500" />
+                        )}
+                        {usernameStatus === "taken" && (
+                          <XCircle className="w-5 h-5 text-red-500" />
+                        )}
+                        {usernameStatus === "invalid" && (
+                          <XCircle className="w-5 h-5 text-red-500" />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  {errors.username && (
                     <span className="text-xs text-red-600">
-                      Username must be at least 3 characters long
+                      {errors.username}
                     </span>
                   )}
-                {!errors.username &&
-                  formData.username &&
-                  formData.username.length >= 3 && (
-                    <div className="text-xs font-[Inter_Tight]">
-                      {usernameStatus === "checking" && (
-                        <span className="text-gray-500">
-                          Checking availability...
-                        </span>
-                      )}
-                      {usernameStatus === "available" && (
-                        <span className="text-green-600">
-                          Username is available!
-                        </span>
-                      )}
-                      {usernameStatus === "taken" && (
-                        <span className="text-red-600">
-                          Username is already taken
-                        </span>
-                      )}
-                      {usernameStatus === "invalid" && (
-                        <span className="text-red-600">
-                          3-50 characters, letters, numbers, and underscores
-                          only
-                        </span>
-                      )}
-                    </div>
-                  )}
+                  {!errors.username &&
+                    formData.username &&
+                    formData.username.length < 3 && (
+                      <span className="text-xs text-red-600">
+                        Username must be at least 3 characters long
+                      </span>
+                    )}
+                  {!errors.username &&
+                    formData.username &&
+                    formData.username.length >= 3 && (
+                      <div className="text-xs font-[Inter_Tight]">
+                        {usernameStatus === "checking" && (
+                          <span className="text-gray-500">
+                            Checking availability...
+                          </span>
+                        )}
+                        {usernameStatus === "available" && (
+                          <span className="text-green-600">
+                            Username is available!
+                          </span>
+                        )}
+                        {usernameStatus === "taken" && (
+                          <span className="text-red-600">
+                            Username is already taken
+                          </span>
+                        )}
+                        {usernameStatus === "invalid" && (
+                          <span className="text-red-600">
+                            3-50 characters, letters, numbers, and underscores
+                            only
+                          </span>
+                        )}
+                      </div>
+                    )}
+                </div>
+              )}
+
+              {/* State and City */}
+              <div className="flex gap-[13px]">
+                <div className="flex-1 flex flex-col gap-[13px]">
+                  <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
+                    State
+                  </label>
+                  <select
+                    value={formData.state || ""}
+                    onChange={(e) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        state: e.target.value,
+                        city: "", // Reset city when state changes
+                      }));
+                    }}
+                    className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] focus:ring-2 focus:ring-purple-600 focus:outline-none appearance-none cursor-pointer"
+                  >
+                    <option value="">Select State</option>
+                    {Object.keys(statesCitiesData).map((state) => (
+                      <option key={state} value={state}>
+                        {state}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex-1 flex flex-col gap-[13px]">
+                  <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
+                    City
+                  </label>
+                  <select
+                    value={formData.city || ""}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, city: e.target.value }))
+                    }
+                    disabled={!formData.state}
+                    className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] focus:ring-2 focus:ring-purple-600 focus:outline-none appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <option value="">Select City</option>
+                    {formData.state &&
+                      statesCitiesData[
+                        formData.state as keyof typeof statesCitiesData
+                      ]?.major_cities?.map((city) => (
+                        <option key={city} value={city}>
+                          {city}
+                        </option>
+                      ))}
+                  </select>
+                </div>
               </div>
-
-
 
               {/* Company Bio */}
               <div className="flex flex-col gap-[13px]">
