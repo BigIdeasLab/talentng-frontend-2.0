@@ -41,7 +41,9 @@ export const CreateProfileStep = ({
   >({
     firstName: initialData?.firstName || "",
     lastName: initialData?.lastName || "",
-    username: initialData?.username || (isAddingRole && currentUsername ? currentUsername : ""),
+    username:
+      initialData?.username ||
+      (isAddingRole && currentUsername ? currentUsername : ""),
     location: initialData?.location || "",
     bio: initialData?.bio || "",
     state: initialLocation.state,
@@ -93,9 +95,16 @@ export const CreateProfileStep = ({
     } else if (usernameError) {
       setUsernameStatus("idle");
     } else if (usernameAvailabilityData) {
-      setUsernameStatus(usernameAvailabilityData.available ? "available" : "taken");
+      setUsernameStatus(
+        usernameAvailabilityData.available ? "available" : "taken",
+      );
     }
-  }, [formData.username, checkingUsername, usernameError, usernameAvailabilityData]);
+  }, [
+    formData.username,
+    checkingUsername,
+    usernameError,
+    usernameAvailabilityData,
+  ]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -267,7 +276,7 @@ export const CreateProfileStep = ({
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleChange}
-                  placeholder="Youremail@gmail.com"
+                  placeholder="First Name"
                   className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] ${
                     errors.firstName ? "ring-2 ring-red-500" : ""
                   }`}
@@ -288,7 +297,7 @@ export const CreateProfileStep = ({
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleChange}
-                  placeholder="Youremail@gmail.com"
+                  placeholder="Last Name"
                   className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] ${
                     errors.lastName ? "ring-2 ring-red-500" : ""
                   }`}
