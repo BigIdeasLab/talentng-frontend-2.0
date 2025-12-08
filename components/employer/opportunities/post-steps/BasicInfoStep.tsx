@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import statesCitiesData from "@/lib/data/states-cities.json";
 import categories from "@/lib/data/categories.json";
 
@@ -16,6 +17,10 @@ interface BasicInfoStepProps {
   onNext: () => void;
 }
 
+interface ValidationErrors {
+  [key: string]: string;
+}
+
 const employmentTypes = [
   "Full-Time",
   "Part-Time",
@@ -29,10 +34,47 @@ export function BasicInfoStep({
   updateFormData,
   onNext,
 }: BasicInfoStepProps) {
+  const [errors, setErrors] = useState<ValidationErrors>({});
+
   const selectedState = formData.location.split(", ")[1] || "";
   const selectedCity = formData.location.split(", ")[0] || "";
-  const stateData = selectedState ? statesCitiesData[selectedState as keyof typeof statesCitiesData] : null;
-  const cities = stateData && 'major_cities' in stateData ? stateData.major_cities : [];
+  const stateData = selectedState
+    ? statesCitiesData[selectedState as keyof typeof statesCitiesData]
+    : null;
+  const cities =
+    stateData && "major_cities" in stateData ? stateData.major_cities : [];
+
+  const validateForm = (): boolean => {
+    const newErrors: ValidationErrors = {};
+
+    if (!formData.title.trim() || formData.title.trim().length < 5) {
+      newErrors.title = "Title must be at least 5 characters";
+    }
+    if (!formData.type) {
+      newErrors.type = "Opportunity type is required";
+    }
+    if (!formData.category) {
+      newErrors.category = "Category is required";
+    }
+    if (!formData.workType) {
+      newErrors.workType = "Work type is required";
+    }
+    if (!selectedState || !selectedCity) {
+      newErrors.location = "Both state and city are required";
+    }
+    if (!formData.employmentType) {
+      newErrors.employmentType = "Employment type is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleNext = () => {
+    if (validateForm()) {
+      onNext();
+    }
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -52,9 +94,19 @@ export function BasicInfoStep({
             type="text"
             placeholder="Add A descriptive Title"
             value={formData.title}
-            onChange={(e) => updateFormData({ title: e.target.value })}
-            className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
+            onChange={(e) => {
+              updateFormData({ title: e.target.value });
+              if (errors.title) setErrors({ ...errors, title: "" });
+            }}
+            className={`w-full px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors ${
+              errors.title ? "border-red-500" : "border-[#E1E4EA]"
+            }`}
           />
+          {errors.title && (
+            <span className="font-inter-tight text-[12px] text-red-500">
+              {errors.title}
+            </span>
+          )}
         </div>
 
         {/* Opportunity Type & Category */}
@@ -66,10 +118,13 @@ export function BasicInfoStep({
             <div className="relative">
               <select
                 value={formData.type}
-                onChange={(e) =>
-                  updateFormData({ type: e.target.value })
-                }
-                className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
+                onChange={(e) => {
+                  updateFormData({ type: e.target.value });
+                  if (errors.type) setErrors({ ...errors, type: "" });
+                }}
+                className={`w-full h-[46px] px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white ${
+                  errors.type ? "border-red-500" : "border-[#E1E4EA]"
+                }`}
               >
                 <option value="" disabled className="text-[#99A0AE]">
                   Select
@@ -92,6 +147,9 @@ export function BasicInfoStep({
                 />
               </svg>
             </div>
+            {errors.type && (
+              <span className="font-inter-tight text-[12px] text-red-500">{errors.type}</span>
+            )}
           </div>
 
           <div className="flex flex-col gap-2.5">
@@ -101,8 +159,13 @@ export function BasicInfoStep({
             <div className="relative">
               <select
                 value={formData.category}
-                onChange={(e) => updateFormData({ category: e.target.value })}
-                className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
+                onChange={(e) => {
+                  updateFormData({ category: e.target.value });
+                  if (errors.category) setErrors({ ...errors, category: "" });
+                }}
+                className={`w-full h-[46px] px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white ${
+                  errors.category ? "border-red-500" : "border-[#E1E4EA]"
+                }`}
               >
                 <option value="" disabled className="text-[#99A0AE]">
                   Select Category
@@ -127,6 +190,9 @@ export function BasicInfoStep({
                 />
               </svg>
             </div>
+            {errors.category && (
+              <span className="font-inter-tight text-[12px] text-red-500">{errors.category}</span>
+            )}
           </div>
         </div>
 
@@ -138,11 +204,16 @@ export function BasicInfoStep({
           <div className="relative">
             <select
               value={formData.workType}
-              onChange={(e) => updateFormData({ workType: e.target.value })}
-              className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
+              onChange={(e) => {
+                updateFormData({ workType: e.target.value });
+                if (errors.workType) setErrors({ ...errors, workType: "" });
+              }}
+              className={`w-full h-[46px] px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white ${
+                errors.workType ? "border-red-500" : "border-[#E1E4EA]"
+              }`}
             >
               <option value="" disabled className="text-[#99A0AE]">
-                Remote / Hybrid / On-Site
+                Select
               </option>
               <option value="remote">Remote</option>
               <option value="hybrid">Hybrid</option>
@@ -161,21 +232,27 @@ export function BasicInfoStep({
                 fill="#B2B2B2"
               />
             </svg>
-          </div>
-        </div>
+            </div>
+            {errors.workType && (
+            <span className="font-inter-tight text-[12px] text-red-500">{errors.workType}</span>
+            )}
+            </div>
 
-        {/* Employment Type */}
-        <div className="flex flex-col gap-2.5">
-          <label className="font-inter-tight text-[13px] font-normal text-black">
+            {/* Employment Type */}
+            <div className="flex flex-col gap-2.5">
+            <label className="font-inter-tight text-[13px] font-normal text-black">
             Employment Type
-          </label>
+            </label>
           <div className="relative">
             <select
               value={formData.employmentType}
-              onChange={(e) =>
-                updateFormData({ employmentType: e.target.value })
-              }
-              className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
+              onChange={(e) => {
+                updateFormData({ employmentType: e.target.value });
+                if (errors.employmentType) setErrors({ ...errors, employmentType: "" });
+              }}
+              className={`w-full h-[46px] px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white ${
+                errors.employmentType ? "border-red-500" : "border-[#E1E4EA]"
+              }`}
             >
               <option value="" disabled className="text-[#99A0AE]">
                 Select
@@ -199,11 +276,14 @@ export function BasicInfoStep({
                 fill="#B2B2B2"
               />
             </svg>
-          </div>
-        </div>
+            </div>
+            {errors.employmentType && (
+            <span className="font-inter-tight text-[12px] text-red-500">{errors.employmentType}</span>
+            )}
+            </div>
 
-        {/* Location - State & City */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Location - State & City */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col gap-2.5">
             <label className="font-inter-tight text-[13px] font-normal text-black">
               State
@@ -212,10 +292,15 @@ export function BasicInfoStep({
               <select
                 value={selectedState}
                 onChange={(e) => {
-                  const newLocation = e.target.value ? `${selectedCity}, ${e.target.value}` : selectedCity;
+                  const newLocation = e.target.value
+                    ? `${selectedCity}, ${e.target.value}`
+                    : selectedCity;
                   updateFormData({ location: newLocation });
+                  if (errors.location) setErrors({ ...errors, location: "" });
                 }}
-                className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
+                className={`w-full h-[46px] px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white ${
+                  errors.location ? "border-red-500" : "border-[#E1E4EA]"
+                }`}
               >
                 <option value="">Select State</option>
                 {Object.keys(statesCitiesData).map((state) => (
@@ -248,11 +333,16 @@ export function BasicInfoStep({
               <select
                 value={selectedCity}
                 onChange={(e) => {
-                  const newLocation = e.target.value ? `${e.target.value}, ${selectedState}` : selectedState;
+                  const newLocation = e.target.value
+                    ? `${e.target.value}, ${selectedState}`
+                    : selectedState;
                   updateFormData({ location: newLocation });
+                  if (errors.location) setErrors({ ...errors, location: "" });
                 }}
                 disabled={!selectedState}
-                className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white disabled:bg-[#F5F5F5] disabled:cursor-not-allowed"
+                className={`w-full h-[46px] px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white disabled:bg-[#F5F5F5] disabled:cursor-not-allowed ${
+                  errors.location ? "border-red-500" : "border-[#E1E4EA]"
+                }`}
               >
                 <option value="">Select City</option>
                 {cities.map((city) => (
@@ -277,11 +367,14 @@ export function BasicInfoStep({
             </div>
           </div>
         </div>
+        {errors.location && (
+          <span className="font-inter-tight text-[12px] text-red-500">{errors.location}</span>
+        )}
       </div>
 
       {/* Next Button */}
       <button
-        onClick={onNext}
+        onClick={handleNext}
         className="w-full h-[44px] bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
       >
         Next

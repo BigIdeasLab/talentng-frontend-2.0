@@ -16,14 +16,58 @@ interface BudgetScopeStepProps {
   onSubmit: () => void;
 }
 
+interface ValidationErrors {
+  [key: string]: string;
+}
+
 export function BudgetScopeStep({
   formData,
   updateFormData,
   onSubmit,
 }: BudgetScopeStepProps) {
+  const [errors, setErrors] = useState<ValidationErrors>({});
   const [selectedPayment, setSelectedPayment] = useState<
     "weekly" | "monthly" | "hourly" | ""
   >(formData.paymentType);
+
+  const validateForm = (): boolean => {
+    const newErrors: ValidationErrors = {};
+
+    if (!selectedPayment) {
+      newErrors.paymentType = "Payment type is required";
+    }
+    
+    const minBudgetNum = parseInt(formData.minBudget?.replace(/,/g, "") || "0");
+    const maxBudgetNum = parseInt(formData.maxBudget?.replace(/,/g, "") || "0");
+
+    if (!formData.minBudget || minBudgetNum === 0) {
+      newErrors.minBudget = "Minimum budget is required";
+    }
+    if (!formData.maxBudget || maxBudgetNum === 0) {
+      newErrors.maxBudget = "Maximum budget is required";
+    }
+    if (minBudgetNum > 0 && maxBudgetNum > 0 && minBudgetNum > maxBudgetNum) {
+      newErrors.maxBudget = "Maximum budget must be greater than or equal to minimum budget";
+    }
+    if (!formData.duration) {
+      newErrors.duration = "Duration is required";
+    }
+    if (!formData.startDate) {
+      newErrors.startDate = "Start date is required";
+    }
+    if (!formData.experienceLevel) {
+      newErrors.experienceLevel = "Experience level is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = () => {
+    if (validateForm()) {
+      onSubmit();
+    }
+  };
 
   const handlePaymentTypeSelect = (type: "weekly" | "monthly" | "hourly") => {
     setSelectedPayment(type);
@@ -102,6 +146,11 @@ export function BudgetScopeStep({
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Pricing
           </label>
+          {(errors.minBudget || errors.maxBudget) && (
+            <span className="font-inter-tight text-[12px] text-red-500">
+              {errors.minBudget || errors.maxBudget}
+            </span>
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[13px] text-black font-medium pointer-events-none">
@@ -112,8 +161,13 @@ export function BudgetScopeStep({
                 inputMode="numeric"
                 placeholder="Min Budget"
                 value={formData.minBudget}
-                onChange={(e) => handleBudgetChange(e, "minBudget")}
-                className="w-full pl-6 pr-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
+                onChange={(e) => {
+                  handleBudgetChange(e, "minBudget");
+                  if (errors.minBudget) setErrors({ ...errors, minBudget: "" });
+                }}
+                className={`w-full pl-6 pr-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors ${
+                  errors.minBudget ? "border-red-500" : "border-[#E1E4EA]"
+                }`}
               />
             </div>
             <div className="relative">
@@ -125,8 +179,13 @@ export function BudgetScopeStep({
                 inputMode="numeric"
                 placeholder="Max Budget"
                 value={formData.maxBudget}
-                onChange={(e) => handleBudgetChange(e, "maxBudget")}
-                className="w-full pl-6 pr-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
+                onChange={(e) => {
+                  handleBudgetChange(e, "maxBudget");
+                  if (errors.maxBudget) setErrors({ ...errors, maxBudget: "" });
+                }}
+                className={`w-full pl-6 pr-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors ${
+                  errors.maxBudget ? "border-red-500" : "border-[#E1E4EA]"
+                }`}
               />
             </div>
             <div className="relative">
@@ -150,10 +209,16 @@ export function BudgetScopeStep({
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Duration
           </label>
+          {errors.duration && (
+            <span className="font-inter-tight text-[12px] text-red-500">{errors.duration}</span>
+          )}
           <div className="relative">
             <select
               value={formData.duration}
-              onChange={(e) => updateFormData({ duration: e.target.value })}
+              onChange={(e) => {
+                updateFormData({ duration: e.target.value });
+                if (errors.duration) setErrors({ ...errors, duration: "" });
+              }}
               className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
             >
               <option value="" disabled className="text-[#99A0AE]">
@@ -188,12 +253,18 @@ export function BudgetScopeStep({
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Start date
           </label>
+          {errors.startDate && (
+            <span className="font-inter-tight text-[12px] text-red-500">{errors.startDate}</span>
+          )}
           <div className="relative">
             <input
               type="date"
               placeholder="MM / DD / YYYY"
               value={formData.startDate}
-              onChange={(e) => updateFormData({ startDate: e.target.value })}
+              onChange={(e) => {
+                updateFormData({ startDate: e.target.value });
+                if (errors.startDate) setErrors({ ...errors, startDate: "" });
+              }}
               className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
             />
           </div>
@@ -204,12 +275,16 @@ export function BudgetScopeStep({
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Experience Level
           </label>
+          {errors.experienceLevel && (
+            <span className="font-inter-tight text-[12px] text-red-500">{errors.experienceLevel}</span>
+          )}
           <div className="relative">
             <select
               value={formData.experienceLevel}
-              onChange={(e) =>
-                updateFormData({ experienceLevel: e.target.value })
-              }
+              onChange={(e) => {
+                updateFormData({ experienceLevel: e.target.value });
+                if (errors.experienceLevel) setErrors({ ...errors, experienceLevel: "" });
+              }}
               className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
             >
               <option value="" disabled className="text-[#99A0AE]">
@@ -239,7 +314,7 @@ export function BudgetScopeStep({
 
       {/* Submit Button */}
       <button
-        onClick={onSubmit}
+        onClick={handleSubmit}
         className="w-full h-[44px] bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
       >
         Preview

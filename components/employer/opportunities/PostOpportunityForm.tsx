@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { BasicInfoStep } from "./post-steps/BasicInfoStep";
 import { DescriptionStep } from "./post-steps/DescriptionStep";
 import { BudgetScopeStep } from "./post-steps/BudgetScopeStep";
@@ -10,33 +10,41 @@ type FormSection = "basic-info" | "description" | "budget-scope";
 
 export function PostOpportunityForm() {
   const router = useRouter();
+  const pathname = usePathname();
   const [expandedSection, setExpandedSection] = useState<string>("basic-info");
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-  const [formData, setFormData] = useState({
-    type: "Job",
-    title: "",
-    description: "",
-    keyResponsibilities: [] as string[],
-    requirements: [] as string[],
-    tags: [] as string[],
-    tools: [] as string[],
-    category: "",
-    workType: "",
-    location: "",
-    paymentType: "" as "weekly" | "monthly" | "hourly" | "",
-    minBudget: "",
-    maxBudget: "",
-    maxHours: "",
-    duration: "",
-    startDate: "",
-    experienceLevel: "",
-    employmentType: "",
-    status: "active" as const,
+  
+  const [formData, setFormData] = useState(() => {
+    const saved = sessionStorage.getItem('opportunityFormData');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse saved form data:', e);
+      }
+    }
+    return {
+      type: "",
+      title: "",
+      description: "",
+      keyResponsibilities: [] as string[],
+      requirements: [] as string[],
+      tags: [] as string[],
+      tools: [] as string[],
+      category: "",
+      workType: "",
+      location: "",
+      paymentType: "" as "weekly" | "monthly" | "hourly" | "",
+      minBudget: "",
+      maxBudget: "",
+      maxHours: "",
+      duration: "",
+      startDate: "",
+      experienceLevel: "",
+      employmentType: "",
+      status: "active" as const,
+    };
   });
-
-  const handleCancel = () => {
-    router.push("/opportunities");
-  };
 
   const handleSave = () => {
     // Navigate to preview with the data for user review
@@ -57,7 +65,18 @@ export function PostOpportunityForm() {
   };
 
   const updateFormData = (data: Partial<typeof formData>) => {
-    setFormData((prev) => ({ ...prev, ...data }));
+    setFormData((prev: typeof formData) => ({ ...prev, ...data }));
+  };
+
+  // Save form data to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem('opportunityFormData', JSON.stringify(formData));
+  }, [formData]);
+
+  // Clear sessionStorage when navigating away
+  const handleCancel = () => {
+    sessionStorage.removeItem('opportunityFormData');
+    router.push("/opportunities");
   };
 
   return (

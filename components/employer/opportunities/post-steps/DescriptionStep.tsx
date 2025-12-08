@@ -19,17 +19,48 @@ interface DescriptionStepProps {
   onNext: () => void;
 }
 
+interface ValidationErrors {
+  [key: string]: string;
+}
+
 export function DescriptionStep({
   formData,
   updateFormData,
   onNext,
 }: DescriptionStepProps) {
+  const [errors, setErrors] = useState<ValidationErrors>({});
   const [responsibilityInput, setResponsibilityInput] = useState("");
   const [requirementInput, setRequirementInput] = useState("");
   const [tagsInput, setTagsInput] = useState("");
   const [toolsInput, setToolsInput] = useState("");
   const [showTagsDropdown, setShowTagsDropdown] = useState(false);
   const [showToolsDropdown, setShowToolsDropdown] = useState(false);
+
+  const validateForm = (): boolean => {
+    const newErrors: ValidationErrors = {};
+
+    if (!formData.description.trim() || formData.description.trim().length < 30) {
+      newErrors.description = "Description must be at least 30 characters";
+    }
+    if (formData.keyResponsibilities.length === 0) {
+      newErrors.keyResponsibilities = "Add at least one responsibility";
+    }
+    if (formData.tags.length === 0) {
+      newErrors.tags = "Add at least one skill tag";
+    }
+    if (formData.tools.length === 0) {
+      newErrors.tools = "Add at least one tool";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleNext = () => {
+    if (validateForm()) {
+      onNext();
+    }
+  };
 
   const handleAddResponsibility = () => {
     if (responsibilityInput.trim()) {
@@ -40,6 +71,7 @@ export function DescriptionStep({
         ],
       });
       setResponsibilityInput("");
+      if (errors.keyResponsibilities) setErrors({ ...errors, keyResponsibilities: "" });
     }
   };
 
@@ -57,6 +89,7 @@ export function DescriptionStep({
         requirements: [...formData.requirements, requirementInput.trim()],
       });
       setRequirementInput("");
+      if (errors.requirements) setErrors({ ...errors, requirements: "" });
     }
   };
 
@@ -92,6 +125,7 @@ export function DescriptionStep({
       });
       setTagsInput("");
       setShowTagsDropdown(false);
+      if (errors.tags) setErrors({ ...errors, tags: "" });
     }
   };
 
@@ -109,6 +143,7 @@ export function DescriptionStep({
       });
       setToolsInput("");
       setShowToolsDropdown(false);
+      if (errors.tools) setErrors({ ...errors, tools: "" });
     }
   };
 
@@ -161,10 +196,18 @@ export function DescriptionStep({
           <textarea
             placeholder="Describe the opportunity in detail"
             value={formData.description}
-            onChange={(e) => updateFormData({ description: e.target.value })}
+            onChange={(e) => {
+              updateFormData({ description: e.target.value });
+              if (errors.description) setErrors({ ...errors, description: "" });
+            }}
             rows={5}
-            className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors resize-none"
+            className={`w-full px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors resize-none ${
+              errors.description ? "border-red-500" : "border-[#E1E4EA]"
+            }`}
           />
+          {errors.description && (
+            <span className="font-inter-tight text-[12px] text-red-500">{errors.description}</span>
+          )}
         </div>
 
         {/* Key Responsibilities */}
@@ -172,6 +215,9 @@ export function DescriptionStep({
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Key Responsibilities
           </label>
+          {errors.keyResponsibilities && (
+            <span className="font-inter-tight text-[12px] text-red-500">{errors.keyResponsibilities}</span>
+          )}
           <div className="flex flex-col gap-2 border border-[#E1E4EA] rounded-[8px] p-3">
             {/* List of added responsibilities */}
             {formData.keyResponsibilities.map((item, index) => (
@@ -284,6 +330,9 @@ export function DescriptionStep({
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Tags (Skills)
           </label>
+          {errors.tags && (
+            <span className="font-inter-tight text-[12px] text-red-500">{errors.tags}</span>
+          )}
           <div className="relative">
             <div className="flex flex-wrap gap-2 p-3 border border-[#E1E4EA] rounded-[8px] min-h-[46px]">
               {/* Added tags as pills */}
@@ -376,11 +425,14 @@ export function DescriptionStep({
         </div>
 
         {/* Tools */}
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-2.5 overflow-visible">
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Tools
           </label>
-          <div className="relative">
+          {errors.tools && (
+            <span className="font-inter-tight text-[12px] text-red-500">{errors.tools}</span>
+          )}
+          <div className="relative overflow-visible">
             <div className="flex flex-wrap gap-2 p-3 border border-[#E1E4EA] rounded-[8px] min-h-[46px]">
               {/* Added tools as pills */}
               {formData.tools.map((tool, index) => {
@@ -502,7 +554,7 @@ export function DescriptionStep({
 
       {/* Next Button */}
       <button
-        onClick={onNext}
+        onClick={handleNext}
         className="w-full h-[44px] bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
       >
         Next
