@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useProfile } from "@/hooks/useProfile";
+import { getToolInfo } from "@/lib/utils/tools";
 
 interface FormData {
   type: string;
@@ -248,17 +249,16 @@ export function OpportunityPreview() {
 
               {/* Skills */}
               {formData.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-2">
                   {formData.tags.map((skill, index) => (
-                    <span
+                    <div
                       key={index}
-                      className="font-inter-tight text-[12px] font-normal text-black"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#5C30FF]/10 border border-[#5C30FF] rounded-full"
                     >
-                      {skill}
-                      {index < formData.tags.length - 1 && (
-                        <span className="ml-1 text-gray-300">•</span>
-                      )}
-                    </span>
+                      <span className="font-inter-tight text-[12px] text-[#5C30FF] font-medium">
+                        {skill}
+                      </span>
+                    </div>
                   ))}
                 </div>
               )}
@@ -282,8 +282,15 @@ export function OpportunityPreview() {
                 <h3 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
                   What You'll Do
                 </h3>
-                <div className="font-inter-tight text-[13px] font-normal text-black leading-[165%] whitespace-pre-line">
-                  {formData.keyResponsibilities.join("\n")}
+                <div className="flex flex-col gap-2">
+                  {formData.keyResponsibilities.map((item, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <span className="text-[#5C30FF] text-[14px] flex-shrink-0 pt-0.5">•</span>
+                      <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
+                        {item}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -294,8 +301,15 @@ export function OpportunityPreview() {
                 <h3 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
                   Requirements
                 </h3>
-                <div className="font-inter-tight text-[13px] font-normal text-black leading-[165%] whitespace-pre-line">
-                  {formData.requirements.join("\n")}
+                <div className="flex flex-col gap-2">
+                  {formData.requirements.map((item, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <span className="text-[#5C30FF] text-[14px] flex-shrink-0 pt-0.5">•</span>
+                      <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
+                        {item}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -306,34 +320,28 @@ export function OpportunityPreview() {
                 <h3 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
                   Tools Needed
                 </h3>
-                <div className="flex flex-wrap gap-1">
-                  {formData.tools.map((tool, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-1.5 rounded-full"
-                    >
-                      <div className="flex items-center gap-1">
-                        <span className="font-inter-tight text-[12px] font-normal text-black">
+                <div className="flex flex-wrap gap-2">
+                  {formData.tools.map((tool, index) => {
+                    const toolInfo = getToolInfo(tool);
+                    return (
+                      <div
+                        key={index}
+                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#5C30FF]/10 border border-[#5C30FF] rounded-full"
+                      >
+                        <img
+                          src={toolInfo.logo}
+                          alt={tool}
+                          className="w-4 h-4 object-contain"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = "none";
+                          }}
+                        />
+                        <span className="font-inter-tight text-[12px] text-[#5C30FF] font-medium">
                           {tool}
                         </span>
                       </div>
-                      <svg
-                        width="11"
-                        height="11"
-                        viewBox="0 0 13 13"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M9.75 3.25L3.25044 9.74957M9.74957 9.75L3.25 3.25046"
-                          stroke="#606060"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -345,11 +353,20 @@ export function OpportunityPreview() {
               {/* Budget */}
               {(formData.minBudget || formData.maxBudget) && (
                 <div className="flex flex-col gap-2.5">
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 flex-wrap">
                     <span className="font-inter-tight text-[17px] font-medium text-black">
-                      ${formData.minBudget || "0"} - $
+                      ₦{formData.minBudget || "0"} - ₦
                       {formData.maxBudget || "0"}
-                      {formData.paymentType === "hourly" ? " / hr" : ""}
+                      {formData.paymentType && (
+                        <span>
+                          /
+                          {formData.paymentType === "hourly"
+                            ? "hr"
+                            : formData.paymentType === "weekly"
+                              ? "wk"
+                              : "mo"}
+                        </span>
+                      )}
                     </span>
                     {formData.duration && (
                       <>
