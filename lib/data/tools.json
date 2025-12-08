@@ -1,0 +1,182 @@
+[
+  {
+    "id": "figma",
+    "name": "Figma",
+    "category": "Design",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg"
+  },
+  {
+    "id": "adobe-xd",
+    "name": "Adobe XD",
+    "category": "Design",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/xd/xd-original.svg"
+  },
+  {
+    "id": "sketch",
+    "name": "Sketch",
+    "category": "Design",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sketch/sketch-original.svg"
+  },
+  {
+    "id": "invision",
+    "name": "InVision",
+    "category": "Design",
+    "logo": "https://www.invisionapp.com/static/images/favicon.ico"
+  },
+  {
+    "id": "photoshop",
+    "name": "Photoshop",
+    "category": "Design",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/photoshop/photoshop-original.svg"
+  },
+  {
+    "id": "after-effects",
+    "name": "After Effects",
+    "category": "Video",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/aftereffects/aftereffects-original.svg"
+  },
+  {
+    "id": "premiere-pro",
+    "name": "Premiere Pro",
+    "category": "Video",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/premierepro/premierepro-original.svg"
+  },
+  {
+    "id": "wordpress",
+    "name": "WordPress",
+    "category": "CMS",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/wordpress/wordpress-original.svg"
+  },
+  {
+    "id": "shopify",
+    "name": "Shopify",
+    "category": "E-commerce",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/shopify/shopify-original.svg"
+  },
+  {
+    "id": "git",
+    "name": "Git",
+    "category": "Version Control",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg"
+  },
+  {
+    "id": "jira",
+    "name": "Jira",
+    "category": "Project Management",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/jira/jira-original.svg"
+  },
+  {
+    "id": "slack",
+    "name": "Slack",
+    "category": "Communication",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/slack/slack-original.svg"
+  },
+  {
+    "id": "asana",
+    "name": "Asana",
+    "category": "Project Management",
+    "logo": "https://asana.com/assets/img/favicons/favicon-32x32.png"
+  },
+  {
+    "id": "rive",
+    "name": "Rive",
+    "category": "Animation",
+    "logo": "https://rive.app/favicon.ico"
+  },
+  {
+    "id": "webflow",
+    "name": "Webflow",
+    "category": "Web Development",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/webflow/webflow-original.svg"
+  },
+  {
+    "id": "lottie",
+    "name": "Lottie",
+    "category": "Animation",
+    "logo": "https://airbnb.io/lottie/static/hero-image-c5a01cc55eeb8b3d04b45b52c76e8f72.webp"
+  },
+  {
+    "id": "framer",
+    "name": "Framer",
+    "category": "Design",
+    "logo": "https://framer.com/favicon.ico"
+  },
+  {
+    "id": "react",
+    "name": "React",
+    "category": "Framework",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg"
+  },
+  {
+    "id": "nextjs",
+    "name": "Next.js",
+    "category": "Framework",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg"
+  },
+  {
+    "id": "typescript",
+    "name": "TypeScript",
+    "category": "Language",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg"
+  },
+  {
+    "id": "javascript",
+    "name": "JavaScript",
+    "category": "Language",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg"
+  },
+  {
+    "id": "nodejs",
+    "name": "Node.js",
+    "category": "Runtime",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg"
+  },
+  {
+    "id": "mongodb",
+    "name": "MongoDB",
+    "category": "Database",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg"
+  },
+  {
+    "id": "postgresql",
+    "name": "PostgreSQL",
+    "category": "Database",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg"
+  },
+  {
+    "id": "docker",
+    "name": "Docker",
+    "category": "DevOps",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg"
+  },
+  {
+    "id": "kubernetes",
+    "name": "Kubernetes",
+    "category": "DevOps",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/kubernetes/kubernetes-original.svg"
+  },
+  {
+    "id": "github",
+    "name": "GitHub",
+    "category": "Version Control",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg"
+  },
+  {
+    "id": "gitlab",
+    "name": "GitLab",
+    "category": "Version Control",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/gitlab/gitlab-original.svg"
+  },
+  {
+    "id": "aws",
+    "name": "AWS",
+    "category": "Cloud",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/amazonwebservices/amazonwebservices-original.svg"
+  },
+  {
+    "id": "gcp",
+    "name": "Google Cloud",
+    "category": "Cloud",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/googlecloud/googlecloud-original.svg"
+  }
+]

@@ -28,5 +28,14 @@ export const getOpportunityById = async (id: string): Promise<Opportunity> => {
   return apiClient<Opportunity>(endpoint);
 };
 
+export const createOpportunity = async (
+  data: Partial<Opportunity>
+): Promise<Opportunity> => {
+  return apiClient<Opportunity>("/opportunities", {
+    method: "POST",
+    body: data,
+  });
+};
+
 // Export types
 export type { Opportunity, GetOpportunitiesParams };

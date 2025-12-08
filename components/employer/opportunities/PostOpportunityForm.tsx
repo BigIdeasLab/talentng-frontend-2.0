@@ -23,7 +23,6 @@ export function PostOpportunityForm() {
     category: "",
     workType: "",
     location: "",
-    compensationType: "",
     paymentType: "" as "weekly" | "monthly" | "hourly" | "",
     minBudget: "",
     maxBudget: "",
@@ -31,7 +30,6 @@ export function PostOpportunityForm() {
     duration: "",
     startDate: "",
     experienceLevel: "",
-    compensation: "",
     employmentType: "",
     status: "active" as const,
   });
@@ -41,8 +39,10 @@ export function PostOpportunityForm() {
   };
 
   const handleSave = () => {
-    console.log("Form submitted:", formData);
-    router.push("/opportunities/preview");
+    // Navigate to preview with the data for user review
+    const searchParams = new URLSearchParams();
+    searchParams.set("data", JSON.stringify(formData));
+    router.push(`/opportunities/preview?${searchParams.toString()}`);
   };
 
   const toggleSection = (section: string) => {
@@ -166,7 +166,6 @@ export function PostOpportunityForm() {
                         category: formData.category,
                         workType: formData.workType,
                         location: formData.location,
-                        compensationType: formData.compensationType,
                         employmentType: formData.employmentType,
                       }}
                       updateFormData={updateFormData}
@@ -270,7 +269,6 @@ export function PostOpportunityForm() {
                         duration: formData.duration,
                         startDate: formData.startDate,
                         experienceLevel: formData.experienceLevel,
-                        compensation: formData.compensation,
                       }}
                       updateFormData={updateFormData}
                       onSubmit={handleSave}

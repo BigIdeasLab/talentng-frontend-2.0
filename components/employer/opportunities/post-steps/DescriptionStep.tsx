@@ -1,5 +1,12 @@
 "use client";
 
+import { useState } from "react";
+import skills from "@/lib/data/skills.json";
+import toolsData from "@/lib/data/tools.json";
+import { getToolInfo } from "@/lib/utils/tools";
+
+const tools = toolsData.map((tool) => tool.name);
+
 interface DescriptionStepProps {
   formData: {
     description: string;
@@ -17,6 +24,126 @@ export function DescriptionStep({
   updateFormData,
   onNext,
 }: DescriptionStepProps) {
+  const [responsibilityInput, setResponsibilityInput] = useState("");
+  const [requirementInput, setRequirementInput] = useState("");
+  const [tagsInput, setTagsInput] = useState("");
+  const [toolsInput, setToolsInput] = useState("");
+  const [showTagsDropdown, setShowTagsDropdown] = useState(false);
+  const [showToolsDropdown, setShowToolsDropdown] = useState(false);
+
+  const handleAddResponsibility = () => {
+    if (responsibilityInput.trim()) {
+      updateFormData({
+        keyResponsibilities: [
+          ...formData.keyResponsibilities,
+          responsibilityInput.trim(),
+        ],
+      });
+      setResponsibilityInput("");
+    }
+  };
+
+  const handleRemoveResponsibility = (index: number) => {
+    updateFormData({
+      keyResponsibilities: formData.keyResponsibilities.filter(
+        (_, i) => i !== index,
+      ),
+    });
+  };
+
+  const handleAddRequirement = () => {
+    if (requirementInput.trim()) {
+      updateFormData({
+        requirements: [...formData.requirements, requirementInput.trim()],
+      });
+      setRequirementInput("");
+    }
+  };
+
+  const handleRemoveRequirement = (index: number) => {
+    updateFormData({
+      requirements: formData.requirements.filter((_, i) => i !== index),
+    });
+  };
+
+  const handleResponsibilityKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddResponsibility();
+    }
+  };
+
+  const handleRequirementKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddRequirement();
+    }
+  };
+
+  const handleAddTag = (tag: string) => {
+    const trimmedTag = tag.trim();
+    if (trimmedTag && !formData.tags.includes(trimmedTag)) {
+      updateFormData({
+        tags: [...formData.tags, trimmedTag],
+      });
+      setTagsInput("");
+      setShowTagsDropdown(false);
+    }
+  };
+
+  const handleRemoveTag = (index: number) => {
+    updateFormData({
+      tags: formData.tags.filter((_, i) => i !== index),
+    });
+  };
+
+  const handleAddTool = (tool: string) => {
+    const trimmedTool = tool.trim();
+    if (trimmedTool && !formData.tools.includes(trimmedTool)) {
+      updateFormData({
+        tools: [...formData.tools, trimmedTool],
+      });
+      setToolsInput("");
+      setShowToolsDropdown(false);
+    }
+  };
+
+  const handleRemoveTool = (index: number) => {
+    updateFormData({
+      tools: formData.tools.filter((_, i) => i !== index),
+    });
+  };
+
+  const handleTagsKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddTag(tagsInput);
+    }
+  };
+
+  const handleToolsKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddTool(toolsInput);
+    }
+  };
+
+  const filteredSkills = skills.filter(
+    (skill) =>
+      skill.toLowerCase().includes(tagsInput.toLowerCase()) &&
+      !formData.tags.includes(skill),
+  );
+
+  const filteredTools = tools.filter(
+    (tool) =>
+      tool.toLowerCase().includes(toolsInput.toLowerCase()) &&
+      !formData.tools.includes(tool),
+  );
+
   return (
     <div className="flex flex-col gap-6">
       {/* Section Title */}
@@ -45,15 +172,55 @@ export function DescriptionStep({
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Key Responsibilities
           </label>
-          <textarea
-            placeholder="List key responsibilities (one per line)"
-            value={formData.keyResponsibilities.join('\n')}
-            onChange={(e) =>
-              updateFormData({ keyResponsibilities: e.target.value.split('\n').filter(r => r.trim()) })
-            }
-            rows={5}
-            className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors resize-none"
-          />
+          <div className="flex flex-col gap-2 border border-[#E1E4EA] rounded-[8px] p-3">
+            {/* List of added responsibilities */}
+            {formData.keyResponsibilities.map((item, index) => (
+              <div key={index} className="flex items-center gap-2 group">
+                <span className="text-[#5C30FF] text-[14px]">•</span>
+                <span className="text-[13px] text-black flex-1">{item}</span>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveResponsibility(index)}
+                  className="text-[#99A0AE] hover:text-[#E63C23] transition-colors opacity-0 group-hover:opacity-100"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 4L4 12M4 4L12 12"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+            ))}
+            {/* Input for new responsibility */}
+            <div className="flex items-center gap-2">
+              <span className="text-[#5C30FF] text-[14px]">•</span>
+              <input
+                type="text"
+                placeholder="Add responsibility (press Enter)"
+                value={responsibilityInput}
+                onChange={(e) => setResponsibilityInput(e.target.value)}
+                onKeyDown={handleResponsibilityKeyDown}
+                className="text-[13px] text-black placeholder:text-[#99A0AE] outline-none flex-1 bg-transparent"
+              />
+              <button
+                type="button"
+                onClick={handleAddResponsibility}
+                className="px-3 py-1 text-[12px] bg-[#5C30FF]/10 text-[#5C30FF] rounded hover:bg-[#5C30FF]/20 transition-colors"
+              >
+                Add
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Requirements */}
@@ -61,15 +228,55 @@ export function DescriptionStep({
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Requirements
           </label>
-          <textarea
-            placeholder="List requirements (one per line)"
-            value={formData.requirements.join('\n')}
-            onChange={(e) =>
-              updateFormData({ requirements: e.target.value.split('\n').filter(r => r.trim()) })
-            }
-            rows={5}
-            className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors resize-none"
-          />
+          <div className="flex flex-col gap-2 border border-[#E1E4EA] rounded-[8px] p-3">
+            {/* List of added requirements */}
+            {formData.requirements.map((item, index) => (
+              <div key={index} className="flex items-center gap-2 group">
+                <span className="text-[#5C30FF] text-[14px]">•</span>
+                <span className="text-[13px] text-black flex-1">{item}</span>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveRequirement(index)}
+                  className="text-[#99A0AE] hover:text-[#E63C23] transition-colors opacity-0 group-hover:opacity-100"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 4L4 12M4 4L12 12"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+            ))}
+            {/* Input for new requirement */}
+            <div className="flex items-center gap-2">
+              <span className="text-[#5C30FF] text-[14px]">•</span>
+              <input
+                type="text"
+                placeholder="Add requirement (press Enter)"
+                value={requirementInput}
+                onChange={(e) => setRequirementInput(e.target.value)}
+                onKeyDown={handleRequirementKeyDown}
+                className="text-[13px] text-black placeholder:text-[#99A0AE] outline-none flex-1 bg-transparent"
+              />
+              <button
+                type="button"
+                onClick={handleAddRequirement}
+                className="px-3 py-1 text-[12px] bg-[#5C30FF]/10 text-[#5C30FF] rounded hover:bg-[#5C30FF]/20 transition-colors"
+              >
+                Add
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Tags (Skills) */}
@@ -78,41 +285,93 @@ export function DescriptionStep({
             Tags (Skills)
           </label>
           <div className="relative">
-            <select
-              multiple
-              value={formData.tags}
-              onChange={(e) => {
-                const selected = Array.from(
-                  e.target.selectedOptions,
-                  (option) => option.value,
-                );
-                updateFormData({ tags: selected });
-              }}
-              className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
-            >
-              <option value="" disabled className="text-[#99A0AE]">
-                Select Skills
-              </option>
-              <option value="ui-design">UI Design</option>
-              <option value="ux-design">UX Design</option>
-              <option value="web-design">Web Design</option>
-              <option value="graphic-design">Graphic Design</option>
-              <option value="user-research">User Research</option>
-              <option value="prototyping">Prototyping</option>
-            </select>
-            <svg
-              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
-              width="14"
-              height="14"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M11.2826 6.2209C11.3525 6.29058 11.4079 6.37338 11.4458 6.46454C11.4837 6.5557 11.5031 6.65344 11.5031 6.75215C11.5031 6.85086 11.4837 6.9486 11.4458 7.03977C11.4079 7.13093 11.3525 7.21373 11.2826 7.2834L8.28255 10.2834C8.21287 10.3533 8.13008 10.4088 8.03892 10.4467C7.94775 10.4845 7.85001 10.504 7.7513 10.504C7.65259 10.504 7.55485 10.4845 7.46369 10.4467C7.37252 10.4088 7.28973 10.3533 7.22005 10.2834L4.22005 7.2834C4.07915 7.14251 4 6.95141 4 6.75215C4 6.5529 4.07915 6.3618 4.22005 6.2209C4.36095 6.08001 4.55204 6.00085 4.7513 6.00085C4.95056 6.00085 5.14165 6.08001 5.28255 6.2209L7.75193 8.68903L10.2213 6.21903C10.2911 6.14942 10.3739 6.09425 10.465 6.05666C10.5561 6.01908 10.6538 5.99983 10.7523 6C10.8509 6.00018 10.9484 6.01977 11.0394 6.05768C11.1304 6.09558 11.213 6.15105 11.2826 6.2209Z"
-                fill="#B2B2B2"
+            <div className="flex flex-wrap gap-2 p-3 border border-[#E1E4EA] rounded-[8px] min-h-[46px]">
+              {/* Added tags as pills */}
+              {formData.tags.map((tag, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-2 px-3 py-1 bg-[#5C30FF]/10 border border-[#5C30FF] rounded-full"
+                >
+                  <span className="text-[12px] text-[#5C30FF] font-medium">
+                    {tag}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveTag(index)}
+                    className="text-[#5C30FF] hover:text-[#E63C23] transition-colors"
+                  >
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 4L4 12M4 4L12 12"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+
+              {/* Input field */}
+              <input
+                type="text"
+                placeholder={
+                  formData.tags.length === 0 ? "Search or add skills..." : ""
+                }
+                value={tagsInput}
+                onChange={(e) => {
+                  setTagsInput(e.target.value);
+                  setShowTagsDropdown(true);
+                }}
+                onKeyDown={handleTagsKeyDown}
+                onFocus={() => setShowTagsDropdown(true)}
+                className="flex-1 min-w-[150px] text-[13px] text-black placeholder:text-[#99A0AE] outline-none bg-transparent"
               />
-            </svg>
+            </div>
+
+            {/* Dropdown */}
+            {showTagsDropdown && tagsInput && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#E1E4EA] rounded-[8px] shadow-lg z-10 max-h-[200px] overflow-y-auto">
+                {filteredSkills.length > 0 ? (
+                  <>
+                    {filteredSkills.slice(0, 8).map((skill) => (
+                      <button
+                        key={skill}
+                        type="button"
+                        onClick={() => handleAddTag(skill)}
+                        className="w-full text-left px-3 py-2 text-[13px] text-black hover:bg-gray-100 transition-colors"
+                      >
+                        {skill}
+                      </button>
+                    ))}
+                    {tagsInput.trim() && !skills.includes(tagsInput) && (
+                      <button
+                        type="button"
+                        onClick={() => handleAddTag(tagsInput)}
+                        className="w-full text-left px-3 py-2 text-[13px] text-[#5C30FF] bg-[#5C30FF]/5 hover:bg-[#5C30FF]/10 font-medium border-t border-[#E1E4EA]"
+                      >
+                        + Add "{tagsInput}" as custom tag
+                      </button>
+                    )}
+                  </>
+                ) : tagsInput.trim() ? (
+                  <button
+                    type="button"
+                    onClick={() => handleAddTag(tagsInput)}
+                    className="w-full text-left px-3 py-2 text-[13px] text-[#5C30FF] bg-[#5C30FF]/5 hover:bg-[#5C30FF]/10 font-medium"
+                  >
+                    + Add "{tagsInput}" as custom tag
+                  </button>
+                ) : null}
+              </div>
+            )}
           </div>
         </div>
 
@@ -122,41 +381,121 @@ export function DescriptionStep({
             Tools
           </label>
           <div className="relative">
-            <select
-              multiple
-              value={formData.tools}
-              onChange={(e) => {
-                const selected = Array.from(
-                  e.target.selectedOptions,
-                  (option) => option.value,
+            <div className="flex flex-wrap gap-2 p-3 border border-[#E1E4EA] rounded-[8px] min-h-[46px]">
+              {/* Added tools as pills */}
+              {formData.tools.map((tool, index) => {
+                const toolInfo = getToolInfo(tool);
+                return (
+                  <div
+                    key={index}
+                    className="flex items-center gap-2 px-2.5 py-1.5 bg-[#5C30FF]/10 border border-[#5C30FF] rounded-full"
+                  >
+                    <img
+                      src={toolInfo.logo}
+                      alt={tool}
+                      className="w-4 h-4 object-contain"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                    <span className="text-[12px] text-[#5C30FF] font-medium">
+                      {tool}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTool(index)}
+                      className="text-[#5C30FF] hover:text-[#E63C23] transition-colors"
+                    >
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 4L4 12M4 4L12 12"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
                 );
-                updateFormData({ tools: selected });
-              }}
-              className="w-full px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
-            >
-              <option value="" disabled className="text-[#99A0AE]">
-                Select Tools
-              </option>
-              <option value="figma">Figma</option>
-              <option value="sketch">Sketch</option>
-              <option value="adobe-xd">Adobe XD</option>
-              <option value="photoshop">Photoshop</option>
-              <option value="illustrator">Illustrator</option>
-              <option value="invision">InVision</option>
-            </select>
-            <svg
-              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
-              width="14"
-              height="14"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M11.2826 6.2209C11.3525 6.29058 11.4079 6.37338 11.4458 6.46454C11.4837 6.5557 11.5031 6.65344 11.5031 6.75215C11.5031 6.85086 11.4837 6.9486 11.4458 7.03977C11.4079 7.13093 11.3525 7.21373 11.2826 7.2834L8.28255 10.2834C8.21287 10.3533 8.13008 10.4088 8.03892 10.4467C7.94775 10.4845 7.85001 10.504 7.7513 10.504C7.65259 10.504 7.55485 10.4845 7.46369 10.4467C7.37252 10.4088 7.28973 10.3533 7.22005 10.2834L4.22005 7.2834C4.07915 7.14251 4 6.95141 4 6.75215C4 6.5529 4.07915 6.3618 4.22005 6.2209C4.36095 6.08001 4.55204 6.00085 4.7513 6.00085C4.95056 6.00085 5.14165 6.08001 5.28255 6.2209L7.75193 8.68903L10.2213 6.21903C10.2911 6.14942 10.3739 6.09425 10.465 6.05666C10.5561 6.01908 10.6538 5.99983 10.7523 6C10.8509 6.00018 10.9484 6.01977 11.0394 6.05768C11.1304 6.09558 11.213 6.15105 11.2826 6.2209Z"
-                fill="#B2B2B2"
+              })}
+
+              {/* Input field */}
+              <input
+                type="text"
+                placeholder={
+                  formData.tools.length === 0 ? "Search or add tools..." : ""
+                }
+                value={toolsInput}
+                onChange={(e) => {
+                  setToolsInput(e.target.value);
+                  setShowToolsDropdown(true);
+                }}
+                onKeyDown={handleToolsKeyDown}
+                onFocus={() => setShowToolsDropdown(true)}
+                className="flex-1 min-w-[150px] text-[13px] text-black placeholder:text-[#99A0AE] outline-none bg-transparent"
               />
-            </svg>
+            </div>
+
+            {/* Dropdown */}
+            {showToolsDropdown && toolsInput && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#E1E4EA] rounded-[8px] shadow-lg z-10 max-h-[300px] overflow-y-auto">
+                {filteredTools.length > 0 ? (
+                  <>
+                    {filteredTools.map((tool) => {
+                      const toolInfo = getToolInfo(tool);
+                      return (
+                        <button
+                          key={tool}
+                          type="button"
+                          onClick={() => handleAddTool(tool)}
+                          className="w-full flex items-center gap-3 text-left px-3 py-2.5 text-[13px] text-black hover:bg-gray-100 transition-colors border-b border-gray-50 last:border-b-0"
+                        >
+                          <img
+                            src={toolInfo.logo}
+                            alt={tool}
+                            className="w-5 h-5 object-contain flex-shrink-0"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display =
+                                "none";
+                            }}
+                          />
+                          <div className="flex-1">
+                            <div className="font-medium">{tool}</div>
+                            <div className="text-[11px] text-gray-500">
+                              {toolInfo.category}
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                    {toolsInput.trim() && !tools.includes(toolsInput) && (
+                      <button
+                        type="button"
+                        onClick={() => handleAddTool(toolsInput)}
+                        className="w-full text-left px-3 py-2 text-[13px] text-[#5C30FF] bg-[#5C30FF]/5 hover:bg-[#5C30FF]/10 font-medium border-t border-[#E1E4EA]"
+                      >
+                        + Add "{toolsInput}" as custom tool
+                      </button>
+                    )}
+                  </>
+                ) : toolsInput.trim() ? (
+                  <button
+                    type="button"
+                    onClick={() => handleAddTool(toolsInput)}
+                    className="w-full text-left px-3 py-2 text-[13px] text-[#5C30FF] bg-[#5C30FF]/5 hover:bg-[#5C30FF]/10 font-medium"
+                  >
+                    + Add "{toolsInput}" as custom tool
+                  </button>
+                ) : null}
+              </div>
+            )}
           </div>
         </div>
       </div>
