@@ -7,11 +7,43 @@ import { ApplicantsHeader } from "./ApplicantsHeader";
 
 interface ApplicantsViewProps {
   opportunityId: string;
+  applicationCount?: number;
+  applicationCap?: number;
+  closingDate?: string;
 }
 
-export function ApplicantsView({ opportunityId }: ApplicantsViewProps) {
+export function ApplicantsView({ 
+  opportunityId, 
+  applicationCount = 0, 
+  applicationCap, 
+  closingDate 
+}: ApplicantsViewProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
+
+  const getProgressPercentage = () => {
+    if (!applicationCap || applicationCap === 0) return 0;
+    return Math.min((applicationCount / applicationCap) * 100, 100);
+  };
+
+  const getCapStatusText = () => {
+    if (!applicationCap) return null;
+    const remaining = Math.max(0, applicationCap - applicationCount);
+    if (remaining === 0) return "Application cap reached";
+    return `${remaining} spot${remaining !== 1 ? "s" : ""} remaining`;
+  };
+
+  const formatClosingDate = (dateString?: string) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  const isNearingCap = applicationCap && applicationCount >= applicationCap * 0.8;
 
   return (
     <div className="h-screen bg-white p-4 md:p-6 overflow-hidden flex flex-col">
@@ -38,10 +70,53 @@ export function ApplicantsView({ opportunityId }: ApplicantsViewProps) {
           </span>
         </Link>
 
-        {/* Page Title */}
-        <h1 className="font-inter-tight text-[21px] font-medium text-black mb-4">
-          Applicants
-        </h1>
+        {/* Page Title and Stats */}
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="font-inter-tight text-[21px] font-medium text-black">
+            Applicants
+          </h1>
+          <div className="text-right">
+            <p className="text-sm font-medium text-black">
+              {applicationCount} {applicationCount === 1 ? "applicant" : "applicants"}
+            </p>
+            {getCapStatusText() && (
+              <p className={`text-xs ${isNearingCap ? "text-orange-600" : "text-gray-500"}`}>
+                {getCapStatusText()}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Application Cap Progress */}
+        {applicationCap && (
+          <div className="mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium text-gray-700">
+                Application Progress
+              </span>
+              <span className="text-xs text-gray-600">
+                {applicationCount} of {applicationCap}
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div
+                className={`h-2 rounded-full transition-all ${
+                  isNearingCap ? "bg-orange-500" : "bg-blue-500"
+                }`}
+                style={{ width: `${getProgressPercentage()}%` }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Closing Date Info */}
+        {closingDate && (
+          <div className="mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <p className="text-xs font-medium text-gray-700">
+              Closes on: <span className="font-semibold">{formatClosingDate(closingDate)}</span>
+            </p>
+          </div>
+        )}
 
         {/* Search and Filters */}
         <ApplicantsHeader

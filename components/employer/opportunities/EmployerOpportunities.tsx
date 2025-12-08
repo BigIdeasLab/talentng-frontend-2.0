@@ -22,6 +22,8 @@ interface Opportunity {
   rate: string;
   applicantsCount: number;
   status: "active" | "closed" | "draft";
+  applicationCap?: number;
+  closingDate?: string;
 }
 
 export function EmployerOpportunities() {
@@ -66,8 +68,10 @@ export function EmployerOpportunities() {
             title: opp.title || "",
             skills: opp.tags || [],
             rate: `₦${Math.round(parseFloat(opp.minBudget) || 0).toLocaleString()} - ₦${Math.round(parseFloat(opp.maxBudget) || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`,
-            applicantsCount: 0, // Will be updated with separate API
+            applicantsCount: opp.applicationCount || 0,
             status: (opp.status || "draft") as "active" | "closed" | "draft",
+            applicationCap: opp.applicationCap,
+            closingDate: opp.closingDate,
           }) as Opportunity,
       );
 

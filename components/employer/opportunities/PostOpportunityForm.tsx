@@ -6,26 +6,24 @@ import { BasicInfoStep } from "./post-steps/BasicInfoStep";
 import { DescriptionStep } from "./post-steps/DescriptionStep";
 import { BudgetScopeStep } from "./post-steps/BudgetScopeStep";
 
-type FormSection = "basic-info" | "description" | "budget-scope";
+type FormSection =
+  | "basic-info"
+  | "description"
+  | "budget-scope"
+  | "application-settings";
 
 export function PostOpportunityForm() {
   const router = useRouter();
   const pathname = usePathname();
   const [expandedSection, setExpandedSection] = useState<string>("basic-info");
   const [showExitModal, setShowExitModal] = useState(false);
-  const [pendingNavigation, setPendingNavigation] = useState<(() => void) | null>(null);
+  const [pendingNavigation, setPendingNavigation] = useState<
+    (() => void) | null
+  >(null);
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-  
+
   const [formData, setFormData] = useState(() => {
-    const saved = sessionStorage.getItem('opportunityFormData');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error('Failed to parse saved form data:', e);
-      }
-    }
-    return {
+    const defaultData = {
       type: "",
       title: "",
       description: "",
@@ -45,7 +43,21 @@ export function PostOpportunityForm() {
       experienceLevel: "",
       employmentType: "",
       status: "active" as const,
+      applicationCap: "",
+      closingDate: "",
     };
+
+    const saved = sessionStorage.getItem("opportunityFormData");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        // Merge with defaults to ensure all fields are defined
+        return { ...defaultData, ...parsed };
+      } catch (e) {
+        console.error("Failed to parse saved form data:", e);
+      }
+    }
+    return defaultData;
   });
 
   const handleSave = () => {
@@ -72,7 +84,7 @@ export function PostOpportunityForm() {
 
   // Save form data to sessionStorage whenever it changes
   useEffect(() => {
-    sessionStorage.setItem('opportunityFormData', JSON.stringify(formData));
+    sessionStorage.setItem("opportunityFormData", JSON.stringify(formData));
   }, [formData]);
 
   // Warn before leaving the page
@@ -91,17 +103,19 @@ export function PostOpportunityForm() {
   const handleSaveAsDraft = async () => {
     try {
       const { createOpportunity } = await import("@/lib/api/opportunities");
-      
+
       const draftData = {
         ...formData,
         minBudget: formData.minBudget ? Number(formData.minBudget) : 0,
         maxBudget: formData.maxBudget ? Number(formData.maxBudget) : 0,
-        startDate: formData.startDate ? new Date(formData.startDate).toISOString() : undefined,
+        startDate: formData.startDate
+          ? new Date(formData.startDate).toISOString()
+          : undefined,
         status: "draft",
       };
 
       await createOpportunity(draftData);
-      sessionStorage.removeItem('opportunityFormData');
+      sessionStorage.removeItem("opportunityFormData");
       setShowExitModal(false);
       if (pendingNavigation) {
         pendingNavigation();
@@ -116,13 +130,13 @@ export function PostOpportunityForm() {
   const handleCancel = () => {
     setShowExitModal(true);
     setPendingNavigation(() => () => {
-      sessionStorage.removeItem('opportunityFormData');
+      sessionStorage.removeItem("opportunityFormData");
       router.push("/opportunities");
     });
   };
 
   const handleDiscard = () => {
-    sessionStorage.removeItem('opportunityFormData');
+    sessionStorage.removeItem("opportunityFormData");
     setShowExitModal(false);
     if (pendingNavigation) {
       pendingNavigation();
@@ -169,6 +183,16 @@ export function PostOpportunityForm() {
             }`}
           >
             Budget & Scope
+          </button>
+          <button
+            onClick={() => toggleSection("application-settings")}
+            className={`text-[14px] font-normal transition-colors text-left ${
+              expandedSection === "application-settings"
+                ? "text-[#5C30FF] font-medium"
+                : "text-[#525866] hover:text-black"
+            }`}
+          >
+            Application Settings
           </button>
         </div>
       </div>
@@ -351,6 +375,100 @@ export function PostOpportunityForm() {
                 </>
               )}
             </div>
+
+            {/* Application Settings Section */}
+            <div
+              ref={(el) => {
+                if (el) sectionRefs.current["application-settings"] = el;
+              }}
+              className="border border-gray-300 rounded-[16px] overflow-hidden"
+            >
+              <button
+                onClick={() => toggleSection("application-settings")}
+                className="w-full px-5 py-4 bg-gray-50 flex items-center justify-between hover:bg-gray-100 transition-colors"
+              >
+                <span className="font-medium text-black text-[14px]">
+                  Application Settings
+                </span>
+                <svg
+                  className={`w-5 h-5 text-gray-600 transition-transform ${
+                    expandedSection === "application-settings"
+                      ? "rotate-180"
+                      : ""
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                  />
+                </svg>
+              </button>
+              {expandedSection === "application-settings" && (
+                <>
+                  <div className="h-[1px] bg-gray-300" />
+                  <div className="p-5 flex flex-col gap-5">
+                    {/* Application Cap */}
+                    <div className="flex flex-col gap-2">
+                      <label className="text-[14px] font-medium text-black">
+                        Application Cap{" "}
+                        <span className="text-gray-400 font-normal">
+                          (Optional)
+                        </span>
+                      </label>
+                      <p className="text-[12px] text-gray-500 mb-2">
+                        Maximum number of applications to accept. Leave empty
+                        for unlimited.
+                      </p>
+                      <input
+                        type="number"
+                        min="1"
+                        placeholder="e.g., 50"
+                        value={formData.applicationCap}
+                        onChange={(e) =>
+                          updateFormData({ applicationCap: e.target.value })
+                        }
+                        className="px-4 py-3 border border-gray-300 rounded-[10px] text-[14px] focus:outline-none focus:border-[#5C30FF]"
+                      />
+                    </div>
+
+                    {/* Closing Date */}
+                    <div className="flex flex-col gap-2">
+                      <label className="text-[14px] font-medium text-black">
+                        Auto-Close Date{" "}
+                        <span className="text-gray-400 font-normal">
+                          (Optional)
+                        </span>
+                      </label>
+                      <p className="text-[12px] text-gray-500 mb-2">
+                        Opportunity will automatically close on this date.
+                      </p>
+                      <input
+                        type="date"
+                        value={formData.closingDate}
+                        onChange={(e) =>
+                          updateFormData({ closingDate: e.target.value })
+                        }
+                        className="px-4 py-3 border border-gray-300 rounded-[10px] text-[14px] focus:outline-none focus:border-[#5C30FF]"
+                      />
+                    </div>
+
+                    {/* Info Box */}
+                    <div className="p-3 bg-blue-50 rounded-[10px] border border-blue-200">
+                      <p className="text-[12px] text-blue-900">
+                        <span className="font-medium">Note:</span> Opportunities
+                        will automatically close when either the application cap
+                        is reached or the closing date passes.
+                      </p>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -364,7 +482,8 @@ export function PostOpportunityForm() {
                 Save Changes?
               </h2>
               <p className="font-inter-tight text-[13px] text-[#525866]">
-                You have unsaved changes. Would you like to save them as a draft before leaving?
+                You have unsaved changes. Would you like to save them as a draft
+                before leaving?
               </p>
             </div>
 
