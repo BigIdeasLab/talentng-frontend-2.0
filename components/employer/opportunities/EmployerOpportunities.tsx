@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useProfile } from "@/hooks/useProfile";
 import { OpportunitiesHeader } from "./OpportunitiesHeader";
 import { SearchAndFilters } from "./SearchAndFilters";
 import { OpportunitiesTabs } from "./OpportunitiesTabs";
@@ -20,177 +21,98 @@ interface Opportunity {
   skills: string[];
   rate: string;
   applicantsCount: number;
+  status: "active" | "closed" | "draft";
 }
-
-const mockOpenOpportunities: Opportunity[] = [
-  {
-    id: "1",
-    companyName: "Chowdeck",
-    companyLogo:
-      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6?width=80",
-    date: "Nov 20",
-    type: "job-listing",
-    title: "UX/UI Designer",
-    skills: ["Web Design", "User Testing", "Interaction Design", "Prototyping"],
-    rate: "$300 / Month",
-    applicantsCount: 254,
-  },
-  {
-    id: "2",
-    companyName: "Chowdeck",
-    companyLogo:
-      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6?width=80",
-    date: "Nov 22",
-    type: "internship",
-    title: "Graphic Designer",
-    skills: ["Brand Identity", "Typography", "Illustration", "Layout Design"],
-    rate: "$400 / Month",
-    applicantsCount: 254,
-  },
-  {
-    id: "3",
-    companyName: "Chowdeck",
-    companyLogo:
-      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6?width=80",
-    date: "Nov 25",
-    type: "job-listing",
-    title: "Product Designer",
-    skills: [
-      "E-commerce",
-      "Market Research",
-      "User Interface Design",
-      "A/B Testing",
-    ],
-    rate: "$350 / Month",
-    applicantsCount: 254,
-  },
-];
-
-const mockClosedOpportunities: Opportunity[] = [
-  {
-    id: "c1",
-    companyName: "Chowdeck",
-    companyLogo:
-      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6?width=80",
-    date: "Dec 15",
-    type: "job-listing",
-    title: "UI/UX Designer",
-    skills: [
-      "User Research",
-      "Wireframing",
-      "Prototyping",
-      "Usability Testing",
-    ],
-    rate: "$6000 / Year",
-    applicantsCount: 1200,
-  },
-  {
-    id: "c2",
-    companyName: "Chowdeck",
-    companyLogo:
-      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6?width=80",
-    date: "Nov 22",
-    type: "job-listing",
-    title: "Graphic Designer",
-    skills: ["Brand Identity", "Typography", "Illustration", "Layout Design"],
-    rate: "$400 / Month",
-    applicantsCount: 245,
-  },
-  {
-    id: "c3",
-    companyName: "Chowdeck",
-    companyLogo:
-      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6?width=80",
-    date: "Jan 10",
-    type: "internship",
-    title: "Web Developer",
-    skills: ["Frontend Development", "Responsive Design", "SEO Optimization"],
-    rate: "$2000 / Month",
-    applicantsCount: 350,
-  },
-  {
-    id: "c4",
-    companyName: "Chowdeck",
-    companyLogo:
-      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6?width=80",
-    date: "Feb 5",
-    type: "job-listing",
-    title: "Content Strategist",
-    skills: [
-      "Copywriting",
-      "SEO Strategy",
-      "Social Media",
-      "Content Management",
-    ],
-    rate: "$4500 / Project",
-    applicantsCount: 90,
-  },
-  {
-    id: "c5",
-    companyName: "Chowdeck",
-    companyLogo:
-      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6?width=80",
-    date: "Mar 3",
-    type: "job-listing",
-    title: "Video Editor",
-    skills: ["Video Production", "Motion Graphics", "Storyboarding", "Editing"],
-    rate: "$300 / Month",
-    applicantsCount: 150,
-  },
-];
-
-const mockDraftOpportunities: Opportunity[] = [
-  {
-    id: "d1",
-    companyName: "Chowdeck",
-    companyLogo:
-      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6?width=80",
-    date: "Dec 15",
-    type: "job-listing",
-    title: "UI/UX Designer",
-    skills: [
-      "User Research",
-      "Wireframing",
-      "Prototyping",
-      "Usability Testing",
-    ],
-    rate: "$6000 / Year",
-    applicantsCount: 0,
-  },
-  {
-    id: "d2",
-    companyName: "Chowdeck",
-    companyLogo:
-      "https://api.builder.io/api/v1/image/assets/TEMP/9bf353c86041ee07f1b8f00fe2bfefc2c11557c6?width=80",
-    date: "Nov 22",
-    type: "job-listing",
-    title: "Graphic Designer",
-    skills: ["Brand Identity", "Typography", "Illustration", "Layout Design"],
-    rate: "$400 / Month",
-    applicantsCount: 0,
-  },
-];
 
 export function EmployerOpportunities() {
   const router = useRouter();
+  const { currentProfile } = useProfile();
   const [activeTab, setActiveTab] = useState<TabType>("open");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortType>("newest");
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch opportunities on mount
+  useEffect(() => {
+    fetchOpportunities();
+  }, [currentProfile]);
+
+  const fetchOpportunities = async () => {
+    try {
+      setIsLoading(true);
+      const { getOpportunities } = await import("@/lib/api/opportunities");
+
+      const userId = (currentProfile as any)?.userId;
+      console.log("Current user ID:", userId);
+      console.log("Current profile:", currentProfile);
+      if (!userId) return;
+
+      const data = await getOpportunities({ postedById: userId });
+      console.log("API response data:", data);
+
+      // Transform API response to card format
+      const transformedOpportunities = (data || []).map(
+        (opp: any) =>
+          ({
+            id: opp.id || "",
+            companyName: opp.company || "Company",
+            companyLogo: opp.logo || "",
+            date: formatDate(opp.createdAt),
+            type:
+              (opp.type || "").toLowerCase() === "job"
+                ? "job-listing"
+                : "internship",
+            title: opp.title || "",
+            skills: opp.tags || [],
+            rate: `₦${Math.round(parseFloat(opp.minBudget) || 0).toLocaleString()} - ₦${Math.round(parseFloat(opp.maxBudget) || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`,
+            applicantsCount: 0, // Will be updated with separate API
+            status: (opp.status || "draft") as "active" | "closed" | "draft",
+          }) as Opportunity,
+      );
+
+      console.log("Transformed opportunities:", transformedOpportunities);
+      setOpportunities(transformedOpportunities);
+    } catch (error) {
+      console.error("Error fetching opportunities:", error);
+      setOpportunities([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const formatDate = (isoDate?: string): string => {
+    if (!isoDate) return "Recently";
+    const date = new Date(isoDate);
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  const getPaymentTypeAbbr = (paymentType: string): string => {
+    if (!paymentType) return "mo";
+    const type = paymentType.toLowerCase();
+    if (type === "hourly") return "hr";
+    if (type === "weekly") return "wk";
+    if (type === "yearly" || type === "annual") return "yr";
+    return "mo"; // default to monthly
+  };
 
   const handlePostClick = () => {
     router.push("/opportunities/post");
   };
 
   const getOpportunitiesByTab = () => {
-    switch (activeTab) {
-      case "closed":
-        return mockClosedOpportunities;
-      case "draft":
-        return mockDraftOpportunities;
-      case "open":
-      default:
-        return mockOpenOpportunities;
-    }
+    // Filter by status based on tab
+    const statusMap: Record<TabType, string> = {
+      open: "active",
+      closed: "closed",
+      draft: "draft",
+    };
+
+    const targetStatus = statusMap[activeTab];
+    return opportunities.filter((opp) => opp.status === targetStatus);
   };
 
   const filteredOpportunities = getOpportunitiesByTab().filter((opp) => {
@@ -202,6 +124,14 @@ export function EmployerOpportunities() {
       );
     return matchesSearch;
   });
+
+  if (isLoading) {
+    return (
+      <div className="h-screen overflow-y-auto overflow-x-hidden bg-white flex items-center justify-center">
+        <p className="text-gray-500">Loading opportunities...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen overflow-y-auto overflow-x-hidden bg-white">
@@ -233,14 +163,22 @@ export function EmployerOpportunities() {
 
         {/* Empty State */}
         {filteredOpportunities.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <p className="text-gray-500 text-xs mb-1.5">
-              No opportunities found
-            </p>
-            <p className="text-gray-400 text-[11px]">
-              Try adjusting your search or filters
-            </p>
-          </div>
+          <>
+            {console.log(
+              "No opportunities found. Search query:",
+              searchQuery,
+              "Active tab:",
+              activeTab,
+            )}
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <p className="text-gray-500 text-xs mb-1.5">
+                No opportunities found
+              </p>
+              <p className="text-gray-400 text-[11px]">
+                Try adjusting your search or filters
+              </p>
+            </div>
+          </>
         )}
       </div>
     </div>

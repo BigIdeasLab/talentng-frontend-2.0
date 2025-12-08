@@ -150,6 +150,7 @@ export function OpportunityPreview() {
         ...formData,
         minBudget: formData.minBudget ? Number(formData.minBudget) : 0,
         maxBudget: formData.maxBudget ? Number(formData.maxBudget) : 0,
+        maxHours: formData.maxHours ? Number(formData.maxHours) : undefined,
         startDate: formData.startDate ? new Date(formData.startDate).toISOString() : undefined,
         status: "draft",
       };
@@ -171,6 +172,7 @@ export function OpportunityPreview() {
         ...formData,
         minBudget: formData.minBudget ? Number(formData.minBudget) : 0,
         maxBudget: formData.maxBudget ? Number(formData.maxBudget) : 0,
+        maxHours: formData.maxHours ? Number(formData.maxHours) : undefined,
         startDate: formData.startDate ? new Date(formData.startDate).toISOString() : undefined,
         status: "active",
       };
