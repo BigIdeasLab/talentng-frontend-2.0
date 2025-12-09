@@ -50,7 +50,11 @@ export function EmployerOpportunities() {
       console.log("Current profile:", currentProfile);
       if (!userId) return;
 
-      const data = await getOpportunities({ postedById: userId });
+      // Fetch opportunities with active status (we'll handle draft/closed in UI tabs)
+      const data = await getOpportunities({ 
+        postedById: userId,
+        status: "active" 
+      });
       console.log("API response data:", data);
 
       // Transform API response to card format

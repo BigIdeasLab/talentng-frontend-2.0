@@ -131,7 +131,8 @@ export function BasicInfoStep({
                 </option>
                 <option value="Job">Job Listing</option>
                 <option value="Internship">Internship</option>
-                <option value="Freelance">Freelance</option>
+                <option value="PartTime">Part-time</option>
+                <option value="Volunteer">Volunteer</option>
               </select>
               <svg
                 className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
@@ -148,7 +149,9 @@ export function BasicInfoStep({
               </svg>
             </div>
             {errors.type && (
-              <span className="font-inter-tight text-[12px] text-red-500">{errors.type}</span>
+              <span className="font-inter-tight text-[12px] text-red-500">
+                {errors.type}
+              </span>
             )}
           </div>
 
@@ -191,7 +194,9 @@ export function BasicInfoStep({
               </svg>
             </div>
             {errors.category && (
-              <span className="font-inter-tight text-[12px] text-red-500">{errors.category}</span>
+              <span className="font-inter-tight text-[12px] text-red-500">
+                {errors.category}
+              </span>
             )}
           </div>
         </div>
@@ -232,23 +237,26 @@ export function BasicInfoStep({
                 fill="#B2B2B2"
               />
             </svg>
-            </div>
-            {errors.workType && (
-            <span className="font-inter-tight text-[12px] text-red-500">{errors.workType}</span>
-            )}
-            </div>
+          </div>
+          {errors.workType && (
+            <span className="font-inter-tight text-[12px] text-red-500">
+              {errors.workType}
+            </span>
+          )}
+        </div>
 
-            {/* Employment Type */}
-            <div className="flex flex-col gap-2.5">
-            <label className="font-inter-tight text-[13px] font-normal text-black">
+        {/* Employment Type */}
+        <div className="flex flex-col gap-2.5">
+          <label className="font-inter-tight text-[13px] font-normal text-black">
             Employment Type
-            </label>
+          </label>
           <div className="relative">
             <select
               value={formData.employmentType}
               onChange={(e) => {
                 updateFormData({ employmentType: e.target.value });
-                if (errors.employmentType) setErrors({ ...errors, employmentType: "" });
+                if (errors.employmentType)
+                  setErrors({ ...errors, employmentType: "" });
               }}
               className={`w-full h-[46px] px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white ${
                 errors.employmentType ? "border-red-500" : "border-[#E1E4EA]"
@@ -276,14 +284,16 @@ export function BasicInfoStep({
                 fill="#B2B2B2"
               />
             </svg>
-            </div>
-            {errors.employmentType && (
-            <span className="font-inter-tight text-[12px] text-red-500">{errors.employmentType}</span>
-            )}
-            </div>
+          </div>
+          {errors.employmentType && (
+            <span className="font-inter-tight text-[12px] text-red-500">
+              {errors.employmentType}
+            </span>
+          )}
+        </div>
 
-            {/* Location - State & City */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Location - State & City */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col gap-2.5">
             <label className="font-inter-tight text-[13px] font-normal text-black">
               State
@@ -368,7 +378,9 @@ export function BasicInfoStep({
           </div>
         </div>
         {errors.location && (
-          <span className="font-inter-tight text-[12px] text-red-500">{errors.location}</span>
+          <span className="font-inter-tight text-[12px] text-red-500">
+            {errors.location}
+          </span>
         )}
       </div>
 

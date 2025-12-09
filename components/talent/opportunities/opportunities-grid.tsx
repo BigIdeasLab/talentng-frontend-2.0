@@ -1,13 +1,13 @@
 import { OpportunityCard } from "./opportunity-card";
 import { EmptyState } from "./empty-state";
 
-type OpportunityType = "internship" | "job-listing" | "volunteer" | "part-time";
+type OpportunityType = "internship" | "job-listing" | "volunteer" | "part-time" | string;
 type ApplicationStatus = "awaiting-review" | "hired" | "not-hired";
 
-interface Opportunity {
+interface DisplayOpportunity {
   id: string;
   posterName: string;
-  posterAvatar?: string;
+  posterAvatar: string;
   date: string;
   type: OpportunityType;
   title: string;
@@ -18,7 +18,7 @@ interface Opportunity {
 }
 
 interface OpportunitiesGridProps {
-  opportunities: Opportunity[];
+  opportunities: DisplayOpportunity[];
 }
 
 export function OpportunitiesGrid({

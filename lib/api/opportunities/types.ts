@@ -1,36 +1,51 @@
+export interface RecruiterProfile {
+  id: string;
+  company: string;
+  location: string;
+  profileImageUrl: string;
+}
+
+export interface PostedBy {
+  id: string;
+  username: string;
+  recruiterProfile: RecruiterProfile;
+}
+
 export interface Opportunity {
-  id?: string;
+  id: string;
+  type: "Job" | "Internship" | "Mentorship" | string;
   title: string;
   description: string;
-  type?: string;
-  location?: string;
-  tags?: string[];
-  status?: string;
-  orgId?: string;
-  postedById?: string;
-  isFeatured?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-  logo?: string;
-  minBudget?: number;
-  maxBudget?: number;
-  paymentType?: string;
-  category?: string;
-  workType?: string;
-  employmentType?: string;
-  experienceLevel?: string;
-  requirements?: string[];
-  keyResponsibilities?: string[];
-  tools?: string[];
-  duration?: string;
-  maxHours?: number;
-  startDate?: string;
-  company?: string;
-  postedBy?: {
-    recruiterProfile?: {
-      company?: string;
-    };
-  };
+  requirements: string[];
+  company: string;
+  logo: string;
+  keyResponsibilities: string[];
+  employmentType: "Full-Time" | "Part-Time" | "Contract" | string;
+  location: string;
+  compensation: string;
+  tags: string[];
+  category: string;
+  workType: string;
+  compensationType: "Fixed" | "Hourly" | "Project-based" | string;
+  experienceLevel: "Junior" | "Mid" | "Senior" | string;
+  minBudget: number;
+  maxBudget: number;
+  paymentType: "weekly" | "monthly" | "hourly" | string;
+  tools: string[];
+  duration: string;
+  maxHours: number;
+  startDate: string;
+  applicationCap: number;
+  closingDate: string;
+  applicationCount: number;
+  status: "active" | "draft" | "closed" | string;
+  postedById: string;
+  isFeatured: boolean;
+  featuredUntil: string | null;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  postedBy: PostedBy;
 }
 
 export interface GetOpportunitiesParams {
@@ -40,7 +55,12 @@ export interface GetOpportunitiesParams {
   location?: string;
   tags?: string;
   status?: string;
-  orgId?: string;
-  postedById?: string;
+  category?: string;
+  experienceLevel?: string;
   isFeatured?: boolean;
+  postedById?: string;
+  limit?: number;
+  offset?: number;
+  sortBy?: "createdAt" | "applicationCount" | "compensation";
+  sortOrder?: "asc" | "desc";
 }
