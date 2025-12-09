@@ -3,7 +3,7 @@
  * Handles request configuration, authentication, and error handling
  */
 
-import { getCookie, setCookie, deleteCookie } from "@/lib/utils";
+import { deleteCookie } from "@/lib/utils";
 
 const baseUrl =
   process.env.NEXT_PUBLIC_TALENTNG_API_URL || "/api/v1";
@@ -35,19 +35,14 @@ const apiClient = async <T>(
   endpoint: string,
   options: ApiOptions = {}
 ): Promise<T> => {
-  let token = getCookie("accessToken");
-
   const config: RequestInit = {
     method: options.method || "GET",
+    credentials: "include", // Auto-send HTTP-only cookies
     headers: {
       "Content-Type": "application/json",
       ...options.headers,
     },
   };
-
-  if (token) {
-    (config.headers as Record<string, string>)["Authorization"] = `Bearer ${token}`;
-  }
 
   if (options.body) {
     if (options.body instanceof FormData) {
@@ -59,9 +54,6 @@ const apiClient = async <T>(
   }
 
   try {
-    if (options.credentials) {
-      config.credentials = options.credentials;
-    }
     let response = await fetch(`${baseUrl}${endpoint}`, config);
 
     if (response.status === 401) {
@@ -80,16 +72,14 @@ const apiClient = async <T>(
         try {
           const refreshResponse = await fetch(`${baseUrl}/auth/refresh`, {
             method: "POST",
-            credentials: "include",
+            credentials: "include", // Already included, keeping for clarity
           });
           if (!refreshResponse.ok) {
             throw new Error("Failed to refresh token");
           }
           const { accessToken: newAccessToken } = await refreshResponse.json();
-          setCookie("accessToken", newAccessToken);
-          processQueue(null, newAccessToken);
-          (config.headers as Record<string, string>)["Authorization"] = `Bearer ${newAccessToken}`;
-          response = await fetch(`${baseUrl}${endpoint}`, config);
+           processQueue(null, newAccessToken);
+           response = await fetch(`${baseUrl}${endpoint}`, config);
           resolve(newAccessToken);
         } catch (error) {
            processQueue(error as Error, null);

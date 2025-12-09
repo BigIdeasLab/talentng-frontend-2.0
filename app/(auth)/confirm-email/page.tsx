@@ -13,7 +13,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { verifyEmailSend, verifyEmailConfirm } from "@/lib/api";
-import { setCookie } from "@/lib/utils";
+
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 
 const confirmEmailSchema = z.object({
@@ -70,16 +70,8 @@ const ConfirmEmailPage = () => {
       setError("");
       toast.success("Email verified successfully!");
 
-      // Store access token
-      if (data.accessToken) {
-        localStorage.setItem("accessToken", data.accessToken);
-        setCookie("accessToken", data.accessToken);
-      }
-
-      // Store user data
-      if (data.user) {
-        localStorage.setItem("user", JSON.stringify(data.user));
-      }
+      // Backend sets tokens as HTTP-only cookies automatically
+       // No need to manually store them
 
       // Navigate based on onboarding status
       if (data.needsOnboarding) {

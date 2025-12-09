@@ -47,6 +47,34 @@ export async function getApplicationById(applicationId: string) {
   }
 }
 
+export async function submitApplication(data: {
+  opportunityId: string;
+  note?: string;
+  files?: File[];
+}) {
+  try {
+    const formData = new FormData();
+    formData.append("opportunityId", data.opportunityId);
+    if (data.note) {
+      formData.append("note", data.note);
+    }
+    if (data.files) {
+      data.files.forEach((file) => {
+        formData.append("attachments", file);
+      });
+    }
+
+    const response = await apiClient(`/applications`, {
+      method: "POST",
+      body: formData,
+    });
+    return response;
+  } catch (error) {
+    console.error("Error submitting application:", error);
+    throw error;
+  }
+}
+
 export async function updateApplicationStatus(
   applicationId: string,
   status: string

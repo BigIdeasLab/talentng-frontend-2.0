@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { decodeJwt, setCookie } from "@/lib/utils";
+import { decodeJwt } from "@/lib/utils";
 
 import { login } from "@/lib/api";
 import { Button } from "@/components/ui/button";
@@ -45,39 +45,20 @@ const Login = () => {
   const loginMutation = useMutation<LoginResponse, Error, LoginFormValues>({
     mutationFn: (data: LoginFormValues) => login(data.email, data.password),
     onSuccess: async (response) => {
-      const { accessToken, user } = response;
-      if (accessToken) {
-        // Set cookie on client side
-        setCookie("accessToken", accessToken, 7);
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("user", JSON.stringify(user));
-        
-        // Also set cookie server-side via API
-        try {
-          await fetch("/api/auth/set-cookie", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ token: accessToken }),
-          });
-        } catch (error) {
-          console.warn("Failed to set server-side cookie:", error);
-        }
-        
-        toast.success("Login successful!");
+      const { user } = response;
+      
+      toast.success("Login successful!");
 
-        const decodedToken = decodeJwt(accessToken);
-        if (decodedToken) {
-          if (!user.username || decodedToken.role === "general") {
-            router.push("/onboarding");
-          } else {
-            router.push("/dashboard");
-          }
+      const decodedToken = decodeJwt(user?.id || "");
+      if (decodedToken || user) {
+        if (!user.username || user.role === "general") {
+          router.push("/onboarding");
         } else {
-          toast.error("Could not decode token. Please try logging in again.");
           router.push("/dashboard");
         }
       } else {
-        toast.error("Login failed: No access token received.");
+        toast.error("Login failed. Please try again.");
+        router.push("/login");
       }
     },
     onError: (error: any) => {

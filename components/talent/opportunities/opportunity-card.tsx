@@ -1,9 +1,14 @@
+"use client";
+
+import { useState } from "react";
 import { Bookmark, Check } from "lucide-react";
 import { ApplicationStatusBanner } from "./application-status-banner";
+import { ApplicationModal } from "./application-modal";
 import type { DisplayOpportunity } from "./types";
 import { TYPE_CONFIG } from "@/types/opportunities";
 
 export function OpportunityCard({ opportunity }: { opportunity: DisplayOpportunity }) {
+  const [showApplicationModal, setShowApplicationModal] = useState(false);
   const config = TYPE_CONFIG[opportunity.type] || TYPE_CONFIG["job-listing"];
   const isVolunteer = opportunity.type === "volunteer";
 
@@ -111,7 +116,10 @@ export function OpportunityCard({ opportunity }: { opportunity: DisplayOpportuni
                   </button>
 
                   {/* Apply Button */}
-                  <button className="flex items-center gap-1 px-4 py-2 h-8 bg-[#5C30FF] border-[0.822px] border-[#5C30FF] rounded-[40px] hover:bg-[#4a26cc] transition-colors">
+                  <button 
+                    onClick={() => setShowApplicationModal(true)}
+                    className="flex items-center gap-1 px-4 py-2 h-8 bg-[#5C30FF] border-[0.822px] border-[#5C30FF] rounded-[40px] hover:bg-[#4a26cc] transition-colors"
+                  >
                     <Check className="w-4 h-4 text-white" />
                     <span className="text-[12px] font-medium font-inter-tight text-white text-center">
                       Apply
@@ -123,6 +131,17 @@ export function OpportunityCard({ opportunity }: { opportunity: DisplayOpportuni
           </div>
         </div>
       </div>
+
+      {/* Application Modal */}
+      <ApplicationModal
+        isOpen={showApplicationModal}
+        opportunity={opportunity}
+        onClose={() => setShowApplicationModal(false)}
+        onSubmit={() => {
+          // Refresh opportunities or show success message
+          console.log("Application submitted successfully");
+        }}
+      />
     </div>
   );
 }
