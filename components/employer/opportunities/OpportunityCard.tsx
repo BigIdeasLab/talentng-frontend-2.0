@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -58,7 +59,12 @@ export function OpportunityCard({
   opportunity,
   activeTab,
 }: OpportunityCardProps) {
+  const router = useRouter();
   const config = typeConfig[opportunity.type] || typeConfig["job-listing"];
+
+  const handleCardClick = () => {
+    router.push(`/opportunities/${opportunity.id}`);
+  };
 
   const renderOpportunityActions = () => {
     if (activeTab === "closed") {
@@ -199,7 +205,8 @@ export function OpportunityCard({
 
   return (
     <div
-      className={`flex flex-col border border-[#E1E4EA] ${
+      onClick={handleCardClick}
+      className={`flex flex-col border border-[#E1E4EA] cursor-pointer hover:shadow-md transition-shadow ${
         activeTab === "open" ? "rounded-t-[16px]" : "rounded-[16px]"
       }`}
     >
