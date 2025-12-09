@@ -32,7 +32,7 @@ export function PostOpportunityForm() {
       tags: [] as string[],
       tools: [] as string[],
       category: "",
-      workType: "",
+      workMode: "",
       location: "",
       paymentType: "" as "weekly" | "monthly" | "hourly" | "",
       minBudget: "",
@@ -148,6 +148,8 @@ export function PostOpportunityForm() {
     setPendingNavigation(null);
   };
 
+  const isVolunteer = formData.type?.toLowerCase() === "volunteer";
+
   return (
     <div className="flex h-screen bg-white">
       {/* Sidebar */}
@@ -174,16 +176,18 @@ export function PostOpportunityForm() {
           >
             Description
           </button>
-          <button
-            onClick={() => toggleSection("budget-scope")}
-            className={`text-[14px] font-normal transition-colors text-left ${
-              expandedSection === "budget-scope"
-                ? "text-[#5C30FF] font-medium"
-                : "text-[#525866] hover:text-black"
-            }`}
-          >
-            Budget & Scope
-          </button>
+          {!isVolunteer && (
+            <button
+              onClick={() => toggleSection("budget-scope")}
+              className={`text-[14px] font-normal transition-colors text-left ${
+                expandedSection === "budget-scope"
+                  ? "text-[#5C30FF] font-medium"
+                  : "text-[#525866] hover:text-black"
+              }`}
+            >
+              Budget & Scope
+            </button>
+          )}
           <button
             onClick={() => toggleSection("application-settings")}
             className={`text-[14px] font-normal transition-colors text-left ${
@@ -262,7 +266,7 @@ export function PostOpportunityForm() {
                         type: formData.type,
                         title: formData.title,
                         category: formData.category,
-                        workType: formData.workType,
+                        workMode: formData.workMode,
                         location: formData.location,
                         employmentType: formData.employmentType,
                       }}
@@ -324,57 +328,59 @@ export function PostOpportunityForm() {
               )}
             </div>
 
-            {/* Budget & Scope Section */}
-            <div
-              ref={(el) => {
-                if (el) sectionRefs.current["budget-scope"] = el;
-              }}
-              className="border border-gray-300 rounded-[16px] overflow-hidden"
-            >
-              <button
-                onClick={() => toggleSection("budget-scope")}
-                className="w-full px-5 py-4 bg-gray-50 flex items-center justify-between hover:bg-gray-100 transition-colors"
+            {/* Budget & Scope Section - Hidden for Volunteer */}
+            {!isVolunteer && (
+              <div
+                ref={(el) => {
+                  if (el) sectionRefs.current["budget-scope"] = el;
+                }}
+                className="border border-gray-300 rounded-[16px] overflow-hidden"
               >
-                <span className="font-medium text-black text-[14px]">
-                  Budget & Scope
-                </span>
-                <svg
-                  className={`w-5 h-5 text-gray-600 transition-transform ${
-                    expandedSection === "budget-scope" ? "rotate-180" : ""
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+                <button
+                  onClick={() => toggleSection("budget-scope")}
+                  className="w-full px-5 py-4 bg-gray-50 flex items-center justify-between hover:bg-gray-100 transition-colors"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                  />
-                </svg>
-              </button>
-              {expandedSection === "budget-scope" && (
-                <>
-                  <div className="h-[1px] bg-gray-300" />
-                  <div className="p-5">
-                    <BudgetScopeStep
-                      formData={{
-                        paymentType: formData.paymentType,
-                        minBudget: formData.minBudget,
-                        maxBudget: formData.maxBudget,
-                        maxHours: formData.maxHours,
-                        duration: formData.duration,
-                        startDate: formData.startDate,
-                        experienceLevel: formData.experienceLevel,
-                      }}
-                      updateFormData={updateFormData}
-                      onSubmit={handleSave}
+                  <span className="font-medium text-black text-[14px]">
+                    Budget & Scope
+                  </span>
+                  <svg
+                    className={`w-5 h-5 text-gray-600 transition-transform ${
+                      expandedSection === "budget-scope" ? "rotate-180" : ""
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 14l-7 7m0 0l-7-7m7 7V3"
                     />
-                  </div>
-                </>
-              )}
-            </div>
+                  </svg>
+                </button>
+                {expandedSection === "budget-scope" && (
+                  <>
+                    <div className="h-[1px] bg-gray-300" />
+                    <div className="p-5">
+                      <BudgetScopeStep
+                        formData={{
+                          paymentType: formData.paymentType,
+                          minBudget: formData.minBudget,
+                          maxBudget: formData.maxBudget,
+                          maxHours: formData.maxHours,
+                          duration: formData.duration,
+                          startDate: formData.startDate,
+                          experienceLevel: formData.experienceLevel,
+                        }}
+                        updateFormData={updateFormData}
+                        onSubmit={handleSave}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
 
             {/* Application Settings Section */}
             <div

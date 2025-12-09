@@ -6,8 +6,35 @@ import Image from "next/image";
 import { useProfile } from "@/hooks/useProfile";
 import { getToolInfo } from "@/lib/utils/tools";
 
+const typeConfig: Record<string, { label: string; bgColor: string; textColor: string; dotColor: string }> = {
+  job: {
+    label: "Job Listing",
+    bgColor: "rgba(92, 48, 255, 0.10)",
+    textColor: "#5C30FF",
+    dotColor: "#5C30FF",
+  },
+  internship: {
+    label: "Internship",
+    bgColor: "rgba(0, 139, 71, 0.09)",
+    textColor: "#008B47",
+    dotColor: "#008B47",
+  },
+  volunteer: {
+    label: "Volunteer",
+    bgColor: "rgba(246, 188, 63, 0.10)",
+    textColor: "#D99400",
+    dotColor: "#D99400",
+  },
+  parttime: {
+    label: "Part-time",
+    bgColor: "rgba(92, 48, 255, 0.10)",
+    textColor: "#5C30FF",
+    dotColor: "#5C30FF",
+  },
+};
+
 interface FormData {
-  type: string;
+  type: string; // Opportunity type: Job, Internship, PartTime, Volunteer
   title: string;
   description: string;
   keyResponsibilities: string[];
@@ -15,7 +42,7 @@ interface FormData {
   tags: string[];
   tools: string[];
   category: string;
-  workType: string;
+  workMode: string; // Work location: remote, hybrid, on-site
   location: string;
   paymentType: "weekly" | "monthly" | "hourly" | "";
   minBudget: string;
@@ -24,7 +51,7 @@ interface FormData {
   duration: string;
   startDate: string;
   experienceLevel: string;
-  employmentType: string;
+  employmentType: string; // Employment arrangement: Full-Time, Part-Time, etc.
   status: "active";
 }
 
@@ -48,7 +75,7 @@ const DEFAULT_FORM_DATA: FormData = {
   tags: ["Mobile App Design", "User Research", "Visual Design", "Wireframing"],
   tools: ["Figma", "Rive", "Webflow", "Lottie", "Framer"],
   category: "Design",
-  workType: "Full - Time",
+  workMode: "remote",
   location: "Remote",
   paymentType: "hourly",
   minBudget: "50",
@@ -67,6 +94,10 @@ export function OpportunityPreview() {
   const { currentProfile, currentProfileUI, activeRole } = useProfile();
   const [formData, setFormData] = useState<FormData>(DEFAULT_FORM_DATA);
   const [isLoading, setIsLoading] = useState(true);
+
+  const isVolunteer = formData.type?.toLowerCase() === "volunteer";
+  const typeConfigKey = formData.type?.toLowerCase() === "parttime" ? "parttime" : formData.type?.toLowerCase() || "job";
+  const config = typeConfig[typeConfigKey] || typeConfig.job;
 
   const displayProfile = currentProfileUI || currentProfile;
 
@@ -145,22 +176,28 @@ export function OpportunityPreview() {
   const handleSaveDraft = async () => {
     try {
       const { createOpportunity } = await import("@/lib/api/opportunities");
-      
+
       const draftData = {
         ...formData,
-        minBudget: formData.minBudget ? Number(String(formData.minBudget).replace(/\D/g, '')) || undefined : undefined,
-        maxBudget: formData.maxBudget ? Number(String(formData.maxBudget).replace(/\D/g, '')) || undefined : undefined,
+        minBudget: formData.minBudget
+          ? Number(String(formData.minBudget).replace(/\D/g, "")) || undefined
+          : undefined,
+        maxBudget: formData.maxBudget
+          ? Number(String(formData.maxBudget).replace(/\D/g, "")) || undefined
+          : undefined,
         maxHours: formData.maxHours ? Number(formData.maxHours) : undefined,
-        startDate: formData.startDate ? new Date(formData.startDate).toISOString() : undefined,
+        startDate: formData.startDate
+          ? new Date(formData.startDate).toISOString()
+          : undefined,
         status: "draft",
       };
 
       // Map type field to allowed values
       const validTypes = ["Internship", "Volunteer", "Job", "PartTime"];
-      const mappedType = validTypes.includes(draftData.type) 
-        ? draftData.type 
+      const mappedType = validTypes.includes(draftData.type)
+        ? draftData.type
         : "Job";
-      
+
       const finalData = {
         ...draftData,
         type: mappedType,
@@ -178,25 +215,41 @@ export function OpportunityPreview() {
   const handlePost = async () => {
     try {
       const { createOpportunity } = await import("@/lib/api/opportunities");
-      
-      console.log("Raw formData minBudget:", formData.minBudget, "type:", typeof formData.minBudget);
-      console.log("Raw formData maxBudget:", formData.maxBudget, "type:", typeof formData.maxBudget);
-      
+
+      console.log(
+        "Raw formData minBudget:",
+        formData.minBudget,
+        "type:",
+        typeof formData.minBudget,
+      );
+      console.log(
+        "Raw formData maxBudget:",
+        formData.maxBudget,
+        "type:",
+        typeof formData.maxBudget,
+      );
+
       const opportunityData = {
         ...formData,
-        minBudget: formData.minBudget ? Number(String(formData.minBudget).replace(/\D/g, '')) || undefined : undefined,
-        maxBudget: formData.maxBudget ? Number(String(formData.maxBudget).replace(/\D/g, '')) || undefined : undefined,
+        minBudget: formData.minBudget
+          ? Number(String(formData.minBudget).replace(/\D/g, "")) || undefined
+          : undefined,
+        maxBudget: formData.maxBudget
+          ? Number(String(formData.maxBudget).replace(/\D/g, "")) || undefined
+          : undefined,
         maxHours: formData.maxHours ? Number(formData.maxHours) : undefined,
-        startDate: formData.startDate ? new Date(formData.startDate).toISOString() : undefined,
+        startDate: formData.startDate
+          ? new Date(formData.startDate).toISOString()
+          : undefined,
         status: "active",
       };
 
       // Map type field to allowed values
       const validTypes = ["Internship", "Volunteer", "Job", "PartTime"];
-      const mappedType = validTypes.includes(opportunityData.type) 
-        ? opportunityData.type 
+      const mappedType = validTypes.includes(opportunityData.type)
+        ? opportunityData.type
         : "Job";
-      
+
       const finalData = {
         ...opportunityData,
         type: mappedType,
@@ -273,10 +326,19 @@ export function OpportunityPreview() {
                     </span>
                   </div>
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-2.5 rounded-lg bg-[#008B47]/[0.09] w-fit">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#008B47]" />
-                  <span className="font-inter-tight text-[12px] font-normal text-[#008B47]">
-                    {formData.employmentType || "Internship"}
+                <div 
+                  className="inline-flex items-center gap-1.5 px-2.5 py-2.5 rounded-lg w-fit"
+                  style={{ backgroundColor: config.bgColor }}
+                >
+                  <div 
+                    className="w-1.5 h-1.5 rounded-full"
+                    style={{ backgroundColor: config.dotColor }}
+                  />
+                  <span 
+                    className="font-inter-tight text-[12px] font-normal"
+                    style={{ color: config.textColor }}
+                  >
+                    {config.label}
                   </span>
                 </div>
               </div>
@@ -319,7 +381,9 @@ export function OpportunityPreview() {
                 <div className="flex flex-col gap-2">
                   {formData.keyResponsibilities.map((item, index) => (
                     <div key={index} className="flex items-start gap-3">
-                      <span className="text-[#5C30FF] text-[14px] flex-shrink-0 pt-0.5">•</span>
+                      <span className="text-[#5C30FF] text-[14px] flex-shrink-0 pt-0.5">
+                        •
+                      </span>
                       <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
                         {item}
                       </span>
@@ -338,7 +402,9 @@ export function OpportunityPreview() {
                 <div className="flex flex-col gap-2">
                   {formData.requirements.map((item, index) => (
                     <div key={index} className="flex items-start gap-3">
-                      <span className="text-[#5C30FF] text-[14px] flex-shrink-0 pt-0.5">•</span>
+                      <span className="text-[#5C30FF] text-[14px] flex-shrink-0 pt-0.5">
+                        •
+                      </span>
                       <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
                         {item}
                       </span>
@@ -367,7 +433,8 @@ export function OpportunityPreview() {
                           alt={tool}
                           className="w-4 h-4 object-contain"
                           onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = "none";
+                            (e.target as HTMLImageElement).style.display =
+                              "none";
                           }}
                         />
                         <span className="font-inter-tight text-[12px] text-[#5C30FF] font-medium">
@@ -384,8 +451,8 @@ export function OpportunityPreview() {
           {/* Right Column - Job Card */}
           <div className="flex flex-col gap-2">
             <div className="border border-[#E1E4EA] rounded-[16px] p-5 flex flex-col gap-4 sticky top-0">
-              {/* Budget */}
-              {(formData.minBudget || formData.maxBudget) && (
+              {/* Budget - Hidden for Volunteer */}
+              {!isVolunteer && (formData.minBudget || formData.maxBudget) && (
                 <div className="flex flex-col gap-2.5">
                   <div className="flex items-center gap-1.5 flex-wrap">
                     <span className="font-inter-tight text-[17px] font-medium text-black">
@@ -419,47 +486,54 @@ export function OpportunityPreview() {
                 </div>
               )}
 
-              {/* Job Type */}
-              {formData.workType && (
-                <div className="flex items-center gap-2">
-                  <div className="w-[30px] h-[30px] rounded-full bg-[#F5F5F5] flex items-center justify-center flex-shrink-0">
-                    <svg
-                      width="17"
-                      height="17"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M1.66602 11.6663C1.66602 9.32559 1.66602 8.15518 2.22778 7.31444C2.47098 6.95047 2.78348 6.63797 3.14745 6.39477C3.98819 5.83301 5.15858 5.83301 7.49935 5.83301H12.4993C14.8401 5.83301 16.0105 5.83301 16.8513 6.39477C17.2152 6.63797 17.5277 6.95047 17.7709 7.31444C18.3327 8.15518 18.3327 9.32559 18.3327 11.6663C18.3327 14.0071 18.3327 15.1775 17.7709 16.0183C17.5277 16.3822 17.2152 16.6947 16.8513 16.9379C16.0105 17.4997 14.8401 17.4997 12.4993 17.4997H7.49935C5.15858 17.4997 3.98819 17.4997 3.14745 16.9379C2.78348 16.6947 2.47098 16.3822 2.22778 16.0183C1.66602 15.1775 1.66602 14.0071 1.66602 11.6663Z"
-                        stroke="#606060"
-                        strokeWidth="1.25"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M13.3337 5.83333C13.3337 4.26198 13.3337 3.47631 12.8455 2.98816C12.3573 2.5 11.5717 2.5 10.0003 2.5C8.42899 2.5 7.6433 2.5 7.15515 2.98816C6.66699 3.47631 6.66699 4.26198 6.66699 5.83333"
-                        stroke="#606060"
-                        strokeWidth="1.25"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M5 9.16699L5.54331 9.33533C8.40425 10.222 11.5957 10.222 14.4567 9.33533L15 9.16699M10 10.0003V11.667"
-                        stroke="#606060"
-                        strokeWidth="1.25"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <span className="font-inter-tight text-[13px] font-medium text-black">
-                      {formData.workType}
-                    </span>
-                    <span className="font-inter-tight text-[12px] font-light text-[#525866]">
-                      {formData.employmentType || "Job"}
-                    </span>
+              {/* Work Mode & Employment Type */}
+              {(formData.workMode || formData.employmentType) && (
+                <div className="flex flex-col gap-2.5">
+                  <div className="flex items-center gap-2">
+                    {/* Work Mode */}
+                    {formData.workMode && (
+                      <div className="flex items-center gap-2">
+                        <div className="w-[30px] h-[30px] rounded-full bg-[#F5F5F5] flex items-center justify-center flex-shrink-0">
+                          <svg
+                            width="17"
+                            height="17"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M1.66602 11.6663C1.66602 9.32559 1.66602 8.15518 2.22778 7.31444C2.47098 6.95047 2.78348 6.63797 3.14745 6.39477C3.98819 5.83301 5.15858 5.83301 7.49935 5.83301H12.4993C14.8401 5.83301 16.0105 5.83301 16.8513 6.39477C17.2152 6.63797 17.5277 6.95047 17.7709 7.31444C18.3327 8.15518 18.3327 9.32559 18.3327 11.6663C18.3327 14.0071 18.3327 15.1775 17.7709 16.0183C17.5277 16.3822 17.2152 16.6947 16.8513 16.9379C16.0105 17.4997 14.8401 17.4997 12.4993 17.4997H7.49935C5.15858 17.4997 3.98819 17.4997 3.14745 16.9379C2.78348 16.6947 2.47098 16.3822 2.22778 16.0183C1.66602 15.1775 1.66602 14.0071 1.66602 11.6663Z"
+                              stroke="#606060"
+                              strokeWidth="1.25"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M13.3337 5.83333C13.3337 4.26198 13.3337 3.47631 12.8455 2.98816C12.3573 2.5 11.5717 2.5 10.0003 2.5C8.42899 2.5 7.6433 2.5 7.15515 2.98816C6.66699 3.47631 6.66699 4.26198 6.66699 5.83333"
+                              stroke="#606060"
+                              strokeWidth="1.25"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M5 9.16699L5.54331 9.33533C8.40425 10.222 11.5957 10.222 14.4567 9.33533L15 9.16699M10 10.0003V11.667"
+                              stroke="#606060"
+                              strokeWidth="1.25"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                          <span className="font-inter-tight text-[13px] font-medium text-black">
+                            {formData.workMode}
+                          </span>
+                          <span className="font-inter-tight text-[12px] font-light text-[#525866]">
+                            Work Mode
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -624,7 +698,10 @@ export function OpportunityPreview() {
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row items-stretch gap-2 pt-4">
-                <button onClick={handleSaveDraft} className="flex-1 h-[48px] flex items-center justify-center gap-1.5 bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors">
+                <button
+                  onClick={handleSaveDraft}
+                  className="flex-1 h-[48px] flex items-center justify-center gap-1.5 bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
+                >
                   <svg
                     width="20"
                     height="20"

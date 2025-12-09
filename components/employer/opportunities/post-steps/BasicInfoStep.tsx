@@ -6,12 +6,12 @@ import categories from "@/lib/data/categories.json";
 
 interface BasicInfoStepProps {
   formData: {
-    type: string;
+    type: string; // Opportunity type
     title: string;
     category: string;
-    workType: string;
+    workMode: string; // Work location: remote, hybrid, on-site
     location: string;
-    employmentType: string;
+    employmentType: string; // Employment arrangement
   };
   updateFormData: (data: Partial<BasicInfoStepProps["formData"]>) => void;
   onNext: () => void;
@@ -56,8 +56,8 @@ export function BasicInfoStep({
     if (!formData.category) {
       newErrors.category = "Category is required";
     }
-    if (!formData.workType) {
-      newErrors.workType = "Work type is required";
+    if (!formData.workMode) {
+      newErrors.workMode = "Work mode is required";
     }
     if (!selectedState || !selectedCity) {
       newErrors.location = "Both state and city are required";
@@ -201,20 +201,20 @@ export function BasicInfoStep({
           </div>
         </div>
 
-        {/* Work Type */}
+        {/* Work Mode */}
         <div className="flex flex-col gap-2.5">
           <label className="font-inter-tight text-[13px] font-normal text-black">
-            Work Type
+            Work Mode
           </label>
           <div className="relative">
             <select
-              value={formData.workType}
+              value={formData.workMode}
               onChange={(e) => {
-                updateFormData({ workType: e.target.value });
-                if (errors.workType) setErrors({ ...errors, workType: "" });
+                updateFormData({ workMode: e.target.value });
+                if (errors.workMode) setErrors({ ...errors, workMode: "" });
               }}
               className={`w-full h-[46px] px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white ${
-                errors.workType ? "border-red-500" : "border-[#E1E4EA]"
+                errors.workMode ? "border-red-500" : "border-[#E1E4EA]"
               }`}
             >
               <option value="" disabled className="text-[#99A0AE]">
@@ -238,9 +238,9 @@ export function BasicInfoStep({
               />
             </svg>
           </div>
-          {errors.workType && (
+          {errors.workMode && (
             <span className="font-inter-tight text-[12px] text-red-500">
-              {errors.workType}
+              {errors.workMode}
             </span>
           )}
         </div>
