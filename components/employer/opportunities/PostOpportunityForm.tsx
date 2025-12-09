@@ -60,6 +60,35 @@ export function PostOpportunityForm() {
     return defaultData;
   });
 
+  const defaultFormData = {
+    type: "",
+    title: "",
+    description: "",
+    keyResponsibilities: [] as string[],
+    requirements: [] as string[],
+    tags: [] as string[],
+    tools: [] as string[],
+    category: "",
+    workMode: "",
+    location: "",
+    paymentType: "" as "weekly" | "monthly" | "hourly" | "",
+    minBudget: "",
+    maxBudget: "",
+    maxHours: "",
+    duration: "",
+    startDate: "",
+    experienceLevel: "",
+    employmentType: "",
+    status: "active" as const,
+    applicationCap: "",
+    closingDate: "",
+  };
+
+  const clearForm = () => {
+    setFormData(defaultFormData);
+    sessionStorage.removeItem("opportunityFormData");
+  };
+
   const handleSave = () => {
     // Navigate to preview with the data for user review
     const searchParams = new URLSearchParams();
@@ -124,8 +153,15 @@ export function PostOpportunityForm() {
 
       const draftData = {
         ...formData,
-        minBudget: formData.minBudget ? Number(formData.minBudget) : 0,
-        maxBudget: formData.maxBudget ? Number(formData.maxBudget) : 0,
+        minBudget: formData.minBudget ? Number(formData.minBudget) : undefined,
+        maxBudget: formData.maxBudget ? Number(formData.maxBudget) : undefined,
+        maxHours: formData.maxHours ? Number(formData.maxHours) : undefined,
+        applicationCap: formData.applicationCap
+          ? Number(formData.applicationCap)
+          : undefined,
+        closingDate: formData.closingDate
+          ? new Date(formData.closingDate).toISOString()
+          : undefined,
         startDate: formData.startDate
           ? new Date(formData.startDate).toISOString()
           : undefined,
@@ -133,11 +169,9 @@ export function PostOpportunityForm() {
       };
 
       await createOpportunity(draftData);
-      sessionStorage.removeItem("opportunityFormData");
-      setShowExitModal(false);
-      if (pendingNavigation) {
-        pendingNavigation();
-      }
+      clearForm();
+      alert("Opportunity saved as draft successfully!");
+      router.push("/opportunities?tab=draft");
     } catch (error) {
       console.error("Error saving draft:", error);
       alert("Failed to save draft. Please try again.");

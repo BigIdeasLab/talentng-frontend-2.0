@@ -6,7 +6,10 @@ import Image from "next/image";
 import { useProfile } from "@/hooks/useProfile";
 import { getToolInfo } from "@/lib/utils/tools";
 
-const typeConfig: Record<string, { label: string; bgColor: string; textColor: string; dotColor: string }> = {
+const typeConfig: Record<
+  string,
+  { label: string; bgColor: string; textColor: string; dotColor: string }
+> = {
   job: {
     label: "Job Listing",
     bgColor: "rgba(92, 48, 255, 0.10)",
@@ -52,6 +55,8 @@ interface FormData {
   startDate: string;
   experienceLevel: string;
   employmentType: string; // Employment arrangement: Full-Time, Part-Time, etc.
+  applicationCap: string;
+  closingDate: string;
   status: "active";
 }
 
@@ -85,6 +90,8 @@ const DEFAULT_FORM_DATA: FormData = {
   startDate: "Nov 18 2025",
   experienceLevel: "Junior",
   employmentType: "Internship",
+  applicationCap: "",
+  closingDate: "",
   status: "active",
 };
 
@@ -96,7 +103,10 @@ export function OpportunityPreview() {
   const [isLoading, setIsLoading] = useState(true);
 
   const isVolunteer = formData.type?.toLowerCase() === "volunteer";
-  const typeConfigKey = formData.type?.toLowerCase() === "parttime" ? "parttime" : formData.type?.toLowerCase() || "job";
+  const typeConfigKey =
+    formData.type?.toLowerCase() === "parttime"
+      ? "parttime"
+      : formData.type?.toLowerCase() || "job";
   const config = typeConfig[typeConfigKey] || typeConfig.job;
 
   const displayProfile = currentProfileUI || currentProfile;
@@ -186,6 +196,12 @@ export function OpportunityPreview() {
           ? Number(String(formData.maxBudget).replace(/\D/g, "")) || undefined
           : undefined,
         maxHours: formData.maxHours ? Number(formData.maxHours) : undefined,
+        applicationCap: formData.applicationCap
+          ? Number(formData.applicationCap)
+          : undefined,
+        closingDate: formData.closingDate
+          ? new Date(formData.closingDate).toISOString()
+          : undefined,
         startDate: formData.startDate
           ? new Date(formData.startDate).toISOString()
           : undefined,
@@ -205,14 +221,9 @@ export function OpportunityPreview() {
 
       const data = await createOpportunity(finalData);
       console.log("Opportunity saved as draft:", data);
-      
+
       // Navigate to opportunities page with draft tab and scroll to it
       router.push("/opportunities?tab=draft");
-      
-      // Wait a moment for navigation to complete, then show success toast
-      setTimeout(() => {
-        alert("Opportunity saved as draft successfully!");
-      }, 500);
     } catch (error) {
       console.error("Error saving draft:", error);
       alert("Failed to save draft. Please try again.");
@@ -245,6 +256,12 @@ export function OpportunityPreview() {
           ? Number(String(formData.maxBudget).replace(/\D/g, "")) || undefined
           : undefined,
         maxHours: formData.maxHours ? Number(formData.maxHours) : undefined,
+        applicationCap: formData.applicationCap
+          ? Number(formData.applicationCap)
+          : undefined,
+        closingDate: formData.closingDate
+          ? new Date(formData.closingDate).toISOString()
+          : undefined,
         startDate: formData.startDate
           ? new Date(formData.startDate).toISOString()
           : undefined,
@@ -265,6 +282,7 @@ export function OpportunityPreview() {
       console.log("Sending opportunity data:", finalData);
       const data = await createOpportunity(finalData);
       console.log("Opportunity posted successfully:", data);
+
       router.push("/opportunities");
     } catch (error) {
       console.error("Error posting opportunity:", error);
@@ -333,15 +351,15 @@ export function OpportunityPreview() {
                     </span>
                   </div>
                 </div>
-                <div 
+                <div
                   className="inline-flex items-center gap-1.5 px-2.5 py-2.5 rounded-lg w-fit"
                   style={{ backgroundColor: config.bgColor }}
                 >
-                  <div 
+                  <div
                     className="w-1.5 h-1.5 rounded-full"
                     style={{ backgroundColor: config.dotColor }}
                   />
-                  <span 
+                  <span
                     className="font-inter-tight text-[12px] font-normal"
                     style={{ color: config.textColor }}
                   >
@@ -726,7 +744,10 @@ export function OpportunityPreview() {
                   </svg>
                   Save
                 </button>
-                <button className="flex-1 h-[48px] flex items-center justify-center gap-2 bg-[#5C30FF] border border-[#5C30FF] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#4a26cc] transition-colors">
+                <button
+                  onClick={handlePost}
+                  className="flex-1 h-[48px] flex items-center justify-center gap-2 bg-[#5C30FF] border border-[#5C30FF] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#4a26cc] transition-colors"
+                >
                   <svg
                     width="20"
                     height="20"

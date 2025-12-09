@@ -68,7 +68,12 @@ export function OpportunityCard({
   const [isLoading, setIsLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const handleCardClick = () => {
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (isLoading || showModal || showDeleteModal) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
     router.push(`/opportunities/${opportunity.id}`);
   };
 
@@ -213,9 +218,26 @@ export function OpportunityCard({
       );
     }
 
+    const handleMarkAsFilled = async (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setIsLoading(true);
+      try {
+        const { updateOpportunity } = await import("@/lib/api/opportunities");
+        await updateOpportunity(opportunity.id, { status: "closed" });
+        window.location.reload();
+      } catch (error) {
+        console.error("Error marking opportunity as filled:", error);
+        setIsLoading(false);
+      }
+    };
+
     return (
       <div className="flex items-center gap-1.5">
-        <button className="flex items-center gap-0.5 h-8 px-3 bg-[#5C30FF] text-white rounded-full border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors flex-shrink-0">
+        <button 
+          onClick={handleMarkAsFilled}
+          disabled={isLoading}
+          className="flex items-center gap-0.5 h-8 px-3 bg-[#5C30FF] text-white rounded-full border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
           <svg
             width="14"
             height="14"
@@ -232,7 +254,7 @@ export function OpportunityCard({
             />
           </svg>
           <span className="text-[10px] font-medium font-inter-tight">
-            Mark As Filled
+            {isLoading ? "Marking..." : "Mark As Filled"}
           </span>
         </button>
 
@@ -271,9 +293,31 @@ export function OpportunityCard({
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem>View Applications</DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600">Delete</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push(`/opportunities/edit/${opportunity.id}`);
+              }}
+            >
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push(`/opportunities/${opportunity.id}/applicants`);
+              }}
+            >
+              View Applications
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-red-600"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowDeleteModal(true);
+              }}
+            >
+              Delete
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -285,7 +329,7 @@ export function OpportunityCard({
       onClick={handleCardClick}
       className={`flex flex-col border border-[#E1E4EA] cursor-pointer hover:shadow-md transition-shadow ${
         activeTab === "open" ? "rounded-t-[16px]" : "rounded-[16px]"
-      }`}
+      } ${isLoading ? "pointer-events-none opacity-50" : ""}`}
     >
       {/* Opportunity Card */}
       <div className="flex flex-col gap-4 p-4">
@@ -410,32 +454,30 @@ export function OpportunityCard({
       )}
 
       {/* Delete Confirmation Modal */}
-      {activeTab === "draft" && (
-        <Modal
-          isOpen={showDeleteModal}
-          onClose={() => setShowDeleteModal(false)}
-          title="Delete Draft?"
-          description={`Are you sure you want to delete "${opportunity.title}"? This action cannot be undone.`}
-          footer={
-            <>
-              <Button
-                variant="outline"
-                onClick={() => setShowDeleteModal(false)}
-                disabled={isLoading}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={confirmDelete}
-                disabled={isLoading}
-                className="bg-red-600 hover:bg-red-700"
-              >
-                {isLoading ? "Deleting..." : "Delete Draft"}
-              </Button>
-            </>
-          }
-        />
-      )}
+      <Modal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        title={activeTab === "draft" ? "Delete Draft?" : "Delete Opportunity?"}
+        description={`Are you sure you want to delete "${opportunity.title}"? This action cannot be undone.`}
+        footer={
+          <>
+            <Button
+              variant="outline"
+              onClick={() => setShowDeleteModal(false)}
+              disabled={isLoading}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={confirmDelete}
+              disabled={isLoading}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {isLoading ? "Deleting..." : `Delete ${activeTab === "draft" ? "Draft" : "Opportunity"}`}
+            </Button>
+          </>
+        }
+      />
     </div>
   );
 }
