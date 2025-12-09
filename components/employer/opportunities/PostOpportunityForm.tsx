@@ -82,6 +82,24 @@ export function PostOpportunityForm() {
     setFormData((prev: typeof formData) => ({ ...prev, ...data }));
   };
 
+  const isVolunteer = formData.type?.toLowerCase() === "volunteer";
+
+  // Clear budget fields when switching to volunteer
+  useEffect(() => {
+    if (isVolunteer) {
+      setFormData((prev: typeof formData) => ({
+        ...prev,
+        paymentType: "",
+        minBudget: "",
+        maxBudget: "",
+        maxHours: "",
+        duration: "",
+        startDate: "",
+        experienceLevel: "",
+      }));
+    }
+  }, [isVolunteer]);
+
   // Save form data to sessionStorage whenever it changes
   useEffect(() => {
     sessionStorage.setItem("opportunityFormData", JSON.stringify(formData));
@@ -147,8 +165,6 @@ export function PostOpportunityForm() {
     setShowExitModal(false);
     setPendingNavigation(null);
   };
-
-  const isVolunteer = formData.type?.toLowerCase() === "volunteer";
 
   return (
     <div className="flex h-screen bg-white">

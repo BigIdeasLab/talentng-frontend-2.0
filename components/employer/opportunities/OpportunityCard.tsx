@@ -261,12 +261,16 @@ export function OpportunityCard({
         </div>
 
         {/* Rate and Actions */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-3 border-t border-[#E1E4EA]">
-          <div className="text-[15px] font-medium font-inter-tight text-black">
-            {opportunity.rate}
-          </div>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-3 border-t border-[#E1E4EA]">
+          {opportunity.type !== "volunteer" && (
+            <div className="text-[15px] font-medium font-inter-tight text-black">
+              {opportunity.rate}
+            </div>
+          )}
 
-          {renderOpportunityActions()}
+          <div className="sm:ml-auto">
+            {renderOpportunityActions()}
+          </div>
         </div>
       </div>
 

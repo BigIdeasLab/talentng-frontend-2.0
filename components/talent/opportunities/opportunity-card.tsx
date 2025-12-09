@@ -49,6 +49,7 @@ interface OpportunityCardProps {
 
 export function OpportunityCard({ opportunity }: OpportunityCardProps) {
   const config = typeConfig[opportunity.type] || typeConfig["job-listing"];
+  const isVolunteer = opportunity.type === "volunteer";
 
   return (
     <div className="relative">
@@ -127,7 +128,16 @@ export function OpportunityCard({ opportunity }: OpportunityCardProps) {
         {/* Footer Section */}
         <div className="flex flex-col items-start gap-2 w-full px-2.5 border-t border-[#E1E4EA]">
           <div className="flex items-center justify-between w-full py-2.5">
-            {opportunity.showActions ? (
+            {isVolunteer ? (
+              /* Learn More Button for Volunteer */
+              <div className="flex items-center justify-end w-full h-8">
+                <button className="flex items-center gap-1 px-4 py-2 h-8 bg-[#5C30FF] border-[0.822px] border-[#5C30FF] rounded-[40px] hover:bg-[#4a26cc] transition-colors">
+                  <span className="text-[12px] font-medium font-inter-tight text-white text-center">
+                    Learn More
+                  </span>
+                </button>
+              </div>
+            ) : (
               <>
                 {/* Rate */}
                 <div className="text-[15px] font-medium font-inter-tight text-black">
@@ -153,15 +163,6 @@ export function OpportunityCard({ opportunity }: OpportunityCardProps) {
                   </button>
                 </div>
               </>
-            ) : (
-              /* Learn More Button for Volunteer */
-              <div className="flex items-center justify-end w-full h-8">
-                <button className="flex items-center gap-1 px-4 py-2 h-8 bg-[#5C30FF] border-[0.822px] border-[#5C30FF] rounded-[40px] hover:bg-[#4a26cc] transition-colors">
-                  <span className="text-[12px] font-medium font-inter-tight text-white text-center">
-                    Learn More
-                  </span>
-                </button>
-              </div>
             )}
           </div>
         </div>
