@@ -16,7 +16,7 @@ interface Opportunity {
   companyName: string;
   companyLogo: string;
   date: string;
-  type: "job-listing" | "internship";
+  type: "job-listing" | "internship" | "volunteer" | "part-time";
   title: string;
   skills: string[];
   rate: string;
@@ -46,8 +46,6 @@ export function EmployerOpportunities() {
       const { getOpportunities } = await import("@/lib/api/opportunities");
 
       const userId = (currentProfile as any)?.userId;
-      console.log("Current user ID:", userId);
-      console.log("Current profile:", currentProfile);
       if (!userId) return;
 
       // Fetch opportunities with active status (we'll handle draft/closed in UI tabs)
@@ -55,7 +53,6 @@ export function EmployerOpportunities() {
         postedById: userId,
         status: "active" 
       });
-      console.log("API response data:", data);
 
       // Transform API response to card format
       const transformedOpportunities = (data || []).map(
@@ -65,10 +62,7 @@ export function EmployerOpportunities() {
             companyName: opp.company || "Company",
             companyLogo: opp.logo || "",
             date: formatDate(opp.createdAt),
-            type:
-              (opp.type || "").toLowerCase() === "job"
-                ? "job-listing"
-                : "internship",
+            type: mapOpportunityType(opp.type),
             title: opp.title || "",
             skills: opp.tags || [],
             rate: `₦${Math.round(parseFloat(opp.minBudget) || 0).toLocaleString()} - ₦${Math.round(parseFloat(opp.maxBudget) || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`,
@@ -79,14 +73,21 @@ export function EmployerOpportunities() {
           }) as Opportunity,
       );
 
-      console.log("Transformed opportunities:", transformedOpportunities);
       setOpportunities(transformedOpportunities);
-    } catch (error) {
-      console.error("Error fetching opportunities:", error);
+      } catch (error) {
       setOpportunities([]);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const mapOpportunityType = (type: string): "job-listing" | "internship" | "volunteer" | "part-time" => {
+    const lowerType = (type || "").toLowerCase();
+    if (lowerType === "job") return "job-listing";
+    if (lowerType === "internship") return "internship";
+    if (lowerType === "volunteer") return "volunteer";
+    if (lowerType === "parttime" || lowerType === "part-time") return "part-time";
+    return "job-listing"; // default
   };
 
   const formatDate = (isoDate?: string): string => {
@@ -171,23 +172,15 @@ export function EmployerOpportunities() {
 
         {/* Empty State */}
         {filteredOpportunities.length === 0 && (
-          <>
-            {console.log(
-              "No opportunities found. Search query:",
-              searchQuery,
-              "Active tab:",
-              activeTab,
-            )}
-            <div className="flex flex-col items-center justify-center py-12 text-center">
+          <div className="flex flex-col items-center justify-center py-12 text-center">
               <p className="text-gray-500 text-xs mb-1.5">
                 No opportunities found
               </p>
               <p className="text-gray-400 text-[11px]">
                 Try adjusting your search or filters
               </p>
-            </div>
-          </>
-        )}
+              </div>
+              )}
       </div>
     </div>
   );

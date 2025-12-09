@@ -45,6 +45,16 @@ const getPaymentTypeAbbr = (paymentType: string): string => {
   return "mo"; // default to monthly
 };
 
+// Helper function to map opportunity types
+const mapOpportunityType = (type: string): "job-listing" | "internship" | "volunteer" | "part-time" => {
+  const lowerType = (type || "").toLowerCase();
+  if (lowerType === "job") return "job-listing";
+  if (lowerType === "internship") return "internship";
+  if (lowerType === "volunteer") return "volunteer";
+  if (lowerType === "parttime" || lowerType === "part-time") return "part-time";
+  return "job-listing"; // default
+};
+
 // Convert display opportunity to grid-compatible format
 interface DisplayOpportunity {
   id: string;
@@ -90,10 +100,7 @@ export function TalentOpportunities() {
           companyName: opp.company || "Company",
           companyLogo: opp.logo || "",
           date: formatDate(opp.createdAt),
-          type:
-            (opp.type || "").toLowerCase() === "job"
-              ? "job-listing"
-              : "internship",
+          type: mapOpportunityType(opp.type),
           title: opp.title || "",
           skills: opp.tags || [],
           rate: `₦${Math.round(parseFloat(opp.minBudget) || 0).toLocaleString()} - ₦${Math.round(parseFloat(opp.maxBudget) || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`,

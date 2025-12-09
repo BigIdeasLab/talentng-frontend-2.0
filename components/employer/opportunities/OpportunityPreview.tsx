@@ -148,14 +148,25 @@ export function OpportunityPreview() {
       
       const draftData = {
         ...formData,
-        minBudget: formData.minBudget ? Number(formData.minBudget) : 0,
-        maxBudget: formData.maxBudget ? Number(formData.maxBudget) : 0,
+        minBudget: formData.minBudget ? Number(String(formData.minBudget).replace(/\D/g, '')) || undefined : undefined,
+        maxBudget: formData.maxBudget ? Number(String(formData.maxBudget).replace(/\D/g, '')) || undefined : undefined,
         maxHours: formData.maxHours ? Number(formData.maxHours) : undefined,
         startDate: formData.startDate ? new Date(formData.startDate).toISOString() : undefined,
         status: "draft",
       };
 
-      const data = await createOpportunity(draftData);
+      // Map type field to allowed values
+      const validTypes = ["Internship", "Volunteer", "Job", "PartTime"];
+      const mappedType = validTypes.includes(draftData.type) 
+        ? draftData.type 
+        : "Job";
+      
+      const finalData = {
+        ...draftData,
+        type: mappedType,
+      };
+
+      const data = await createOpportunity(finalData);
       console.log("Opportunity saved as draft:", data);
       alert("Opportunity saved as draft successfully!");
     } catch (error) {
@@ -168,16 +179,31 @@ export function OpportunityPreview() {
     try {
       const { createOpportunity } = await import("@/lib/api/opportunities");
       
+      console.log("Raw formData minBudget:", formData.minBudget, "type:", typeof formData.minBudget);
+      console.log("Raw formData maxBudget:", formData.maxBudget, "type:", typeof formData.maxBudget);
+      
       const opportunityData = {
         ...formData,
-        minBudget: formData.minBudget ? Number(formData.minBudget) : 0,
-        maxBudget: formData.maxBudget ? Number(formData.maxBudget) : 0,
+        minBudget: formData.minBudget ? Number(String(formData.minBudget).replace(/\D/g, '')) || undefined : undefined,
+        maxBudget: formData.maxBudget ? Number(String(formData.maxBudget).replace(/\D/g, '')) || undefined : undefined,
         maxHours: formData.maxHours ? Number(formData.maxHours) : undefined,
         startDate: formData.startDate ? new Date(formData.startDate).toISOString() : undefined,
         status: "active",
       };
 
-      const data = await createOpportunity(opportunityData);
+      // Map type field to allowed values
+      const validTypes = ["Internship", "Volunteer", "Job", "PartTime"];
+      const mappedType = validTypes.includes(opportunityData.type) 
+        ? opportunityData.type 
+        : "Job";
+      
+      const finalData = {
+        ...opportunityData,
+        type: mappedType,
+      };
+
+      console.log("Sending opportunity data:", finalData);
+      const data = await createOpportunity(finalData);
       console.log("Opportunity posted successfully:", data);
       router.push("/opportunities");
     } catch (error) {

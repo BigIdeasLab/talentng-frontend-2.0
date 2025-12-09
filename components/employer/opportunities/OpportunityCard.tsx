@@ -8,13 +8,41 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 type TabType = "open" | "closed" | "draft";
+type OpportunityType = "job-listing" | "internship" | "volunteer" | "part-time";
+
+const typeConfig: Record<string, { label: string; bgColor: string; textColor: string; dotColor: string }> = {
+  internship: {
+    label: "Internship",
+    bgColor: "rgba(0, 139, 71, 0.09)",
+    textColor: "#008B47",
+    dotColor: "#008B47",
+  },
+  "job-listing": {
+    label: "Job Listing",
+    bgColor: "rgba(92, 48, 255, 0.10)",
+    textColor: "#5C30FF",
+    dotColor: "#5C30FF",
+  },
+  volunteer: {
+    label: "Volunteer",
+    bgColor: "rgba(246, 188, 63, 0.10)",
+    textColor: "#D99400",
+    dotColor: "#D99400",
+  },
+  "part-time": {
+    label: "Part-time",
+    bgColor: "rgba(92, 48, 255, 0.10)",
+    textColor: "#5C30FF",
+    dotColor: "#5C30FF",
+  },
+};
 
 interface Opportunity {
   id: string;
   companyName: string;
   companyLogo: string;
   date: string;
-  type: "job-listing" | "internship";
+  type: OpportunityType;
   title: string;
   skills: string[];
   rate: string;
@@ -30,6 +58,8 @@ export function OpportunityCard({
   opportunity,
   activeTab,
 }: OpportunityCardProps) {
+  const config = typeConfig[opportunity.type] || typeConfig["job-listing"];
+
   const renderOpportunityActions = () => {
     if (activeTab === "closed") {
       return (
@@ -194,29 +224,18 @@ export function OpportunityCard({
           </div>
 
           <div
-            className={`flex items-center gap-1 px-2 py-1.5 rounded-md flex-shrink-0 ${
-              opportunity.type === "job-listing"
-                ? "bg-[#5C30FF]/10"
-                : "bg-[#008B47]/9"
-            }`}
+            className="flex items-center gap-1 px-2 py-1.5 rounded-md flex-shrink-0"
+            style={{ backgroundColor: config.bgColor }}
           >
             <div
-              className={`w-1.5 h-1.5 rounded-full ${
-                opportunity.type === "job-listing"
-                  ? "bg-[#5C30FF]"
-                  : "bg-[#008B47]"
-              }`}
+              className="w-1.5 h-1.5 rounded-full"
+              style={{ backgroundColor: config.dotColor }}
             />
             <span
-              className={`text-[10px] font-normal font-inter-tight ${
-                opportunity.type === "job-listing"
-                  ? "text-[#5C30FF]"
-                  : "text-[#008B47]"
-              }`}
+              className="text-[10px] font-normal font-inter-tight"
+              style={{ color: config.textColor }}
             >
-              {opportunity.type === "job-listing"
-                ? "Job Listing"
-                : "Internship"}
+              {config.label}
             </span>
           </div>
         </div>
