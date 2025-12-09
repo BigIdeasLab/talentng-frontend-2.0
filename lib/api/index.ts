@@ -6,7 +6,7 @@
 import { deleteCookie } from "@/lib/utils";
 
 const baseUrl =
-  process.env.NEXT_PUBLIC_TALENTNG_API_URL || "/api/v1";
+   process.env.NEXT_PUBLIC_TALENTNG_API_URL || "http://localhost:3001";
 
 type ApiOptions = {
   headers?: Record<string, string>;
@@ -59,9 +59,7 @@ const apiClient = async <T>(
     if (response.status === 401) {
       if (isRefreshing && refreshTokenPromise) {
         return refreshTokenPromise
-          .then((newToken) => {
-            if (!newToken) throw new Error("Token refresh failed");
-            (config.headers as Record<string, string>)["Authorization"] = `Bearer ${newToken}`;
+          .then(() => {
             return fetch(`${baseUrl}${endpoint}`, config);
           })
           .then((res) => res.json());
@@ -72,25 +70,25 @@ const apiClient = async <T>(
         try {
           const refreshResponse = await fetch(`${baseUrl}/auth/refresh`, {
             method: "POST",
-            credentials: "include", // Already included, keeping for clarity
+            credentials: "include",
           });
           if (!refreshResponse.ok) {
             throw new Error("Failed to refresh token");
           }
-          const { accessToken: newAccessToken } = await refreshResponse.json();
-           processQueue(null, newAccessToken);
-           response = await fetch(`${baseUrl}${endpoint}`, config);
-          resolve(newAccessToken);
+          // Backend sets new token as HTTP-only cookie, no body parsing needed
+          processQueue(null, null);
+          response = await fetch(`${baseUrl}${endpoint}`, config);
+          resolve(null);
         } catch (error) {
-           processQueue(error as Error, null);
-           deleteCookie("accessToken");
-           deleteCookie("user");
-           isRefreshing = false;
-           refreshTokenPromise = null;
-           if (typeof window !== "undefined") {
-             window.location.href = "/login";
-           }
-           resolve(null);
+          processQueue(error as Error, null);
+          deleteCookie("accessToken");
+          deleteCookie("user");
+          isRefreshing = false;
+          refreshTokenPromise = null;
+          if (typeof window !== "undefined") {
+            window.location.href = "/login";
+          }
+          resolve(null);
         } finally {
           isRefreshing = false;
           refreshTokenPromise = null;

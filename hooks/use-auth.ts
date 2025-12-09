@@ -1,23 +1,17 @@
 "use client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { getCookie, deleteCookie, setCookie } from "@/lib/utils";
 import { userProfileApi, type User } from "@/lib/api/user-service";
 import { logout as logoutAPI } from "@/lib/api";
 
 const fetchUser = async (): Promise<User | null> => {
-  const token = getCookie("accessToken");
-  if (token) {
-    try {
-      const userData = await userProfileApi.getCurrentUser();
-      return userData;
-    } catch (error) {
-      console.error("Failed to fetch user data:", error);
-      deleteCookie("accessToken");
-      return null;
-    }
+  try {
+    const userData = await userProfileApi.getCurrentUser();
+    return userData;
+  } catch (error) {
+    console.error("Failed to fetch user data:", error);
+    return null;
   }
-  return null;
 };
 
 export const useAuth = () => {
@@ -38,12 +32,17 @@ export const useAuth = () => {
       await logoutAPI();
     } catch (error) {
       console.error("Logout error:", error);
+      // Continue logout even if API call fails
     } finally {
-      deleteCookie("accessToken");
-      localStorage.removeItem("accessToken");
+      // Clear client state
       localStorage.removeItem("user");
       queryClient.setQueryData(["user"], null);
-      router.push("/login");
+      
+      // HTTP-only cookies are cleared by server
+      // Hard redirect to force middleware to re-check
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
+      }
     }
   };
 

@@ -211,7 +211,6 @@ export function ProfileSwitcher() {
     // Save the current active role before logging out
     localStorage.setItem("lastActiveRole", activeRole);
     await logout();
-    router.push("/login");
   };
 
   // Get display profile (use UI version if available, fallback to raw)
