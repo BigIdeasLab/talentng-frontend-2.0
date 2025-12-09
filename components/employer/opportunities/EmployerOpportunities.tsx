@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useProfile } from "@/hooks/useProfile";
 import { OpportunitiesHeader } from "./OpportunitiesHeader";
 import { SearchAndFilters } from "./SearchAndFilters";
@@ -28,6 +28,7 @@ interface Opportunity {
 
 export function EmployerOpportunities() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { currentProfile } = useProfile();
   const [activeTab, setActiveTab] = useState<TabType>("open");
   const [searchQuery, setSearchQuery] = useState("");
@@ -40,6 +41,14 @@ export function EmployerOpportunities() {
     fetchOpportunities();
   }, [currentProfile]);
 
+  // Handle tab from query params
+  useEffect(() => {
+    const tabParam = searchParams.get("tab") as TabType | null;
+    if (tabParam && ["open", "closed", "draft"].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
+
   const fetchOpportunities = async () => {
     try {
       setIsLoading(true);
@@ -48,10 +57,9 @@ export function EmployerOpportunities() {
       const userId = (currentProfile as any)?.userId;
       if (!userId) return;
 
-      // Fetch opportunities with active status (we'll handle draft/closed in UI tabs)
+      // Fetch all opportunities (we'll filter by status in UI tabs)
       const data = await getOpportunities({ 
-        postedById: userId,
-        status: "active" 
+        postedById: userId
       });
 
       // Transform API response to card format

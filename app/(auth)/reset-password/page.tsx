@@ -8,6 +8,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 
 import { resetPassword } from "@/lib/api";
 import { Input } from "@/components/ui/input";
@@ -21,6 +26,10 @@ import {
 } from "@/components/ui/form";
 
 const resetPasswordSchema = z.object({
+  resetCode: z
+    .string()
+    .length(6, "Reset code must be exactly 6 digits")
+    .regex(/^\d+$/, "Reset code must contain only numbers"),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters.")
@@ -35,8 +44,9 @@ const ResetPassword = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
-  const [resetToken, setResetToken] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const passwordChecks = {
     length: password.length >= 8,
@@ -48,43 +58,49 @@ const ResetPassword = () => {
   const isPasswordValid = Object.values(passwordChecks).every(Boolean);
 
   useEffect(() => {
-    const token = searchParams.get("token");
-    if (!token) {
+    const emailParam = searchParams.get("email");
+    if (!emailParam) {
       toast.error("Invalid reset link. Please request a new one.");
       router.push("/forgot-password");
     } else {
-      setResetToken(token);
+      setEmail(decodeURIComponent(emailParam));
     }
   }, [searchParams, router]);
 
   const form = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
+      resetCode: "",
       password: "",
     },
   });
 
   const mutation = useMutation({
     mutationFn: (data: ResetPasswordFormValues) =>
-      resetPassword(resetToken, data.password),
+      resetPassword(email, data.resetCode, data.password),
     onSuccess: () => {
+      setError("");
       toast.success("Password reset successfully!");
       router.push("/login");
     },
     onError: (error: any) => {
       const message =
         error.message || "Failed to reset password. Please try again.";
+      setError("Invalid Code");
       toast.error(message);
     },
   });
 
   const handleSubmit = (data: ResetPasswordFormValues) => {
-    if (!resetToken) {
-      toast.error("Invalid reset link. Please request a new one.");
+    if (!email) {
+      toast.error("Email is missing. Please request a new reset code.");
       return;
     }
+    setError("");
     mutation.mutate(data);
   };
+
+  const resetCode = form.watch("resetCode");
 
   return (
     <div className="relative h-screen bg-white overflow-hidden">
@@ -96,181 +112,258 @@ const ResetPassword = () => {
       />
 
       {/* Content */}
-      <div className="relative z-10 h-screen flex items-center justify-center px-3 py-3 overflow-hidden">
-        <div className="w-full max-w-md max-h-full">
-          <div className="bg-white rounded-[30px] shadow-lg p-6 md:p-10 overflow-y-auto max-h-[calc(100vh-24px)]">
-            <div className="flex flex-col items-center gap-8">
-              {/* Header */}
-              <div className="flex flex-col gap-5 text-center">
-                <h1 className="text-3xl md:text-[30px] font-semibold text-black leading-tight">
-                  Create New Password
-                </h1>
-                <p className="text-base md:text-[17px] font-light text-gray-400">
-                  Enter a new password for your account.
-                </p>
+      <div className="relative z-10 h-screen flex items-center justify-center px-3 py-3 md:px-4 lg:px-6 overflow-hidden">
+        <div className="w-full max-w-5xl max-h-full">
+          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden h-[600px] flex flex-col">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
+              {/* Left Side - Logo */}
+              <div className="hidden md:flex flex-col items-center justify-center p-8 lg:p-12 bg-white overflow-hidden">
+                <img
+                  src="/logo.png"
+                  alt="Talent.ng Logo"
+                  className="w-full max-w-lg object-contain"
+                />
               </div>
 
-              {/* Form */}
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(handleSubmit)}
-                  className="flex flex-col gap-6 w-full"
-                >
-                  {/* Password Field */}
-                  <div className="flex flex-col gap-3">
-                    <label className="text-sm font-medium text-black">
-                      New Password
-                    </label>
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <div className="relative h-[53px] rounded-[10px] bg-gray-100 flex items-center px-4">
-                              <Input
-                                type={showPassword ? "text" : "password"}
-                                placeholder="Enter new password"
-                                {...field}
-                                onChange={(e) => {
-                                  field.onChange(e);
-                                  setPassword(e.target.value);
-                                }}
-                                className="flex-1 bg-transparent border-0 placeholder:text-gray-400 focus:ring-0"
-                              />
-                              <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="text-gray-500 hover:text-gray-700"
-                              >
-                                {showPassword ? (
-                                  <EyeOff size={20} />
-                                ) : (
-                                  <Eye size={20} />
-                                )}
-                              </button>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+              {/* Right Side - Form */}
+              <div className="flex flex-col justify-center p-4 md:p-6 lg:p-8 bg-white overflow-y-auto h-full">
+                <div className="flex flex-col gap-3">
+                  {/* Lock Icon */}
+                  <svg
+                    width="45"
+                    height="45"
+                    viewBox="0 0 60 60"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <rect width="60" height="60" rx="12" fill="#F5F5F5" />
+                    <path
+                      d="M30 18C26.6863 18 24 20.6863 24 24V28H22C20.8954 28 20 28.8954 20 30V42C20 43.1046 20.8954 44 22 44H38C39.1046 44 40 43.1046 40 42V30C40 28.8954 39.1046 28 38 28H36V24C36 20.6863 33.3137 18 30 18ZM26 24C26 21.7909 27.7909 20 30 20C32.2091 20 34 21.7909 34 24V28H26V24ZM22 30H38V42H22V30ZM30 34C30.5523 34 31 34.4477 31 35V39C31 39.5523 30.5523 40 30 40C29.4477 40 29 39.5523 29 39V35C29 34.4477 29.4477 34 30 34Z"
+                      fill="#5C30FF"
                     />
+                  </svg>
 
-                    {/* Password Requirements Checklist */}
-                    {password && (
-                      <div className="bg-gray-50 p-3 rounded-[10px] flex flex-wrap gap-3">
-                        <div className="flex items-center gap-1 text-xs">
-                          <span
-                            className={
-                              passwordChecks.length
-                                ? "text-green-600"
-                                : "text-gray-400"
-                            }
-                          >
-                            {passwordChecks.length ? "✓" : "○"}
-                          </span>
-                          <span
-                            className={
-                              passwordChecks.length
-                                ? "text-gray-700"
-                                : "text-gray-500"
-                            }
-                          >
-                            8 chars
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1 text-xs">
-                          <span
-                            className={
-                              passwordChecks.uppercase
-                                ? "text-green-600"
-                                : "text-gray-400"
-                            }
-                          >
-                            {passwordChecks.uppercase ? "✓" : "○"}
-                          </span>
-                          <span
-                            className={
-                              passwordChecks.uppercase
-                                ? "text-gray-700"
-                                : "text-gray-500"
-                            }
-                          >
-                            A-Z
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1 text-xs">
-                          <span
-                            className={
-                              passwordChecks.lowercase
-                                ? "text-green-600"
-                                : "text-gray-400"
-                            }
-                          >
-                            {passwordChecks.lowercase ? "✓" : "○"}
-                          </span>
-                          <span
-                            className={
-                              passwordChecks.lowercase
-                                ? "text-gray-700"
-                                : "text-gray-500"
-                            }
-                          >
-                            a-z
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1 text-xs">
-                          <span
-                            className={
-                              passwordChecks.number
-                                ? "text-green-600"
-                                : "text-gray-400"
-                            }
-                          >
-                            {passwordChecks.number ? "✓" : "○"}
-                          </span>
-                          <span
-                            className={
-                              passwordChecks.number
-                                ? "text-gray-700"
-                                : "text-gray-500"
-                            }
-                          >
-                            0-9
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex flex-col gap-3 pt-2">
-                    <Button
-                      type="submit"
-                      disabled={mutation.isPending || !resetToken}
-                      className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base disabled:bg-gray-400 disabled:cursor-not-allowed"
-                    >
-                      {mutation.isPending ? (
-                        <Loader2 size={18} className="animate-spin" />
-                      ) : (
-                        "Change password"
-                      )}
-                    </Button>
-
-                    <p className="text-center text-sm">
-                      <span className="text-gray-400">
-                        Already have an account?{" "}
+                  {/* Header */}
+                  <div className="flex flex-col gap-1">
+                    <h1 className="text-xl md:text-2xl font-semibold text-black leading-tight">
+                      Reset Password
+                    </h1>
+                    <p className="text-xs md:text-sm font-light text-gray-400">
+                      Enter the 6-digit code we sent to{" "}
+                      <span className="font-semibold text-gray-400">
+                        {email}
                       </span>
-                      <Link
-                        href="/login"
-                        className="text-[#5C30FF] font-semibold hover:underline"
-                      >
-                        Sign in
-                      </Link>
                     </p>
                   </div>
-                </form>
-              </Form>
+
+                  {/* Form */}
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(handleSubmit)}
+                      className="flex flex-col gap-2"
+                    >
+                      {/* Reset Code Field */}
+                      <FormField
+                        control={form.control}
+                        name="resetCode"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <div className="flex flex-col gap-2.5">
+                                {error && (
+                                  <p className="text-[#E63C23] text-center text-[15px] font-normal font-inter-tight">
+                                    {error}
+                                  </p>
+                                )}
+                                <div
+                                  className={`flex justify-center items-center rounded-[10px] py-[5px] px-[54px] ${
+                                    error
+                                      ? "bg-[#E63C231A]"
+                                      : mutation.isSuccess
+                                      ? "bg-[#008B471A]"
+                                      : "bg-[#F5F5F5]"
+                                  }`}
+                                >
+                                  <InputOTP maxLength={6} {...field}>
+                                    <InputOTPGroup className="flex items-center gap-0">
+                                      {[0, 1, 2, 3, 4, 5].map((index) => (
+                                        <InputOTPSlot
+                                          key={index}
+                                          index={index}
+                                          className={`w-[50px] h-[50px] border-0 bg-transparent flex items-center justify-center text-[30px] font-semibold font-inter-tight ${
+                                            error
+                                              ? "text-[#E63C23]"
+                                              : mutation.isSuccess
+                                              ? "text-[#008B47]"
+                                              : "text-black"
+                                          }`}
+                                        />
+                                      ))}
+                                    </InputOTPGroup>
+                                  </InputOTP>
+                                </div>
+                              </div>
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Password Field */}
+                      <div className="flex flex-col gap-2 mt-2">
+                        <label className="text-xs md:text-sm font-medium text-black">
+                          New Password
+                        </label>
+                        <FormField
+                          control={form.control}
+                          name="password"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <div className="relative h-[53px] rounded-[10px] bg-gray-100 flex items-center px-4">
+                                  <Input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Your Password"
+                                    {...field}
+                                    onChange={(e) => {
+                                      field.onChange(e);
+                                      setPassword(e.target.value);
+                                    }}
+                                    className="flex-1 bg-transparent border-0 placeholder:text-gray-400 focus:ring-0"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setShowPassword(!showPassword)
+                                    }
+                                    className="text-gray-500 hover:text-gray-700"
+                                  >
+                                    {showPassword ? (
+                                      <EyeOff size={20} />
+                                    ) : (
+                                      <Eye size={20} />
+                                    )}
+                                  </button>
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        {/* Password Requirements Checklist */}
+                        {password && (
+                          <div className="bg-gray-50 p-3 rounded-[10px] flex flex-wrap gap-3">
+                            <div className="flex items-center gap-1 text-xs">
+                              <span
+                                className={
+                                  passwordChecks.length
+                                    ? "text-green-600"
+                                    : "text-red-600"
+                                }
+                              >
+                                {passwordChecks.length ? "✓" : "○"}
+                              </span>
+                              <span
+                                className={
+                                  passwordChecks.length
+                                    ? "text-gray-700"
+                                    : "text-gray-500"
+                                }
+                              >
+                                8 chars
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1 text-xs">
+                              <span
+                                className={
+                                  passwordChecks.uppercase
+                                    ? "text-green-600"
+                                    : "text-red-600"
+                                }
+                              >
+                                {passwordChecks.uppercase ? "✓" : "○"}
+                              </span>
+                              <span
+                                className={
+                                  passwordChecks.uppercase
+                                    ? "text-gray-700"
+                                    : "text-gray-500"
+                                }
+                              >
+                                A-Z
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1 text-xs">
+                              <span
+                                className={
+                                  passwordChecks.lowercase
+                                    ? "text-green-600"
+                                    : "text-red-600"
+                                }
+                              >
+                                {passwordChecks.lowercase ? "✓" : "○"}
+                              </span>
+                              <span
+                                className={
+                                  passwordChecks.lowercase
+                                    ? "text-gray-700"
+                                    : "text-gray-500"
+                                }
+                              >
+                                a-z
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1 text-xs">
+                              <span
+                                className={
+                                  passwordChecks.number
+                                    ? "text-green-600"
+                                    : "text-red-600"
+                                }
+                              >
+                                {passwordChecks.number ? "✓" : "○"}
+                              </span>
+                              <span
+                                className={
+                                  passwordChecks.number
+                                    ? "text-gray-700"
+                                    : "text-gray-500"
+                                }
+                              >
+                                0-9
+                              </span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Reset Button */}
+                      <Button
+                        type="submit"
+                        disabled={mutation.isPending || !email || !isPasswordValid || resetCode.length !== 6}
+                        className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base mt-1"
+                      >
+                        {mutation.isPending ? (
+                          <Loader2 size={18} className="animate-spin" />
+                        ) : (
+                          "Reset Password"
+                        )}
+                      </Button>
+                    </form>
+                  </Form>
+
+                  {/* Back to Login Link */}
+                  <p className="text-center text-xs md:text-sm">
+                    <span className="text-gray-400">Remember your password? </span>
+                    <Link
+                      href="/login"
+                      className="text-[#5C30FF] font-medium hover:underline"
+                    >
+                      Sign in
+                    </Link>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

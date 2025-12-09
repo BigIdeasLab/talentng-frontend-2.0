@@ -61,12 +61,13 @@ export const forgotPassword = async (email: string): Promise<void> => {
 };
 
 export const resetPassword = async (
-  resetToken: string,
+  email: string,
+  resetCode: string,
   newPassword: string
 ): Promise<void> => {
   return apiClient<void>("/auth/reset-password", {
     method: "POST",
-    body: { resetToken, newPassword },
+    body: { email, resetCode, newPassword },
   });
 };
 

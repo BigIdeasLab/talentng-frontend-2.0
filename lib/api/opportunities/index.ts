@@ -37,5 +37,28 @@ export const createOpportunity = async (
   });
 };
 
+export const updateOpportunity = async (
+  id: string,
+  data: Partial<Opportunity>
+): Promise<Opportunity> => {
+  return apiClient<Opportunity>(`/opportunities/${id}`, {
+    method: "PATCH",
+    body: data,
+  });
+};
+
+export const postOpportunity = async (id: string): Promise<Opportunity> => {
+  return apiClient<Opportunity>(`/opportunities/${id}`, {
+    method: "PATCH",
+    body: { status: "active" },
+  });
+};
+
+export const deleteOpportunity = async (id: string): Promise<void> => {
+  return apiClient<void>(`/opportunities/${id}`, {
+    method: "DELETE",
+  });
+};
+
 // Export types
 export type { Opportunity, GetOpportunitiesParams };

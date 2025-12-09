@@ -205,7 +205,14 @@ export function OpportunityPreview() {
 
       const data = await createOpportunity(finalData);
       console.log("Opportunity saved as draft:", data);
-      alert("Opportunity saved as draft successfully!");
+      
+      // Navigate to opportunities page with draft tab and scroll to it
+      router.push("/opportunities?tab=draft");
+      
+      // Wait a moment for navigation to complete, then show success toast
+      setTimeout(() => {
+        alert("Opportunity saved as draft successfully!");
+      }, 500);
     } catch (error) {
       console.error("Error saving draft:", error);
       alert("Failed to save draft. Please try again.");

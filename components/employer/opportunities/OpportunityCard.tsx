@@ -1,6 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Modal } from "@/components/ui/modal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -61,9 +64,46 @@ export function OpportunityCard({
 }: OpportunityCardProps) {
   const router = useRouter();
   const config = typeConfig[opportunity.type] || typeConfig["job-listing"];
+  const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleCardClick = () => {
     router.push(`/opportunities/${opportunity.id}`);
+  };
+
+  const confirmPost = async () => {
+    setIsLoading(true);
+    try {
+      const { postOpportunity } = await import("@/lib/api/opportunities");
+      await postOpportunity(opportunity.id);
+      
+      // Close modal and refresh
+      setShowModal(false);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error posting opportunity:", error);
+      setShowModal(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const confirmDelete = async () => {
+    setIsLoading(true);
+    try {
+      const { deleteOpportunity } = await import("@/lib/api/opportunities");
+      await deleteOpportunity(opportunity.id);
+      
+      // Close modal and refresh
+      setShowDeleteModal(false);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error deleting opportunity:", error);
+      setShowDeleteModal(false);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const renderOpportunityActions = () => {
@@ -83,9 +123,19 @@ export function OpportunityCard({
     }
 
     if (activeTab === "draft") {
+      const handleEdit = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        router.push(`/opportunities/edit/${opportunity.id}`);
+      };
+
+      const handlePost = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setShowModal(true);
+      };
+
       return (
         <div className="flex items-center gap-1.5">
-          <button className="flex items-center gap-0.5 h-8 px-3 bg-[#181B25] text-white rounded-full hover:bg-[#2a2d35] transition-colors flex-shrink-0">
+          <button onClick={handleEdit} className="flex items-center gap-0.5 h-8 px-3 bg-[#181B25] text-white rounded-full hover:bg-[#2a2d35] transition-colors flex-shrink-0">
             <svg
               width="14"
               height="14"
@@ -112,7 +162,7 @@ export function OpportunityCard({
             </span>
           </button>
 
-          <button className="flex items-center gap-0.5 h-8 px-3 bg-[#5C30FF] text-white rounded-full border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors flex-shrink-0">
+          <button onClick={handlePost} className="flex items-center gap-0.5 h-8 px-3 bg-[#5C30FF] text-white rounded-full border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors flex-shrink-0">
             <svg
               width="14"
               height="14"
@@ -130,6 +180,33 @@ export function OpportunityCard({
             </svg>
             <span className="text-[10px] font-medium font-inter-tight">
               Post
+            </span>
+          </button>
+
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowDeleteModal(true);
+            }}
+            className="flex items-center gap-0.5 h-8 px-3 bg-red-50 text-red-600 rounded-full border border-red-200 hover:bg-red-100 transition-colors flex-shrink-0"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M2.25 4.5H15.75M7.5 7.5V13.5M10.5 7.5V13.5M3.75 4.5L4.5 14.25C4.5 14.663 4.66875 15.059 4.97919 15.3508C5.28963 15.6425 5.70218 15.825 6.125 15.825H11.875C12.2982 15.825 12.7104 15.6425 13.0208 15.3508C13.3313 15.059 13.5 14.663 13.5 14.25L14.25 4.5M6.375 4.5V3.375C6.375 3.16875 6.45938 2.97188 6.60469 2.82656C6.75 2.68125 6.94688 2.59688 7.15312 2.59688H10.8469C11.0531 2.59688 11.25 2.68125 11.3953 2.82656C11.5406 2.97188 11.625 3.16875 11.625 3.375V4.5"
+                stroke="currentColor"
+                strokeWidth="1.125"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span className="text-[10px] font-medium font-inter-tight">
+              Delete
             </span>
           </button>
         </div>
@@ -302,6 +379,62 @@ export function OpportunityCard({
             </a>
           </p>
         </div>
+      )}
+
+      {/* Post Confirmation Modal */}
+      {activeTab === "draft" && (
+        <Modal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          title="Post Opportunity"
+          description={`Are you sure you want to post "${opportunity.title}"? It will be visible to all talents.`}
+          footer={
+            <>
+              <Button
+                variant="outline"
+                onClick={() => setShowModal(false)}
+                disabled={isLoading}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={confirmPost}
+                disabled={isLoading}
+                className="bg-[#5C30FF] hover:bg-[#4a1fe5]"
+              >
+                {isLoading ? "Posting..." : "Post Now"}
+              </Button>
+            </>
+          }
+        />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {activeTab === "draft" && (
+        <Modal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          title="Delete Draft?"
+          description={`Are you sure you want to delete "${opportunity.title}"? This action cannot be undone.`}
+          footer={
+            <>
+              <Button
+                variant="outline"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={isLoading}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={confirmDelete}
+                disabled={isLoading}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {isLoading ? "Deleting..." : "Delete Draft"}
+              </Button>
+            </>
+          }
+        />
       )}
     </div>
   );

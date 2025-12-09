@@ -40,8 +40,8 @@ const ForgotPassword = () => {
     mutationFn: (data: ForgotPasswordFormValues) =>
       forgotPassword(data.email),
     onSuccess: (_, variables) => {
-      toast.success("Reset link sent to your email!");
-      router.push(`/forgot-password-confirmation?email=${encodeURIComponent(variables.email)}`);
+      toast.success("Check your email for a 6-digit reset code!");
+      router.push(`/reset-password?email=${encodeURIComponent(variables.email)}`);
     },
     onError: (error: any) => {
       const message =
@@ -86,8 +86,7 @@ const ForgotPassword = () => {
                       Reset Password
                     </h1>
                     <p className="text-xs md:text-sm font-light text-gray-400">
-                      We can help you reset your password using the email address
-                      linked to your account.
+                      We'll send you a 6-digit code via email to reset your password.
                     </p>
                   </div>
 
@@ -131,7 +130,7 @@ const ForgotPassword = () => {
                           {mutation.isPending ? (
                             <Loader2 size={18} className="animate-spin" />
                           ) : (
-                            "Reset my password"
+                            "Send Reset Code"
                           )}
                         </Button>
 
