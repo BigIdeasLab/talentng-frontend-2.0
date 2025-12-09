@@ -51,20 +51,23 @@ interface DisplayOpportunity {
   skills: string[];
   rate: string;
   showActions: boolean;
+  applied?: boolean;
 }
 
 const mapOpportunityToDisplay = (opp: OpportunityCard): DisplayOpportunity => {
-  return {
-    id: opp.id,
-    posterName: opp.companyName,
-    posterAvatar: opp.companyLogo,
-    date: opp.date,
-    type: opp.type,
-    title: opp.title,
-    skills: opp.skills,
-    rate: opp.rate,
-    showActions: opp.status === "active",
-  };
+   const mapped = {
+     id: opp.id,
+     posterName: opp.companyName,
+     posterAvatar: opp.companyLogo,
+     date: opp.date,
+     type: opp.type,
+     title: opp.title,
+     skills: opp.skills,
+     rate: opp.rate,
+     showActions: opp.status === "active",
+     applied: (opp as any).applied || false,
+   };
+   return mapped;
 };
 
 export function TalentOpportunities() {
@@ -77,17 +80,16 @@ export function TalentOpportunities() {
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
-    const fetchOpportunities = async () => {
-      try {
-        const data = await getAll({ status: "active" });
-        setApiOpportunities(data);
-      } catch (error) {
-        console.error("Error fetching opportunities:", error);
-        setIsError(true);
-      }
-    };
-    fetchOpportunities();
-  }, [getAll]);
+     const fetchOpportunities = async () => {
+       try {
+         const data = await getAll({ status: "active" });
+         setApiOpportunities(data);
+       } catch (error) {
+         setIsError(true);
+       }
+     };
+     fetchOpportunities();
+   }, [getAll]);
 
   // Transform API opportunities to display format
   const opportunities = useMemo(() => {
@@ -106,6 +108,7 @@ export function TalentOpportunities() {
           status: (opp.status || "draft") as "active" | "closed" | "draft",
           applicationCap: opp.applicationCap,
           closingDate: opp.closingDate,
+          applied: opp.applied || false,
         }) as OpportunityCard,
     );
   }, [apiOpportunities]);
@@ -179,7 +182,21 @@ export function TalentOpportunities() {
         </div>
 
         {/* Opportunities Grid */}
-        <OpportunitiesGrid opportunities={filteredOpportunities} />
+         <OpportunitiesGrid 
+           opportunities={filteredOpportunities}
+           onApplicationSubmitted={() => {
+             // Refetch opportunities to get updated applied status
+             const fetchOpportunities = async () => {
+               try {
+                 const data = await getAll({ status: "active" });
+                 setApiOpportunities(data);
+               } catch (error) {
+                 // Silent fail - opportunities will remain as is
+               }
+             };
+             fetchOpportunities();
+           }}
+         />
       </div>
     </div>
   );

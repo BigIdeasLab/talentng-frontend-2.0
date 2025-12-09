@@ -53,22 +53,33 @@ export async function submitApplication(data: {
   files?: File[];
 }) {
   try {
-    const formData = new FormData();
-    formData.append("opportunityId", data.opportunityId);
-    if (data.note) {
-      formData.append("note", data.note);
-    }
-    if (data.files) {
+    // If there are files, use FormData; otherwise use JSON
+    if (data.files && data.files.length > 0) {
+      const formData = new FormData();
+      formData.append("opportunityId", data.opportunityId);
+      if (data.note) {
+        formData.append("note", data.note);
+      }
       data.files.forEach((file) => {
         formData.append("attachments", file);
       });
-    }
 
-    const response = await apiClient(`/applications`, {
-      method: "POST",
-      body: formData,
-    });
-    return response;
+      const response = await apiClient(`/applications`, {
+        method: "POST",
+        body: formData,
+      });
+      return response;
+    } else {
+      // No files - send as JSON
+      const response = await apiClient(`/applications`, {
+        method: "POST",
+        body: {
+          opportunityId: data.opportunityId,
+          note: data.note,
+        },
+      });
+      return response;
+    }
   } catch (error) {
     console.error("Error submitting application:", error);
     throw error;

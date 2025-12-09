@@ -7,10 +7,15 @@ import { ApplicationModal } from "./application-modal";
 import type { DisplayOpportunity } from "./types";
 import { TYPE_CONFIG } from "@/types/opportunities";
 
-export function OpportunityCard({ opportunity }: { opportunity: DisplayOpportunity }) {
-  const [showApplicationModal, setShowApplicationModal] = useState(false);
-  const config = TYPE_CONFIG[opportunity.type] || TYPE_CONFIG["job-listing"];
-  const isVolunteer = opportunity.type === "volunteer";
+interface OpportunityCardProps {
+  opportunity: DisplayOpportunity;
+  onApplicationSubmitted?: () => void;
+}
+
+export function OpportunityCard({ opportunity, onApplicationSubmitted }: OpportunityCardProps) {
+   const [showApplicationModal, setShowApplicationModal] = useState(false);
+   const config = TYPE_CONFIG[opportunity.type] || TYPE_CONFIG["job-listing"];
+   const isVolunteer = opportunity.type === "volunteer";
 
   return (
     <div className="relative">
@@ -117,12 +122,19 @@ export function OpportunityCard({ opportunity }: { opportunity: DisplayOpportuni
 
                   {/* Apply Button */}
                   <button 
-                    onClick={() => setShowApplicationModal(true)}
-                    className="flex items-center gap-1 px-4 py-2 h-8 bg-[#5C30FF] border-[0.822px] border-[#5C30FF] rounded-[40px] hover:bg-[#4a26cc] transition-colors"
+                    onClick={() => !opportunity.applied && setShowApplicationModal(true)}
+                    disabled={opportunity.applied}
+                    className={`flex items-center gap-1 px-4 py-2 h-8 border-[0.822px] rounded-[40px] transition-colors ${
+                      opportunity.applied
+                        ? "bg-gray-200 border-gray-200 cursor-not-allowed"
+                        : "bg-[#5C30FF] border-[#5C30FF] hover:bg-[#4a26cc]"
+                    }`}
                   >
-                    <Check className="w-4 h-4 text-white" />
-                    <span className="text-[12px] font-medium font-inter-tight text-white text-center">
-                      Apply
+                    <Check className={`w-4 h-4 ${opportunity.applied ? "text-gray-600" : "text-white"}`} />
+                    <span className={`text-[12px] font-medium font-inter-tight text-center ${
+                      opportunity.applied ? "text-gray-600" : "text-white"
+                    }`}>
+                      {opportunity.applied ? "Applied" : "Apply"}
                     </span>
                   </button>
                 </div>
@@ -138,8 +150,8 @@ export function OpportunityCard({ opportunity }: { opportunity: DisplayOpportuni
         opportunity={opportunity}
         onClose={() => setShowApplicationModal(false)}
         onSubmit={() => {
-          // Refresh opportunities or show success message
-          console.log("Application submitted successfully");
+          setShowApplicationModal(false);
+          onApplicationSubmitted?.();
         }}
       />
     </div>

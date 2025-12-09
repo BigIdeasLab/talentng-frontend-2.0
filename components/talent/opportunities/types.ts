@@ -13,6 +13,7 @@ export interface DisplayOpportunity {
   rate: string;
   showActions: boolean;
   applicationStatus?: ApplicationStatus;
+  applied?: boolean;
 }
 
 // Grid component props
