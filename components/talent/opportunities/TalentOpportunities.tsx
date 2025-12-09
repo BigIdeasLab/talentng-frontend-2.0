@@ -123,7 +123,11 @@ export function TalentOpportunities() {
     return displayOpportunities.filter((opportunity) => {
       // Handle filter
       if (activeFilter !== "all") {
-        if (opportunity.type !== activeFilter) return false;
+        if (activeFilter === "applied") {
+          if (!opportunity.applied) return false;
+        } else {
+          if (opportunity.type !== activeFilter) return false;
+        }
       }
       // Handle search
       if (searchQuery) {
