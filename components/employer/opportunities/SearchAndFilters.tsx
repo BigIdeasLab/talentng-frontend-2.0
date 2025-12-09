@@ -7,8 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-type SortType = "newest" | "oldest" | "rate-high" | "rate-low";
+import type { SortType } from "@/types/opportunities";
 
 interface SearchAndFiltersProps {
   searchQuery: string;

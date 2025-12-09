@@ -11,60 +11,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-type TabType = "open" | "closed" | "draft";
-type OpportunityType = "job-listing" | "internship" | "volunteer" | "part-time";
-
-const typeConfig: Record<string, { label: string; bgColor: string; textColor: string; dotColor: string }> = {
-  internship: {
-    label: "Internship",
-    bgColor: "rgba(0, 139, 71, 0.09)",
-    textColor: "#008B47",
-    dotColor: "#008B47",
-  },
-  "job-listing": {
-    label: "Job Listing",
-    bgColor: "rgba(92, 48, 255, 0.10)",
-    textColor: "#5C30FF",
-    dotColor: "#5C30FF",
-  },
-  volunteer: {
-    label: "Volunteer",
-    bgColor: "rgba(246, 188, 63, 0.10)",
-    textColor: "#D99400",
-    dotColor: "#D99400",
-  },
-  "part-time": {
-    label: "Part-time",
-    bgColor: "rgba(92, 48, 255, 0.10)",
-    textColor: "#5C30FF",
-    dotColor: "#5C30FF",
-  },
-};
-
-interface Opportunity {
-  id: string;
-  companyName: string;
-  companyLogo: string;
-  date: string;
-  type: OpportunityType;
-  title: string;
-  skills: string[];
-  rate: string;
-  applicantsCount: number;
-}
-
-interface OpportunityCardProps {
-  opportunity: Opportunity;
-  activeTab: TabType;
-}
+import type { TabType, OpportunityCard, OpportunityCardProps } from "@/types/opportunities";
+import { TYPE_CONFIG } from "@/types/opportunities";
 
 export function OpportunityCard({
   opportunity,
   activeTab,
 }: OpportunityCardProps) {
   const router = useRouter();
-  const config = typeConfig[opportunity.type] || typeConfig["job-listing"];
+  const config = TYPE_CONFIG[opportunity.type] || TYPE_CONFIG["job-listing"];
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { isLoading, post, delete: deleteOpp, updateStatus } = useOpportunitiesManager();

@@ -1,6 +1,6 @@
 "use client";
 
-type TabType = "open" | "closed" | "draft";
+import type { TabType } from "@/types/opportunities";
 
 interface OpportunitiesTabsProps {
   activeTab: TabType;

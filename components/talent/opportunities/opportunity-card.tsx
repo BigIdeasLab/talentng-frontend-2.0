@@ -1,54 +1,10 @@
 import { Bookmark, Check } from "lucide-react";
 import { ApplicationStatusBanner } from "./application-status-banner";
+import type { DisplayOpportunity } from "./types";
+import { TYPE_CONFIG } from "@/types/opportunities";
 
-type OpportunityType = "internship" | "job-listing" | "volunteer" | "part-time" | string;
-type ApplicationStatus = "awaiting-review" | "hired" | "not-hired";
-
-interface DisplayOpportunity {
-  id: string;
-  posterName: string;
-  posterAvatar: string;
-  date: string;
-  type: OpportunityType;
-  title: string;
-  skills: string[];
-  rate: string;
-  showActions: boolean;
-}
-
-const typeConfig: Record<string, { label: string; bgColor: string; textColor: string; dotColor: string }> = {
-  internship: {
-    label: "Internship",
-    bgColor: "rgba(0, 139, 71, 0.09)",
-    textColor: "#008B47",
-    dotColor: "#008B47",
-  },
-  "job-listing": {
-    label: "Job Listing",
-    bgColor: "rgba(92, 48, 255, 0.10)",
-    textColor: "#5C30FF",
-    dotColor: "#5C30FF",
-  },
-  volunteer: {
-    label: "Volunteer",
-    bgColor: "rgba(246, 188, 63, 0.10)",
-    textColor: "#D99400",
-    dotColor: "#D99400",
-  },
-  "part-time": {
-    label: "Part-time",
-    bgColor: "rgba(92, 48, 255, 0.10)",
-    textColor: "#5C30FF",
-    dotColor: "#5C30FF",
-  },
-};
-
-interface OpportunityCardProps {
-  opportunity: DisplayOpportunity;
-}
-
-export function OpportunityCard({ opportunity }: OpportunityCardProps) {
-  const config = typeConfig[opportunity.type] || typeConfig["job-listing"];
+export function OpportunityCard({ opportunity }: { opportunity: DisplayOpportunity }) {
+  const config = TYPE_CONFIG[opportunity.type] || TYPE_CONFIG["job-listing"];
   const isVolunteer = opportunity.type === "volunteer";
 
   return (

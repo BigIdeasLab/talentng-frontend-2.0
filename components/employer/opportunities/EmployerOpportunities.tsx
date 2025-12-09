@@ -4,28 +4,11 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useProfile } from "@/hooks/useProfile";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import type { TabType, SortType, OpportunityCard, OpportunityType } from "@/types/opportunities";
 import { OpportunitiesHeader } from "./OpportunitiesHeader";
 import { SearchAndFilters } from "./SearchAndFilters";
 import { OpportunitiesTabs } from "./OpportunitiesTabs";
-import { OpportunityCard } from "./OpportunityCard";
-
-type TabType = "open" | "closed" | "draft";
-type SortType = "newest" | "oldest" | "rate-high" | "rate-low";
-
-interface Opportunity {
-  id: string;
-  companyName: string;
-  companyLogo: string;
-  date: string;
-  type: "job-listing" | "internship" | "volunteer" | "part-time";
-  title: string;
-  skills: string[];
-  rate: string;
-  applicantsCount: number;
-  status: "active" | "closed" | "draft";
-  applicationCap?: number;
-  closingDate?: string;
-}
+import { OpportunityCard as OpportunityCardComponent } from "./OpportunityCard";
 
 export function EmployerOpportunities() {
   const router = useRouter();
@@ -35,7 +18,7 @@ export function EmployerOpportunities() {
   const [activeTab, setActiveTab] = useState<TabType>("open");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortType>("newest");
-  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [opportunities, setOpportunities] = useState<OpportunityCard[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Fetch opportunities on mount
@@ -78,7 +61,7 @@ export function EmployerOpportunities() {
             status: (opp.status || "draft") as "active" | "closed" | "draft",
             applicationCap: opp.applicationCap,
             closingDate: opp.closingDate,
-          }) as Opportunity,
+          }) as OpportunityCard,
       );
 
       setOpportunities(transformedOpportunities);
@@ -89,7 +72,7 @@ export function EmployerOpportunities() {
     }
   };
 
-  const mapOpportunityType = (type: string): "job-listing" | "internship" | "volunteer" | "part-time" => {
+  const mapOpportunityType = (type: string): OpportunityType => {
     const lowerType = (type || "").toLowerCase();
     if (lowerType === "job") return "job-listing";
     if (lowerType === "internship") return "internship";
@@ -170,7 +153,7 @@ export function EmployerOpportunities() {
         {/* Opportunities Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {filteredOpportunities.map((opportunity) => (
-            <OpportunityCard
+            <OpportunityCardComponent
               key={opportunity.id}
               opportunity={opportunity}
               activeTab={activeTab}

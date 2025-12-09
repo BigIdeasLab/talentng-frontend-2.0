@@ -1,25 +1,6 @@
 import { OpportunityCard } from "./opportunity-card";
 import { EmptyState } from "./empty-state";
-
-type OpportunityType = "internship" | "job-listing" | "volunteer" | "part-time" | string;
-type ApplicationStatus = "awaiting-review" | "hired" | "not-hired";
-
-interface DisplayOpportunity {
-  id: string;
-  posterName: string;
-  posterAvatar: string;
-  date: string;
-  type: OpportunityType;
-  title: string;
-  skills: string[];
-  rate: string;
-  showActions: boolean;
-  applicationStatus?: ApplicationStatus;
-}
-
-interface OpportunitiesGridProps {
-  opportunities: DisplayOpportunity[];
-}
+import type { OpportunitiesGridProps } from "./types";
 
 export function OpportunitiesGrid({
   opportunities,

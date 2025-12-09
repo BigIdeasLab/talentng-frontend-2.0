@@ -1,29 +1,14 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { useOpportunities } from "@/hooks/useOpportunities";
+import { useState, useMemo, useEffect } from "react";
+import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
 import { Spinner } from "@/components/ui/spinner";
 import { TalentOpportunitiesHeader } from "./header";
 import { SearchBar } from "./search-bar";
 import { FilterTabs } from "./filter-tabs";
 import { OpportunitiesGrid } from "./opportunities-grid";
 import type { FilterType } from "./types";
-
-// Use same interface as EmployerOpportunities for consistency
-interface Opportunity {
-  id: string;
-  companyName: string;
-  companyLogo: string;
-  date: string;
-  type: "job-listing" | "internship" | "volunteer" | "part-time" | string;
-  title: string;
-  skills: string[];
-  rate: string;
-  applicantsCount: number;
-  status: "active" | "closed" | "draft";
-  applicationCap?: number;
-  closingDate?: string;
-}
+import type { OpportunityCard, OpportunityType } from "@/types/opportunities";
 
 // Helper function to format date
 const formatDate = (isoDate?: string): string => {
@@ -46,7 +31,7 @@ const getPaymentTypeAbbr = (paymentType: string): string => {
 };
 
 // Helper function to map opportunity types
-const mapOpportunityType = (type: string): "job-listing" | "internship" | "volunteer" | "part-time" => {
+const mapOpportunityType = (type: string): OpportunityType => {
   const lowerType = (type || "").toLowerCase();
   if (lowerType === "job") return "job-listing";
   if (lowerType === "internship") return "internship";
@@ -68,7 +53,7 @@ interface DisplayOpportunity {
   showActions: boolean;
 }
 
-const mapOpportunityToDisplay = (opp: Opportunity): DisplayOpportunity => {
+const mapOpportunityToDisplay = (opp: OpportunityCard): DisplayOpportunity => {
   return {
     id: opp.id,
     posterName: opp.companyName,
@@ -87,11 +72,24 @@ export function TalentOpportunities() {
   const [searchQuery, setSearchQuery] = useState("");
 
   // Fetch only active opportunities from API
-  const { opportunities: apiOpportunities, isLoading, isError } = useOpportunities({
-    status: "active",
-  });
+  const { getAll, isLoading } = useOpportunitiesManager();
+  const [apiOpportunities, setApiOpportunities] = useState<any[]>([]);
+  const [isError, setIsError] = useState(false);
 
-  // Transform API opportunities to display format (using exact EmployerOpportunities mapping)
+  useEffect(() => {
+    const fetchOpportunities = async () => {
+      try {
+        const data = await getAll({ status: "active" });
+        setApiOpportunities(data);
+      } catch (error) {
+        console.error("Error fetching opportunities:", error);
+        setIsError(true);
+      }
+    };
+    fetchOpportunities();
+  }, [getAll]);
+
+  // Transform API opportunities to display format
   const opportunities = useMemo(() => {
     return (apiOpportunities || []).map(
       (opp: any) =>
@@ -108,7 +106,7 @@ export function TalentOpportunities() {
           status: (opp.status || "draft") as "active" | "closed" | "draft",
           applicationCap: opp.applicationCap,
           closingDate: opp.closingDate,
-        }) as Opportunity,
+        }) as OpportunityCard,
     );
   }, [apiOpportunities]);
 

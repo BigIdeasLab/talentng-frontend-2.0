@@ -3,16 +3,11 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
-import { FormSection } from "./FormSection";
+import type { FormSection } from "@/types/opportunities";
+import { FormSectionComponent } from "./FormSection";
 import { BasicInfoStep } from "./post-steps/BasicInfoStep";
 import { DescriptionStep } from "./post-steps/DescriptionStep";
 import { BudgetScopeStep } from "./post-steps/BudgetScopeStep";
-
-type FormSection =
-  | "basic-info"
-  | "description"
-  | "budget-scope"
-  | "application-settings";
 
 const DEFAULT_FORM_DATA = {
   type: "",
@@ -254,7 +249,7 @@ export function PostOpportunityForm() {
         <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
             {/* Basic Info Section */}
-            <FormSection
+            <FormSectionComponent
               title="Basic Info"
               isExpanded={expandedSection === "basic-info"}
               onToggle={() => toggleSection("basic-info")}
@@ -274,10 +269,10 @@ export function PostOpportunityForm() {
                 updateFormData={updateFormData}
                 onNext={() => toggleSection("description")}
               />
-            </FormSection>
+            </FormSectionComponent>
 
             {/* Description Section */}
-            <FormSection
+            <FormSectionComponent
               title="Description"
               isExpanded={expandedSection === "description"}
               onToggle={() => toggleSection("description")}
@@ -296,11 +291,11 @@ export function PostOpportunityForm() {
                 updateFormData={updateFormData}
                 onNext={() => toggleSection("budget-scope")}
               />
-            </FormSection>
+            </FormSectionComponent>
 
             {/* Budget & Scope Section - Hidden for Volunteer */}
             {!isVolunteer && (
-              <FormSection
+              <FormSectionComponent
                 title="Budget & Scope"
                 isExpanded={expandedSection === "budget-scope"}
                 onToggle={() => toggleSection("budget-scope")}
@@ -321,7 +316,7 @@ export function PostOpportunityForm() {
                   updateFormData={updateFormData}
                   onSubmit={handleSave}
                 />
-              </FormSection>
+              </FormSectionComponent>
             )}
 
             {/* Application Settings Section */}

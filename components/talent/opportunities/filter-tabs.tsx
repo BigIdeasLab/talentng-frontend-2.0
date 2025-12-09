@@ -1,10 +1,4 @@
-type FilterType =
-  | "all"
-  | "job-listing"
-  | "internship"
-  | "volunteer"
-  | "applied"
-  | "part-time";
+import type { FilterType } from "./types";
 
 interface FilterTabsProps {
   activeFilter: FilterType;

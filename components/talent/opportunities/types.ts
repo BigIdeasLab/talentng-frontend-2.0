@@ -1,16 +1,24 @@
-export type OpportunityType = "internship" | "job-listing" | "volunteer" | "part-time";
 export type FilterType = "all" | "job-listing" | "internship" | "volunteer" | "applied" | "part-time";
 export type ApplicationStatus = "awaiting-review" | "hired" | "not-hired";
 
-export interface Opportunity {
+// Display opportunity for grid/list views
+export interface DisplayOpportunity {
   id: string;
   posterName: string;
-  posterAvatar?: string;
+  posterAvatar: string;
   date: string;
-  type: OpportunityType;
+  type: string;
   title: string;
   skills: string[];
   rate: string;
   showActions: boolean;
   applicationStatus?: ApplicationStatus;
 }
+
+// Grid component props
+export interface OpportunitiesGridProps {
+  opportunities: DisplayOpportunity[];
+}
+
+// Legacy alias for backward compatibility
+export interface Opportunity extends DisplayOpportunity {}

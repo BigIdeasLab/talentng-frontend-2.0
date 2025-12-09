@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-interface FormSectionProps {
+interface FormSectionComponentProps {
   title: string;
   isExpanded: boolean;
   onToggle: () => void;
@@ -8,13 +8,13 @@ interface FormSectionProps {
   forwardedRef?: React.Ref<HTMLDivElement>;
 }
 
-export function FormSection({
+export function FormSectionComponent({
   title,
   isExpanded,
   onToggle,
   children,
   forwardedRef,
-}: FormSectionProps) {
+}: FormSectionComponentProps) {
   return (
     <div ref={forwardedRef} className="border border-gray-300 rounded-[16px] overflow-hidden">
       <button
