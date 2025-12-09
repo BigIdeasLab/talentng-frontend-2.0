@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useProfile } from "@/hooks/useProfile";
+import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
 import { OpportunitiesHeader } from "./OpportunitiesHeader";
 import { SearchAndFilters } from "./SearchAndFilters";
 import { OpportunitiesTabs } from "./OpportunitiesTabs";
@@ -30,6 +31,7 @@ export function EmployerOpportunities() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { currentProfile } = useProfile();
+  const { getAll, isLoading: apiLoading } = useOpportunitiesManager();
   const [activeTab, setActiveTab] = useState<TabType>("open");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortType>("newest");
@@ -52,13 +54,11 @@ export function EmployerOpportunities() {
   const fetchOpportunities = async () => {
     try {
       setIsLoading(true);
-      const { getOpportunities } = await import("@/lib/api/opportunities");
-
       const userId = (currentProfile as any)?.userId;
       if (!userId) return;
 
       // Fetch all opportunities (we'll filter by status in UI tabs)
-      const data = await getOpportunities({ 
+      const data = await getAll({ 
         postedById: userId
       });
 

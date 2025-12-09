@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { FormSection } from "./FormSection";
 import { BasicInfoStep } from "./post-steps/BasicInfoStep";
 import { DescriptionStep } from "./post-steps/DescriptionStep";
 import { BudgetScopeStep } from "./post-steps/BudgetScopeStep";
@@ -12,9 +14,34 @@ type FormSection =
   | "budget-scope"
   | "application-settings";
 
+const DEFAULT_FORM_DATA = {
+  type: "",
+  title: "",
+  description: "",
+  keyResponsibilities: [] as string[],
+  requirements: [] as string[],
+  tags: [] as string[],
+  tools: [] as string[],
+  category: "",
+  workMode: "",
+  location: "",
+  paymentType: "" as "weekly" | "monthly" | "hourly" | "",
+  minBudget: "",
+  maxBudget: "",
+  maxHours: "",
+  duration: "",
+  startDate: "",
+  experienceLevel: "",
+  employmentType: "",
+  status: "active" as const,
+  applicationCap: "",
+  closingDate: "",
+};
+
 export function PostOpportunityForm() {
   const router = useRouter();
   const pathname = usePathname();
+  const { create, isLoading } = useOpportunitiesManager();
   const [expandedSection, setExpandedSection] = useState<string>("basic-info");
   const [showExitModal, setShowExitModal] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState<
@@ -23,69 +50,20 @@ export function PostOpportunityForm() {
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   const [formData, setFormData] = useState(() => {
-    const defaultData = {
-      type: "",
-      title: "",
-      description: "",
-      keyResponsibilities: [] as string[],
-      requirements: [] as string[],
-      tags: [] as string[],
-      tools: [] as string[],
-      category: "",
-      workMode: "",
-      location: "",
-      paymentType: "" as "weekly" | "monthly" | "hourly" | "",
-      minBudget: "",
-      maxBudget: "",
-      maxHours: "",
-      duration: "",
-      startDate: "",
-      experienceLevel: "",
-      employmentType: "",
-      status: "active" as const,
-      applicationCap: "",
-      closingDate: "",
-    };
-
     const saved = sessionStorage.getItem("opportunityFormData");
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        // Merge with defaults to ensure all fields are defined
-        return { ...defaultData, ...parsed };
+        return { ...DEFAULT_FORM_DATA, ...parsed };
       } catch (e) {
         console.error("Failed to parse saved form data:", e);
       }
     }
-    return defaultData;
+    return DEFAULT_FORM_DATA;
   });
 
-  const defaultFormData = {
-    type: "",
-    title: "",
-    description: "",
-    keyResponsibilities: [] as string[],
-    requirements: [] as string[],
-    tags: [] as string[],
-    tools: [] as string[],
-    category: "",
-    workMode: "",
-    location: "",
-    paymentType: "" as "weekly" | "monthly" | "hourly" | "",
-    minBudget: "",
-    maxBudget: "",
-    maxHours: "",
-    duration: "",
-    startDate: "",
-    experienceLevel: "",
-    employmentType: "",
-    status: "active" as const,
-    applicationCap: "",
-    closingDate: "",
-  };
-
   const clearForm = () => {
-    setFormData(defaultFormData);
+    setFormData(DEFAULT_FORM_DATA);
     sessionStorage.removeItem("opportunityFormData");
   };
 
@@ -146,29 +124,27 @@ export function PostOpportunityForm() {
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, []);
 
+  const transformFormData = (status: "draft" | "active" = "draft") => ({
+    ...formData,
+    minBudget: formData.minBudget ? Number(formData.minBudget) : undefined,
+    maxBudget: formData.maxBudget ? Number(formData.maxBudget) : undefined,
+    maxHours: formData.maxHours ? Number(formData.maxHours) : undefined,
+    applicationCap: formData.applicationCap
+      ? Number(formData.applicationCap)
+      : undefined,
+    closingDate: formData.closingDate
+      ? new Date(formData.closingDate).toISOString()
+      : undefined,
+    startDate: formData.startDate
+      ? new Date(formData.startDate).toISOString()
+      : undefined,
+    status,
+  });
+
   // Handle save as draft
   const handleSaveAsDraft = async () => {
     try {
-      const { createOpportunity } = await import("@/lib/api/opportunities");
-
-      const draftData = {
-        ...formData,
-        minBudget: formData.minBudget ? Number(formData.minBudget) : undefined,
-        maxBudget: formData.maxBudget ? Number(formData.maxBudget) : undefined,
-        maxHours: formData.maxHours ? Number(formData.maxHours) : undefined,
-        applicationCap: formData.applicationCap
-          ? Number(formData.applicationCap)
-          : undefined,
-        closingDate: formData.closingDate
-          ? new Date(formData.closingDate).toISOString()
-          : undefined,
-        startDate: formData.startDate
-          ? new Date(formData.startDate).toISOString()
-          : undefined,
-        status: "draft",
-      };
-
-      await createOpportunity(draftData);
+      await create(transformFormData("draft"));
       clearForm();
       alert("Opportunity saved as draft successfully!");
       router.push("/opportunities?tab=draft");
@@ -278,158 +254,74 @@ export function PostOpportunityForm() {
         <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
             {/* Basic Info Section */}
-            <div
-              ref={(el) => {
+            <FormSection
+              title="Basic Info"
+              isExpanded={expandedSection === "basic-info"}
+              onToggle={() => toggleSection("basic-info")}
+              forwardedRef={(el) => {
                 if (el) sectionRefs.current["basic-info"] = el;
               }}
-              className="border border-gray-300 rounded-[16px] overflow-hidden"
             >
-              <button
-                onClick={() => toggleSection("basic-info")}
-                className="w-full px-5 py-4 bg-gray-50 flex items-center justify-between hover:bg-gray-100 transition-colors"
-              >
-                <span className="font-medium text-black text-[14px]">
-                  Basic Info
-                </span>
-                <svg
-                  className={`w-5 h-5 text-gray-600 transition-transform ${
-                    expandedSection === "basic-info" ? "rotate-180" : ""
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                  />
-                </svg>
-              </button>
-              {expandedSection === "basic-info" && (
-                <>
-                  <div className="h-[1px] bg-gray-300" />
-                  <div className="p-5">
-                    <BasicInfoStep
-                      formData={{
-                        type: formData.type,
-                        title: formData.title,
-                        category: formData.category,
-                        workMode: formData.workMode,
-                        location: formData.location,
-                        employmentType: formData.employmentType,
-                      }}
-                      updateFormData={updateFormData}
-                      onNext={() => toggleSection("description")}
-                    />
-                  </div>
-                </>
-              )}
-            </div>
+              <BasicInfoStep
+                formData={{
+                  type: formData.type,
+                  title: formData.title,
+                  category: formData.category,
+                  workMode: formData.workMode,
+                  location: formData.location,
+                  employmentType: formData.employmentType,
+                }}
+                updateFormData={updateFormData}
+                onNext={() => toggleSection("description")}
+              />
+            </FormSection>
 
             {/* Description Section */}
-            <div
-              ref={(el) => {
+            <FormSection
+              title="Description"
+              isExpanded={expandedSection === "description"}
+              onToggle={() => toggleSection("description")}
+              forwardedRef={(el) => {
                 if (el) sectionRefs.current["description"] = el;
               }}
-              className="border border-gray-300 rounded-[16px] overflow-hidden"
             >
-              <button
-                onClick={() => toggleSection("description")}
-                className="w-full px-5 py-4 bg-gray-50 flex items-center justify-between hover:bg-gray-100 transition-colors"
-              >
-                <span className="font-medium text-black text-[14px]">
-                  Description
-                </span>
-                <svg
-                  className={`w-5 h-5 text-gray-600 transition-transform ${
-                    expandedSection === "description" ? "rotate-180" : ""
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                  />
-                </svg>
-              </button>
-              {expandedSection === "description" && (
-                <>
-                  <div className="h-[1px] bg-gray-300" />
-                  <div className="p-5">
-                    <DescriptionStep
-                      formData={{
-                        description: formData.description,
-                        keyResponsibilities: formData.keyResponsibilities,
-                        requirements: formData.requirements,
-                        tags: formData.tags,
-                        tools: formData.tools,
-                      }}
-                      updateFormData={updateFormData}
-                      onNext={() => toggleSection("budget-scope")}
-                    />
-                  </div>
-                </>
-              )}
-            </div>
+              <DescriptionStep
+                formData={{
+                  description: formData.description,
+                  keyResponsibilities: formData.keyResponsibilities,
+                  requirements: formData.requirements,
+                  tags: formData.tags,
+                  tools: formData.tools,
+                }}
+                updateFormData={updateFormData}
+                onNext={() => toggleSection("budget-scope")}
+              />
+            </FormSection>
 
             {/* Budget & Scope Section - Hidden for Volunteer */}
             {!isVolunteer && (
-              <div
-                ref={(el) => {
+              <FormSection
+                title="Budget & Scope"
+                isExpanded={expandedSection === "budget-scope"}
+                onToggle={() => toggleSection("budget-scope")}
+                forwardedRef={(el) => {
                   if (el) sectionRefs.current["budget-scope"] = el;
                 }}
-                className="border border-gray-300 rounded-[16px] overflow-hidden"
               >
-                <button
-                  onClick={() => toggleSection("budget-scope")}
-                  className="w-full px-5 py-4 bg-gray-50 flex items-center justify-between hover:bg-gray-100 transition-colors"
-                >
-                  <span className="font-medium text-black text-[14px]">
-                    Budget & Scope
-                  </span>
-                  <svg
-                    className={`w-5 h-5 text-gray-600 transition-transform ${
-                      expandedSection === "budget-scope" ? "rotate-180" : ""
-                    }`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                    />
-                  </svg>
-                </button>
-                {expandedSection === "budget-scope" && (
-                  <>
-                    <div className="h-[1px] bg-gray-300" />
-                    <div className="p-5">
-                      <BudgetScopeStep
-                        formData={{
-                          paymentType: formData.paymentType,
-                          minBudget: formData.minBudget,
-                          maxBudget: formData.maxBudget,
-                          maxHours: formData.maxHours,
-                          duration: formData.duration,
-                          startDate: formData.startDate,
-                          experienceLevel: formData.experienceLevel,
-                        }}
-                        updateFormData={updateFormData}
-                        onSubmit={handleSave}
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
+                <BudgetScopeStep
+                  formData={{
+                    paymentType: formData.paymentType,
+                    minBudget: formData.minBudget,
+                    maxBudget: formData.maxBudget,
+                    maxHours: formData.maxHours,
+                    duration: formData.duration,
+                    startDate: formData.startDate,
+                    experienceLevel: formData.experienceLevel,
+                  }}
+                  updateFormData={updateFormData}
+                  onSubmit={handleSave}
+                />
+              </FormSection>
             )}
 
             {/* Application Settings Section */}

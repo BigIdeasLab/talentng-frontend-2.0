@@ -2,10 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
 import { BasicInfoStep } from "./post-steps/BasicInfoStep";
 import { DescriptionStep } from "./post-steps/DescriptionStep";
 import { BudgetScopeStep } from "./post-steps/BudgetScopeStep";
-import { getOpportunityById, updateOpportunity } from "@/lib/api/opportunities";
 import { Loader2 } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,7 @@ export function EditOpportunityForm({
   opportunityId,
 }: EditOpportunityFormProps) {
   const router = useRouter();
+  const { getById, update, isLoading: apiLoading } = useOpportunitiesManager();
   const [expandedSection, setExpandedSection] = useState<string>("basic-info");
   const [showExitModal, setShowExitModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -85,7 +86,7 @@ export function EditOpportunityForm({
   useEffect(() => {
     const fetchOpportunity = async () => {
       try {
-        const data = await getOpportunityById(opportunityId);
+        const data = await getById(opportunityId);
         const paymentType = (data.paymentType || "") as
           | "weekly"
           | "monthly"
@@ -147,7 +148,7 @@ export function EditOpportunityForm({
           : undefined,
       };
 
-      await updateOpportunity(opportunityId, updateData);
+      await update(opportunityId, updateData);
       alert("Opportunity updated successfully!");
       router.push("/opportunities");
     } catch (error) {

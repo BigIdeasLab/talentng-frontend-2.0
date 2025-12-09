@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import {
@@ -65,8 +66,8 @@ export function OpportunityCard({
   const router = useRouter();
   const config = typeConfig[opportunity.type] || typeConfig["job-listing"];
   const [showModal, setShowModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { isLoading, post, delete: deleteOpp, updateStatus } = useOpportunitiesManager();
 
   const handleCardClick = (e: React.MouseEvent) => {
     if (isLoading || showModal || showDeleteModal) {
@@ -78,36 +79,24 @@ export function OpportunityCard({
   };
 
   const confirmPost = async () => {
-    setIsLoading(true);
     try {
-      const { postOpportunity } = await import("@/lib/api/opportunities");
-      await postOpportunity(opportunity.id);
-      
-      // Close modal and refresh
+      await post(opportunity.id);
       setShowModal(false);
       window.location.reload();
     } catch (error) {
       console.error("Error posting opportunity:", error);
       setShowModal(false);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const confirmDelete = async () => {
-    setIsLoading(true);
     try {
-      const { deleteOpportunity } = await import("@/lib/api/opportunities");
-      await deleteOpportunity(opportunity.id);
-      
-      // Close modal and refresh
+      await deleteOpp(opportunity.id);
       setShowDeleteModal(false);
       window.location.reload();
     } catch (error) {
       console.error("Error deleting opportunity:", error);
       setShowDeleteModal(false);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -220,14 +209,11 @@ export function OpportunityCard({
 
     const handleMarkAsFilled = async (e: React.MouseEvent) => {
       e.stopPropagation();
-      setIsLoading(true);
       try {
-        const { updateOpportunity } = await import("@/lib/api/opportunities");
-        await updateOpportunity(opportunity.id, { status: "closed" });
+        await updateStatus(opportunity.id, "closed");
         window.location.reload();
       } catch (error) {
         console.error("Error marking opportunity as filled:", error);
-        setIsLoading(false);
       }
     };
 
