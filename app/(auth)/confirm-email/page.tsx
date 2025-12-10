@@ -71,7 +71,7 @@ const ConfirmEmailPage = () => {
       toast.success("Email verified successfully!");
 
       // Backend sets tokens as HTTP-only cookies automatically
-       // No need to manually store them
+      // No need to manually store them
 
       // Navigate based on onboarding status
       if (data.needsOnboarding) {
@@ -81,7 +81,15 @@ const ConfirmEmailPage = () => {
       }
     },
     onError: (error: any) => {
-      setError("Wrong Code");
+      console.error("Verification error:", error);
+      // Handle specific error messages from backend
+      if (error.message && error.message.includes("Invalid verification code")) {
+        setError("Invalid code");
+      } else if (error.message && error.message.includes("expired")) {
+        setError("Code expired");
+      } else {
+        setError("Wrong Code");
+      }
       toast.error(error.message || "An error occurred. Please try again.");
     },
   });

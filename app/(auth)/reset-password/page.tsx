@@ -78,15 +78,25 @@ const ResetPassword = () => {
   const mutation = useMutation({
     mutationFn: (data: ResetPasswordFormValues) =>
       resetPassword(email, data.resetCode, data.password),
-    onSuccess: () => {
+    onSuccess: (data: any) => {
       setError("");
       toast.success("Password reset successfully!");
-      router.push("/login");
+      // Backend sets tokens as HTTP-only cookies automatically
+      // Navigate to dashboard directly
+      router.push("/dashboard");
     },
     onError: (error: any) => {
+      console.error("Password reset error:", error);
+      // Handle specific error messages from backend
+      if (error.message && error.message.includes("Invalid reset code")) {
+        setError("Invalid code");
+      } else if (error.message && error.message.includes("expired")) {
+        setError("Code expired");
+      } else {
+        setError("Invalid Code");
+      }
       const message =
         error.message || "Failed to reset password. Please try again.";
-      setError("Invalid Code");
       toast.error(message);
     },
   });

@@ -57,6 +57,22 @@ const apiClient = async <T>(
     let response = await fetch(`${baseUrl}${endpoint}`, config);
 
     if (response.status === 401) {
+      // Don't attempt token refresh for auth endpoints
+      if (endpoint.includes("/auth/verify-email/confirm") || endpoint.includes("/auth/reset-password")) {
+        const errorText = await response.text();
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch (e) {
+          errorData = { message: errorText || response.statusText };
+        }
+        const errorMessage = errorData.message || errorData.error || "An error occurred during the API request.";
+        const error = new Error(errorMessage);
+        (error as any).status = response.status;
+        (error as any).data = errorData;
+        throw error;
+      }
+
       if (isRefreshing && refreshTokenPromise) {
         return refreshTokenPromise
           .then(() => {

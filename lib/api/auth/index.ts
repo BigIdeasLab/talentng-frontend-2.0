@@ -64,10 +64,11 @@ export const resetPassword = async (
   email: string,
   resetCode: string,
   newPassword: string
-): Promise<void> => {
-  return apiClient<void>("/auth/reset-password", {
+): Promise<LoginResponse> => {
+  return apiClient<LoginResponse>("/auth/reset-password", {
     method: "POST",
     body: { email, resetCode, newPassword },
+    credentials: "include",
   });
 };
 
