@@ -368,5 +368,3 @@ export function OpportunitiesFilterModal({
     </div>
   );
 }
-
-export type { OpportunitiesFilterState };
