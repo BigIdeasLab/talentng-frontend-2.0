@@ -49,18 +49,18 @@ export interface Opportunity {
 }
 
 export interface GetOpportunitiesParams {
-  q?: string;
-  type?: string;
-  title?: string;
-  location?: string;
-  tags?: string;
-  status?: string;
-  category?: string;
-  experienceLevel?: string;
-  isFeatured?: boolean;
-  postedById?: string;
-  limit?: number;
-  offset?: number;
-  sortBy?: "createdAt" | "applicationCount" | "compensation";
-  sortOrder?: "asc" | "desc";
+   q?: string;
+   type?: string;
+   title?: string;
+   location?: string;
+   tags?: string;
+   status?: string;
+   category?: string;
+   experienceLevel?: string;
+   isFeatured?: boolean;
+   postedById?: string;
+   limit?: number;
+   offset?: number;
+   sortBy?: "createdAt" | "applicationCount" | "title";
+   sortOrder?: "asc" | "desc";
 }

@@ -42,6 +42,32 @@ export interface TypeConfig {
 }
 
 export const TYPE_CONFIG: Record<string, TypeConfig> = {
+  // API format types
+  Job: {
+    label: "Job Listing",
+    bgColor: "rgba(92, 48, 255, 0.10)",
+    textColor: "#5C30FF",
+    dotColor: "#5C30FF",
+  },
+  Internship: {
+    label: "Internship",
+    bgColor: "rgba(0, 139, 71, 0.09)",
+    textColor: "#008B47",
+    dotColor: "#008B47",
+  },
+  Volunteer: {
+    label: "Volunteer",
+    bgColor: "rgba(246, 188, 63, 0.10)",
+    textColor: "#D99400",
+    dotColor: "#D99400",
+  },
+  PartTime: {
+    label: "Part-time",
+    bgColor: "rgba(92, 48, 255, 0.10)",
+    textColor: "#5C30FF",
+    dotColor: "#5C30FF",
+  },
+  // Legacy format types (for backward compatibility)
   internship: {
     label: "Internship",
     bgColor: "rgba(0, 139, 71, 0.09)",

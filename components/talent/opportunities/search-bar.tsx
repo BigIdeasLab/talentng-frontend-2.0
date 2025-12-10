@@ -1,43 +1,56 @@
-import { Search, SlidersHorizontal, ChevronDown } from "lucide-react";
+import { Search, SlidersHorizontal, X } from "lucide-react";
 
 interface SearchBarProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  onFilterClick: () => void;
+  isLoading?: boolean;
+  filterCount?: number;
 }
 
-export function SearchBar({ searchQuery, onSearchChange }: SearchBarProps) {
+export function SearchBar({ searchQuery, onSearchChange, onFilterClick, isLoading = false, filterCount = 0 }: SearchBarProps) {
   return (
-    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mb-4">
-      {/* Search Container */}
-      <div className="flex-1 min-w-0 max-w-full sm:max-w-[585px]">
-        <div className="flex items-center gap-1 px-3 py-2 border border-[#E1E4EA] rounded-[8px] bg-white">
-          <Search className="w-4 h-4 text-[#B2B2B2] flex-shrink-0" />
-          <input
-            type="text"
-            placeholder="Search Role, Level or Jobs"
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="flex-1 text-[13px] font-normal font-inter-tight text-black placeholder:text-[rgba(0,0,0,0.3)] bg-transparent outline-none capitalize"
-          />
-        </div>
+    <div className="flex items-center gap-[8px] mb-[19px]">
+      {/* Search Bar */}
+      <div className="flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border border-[#E1E4EA] rounded-[8px]">
+        {isLoading ? (
+          <div className="w-[15px] h-[15px] border-2 border-[#B2B2B2] border-t-transparent rounded-full animate-spin flex-shrink-0" />
+        ) : (
+          <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
+        )}
+        <input
+          type="text"
+          placeholder="Search opportunities, skills..."
+          value={searchQuery}
+          onChange={(e) => onSearchChange(e.target.value)}
+          className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+        />
+        {searchQuery && !isLoading && (
+          <button
+            onClick={() => onSearchChange("")}
+            className="flex-shrink-0 text-[#B2B2B2] hover:text-black transition-colors"
+            aria-label="Clear search"
+          >
+            <X className="w-[15px] h-[15px]" />
+          </button>
+        )}
       </div>
 
-      {/* Filter and Sort Buttons */}
-      <div className="flex items-center gap-2">
-        {/* Filter Button */}
-        <button className="flex items-center gap-1 px-3 py-2 bg-[#F5F5F5] rounded-[8px] hover:bg-gray-200 transition-colors">
-          <SlidersHorizontal className="w-4 h-4 text-black" />
-          <span className="text-[13px] font-normal font-inter-tight text-black">
+      {/* Filter Button */}
+      <div className="relative">
+        <button
+          onClick={onFilterClick}
+          className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] flex-shrink-0 relative hover:bg-gray-100 transition-colors"
+        >
+          <SlidersHorizontal className="w-[15px] h-[15px] text-black" />
+          <span className="text-[13px] font-normal text-black font-inter-tight">
             Filter
           </span>
-        </button>
-
-        {/* Sort Button */}
-        <button className="flex items-center gap-1 px-3 py-2 bg-[#F5F5F5] rounded-[8px] hover:bg-gray-200 transition-colors">
-          <span className="text-[13px] font-normal font-inter-tight text-black">
-            Newest
-          </span>
-          <ChevronDown className="w-3.5 h-3.5 text-black" />
+          {filterCount > 0 && (
+            <div className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold">
+              {filterCount}
+            </div>
+          )}
         </button>
       </div>
     </div>

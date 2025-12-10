@@ -12,16 +12,17 @@ interface OpportunityCardProps {
   onApplicationSubmitted?: () => void;
 }
 
-export function OpportunityCard({ opportunity, onApplicationSubmitted }: OpportunityCardProps) {
-   const [showApplicationModal, setShowApplicationModal] = useState(false);
-   const config = TYPE_CONFIG[opportunity.type] || TYPE_CONFIG["job-listing"];
-   const isVolunteer = opportunity.type === "volunteer";
+export function OpportunityCard({
+  opportunity,
+  onApplicationSubmitted,
+}: OpportunityCardProps) {
+  const [showApplicationModal, setShowApplicationModal] = useState(false);
+  const config = TYPE_CONFIG[opportunity.type] || TYPE_CONFIG["job-listing"];
+  const isVolunteer = opportunity.type === "Volunteer";
 
   return (
     <div className="relative">
-      <div
-        className="flex flex-col items-center gap-4 pt-3 border border-[#E1E4EA] rounded-[16px] bg-white hover:shadow-md transition-shadow"
-      >
+      <div className="flex flex-col items-center gap-4 pt-3 border border-[#E1E4EA] rounded-[16px] bg-white hover:shadow-md transition-shadow">
         {/* Card Content */}
         <div className="flex flex-col items-start gap-3.5 w-full px-2.5 md:px-5">
           {/* Header Section */}
@@ -121,8 +122,10 @@ export function OpportunityCard({ opportunity, onApplicationSubmitted }: Opportu
                   </button>
 
                   {/* Apply Button */}
-                  <button 
-                    onClick={() => !opportunity.applied && setShowApplicationModal(true)}
+                  <button
+                    onClick={() =>
+                      !opportunity.applied && setShowApplicationModal(true)
+                    }
                     disabled={opportunity.applied}
                     className={`flex items-center gap-1 px-4 py-2 h-8 border-[0.822px] rounded-[40px] transition-colors ${
                       opportunity.applied
@@ -130,10 +133,14 @@ export function OpportunityCard({ opportunity, onApplicationSubmitted }: Opportu
                         : "bg-[#5C30FF] border-[#5C30FF] hover:bg-[#4a26cc]"
                     }`}
                   >
-                    <Check className={`w-4 h-4 ${opportunity.applied ? "text-gray-600" : "text-white"}`} />
-                    <span className={`text-[12px] font-medium font-inter-tight text-center ${
-                      opportunity.applied ? "text-gray-600" : "text-white"
-                    }`}>
+                    <Check
+                      className={`w-4 h-4 ${opportunity.applied ? "text-gray-600" : "text-white"}`}
+                    />
+                    <span
+                      className={`text-[12px] font-medium font-inter-tight text-center ${
+                        opportunity.applied ? "text-gray-600" : "text-white"
+                      }`}
+                    >
                       {opportunity.applied ? "Applied" : "Apply"}
                     </span>
                   </button>
