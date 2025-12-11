@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { TalentOpportunitiesHeader } from "@/components/talent/opportunities/header";
 import { OpportunitiesGrid } from "@/components/talent/opportunities/opportunities-grid";
 import {
@@ -55,6 +55,10 @@ export function OpportunitiesClient({
   const [error, setError] = useState<string | null>(initialError);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialLoadRef = useRef(true);
+
+  useEffect(() => {
+    fetchOpportunitiesWithFilters(0);
+  }, []);
 
   const fetchOpportunitiesWithFilters = useCallback(
     async (pageOffset: number = 0, filterType?: FilterType) => {

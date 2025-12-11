@@ -52,7 +52,7 @@ function OpportunitiesContent() {
     fetchData();
   }, []);
 
-  if (profileLoading || isLoading) {
+  if (profileLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
         <Spinner size="lg" className="text-blue-600" />

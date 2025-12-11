@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   DiscoverTalentHeader,
   TalentGrid,
@@ -30,6 +30,10 @@ export function DiscoverTalentClient({
   const LIMIT = 20;
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialLoadRef = useRef(true);
+
+  useEffect(() => {
+    fetchTalents(searchQuery, selectedCategory, filters, 0);
+  }, []);
 
   const fetchTalents = async (
     query: string,
