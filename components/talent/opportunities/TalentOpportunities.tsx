@@ -131,9 +131,7 @@ export function TalentOpportunities() {
           }
         }
 
-        console.log("API params:", params);
         const response = await getAll(params);
-        console.log("API response:", response);
         setApiOpportunities(response.data);
         setPagination(response.pagination);
         setOffset(pageOffset);
@@ -178,9 +176,7 @@ export function TalentOpportunities() {
 
   // Convert to display format for grid
   const displayOpportunities = useMemo(() => {
-    const display = opportunities.map(mapOpportunityToDisplay);
-    console.log("displayOpportunities:", display);
-    return display;
+    return opportunities.map(mapOpportunityToDisplay);
   }, [opportunities]);
 
   // Helper to map tab filter type to API type for comparison
@@ -194,60 +190,20 @@ export function TalentOpportunities() {
     return typeMap[tabType] || tabType;
   };
 
-  // Filter opportunities based on active filter, search, and applied filters
-  // Note: Most filtering is done server-side now, this is client-side for better UX
+  // Filter opportunities based on active tab only (applied/not applied)
+  // Server-side filters already applied, no need for client-side filtering
   const filteredOpportunities = useMemo(() => {
-    console.log(
-      "Starting filter - activeFilter:",
-      activeFilter,
-      "displayOpportunities count:",
-      displayOpportunities.length,
-    );
-    const result = displayOpportunities.filter((opportunity) => {
-      console.log(
-        "Checking opportunity:",
-        opportunity.title,
-        "type:",
-        opportunity.type,
-      );
-      // Handle tab filter
-      if (activeFilter !== "all") {
+    if (activeFilter === "all" || activeFilter === "applied") {
+      return displayOpportunities.filter((opportunity) => {
         if (activeFilter === "applied") {
-          if (!opportunity.applied) return false;
-        } else {
-          const apiType = mapTabTypeToAPI(activeFilter);
-          if (opportunity.type !== apiType) return false;
+          return opportunity.applied;
         }
-      }
-
-      // Handle advanced filters (these should ideally be server-side)
-      if (appliedFilters) {
-        if (
-          appliedFilters.types.length > 0 &&
-          !appliedFilters.types.includes(opportunity.type)
-        ) {
-          console.log(
-            "Filtered out - type mismatch",
-            appliedFilters.types,
-            opportunity.type,
-          );
-          return false;
-        }
-        if (appliedFilters.skills.length > 0) {
-          const hasMatchingSkill = appliedFilters.skills.some((skill) =>
-            opportunity.skills.some((s) =>
-              s.toLowerCase().includes(skill.toLowerCase()),
-            ),
-          );
-          if (!hasMatchingSkill) return false;
-        }
-      }
-
-      return true;
-    });
-    console.log("filteredOpportunities count:", result.length);
-    return result;
-  }, [displayOpportunities, activeFilter, appliedFilters]);
+        return true;
+      });
+    }
+    // Tab filters (job-listing, internship, etc) are already filtered server-side
+    return displayOpportunities;
+  }, [displayOpportunities, activeFilter]);
 
   // Get all unique skills for filter modal
   const allSkills = useMemo(() => {
@@ -369,10 +325,6 @@ export function TalentOpportunities() {
           isOpen={isFilterOpen}
           onClose={() => setIsFilterOpen(false)}
           onApply={(filters) => {
-            console.log(
-              "TalentOpportunities - Setting applied filters:",
-              filters,
-            );
             setAppliedFilters(filters);
             setIsFilterOpen(false);
             // Reset to first page when filters are applied
