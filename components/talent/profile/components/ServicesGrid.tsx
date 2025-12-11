@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Briefcase, Star } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import { EmptyState } from "./EmptyState";
 import { useMyServices } from "@/hooks/useTalentApi";
 import type { Service } from "@/lib/api/talent-service";
@@ -29,6 +30,7 @@ export function ServicesGrid({
   isLoading: parentIsLoading = false,
   onLoadingChange,
 }: ServicesGridProps) {
+  const { toast } = useToast();
   const { data: hookServices, isLoading: hookIsLoading, error: hookError } = useMyServices();
   const [services, setServices] = useState<Service[]>(cachedServices);
   const [isLoading, setIsLoading] = useState(parentIsLoading && cachedServices.length === 0);
@@ -48,7 +50,7 @@ export function ServicesGrid({
       onLoadingChange?.(false);
     }
     if (hookError) {
-      const errorStatus = (hookError as any)?.status;
+      const errorStatus = (hookError as Error & { status?: number })?.status;
       let errorMessage = "";
 
       if (errorStatus === 404) {
@@ -84,7 +86,10 @@ export function ServicesGrid({
         <div className="text-center">
           <p className="text-red-600 mb-3">{error}</p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => {
+              setError(null);
+              setServices(cachedServices);
+            }}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
           >
             Retry

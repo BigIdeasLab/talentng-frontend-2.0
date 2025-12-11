@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Trash2, Loader } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import { EmptyState } from "./EmptyState";
 import { deleteGalleryItem } from "@/lib/api/talent";
 import type { GalleryItem } from "@/lib/api/talent";
@@ -22,6 +23,7 @@ export function WorksGrid({
   onAddWork,
   onItemDeleted,
 }: WorksGridProps) {
+  const { toast } = useToast();
   const [displayItems, setDisplayItems] = useState<GalleryItem[]>([]);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -45,12 +47,20 @@ export function WorksGrid({
     try {
       await deleteGalleryItem(itemId);
       setDisplayItems((prev) => prev.filter((item) => item.id !== itemId));
+      toast({
+        title: "Success",
+        description: "Work deleted successfully",
+      });
       onItemDeleted?.();
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to delete work";
       setError(errorMessage);
-      console.error("Error deleting gallery item:", err);
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
     } finally {
       setDeletingId(null);
     }
@@ -70,7 +80,10 @@ export function WorksGrid({
         <div className="text-center">
           <p className="text-red-600 mb-3">{error}</p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => {
+              setError(null);
+              setDisplayItems(items);
+            }}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
           >
             Retry

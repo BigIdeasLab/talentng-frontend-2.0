@@ -4,6 +4,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useProfile } from "@/hooks/useProfile";
+import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { useToast } from "@/hooks/use-toast";
 import { getToolInfo } from "@/lib/utils/tools";
 
 const typeConfig: Record<
@@ -103,7 +105,9 @@ const DEFAULT_FORM_DATA: FormData = {
 export function OpportunityPreview() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { toast } = useToast();
   const { currentProfile, currentProfileUI, activeRole } = useProfile();
+  const { create, isLoading: apiLoading } = useOpportunitiesManager();
   const [formData, setFormData] = useState<FormData>(DEFAULT_FORM_DATA);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -190,8 +194,6 @@ export function OpportunityPreview() {
 
   const handleSaveDraft = async () => {
     try {
-      const { createOpportunity } = await import("@/lib/api/opportunities");
-
       const draftData = {
         ...formData,
         minBudget: formData.minBudget
@@ -224,34 +226,24 @@ export function OpportunityPreview() {
         type: mappedType,
       };
 
-      const data = await createOpportunity(finalData);
-      console.log("Opportunity saved as draft:", data);
-
-      // Navigate to opportunities page with draft tab and scroll to it
+      await create(finalData);
+      toast({
+        title: "Success",
+        description: "Opportunity saved as draft",
+      });
       router.push("/opportunities?tab=draft");
     } catch (error) {
-      console.error("Error saving draft:", error);
-      alert("Failed to save draft. Please try again.");
+      const message = error instanceof Error ? error.message : "Failed to save draft";
+      toast({
+        title: "Error",
+        description: message,
+        variant: "destructive",
+      });
     }
   };
 
   const handlePost = async () => {
     try {
-      const { createOpportunity } = await import("@/lib/api/opportunities");
-
-      console.log(
-        "Raw formData minBudget:",
-        formData.minBudget,
-        "type:",
-        typeof formData.minBudget,
-      );
-      console.log(
-        "Raw formData maxBudget:",
-        formData.maxBudget,
-        "type:",
-        typeof formData.maxBudget,
-      );
-
       const opportunityData = {
         ...formData,
         minBudget: formData.minBudget
@@ -284,14 +276,19 @@ export function OpportunityPreview() {
         type: mappedType,
       };
 
-      console.log("Sending opportunity data:", finalData);
-      const data = await createOpportunity(finalData);
-      console.log("Opportunity posted successfully:", data);
-
+      await create(finalData);
+      toast({
+        title: "Success",
+        description: "Opportunity posted successfully",
+      });
       router.push("/opportunities");
     } catch (error) {
-      console.error("Error posting opportunity:", error);
-      alert("Failed to post opportunity. Please try again.");
+      const message = error instanceof Error ? error.message : "Failed to post opportunity";
+      toast({
+        title: "Error",
+        description: message,
+        variant: "destructive",
+      });
     }
   };
 

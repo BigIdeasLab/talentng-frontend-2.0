@@ -2,33 +2,11 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useApplications } from "@/hooks/useApplications";
+import { useToast } from "@/hooks/use-toast";
 import { ApplicantsTable } from "./ApplicantsTable";
 import { ApplicantsHeader } from "./ApplicantsHeader";
-
-interface Applicant {
-  id: string;
-  userId: string;
-  opportunityId: string;
-  status: string;
-  note?: string;
-  createdAt: string;
-  updatedAt: string;
-  user: {
-    id: string;
-    username: string;
-    email: string;
-    talentProfile: {
-      id: string;
-      fullName: string;
-      headline: string;
-      bio?: string;
-      skills: string[];
-      location: string;
-      profileImageUrl: string;
-      category: string;
-    };
-  };
-}
+import type { Application } from "@/lib/api/applications";
 
 interface ApplicantsViewProps {
   opportunityId: string;
@@ -43,11 +21,11 @@ export function ApplicantsView({
   applicationCap, 
   closingDate 
 }: ApplicantsViewProps) {
+  const { toast } = useToast();
+  const { getAll, isLoading, error } = useApplications();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
-  const [applicants, setApplicants] = useState<Applicant[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [applicants, setApplicants] = useState<Application[]>([]);
 
   useEffect(() => {
     fetchApplicants();
@@ -55,18 +33,16 @@ export function ApplicantsView({
 
   const fetchApplicants = async () => {
     try {
-      setIsLoading(true);
-      setError(null);
-      const { getApplications } = await import("@/lib/api/applications");
-      const data = await getApplications({ opportunityId });
-      console.log("Applicants data:", data);
+      const data = await getAll(opportunityId);
       setApplicants(data || []);
     } catch (err) {
-      console.error("Error fetching applicants:", err);
-      setError("Failed to load applicants");
+      const message = err instanceof Error ? err.message : "Failed to load applicants";
+      toast({
+        title: "Error",
+        description: message,
+        variant: "destructive",
+      });
       setApplicants([]);
-    } finally {
-      setIsLoading(false);
     }
   };
 

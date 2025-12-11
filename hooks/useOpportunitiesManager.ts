@@ -29,14 +29,6 @@ export function useOpportunitiesManager(): UseOpportunitiesManagerReturn {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleError = useCallback((err: unknown, context: string) => {
-    const message = err instanceof Error ? err.message : "An error occurred";
-    const errorMsg = `${context}: ${message}`;
-    setError(errorMsg);
-    console.error(errorMsg);
-    throw err;
-  }, []);
-
   const getAll = useCallback(
     async (params?: GetOpportunitiesParams): Promise<PaginatedOpportunitiesResponse> => {
       setIsLoading(true);
@@ -44,24 +36,15 @@ export function useOpportunitiesManager(): UseOpportunitiesManagerReturn {
       try {
         return await getOpportunities(params);
       } catch (err) {
-        handleError(err, "Failed to fetch opportunities");
-        return { 
-          data: [], 
-          pagination: {
-            total: 0,
-            limit: 20,
-            offset: 0,
-            currentPage: 1,
-            totalPages: 0,
-            hasNextPage: false,
-            hasPreviousPage: false,
-          }
-        };
+        const errorMsg = err instanceof Error ? err.message : "Failed to fetch opportunities";
+        setError(errorMsg);
+        console.error("Failed to fetch opportunities:", err);
+        throw err;
       } finally {
         setIsLoading(false);
       }
     },
-    [handleError]
+    []
   );
 
   const getById = useCallback(
@@ -71,13 +54,15 @@ export function useOpportunitiesManager(): UseOpportunitiesManagerReturn {
       try {
         return await getOpportunityById(id);
       } catch (err) {
-        handleError(err, "Failed to fetch opportunity");
+        const errorMsg = err instanceof Error ? err.message : "Failed to fetch opportunity";
+        setError(errorMsg);
+        console.error("Failed to fetch opportunity:", err);
         throw err;
       } finally {
         setIsLoading(false);
       }
     },
-    [handleError]
+    []
   );
 
   const create = useCallback(
@@ -87,13 +72,15 @@ export function useOpportunitiesManager(): UseOpportunitiesManagerReturn {
       try {
         return await createOpportunity(data);
       } catch (err) {
-        handleError(err, "Failed to create opportunity");
+        const errorMsg = err instanceof Error ? err.message : "Failed to create opportunity";
+        setError(errorMsg);
+        console.error("Failed to create opportunity:", err);
         throw err;
       } finally {
         setIsLoading(false);
       }
     },
-    [handleError]
+    []
   );
 
   const update = useCallback(
@@ -103,13 +90,15 @@ export function useOpportunitiesManager(): UseOpportunitiesManagerReturn {
       try {
         return await updateOpportunity(id, data);
       } catch (err) {
-        handleError(err, "Failed to update opportunity");
+        const errorMsg = err instanceof Error ? err.message : "Failed to update opportunity";
+        setError(errorMsg);
+        console.error("Failed to update opportunity:", err);
         throw err;
       } finally {
         setIsLoading(false);
       }
     },
-    [handleError]
+    []
   );
 
   const post = useCallback(
@@ -119,13 +108,15 @@ export function useOpportunitiesManager(): UseOpportunitiesManagerReturn {
       try {
         return await postOpportunity(id);
       } catch (err) {
-        handleError(err, "Failed to post opportunity");
+        const errorMsg = err instanceof Error ? err.message : "Failed to post opportunity";
+        setError(errorMsg);
+        console.error("Failed to post opportunity:", err);
         throw err;
       } finally {
         setIsLoading(false);
       }
     },
-    [handleError]
+    []
   );
 
   const deleteOpp = useCallback(
@@ -135,13 +126,15 @@ export function useOpportunitiesManager(): UseOpportunitiesManagerReturn {
       try {
         return await deleteOpportunity(id);
       } catch (err) {
-        handleError(err, "Failed to delete opportunity");
+        const errorMsg = err instanceof Error ? err.message : "Failed to delete opportunity";
+        setError(errorMsg);
+        console.error("Failed to delete opportunity:", err);
         throw err;
       } finally {
         setIsLoading(false);
       }
     },
-    [handleError]
+    []
   );
 
   const updateStatus = useCallback(
@@ -154,13 +147,15 @@ export function useOpportunitiesManager(): UseOpportunitiesManagerReturn {
       try {
         return await updateOpportunity(id, { status });
       } catch (err) {
-        handleError(err, "Failed to update opportunity status");
+        const errorMsg = err instanceof Error ? err.message : "Failed to update opportunity status";
+        setError(errorMsg);
+        console.error("Failed to update opportunity status:", err);
         throw err;
       } finally {
         setIsLoading(false);
       }
     },
-    [handleError]
+    []
   );
 
   return {

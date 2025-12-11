@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useProfile } from "@/hooks/useProfile";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
 import type { TabType, SortType, OpportunityCard, OpportunityType } from "@/types/opportunities";
+import { transformOpportunityToCard } from "@/lib/utils/opportunities";
 import { OpportunitiesHeader } from "./OpportunitiesHeader";
 import { SearchAndFilters } from "./SearchAndFilters";
 import { OpportunitiesTabs } from "./OpportunitiesTabs";
@@ -37,7 +38,7 @@ export function EmployerOpportunities() {
   const fetchOpportunities = async () => {
     try {
       setIsLoading(true);
-      const userId = (currentProfile as any)?.userId;
+      const userId = currentProfile?.userId;
       if (!userId) return;
 
       // Fetch all opportunities (we'll filter by status in UI tabs)
@@ -45,31 +46,11 @@ export function EmployerOpportunities() {
         postedById: userId
       });
 
-      // console.log("API Response - Raw opportunities data:", response);
-
       // Transform API response to card format
       const transformedOpportunities = (response.data || []).map(
-        (opp: any) =>
-          ({
-            id: opp.id || "",
-            // Get company name from recruiter profile if available, fallback to opportunity company field
-            companyName: opp.postedBy?.recruiterProfile?.company || opp.company || "Company",
-            // Get logo from recruiter profile if available, fallback to opportunity logo field
-            companyLogo: opp.postedBy?.recruiterProfile?.profileImageUrl || opp.logo || "",
-            date: formatDate(opp.createdAt),
-            type: mapOpportunityType(opp.type),
-            title: opp.title || "",
-            category: opp.category,
-            skills: opp.tags || [],
-            rate: `₦${Math.round(parseFloat(opp.minBudget) || 0).toLocaleString()} - ₦${Math.round(parseFloat(opp.maxBudget) || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`,
-            applicantsCount: opp.applicationCount || 0,
-            status: (opp.status || "draft") as "active" | "closed" | "draft",
-            applicationCap: opp.applicationCap,
-            closingDate: opp.closingDate,
-          }) as OpportunityCard,
+        transformOpportunityToCard
       );
 
-      // console.log("Transformed opportunities:", transformedOpportunities);
       setOpportunities(transformedOpportunities);
       } catch (error) {
       console.error("Error fetching opportunities:", error);
@@ -77,33 +58,6 @@ export function EmployerOpportunities() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const mapOpportunityType = (type: string): OpportunityType => {
-    const lowerType = (type || "").toLowerCase();
-    if (lowerType === "job") return "job-listing";
-    if (lowerType === "internship") return "internship";
-    if (lowerType === "volunteer") return "volunteer";
-    if (lowerType === "parttime" || lowerType === "part-time") return "part-time";
-    return "job-listing"; // default
-  };
-
-  const formatDate = (isoDate?: string): string => {
-    if (!isoDate) return "Recently";
-    const date = new Date(isoDate);
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-    });
-  };
-
-  const getPaymentTypeAbbr = (paymentType: string): string => {
-    if (!paymentType) return "mo";
-    const type = paymentType.toLowerCase();
-    if (type === "hourly") return "hr";
-    if (type === "weekly") return "wk";
-    if (type === "yearly" || type === "annual") return "yr";
-    return "mo"; // default to monthly
   };
 
   const handlePostClick = () => {
@@ -158,15 +112,16 @@ export function EmployerOpportunities() {
         <OpportunitiesTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
         {/* Opportunities Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {filteredOpportunities.map((opportunity) => (
-            <OpportunityCardComponent
-              key={opportunity.id}
-              opportunity={opportunity}
-              activeTab={activeTab}
-            />
-          ))}
-        </div>
+         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+           {filteredOpportunities.map((opportunity) => (
+             <OpportunityCardComponent
+               key={opportunity.id}
+               opportunity={opportunity}
+               activeTab={activeTab}
+               onMutationSuccess={fetchOpportunities}
+             />
+           ))}
+         </div>
 
         {/* Empty State */}
         {filteredOpportunities.length === 0 && (

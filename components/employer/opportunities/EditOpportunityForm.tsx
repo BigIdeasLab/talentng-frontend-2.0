@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { useToast } from "@/hooks/use-toast";
 import { BasicInfoStep } from "./post-steps/BasicInfoStep";
 import { DescriptionStep } from "./post-steps/DescriptionStep";
 import { BudgetScopeStep } from "./post-steps/BudgetScopeStep";
@@ -24,6 +25,7 @@ export function EditOpportunityForm({
   opportunityId,
 }: EditOpportunityFormProps) {
   const router = useRouter();
+  const { toast } = useToast();
   const { getById, update, isLoading: apiLoading } = useOpportunitiesManager();
   const [expandedSection, setExpandedSection] = useState<string>("basic-info");
   const [showExitModal, setShowExitModal] = useState(false);
@@ -149,11 +151,18 @@ export function EditOpportunityForm({
       };
 
       await update(opportunityId, updateData);
-      alert("Opportunity updated successfully!");
+      toast({
+        title: "Success",
+        description: "Opportunity updated successfully",
+      });
       router.push("/opportunities");
     } catch (error) {
-      console.error("Error updating opportunity:", error);
-      alert("Failed to update opportunity. Please try again.");
+      const message = error instanceof Error ? error.message : "Failed to update opportunity";
+      toast({
+        title: "Error",
+        description: message,
+        variant: "destructive",
+      });
     } finally {
       setIsSaving(false);
     }

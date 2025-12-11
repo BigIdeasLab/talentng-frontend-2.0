@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import {
@@ -17,8 +18,10 @@ import { TYPE_CONFIG } from "@/types/opportunities";
 export function OpportunityCard({
   opportunity,
   activeTab,
-}: OpportunityCardProps) {
+  onMutationSuccess,
+}: OpportunityCardProps & { onMutationSuccess?: () => void }) {
   const router = useRouter();
+  const { toast } = useToast();
   const config = TYPE_CONFIG[opportunity.type] || TYPE_CONFIG["job-listing"];
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -37,9 +40,18 @@ export function OpportunityCard({
     try {
       await post(opportunity.id);
       setShowModal(false);
-      window.location.reload();
+      toast({
+        title: "Success",
+        description: "Opportunity posted successfully",
+      });
+      onMutationSuccess?.();
     } catch (error) {
-      console.error("Error posting opportunity:", error);
+      const message = error instanceof Error ? error.message : "Failed to post opportunity";
+      toast({
+        title: "Error",
+        description: message,
+        variant: "destructive",
+      });
       setShowModal(false);
     }
   };
@@ -48,9 +60,18 @@ export function OpportunityCard({
     try {
       await deleteOpp(opportunity.id);
       setShowDeleteModal(false);
-      window.location.reload();
+      toast({
+        title: "Success",
+        description: "Opportunity deleted successfully",
+      });
+      onMutationSuccess?.();
     } catch (error) {
-      console.error("Error deleting opportunity:", error);
+      const message = error instanceof Error ? error.message : "Failed to delete opportunity";
+      toast({
+        title: "Error",
+        description: message,
+        variant: "destructive",
+      });
       setShowDeleteModal(false);
     }
   };
@@ -166,9 +187,18 @@ export function OpportunityCard({
       e.stopPropagation();
       try {
         await updateStatus(opportunity.id, "closed");
-        window.location.reload();
+        toast({
+          title: "Success",
+          description: "Opportunity marked as filled",
+        });
+        onMutationSuccess?.();
       } catch (error) {
-        console.error("Error marking opportunity as filled:", error);
+        const message = error instanceof Error ? error.message : "Failed to mark opportunity as filled";
+        toast({
+          title: "Error",
+          description: message,
+          variant: "destructive",
+        });
       }
     };
 

@@ -4,7 +4,8 @@ import { useState, useRef } from "react";
 import { X, Upload, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
-import { submitApplication } from "@/lib/api/applications";
+import { useApplications } from "@/hooks/useApplications";
+import { useToast } from "@/hooks/use-toast";
 import type { DisplayOpportunity } from "./types";
 
 interface ApplicationModalProps {
@@ -25,9 +26,10 @@ export function ApplicationModal({
   onClose,
   onSubmit,
 }: ApplicationModalProps) {
+  const { toast } = useToast();
+  const { submit, isLoading: isSubmitting } = useApplications();
   const [note, setNote] = useState("");
   const [attachments, setAttachments] = useState<Attachment[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -61,18 +63,21 @@ export function ApplicationModal({
   const handleSubmit = async () => {
     if (!isFormValid || isSubmitting) return;
 
-    setIsSubmitting(true);
     setError(null);
 
     try {
       // Submit application via API
-      await submitApplication({
+      await submit({
         opportunityId: opportunity.id,
         note: note.trim() || undefined,
         files: attachments.map((a) => a.file),
       });
 
       setSuccess(true);
+      toast({
+        title: "Success",
+        description: "Application submitted successfully",
+      });
       
       // Reset form after success
       setTimeout(() => {
@@ -86,9 +91,11 @@ export function ApplicationModal({
       const message =
         err instanceof Error ? err.message : "Failed to submit application";
       setError(message);
-      console.error("Application submission error:", err);
-    } finally {
-      setIsSubmitting(false);
+      toast({
+        title: "Error",
+        description: message,
+        variant: "destructive",
+      });
     }
   };
 

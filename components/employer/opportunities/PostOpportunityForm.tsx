@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { useToast } from "@/hooks/use-toast";
 import type { FormSection } from "@/types/opportunities";
 import { FormSectionComponent } from "./FormSection";
 import { BasicInfoStep } from "./post-steps/BasicInfoStep";
@@ -36,6 +37,7 @@ const DEFAULT_FORM_DATA = {
 export function PostOpportunityForm() {
   const router = useRouter();
   const pathname = usePathname();
+  const { toast } = useToast();
   const { create, isLoading } = useOpportunitiesManager();
   const [expandedSection, setExpandedSection] = useState<string>("basic-info");
   const [showExitModal, setShowExitModal] = useState(false);
@@ -141,11 +143,18 @@ export function PostOpportunityForm() {
     try {
       await create(transformFormData("draft"));
       clearForm();
-      alert("Opportunity saved as draft successfully!");
+      toast({
+        title: "Success",
+        description: "Opportunity saved as draft",
+      });
       router.push("/opportunities?tab=draft");
     } catch (error) {
-      console.error("Error saving draft:", error);
-      alert("Failed to save draft. Please try again.");
+      const message = error instanceof Error ? error.message : "Failed to save draft";
+      toast({
+        title: "Error",
+        description: message,
+        variant: "destructive",
+      });
     }
   };
 

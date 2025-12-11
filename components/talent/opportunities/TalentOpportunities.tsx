@@ -14,36 +14,12 @@ import {
 import { OpportunitiesGridSkeleton } from "./OpportunitySkeleton";
 import type { FilterType, DisplayOpportunity } from "./types";
 import type { OpportunityCard, OpportunityType } from "@/types/opportunities";
-
-// Helper function to format date
-const formatDate = (isoDate?: string): string => {
-  if (!isoDate) return "Recently";
-  const date = new Date(isoDate);
-  return date.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
-};
-
-// Helper function to get payment type abbreviation
-const getPaymentTypeAbbr = (paymentType: string): string => {
-  if (!paymentType) return "mo";
-  const type = paymentType.toLowerCase();
-  if (type === "hourly") return "hr";
-  if (type === "weekly") return "wk";
-  if (type === "yearly" || type === "annual") return "yr";
-  return "mo"; // default to monthly
-};
-
-// Helper function to map opportunity types
-const mapOpportunityType = (type: string): OpportunityType => {
-  const lowerType = (type || "").toLowerCase();
-  if (lowerType === "job") return "job-listing";
-  if (lowerType === "internship") return "internship";
-  if (lowerType === "volunteer") return "volunteer";
-  if (lowerType === "parttime" || lowerType === "part-time") return "part-time";
-  return "job-listing"; // default
-};
+import {
+  formatDate,
+  getPaymentTypeAbbr,
+  mapOpportunityType,
+  transformOpportunityToCard,
+} from "@/lib/utils/opportunities";
 
 // Helper function to convert filter types to API format
 const convertFilterTypesToAPI = (types: string[]): string[] => {
@@ -149,29 +125,10 @@ export function TalentOpportunities() {
 
   // Transform API opportunities to display format
   const opportunities = useMemo(() => {
-    return (apiOpportunities || []).map(
-      (opp: any) =>
-        ({
-          id: opp.id || "",
-          // Get company name from recruiter profile if available, fallback to opportunity company field
-          companyName:
-            opp.postedBy?.recruiterProfile?.company || opp.company || "Company",
-          // Get logo from recruiter profile if available, fallback to opportunity logo field
-          companyLogo:
-            opp.postedBy?.recruiterProfile?.profileImageUrl || opp.logo || "",
-          date: formatDate(opp.createdAt),
-          type: opp.type || "Job",
-          title: opp.title || "",
-          category: opp.category,
-          skills: opp.tags || [],
-          rate: `₦${Math.round(parseFloat(opp.minBudget) || 0).toLocaleString()} - ₦${Math.round(parseFloat(opp.maxBudget) || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`,
-          applicantsCount: opp.applicationCount || 0,
-          status: (opp.status || "draft") as "active" | "closed" | "draft",
-          applicationCap: opp.applicationCap,
-          closingDate: opp.closingDate,
-          applied: opp.applied || false,
-        }) as OpportunityCard,
-    );
+    return (apiOpportunities || []).map((opp) => ({
+      ...transformOpportunityToCard(opp),
+      applied: opp.applied || false,
+    }));
   }, [apiOpportunities]);
 
   // Convert to display format for grid
