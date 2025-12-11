@@ -37,9 +37,9 @@ export async function getApplications(params: { opportunityId: string }): Promis
   }
 }
 
-export async function getApplicationById(applicationId: string) {
+export async function getApplicationById(applicationId: string): Promise<Application> {
   try {
-    const response = await apiClient(`/applications/${applicationId}`);
+    const response = await apiClient<Application>(`/applications/${applicationId}`);
     return response;
   } catch (error) {
     console.error("Error fetching application:", error);
@@ -51,7 +51,7 @@ export async function submitApplication(data: {
   opportunityId: string;
   note?: string;
   files?: File[];
-}) {
+}): Promise<Application> {
   try {
     // If there are files, use FormData; otherwise use JSON
     if (data.files && data.files.length > 0) {
@@ -64,14 +64,14 @@ export async function submitApplication(data: {
         formData.append("attachments", file);
       });
 
-      const response = await apiClient(`/applications`, {
+      const response = await apiClient<Application>(`/applications`, {
         method: "POST",
         body: formData,
       });
       return response;
     } else {
       // No files - send as JSON
-      const response = await apiClient(`/applications`, {
+      const response = await apiClient<Application>(`/applications`, {
         method: "POST",
         body: {
           opportunityId: data.opportunityId,
@@ -89,9 +89,9 @@ export async function submitApplication(data: {
 export async function updateApplicationStatus(
   applicationId: string,
   status: string
-) {
+): Promise<Application> {
   try {
-    const response = await apiClient(`/applications/${applicationId}`, {
+    const response = await apiClient<Application>(`/applications/${applicationId}`, {
       method: "PATCH",
       body: { status },
     });

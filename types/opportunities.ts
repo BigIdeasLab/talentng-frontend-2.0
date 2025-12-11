@@ -18,6 +18,7 @@ export interface OpportunityCard {
   date: string;
   type: OpportunityType;
   title: string;
+  category?: string;
   skills: string[];
   rate: string;
   applicantsCount: number;

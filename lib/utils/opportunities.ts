@@ -2,7 +2,8 @@
  * Opportunity utilities for formatting and transforming data
  */
 
-import type { Opportunity, OpportunityCard } from "@/types/opportunities";
+import type { OpportunityCard } from "@/types/opportunities";
+import type { Opportunity } from "@/lib/api/opportunities/types";
 
 export const formatDate = (isoDate?: string): string => {
   if (!isoDate) return "Recently";
@@ -47,7 +48,7 @@ export const transformOpportunityToCard = (opp: Opportunity): OpportunityCard =>
     title: opp.title || "",
     category: opp.category,
     skills: opp.tags || [],
-    rate: `₦${Math.round(parseFloat(opp.minBudget) || 0).toLocaleString()} - ₦${Math.round(parseFloat(opp.maxBudget) || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`,
+    rate: `₦${Math.round(opp.minBudget || 0).toLocaleString()} - ₦${Math.round(opp.maxBudget || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`,
     applicantsCount: opp.applicationCount || 0,
     status: (opp.status || "draft") as "active" | "closed" | "draft",
     applicationCap: opp.applicationCap,
