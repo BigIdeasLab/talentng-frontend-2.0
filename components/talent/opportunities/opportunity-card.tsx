@@ -31,11 +31,11 @@ export function OpportunityCard({
             <div className="flex items-center justify-between w-full">
               {/* Profile */}
               <div className="flex items-center gap-2">
-                {opportunity.posterAvatar ? (
+                {opportunity.companyLogo ? (
                   <div
                     className="w-8 h-8 rounded-full bg-cover bg-center flex-shrink-0"
                     style={{
-                      backgroundImage: `url(${opportunity.posterAvatar})`,
+                      backgroundImage: `url(${opportunity.companyLogo})`,
                     }}
                   />
                 ) : (
@@ -43,7 +43,7 @@ export function OpportunityCard({
                 )}
                 <div className="flex flex-col items-start gap-1.5">
                   <div className="text-[13px] font-medium font-inter-tight text-black text-center">
-                    {opportunity.posterName}
+                    {opportunity.companyName}
                   </div>
                   <div className="text-[12px] font-light font-inter-tight text-[#525866]">
                     {opportunity.date}

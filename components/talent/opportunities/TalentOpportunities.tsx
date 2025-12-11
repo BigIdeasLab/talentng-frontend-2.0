@@ -11,7 +11,8 @@ import {
   OpportunitiesFilterModal,
   type OpportunitiesFilterState,
 } from "./OpportunitiesFilterModal";
-import type { FilterType } from "./types";
+import { OpportunitiesGridSkeleton } from "./OpportunitySkeleton";
+import type { FilterType, DisplayOpportunity } from "./types";
 import type { OpportunityCard, OpportunityType } from "@/types/opportunities";
 
 // Helper function to format date
@@ -62,36 +63,22 @@ const convertFilterTypesToAPI = (types: string[]): string[] => {
   });
 };
 
-// Convert display opportunity to grid-compatible format
-interface DisplayOpportunity {
-  id: string;
-  posterName: string;
-  posterAvatar: string;
-  date: string;
-  type: FilterType | string;
-  title: string;
-  skills: string[];
-  rate: string;
-  showActions: boolean;
-  applied?: boolean;
-}
-
 const mapOpportunityToDisplay = (opp: OpportunityCard): DisplayOpportunity => {
-  const mapped = {
-    id: opp.id,
-    posterName: opp.companyName,
-    posterAvatar: opp.companyLogo,
-    date: opp.date,
-    type: opp.type,
-    title: opp.title,
-    category: (opp as any).category,
-    skills: opp.skills,
-    rate: opp.rate,
-    showActions: opp.status === "active",
-    applied: (opp as any).applied || false,
+    const mapped = {
+      id: opp.id,
+      companyName: opp.companyName,
+      companyLogo: opp.companyLogo,
+      date: opp.date,
+      type: opp.type,
+      title: opp.title,
+      category: (opp as any).category,
+      skills: opp.skills,
+      rate: opp.rate,
+      status: opp.status,
+      applied: (opp as any).applied || false,
+    };
+    return mapped;
   };
-  return mapped;
-};
 
 export function TalentOpportunities() {
   const LIMIT = 20;
@@ -313,12 +300,30 @@ export function TalentOpportunities() {
     setActiveFilter(filter);
     // Reset to first page when filter tab changes
     setOffset(0);
+    // Fetch opportunities with new filter
+    fetchOpportunitiesWithFilters(0);
   };
 
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <Spinner size="lg" className="text-blue-600" />
+      <div className="h-screen overflow-x-hidden bg-white flex flex-col">
+        <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+          <TalentOpportunitiesHeader />
+          <SearchBar
+            searchQuery={searchQuery}
+            onSearchChange={handleSearch}
+            onFilterClick={() => setIsFilterOpen(true)}
+            isLoading={isLoading}
+            filterCount={getFilterCount()}
+          />
+          <FilterTabs
+            activeFilter={activeFilter}
+            onFilterChange={handleFilterChange}
+          />
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <OpportunitiesGridSkeleton />
+        </div>
       </div>
     );
   }

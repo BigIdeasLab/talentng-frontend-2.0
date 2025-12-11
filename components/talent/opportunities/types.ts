@@ -4,15 +4,15 @@ export type ApplicationStatus = "awaiting-review" | "hired" | "not-hired";
 // Display opportunity for grid/list views
 export interface DisplayOpportunity {
   id: string;
-  posterName: string;
-  posterAvatar: string;
+  companyName: string;
+  companyLogo: string;
   date: string;
   type: string;
   title: string;
   category?: string;
   skills: string[];
   rate: string;
-  showActions: boolean;
+  status: "active" | "closed" | "draft";
   applicationStatus?: ApplicationStatus;
   applied?: boolean;
 }
