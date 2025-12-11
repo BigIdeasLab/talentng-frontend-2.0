@@ -23,9 +23,9 @@ export function TalentServicesGrid({ services }: TalentServicesGridProps) {
   return (
     <div className="w-full px-[15px] py-[15px]">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[10px] gap-y-[20px]">
-        {services.map((service) => (
+        {services.map((service, idx) => (
           <div
-            key={service.id}
+            key={service.id || `service-${idx}`}
             className="group flex flex-col items-start gap-[8px] text-left hover:opacity-80 transition-opacity cursor-pointer"
           >
             {/* Service Image */}
@@ -56,7 +56,7 @@ export function TalentServicesGrid({ services }: TalentServicesGridProps) {
                 <div className="flex flex-wrap items-center gap-[4px]">
                   {service.tags.slice(0, 3).map((tag, idx) => (
                     <div
-                      key={idx}
+                      key={`${service.id}-${tag}-${idx}`}
                       className="flex px-[10px] py-[8px] justify-center items-center rounded-[30px] bg-[#F5F5F5]"
                     >
                       <span className="text-[11px] font-normal leading-[105%] font-inter-tight text-black">

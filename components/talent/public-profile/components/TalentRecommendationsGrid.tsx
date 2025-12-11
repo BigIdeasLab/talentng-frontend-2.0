@@ -30,9 +30,9 @@ export function TalentRecommendationsGrid({
   return (
     <div className="w-full px-[15px] py-[15px]">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-[8px]">
-        {recommendations.map((rec) => (
+        {recommendations.map((rec, idx) => (
           <div
-            key={rec.id}
+            key={rec.id || `rec-${idx}`}
             className="flex flex-col items-start gap-[8px] p-[12px_10px] rounded-[12px] border border-[#E1E4EA] text-left hover:shadow-md transition-shadow cursor-pointer"
           >
             <div className="flex flex-col items-start gap-[15px] w-full">
@@ -91,7 +91,7 @@ export function TalentRecommendationsGrid({
                 <div className="flex items-center gap-[4px]">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <span
-                      key={i}
+                      key={`${rec.id}-star-${i}`}
                       className={`text-sm ${
                         i < rec.rating!
                           ? "text-yellow-400"

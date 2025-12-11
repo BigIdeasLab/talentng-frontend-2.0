@@ -45,7 +45,7 @@ export function EmployerOpportunities() {
         postedById: userId
       });
 
-      console.log("API Response - Raw opportunities data:", response);
+      // console.log("API Response - Raw opportunities data:", response);
 
       // Transform API response to card format
       const transformedOpportunities = (response.data || []).map(
@@ -69,7 +69,7 @@ export function EmployerOpportunities() {
           }) as OpportunityCard,
       );
 
-      console.log("Transformed opportunities:", transformedOpportunities);
+      // console.log("Transformed opportunities:", transformedOpportunities);
       setOpportunities(transformedOpportunities);
       } catch (error) {
       console.error("Error fetching opportunities:", error);

@@ -37,7 +37,7 @@ export const SelectRoleStep = ({
    const [selectedRole, setSelectedRole] = useState<Role | null>(null);
 
    useEffect(() => {
-     console.log("User roles:", existingRoles);
+     // console.log("User roles:", existingRoles);
    }, [existingRoles]);
 
    const roles = [

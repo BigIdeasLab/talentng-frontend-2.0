@@ -28,8 +28,8 @@ const mapRecommendationToUI = (apiRec: any) => ({
 });
 
 export async function getBusinessLayoutData() {
-  try {
-    console.log("[Layout Data] Fetching profile data on server...");
+   try {
+     // console.log("[Layout Data] Fetching profile data on server...");
 
     // Fetch all profiles in parallel on server
     // Note: Some profiles may not exist (404), which is expected and handled gracefully
@@ -41,7 +41,7 @@ export async function getBusinessLayoutData() {
 
     // If no profiles found, return empty state
     if (!talentProfile && !recruiterProfile && !mentorProfile) {
-      console.log("[Layout Data] No profiles found - returning empty state");
+      // console.log("[Layout Data] No profiles found - returning empty state");
       return {
         profiles: {},
         profilesUI: {},
@@ -85,7 +85,7 @@ export async function getBusinessLayoutData() {
     // Set default active role to first available
     const activeRole = userRoles[0] || "";
 
-    console.log("[Layout Data] Profiles loaded. Available roles:", userRoles.join(", "));
+    // console.log("[Layout Data] Profiles loaded. Available roles:", userRoles.join(", "));
 
     return {
       profiles,
@@ -100,7 +100,7 @@ export async function getBusinessLayoutData() {
       error: null,
     };
   } catch (error) {
-    console.error("[Layout Data] Error fetching profile data:", error);
+    // console.error("[Layout Data] Error fetching profile data:", error);
     return {
       profiles: {},
       profilesUI: {},
