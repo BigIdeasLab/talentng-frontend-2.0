@@ -90,54 +90,66 @@ const mapOpportunityToDisplay = (opp: OpportunityCard): DisplayOpportunity => {
 };
 
 export function TalentOpportunities() {
+   const LIMIT = 20;
    const [activeFilter, setActiveFilter] = useState<FilterType>("all");
    const [searchQuery, setSearchQuery] = useState("");
    const [isFilterOpen, setIsFilterOpen] = useState(false);
    const [appliedFilters, setAppliedFilters] = useState<OpportunitiesFilterState | null>(null);
+   const [offset, setOffset] = useState(0);
    const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
    // Fetch only active opportunities from API
    const { getAll, isLoading } = useOpportunitiesManager();
    const [apiOpportunities, setApiOpportunities] = useState<any[]>([]);
+   const [pagination, setPagination] = useState<any>(null);
    const [isError, setIsError] = useState(false);
 
-   const fetchOpportunitiesWithFilters = useCallback(async () => {
-     try {
-       const params: any = { status: "active" };
+   const fetchOpportunitiesWithFilters = useCallback(
+     async (pageOffset: number = 0) => {
+       try {
+         const params: any = { 
+           status: "active",
+           limit: LIMIT,
+           offset: pageOffset
+         };
 
-       // Add search query
-       if (searchQuery) {
-         params.q = searchQuery;
+         // Add search query
+         if (searchQuery) {
+           params.q = searchQuery;
+         }
+
+         // Add filter parameters
+         if (appliedFilters) {
+           if (appliedFilters.types.length > 0) {
+             params.type = convertFilterTypesToAPI(appliedFilters.types).join(",");
+           }
+           if (appliedFilters.skills.length > 0) {
+             params.tags = appliedFilters.skills.join(",");
+           }
+           if (appliedFilters.categories?.length) {
+             params.category = appliedFilters.categories.join(",");
+           }
+           if (appliedFilters.experienceLevels?.length) {
+             params.experienceLevel = appliedFilters.experienceLevels.join(",");
+           }
+           if (appliedFilters.location) {
+             params.location = appliedFilters.location;
+           }
+         }
+
+         console.log("API params:", params);
+         const response = await getAll(params);
+         console.log("API response:", response);
+         setApiOpportunities(response.data);
+         setPagination(response.pagination);
+         setOffset(pageOffset);
+       } catch (error) {
+         console.error("Fetch error:", error);
+         setIsError(true);
        }
-
-       // Add filter parameters
-       if (appliedFilters) {
-         if (appliedFilters.types.length > 0) {
-           params.type = convertFilterTypesToAPI(appliedFilters.types).join(",");
-         }
-         if (appliedFilters.skills.length > 0) {
-           params.tags = appliedFilters.skills.join(",");
-         }
-         if (appliedFilters.categories?.length) {
-           params.category = appliedFilters.categories.join(",");
-         }
-         if (appliedFilters.experienceLevels?.length) {
-           params.experienceLevel = appliedFilters.experienceLevels.join(",");
-         }
-         if (appliedFilters.location) {
-           params.location = appliedFilters.location;
-         }
-       }
-
-       console.log("API params:", params);
-       const data = await getAll(params);
-       console.log("API response:", data);
-       setApiOpportunities(data);
-     } catch (error) {
-       console.error("Fetch error:", error);
-       setIsError(true);
-     }
-   }, [getAll, searchQuery, appliedFilters]);
+     },
+     [getAll, searchQuery, appliedFilters, LIMIT]
+   );
 
    useEffect(() => {
      fetchOpportunitiesWithFilters();
@@ -250,8 +262,24 @@ export function TalentOpportunities() {
 
     // Set new timeout for debouncing
     searchTimeoutRef.current = setTimeout(() => {
-      // Search happens automatically via useMemo
+      fetchOpportunitiesWithFilters(0);
     }, 300);
+  };
+
+  const handleNextPage = () => {
+    fetchOpportunitiesWithFilters(offset + LIMIT);
+  };
+
+  const handlePreviousPage = () => {
+    if (offset > 0) {
+      fetchOpportunitiesWithFilters(offset - LIMIT);
+    }
+  };
+
+  const handleFilterChange = (filter: FilterType) => {
+    setActiveFilter(filter);
+    // Reset to first page when filter tab changes
+    setOffset(0);
   };
 
   if (isLoading) {
@@ -292,33 +320,41 @@ export function TalentOpportunities() {
           />
 
           {/* Filter Tabs */}
-          <FilterTabs
-            activeFilter={activeFilter}
-            onFilterChange={setActiveFilter}
-          />
+           <FilterTabs
+             activeFilter={activeFilter}
+             onFilterChange={handleFilterChange}
+           />
         </div>
 
         {/* Opportunities Grid */}
-         <OpportunitiesGrid 
-           opportunities={filteredOpportunities}
-           onApplicationSubmitted={() => {
-             // Refetch opportunities to get updated applied status
-             fetchOpportunitiesWithFilters();
-           }}
-         />
+        <OpportunitiesGrid 
+          opportunities={filteredOpportunities}
+          onApplicationSubmitted={() => {
+            // Refetch opportunities to get updated applied status
+            fetchOpportunitiesWithFilters(offset);
+          }}
+          onNextPage={handleNextPage}
+          onPreviousPage={handlePreviousPage}
+          hasNextPage={pagination?.hasNextPage || false}
+          hasPreviousPage={pagination?.hasPreviousPage || false}
+          currentPage={pagination?.currentPage || 1}
+          totalPages={pagination?.totalPages || 1}
+        />
 
         {/* Filter Modal */}
-        <OpportunitiesFilterModal
-          isOpen={isFilterOpen}
-          onClose={() => setIsFilterOpen(false)}
-          onApply={(filters) => {
-            console.log("TalentOpportunities - Setting applied filters:", filters);
-            setAppliedFilters(filters);
-            setIsFilterOpen(false);
-          }}
-          availableSkills={allSkills}
-          initialFilters={appliedFilters || undefined}
-        />
+         <OpportunitiesFilterModal
+           isOpen={isFilterOpen}
+           onClose={() => setIsFilterOpen(false)}
+           onApply={(filters) => {
+             console.log("TalentOpportunities - Setting applied filters:", filters);
+             setAppliedFilters(filters);
+             setIsFilterOpen(false);
+             // Reset to first page when filters are applied
+             fetchOpportunitiesWithFilters(0);
+           }}
+           availableSkills={allSkills}
+           initialFilters={appliedFilters || undefined}
+         />
       </div>
     </div>
   );

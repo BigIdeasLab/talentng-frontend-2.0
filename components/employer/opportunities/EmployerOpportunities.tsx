@@ -41,12 +41,14 @@ export function EmployerOpportunities() {
       if (!userId) return;
 
       // Fetch all opportunities (we'll filter by status in UI tabs)
-      const data = await getAll({ 
+      const response = await getAll({ 
         postedById: userId
       });
 
+      console.log("API Response - Raw opportunities data:", response);
+
       // Transform API response to card format
-      const transformedOpportunities = (data || []).map(
+      const transformedOpportunities = (response.data || []).map(
         (opp: any) =>
           ({
             id: opp.id || "",
@@ -64,8 +66,10 @@ export function EmployerOpportunities() {
           }) as OpportunityCard,
       );
 
+      console.log("Transformed opportunities:", transformedOpportunities);
       setOpportunities(transformedOpportunities);
       } catch (error) {
+      console.error("Error fetching opportunities:", error);
       setOpportunities([]);
     } finally {
       setIsLoading(false);

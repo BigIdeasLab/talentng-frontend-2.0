@@ -4,11 +4,11 @@
  */
 
 import apiClient from "@/lib/api";
-import type { Opportunity, GetOpportunitiesParams } from "./types";
+import type { Opportunity, GetOpportunitiesParams, PaginatedOpportunitiesResponse } from "./types";
 
 export const getOpportunities = async (
   params?: GetOpportunitiesParams
-): Promise<Opportunity[]> => {
+): Promise<PaginatedOpportunitiesResponse> => {
   const query = new URLSearchParams();
   if (params) {
     for (const key in params) {
@@ -20,7 +20,7 @@ export const getOpportunities = async (
   }
   const queryString = query.toString();
   const endpoint = `/opportunities${queryString ? `?${queryString}` : ""}`;
-  return apiClient<Opportunity[]>(endpoint);
+  return apiClient<PaginatedOpportunitiesResponse>(endpoint);
 };
 
 export const getOpportunityById = async (id: string): Promise<Opportunity> => {
@@ -61,4 +61,4 @@ export const deleteOpportunity = async (id: string): Promise<void> => {
 };
 
 // Export types
-export type { Opportunity, GetOpportunitiesParams };
+export type { Opportunity, GetOpportunitiesParams, PaginatedOpportunitiesResponse };

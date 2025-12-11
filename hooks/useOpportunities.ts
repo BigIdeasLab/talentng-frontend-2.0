@@ -22,8 +22,8 @@ export function useOpportunities(
       setIsLoading(true);
       setIsError(false);
       setError(null);
-      const data = await getOpportunities(params);
-      setOpportunities(data);
+      const response = await getOpportunities(params);
+      setOpportunities(response.data);
     } catch (err) {
       const error = err instanceof Error ? err : new Error("Failed to fetch opportunities");
       setError(error);

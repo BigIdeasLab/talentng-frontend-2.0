@@ -48,7 +48,15 @@ export interface GetDiscoverTalentDataParams {
   offset?: number;
 }
 
-export async function getDiscoverTalentData(params: GetDiscoverTalentDataParams = {}) {
+export interface GetDiscoverTalentDataResponse {
+  talents: TalentData[];
+  pagination: any;
+  error: string | null;
+}
+
+export async function getDiscoverTalentData(
+  params: GetDiscoverTalentDataParams = {},
+): Promise<GetDiscoverTalentDataResponse> {
   try {
     const {
       searchQuery,
@@ -71,18 +79,20 @@ export async function getDiscoverTalentData(params: GetDiscoverTalentDataParams 
     filters.limit = limit;
     filters.offset = offset;
 
-    const profiles = await talentDiscoveryApi.listTalentProfiles(filters);
+    const response = await talentDiscoveryApi.listTalentProfiles(filters);
 
-    const talents = profiles.map(mapTalentToUI);
+    const talents = response.data.map(mapTalentToUI);
 
     return {
       talents,
+      pagination: response.pagination,
       error: null,
     };
   } catch (error) {
     console.error("Error loading talents on server:", error);
     return {
       talents: [],
+      pagination: null,
       error: error instanceof Error ? error.message : "Failed to load talents",
     };
   }

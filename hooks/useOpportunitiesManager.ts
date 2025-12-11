@@ -10,12 +10,13 @@ import {
   deleteOpportunity,
   type Opportunity,
   type GetOpportunitiesParams,
+  type PaginatedOpportunitiesResponse,
 } from "@/lib/api/opportunities";
 
 interface UseOpportunitiesManagerReturn {
   isLoading: boolean;
   error: string | null;
-  getAll: (params?: GetOpportunitiesParams) => Promise<Opportunity[]>;
+  getAll: (params?: GetOpportunitiesParams) => Promise<PaginatedOpportunitiesResponse>;
   getById: (id: string) => Promise<Opportunity>;
   create: (data: Partial<Opportunity>) => Promise<Opportunity>;
   update: (id: string, data: Partial<Opportunity>) => Promise<Opportunity>;
@@ -37,14 +38,25 @@ export function useOpportunitiesManager(): UseOpportunitiesManagerReturn {
   }, []);
 
   const getAll = useCallback(
-    async (params?: GetOpportunitiesParams): Promise<Opportunity[]> => {
+    async (params?: GetOpportunitiesParams): Promise<PaginatedOpportunitiesResponse> => {
       setIsLoading(true);
       setError(null);
       try {
         return await getOpportunities(params);
       } catch (err) {
         handleError(err, "Failed to fetch opportunities");
-        return [];
+        return { 
+          data: [], 
+          pagination: {
+            total: 0,
+            limit: 20,
+            offset: 0,
+            currentPage: 1,
+            totalPages: 0,
+            hasNextPage: false,
+            hasPreviousPage: false,
+          }
+        };
       } finally {
         setIsLoading(false);
       }

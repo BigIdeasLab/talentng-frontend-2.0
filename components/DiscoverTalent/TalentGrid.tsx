@@ -11,6 +11,7 @@ interface TalentGridProps {
   hasNextPage?: boolean;
   hasPreviousPage?: boolean;
   currentPage?: number;
+  totalPages?: number;
 }
 
 export function TalentGrid({
@@ -20,6 +21,7 @@ export function TalentGrid({
   hasNextPage = false,
   hasPreviousPage = false,
   currentPage = 1,
+  totalPages = 1,
 }: TalentGridProps) {
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
@@ -56,7 +58,7 @@ export function TalentGrid({
         </button>
 
         <span className="text-[13px] font-normal text-gray-600">
-          Page {currentPage}
+          Page {currentPage} of {totalPages}
         </span>
 
         <button

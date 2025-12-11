@@ -48,6 +48,23 @@ export interface Opportunity {
   postedBy: PostedBy;
 }
 
+export interface PaginationInfo {
+  total: number;
+  limit: number;
+  offset: number;
+  currentPage: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface PaginationInfoOptional extends Partial<PaginationInfo> {}
+
+export interface PaginatedOpportunitiesResponse {
+  data: Opportunity[];
+  pagination: PaginationInfo;
+}
+
 export interface GetOpportunitiesParams {
    q?: string;
    type?: string;

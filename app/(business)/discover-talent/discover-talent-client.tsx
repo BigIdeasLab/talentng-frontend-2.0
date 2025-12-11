@@ -12,18 +12,19 @@ interface DiscoverTalentClientProps {
 }
 
 export function DiscoverTalentClient({
-  initialTalents,
-  initialError,
-}: DiscoverTalentClientProps) {
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [talents, setTalents] = useState<TalentData[]>(initialTalents);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(initialError);
-  const [filters, setFilters] = useState<FilterState | null>(null);
-  const [offset, setOffset] = useState(0);
-  const LIMIT = 20;
-  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+   initialTalents,
+   initialError,
+ }: DiscoverTalentClientProps) {
+   const [selectedCategory, setSelectedCategory] = useState("All");
+   const [searchQuery, setSearchQuery] = useState("");
+   const [talents, setTalents] = useState<TalentData[]>(initialTalents);
+   const [loading, setLoading] = useState(false);
+   const [error, setError] = useState<string | null>(initialError);
+   const [filters, setFilters] = useState<FilterState | null>(null);
+   const [offset, setOffset] = useState(0);
+   const [pagination, setPagination] = useState<any>(null);
+   const LIMIT = 20;
+   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const fetchTalents = async (
     query: string,
@@ -35,7 +36,7 @@ export function DiscoverTalentClient({
     setError(null);
 
     try {
-      const { talents: newTalents, error: fetchError } =
+      const { talents: newTalents, pagination: newPagination, error: fetchError } =
         await getDiscoverTalentData({
           searchQuery: query,
           category,
@@ -46,6 +47,7 @@ export function DiscoverTalentClient({
           offset: pageOffset,
         });
       setTalents(newTalents);
+      setPagination(newPagination);
       setError(fetchError);
       setOffset(pageOffset);
     } catch (err) {
@@ -111,9 +113,10 @@ export function DiscoverTalentClient({
           talents={talents}
           onNextPage={handleNextPage}
           onPreviousPage={handlePreviousPage}
-          hasNextPage={talents.length >= LIMIT}
-          hasPreviousPage={offset > 0}
-          currentPage={Math.floor(offset / LIMIT) + 1}
+          hasNextPage={pagination?.hasNextPage || false}
+          hasPreviousPage={pagination?.hasPreviousPage || false}
+          currentPage={pagination?.currentPage || 1}
+          totalPages={pagination?.totalPages || 1}
         />
       )}
     </div>

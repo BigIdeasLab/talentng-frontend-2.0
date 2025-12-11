@@ -10,6 +10,7 @@ import type {
   TalentProfile,
   DashboardStats,
   TalentFilterParams,
+  PaginatedTalentResponse,
   PortfolioItem,
   GalleryItem,
   Service,
@@ -146,7 +147,7 @@ export async function deleteGalleryItem(
  */
 export async function listTalentProfiles(
   filters?: TalentFilterParams,
-): Promise<TalentProfile[]> {
+): Promise<PaginatedTalentResponse> {
   const queryParams = new URLSearchParams();
 
   if (filters) {
@@ -160,7 +161,7 @@ export async function listTalentProfiles(
   const query = queryParams.toString();
   const endpoint = query ? `/talent?${query}` : "/talent";
 
-  return apiClient<TalentProfile[]>(endpoint);
+  return apiClient<PaginatedTalentResponse>(endpoint);
 }
 
 /**
