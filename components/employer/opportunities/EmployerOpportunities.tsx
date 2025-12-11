@@ -4,7 +4,12 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useProfile } from "@/hooks/useProfile";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
-import type { TabType, SortType, OpportunityCard, OpportunityType } from "@/types/opportunities";
+import type {
+  TabType,
+  SortType,
+  OpportunityCard,
+  OpportunityType,
+} from "@/types/opportunities";
 import { transformOpportunityToCard } from "@/lib/utils/opportunities";
 import { OpportunitiesHeader } from "./OpportunitiesHeader";
 import { SearchAndFilters } from "./SearchAndFilters";
@@ -42,17 +47,17 @@ export function EmployerOpportunities() {
       if (!userId) return;
 
       // Fetch all opportunities (we'll filter by status in UI tabs)
-      const response = await getAll({ 
-        postedById: userId
+      const response = await getAll({
+        postedById: userId,
       });
 
       // Transform API response to card format
       const transformedOpportunities = (response.data || []).map(
-        transformOpportunityToCard
+        transformOpportunityToCard,
       );
 
       setOpportunities(transformedOpportunities);
-      } catch (error) {
+    } catch (error) {
       console.error("Error fetching opportunities:", error);
       setOpportunities([]);
     } finally {
@@ -112,28 +117,28 @@ export function EmployerOpportunities() {
         <OpportunitiesTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
         {/* Opportunities Grid */}
-         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-           {filteredOpportunities.map((opportunity) => (
-             <OpportunityCardComponent
-               key={opportunity.id}
-               opportunity={opportunity}
-               activeTab={activeTab}
-               onMutationSuccess={fetchOpportunities}
-             />
-           ))}
-         </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {filteredOpportunities.map((opportunity) => (
+            <OpportunityCardComponent
+              key={opportunity.id}
+              opportunity={opportunity}
+              activeTab={activeTab}
+              onMutationSuccess={fetchOpportunities}
+            />
+          ))}
+        </div>
 
         {/* Empty State */}
         {filteredOpportunities.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-              <p className="text-gray-500 text-xs mb-1.5">
-                No opportunities found
-              </p>
-              <p className="text-gray-400 text-[11px]">
-                Try adjusting your search or filters
-              </p>
-              </div>
-              )}
+            <p className="text-gray-500 text-xs mb-1.5">
+              No opportunities found
+            </p>
+            <p className="text-gray-400 text-[11px]">
+              Try adjusting your search or filters
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

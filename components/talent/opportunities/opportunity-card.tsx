@@ -17,6 +17,7 @@ export function OpportunityCard({
   onApplicationSubmitted,
 }: OpportunityCardProps) {
   const [showApplicationModal, setShowApplicationModal] = useState(false);
+  const [isApplied, setIsApplied] = useState(opportunity.applied);
   const config = TYPE_CONFIG[opportunity.type] || TYPE_CONFIG["job-listing"];
   const isVolunteer = opportunity.type === "Volunteer";
 
@@ -131,24 +132,24 @@ export function OpportunityCard({
                   {/* Apply Button */}
                   <button
                     onClick={() =>
-                      !opportunity.applied && setShowApplicationModal(true)
+                      !isApplied && setShowApplicationModal(true)
                     }
-                    disabled={opportunity.applied}
+                    disabled={isApplied}
                     className={`flex items-center gap-1 px-4 py-2 h-8 border-[0.822px] rounded-[40px] transition-colors ${
-                      opportunity.applied
+                      isApplied
                         ? "bg-gray-200 border-gray-200 cursor-not-allowed"
                         : "bg-[#5C30FF] border-[#5C30FF] hover:bg-[#4a26cc]"
                     }`}
                   >
                     <Check
-                      className={`w-4 h-4 ${opportunity.applied ? "text-gray-600" : "text-white"}`}
+                      className={`w-4 h-4 ${isApplied ? "text-gray-600" : "text-white"}`}
                     />
                     <span
                       className={`text-[12px] font-medium font-inter-tight text-center ${
-                        opportunity.applied ? "text-gray-600" : "text-white"
+                        isApplied ? "text-gray-600" : "text-white"
                       }`}
                     >
-                      {opportunity.applied ? "Applied" : "Apply"}
+                      {isApplied ? "Applied" : "Apply"}
                     </span>
                   </button>
                 </div>
@@ -165,6 +166,7 @@ export function OpportunityCard({
         onClose={() => setShowApplicationModal(false)}
         onSubmit={() => {
             setShowApplicationModal(false);
+            setIsApplied(true);
             onApplicationSubmitted?.(opportunity.id);
           }}
       />
