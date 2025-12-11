@@ -10,7 +10,10 @@ import {
   type OpportunitiesFilterState,
 } from "@/components/talent/opportunities/OpportunitiesFilterModal";
 import { OpportunitiesGridSkeleton } from "@/components/talent/opportunities/OpportunitySkeleton";
-import type { FilterType, DisplayOpportunity } from "@/components/talent/opportunities/types";
+import type {
+  FilterType,
+  DisplayOpportunity,
+} from "@/components/talent/opportunities/types";
 import type { OpportunityData } from "./server-data";
 import { getOpportunitiesData } from "./server-data";
 
@@ -55,29 +58,42 @@ export function OpportunitiesClient({
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const fetchOpportunitiesWithFilters = useCallback(
-    async (pageOffset: number = 0) => {
+    async (pageOffset: number = 0, filterType?: FilterType) => {
       setIsLoading(true);
       setError(null);
+      const filter = filterType ?? activeFilter;
 
       try {
-        const { opportunities: newOpportunities, pagination: newPagination, error: fetchError } =
-          await getOpportunitiesData({
-            searchQuery,
-            limit: LIMIT,
-            offset: pageOffset,
-          });
+        const {
+          opportunities: newOpportunities,
+          pagination: newPagination,
+          error: fetchError,
+        } = await getOpportunitiesData({
+          searchQuery,
+          limit: LIMIT,
+          offset: pageOffset,
+        });
 
-        setOpportunities(newOpportunities);
+        // Filter by active filter type (client-side filtering)
+        const filtered = newOpportunities.filter((opp) => {
+          if (filter === "all") return true;
+          if (filter === "applied") return opp.applied === true;
+          return opp.type === filter;
+        });
+
+        setOpportunities(filtered);
         setPagination(newPagination);
         setError(fetchError);
         setOffset(pageOffset);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to fetch opportunities");
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch opportunities",
+        );
       } finally {
         setIsLoading(false);
       }
     },
-    [searchQuery],
+    [searchQuery, activeFilter],
   );
 
   const handleSearch = async (query: string) => {
@@ -95,6 +111,7 @@ export function OpportunitiesClient({
   const handleFilterChange = (filter: FilterType) => {
     setActiveFilter(filter);
     setOffset(0);
+    fetchOpportunitiesWithFilters(0, filter);
   };
 
   const handleNextPage = () => {
@@ -111,8 +128,7 @@ export function OpportunitiesClient({
     if (!appliedFilters) return 0;
     let count = 0;
     if (appliedFilters.types.length > 0) count += appliedFilters.types.length;
-    if (appliedFilters.skills.length > 0)
-      count += appliedFilters.skills.length;
+    if (appliedFilters.skills.length > 0) count += appliedFilters.skills.length;
     if (appliedFilters.categories?.length)
       count += appliedFilters.categories.length;
     if (appliedFilters.experienceLevels?.length)
@@ -155,9 +171,7 @@ export function OpportunitiesClient({
 
       {/* Grid Container */}
       <div className="flex-1 overflow-hidden">
-        {isLoading && (
-          <OpportunitiesGridSkeleton />
-        )}
+        {isLoading && <OpportunitiesGridSkeleton />}
         {error && !isLoading && (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">

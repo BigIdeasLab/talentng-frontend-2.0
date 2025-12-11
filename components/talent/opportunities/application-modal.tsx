@@ -36,7 +36,7 @@ export function ApplicationModal({
 
   const noteLength = note.length;
   const isValidNote = noteLength === 0 || (noteLength >= 10 && noteLength <= 500);
-  const isFormValid = isValidNote;
+  const isFormValid = isValidNote && !opportunity.applied;
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -253,13 +253,23 @@ export function ApplicationModal({
           </div>
 
           {/* Info Box */}
-          <div className="p-3 bg-blue-50 rounded-[10px] border border-blue-200">
-            <p className="text-[12px] text-blue-900 font-inter-tight">
-              <span className="font-medium">Note:</span> You can only apply once
-              to this opportunity. The opportunity poster will be notified of your
-              application.
-            </p>
-          </div>
+          {opportunity.applied ? (
+            <div className="p-3 bg-yellow-50 rounded-[10px] border border-yellow-200">
+              <p className="text-[12px] text-yellow-900 font-inter-tight">
+                <span className="font-medium">Already Applied:</span> You have already
+                applied for this opportunity. You can only submit one application per
+                opportunity.
+              </p>
+            </div>
+          ) : (
+            <div className="p-3 bg-blue-50 rounded-[10px] border border-blue-200">
+              <p className="text-[12px] text-blue-900 font-inter-tight">
+                <span className="font-medium">Note:</span> You can only apply once
+                to this opportunity. The opportunity poster will be notified of your
+                application.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Footer */}

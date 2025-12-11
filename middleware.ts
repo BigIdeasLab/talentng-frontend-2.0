@@ -46,6 +46,28 @@ async function verifyToken(token: string, secret: string) {
   }
 }
 
+async function refreshAccessToken(request: NextRequest) {
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_TALENTNG_API_URL || "http://localhost:3001";
+    const response = await fetch(`${apiUrl}/auth/refresh`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        Cookie: request.headers.get("cookie") || "",
+      },
+    });
+
+    if (response.ok) {
+      const setCookie = response.headers.get("set-cookie");
+      return { success: true, setCookie };
+    }
+    return { success: false };
+  } catch (error) {
+    console.error("Token refresh failed:", error);
+    return { success: false };
+  }
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
   const tokenFromCookie = request.cookies.get("accessToken")?.value;
@@ -83,7 +105,20 @@ export async function middleware(request: NextRequest) {
 
   // Handle protected routes
   if (isProtectedRoute(pathname)) {
-    const payload = token ? await verifyToken(token, jwtSecret) : null;
+    let payload = token ? await verifyToken(token, jwtSecret) : null;
+    
+    // If token is invalid or expired, try to refresh
+    if (!payload && token) {
+      const refreshResult = await refreshAccessToken(request);
+      if (refreshResult.success) {
+        // Retry verification with refreshed token from response
+        const newToken = request.cookies.get("accessToken")?.value;
+        if (newToken) {
+          payload = await verifyToken(newToken, jwtSecret);
+        }
+      }
+    }
+    
     if (!payload) {
       const url = request.nextUrl.clone();
       url.pathname = "/login";

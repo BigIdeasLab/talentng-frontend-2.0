@@ -8,10 +8,10 @@ interface FilterTabsProps {
 
 const FILTERS = [
   { id: "all", label: "All" },
-  { id: "job-listing", label: "Job Listing" },
-  { id: "internship", label: "Internship" },
-  { id: "part-time", label: "Part-time" },
-  { id: "volunteer", label: "Volunteer" },
+  { id: "Job", label: "Job Listing" },
+  { id: "Internship", label: "Internship" },
+  { id: "PartTime", label: "Part-time" },
+  { id: "Volunteer", label: "Volunteer" },
   { id: "applied", label: "Applied" },
 ];
 
@@ -26,12 +26,10 @@ export function FilterTabs({ activeFilter, onFilterChange }: FilterTabsProps) {
             "px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors",
             activeFilter === filter.id
               ? "text-black font-medium border-b-2 border-black"
-              : "text-black/30 font-medium hover:text-black/50"
+              : "text-black/30 font-medium hover:text-black/50",
           )}
         >
-          <span className="text-[13px] font-inter-tight">
-            {filter.label}
-          </span>
+          <span className="text-[13px] font-inter-tight">{filter.label}</span>
         </button>
       ))}
     </div>

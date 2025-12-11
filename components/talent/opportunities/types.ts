@@ -1,4 +1,4 @@
-export type FilterType = "all" | "job-listing" | "internship" | "volunteer" | "applied" | "part-time";
+export type FilterType = "all" | "Job" | "Internship" | "Volunteer" | "PartTime" | "applied";
 export type ApplicationStatus = "awaiting-review" | "hired" | "not-hired";
 
 // Display opportunity for grid/list views
