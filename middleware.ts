@@ -87,7 +87,6 @@ export async function middleware(request: NextRequest) {
   if (isProtectedRoute(pathname)) {
     // If no token, redirect to login
     if (!token) {
-      console.log("[Middleware] No token found for protected route:", pathname);
       const url = request.nextUrl.clone();
       url.pathname = "/login";
       url.searchParams.set("redirect", pathname);
@@ -95,12 +94,11 @@ export async function middleware(request: NextRequest) {
     }
 
     // Verify token - if expired or invalid, let the client API handle refresh
-    // The API client has its own refresh logic that works better in the browser
+    // The API client has its own refresh logic and device-aware refresh token
     const payload = await verifyToken(token, jwtSecret);
     if (!payload) {
       // Token is invalid/expired, redirect to login
-      // Client API will refresh on 401 responses
-      console.log("[Middleware] Token verification failed for:", pathname);
+      // Client API will refresh on 401 responses with deviceId
       const url = request.nextUrl.clone();
       url.pathname = "/login";
       url.searchParams.set("redirect", pathname);

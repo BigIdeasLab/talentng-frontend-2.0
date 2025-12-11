@@ -4,6 +4,7 @@
  */
 
 import apiClient from "@/lib/api";
+import { getOrCreateDeviceId, getDeviceName } from "@/lib/device";
 import type {
   LoginCredentials,
   RegisterCredentials,
@@ -28,9 +29,12 @@ export const login = async (
   email: string,
   password: string
 ): Promise<LoginResponse> => {
+  const deviceId = getOrCreateDeviceId();
+  const deviceName = getDeviceName();
+
   return apiClient<LoginResponse>("/auth/login", {
     method: "POST",
-    body: { email, password },
+    body: { email, password, deviceId, deviceName },
     credentials: "include",
   });
 };
@@ -72,9 +76,38 @@ export const resetPassword = async (
   });
 };
 
-export const logout = async (): Promise<void> => {
-  return apiClient<void>("/auth/logout", {
+export const logout = async (deviceId?: string): Promise<void> => {
+  const id = deviceId || (typeof window !== "undefined" ? localStorage.getItem("deviceId") : null);
+
+  const result = await apiClient<void>("/auth/logout", {
     method: "POST",
+    body: id ? { deviceId: id } : {},
+    credentials: "include",
+  });
+
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("deviceId");
+  }
+
+  return result;
+};
+
+export const logoutAllDevices = async (): Promise<void> => {
+  const result = await apiClient<void>("/auth/logout-all-devices", {
+    method: "POST",
+    credentials: "include",
+  });
+
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("deviceId");
+  }
+
+  return result;
+};
+
+export const getActiveSessions = async (): Promise<any[]> => {
+  return apiClient<any[]>("/auth/sessions", {
+    method: "GET",
     credentials: "include",
   });
 };
@@ -87,8 +120,11 @@ export const createPassword = async (password: string): Promise<void> => {
 };
 
 export const refreshAuthToken = async (): Promise<AuthResponse> => {
+  const deviceId = typeof window !== "undefined" ? localStorage.getItem("deviceId") : null;
+
   return apiClient<AuthResponse>("/auth/refresh", {
     method: "POST",
+    body: deviceId ? { deviceId } : {},
     credentials: "include",
   });
 };

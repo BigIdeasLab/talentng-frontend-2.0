@@ -84,9 +84,17 @@ const apiClient = async <T>(
       isRefreshing = true;
       refreshTokenPromise = new Promise(async (resolve) => {
         try {
+          const deviceId = typeof window !== "undefined" 
+            ? localStorage.getItem("deviceId") 
+            : null;
+
           const refreshResponse = await fetch(`${baseUrl}/auth/refresh`, {
             method: "POST",
             credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ deviceId }),
           });
           if (!refreshResponse.ok) {
             throw new Error("Failed to refresh token");
@@ -99,11 +107,12 @@ const apiClient = async <T>(
           processQueue(error as Error, null);
           deleteCookie("accessToken");
           deleteCookie("user");
-          isRefreshing = false;
-          refreshTokenPromise = null;
           if (typeof window !== "undefined") {
+            localStorage.removeItem("deviceId");
             window.location.href = "/login";
           }
+          isRefreshing = false;
+          refreshTokenPromise = null;
           resolve(null);
         } finally {
           isRefreshing = false;
