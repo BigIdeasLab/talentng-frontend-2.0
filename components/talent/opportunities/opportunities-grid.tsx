@@ -6,26 +6,26 @@ import { EmptyState } from "./empty-state";
 import type { OpportunitiesGridProps } from "./types";
 
 interface OpportunitiesGridExtendedProps extends OpportunitiesGridProps {
-  onApplicationSubmitted?: () => void;
-  onNextPage?: () => void;
-  onPreviousPage?: () => void;
-  hasNextPage?: boolean;
-  hasPreviousPage?: boolean;
-  currentPage?: number;
-  totalPages?: number;
+   onApplicationSubmitted?: (opportunityId: string) => void;
+   onNextPage?: () => void;
+   onPreviousPage?: () => void;
+   hasNextPage?: boolean;
+   hasPreviousPage?: boolean;
+   currentPage?: number;
+   totalPages?: number;
 }
 
 export function OpportunitiesGrid({
-  opportunities,
-  onApplicationSubmitted,
-  onNextPage,
-  onPreviousPage,
-  hasNextPage = false,
-  hasPreviousPage = false,
-  currentPage = 1,
-  totalPages = 1,
-}: OpportunitiesGridExtendedProps) {
-  return (
+   opportunities,
+   onApplicationSubmitted,
+   onNextPage,
+   onPreviousPage,
+   hasNextPage = false,
+   hasPreviousPage = false,
+   currentPage = 1,
+   totalPages = 1,
+ }: OpportunitiesGridExtendedProps) {
+   return (
     <div className="flex flex-col h-full">
       {/* Result Count */}
       <div className="flex-shrink-0 px-[25px] py-[12px] border-b border-[#E1E4EA]">
@@ -42,7 +42,9 @@ export function OpportunitiesGrid({
               <OpportunityCard 
                 key={opportunity.id} 
                 opportunity={opportunity}
-                onApplicationSubmitted={onApplicationSubmitted}
+                onApplicationSubmitted={(oppId: string) => {
+                  onApplicationSubmitted?.(oppId);
+                }}
               />
             ))
           ) : (

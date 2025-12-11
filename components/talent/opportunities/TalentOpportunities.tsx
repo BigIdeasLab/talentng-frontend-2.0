@@ -57,7 +57,7 @@ const mapOpportunityToDisplay = (opp: OpportunityCard): DisplayOpportunity => {
   };
 
 export function TalentOpportunities() {
-  const LIMIT = 20;
+   const LIMIT = 20;
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -124,12 +124,12 @@ export function TalentOpportunities() {
   }, [fetchOpportunitiesWithFilters]);
 
   // Transform API opportunities to display format
-  const opportunities = useMemo(() => {
-    return (apiOpportunities || []).map((opp) => ({
-      ...transformOpportunityToCard(opp),
-      applied: opp.applied || false,
-    }));
-  }, [apiOpportunities]);
+   const opportunities = useMemo(() => {
+     return (apiOpportunities || []).map((opp) => ({
+       ...transformOpportunityToCard(opp),
+       applied: opp.applied || false,
+     }));
+   }, [apiOpportunities]);
 
   // Convert to display format for grid
   const displayOpportunities = useMemo(() => {
@@ -217,6 +217,19 @@ export function TalentOpportunities() {
     fetchOpportunitiesWithFilters(0);
   };
 
+  const handleApplicationSubmitted = useCallback((opportunityId: string) => {
+    // Optimistically update the applied status locally
+    setApiOpportunities((prev) =>
+      prev.map((opp) =>
+        opp.id === opportunityId ? { ...opp, applied: true } : opp
+      )
+    );
+    // Then refetch to verify with backend
+    setTimeout(() => {
+      fetchOpportunitiesWithFilters(offset);
+    }, 500);
+  }, [offset, fetchOpportunitiesWithFilters]);
+
   if (isLoading) {
     return (
       <div className="h-screen overflow-x-hidden bg-white flex flex-col">
@@ -286,10 +299,7 @@ export function TalentOpportunities() {
       <div className="flex-1 overflow-hidden">
         <OpportunitiesGrid
           opportunities={filteredOpportunities}
-          onApplicationSubmitted={() => {
-            // Refetch opportunities to get updated applied status
-            fetchOpportunitiesWithFilters(offset);
-          }}
+          onApplicationSubmitted={handleApplicationSubmitted}
           onNextPage={handleNextPage}
           onPreviousPage={handlePreviousPage}
           hasNextPage={pagination?.hasNextPage || false}

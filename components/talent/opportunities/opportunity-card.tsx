@@ -9,7 +9,7 @@ import { TYPE_CONFIG } from "@/types/opportunities";
 
 interface OpportunityCardProps {
   opportunity: DisplayOpportunity;
-  onApplicationSubmitted?: () => void;
+  onApplicationSubmitted?: (opportunityId: string) => void;
 }
 
 export function OpportunityCard({
@@ -164,9 +164,9 @@ export function OpportunityCard({
         opportunity={opportunity}
         onClose={() => setShowApplicationModal(false)}
         onSubmit={() => {
-          setShowApplicationModal(false);
-          onApplicationSubmitted?.();
-        }}
+            setShowApplicationModal(false);
+            onApplicationSubmitted?.(opportunity.id);
+          }}
       />
     </div>
   );

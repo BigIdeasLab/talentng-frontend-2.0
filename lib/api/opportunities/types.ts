@@ -12,40 +12,41 @@ export interface PostedBy {
 }
 
 export interface Opportunity {
-  id: string;
-  type: "Job" | "Internship" | "Mentorship" | string;
-  title: string;
-  description: string;
-  requirements: string[];
-  company: string;
-  logo: string;
-  keyResponsibilities: string[];
-  employmentType: "Full-Time" | "Part-Time" | "Contract" | string;
-  location: string;
-  compensation: string;
-  tags: string[];
-  category: string;
-  workType: string;
-  compensationType: "Fixed" | "Hourly" | "Project-based" | string;
-  experienceLevel: "Junior" | "Mid" | "Senior" | string;
-  minBudget: number;
-  maxBudget: number;
-  paymentType: "weekly" | "monthly" | "hourly" | string;
-  tools: string[];
-  duration: string;
-  maxHours: number;
-  startDate: string;
-  applicationCap: number;
-  closingDate: string;
-  applicationCount: number;
-  status: "active" | "draft" | "closed" | string;
-  postedById: string;
-  isFeatured: boolean;
-  featuredUntil: string | null;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  postedBy: PostedBy;
+   id: string;
+   type: "Job" | "Internship" | "Mentorship" | string;
+   title: string;
+   description: string;
+   requirements: string[];
+   company: string;
+   logo: string;
+   keyResponsibilities: string[];
+   employmentType: "Full-Time" | "Part-Time" | "Contract" | string;
+   location: string;
+   compensation: string;
+   tags: string[];
+   category: string;
+   workType: string;
+   compensationType: "Fixed" | "Hourly" | "Project-based" | string;
+   experienceLevel: "Junior" | "Mid" | "Senior" | string;
+   minBudget: number;
+   maxBudget: number;
+   paymentType: "weekly" | "monthly" | "hourly" | string;
+   tools: string[];
+   duration: string;
+   maxHours: number;
+   startDate: string;
+   applicationCap: number;
+   closingDate: string;
+   applicationCount: number;
+   status: "active" | "draft" | "closed" | string;
+   postedById: string;
+   isFeatured: boolean;
+   featuredUntil: string | null;
+   createdAt: string;
+   updatedAt: string;
+   deletedAt: string | null;
+   postedBy: PostedBy;
+   applied?: boolean;
 }
 
 export interface PaginationInfo {

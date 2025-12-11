@@ -430,7 +430,13 @@ export function OpportunityCard({
 
       {/* Applicants Section - Only for Open Opportunities */}
       {activeTab === "open" && (
-        <div className="flex items-center gap-2 p-3 border-t border-[#E1E4EA] rounded-b-[16px]">
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            router.push(`/opportunities/${opportunity.id}/applicants`);
+          }}
+          className="flex items-center gap-2 p-3 border-t border-[#E1E4EA] rounded-b-[16px] cursor-pointer hover:bg-gray-50 transition-colors"
+        >
           <div className="flex -space-x-2.5">
             {loadingApplicants ? (
               <>
@@ -461,12 +467,7 @@ export function OpportunityCard({
               {opportunity.applicantsCount} talents already applied to this
               opportunity.{" "}
             </span>
-            <a
-              href={`/opportunities/${opportunity.id}/applicants`}
-              className="text-[#E39B00] underline hover:no-underline"
-            >
-              View
-            </a>
+            <span className="text-[#E39B00] underline">View</span>
           </p>
         </div>
       )}
