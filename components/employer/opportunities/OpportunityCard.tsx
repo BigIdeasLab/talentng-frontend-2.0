@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
 import { useToast } from "@/hooks/use-toast";
@@ -12,8 +12,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { TabType, OpportunityCard, OpportunityCardProps } from "@/types/opportunities";
+import type {
+  TabType,
+  OpportunityCard,
+  OpportunityCardProps,
+} from "@/types/opportunities";
 import { TYPE_CONFIG } from "@/types/opportunities";
+import { getApplications, type Application } from "@/lib/api/applications";
 
 export function OpportunityCard({
   opportunity,
@@ -25,7 +30,34 @@ export function OpportunityCard({
   const config = TYPE_CONFIG[opportunity.type] || TYPE_CONFIG["job-listing"];
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const { isLoading, post, delete: deleteOpp, updateStatus } = useOpportunitiesManager();
+  const [applicants, setApplicants] = useState<Application[]>([]);
+  const [loadingApplicants, setLoadingApplicants] = useState(false);
+  const {
+    isLoading,
+    post,
+    delete: deleteOpp,
+    updateStatus,
+  } = useOpportunitiesManager();
+
+  useEffect(() => {
+    if (activeTab === "open" || activeTab === "closed") {
+      const fetchApplicants = async () => {
+        setLoadingApplicants(true);
+        try {
+          const data = await getApplications({
+            opportunityId: opportunity.id,
+          });
+          setApplicants(data.slice(0, 3));
+        } catch (error) {
+          console.error("Error fetching applicants:", error);
+        } finally {
+          setLoadingApplicants(false);
+        }
+      };
+
+      fetchApplicants();
+    }
+  }, [opportunity.id, activeTab]);
 
   const handleCardClick = (e: React.MouseEvent) => {
     if (isLoading || showModal || showDeleteModal) {
@@ -46,7 +78,8 @@ export function OpportunityCard({
       });
       onMutationSuccess?.();
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to post opportunity";
+      const message =
+        error instanceof Error ? error.message : "Failed to post opportunity";
       toast({
         title: "Error",
         description: message,
@@ -66,7 +99,8 @@ export function OpportunityCard({
       });
       onMutationSuccess?.();
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to delete opportunity";
+      const message =
+        error instanceof Error ? error.message : "Failed to delete opportunity";
       toast({
         title: "Error",
         description: message,
@@ -81,9 +115,23 @@ export function OpportunityCard({
       return (
         <div className="flex items-center gap-2">
           <div className="flex -space-x-2.5">
-            <div className="w-6 h-6 rounded-full bg-gray-300 border border-white flex-shrink-0" />
-            <div className="w-6 h-6 rounded-full bg-gray-400 border border-white flex-shrink-0" />
-            <div className="w-6 h-6 rounded-full bg-gray-500 border border-white flex-shrink-0" />
+            {applicants.length > 0 ? (
+              applicants.map((app) => (
+                <img
+                  key={app.id}
+                  src={app.user.talentProfile.profileImageUrl}
+                  alt={app.user.talentProfile.fullName}
+                  title={app.user.talentProfile.fullName}
+                  className="w-6 h-6 rounded-full border border-white flex-shrink-0 object-cover"
+                />
+              ))
+            ) : (
+              <>
+                <div className="w-6 h-6 rounded-full bg-gray-300 border border-white flex-shrink-0" />
+                <div className="w-6 h-6 rounded-full bg-gray-400 border border-white flex-shrink-0" />
+                <div className="w-6 h-6 rounded-full bg-gray-500 border border-white flex-shrink-0" />
+              </>
+            )}
           </div>
           <div className="text-xs font-medium font-inter-tight text-black">
             {opportunity.applicantsCount} Talent Applied
@@ -105,7 +153,10 @@ export function OpportunityCard({
 
       return (
         <div className="flex items-center gap-1.5">
-          <button onClick={handleEdit} className="flex items-center gap-0.5 h-8 px-3 bg-[#181B25] text-white rounded-full hover:bg-[#2a2d35] transition-colors flex-shrink-0">
+          <button
+            onClick={handleEdit}
+            className="flex items-center gap-0.5 h-8 px-3 bg-[#181B25] text-white rounded-full hover:bg-[#2a2d35] transition-colors flex-shrink-0"
+          >
             <svg
               width="14"
               height="14"
@@ -132,7 +183,10 @@ export function OpportunityCard({
             </span>
           </button>
 
-          <button onClick={handlePost} className="flex items-center gap-0.5 h-8 px-3 bg-[#5C30FF] text-white rounded-full border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors flex-shrink-0">
+          <button
+            onClick={handlePost}
+            className="flex items-center gap-0.5 h-8 px-3 bg-[#5C30FF] text-white rounded-full border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors flex-shrink-0"
+          >
             <svg
               width="14"
               height="14"
@@ -153,7 +207,7 @@ export function OpportunityCard({
             </span>
           </button>
 
-          <button 
+          <button
             onClick={(e) => {
               e.stopPropagation();
               setShowDeleteModal(true);
@@ -193,7 +247,10 @@ export function OpportunityCard({
         });
         onMutationSuccess?.();
       } catch (error) {
-        const message = error instanceof Error ? error.message : "Failed to mark opportunity as filled";
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Failed to mark opportunity as filled";
         toast({
           title: "Error",
           description: message,
@@ -204,7 +261,7 @@ export function OpportunityCard({
 
     return (
       <div className="flex items-center gap-1.5">
-        <button 
+        <button
           onClick={handleMarkAsFilled}
           disabled={isLoading}
           className="flex items-center gap-0.5 h-8 px-3 bg-[#5C30FF] text-white rounded-full border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -367,9 +424,7 @@ export function OpportunityCard({
             </div>
           )}
 
-          <div className="sm:ml-auto">
-            {renderOpportunityActions()}
-          </div>
+          <div className="sm:ml-auto">{renderOpportunityActions()}</div>
         </div>
       </div>
 
@@ -377,9 +432,29 @@ export function OpportunityCard({
       {activeTab === "open" && (
         <div className="flex items-center gap-2 p-3 border-t border-[#E1E4EA] rounded-b-[16px]">
           <div className="flex -space-x-2.5">
-            <div className="w-6 h-6 rounded-full bg-gray-300 border border-white flex-shrink-0" />
-            <div className="w-6 h-6 rounded-full bg-gray-400 border border-white flex-shrink-0" />
-            <div className="w-6 h-6 rounded-full bg-gray-500 border border-white flex-shrink-0" />
+            {loadingApplicants ? (
+              <>
+                <div className="w-6 h-6 rounded-full bg-gray-300 border border-white flex-shrink-0 animate-pulse" />
+                <div className="w-6 h-6 rounded-full bg-gray-400 border border-white flex-shrink-0 animate-pulse" />
+                <div className="w-6 h-6 rounded-full bg-gray-500 border border-white flex-shrink-0 animate-pulse" />
+              </>
+            ) : applicants.length > 0 ? (
+              applicants.map((app) => (
+                <img
+                  key={app.id}
+                  src={app.user.talentProfile.profileImageUrl}
+                  alt={app.user.talentProfile.fullName}
+                  title={app.user.talentProfile.fullName}
+                  className="w-6 h-6 rounded-full border border-white flex-shrink-0 object-cover"
+                />
+              ))
+            ) : (
+              <>
+                <div className="w-6 h-6 rounded-full bg-gray-300 border border-white flex-shrink-0" />
+                <div className="w-6 h-6 rounded-full bg-gray-400 border border-white flex-shrink-0" />
+                <div className="w-6 h-6 rounded-full bg-gray-500 border border-white flex-shrink-0" />
+              </>
+            )}
           </div>
           <p className="text-xs font-medium font-inter-tight">
             <span className="text-black">
@@ -444,7 +519,9 @@ export function OpportunityCard({
               disabled={isLoading}
               className="bg-red-600 hover:bg-red-700"
             >
-              {isLoading ? "Deleting..." : `Delete ${activeTab === "draft" ? "Draft" : "Opportunity"}`}
+              {isLoading
+                ? "Deleting..."
+                : `Delete ${activeTab === "draft" ? "Draft" : "Opportunity"}`}
             </Button>
           </>
         }
