@@ -75,6 +75,13 @@ export function OpportunityCard({
             {opportunity.title}
           </div>
 
+          {/* Category */}
+          {opportunity.category && (
+            <div className="text-[12px] font-normal text-[#525866]">
+              {opportunity.category}
+            </div>
+          )}
+
           {/* Skills */}
           <div className="flex flex-col items-start gap-2.5 w-full">
             <div className="flex items-start content-start gap-x-1 gap-y-1.5 flex-wrap w-full min-h-[28px]">

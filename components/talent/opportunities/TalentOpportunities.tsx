@@ -74,19 +74,20 @@ interface DisplayOpportunity {
 }
 
 const mapOpportunityToDisplay = (opp: OpportunityCard): DisplayOpportunity => {
-   const mapped = {
-     id: opp.id,
-     posterName: opp.companyName,
-     posterAvatar: opp.companyLogo,
-     date: opp.date,
-     type: opp.type,
-     title: opp.title,
-     skills: opp.skills,
-     rate: opp.rate,
-     showActions: opp.status === "active",
-     applied: (opp as any).applied || false,
-   };
-   return mapped;
+    const mapped = {
+      id: opp.id,
+      posterName: opp.companyName,
+      posterAvatar: opp.companyLogo,
+      date: opp.date,
+      type: opp.type,
+      title: opp.title,
+      category: (opp as any).category,
+      skills: opp.skills,
+      rate: opp.rate,
+      showActions: opp.status === "active",
+      applied: (opp as any).applied || false,
+    };
+    return mapped;
 };
 
 export function TalentOpportunities() {
@@ -161,11 +162,14 @@ export function TalentOpportunities() {
       (opp: any) =>
         ({
           id: opp.id || "",
-          companyName: opp.company || "Company",
-          companyLogo: opp.logo || "",
+          // Get company name from recruiter profile if available, fallback to opportunity company field
+          companyName: opp.postedBy?.recruiterProfile?.company || opp.company || "Company",
+          // Get logo from recruiter profile if available, fallback to opportunity logo field
+          companyLogo: opp.postedBy?.recruiterProfile?.profileImageUrl || opp.logo || "",
           date: formatDate(opp.createdAt),
           type: opp.type || "Job",
           title: opp.title || "",
+          category: opp.category,
           skills: opp.tags || [],
           rate: `₦${Math.round(parseFloat(opp.minBudget) || 0).toLocaleString()} - ₦${Math.round(parseFloat(opp.maxBudget) || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`,
           applicantsCount: opp.applicationCount || 0,

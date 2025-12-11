@@ -9,6 +9,7 @@ export interface DisplayOpportunity {
   date: string;
   type: string;
   title: string;
+  category?: string;
   skills: string[];
   rate: string;
   showActions: boolean;
