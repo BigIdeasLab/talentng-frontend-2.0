@@ -28,15 +28,15 @@ export function OpportunitiesGrid({
   return (
     <div className="flex flex-col h-full">
       {/* Result Count */}
-      <div className="flex-shrink-0 py-[12px] border-b border-[#E1E4EA]">
+      <div className="flex-shrink-0 px-[25px] py-[12px] border-b border-[#E1E4EA]">
         <p className="text-[12px] text-gray-600">
           {opportunities.length} opportunit{opportunities.length !== 1 ? "ies" : "y"} found
         </p>
       </div>
 
       {/* Grid */}
-      <div className="flex-1 overflow-y-auto scrollbar-styled py-[16px]">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 pb-8">
+      <div className="flex-1 overflow-y-auto scrollbar-styled px-[25px] py-[16px]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px] pb-8">
           {opportunities.length > 0 ? (
             opportunities.map((opportunity) => (
               <OpportunityCard 
@@ -52,7 +52,7 @@ export function OpportunitiesGrid({
       </div>
 
       {/* Pagination Controls */}
-      <div className="flex-shrink-0 py-[16px] border-t border-[#E1E4EA] flex items-center justify-between">
+      <div className="flex-shrink-0 px-[25px] py-[16px] border-t border-[#E1E4EA] flex items-center justify-between">
         <button
           onClick={onPreviousPage}
           disabled={!hasPreviousPage}

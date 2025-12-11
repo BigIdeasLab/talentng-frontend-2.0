@@ -7,7 +7,10 @@ import { TalentOpportunitiesHeader } from "./header";
 import { SearchBar } from "./search-bar";
 import { FilterTabs } from "./filter-tabs";
 import { OpportunitiesGrid } from "./opportunities-grid";
-import { OpportunitiesFilterModal, type OpportunitiesFilterState } from "./OpportunitiesFilterModal";
+import {
+  OpportunitiesFilterModal,
+  type OpportunitiesFilterState,
+} from "./OpportunitiesFilterModal";
 import type { FilterType } from "./types";
 import type { OpportunityCard, OpportunityType } from "@/types/opportunities";
 
@@ -43,7 +46,7 @@ const mapOpportunityType = (type: string): OpportunityType => {
 
 // Helper function to convert filter types to API format
 const convertFilterTypesToAPI = (types: string[]): string[] => {
-  return types.map(type => {
+  return types.map((type) => {
     // Already in API format (Job, Internship, Volunteer, PartTime)
     if (["Job", "Internship", "Volunteer", "PartTime"].includes(type)) {
       return type;
@@ -51,8 +54,8 @@ const convertFilterTypesToAPI = (types: string[]): string[] => {
     // Convert from display format
     const typeMap: Record<string, string> = {
       "job-listing": "Job",
-      "internship": "Internship",
-      "volunteer": "Volunteer",
+      internship: "Internship",
+      volunteer: "Volunteer",
       "part-time": "PartTime",
     };
     return typeMap[type.toLowerCase()] || type;
@@ -74,87 +77,90 @@ interface DisplayOpportunity {
 }
 
 const mapOpportunityToDisplay = (opp: OpportunityCard): DisplayOpportunity => {
-    const mapped = {
-      id: opp.id,
-      posterName: opp.companyName,
-      posterAvatar: opp.companyLogo,
-      date: opp.date,
-      type: opp.type,
-      title: opp.title,
-      category: (opp as any).category,
-      skills: opp.skills,
-      rate: opp.rate,
-      showActions: opp.status === "active",
-      applied: (opp as any).applied || false,
-    };
-    return mapped;
+  const mapped = {
+    id: opp.id,
+    posterName: opp.companyName,
+    posterAvatar: opp.companyLogo,
+    date: opp.date,
+    type: opp.type,
+    title: opp.title,
+    category: (opp as any).category,
+    skills: opp.skills,
+    rate: opp.rate,
+    showActions: opp.status === "active",
+    applied: (opp as any).applied || false,
+  };
+  return mapped;
 };
 
 export function TalentOpportunities() {
-   const LIMIT = 20;
-   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
-   const [searchQuery, setSearchQuery] = useState("");
-   const [isFilterOpen, setIsFilterOpen] = useState(false);
-   const [appliedFilters, setAppliedFilters] = useState<OpportunitiesFilterState | null>(null);
-   const [offset, setOffset] = useState(0);
-   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const LIMIT = 20;
+  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [appliedFilters, setAppliedFilters] =
+    useState<OpportunitiesFilterState | null>(null);
+  const [offset, setOffset] = useState(0);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-   // Fetch only active opportunities from API
-   const { getAll, isLoading } = useOpportunitiesManager();
-   const [apiOpportunities, setApiOpportunities] = useState<any[]>([]);
-   const [pagination, setPagination] = useState<any>(null);
-   const [isError, setIsError] = useState(false);
+  // Fetch only active opportunities from API
+  const { getAll, isLoading } = useOpportunitiesManager();
+  const [apiOpportunities, setApiOpportunities] = useState<any[]>([]);
+  const [pagination, setPagination] = useState<any>(null);
+  const [isError, setIsError] = useState(false);
 
-   const fetchOpportunitiesWithFilters = useCallback(
-     async (pageOffset: number = 0) => {
-       try {
-         const params: any = { 
-           status: "active",
-           limit: LIMIT,
-           offset: pageOffset
-         };
+  const fetchOpportunitiesWithFilters = useCallback(
+    async (pageOffset: number = 0) => {
+      try {
+        const params: any = {
+          status: "active",
+          limit: LIMIT,
+          offset: pageOffset,
+        };
 
-         // Add search query
-         if (searchQuery) {
-           params.q = searchQuery;
-         }
+        // Add search query
+        if (searchQuery) {
+          params.q = searchQuery;
+        }
 
-         // Add filter parameters
-         if (appliedFilters) {
-           if (appliedFilters.types.length > 0) {
-             params.type = convertFilterTypesToAPI(appliedFilters.types).join(",");
-           }
-           if (appliedFilters.skills.length > 0) {
-             params.tags = appliedFilters.skills.join(",");
-           }
-           if (appliedFilters.categories?.length) {
-             params.category = appliedFilters.categories.join(",");
-           }
-           if (appliedFilters.experienceLevels?.length) {
-             params.experienceLevel = appliedFilters.experienceLevels.join(",");
-           }
-           if (appliedFilters.location) {
-             params.location = appliedFilters.location;
-           }
-         }
+        // Add filter parameters
+        if (appliedFilters) {
+          if (appliedFilters.types.length > 0) {
+            params.type = convertFilterTypesToAPI(appliedFilters.types).join(
+              ",",
+            );
+          }
+          if (appliedFilters.skills.length > 0) {
+            params.tags = appliedFilters.skills.join(",");
+          }
+          if (appliedFilters.categories?.length) {
+            params.category = appliedFilters.categories.join(",");
+          }
+          if (appliedFilters.experienceLevels?.length) {
+            params.experienceLevel = appliedFilters.experienceLevels.join(",");
+          }
+          if (appliedFilters.location) {
+            params.location = appliedFilters.location;
+          }
+        }
 
-         console.log("API params:", params);
-         const response = await getAll(params);
-         console.log("API response:", response);
-         setApiOpportunities(response.data);
-         setPagination(response.pagination);
-         setOffset(pageOffset);
-       } catch (error) {
-         console.error("Fetch error:", error);
-         setIsError(true);
-       }
-     },
-     [getAll, searchQuery, appliedFilters, LIMIT]
-   );
+        console.log("API params:", params);
+        const response = await getAll(params);
+        console.log("API response:", response);
+        setApiOpportunities(response.data);
+        setPagination(response.pagination);
+        setOffset(pageOffset);
+      } catch (error) {
+        console.error("Fetch error:", error);
+        setIsError(true);
+      }
+    },
+    [getAll, searchQuery, appliedFilters, LIMIT],
+  );
 
-   useEffect(() => {
-     fetchOpportunitiesWithFilters();
-   }, [fetchOpportunitiesWithFilters]);
+  useEffect(() => {
+    fetchOpportunitiesWithFilters();
+  }, [fetchOpportunitiesWithFilters]);
 
   // Transform API opportunities to display format
   const opportunities = useMemo(() => {
@@ -163,9 +169,11 @@ export function TalentOpportunities() {
         ({
           id: opp.id || "",
           // Get company name from recruiter profile if available, fallback to opportunity company field
-          companyName: opp.postedBy?.recruiterProfile?.company || opp.company || "Company",
+          companyName:
+            opp.postedBy?.recruiterProfile?.company || opp.company || "Company",
           // Get logo from recruiter profile if available, fallback to opportunity logo field
-          companyLogo: opp.postedBy?.recruiterProfile?.profileImageUrl || opp.logo || "",
+          companyLogo:
+            opp.postedBy?.recruiterProfile?.profileImageUrl || opp.logo || "",
           date: formatDate(opp.createdAt),
           type: opp.type || "Job",
           title: opp.title || "",
@@ -192,8 +200,8 @@ export function TalentOpportunities() {
   const mapTabTypeToAPI = (tabType: string): string => {
     const typeMap: Record<string, string> = {
       "job-listing": "Job",
-      "internship": "Internship",
-      "volunteer": "Volunteer",
+      internship: "Internship",
+      volunteer: "Volunteer",
       "part-time": "PartTime",
     };
     return typeMap[tabType] || tabType;
@@ -202,9 +210,19 @@ export function TalentOpportunities() {
   // Filter opportunities based on active filter, search, and applied filters
   // Note: Most filtering is done server-side now, this is client-side for better UX
   const filteredOpportunities = useMemo(() => {
-    console.log("Starting filter - activeFilter:", activeFilter, "displayOpportunities count:", displayOpportunities.length);
+    console.log(
+      "Starting filter - activeFilter:",
+      activeFilter,
+      "displayOpportunities count:",
+      displayOpportunities.length,
+    );
     const result = displayOpportunities.filter((opportunity) => {
-      console.log("Checking opportunity:", opportunity.title, "type:", opportunity.type);
+      console.log(
+        "Checking opportunity:",
+        opportunity.title,
+        "type:",
+        opportunity.type,
+      );
       // Handle tab filter
       if (activeFilter !== "all") {
         if (activeFilter === "applied") {
@@ -217,13 +235,22 @@ export function TalentOpportunities() {
 
       // Handle advanced filters (these should ideally be server-side)
       if (appliedFilters) {
-        if (appliedFilters.types.length > 0 && !appliedFilters.types.includes(opportunity.type)) {
-         console.log("Filtered out - type mismatch", appliedFilters.types, opportunity.type);
+        if (
+          appliedFilters.types.length > 0 &&
+          !appliedFilters.types.includes(opportunity.type)
+        ) {
+          console.log(
+            "Filtered out - type mismatch",
+            appliedFilters.types,
+            opportunity.type,
+          );
           return false;
         }
         if (appliedFilters.skills.length > 0) {
           const hasMatchingSkill = appliedFilters.skills.some((skill) =>
-            opportunity.skills.some((s) => s.toLowerCase().includes(skill.toLowerCase()))
+            opportunity.skills.some((s) =>
+              s.toLowerCase().includes(skill.toLowerCase()),
+            ),
           );
           if (!hasMatchingSkill) return false;
         }
@@ -250,8 +277,10 @@ export function TalentOpportunities() {
     let count = 0;
     if (appliedFilters.types.length > 0) count += appliedFilters.types.length;
     if (appliedFilters.skills.length > 0) count += appliedFilters.skills.length;
-    if (appliedFilters.categories?.length) count += appliedFilters.categories.length;
-    if (appliedFilters.experienceLevels?.length) count += appliedFilters.experienceLevels.length;
+    if (appliedFilters.categories?.length)
+      count += appliedFilters.categories.length;
+    if (appliedFilters.experienceLevels?.length)
+      count += appliedFilters.experienceLevels.length;
     if (appliedFilters.location) count += 1;
     return count;
   };
@@ -308,10 +337,10 @@ export function TalentOpportunities() {
   }
 
   return (
-    <div className="h-screen overflow-y-auto overflow-x-hidden bg-white">
-      <div className="w-full px-[25px] pt-[19px]">
+    <div className="h-screen overflow-x-hidden bg-white flex flex-col">
+      <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
         {/* Header */}
-        <div className="mb-4">
+        <div>
           <TalentOpportunitiesHeader />
 
           {/* Search and Filters */}
@@ -324,14 +353,34 @@ export function TalentOpportunities() {
           />
 
           {/* Filter Tabs */}
-           <FilterTabs
-             activeFilter={activeFilter}
-             onFilterChange={handleFilterChange}
-           />
+          <FilterTabs
+            activeFilter={activeFilter}
+            onFilterChange={handleFilterChange}
+          />
         </div>
 
-        {/* Opportunities Grid */}
-        <OpportunitiesGrid 
+        {/* Filter Modal */}
+        <OpportunitiesFilterModal
+          isOpen={isFilterOpen}
+          onClose={() => setIsFilterOpen(false)}
+          onApply={(filters) => {
+            console.log(
+              "TalentOpportunities - Setting applied filters:",
+              filters,
+            );
+            setAppliedFilters(filters);
+            setIsFilterOpen(false);
+            // Reset to first page when filters are applied
+            fetchOpportunitiesWithFilters(0);
+          }}
+          availableSkills={allSkills}
+          initialFilters={appliedFilters || undefined}
+        />
+      </div>
+
+      {/* Opportunities Grid */}
+      <div className="flex-1 overflow-hidden">
+        <OpportunitiesGrid
           opportunities={filteredOpportunities}
           onApplicationSubmitted={() => {
             // Refetch opportunities to get updated applied status
@@ -344,22 +393,7 @@ export function TalentOpportunities() {
           currentPage={pagination?.currentPage || 1}
           totalPages={pagination?.totalPages || 1}
         />
-
-        {/* Filter Modal */}
-         <OpportunitiesFilterModal
-           isOpen={isFilterOpen}
-           onClose={() => setIsFilterOpen(false)}
-           onApply={(filters) => {
-             console.log("TalentOpportunities - Setting applied filters:", filters);
-             setAppliedFilters(filters);
-             setIsFilterOpen(false);
-             // Reset to first page when filters are applied
-             fetchOpportunitiesWithFilters(0);
-           }}
-           availableSkills={allSkills}
-           initialFilters={appliedFilters || undefined}
-         />
       </div>
     </div>
   );
-  }
+}

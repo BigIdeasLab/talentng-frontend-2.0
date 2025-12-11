@@ -35,12 +35,15 @@ export function DiscoverTalentHeader({
   onFilterApply,
 }: DiscoverTalentHeaderProps) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [appliedFilters, setAppliedFilters] = useState<FilterState | null>(null);
+  const [appliedFilters, setAppliedFilters] = useState<FilterState | null>(
+    null,
+  );
 
   const getFilterCount = (): number => {
     if (!appliedFilters) return 0;
     let count = 0;
-    if (appliedFilters.categories.length > 0) count += appliedFilters.categories.length;
+    if (appliedFilters.categories.length > 0)
+      count += appliedFilters.categories.length;
     if (appliedFilters.skills.length > 0) count += appliedFilters.skills.length;
     if (appliedFilters.location) count += 1;
     if (appliedFilters.availability !== "All") count += 1;

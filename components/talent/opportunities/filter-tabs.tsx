@@ -1,4 +1,5 @@
 import type { FilterType } from "./types";
+import { cn } from "@/lib/utils";
 
 interface FilterTabsProps {
   activeFilter: FilterType;
@@ -16,18 +17,19 @@ const FILTERS = [
 
 export function FilterTabs({ activeFilter, onFilterChange }: FilterTabsProps) {
   return (
-    <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide pb-1.5">
+    <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide mb-[19px]">
       {FILTERS.map((filter) => (
         <button
           key={filter.id}
           onClick={() => onFilterChange(filter.id as FilterType)}
-          className={`flex items-center justify-center px-3 py-2.5 whitespace-nowrap transition-colors flex-shrink-0 ${
+          className={cn(
+            "px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors",
             activeFilter === filter.id
-              ? "text-black"
-              : "text-[rgba(0,0,0,0.3)] hover:text-black"
-          }`}
+              ? "text-black font-medium border-b-2 border-black"
+              : "text-black/30 font-medium hover:text-black/50"
+          )}
         >
-          <span className="text-[13px] font-medium font-inter-tight text-center">
+          <span className="text-[13px] font-inter-tight">
             {filter.label}
           </span>
         </button>
