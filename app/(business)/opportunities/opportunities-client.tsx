@@ -2,8 +2,6 @@
 
 import { useState, useRef, useCallback } from "react";
 import { TalentOpportunitiesHeader } from "@/components/talent/opportunities/header";
-import { SearchBar } from "@/components/talent/opportunities/search-bar";
-import { FilterTabs } from "@/components/talent/opportunities/filter-tabs";
 import { OpportunitiesGrid } from "@/components/talent/opportunities/opportunities-grid";
 import {
   OpportunitiesFilterModal,
@@ -56,10 +54,14 @@ export function OpportunitiesClient({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(initialError);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isInitialLoadRef = useRef(true);
 
   const fetchOpportunitiesWithFilters = useCallback(
     async (pageOffset: number = 0, filterType?: FilterType) => {
-      setIsLoading(true);
+      // Only show loading skeleton on initial load, not on filter changes
+      if (isInitialLoadRef.current) {
+        setIsLoading(true);
+      }
       setError(null);
       const filter = filterType ?? activeFilter;
 
@@ -85,6 +87,7 @@ export function OpportunitiesClient({
         setPagination(newPagination);
         setError(fetchError);
         setOffset(pageOffset);
+        isInitialLoadRef.current = false;
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Failed to fetch opportunities",
@@ -141,17 +144,12 @@ export function OpportunitiesClient({
     <div className="h-screen overflow-x-hidden bg-white flex flex-col">
       {/* Header */}
       <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
-        <TalentOpportunitiesHeader />
-
-        <SearchBar
+        <TalentOpportunitiesHeader
           searchQuery={searchQuery}
           onSearchChange={handleSearch}
           onFilterClick={() => setIsFilterOpen(true)}
           isLoading={isLoading}
           filterCount={getFilterCount()}
-        />
-
-        <FilterTabs
           activeFilter={activeFilter}
           onFilterChange={handleFilterChange}
         />

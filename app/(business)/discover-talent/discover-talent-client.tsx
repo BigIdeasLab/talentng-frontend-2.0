@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { DiscoverTalentHeader, TalentGrid, TalentGridSkeleton } from "@/components/DiscoverTalent";
+import {
+  DiscoverTalentHeader,
+  TalentGrid,
+  TalentGridSkeleton,
+} from "@/components/DiscoverTalent";
 import { getDiscoverTalentData } from "./server-data";
 import type { TalentData } from "./server-data";
 import type { FilterState } from "@/components/DiscoverTalent";
@@ -12,19 +16,20 @@ interface DiscoverTalentClientProps {
 }
 
 export function DiscoverTalentClient({
-   initialTalents,
-   initialError,
- }: DiscoverTalentClientProps) {
-   const [selectedCategory, setSelectedCategory] = useState("All");
-   const [searchQuery, setSearchQuery] = useState("");
-   const [talents, setTalents] = useState<TalentData[]>(initialTalents);
-   const [loading, setLoading] = useState(false);
-   const [error, setError] = useState<string | null>(initialError);
-   const [filters, setFilters] = useState<FilterState | null>(null);
-   const [offset, setOffset] = useState(0);
-   const [pagination, setPagination] = useState<any>(null);
-   const LIMIT = 20;
-   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  initialTalents,
+  initialError,
+}: DiscoverTalentClientProps) {
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [talents, setTalents] = useState<TalentData[]>(initialTalents);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(initialError);
+  const [filters, setFilters] = useState<FilterState | null>(null);
+  const [offset, setOffset] = useState(0);
+  const [pagination, setPagination] = useState<any>(null);
+  const LIMIT = 20;
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isInitialLoadRef = useRef(true);
 
   const fetchTalents = async (
     query: string,
@@ -32,24 +37,31 @@ export function DiscoverTalentClient({
     appliedFilters: FilterState | null,
     pageOffset: number = 0,
   ) => {
-    setLoading(true);
+    // Only show loading skeleton on initial load, not on filter/category changes
+    if (isInitialLoadRef.current) {
+      setLoading(true);
+    }
     setError(null);
 
     try {
-      const { talents: newTalents, pagination: newPagination, error: fetchError } =
-        await getDiscoverTalentData({
-          searchQuery: query,
-          category,
-          skills: appliedFilters?.skills || [],
-          location: appliedFilters?.location,
-          availability: appliedFilters?.availability,
-          limit: LIMIT,
-          offset: pageOffset,
-        });
+      const {
+        talents: newTalents,
+        pagination: newPagination,
+        error: fetchError,
+      } = await getDiscoverTalentData({
+        searchQuery: query,
+        category,
+        skills: appliedFilters?.skills || [],
+        location: appliedFilters?.location,
+        availability: appliedFilters?.availability,
+        limit: LIMIT,
+        offset: pageOffset,
+      });
       setTalents(newTalents);
       setPagination(newPagination);
       setError(fetchError);
       setOffset(pageOffset);
+      isInitialLoadRef.current = false;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch talents");
     } finally {
@@ -59,7 +71,6 @@ export function DiscoverTalentClient({
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
-    setLoading(true);
 
     // Clear previous timeout
     if (searchTimeoutRef.current) {

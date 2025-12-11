@@ -46,27 +46,7 @@ async function verifyToken(token: string, secret: string) {
   }
 }
 
-async function refreshAccessToken(request: NextRequest) {
-  try {
-    const apiUrl = process.env.NEXT_PUBLIC_TALENTNG_API_URL || "http://localhost:3001";
-    const response = await fetch(`${apiUrl}/auth/refresh`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        Cookie: request.headers.get("cookie") || "",
-      },
-    });
 
-    if (response.ok) {
-      const setCookie = response.headers.get("set-cookie");
-      return { success: true, setCookie };
-    }
-    return { success: false };
-  } catch (error) {
-    console.error("Token refresh failed:", error);
-    return { success: false };
-  }
-}
 
 export async function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
@@ -105,24 +85,21 @@ export async function middleware(request: NextRequest) {
 
   // Handle protected routes
   if (isProtectedRoute(pathname)) {
-    let payload = token ? await verifyToken(token, jwtSecret) : null;
-    
-    // If token is invalid or expired, try to refresh
-    if (!payload && token) {
-      const refreshResult = await refreshAccessToken(request);
-      if (refreshResult.success) {
-        // Retry verification with refreshed token from response
-        const newToken = request.cookies.get("accessToken")?.value;
-        if (newToken) {
-          payload = await verifyToken(newToken, jwtSecret);
-        }
-      }
-    }
-    
-    if (!payload) {
+    // If no token, redirect to login
+    if (!token) {
       const url = request.nextUrl.clone();
       url.pathname = "/login";
-      // Store the intended destination to redirect after login
+      url.searchParams.set("redirect", pathname);
+      return NextResponse.redirect(url);
+    }
+
+    // Verify token - if expired or invalid, let the client API handle refresh
+    // The API client has its own refresh logic that works better in the browser
+    const payload = await verifyToken(token, jwtSecret);
+    if (!payload) {
+      // Token is invalid, redirect to login
+      const url = request.nextUrl.clone();
+      url.pathname = "/login";
       url.searchParams.set("redirect", pathname);
       return NextResponse.redirect(url);
     }
