@@ -264,15 +264,12 @@ export function TalentOpportunities() {
     return (
       <div className="h-screen overflow-x-hidden bg-white flex flex-col">
         <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
-          <TalentOpportunitiesHeader />
-          <SearchBar
+          <TalentOpportunitiesHeader
             searchQuery={searchQuery}
             onSearchChange={handleSearch}
             onFilterClick={() => setIsFilterOpen(true)}
             isLoading={isLoading}
             filterCount={getFilterCount()}
-          />
-          <FilterTabs
             activeFilter={activeFilter}
             onFilterChange={handleFilterChange}
           />
@@ -302,19 +299,12 @@ export function TalentOpportunities() {
       <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
         {/* Header */}
         <div>
-          <TalentOpportunitiesHeader />
-
-          {/* Search and Filters */}
-          <SearchBar
+          <TalentOpportunitiesHeader
             searchQuery={searchQuery}
             onSearchChange={handleSearch}
             onFilterClick={() => setIsFilterOpen(true)}
             isLoading={isLoading}
             filterCount={getFilterCount()}
-          />
-
-          {/* Filter Tabs */}
-          <FilterTabs
             activeFilter={activeFilter}
             onFilterChange={handleFilterChange}
           />
