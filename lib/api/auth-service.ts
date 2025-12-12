@@ -19,6 +19,7 @@ export interface AuthResponse {
   refreshToken: string;
   userId?: string;
   user?: User;
+  needsOnboarding?: boolean;
 }
 
 /**
@@ -99,14 +100,19 @@ export const verifyEmailSend = async (email: string): Promise<void> => {
 export const verifyEmailConfirm = async (
   email: string,
   verificationCode: string
-): Promise<LoginResponse> => {
+): Promise<AuthResponse> => {
   const response = await apiClient<AuthResponse>("/auth/verify-email/confirm", {
     method: "POST",
     body: { email, verificationCode },
   });
 
   handleAuthResponse(response);
-  return { accessToken: response.accessToken, user: response.user || {} as User };
+  return { 
+    accessToken: response.accessToken, 
+    refreshToken: response.refreshToken,
+    user: response.user || {} as User,
+    needsOnboarding: response.needsOnboarding,
+  };
 };
 
 export const forgotPassword = async (email: string): Promise<void> => {
