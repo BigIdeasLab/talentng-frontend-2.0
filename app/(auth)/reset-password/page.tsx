@@ -76,7 +76,7 @@ const ResetPassword = () => {
     },
   });
 
-  const mutation = useMutation<AuthResponse>({
+  const mutation = useMutation<AuthResponse, Error, ResetPasswordFormValues>({
     mutationFn: (data: ResetPasswordFormValues) =>
       resetPassword(email, data.resetCode, data.password),
     onSuccess: (response) => {
