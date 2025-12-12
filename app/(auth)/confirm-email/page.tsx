@@ -12,7 +12,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { verifyEmailSend, verifyEmailConfirm } from "@/lib/api";
+import { verifyEmailSend, verifyEmailConfirm } from "@/lib/api/auth-service";
 
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 
@@ -70,8 +70,7 @@ const ConfirmEmailPage = () => {
       setError("");
       toast.success("Email verified successfully!");
 
-      // Backend sets tokens as HTTP-only cookies automatically
-      // No need to manually store them
+      // Tokens are already stored by verifyEmailConfirm via auth-service
 
       // Navigate based on onboarding status
       if (data.needsOnboarding) {

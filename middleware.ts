@@ -61,21 +61,18 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // If a token is in the URL, validate it, set it as a cookie, and redirect.
+  // If a token is in the URL, validate it and redirect clean URL
+  // (Client-side will handle storing in localStorage)
   if (tokenFromUrl) {
     const payload = await verifyToken(tokenFromUrl, jwtSecret);
     if (payload) {
       const url = request.nextUrl.clone();
       url.searchParams.delete("accessToken");
-      const response = NextResponse.redirect(url);
-      response.cookies.set("accessToken", tokenFromUrl, {
-        path: "/",
-        maxAge: 604800, // 7 days
-        sameSite: "lax",
-      });
-      return response;
+      url.searchParams.delete("refreshToken");
+      url.searchParams.delete("userId");
+      return NextResponse.redirect(url);
     } else {
-      // Invalid URL token, just redirect to login without the bad token
+      // Invalid URL token, redirect to login without the bad token
       const url = new URL("/login", request.url);
       return NextResponse.redirect(url);
     }

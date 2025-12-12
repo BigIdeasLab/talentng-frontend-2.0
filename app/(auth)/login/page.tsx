@@ -8,9 +8,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { decodeJwt } from "@/lib/utils";
-
-import { login } from "@/lib/api";
+import { login } from "@/lib/api/auth-service";
+import { useOAuthCallback } from "@/hooks/useOAuthCallback";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -49,8 +48,7 @@ const Login = () => {
       
       toast.success("Login successful!");
 
-      const decodedToken = decodeJwt(user?.id || "");
-      if (decodedToken || user) {
+      if (user) {
         if (!user.username || user.role === "general") {
           router.push("/onboarding");
         } else {
@@ -63,20 +61,15 @@ const Login = () => {
     },
     onError: (error: any) => {
       const message = error.message || "Login failed. Please try again.";
-      // Only show API errors in toast, not form
       toast.error(message);
     },
   });
 
-  // Handle OAuth callback redirect with userId in query
-  React.useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const userId = searchParams.get("userId");
-    if (userId) {
-      // Clean up the URL and redirect to dashboard
-      router.replace("/dashboard");
-    }
-  }, [router]);
+  // Handle OAuth callback redirect - extracts tokens from URL and stores them
+  useOAuthCallback(() => {
+    toast.success("Login successful!");
+    router.push("/dashboard");
+  });
 
   const onSubmit = (data: LoginFormValues) => {
     loginMutation.mutate(data);

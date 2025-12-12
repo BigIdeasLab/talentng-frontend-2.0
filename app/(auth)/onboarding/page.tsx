@@ -15,6 +15,7 @@ import { MentorExpertiseStep } from "@/components/onboarding/MentorExpertiseStep
 import { useCompleteOnboarding } from "@/hooks/useUserApi";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
+import { useTokenRefresh } from "@/hooks/useTokenRefresh";
 
 const OnboardingPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -31,6 +32,7 @@ const OnboardingPage = () => {
   const { toast } = useToast();
   const { refetchUser, user } = useAuth();
   const completeOnboardingMutation = useCompleteOnboarding();
+  const { ensureValidTokenBeforeOperation } = useTokenRefresh();
   
   // Check if we're in "add role" mode
   const isAddingRole = searchParams.get("mode") === "add-role";
@@ -349,6 +351,13 @@ const OnboardingPage = () => {
     }
 
     try {
+      // Ensure token is valid before submitting large profile data
+      const tokenValid = await ensureValidTokenBeforeOperation('profile completion');
+      if (!tokenValid) {
+        setIsLoading(false);
+        return;
+      }
+
       await completeOnboardingMutation.mutateAsync(formData);
 
       await refetchUser();

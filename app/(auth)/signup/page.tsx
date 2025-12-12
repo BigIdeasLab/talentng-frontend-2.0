@@ -9,7 +9,8 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
-import { register } from "@/lib/api";
+import { register } from "@/lib/api/auth-service";
+import { useOAuthCallback } from "@/hooks/useOAuthCallback";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -76,6 +77,12 @@ const Signup = () => {
   const onSubmit = (data: SignUpFormValues) => {
     mutation.mutate(data);
   };
+
+  // Handle OAuth callback redirect - extracts tokens from URL and stores them
+  useOAuthCallback(() => {
+    toast.success("Sign up successful!");
+    router.push("/onboarding");
+  });
 
   return (
     <div className="relative h-screen bg-white overflow-hidden">

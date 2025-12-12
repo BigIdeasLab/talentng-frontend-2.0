@@ -9,7 +9,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
-import { forgotPassword } from "@/lib/api";
+import { forgotPassword } from "@/lib/api/auth-service";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {

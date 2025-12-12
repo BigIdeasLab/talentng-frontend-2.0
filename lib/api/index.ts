@@ -1,12 +1,14 @@
 /**
  * Centralized API Client
  * Handles request configuration, authentication, and error handling
+ * Uses Authorization header with localStorage tokens
  */
 
-import { deleteCookie } from "@/lib/utils";
+import { getAccessToken, clearTokens } from "@/lib/auth";
+import { ensureValidToken, queueRequest, resetRefreshState } from "@/lib/token-refresh";
 
 const baseUrl =
-   process.env.NEXT_PUBLIC_TALENTNG_API_URL || "http://localhost:3001";
+  process.env.NEXT_PUBLIC_TALENTNG_API_URL || "http://localhost:3001";
 
 type ApiOptions = {
   headers?: Record<string, string>;
@@ -16,15 +18,18 @@ type ApiOptions = {
 };
 
 let isRefreshing = false;
-let refreshTokenPromise: Promise<string | null> | null = null;
-const failedQueue: any[] = [];
+let refreshPromise: Promise<boolean> | null = null;
+const failedQueue: Array<{
+  resolve: () => void;
+  reject: (error: Error) => void;
+}> = [];
 
-const processQueue = (error: Error | null, token: string | null = null) => {
+const processQueue = (success: boolean, error?: Error): void => {
   failedQueue.forEach((prom) => {
-    if (error) {
-      prom.reject(error);
+    if (success) {
+      prom.resolve();
     } else {
-      prom.resolve(token);
+      prom.reject(error || new Error("Token refresh failed"));
     }
   });
 
@@ -35,14 +40,21 @@ const apiClient = async <T>(
   endpoint: string,
   options: ApiOptions = {}
 ): Promise<T> => {
+  const accessToken = getAccessToken();
+  
   const config: RequestInit = {
     method: options.method || "GET",
-    credentials: "include", // Auto-send HTTP-only cookies
+    credentials: "include", // Still send cookies (for future backend changes)
     headers: {
       "Content-Type": "application/json",
       ...options.headers,
     },
   };
+
+  // Add Authorization header if token exists
+  if (accessToken) {
+    (config.headers as Record<string, string>)["Authorization"] = `Bearer ${accessToken}`;
+  }
 
   if (options.body) {
     if (options.body instanceof FormData) {
@@ -57,8 +69,11 @@ const apiClient = async <T>(
     let response = await fetch(`${baseUrl}${endpoint}`, config);
 
     if (response.status === 401) {
-      // Don't attempt token refresh for auth endpoints
-      if (endpoint.includes("/auth/verify-email/confirm") || endpoint.includes("/auth/reset-password")) {
+      // Don't attempt token refresh for certain auth endpoints
+      if (
+        endpoint.includes("/auth/verify-email/confirm") ||
+        endpoint.includes("/auth/reset-password")
+      ) {
         const errorText = await response.text();
         let errorData;
         try {
@@ -66,61 +81,66 @@ const apiClient = async <T>(
         } catch (e) {
           errorData = { message: errorText || response.statusText };
         }
-        const errorMessage = errorData.message || errorData.error || "An error occurred during the API request.";
+        const errorMessage =
+          errorData.message || errorData.error || "An error occurred during the API request.";
         const error = new Error(errorMessage);
         (error as any).status = response.status;
         (error as any).data = errorData;
         throw error;
       }
 
-      if (isRefreshing && refreshTokenPromise) {
-        return refreshTokenPromise
-          .then(() => {
-            return fetch(`${baseUrl}${endpoint}`, config);
-          })
-          .then((res) => res.json());
+      // If already refreshing, queue this request
+      if (isRefreshing && refreshPromise) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({
+            resolve: () => {
+              // Retry the original request with new token
+              const newToken = getAccessToken();
+              if (newToken) {
+                (config.headers as Record<string, string>)["Authorization"] = `Bearer ${newToken}`;
+              }
+              fetch(`${baseUrl}${endpoint}`, config)
+                .then((res) => res.json())
+                .then(resolve)
+                .catch(reject);
+            },
+            reject,
+          });
+        });
       }
 
+      // Start refresh
       isRefreshing = true;
-      refreshTokenPromise = new Promise(async (resolve) => {
-        try {
-          const deviceId = typeof window !== "undefined" 
-            ? localStorage.getItem("deviceId") 
-            : null;
+      refreshPromise = ensureValidToken(baseUrl);
 
-          const refreshResponse = await fetch(`${baseUrl}/auth/refresh`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ deviceId }),
-          });
-          if (!refreshResponse.ok) {
-            throw new Error("Failed to refresh token");
-          }
-          // Backend sets new token as HTTP-only cookie, no body parsing needed
-          processQueue(null, null);
-          response = await fetch(`${baseUrl}${endpoint}`, config);
-          resolve(null);
-        } catch (error) {
-          processQueue(error as Error, null);
-          deleteCookie("accessToken");
-          deleteCookie("user");
-          if (typeof window !== "undefined") {
-            localStorage.removeItem("deviceId");
-            window.location.href = "/login";
-          }
-          isRefreshing = false;
-          refreshTokenPromise = null;
-          resolve(null);
-        } finally {
-          isRefreshing = false;
-          refreshTokenPromise = null;
+      try {
+        const refreshSuccess = await refreshPromise;
+        if (!refreshSuccess) {
+          throw new Error("Failed to refresh token");
         }
-      });
 
-      return refreshTokenPromise.then(() => response.json());
+        processQueue(true);
+        isRefreshing = false;
+        refreshPromise = null;
+
+        // Retry with new token
+        const newToken = getAccessToken();
+        if (newToken) {
+          (config.headers as Record<string, string>)["Authorization"] = `Bearer ${newToken}`;
+        }
+        response = await fetch(`${baseUrl}${endpoint}`, config);
+      } catch (error) {
+        processQueue(false, error as Error);
+        clearTokens();
+        isRefreshing = false;
+        refreshPromise = null;
+        resetRefreshState();
+
+        if (typeof window !== "undefined") {
+          window.location.href = "/login";
+        }
+        throw error;
+      }
     }
 
     if (!response.ok) {
@@ -148,7 +168,6 @@ const apiClient = async <T>(
       } else if (response.status === 500) {
         errorMessage = "Server error. Please try again later.";
       }
-      // Keep other error messages as-is from the backend (400, 401, 404, 429, etc.)
 
       const error = new Error(errorMessage);
       (error as any).status = response.status;
@@ -167,7 +186,7 @@ const apiClient = async <T>(
 export default apiClient;
 
 // Re-export all API modules for convenience
-export * from "./auth";
+// NOTE: Auth is now in auth-service.ts, not ./auth
 export * from "./opportunities";
 export * from "./applications";
 export * from "./mentors";

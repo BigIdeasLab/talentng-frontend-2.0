@@ -14,7 +14,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 
-import { resetPassword } from "@/lib/api";
+import { resetPassword } from "@/lib/api/auth-service";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -81,7 +81,7 @@ const ResetPassword = () => {
     onSuccess: (data: any) => {
       setError("");
       toast.success("Password reset successfully!");
-      // Backend sets tokens as HTTP-only cookies automatically
+      // Tokens are already stored by resetPassword via auth-service
       // Navigate to dashboard directly
       router.push("/dashboard");
     },

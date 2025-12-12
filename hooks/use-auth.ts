@@ -2,7 +2,9 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { userProfileApi, type User } from "@/lib/api/user-service";
-import { logout as logoutAPI } from "@/lib/api";
+import { logout as logoutAPI } from "@/lib/api/auth-service";
+import { clearTokens } from "@/lib/auth";
+import { resetRefreshState } from "@/lib/token-refresh";
 
 const fetchUser = async (): Promise<User | null> => {
   try {
@@ -34,11 +36,12 @@ export const useAuth = () => {
       console.error("Logout error:", error);
       // Continue logout even if API call fails
     } finally {
-      // Clear client state
+      // Clear all tokens and state
+      clearTokens();
+      resetRefreshState();
       localStorage.removeItem("user");
       queryClient.setQueryData(["user"], null);
       
-      // HTTP-only cookies are cleared by server
       // Hard redirect to force middleware to re-check
       if (typeof window !== "undefined") {
         window.location.href = "/login";
