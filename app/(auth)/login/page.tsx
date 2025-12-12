@@ -20,7 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { LoginResponse } from "@/lib/types/auth";
+import type { AuthResponse } from "@/lib/api/auth-service";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
@@ -41,22 +41,20 @@ const Login = () => {
     },
   });
 
-  const loginMutation = useMutation<LoginResponse, Error, LoginFormValues>({
+  const loginMutation = useMutation<AuthResponse, Error, LoginFormValues>({
     mutationFn: (data: LoginFormValues) => login(data.email, data.password),
     onSuccess: async (response) => {
-      const { user } = response;
+      console.log("✅ Login successful");
+      console.log("needsOnboarding:", response.needsOnboarding);
       
       toast.success("Login successful!");
 
-      if (user) {
-        if (!user.username || user.role === "general") {
-          router.push("/onboarding");
-        } else {
-          router.push("/dashboard");
-        }
+      if (response.needsOnboarding) {
+        console.log("🔄 Redirecting to onboarding");
+        router.push("/onboarding");
       } else {
-        toast.error("Login failed. Please try again.");
-        router.push("/login");
+        console.log("🔄 Redirecting to dashboard");
+        router.push("/dashboard");
       }
     },
     onError: (error: any) => {

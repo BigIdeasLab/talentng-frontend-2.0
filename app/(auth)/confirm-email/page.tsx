@@ -116,7 +116,7 @@ const ConfirmEmailPage = () => {
     if (verificationCode.length === 6) {
       onSubmit({ verificationCode });
     }
-  }, [verificationCode]);
+  }, [verificationCode, error]);
 
   return (
     <div className="relative h-screen bg-white overflow-hidden">

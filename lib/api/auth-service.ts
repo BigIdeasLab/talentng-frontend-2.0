@@ -7,7 +7,7 @@
 import apiClient from "@/lib/api";
 import { storeTokens, clearTokens } from "@/lib/auth";
 import { getOrCreateDeviceId, getDeviceName } from "@/lib/device";
-import type { LoginResponse, User } from "@/lib/types/auth";
+import type { User } from "@/lib/types/auth";
 
 export interface LoginCredentials {
   email: string;
@@ -27,12 +27,12 @@ export interface AuthResponse {
  */
 const setCookie = (name: string, value: string, maxAgeSeconds: number = 604800) => {
   if (typeof document === 'undefined') return;
-  
+
   try {
     // Format: name=value; path=/; max-age=X; samesite=strict
     const secure = process.env.NODE_ENV === 'production' ? 'secure; ' : '';
     const sameSite = 'samesite=strict';
-    
+
     const cookieString = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAgeSeconds}; ${secure}${sameSite}`;
     document.cookie = cookieString;
   } catch (error) {
@@ -43,17 +43,17 @@ const setCookie = (name: string, value: string, maxAgeSeconds: number = 604800) 
 /**
  * Helper to store tokens from auth response
  */
-const handleAuthResponse = (response: AuthResponse | LoginResponse): void => {
+const handleAuthResponse = (response: AuthResponse): void => {
   if ('accessToken' in response && response.accessToken && 'refreshToken' in response && response.refreshToken) {
     const tokenData = {
       accessToken: response.accessToken,
-      refreshToken: (response as AuthResponse).refreshToken,
-      userId: response.user?.id || (response as AuthResponse).userId || '',
+      refreshToken: response.refreshToken,
+      userId: response.user?.id || response.userId || '',
     };
-    
+
     // Store in localStorage for client-side
     storeTokens(tokenData);
-    
+
     // Also set cookies for SSR
     setCookie('accessToken', tokenData.accessToken, 86400); // 1 day in seconds
     setCookie('refreshToken', tokenData.refreshToken, 604800); // 7 days in seconds
@@ -64,20 +64,25 @@ const handleAuthResponse = (response: AuthResponse | LoginResponse): void => {
 export const register = async (
   email: string,
   password: string
-): Promise<LoginResponse> => {
+): Promise<AuthResponse> => {
   const response = await apiClient<AuthResponse>("/auth/register", {
     method: "POST",
     body: { email, password },
   });
 
   handleAuthResponse(response);
-  return { accessToken: response.accessToken, user: response.user || {} as User };
+  return {
+    accessToken: response.accessToken,
+    refreshToken: response.refreshToken,
+    user: response.user || ({} as User),
+    needsOnboarding: response.needsOnboarding,
+  };
 };
 
 export const login = async (
   email: string,
   password: string
-): Promise<LoginResponse> => {
+): Promise<AuthResponse> => {
   const deviceId = getOrCreateDeviceId();
   const deviceName = getDeviceName();
 
@@ -87,7 +92,12 @@ export const login = async (
   });
 
   handleAuthResponse(response);
-  return { accessToken: response.accessToken, user: response.user || {} as User };
+  return {
+    accessToken: response.accessToken,
+    refreshToken: response.refreshToken,
+    user: response.user || ({} as User),
+    needsOnboarding: response.needsOnboarding,
+  };
 };
 
 export const verifyEmailSend = async (email: string): Promise<void> => {
@@ -107,10 +117,10 @@ export const verifyEmailConfirm = async (
   });
 
   handleAuthResponse(response);
-  return { 
-    accessToken: response.accessToken, 
+  return {
+    accessToken: response.accessToken,
     refreshToken: response.refreshToken,
-    user: response.user || {} as User,
+    user: response.user || ({} as User),
     needsOnboarding: response.needsOnboarding,
   };
 };
@@ -126,14 +136,19 @@ export const resetPassword = async (
   email: string,
   resetCode: string,
   newPassword: string
-): Promise<LoginResponse> => {
+): Promise<AuthResponse> => {
   const response = await apiClient<AuthResponse>("/auth/reset-password", {
     method: "POST",
     body: { email, resetCode, newPassword },
   });
 
   handleAuthResponse(response);
-  return { accessToken: response.accessToken, user: response.user || {} as User };
+  return {
+    accessToken: response.accessToken,
+    refreshToken: response.refreshToken,
+    user: response.user || ({} as User),
+    needsOnboarding: response.needsOnboarding,
+  };
 };
 
 /**
@@ -141,12 +156,12 @@ export const resetPassword = async (
  */
 const clearCookies = () => {
   if (typeof document === 'undefined') return;
-  
+
   const cookieNames = ['accessToken', 'refreshToken', 'userId'];
   const date = new Date();
   date.setTime(date.getTime() - 1); // Set to past date to delete
   const expires = `expires=${date.toUTCString()}`;
-  
+
   cookieNames.forEach(name => {
     document.cookie = `${name}=;path=/;${expires}`;
   });

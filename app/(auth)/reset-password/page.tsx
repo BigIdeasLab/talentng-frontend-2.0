@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/input-otp";
 
 import { resetPassword } from "@/lib/api/auth-service";
+import type { AuthResponse } from "@/lib/api/auth-service";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -75,15 +76,24 @@ const ResetPassword = () => {
     },
   });
 
-  const mutation = useMutation({
+  const mutation = useMutation<AuthResponse>({
     mutationFn: (data: ResetPasswordFormValues) =>
       resetPassword(email, data.resetCode, data.password),
-    onSuccess: (data: any) => {
+    onSuccess: (response) => {
+      console.log("✅ Password reset successful");
+      console.log("needsOnboarding:", response.needsOnboarding);
+      
       setError("");
       toast.success("Password reset successfully!");
       // Tokens are already stored by resetPassword via auth-service
-      // Navigate to dashboard directly
-      router.push("/dashboard");
+      
+      if (response.needsOnboarding) {
+        console.log("🔄 Redirecting to onboarding");
+        router.push("/onboarding");
+      } else {
+        console.log("🔄 Redirecting to dashboard");
+        router.push("/dashboard");
+      }
     },
     onError: (error: any) => {
       console.error("Password reset error:", error);
