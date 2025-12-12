@@ -61,16 +61,14 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // If a token is in the URL, validate it and redirect clean URL
-  // (Client-side will handle storing in localStorage)
+  // If a token is in the URL, validate it and let it through
+  // (Client-side useOAuthCallback will extract and store in localStorage)
   if (tokenFromUrl) {
     const payload = await verifyToken(tokenFromUrl, jwtSecret);
     if (payload) {
-      const url = request.nextUrl.clone();
-      url.searchParams.delete("accessToken");
-      url.searchParams.delete("refreshToken");
-      url.searchParams.delete("userId");
-      return NextResponse.redirect(url);
+      // Token is valid - let page load with tokens in URL
+      // Client will extract and store them in localStorage
+      return NextResponse.next();
     } else {
       // Invalid URL token, redirect to login without the bad token
       const url = new URL("/login", request.url);

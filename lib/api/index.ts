@@ -54,6 +54,9 @@ const apiClient = async <T>(
   // Add Authorization header if token exists
   if (accessToken) {
     (config.headers as Record<string, string>)["Authorization"] = `Bearer ${accessToken}`;
+    console.log('[API CLIENT] Authorization header added', { endpoint, tokenLength: accessToken.length });
+  } else {
+    console.warn('[API CLIENT] No access token found for request', { endpoint });
   }
 
   if (options.body) {

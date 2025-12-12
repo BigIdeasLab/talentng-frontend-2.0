@@ -20,6 +20,12 @@ export const storeTokens = (data: TokenData): void => {
   localStorage.setItem('accessToken', data.accessToken);
   localStorage.setItem('refreshToken', data.refreshToken);
   localStorage.setItem('userId', data.userId);
+  
+  console.log('[TOKEN STORAGE] Tokens stored in localStorage', {
+    accessToken: data.accessToken.substring(0, 20) + '...',
+    refreshToken: data.refreshToken.substring(0, 20) + '...',
+    userId: data.userId,
+  });
 };
 
 /**

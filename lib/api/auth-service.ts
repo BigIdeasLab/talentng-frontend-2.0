@@ -7,6 +7,7 @@
 import apiClient from "@/lib/api";
 import { storeTokens, clearTokens } from "@/lib/auth";
 import { getOrCreateDeviceId, getDeviceName } from "@/lib/device";
+import type { LoginResponse, User } from "@/lib/types/auth";
 
 export interface LoginCredentials {
   email: string;
@@ -17,18 +18,18 @@ export interface AuthResponse {
   accessToken: string;
   refreshToken: string;
   userId?: string;
-  user?: { id: string; [key: string]: any };
+  user?: User;
 }
 
 /**
  * Helper to store tokens from auth response
  */
-const handleAuthResponse = (response: AuthResponse): void => {
-  if (response.accessToken && response.refreshToken) {
+const handleAuthResponse = (response: AuthResponse | LoginResponse): void => {
+  if ('accessToken' in response && response.accessToken && 'refreshToken' in response && response.refreshToken) {
     storeTokens({
       accessToken: response.accessToken,
-      refreshToken: response.refreshToken,
-      userId: response.user?.id || response.userId || '',
+      refreshToken: (response as AuthResponse).refreshToken,
+      userId: response.user?.id || (response as AuthResponse).userId || '',
     });
   }
 };
@@ -36,20 +37,20 @@ const handleAuthResponse = (response: AuthResponse): void => {
 export const register = async (
   email: string,
   password: string
-): Promise<AuthResponse> => {
+): Promise<LoginResponse> => {
   const response = await apiClient<AuthResponse>("/auth/register", {
     method: "POST",
     body: { email, password },
   });
 
   handleAuthResponse(response);
-  return response;
+  return { accessToken: response.accessToken, user: response.user || {} as User };
 };
 
 export const login = async (
   email: string,
   password: string
-): Promise<AuthResponse> => {
+): Promise<LoginResponse> => {
   const deviceId = getOrCreateDeviceId();
   const deviceName = getDeviceName();
 
@@ -59,7 +60,7 @@ export const login = async (
   });
 
   handleAuthResponse(response);
-  return response;
+  return { accessToken: response.accessToken, user: response.user || {} as User };
 };
 
 export const verifyEmailSend = async (email: string): Promise<void> => {
@@ -72,14 +73,14 @@ export const verifyEmailSend = async (email: string): Promise<void> => {
 export const verifyEmailConfirm = async (
   email: string,
   verificationCode: string
-): Promise<AuthResponse> => {
+): Promise<LoginResponse> => {
   const response = await apiClient<AuthResponse>("/auth/verify-email/confirm", {
     method: "POST",
     body: { email, verificationCode },
   });
 
   handleAuthResponse(response);
-  return response;
+  return { accessToken: response.accessToken, user: response.user || {} as User };
 };
 
 export const forgotPassword = async (email: string): Promise<void> => {
@@ -93,14 +94,14 @@ export const resetPassword = async (
   email: string,
   resetCode: string,
   newPassword: string
-): Promise<AuthResponse> => {
+): Promise<LoginResponse> => {
   const response = await apiClient<AuthResponse>("/auth/reset-password", {
     method: "POST",
     body: { email, resetCode, newPassword },
   });
 
   handleAuthResponse(response);
-  return response;
+  return { accessToken: response.accessToken, user: response.user || {} as User };
 };
 
 export const logout = async (deviceId?: string): Promise<void> => {

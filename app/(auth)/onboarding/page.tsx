@@ -16,6 +16,7 @@ import { useCompleteOnboarding } from "@/hooks/useUserApi";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { useTokenRefresh } from "@/hooks/useTokenRefresh";
+import { useOAuthCallback } from "@/hooks/useOAuthCallback";
 
 const OnboardingPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -33,6 +34,10 @@ const OnboardingPage = () => {
   const { refetchUser, user } = useAuth();
   const completeOnboardingMutation = useCompleteOnboarding();
   const { ensureValidTokenBeforeOperation } = useTokenRefresh();
+  
+  // Handle OAuth callback redirect - extracts tokens from URL and stores them
+  // This must run BEFORE any API calls to ensure token is available
+  useOAuthCallback();
   
   // Check if we're in "add role" mode
   const isAddingRole = searchParams.get("mode") === "add-role";
