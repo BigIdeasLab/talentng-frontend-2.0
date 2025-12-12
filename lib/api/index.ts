@@ -40,11 +40,37 @@ const apiClient = async <T>(
   endpoint: string,
   options: ApiOptions = {}
 ): Promise<T> => {
-  const accessToken = getAccessToken();
+  // If no token in localStorage but cookies exist (OAuth callback), extract from cookies
+  let accessToken = getAccessToken();
+  if (!accessToken && typeof document !== 'undefined') {
+    const cookieToken = document.cookie
+      .split('; ')
+      .find(c => c.startsWith('accessToken='))
+      ?.split('=')[1];
+    if (cookieToken) {
+      const refreshTokenCookie = document.cookie
+        .split('; ')
+        .find(c => c.startsWith('refreshToken='))
+        ?.split('=')[1];
+      const userIdCookie = document.cookie
+        .split('; ')
+        .find(c => c.startsWith('userId='))
+        ?.split('=')[1];
+      
+      if (refreshTokenCookie && userIdCookie) {
+        const { storeTokens } = require('@/lib/auth');
+        storeTokens({
+          accessToken: decodeURIComponent(cookieToken),
+          refreshToken: decodeURIComponent(refreshTokenCookie),
+          userId: decodeURIComponent(userIdCookie),
+        });
+        accessToken = decodeURIComponent(cookieToken);
+      }
+    }
+  }
   
   const config: RequestInit = {
     method: options.method || "GET",
-    credentials: "include", // Still send cookies (for future backend changes)
     headers: {
       "Content-Type": "application/json",
       ...options.headers,
@@ -54,9 +80,6 @@ const apiClient = async <T>(
   // Add Authorization header if token exists
   if (accessToken) {
     (config.headers as Record<string, string>)["Authorization"] = `Bearer ${accessToken}`;
-    console.log('[API CLIENT] Authorization header added', { endpoint, tokenLength: accessToken.length });
-  } else {
-    console.warn('[API CLIENT] No access token found for request', { endpoint });
   }
 
   if (options.body) {
@@ -135,6 +158,16 @@ const apiClient = async <T>(
       } catch (error) {
         processQueue(false, error as Error);
         clearTokens();
+        // Also clear cookies
+        if (typeof document !== 'undefined') {
+          const cookieNames = ['accessToken', 'refreshToken', 'userId'];
+          const date = new Date();
+          date.setTime(date.getTime() - 1);
+          const expires = `expires=${date.toUTCString()}`;
+          cookieNames.forEach(name => {
+            document.cookie = `${name}=;path=/;${expires}`;
+          });
+        }
         isRefreshing = false;
         refreshPromise = null;
         resetRefreshState();

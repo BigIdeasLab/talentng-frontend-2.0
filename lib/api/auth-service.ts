@@ -22,15 +22,41 @@ export interface AuthResponse {
 }
 
 /**
+ * Set cookie for server-side access
+ */
+const setCookie = (name: string, value: string, maxAgeSeconds: number = 604800) => {
+  if (typeof document === 'undefined') return;
+  
+  try {
+    // Format: name=value; path=/; max-age=X; samesite=strict
+    const secure = process.env.NODE_ENV === 'production' ? 'secure; ' : '';
+    const sameSite = 'samesite=strict';
+    
+    const cookieString = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAgeSeconds}; ${secure}${sameSite}`;
+    document.cookie = cookieString;
+  } catch (error) {
+    console.error('[AUTH SERVICE] Error setting cookie:', name, error);
+  }
+};
+
+/**
  * Helper to store tokens from auth response
  */
 const handleAuthResponse = (response: AuthResponse | LoginResponse): void => {
   if ('accessToken' in response && response.accessToken && 'refreshToken' in response && response.refreshToken) {
-    storeTokens({
+    const tokenData = {
       accessToken: response.accessToken,
       refreshToken: (response as AuthResponse).refreshToken,
       userId: response.user?.id || (response as AuthResponse).userId || '',
-    });
+    };
+    
+    // Store in localStorage for client-side
+    storeTokens(tokenData);
+    
+    // Also set cookies for SSR
+    setCookie('accessToken', tokenData.accessToken, 86400); // 1 day in seconds
+    setCookie('refreshToken', tokenData.refreshToken, 604800); // 7 days in seconds
+    setCookie('userId', tokenData.userId, 604800); // 7 days in seconds
   }
 };
 
@@ -104,6 +130,22 @@ export const resetPassword = async (
   return { accessToken: response.accessToken, user: response.user || {} as User };
 };
 
+/**
+ * Clear tokens from cookies
+ */
+const clearCookies = () => {
+  if (typeof document === 'undefined') return;
+  
+  const cookieNames = ['accessToken', 'refreshToken', 'userId'];
+  const date = new Date();
+  date.setTime(date.getTime() - 1); // Set to past date to delete
+  const expires = `expires=${date.toUTCString()}`;
+  
+  cookieNames.forEach(name => {
+    document.cookie = `${name}=;path=/;${expires}`;
+  });
+};
+
 export const logout = async (deviceId?: string): Promise<void> => {
   try {
     const id =
@@ -121,6 +163,7 @@ export const logout = async (deviceId?: string): Promise<void> => {
     console.error("Logout API error:", error);
   } finally {
     clearTokens();
+    clearCookies();
 
     if (typeof window !== "undefined") {
       localStorage.removeItem("deviceId");
@@ -139,6 +182,7 @@ export const logoutAllDevices = async (): Promise<void> => {
     console.error("Logout all devices API error:", error);
   } finally {
     clearTokens();
+    clearCookies();
 
     if (typeof window !== "undefined") {
       localStorage.removeItem("deviceId");

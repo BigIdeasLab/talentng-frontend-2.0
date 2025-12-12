@@ -52,6 +52,8 @@ export async function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
   const tokenFromCookie = request.cookies.get("accessToken")?.value;
   const tokenFromUrl = searchParams.get("accessToken");
+  const refreshTokenFromUrl = searchParams.get("refreshToken");
+  const userIdFromUrl = searchParams.get("userId");
   const jwtSecret = process.env.JWT_SECRET;
 
   if (!jwtSecret) {
@@ -61,14 +63,56 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // If a token is in the URL, validate it and let it through
-  // (Client-side useOAuthCallback will extract and store in localStorage)
+  // If tokens are in the URL (OAuth callback), validate and set as cookies
+  // This ensures server components can read them on the NEXT request
   if (tokenFromUrl) {
     const payload = await verifyToken(tokenFromUrl, jwtSecret);
     if (payload) {
-      // Token is valid - let page load with tokens in URL
-      // Client will extract and store them in localStorage
-      return NextResponse.next();
+      // Create a new response object to properly set cookies
+      const response = NextResponse.next({
+        request: {
+          headers: request.headers,
+        },
+      });
+      
+      // Set accessToken cookie (1 day)
+      response.cookies.set({
+        name: "accessToken",
+        value: tokenFromUrl,
+        httpOnly: false, // Allow JS access for client-side use
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 86400, // 1 day in seconds
+        path: "/",
+      });
+      
+      // Set refreshToken cookie (7 days)
+      if (refreshTokenFromUrl) {
+        response.cookies.set({
+          name: "refreshToken",
+          value: refreshTokenFromUrl,
+          httpOnly: false,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+          maxAge: 604800, // 7 days in seconds
+          path: "/",
+        });
+      }
+      
+      // Set userId cookie (7 days)
+      if (userIdFromUrl) {
+        response.cookies.set({
+          name: "userId",
+          value: userIdFromUrl,
+          httpOnly: false,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+          maxAge: 604800, // 7 days in seconds
+          path: "/",
+        });
+      }
+      
+      return response;
     } else {
       // Invalid URL token, redirect to login without the bad token
       const url = new URL("/login", request.url);

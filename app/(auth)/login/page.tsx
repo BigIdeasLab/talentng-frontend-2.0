@@ -66,9 +66,15 @@ const Login = () => {
   });
 
   // Handle OAuth callback redirect - extracts tokens from URL and stores them
+  // IMPORTANT: Only redirect if we're actually on the login page (not if navigated elsewhere)
   useOAuthCallback(() => {
-    toast.success("Login successful!");
-    router.push("/dashboard");
+    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+    
+    // Only redirect if still on login page
+    if (currentPath === '/login') {
+      toast.success("Login successful!");
+      router.push("/dashboard");
+    }
   });
 
   const onSubmit = (data: LoginFormValues) => {

@@ -27,9 +27,10 @@ const serverApiClient = async <T>(
   const token = cookieStore.get("accessToken")?.value;
 
   if (!token) {
-    const error = new Error("Not authenticated - No access token found");
-    console.error("[Server API] Authentication required:", error.message);
-    throw error;
+    // Return null/empty for unauthenticated requests instead of throwing
+    // This allows unauthenticated pages (like login, signup) to render without errors
+    // and allows ProfileProvider to gracefully handle missing profiles
+    return null as T;
   }
 
   const config: RequestInit = {
@@ -67,11 +68,6 @@ const serverApiClient = async <T>(
       let errorMessage =
         errorData.message || errorData.error || `API Error: ${response.statusText}`;
 
-      // Only log errors in development, and skip 404s (which are often expected)
-      if (process.env.NODE_ENV === "development" && response.status !== 404) {
-        console.error(`[Server API Error] ${response.status}: ${errorMessage}`);
-      }
-
       const error = new Error(errorMessage);
       (error as any).status = response.status;
       (error as any).data = errorData;
@@ -82,11 +78,6 @@ const serverApiClient = async <T>(
     const data = responseText ? JSON.parse(responseText) : ({} as T);
     return data;
   } catch (error) {
-    // Only log unexpected errors (not 404s)
-    const status = (error as any).status;
-    if (process.env.NODE_ENV === "development" && status !== 404) {
-      console.error("[Server API Client Error]:", error);
-    }
     throw error;
   }
 };
