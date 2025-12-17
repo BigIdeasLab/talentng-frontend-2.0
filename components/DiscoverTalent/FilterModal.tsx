@@ -220,53 +220,90 @@ export function FilterModal({
              </button>
            </div>
             <div className="relative">
-              <div className="flex items-center gap-[4px] px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] bg-white">
-                <Search className="w-[12px] h-[12px] text-[#B2B2B2]" />
-                <input
-                  type="text"
-                  placeholder="Search Skills"
-                  value={skillSearch}
-                  onChange={(e) => setSkillSearch(e.target.value)}
-                  onFocus={() => setIsSkillOpen(true)}
-                  className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
-                />
-              </div>
-              {isSkillOpen && filteredSkills.length > 0 && (
-                <div className="absolute top-full mt-2 w-full max-h-[160px] overflow-y-auto bg-white rounded-[8px] shadow-[0_2px_20px_2px_rgba(0,0,0,0.15)] p-[8px] flex flex-col gap-[10px] z-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                  {filteredSkills.map((skill) => (
-                    <button
-                      key={skill}
-                      onClick={() => {
-                        toggleSkill(skill);
-                        setIsSkillOpen(false);
-                        setSkillSearch("");
-                      }}
-                      className="text-left px-[2px] py-[2px] text-[11px] font-normal text-black font-inter-tight capitalize hover:bg-gray-50 rounded"
-                    >
-                      {skill}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-            {/* Selected Skills */}
-            {filters.skills.length > 0 && (
-              <div className="flex flex-wrap gap-[4px] mt-1">
-                {filters.skills.map((skill) => (
-                  <div
-                    key={skill}
-                    className="flex items-center gap-[5px] px-[7px] py-[8px] bg-[#F5F5F5] rounded-[25px]"
-                  >
-                    <span className="text-[10px] font-normal text-black font-inter-tight">
-                      {skill}
-                    </span>
-                    <button onClick={() => toggleSkill(skill)}>
-                      <X className="w-[10px] h-[10px] text-[#606060]" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
+             <div className="flex items-center gap-[4px] px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] bg-white">
+               <Search className="w-[12px] h-[12px] text-[#B2B2B2]" />
+               <input
+                 type="text"
+                 placeholder="Search Skills"
+                 value={skillSearch}
+                 onChange={(e) => setSkillSearch(e.target.value)}
+                 onKeyDown={(e) => {
+                   if (e.key === "Enter") {
+                     e.preventDefault();
+                     if (skillSearch.trim() && !filters.skills.includes(skillSearch)) {
+                       toggleSkill(skillSearch);
+                       setSkillSearch("");
+                       setIsSkillOpen(false);
+                     }
+                   }
+                 }}
+                 onFocus={() => setIsSkillOpen(true)}
+                 className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
+               />
+             </div>
+             {isSkillOpen && skillSearch && (
+               <div className="absolute top-full mt-2 w-full max-h-[160px] overflow-y-auto bg-white rounded-[8px] shadow-[0_2px_20px_2px_rgba(0,0,0,0.15)] p-[8px] flex flex-col gap-[10px] z-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                 {filteredSkills.length > 0 ? (
+                   <>
+                     {filteredSkills.map((skill) => (
+                       <button
+                         key={skill}
+                         onClick={() => {
+                           toggleSkill(skill);
+                           setIsSkillOpen(false);
+                           setSkillSearch("");
+                         }}
+                         className="text-left px-[2px] py-[2px] text-[11px] font-normal text-black font-inter-tight capitalize hover:bg-gray-50 rounded"
+                       >
+                         {skill}
+                       </button>
+                     ))}
+                     {skillSearch.trim() && !skillsData.includes(skillSearch) && (
+                       <button
+                         onClick={() => {
+                           toggleSkill(skillSearch);
+                           setSkillSearch("");
+                           setIsSkillOpen(false);
+                         }}
+                         className="text-left px-[2px] py-[2px] text-[11px] font-normal text-[#5C30FF] bg-[#5C30FF]/5 hover:bg-[#5C30FF]/10 rounded border-t border-[#E1E4EA]"
+                       >
+                         + Add "{skillSearch}" as custom skill
+                       </button>
+                     )}
+                   </>
+                 ) : skillSearch.trim() ? (
+                   <button
+                     onClick={() => {
+                       toggleSkill(skillSearch);
+                       setSkillSearch("");
+                       setIsSkillOpen(false);
+                     }}
+                     className="text-left px-[2px] py-[2px] text-[11px] font-normal text-[#5C30FF] bg-[#5C30FF]/5 hover:bg-[#5C30FF]/10 rounded"
+                   >
+                     + Add "{skillSearch}" as custom skill
+                   </button>
+                 ) : null}
+               </div>
+             )}
+           </div>
+           {/* Selected Skills */}
+           {filters.skills.length > 0 && (
+             <div className="flex flex-wrap gap-[4px] mt-1">
+               {filters.skills.map((skill) => (
+                 <div
+                   key={skill}
+                   className="flex items-center gap-[5px] px-[7px] py-[8px] bg-[#F5F5F5] rounded-[25px]"
+                 >
+                   <span className="text-[10px] font-normal text-black font-inter-tight">
+                     {skill}
+                   </span>
+                   <button onClick={() => toggleSkill(skill)}>
+                     <X className="w-[10px] h-[10px] text-[#606060]" />
+                   </button>
+                 </div>
+               ))}
+             </div>
+           )}
           </div>
 
           {/* Location Dropdown */}
