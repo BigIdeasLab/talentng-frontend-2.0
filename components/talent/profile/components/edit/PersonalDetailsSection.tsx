@@ -23,6 +23,7 @@ interface PersonalDetailsSectionProps {
   onInputChange: (field: string, value: string) => void;
   sectionRef: (el: HTMLDivElement | null) => void;
   statesCities: Record<string, { major_cities: string[] }>;
+  onNext?: () => void;
 }
 
 export function PersonalDetailsSection({
@@ -32,6 +33,7 @@ export function PersonalDetailsSection({
   onInputChange,
   sectionRef,
   statesCities,
+  onNext,
 }: PersonalDetailsSectionProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -195,22 +197,6 @@ export function PersonalDetailsSection({
               />
             </div>
 
-            {/* Profile Image URL */}
-            <div className="flex flex-col gap-[10px]">
-              <label className="text-[13px] font-normal text-black font-inter-tight">
-                Profile Image URL
-              </label>
-              <input
-                type="url"
-                value={formData.profileImageUrl}
-                onChange={(e) =>
-                  onInputChange("profileImageUrl", e.target.value)
-                }
-                placeholder="https://images.example.com/avatars/your-profile.jpg"
-                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
-              />
-            </div>
-
             {/* State and City */}
             <div className="flex gap-[10px]">
               <div className="flex-1 flex flex-col gap-[10px]">
@@ -253,7 +239,10 @@ export function PersonalDetailsSection({
 
             {/* Next Button */}
             <div className="flex justify-end">
-              <button className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal">
+              <button 
+                onClick={onNext}
+                className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal"
+              >
                 Next
               </button>
             </div>

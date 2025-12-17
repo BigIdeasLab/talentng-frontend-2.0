@@ -9,6 +9,7 @@ import { WorkExperienceSection } from "@/components/talent/profile/components/ed
 import { EducationSection } from "@/components/talent/profile/components/edit/EducationSection";
 import { PortfolioSection } from "@/components/talent/profile/components/edit/PortfolioSection";
 import { SocialLinksSection } from "@/components/talent/profile/components/edit/SocialLinksSection";
+import { Modal } from "@/components/ui/modal";
 import statesCities from "@/lib/data/states-cities.json";
 import {
   mapUIToAPI,
@@ -92,6 +93,9 @@ export default function EditProfilePage() {
   >(null);
   const [skillsDropdownOpen, setSkillsDropdownOpen] = useState(false);
   const [stackDropdownOpen, setStackDropdownOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const skillsSelectRef = useRef<HTMLSelectElement | null>(null);
   const stackSelectRef = useRef<HTMLSelectElement | null>(null);
@@ -282,10 +286,14 @@ export default function EditProfilePage() {
       // Send to API using mutation
       await updateProfileMutation.mutateAsync(apiData);
 
-      alert("Profile saved successfully!");
+      setModalMessage("Profile saved successfully!");
+      setIsSuccess(true);
+      setModalOpen(true);
     } catch (error) {
       console.error("Error saving profile:", error);
-      alert("Failed to save profile. Please try again.");
+      setModalMessage("Failed to save profile. Please try again.");
+      setIsSuccess(false);
+      setModalOpen(true);
     }
   };
 
@@ -313,6 +321,7 @@ export default function EditProfilePage() {
                 if (el) sectionRefs.current["personal"] = el;
               }}
               statesCities={statesCities}
+              onNext={() => toggleSection("professional")}
             />
 
             <ProfessionalDetailsSection
@@ -385,6 +394,26 @@ export default function EditProfilePage() {
           </div>
         </div>
       </div>
+
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={isSuccess ? "Success" : "Error"}
+        description={modalMessage}
+        size="sm"
+        footer={
+          <button
+            onClick={() => setModalOpen(false)}
+            className={`px-4 py-2 rounded-lg font-medium text-white transition-colors ${
+              isSuccess
+                ? "bg-[#5C30FF] hover:bg-[#4a26cc]"
+                : "bg-red-500 hover:bg-red-600"
+            }`}
+          >
+            {isSuccess ? "Okay" : "Try Again"}
+          </button>
+        }
+      />
     </div>
   );
 }
