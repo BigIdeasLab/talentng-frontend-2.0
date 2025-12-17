@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { X, Search, ChevronDown } from "lucide-react";
 import categoriesData from "@/lib/data/categories.json";
+import skillsData from "@/lib/data/skills.json";
 
 export interface OpportunitiesFilterState {
   types: string[];
@@ -25,12 +26,6 @@ const OPPORTUNITY_TYPES = [
   { display: "Internship", value: "Internship" },
   { display: "Volunteer", value: "Volunteer" },
   { display: "Part-time", value: "PartTime" },
-];
-
-const EXPERIENCE_LEVELS = [
-  "Entry Level",
-  "Mid-Level",
-  "Senior",
 ];
 
 export function OpportunitiesFilterModal({
@@ -62,23 +57,26 @@ export function OpportunitiesFilterModal({
   );
 
   const filteredTypes = useMemo(() => {
-    return OPPORTUNITY_TYPES.filter((type) =>
-      type.display.toLowerCase().includes(typeSearch.toLowerCase()) ||
-      type.value.toLowerCase().includes(typeSearch.toLowerCase())
+    return OPPORTUNITY_TYPES.filter(
+      (type) =>
+        type.display.toLowerCase().includes(typeSearch.toLowerCase()) ||
+        type.value.toLowerCase().includes(typeSearch.toLowerCase()),
     );
   }, [typeSearch]);
 
   const filteredSkills = useMemo(() => {
-    return availableSkills.filter((skill) =>
-      skill.toLowerCase().includes(skillSearch.toLowerCase()),
+    return skillsData.filter((skill) =>
+      skill.toLowerCase().includes(skillSearch.toLowerCase()) &&
+      !filters.skills.includes(skill),
     );
-  }, [skillSearch, availableSkills]);
+  }, [skillSearch, filters.skills]);
 
   const filteredCategories = useMemo(() => {
     return categoriesData.filter((category) =>
-      category.toLowerCase().includes(categorySearch.toLowerCase()),
+      category.toLowerCase().includes(categorySearch.toLowerCase()) &&
+      !(filters.categories || []).includes(category),
     );
-  }, [categorySearch]);
+  }, [categorySearch, filters.categories]);
 
   const handleClearFilter = () => {
     const emptyFilters: OpportunitiesFilterState = {
@@ -132,19 +130,34 @@ export function OpportunitiesFilterModal({
     if (!isOpen) return;
 
     const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
         onClose();
       }
 
-      if (isTypeOpen && typeRef.current && !typeRef.current.contains(event.target as Node)) {
+      if (
+        isTypeOpen &&
+        typeRef.current &&
+        !typeRef.current.contains(event.target as Node)
+      ) {
         setIsTypeOpen(false);
       }
 
-      if (isSkillOpen && skillRef.current && !skillRef.current.contains(event.target as Node)) {
+      if (
+        isSkillOpen &&
+        skillRef.current &&
+        !skillRef.current.contains(event.target as Node)
+      ) {
         setIsSkillOpen(false);
       }
 
-      if (isCategoryOpen && categoryRef.current && !categoryRef.current.contains(event.target as Node)) {
+      if (
+        isCategoryOpen &&
+        categoryRef.current &&
+        !categoryRef.current.contains(event.target as Node)
+      ) {
         setIsCategoryOpen(false);
       }
     };
@@ -157,9 +170,13 @@ export function OpportunitiesFilterModal({
 
   return (
     <div className="fixed inset-0 z-40" onClick={onClose}>
-      <div className="absolute top-[60px] right-[25px] z-50 w-[245px]" ref={modalRef} onClick={(e) => e.stopPropagation()}>
+      <div
+        className="absolute top-[60px] right-[25px] z-50 w-[245px]"
+        ref={modalRef}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex flex-col gap-[12px] rounded-[12px] bg-white shadow-[0_0_15px_0_rgba(0,0,0,0.15)] p-[12px_8px] max-h-[90vh]">
-          <div className="flex flex-col gap-[12px] overflow-y-auto max-h-[420px] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="flex flex-col gap-[12px] overflow-visible max-h-[420px] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {/* Type Dropdown */}
             <div className="flex flex-col gap-[8px] w-full" ref={typeRef}>
               <div className="flex justify-between items-center">
@@ -204,19 +221,21 @@ export function OpportunitiesFilterModal({
               {filters.types.length > 0 && (
                 <div className="flex flex-wrap gap-[4px] mt-1">
                   {filters.types.map((type) => {
-                    const typeObj = OPPORTUNITY_TYPES.find(t => t.value === type);
+                    const typeObj = OPPORTUNITY_TYPES.find(
+                      (t) => t.value === type,
+                    );
                     return (
-                    <div
-                      key={type}
-                      className="flex items-center gap-[5px] px-[7px] py-[8px] bg-[#F5F5F5] rounded-[25px]"
-                    >
-                      <span className="text-[10px] font-normal text-black font-inter-tight">
-                        {typeObj?.display || type}
-                      </span>
-                      <button onClick={() => toggleType(type)}>
-                        <X className="w-[10px] h-[10px] text-[#606060]" />
-                      </button>
-                    </div>
+                      <div
+                        key={type}
+                        className="flex items-center gap-[5px] px-[7px] py-[8px] bg-[#F5F5F5] rounded-[25px]"
+                      >
+                        <span className="text-[10px] font-normal text-black font-inter-tight">
+                          {typeObj?.display || type}
+                        </span>
+                        <button onClick={() => toggleType(type)}>
+                          <X className="w-[10px] h-[10px] text-[#606060]" />
+                        </button>
+                      </div>
                     );
                   })}
                 </div>
@@ -241,27 +260,64 @@ export function OpportunitiesFilterModal({
                     placeholder="Search Skills"
                     value={skillSearch}
                     onChange={(e) => setSkillSearch(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        if (skillSearch.trim() && !filters.skills.includes(skillSearch)) {
+                          toggleSkill(skillSearch);
+                          setSkillSearch("");
+                          setIsSkillOpen(false);
+                        }
+                      }
+                    }}
                     onFocus={() => setIsSkillOpen(true)}
                     className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
-                  />
-                </div>
-                {isSkillOpen && filteredSkills.length > 0 && (
-                  <div className="absolute top-full mt-2 w-full max-h-[160px] overflow-y-auto bg-white rounded-[8px] shadow-[0_2px_20px_2px_rgba(0,0,0,0.15)] p-[8px] flex flex-col gap-[10px] z-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                    {filteredSkills.map((skill) => (
-                      <button
-                        key={skill}
-                        onClick={() => {
-                          toggleSkill(skill);
-                          setIsSkillOpen(false);
-                          setSkillSearch("");
-                        }}
-                        className="text-left px-[2px] py-[2px] text-[11px] font-normal text-black font-inter-tight capitalize hover:bg-gray-50 rounded"
-                      >
-                        {skill}
-                      </button>
-                    ))}
-                  </div>
-                )}
+                    />
+                    </div>
+                    {isSkillOpen && skillSearch && (
+                    <div className="absolute top-full mt-2 w-full max-h-[160px] overflow-y-auto bg-white rounded-[8px] shadow-[0_2px_20px_2px_rgba(0,0,0,0.15)] p-[8px] flex flex-col gap-[10px] z-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                     {filteredSkills.length > 0 ? (
+                       <>
+                         {filteredSkills.map((skill) => (
+                           <button
+                             key={skill}
+                             onClick={() => {
+                               toggleSkill(skill);
+                               setIsSkillOpen(false);
+                               setSkillSearch("");
+                             }}
+                             className="text-left px-[2px] py-[2px] text-[11px] font-normal text-black font-inter-tight capitalize hover:bg-gray-50 rounded"
+                           >
+                             {skill}
+                           </button>
+                         ))}
+                         {skillSearch.trim() && !skillsData.includes(skillSearch) && (
+                           <button
+                             onClick={() => {
+                               toggleSkill(skillSearch);
+                               setSkillSearch("");
+                               setIsSkillOpen(false);
+                             }}
+                             className="text-left px-[2px] py-[2px] text-[11px] font-normal text-[#5C30FF] bg-[#5C30FF]/5 hover:bg-[#5C30FF]/10 rounded border-t border-[#E1E4EA]"
+                           >
+                             + Add "{skillSearch}" as custom skill
+                           </button>
+                         )}
+                       </>
+                     ) : skillSearch.trim() ? (
+                       <button
+                         onClick={() => {
+                           toggleSkill(skillSearch);
+                           setSkillSearch("");
+                           setIsSkillOpen(false);
+                         }}
+                         className="text-left px-[2px] py-[2px] text-[11px] font-normal text-[#5C30FF] bg-[#5C30FF]/5 hover:bg-[#5C30FF]/10 rounded"
+                       >
+                         + Add "{skillSearch}" as custom skill
+                       </button>
+                     ) : null}
+                    </div>
+                    )}
               </div>
               {/* Selected Skills */}
               {filters.skills.length > 0 && (
@@ -300,14 +356,17 @@ export function OpportunitiesFilterModal({
                     type="text"
                     placeholder="Search Category"
                     value={categorySearch}
-                    onChange={(e) => setCategorySearch(e.target.value)}
+                    onChange={(e) => {
+                      setCategorySearch(e.target.value);
+                      setIsCategoryOpen(true);
+                    }}
                     onFocus={() => setIsCategoryOpen(true)}
                     className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
                   />
                 </div>
-                {isCategoryOpen && filteredCategories.length > 0 && (
-                  <div className="absolute top-full mt-2 w-full max-h-[160px] overflow-y-auto bg-white rounded-[8px] shadow-[0_2px_20px_2px_rgba(0,0,0,0.15)] p-[8px] flex flex-col gap-[10px] z-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                    {filteredCategories.map((category) => (
+                {isCategoryOpen && categorySearch && (
+                   <div className="absolute top-full mt-2 w-full max-h-[160px] overflow-y-auto bg-white rounded-[8px] shadow-[0_2px_20px_2px_rgba(0,0,0,0.15)] p-[8px] flex flex-col gap-[10px] z-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                     {filteredCategories.length > 0 && filteredCategories.map((category) => (
                       <button
                         key={category}
                         onClick={() => {
