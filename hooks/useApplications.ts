@@ -70,18 +70,15 @@ export function useApplications(): UseApplicationsReturn {
       note?: string;
       files?: File[];
     }): Promise<Application> => {
-      console.log("useApplications.submit - START:", { opportunityId: data.opportunityId, hasNote: !!data.note, fileCount: data.files?.length || 0 });
       setIsLoading(true);
       setError(null);
       try {
         const result = await submitApplication(data);
-        console.log("useApplications.submit - SUCCESS:", { opportunityId: data.opportunityId, applicationId: result.id });
         return result;
       } catch (err) {
         const errorMsg =
           err instanceof Error ? err.message : "Failed to submit application";
         setError(errorMsg);
-        console.error("useApplications.submit - FAILED:", { opportunityId: data.opportunityId, error: errorMsg, fullError: err });
         throw err;
       } finally {
         setIsLoading(false);

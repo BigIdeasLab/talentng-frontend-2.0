@@ -21,14 +21,6 @@ export const getOpportunities = async (
   const queryString = query.toString();
   const endpoint = `/opportunities${queryString ? `?${queryString}` : ""}`;
   const response = await apiClient<PaginatedOpportunitiesResponse>(endpoint);
-  // Log all opportunities with applied status
-  const appliedCount = response.data?.filter(o => o.applied).length || 0;
-  console.log("getOpportunities response:", {
-    endpoint,
-    totalCount: response.data?.length,
-    appliedCount,
-    appliedOppIds: response.data?.filter(o => o.applied).map(o => o.id),
-  });
   return response;
 };
 

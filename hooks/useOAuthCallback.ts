@@ -58,6 +58,8 @@ export const useOAuthCallback = (onTokensStored?: () => void) => {
       
       // Also store in localStorage for client-side use
       storeTokens(tokens);
+      
+      console.log('[OAUTH CALLBACK] Tokens stored in localStorage and cookies');
     }
   }
 
@@ -70,12 +72,10 @@ export const useOAuthCallback = (onTokensStored?: () => void) => {
     if (tokens) {
       cleanUrlTokenParams();
       
-      // Small delay to ensure cookies are sent with next request
-      setTimeout(() => {
-        if (onTokensStored) {
-          onTokensStored();
-        }
-      }, 500);
+      // Call callback immediately to trigger navigation and refetch
+      if (onTokensStored) {
+        onTokensStored();
+      }
     }
   }, [onTokensStored]);
 };

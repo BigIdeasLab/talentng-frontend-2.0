@@ -81,13 +81,13 @@ export function OpportunitiesClient({
         });
 
         // Filter by active filter type (client-side filtering)
-        const filtered = newOpportunities.filter((opp) => {
-          if (filter === "all") return true;
-          if (filter === "applied") return opp.applied === true;
-          return opp.type === filter;
-        });
+         const filtered = newOpportunities.filter((opp) => {
+           if (filter === "all") return true;
+           if (filter === "applied") return opp.applied === true;
+           return opp.type === filter;
+         });
 
-        setOpportunities(filtered);
+         setOpportunities(filtered);
         setPagination(newPagination);
         setError(fetchError);
         setOffset(pageOffset);
@@ -130,6 +130,15 @@ export function OpportunitiesClient({
       fetchOpportunitiesWithFilters(offset - LIMIT);
     }
   };
+
+  const handleApplicationSubmitted = useCallback((opportunityId: string) => {
+    // Optimistically update the applied status locally
+    setOpportunities((prev) =>
+      prev.map((opp) =>
+        opp.id === opportunityId ? { ...opp, applied: true } : opp
+      )
+    );
+  }, []);
 
   const getFilterCount = (): number => {
     if (!appliedFilters) return 0;
@@ -187,6 +196,7 @@ export function OpportunitiesClient({
         {!isLoading && !error && (
           <OpportunitiesGrid
             opportunities={opportunities as DisplayOpportunity[]}
+            onApplicationSubmitted={handleApplicationSubmitted}
             onNextPage={handleNextPage}
             onPreviousPage={handlePreviousPage}
             hasNextPage={pagination?.hasNextPage || false}

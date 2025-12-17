@@ -25,10 +25,6 @@ export function OpportunitiesGrid({
     currentPage = 1,
     totalPages = 1,
   }: OpportunitiesGridExtendedProps) {
-    console.log("📊 OpportunitiesGrid props:", {
-      hasOnApplicationSubmitted: !!onApplicationSubmitted,
-      opportunitiesCount: opportunities.length,
-    });
     return (
     <div className="flex flex-col h-full">
       {/* Result Count */}
@@ -47,16 +43,10 @@ export function OpportunitiesGrid({
                 key={opportunity.id} 
                 opportunity={opportunity}
                 onApplicationSubmitted={(oppId: string) => {
-                  console.log("🎯 OpportunitiesGrid wrapper callback triggered for:", oppId, {
-                    parentCallbackExists: !!onApplicationSubmitted,
-                  });
-                  if (onApplicationSubmitted) {
-                    console.log("✅ Calling parent onApplicationSubmitted");
-                    onApplicationSubmitted(oppId);
-                  } else {
-                    console.log("❌ Parent onApplicationSubmitted is undefined/null");
-                  }
-                }}
+                   if (onApplicationSubmitted) {
+                     onApplicationSubmitted(oppId);
+                   }
+                 }}
               />
             ))
           ) : (

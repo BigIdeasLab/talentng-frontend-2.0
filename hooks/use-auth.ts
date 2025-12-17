@@ -1,9 +1,10 @@
 "use client";
+import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { userProfileApi, type User } from "@/lib/api/user-service";
 import { logout as logoutAPI } from "@/lib/api/auth-service";
-import { clearTokens } from "@/lib/auth";
+import { clearTokens, getAccessToken } from "@/lib/auth";
 import { resetRefreshState } from "@/lib/token-refresh";
 
 const fetchUser = async (): Promise<User | null> => {
@@ -27,7 +28,16 @@ export const useAuth = () => {
   } = useQuery({
     queryKey: ["user"],
     queryFn: fetchUser,
+    staleTime: 0, // Always consider cache stale to ensure fresh data after login
   });
+
+  // Refetch user when auth tokens change (after login)
+  useEffect(() => {
+    const token = getAccessToken();
+    if (token) {
+      refetchUser();
+    }
+  }, [refetchUser]);
 
   const logout = async () => {
     try {

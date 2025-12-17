@@ -28,17 +28,11 @@ export function OpportunityCard({
   const isVolunteer = opportunity.type === "Volunteer";
 
   // Sync isApplied and isSaved when opportunity prop changes
+  // Only sync when opportunity ID changes (new card), otherwise preserve local state
   useEffect(() => {
-    console.log("OpportunityCard useEffect - syncing state:", {
-      id: opportunity.id,
-      title: opportunity.title,
-      opportunity_applied: opportunity.applied,
-      opportunity_saved: opportunity.saved,
-      settingIsApplied: opportunity.applied ?? false,
-    });
     setIsApplied(opportunity.applied ?? false);
     setIsSaved(opportunity.saved ?? false);
-  }, [opportunity.id, opportunity.applied, opportunity.saved]);
+  }, [opportunity.id]);
 
   const handleToggleSave = async () => {
     setIsSavingLoading(true);
@@ -210,12 +204,9 @@ export function OpportunityCard({
         opportunity={opportunity}
         onClose={() => setShowApplicationModal(false)}
         onSubmit={() => {
-          console.log("OpportunityCard.onSubmit callback triggered for:", opportunity.id);
           setShowApplicationModal(false);
           setIsApplied(true);
-          console.log("OpportunityCard - set isApplied=true, about to call onApplicationSubmitted");
           onApplicationSubmitted?.(opportunity.id);
-          console.log("OpportunityCard - onApplicationSubmitted called");
         }}
       />
     </div>

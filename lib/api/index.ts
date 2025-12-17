@@ -4,7 +4,7 @@
  * Uses Authorization header with localStorage tokens
  */
 
-import { getAccessToken, clearTokens } from "@/lib/auth";
+import { getAccessToken, getRefreshToken, clearTokens } from "@/lib/auth";
 import { ensureValidToken, queueRequest, resetRefreshState } from "@/lib/token-refresh";
 
 const baseUrl =
@@ -135,9 +135,32 @@ const apiClient = async <T>(
         });
       }
 
-      // Start refresh
-      isRefreshing = true;
-      refreshPromise = ensureValidToken(baseUrl);
+      // Start refresh - but check if we even have a refresh token first
+       const refreshToken = getRefreshToken();
+       
+       if (!refreshToken) {
+         console.warn('[API] No refresh token available, clearing tokens and redirecting to login');
+         clearTokens();
+         // Also clear cookies
+         if (typeof document !== 'undefined') {
+           const cookieNames = ['accessToken', 'refreshToken', 'userId'];
+           const date = new Date();
+           date.setTime(date.getTime() - 1);
+           const expires = `expires=${date.toUTCString()}`;
+           cookieNames.forEach(name => {
+             document.cookie = `${name}=;path=/;${expires}`;
+           });
+         }
+         resetRefreshState();
+         
+         if (typeof window !== "undefined") {
+           window.location.href = "/login";
+         }
+         throw new Error("No refresh token available");
+       }
+       
+       isRefreshing = true;
+       refreshPromise = ensureValidToken(baseUrl);
 
       try {
         const refreshSuccess = await refreshPromise;

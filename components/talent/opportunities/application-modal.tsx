@@ -66,23 +66,11 @@ export function ApplicationModal({
     setError(null);
 
     try {
-      console.log("BEFORE APPLY - Opportunity:", {
-        id: opportunity.id,
-        title: opportunity.title,
-        applied: opportunity.applied,
-      });
-
       // Submit application via API
       await submit({
         opportunityId: opportunity.id,
         note: note.trim() || undefined,
         files: attachments.map((a) => a.file),
-      });
-
-      console.log("AFTER SUBMIT - Opportunity from props:", {
-        id: opportunity.id,
-        title: opportunity.title,
-        applied: opportunity.applied,
       });
 
       setSuccess(true);
@@ -93,13 +81,10 @@ export function ApplicationModal({
       
       // Reset form after success
       setTimeout(() => {
-        console.log("ApplicationModal - calling onSubmit callback for opportunity:", opportunity.id);
         setNote("");
         setAttachments([]);
         setSuccess(false);
-        console.log("ApplicationModal - about to call onSubmit?.()");
         onSubmit?.();
-        console.log("ApplicationModal - onSubmit?.() called, now calling onClose");
         onClose();
       }, 1500);
     } catch (err) {
