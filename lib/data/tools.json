@@ -178,5 +178,527 @@
     "name": "Google Cloud",
     "category": "Cloud",
     "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/googlecloud/googlecloud-original.svg"
+  },
+  {
+    "id": "canva",
+    "name": "Canva",
+    "category": "Design",
+    "logo": "https://www.canva.com/favicon.ico"
+  },
+  {
+    "id": "python",
+    "name": "Python",
+    "category": "Tech",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg"
+  },
+  {
+    "id": "grammarly",
+    "name": "Grammarly",
+    "category": "Writing",
+    "logo": "https://www.grammarly.com/favicon.ico"
+  },
+  {
+    "id": "hootsuite",
+    "name": "Hootsuite",
+    "category": "Marketing",
+    "logo": "https://www.hootsuite.com/favicon.ico"
+  },
+  {
+    "id": "ableton",
+    "name": "Ableton Live",
+    "category": "Music",
+    "logo": "https://www.ableton.com/favicon.ico"
+  },
+  {
+    "id": "final-cut",
+    "name": "Final Cut Pro",
+    "category": "Acting & Dance",
+    "logo": "https://support.apple.com/library/APPLE_SUPPORT/APPLE_SUPPORT_LOGO.gif"
+  },
+  {
+    "id": "asana-business",
+    "name": "Monday.com",
+    "category": "Business",
+    "logo": "https://monday.com/favicon.ico"
+  },
+  {
+    "id": "solidworks",
+    "name": "SolidWorks",
+    "category": "Engineering",
+    "logo": "https://www.solidworks.com/favicon.ico"
+  },
+  {
+    "id": "salesforce",
+    "name": "Salesforce",
+    "category": "Consulting",
+    "logo": "https://www.salesforce.com/favicon.ico"
+  },
+  {
+    "id": "blender",
+    "name": "Blender",
+    "category": "Crafts",
+    "logo": "https://www.blender.org/favicon.ico"
+  },
+  {
+    "id": "strava",
+    "name": "Strava",
+    "category": "Sports",
+    "logo": "https://www.strava.com/favicon.ico"
+  },
+  {
+    "id": "moodle",
+    "name": "Moodle",
+    "category": "Teaching",
+    "logo": "https://moodle.org/favicon.ico"
+  },
+  {
+    "id": "stripe",
+    "name": "Stripe",
+    "category": "Entrepreneurship",
+    "logo": "https://www.stripe.com/favicon.ico"
+  },
+  {
+    "id": "sap",
+    "name": "SAP",
+    "category": "Logistics",
+    "logo": "https://www.sap.com/favicon.ico"
+  },
+  {
+    "id": "opentable",
+    "name": "OpenTable",
+    "category": "Hospitality",
+    "logo": "https://www.opentable.com/favicon.ico"
+  },
+  {
+    "id": "telemedicine",
+    "name": "Teladoc",
+    "category": "Health",
+    "logo": "https://www.teladoc.com/favicon.ico"
+  },
+  {
+    "id": "adobe-animate",
+    "name": "Adobe Animate",
+    "category": "Media",
+    "logo": "https://adobe.com/favicon.ico"
+  },
+  {
+    "id": "hubspot",
+    "name": "HubSpot",
+    "category": "Sales",
+    "logo": "https://www.hubspot.com/favicon.ico"
+  },
+  {
+    "id": "agworld",
+    "name": "AgWorld",
+    "category": "Agriculture",
+    "logo": "https://www.agworld.com/favicon.ico"
+  },
+  {
+    "id": "fortinet",
+    "name": "Fortinet",
+    "category": "Security",
+    "logo": "https://www.fortinet.com/favicon.ico"
+  },
+  {
+    "id": "quickbooks",
+    "name": "QuickBooks",
+    "category": "Finance",
+    "logo": "https://quickbooks.intuit.com/favicon.ico"
+  },
+  {
+    "id": "westlaw",
+    "name": "Westlaw",
+    "category": "Law",
+    "logo": "https://www.westlaw.com/favicon.ico"
+  },
+  {
+    "id": "duolingo",
+    "name": "Duolingo",
+    "category": "Language",
+    "logo": "https://www.duolingo.com/favicon.ico"
+  },
+  {
+    "id": "revit",
+    "name": "Revit",
+    "category": "Architecture",
+    "logo": "https://www.autodesk.com/favicon.ico"
+  },
+  {
+    "id": "jupyter",
+    "name": "Jupyter Notebook",
+    "category": "Data Science",
+    "logo": "https://jupyter.org/favicon.ico"
+  },
+  {
+    "id": "autocad",
+    "name": "AutoCAD",
+    "category": "Skilled Trades",
+    "logo": "https://www.autodesk.com/favicon.ico"
+  },
+  {
+    "id": "uber-eats",
+    "name": "Uber Eats",
+    "category": "Transportation",
+    "logo": "https://www.ubereats.com/favicon.ico"
+  },
+  {
+    "id": "salesforce-social",
+    "name": "Salesforce Social",
+    "category": "Social Work",
+    "logo": "https://www.salesforce.com/favicon.ico"
+  },
+  {
+    "id": "r-studio",
+    "name": "R Studio",
+    "category": "Research",
+    "logo": "https://www.rstudio.com/favicon.ico"
+  },
+  {
+    "id": "figma-design",
+    "name": "Figma Design",
+    "category": "Design",
+    "logo": "https://www.figma.com/favicon.ico"
+  },
+  {
+    "id": "vue",
+    "name": "Vue.js",
+    "category": "Tech",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vuejs/vuejs-original.svg"
+  },
+  {
+    "id": "notion",
+    "name": "Notion",
+    "category": "Writing",
+    "logo": "https://www.notion.so/favicon.ico"
+  },
+  {
+    "id": "mailchimp",
+    "name": "Mailchimp",
+    "category": "Marketing",
+    "logo": "https://mailchimp.com/favicon.ico"
+  },
+  {
+    "id": "fl-studio",
+    "name": "FL Studio",
+    "category": "Music",
+    "logo": "https://www.image-line.com/favicon.ico"
+  },
+  {
+    "id": "danceability",
+    "name": "Danceability",
+    "category": "Acting & Dance",
+    "logo": "https://www.example.com/favicon.ico"
+  },
+  {
+    "id": "quickbooks-business",
+    "name": "Wave",
+    "category": "Business",
+    "logo": "https://www.waveapps.com/favicon.ico"
+  },
+  {
+    "id": "autocad-civil",
+    "name": "Civil 3D",
+    "category": "Engineering",
+    "logo": "https://www.autodesk.com/favicon.ico"
+  },
+  {
+    "id": "gartner",
+    "name": "Gartner",
+    "category": "Consulting",
+    "logo": "https://www.gartner.com/favicon.ico"
+  },
+  {
+    "id": "fusion-360",
+    "name": "Fusion 360",
+    "category": "Crafts",
+    "logo": "https://www.autodesk.com/favicon.ico"
+  },
+  {
+    "id": "fitbit",
+    "name": "Fitbit",
+    "category": "Sports",
+    "logo": "https://www.fitbit.com/favicon.ico"
+  },
+  {
+    "id": "google-classroom",
+    "name": "Google Classroom",
+    "category": "Teaching",
+    "logo": "https://classroom.google.com/favicon.ico"
+  },
+  {
+    "id": "square",
+    "name": "Square",
+    "category": "Entrepreneurship",
+    "logo": "https://www.square.com/favicon.ico"
+  },
+  {
+    "id": "oracle-scm",
+    "name": "Oracle SCM",
+    "category": "Logistics",
+    "logo": "https://www.oracle.com/favicon.ico"
+  },
+  {
+    "id": "resy",
+    "name": "Resy",
+    "category": "Hospitality",
+    "logo": "https://www.resy.com/favicon.ico"
+  },
+  {
+    "id": "epic-ehr",
+    "name": "Epic EHR",
+    "category": "Health",
+    "logo": "https://www.epic.com/favicon.ico"
+  },
+  {
+    "id": "dailymotion",
+    "name": "DailyMotion",
+    "category": "Media",
+    "logo": "https://www.dailymotion.com/favicon.ico"
+  },
+  {
+    "id": "pipedrive",
+    "name": "Pipedrive",
+    "category": "Sales",
+    "logo": "https://www.pipedrive.com/favicon.ico"
+  },
+  {
+    "id": "farmbrite",
+    "name": "FarmBrite",
+    "category": "Agriculture",
+    "logo": "https://www.farmbrite.com/favicon.ico"
+  },
+  {
+    "id": "okta",
+    "name": "Okta",
+    "category": "Security",
+    "logo": "https://www.okta.com/favicon.ico"
+  },
+  {
+    "id": "xero",
+    "name": "Xero",
+    "category": "Finance",
+    "logo": "https://www.xero.com/favicon.ico"
+  },
+  {
+    "id": "lexisnexis",
+    "name": "LexisNexis",
+    "category": "Law",
+    "logo": "https://www.lexisnexis.com/favicon.ico"
+  },
+  {
+    "id": "babbel",
+    "name": "Babbel",
+    "category": "Language",
+    "logo": "https://www.babbel.com/favicon.ico"
+  },
+  {
+    "id": "sketchup",
+    "name": "SketchUp",
+    "category": "Architecture",
+    "logo": "https://www.sketchup.com/favicon.ico"
+  },
+  {
+    "id": "tableau",
+    "name": "Tableau",
+    "category": "Data Science",
+    "logo": "https://www.tableau.com/favicon.ico"
+  },
+  {
+    "id": "cad-kas",
+    "name": "CAD-KAS",
+    "category": "Skilled Trades",
+    "logo": "https://www.example.com/favicon.ico"
+  },
+  {
+    "id": "lyft",
+    "name": "Lyft",
+    "category": "Transportation",
+    "logo": "https://www.lyft.com/favicon.ico"
+  },
+  {
+    "id": "apptio",
+    "name": "Apptio",
+    "category": "Social Work",
+    "logo": "https://www.apptio.com/favicon.ico"
+  },
+  {
+    "id": "scipy",
+    "name": "SciPy",
+    "category": "Research",
+    "logo": "https://www.scipy.org/favicon.ico"
+  },
+  {
+    "id": "procreate",
+    "name": "Procreate",
+    "category": "Design",
+    "logo": "https://www.procreate.art/favicon.ico"
+  },
+  {
+    "id": "angular",
+    "name": "Angular",
+    "category": "Tech",
+    "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/angular/angular-original.svg"
+  },
+  {
+    "id": "medium",
+    "name": "Medium",
+    "category": "Writing",
+    "logo": "https://www.medium.com/favicon.ico"
+  },
+  {
+    "id": "semrush",
+    "name": "Semrush",
+    "category": "Marketing",
+    "logo": "https://www.semrush.com/favicon.ico"
+  },
+  {
+    "id": "logic-pro",
+    "name": "Logic Pro",
+    "category": "Music",
+    "logo": "https://www.apple.com/favicon.ico"
+  },
+  {
+    "id": "studio-max",
+    "name": "MotionBuilder",
+    "category": "Acting & Dance",
+    "logo": "https://www.autodesk.com/favicon.ico"
+  },
+  {
+    "id": "freshbooks",
+    "name": "FreshBooks",
+    "category": "Business",
+    "logo": "https://www.freshbooks.com/favicon.ico"
+  },
+  {
+    "id": "ansys",
+    "name": "ANSYS",
+    "category": "Engineering",
+    "logo": "https://www.ansys.com/favicon.ico"
+  },
+  {
+    "id": "mckinsey",
+    "name": "McKinsey",
+    "category": "Consulting",
+    "logo": "https://www.mckinsey.com/favicon.ico"
+  },
+  {
+    "id": "3ds-max",
+    "name": "3DS Max",
+    "category": "Crafts",
+    "logo": "https://www.autodesk.com/favicon.ico"
+  },
+  {
+    "id": "garmin",
+    "name": "Garmin Connect",
+    "category": "Sports",
+    "logo": "https://www.garmin.com/favicon.ico"
+  },
+  {
+    "id": "blackboard",
+    "name": "Blackboard",
+    "category": "Teaching",
+    "logo": "https://www.blackboard.com/favicon.ico"
+  },
+  {
+    "id": "paypal",
+    "name": "PayPal",
+    "category": "Entrepreneurship",
+    "logo": "https://www.paypal.com/favicon.ico"
+  },
+  {
+    "id": "jda",
+    "name": "JDA Software",
+    "category": "Logistics",
+    "logo": "https://www.jda.com/favicon.ico"
+  },
+  {
+    "id": "airbnb",
+    "name": "Airbnb",
+    "category": "Hospitality",
+    "logo": "https://www.airbnb.com/favicon.ico"
+  },
+  {
+    "id": "cerner",
+    "name": "Cerner",
+    "category": "Health",
+    "logo": "https://www.cerner.com/favicon.ico"
+  },
+  {
+    "id": "vimeo",
+    "name": "Vimeo",
+    "category": "Media",
+    "logo": "https://www.vimeo.com/favicon.ico"
+  },
+  {
+    "id": "freshsales",
+    "name": "Freshsales",
+    "category": "Sales",
+    "logo": "https://www.freshsales.io/favicon.ico"
+  },
+  {
+    "id": "trimble",
+    "name": "Trimble",
+    "category": "Agriculture",
+    "logo": "https://www.trimble.com/favicon.ico"
+  },
+  {
+    "id": "crowdstrike",
+    "name": "CrowdStrike",
+    "category": "Security",
+    "logo": "https://www.crowdstrike.com/favicon.ico"
+  },
+  {
+    "id": "sage",
+    "name": "Sage",
+    "category": "Finance",
+    "logo": "https://www.sage.com/favicon.ico"
+  },
+  {
+    "id": "practical-law",
+    "name": "Practical Law",
+    "category": "Law",
+    "logo": "https://www.practicallaw.com/favicon.ico"
+  },
+  {
+    "id": "rosetta-stone",
+    "name": "Rosetta Stone",
+    "category": "Language",
+    "logo": "https://www.rosettastone.com/favicon.ico"
+  },
+  {
+    "id": "archicad",
+    "name": "ArchiCAD",
+    "category": "Architecture",
+    "logo": "https://www.graphisoft.com/favicon.ico"
+  },
+  {
+    "id": "power-bi",
+    "name": "Power BI",
+    "category": "Data Science",
+    "logo": "https://powerbi.microsoft.com/favicon.ico"
+  },
+  {
+    "id": "inventor",
+    "name": "Inventor",
+    "category": "Skilled Trades",
+    "logo": "https://www.autodesk.com/favicon.ico"
+  },
+  {
+    "id": "way2go",
+    "name": "Way2Go",
+    "category": "Transportation",
+    "logo": "https://www.example.com/favicon.ico"
+  },
+  {
+    "id": "ngo-hub",
+    "name": "NGO Connect",
+    "category": "Social Work",
+    "logo": "https://www.example.com/favicon.ico"
+  },
+  {
+    "id": "matlab",
+    "name": "MATLAB",
+    "category": "Research",
+    "logo": "https://www.mathworks.com/favicon.ico"
   }
 ]
