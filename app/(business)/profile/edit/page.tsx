@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { EditProfileSidebar } from "@/components/talent/profile/components/edit/Sidebar";
 import { EditProfileActionBar } from "@/components/talent/profile/components/edit/ActionBar";
 import { PersonalDetailsSection } from "@/components/talent/profile/components/edit/PersonalDetailsSection";
@@ -83,6 +85,7 @@ const DEFAULT_PROFILE_DATA: UIProfileData = {
 };
 
 export default function EditProfilePage() {
+  const router = useRouter();
   const [expandedSection, setExpandedSection] = useState<string>("personal");
   const [formData, setFormData] = useState<UIProfileData>(DEFAULT_PROFILE_DATA);
   const [editingExperienceIndex, setEditingExperienceIndex] = useState<
@@ -96,6 +99,7 @@ export default function EditProfilePage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const skillsSelectRef = useRef<HTMLSelectElement | null>(null);
   const stackSelectRef = useRef<HTMLSelectElement | null>(null);
@@ -109,8 +113,34 @@ export default function EditProfilePage() {
     if (profileData) {
       const uiData = mapAPIToUI(profileData);
       setFormData(uiData);
+      setHasUnsavedChanges(false);
     }
   }, [profileData]);
+
+  // Track unsaved changes
+  useEffect(() => {
+    if (profileData) {
+      const currentData = mapAPIToUI(profileData);
+      const hasChanges = JSON.stringify(formData) !== JSON.stringify(currentData);
+      setHasUnsavedChanges(hasChanges);
+    }
+  }, [formData, profileData]);
+
+  // Warn on page leave
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = "";
+        return "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [hasUnsavedChanges]);
+
+
 
   const toggleSection = (section: string) => {
     setExpandedSection(expandedSection === section ? "" : section);
