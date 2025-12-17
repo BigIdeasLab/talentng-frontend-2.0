@@ -22,6 +22,7 @@ interface EducationSectionProps {
   onUpdate: (index: number, field: string, value: string) => void;
   onAdd: () => void;
   sectionRef: (el: HTMLDivElement | null) => void;
+  onNext: () => void;
 }
 
 export function EducationSection({
@@ -33,6 +34,7 @@ export function EducationSection({
   onUpdate,
   onAdd,
   sectionRef,
+  onNext,
 }: EducationSectionProps) {
   return (
     <div
@@ -165,7 +167,11 @@ export function EducationSection({
             </Button>
 
             <div className="flex justify-end">
-              <Button className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal">
+              <Button
+                type="button"
+                onClick={onNext}
+                className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal"
+              >
                 Next
               </Button>
             </div>

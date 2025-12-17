@@ -338,12 +338,7 @@ export default function EditProfilePage() {
               }}
               availableSkills={availableSkills}
               availableStack={availableStack}
-              skillsDropdownOpen={skillsDropdownOpen}
-              stackDropdownOpen={stackDropdownOpen}
-              skillsSelectRef={skillsSelectRef}
-              stackSelectRef={stackSelectRef}
-              onSetSkillsDropdownOpen={setSkillsDropdownOpen}
-              onSetStackDropdownOpen={setStackDropdownOpen}
+              onNext={() => toggleSection("experience")}
             />
 
             <WorkExperienceSection
@@ -357,6 +352,7 @@ export default function EditProfilePage() {
               sectionRef={(el) => {
                 if (el) sectionRefs.current["experience"] = el;
               }}
+              onNext={() => toggleSection("education")}
             />
 
             <EducationSection
@@ -370,6 +366,7 @@ export default function EditProfilePage() {
               sectionRef={(el) => {
                 if (el) sectionRefs.current["education"] = el;
               }}
+              onNext={() => toggleSection("portfolio")}
             />
 
             <PortfolioSection
@@ -380,6 +377,7 @@ export default function EditProfilePage() {
               sectionRef={(el) => {
                 if (el) sectionRefs.current["portfolio"] = el;
               }}
+              onNext={() => toggleSection("social")}
             />
 
             <SocialLinksSection
@@ -390,6 +388,7 @@ export default function EditProfilePage() {
               sectionRef={(el) => {
                 if (el) sectionRefs.current["social"] = el;
               }}
+              onNext={() => toggleSection("")}
             />
           </div>
         </div>

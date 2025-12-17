@@ -23,6 +23,7 @@ interface WorkExperienceSectionProps {
   onUpdate: (index: number, field: string, value: string | boolean) => void;
   onAdd: () => void;
   sectionRef: (el: HTMLDivElement | null) => void;
+  onNext: () => void;
 }
 
 export function WorkExperienceSection({
@@ -34,6 +35,7 @@ export function WorkExperienceSection({
   onUpdate,
   onAdd,
   sectionRef,
+  onNext,
 }: WorkExperienceSectionProps) {
   return (
     <div
@@ -174,7 +176,11 @@ export function WorkExperienceSection({
             </Button>
 
             <div className="flex justify-end">
-              <Button className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal">
+              <Button
+                type="button"
+                onClick={onNext}
+                className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal"
+              >
                 Next
               </Button>
             </div>

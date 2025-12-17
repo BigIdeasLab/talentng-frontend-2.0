@@ -23,7 +23,7 @@ interface PersonalDetailsSectionProps {
   onInputChange: (field: string, value: string) => void;
   sectionRef: (el: HTMLDivElement | null) => void;
   statesCities: Record<string, { major_cities: string[] }>;
-  onNext?: () => void;
+  onNext: () => void;
 }
 
 export function PersonalDetailsSection({

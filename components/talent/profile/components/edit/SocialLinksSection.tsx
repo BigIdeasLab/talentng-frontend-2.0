@@ -16,6 +16,7 @@ interface SocialLinksSectionProps {
   socialData: SocialData;
   onInputChange: (platform: string, value: string) => void;
   sectionRef: (el: HTMLDivElement | null) => void;
+  onNext: () => void;
 }
 
 const socialPlatforms = [
@@ -131,6 +132,7 @@ export function SocialLinksSection({
   socialData,
   onInputChange,
   sectionRef,
+  onNext,
 }: SocialLinksSectionProps) {
   return (
     <div
@@ -166,7 +168,11 @@ export function SocialLinksSection({
             ))}
 
             <div className="flex justify-end">
-              <Button className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal">
+              <Button
+                type="button"
+                onClick={onNext}
+                className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal"
+              >
                 Next
               </Button>
             </div>
