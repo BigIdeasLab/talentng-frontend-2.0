@@ -63,6 +63,7 @@ export async function getOpportunitiesData(params?: {
         rate: `₦${Math.round(parseFloat(opp.minBudget) || 0).toLocaleString()} - ₦${Math.round(parseFloat(opp.maxBudget) || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`,
         status: (opp.status || "draft") as "active" | "closed" | "draft",
         applied: opp.applied || opp.userHasApplied || false,
+        saved: opp.saved || opp.userHasSaved || false,
       }),
     );
 

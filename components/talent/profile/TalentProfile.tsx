@@ -133,14 +133,6 @@ export function TalentProfile({
       setOpportunitiesLoading(true);
       try {
         const response = await getSaved(100, 0);
-        console.log("TalentProfile getSaved response:", {
-          count: response.data?.length,
-          data: response.data?.map((o) => ({
-            id: o.id,
-            applied: o.applied,
-            saved: o.saved,
-          })),
-        });
         setCachedOpportunities(response.data || []);
       } catch (error) {
         console.error("Failed to fetch saved opportunities:", error);
@@ -333,10 +325,22 @@ export function TalentProfile({
                 ) as "internship" | "job_listing",
                 title: opp.title,
                 skills: opp.tools || opp.tags || [],
-                rate:
-                  opp.compensationType === "Fixed"
-                    ? `$${opp.minBudget || 0}`
-                    : `$${opp.maxBudget || opp.minBudget || 0}${opp.paymentType ? `/${opp.paymentType}` : ""}`,
+                rate: (() => {
+                  const getPaymentTypeAbbr = (paymentType?: string): string => {
+                    switch (paymentType?.toLowerCase()) {
+                      case "hourly":
+                        return "hr";
+                      case "weekly":
+                        return "wk";
+                      case "yearly":
+                      case "annual":
+                        return "yr";
+                      default:
+                        return "mo";
+                    }
+                  };
+                  return `₦${Math.round(Number(opp.minBudget) || 0).toLocaleString()} - ₦${Math.round(Number(opp.maxBudget) || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`;
+                })(),
                 isSaved: true,
                 applied: opp.applied ?? false,
               }))}
