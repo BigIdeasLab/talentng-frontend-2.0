@@ -20,7 +20,16 @@ export const getOpportunities = async (
   }
   const queryString = query.toString();
   const endpoint = `/opportunities${queryString ? `?${queryString}` : ""}`;
-  return apiClient<PaginatedOpportunitiesResponse>(endpoint);
+  const response = await apiClient<PaginatedOpportunitiesResponse>(endpoint);
+  // Log all opportunities with applied status
+  const appliedCount = response.data?.filter(o => o.applied).length || 0;
+  console.log("getOpportunities response:", {
+    endpoint,
+    totalCount: response.data?.length,
+    appliedCount,
+    appliedOppIds: response.data?.filter(o => o.applied).map(o => o.id),
+  });
+  return response;
 };
 
 export const getOpportunityById = async (id: string): Promise<Opportunity> => {
@@ -58,6 +67,39 @@ export const deleteOpportunity = async (id: string): Promise<void> => {
   return apiClient<void>(`/opportunities/${id}`, {
     method: "DELETE",
   });
+};
+
+export const saveOpportunity = async (id: string): Promise<Opportunity> => {
+  return apiClient<Opportunity>(`/opportunities/${id}/save`, {
+    method: "POST",
+    body: {},
+  });
+};
+
+export const unsaveOpportunity = async (id: string): Promise<void> => {
+  return apiClient<void>(`/opportunities/${id}/save`, {
+    method: "DELETE",
+  });
+};
+
+export const getSaveStatus = async (
+  id: string
+): Promise<{ saved: boolean }> => {
+  return apiClient<{ saved: boolean }>(`/opportunities/${id}/is-saved`);
+};
+
+export const getSavedOpportunities = async (
+  limit = 20,
+  offset = 0
+): Promise<PaginatedOpportunitiesResponse> => {
+  const query = new URLSearchParams({
+    limit: String(limit),
+    offset: String(offset),
+  });
+  const response = await apiClient<PaginatedOpportunitiesResponse>(
+    `/opportunities/saved?${query.toString()}`
+  );
+  return response;
 };
 
 // Export types

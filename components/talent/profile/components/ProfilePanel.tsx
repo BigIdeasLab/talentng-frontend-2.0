@@ -168,18 +168,6 @@ export function ProfilePanel({
                 </div>
               </div>
             )}
-
-            {/* Earnings */}
-            {stats?.earnings && (
-              <div className="flex justify-between items-center w-full">
-                <div className="flex items-center gap-[6px]">
-                  <DollarSign className="w-[18px] h-[18px] text-[#525866]" />
-                  <span className="text-[12px] font-normal text-black font-inter-tight">
-                    {stats.earnings}
-                  </span>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -257,45 +245,48 @@ export function ProfilePanel({
               { name: "Instagram", icon: "📷", url: socialLinks?.instagram },
               { name: "LinkendIn", icon: "in", url: socialLinks?.linkedin },
             ].map((social, idx) => (
-            <div key={idx} className="flex justify-between items-center w-full">
-              <div className="flex items-center gap-[6px]">
-                <span className="text-[12px] font-normal text-black font-inter-tight">
-                  {social.name}
-                </span>
-              </div>
-              <Link
-                href={social.url || "#"}
-                className="text-[#525866] hover:text-black transition-colors"
+              <div
+                key={idx}
+                className="flex justify-between items-center w-full"
               >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 22 22"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-[18px] h-[18px]"
+                <div className="flex items-center gap-[6px]">
+                  <span className="text-[12px] font-normal text-black font-inter-tight">
+                    {social.name}
+                  </span>
+                </div>
+                <Link
+                  href={social.url || "#"}
+                  className="text-[#525866] hover:text-black transition-colors"
                 >
-                  <path
-                    d="M10.1739 2.75C6.82897 2.75602 5.0774 2.83816 3.95801 3.95773C2.75 5.16593 2.75 7.11051 2.75 10.9996C2.75 14.8888 2.75 16.8334 3.95801 18.0415C5.16601 19.2498 7.11028 19.2498 10.9989 19.2498C14.8873 19.2498 16.8316 19.2498 18.0396 18.0415C19.1589 16.922 19.2411 15.1701 19.2471 11.8247"
-                    stroke="currentColor"
-                    strokeWidth="1.375"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M18.8432 3.20458L10.1282 11.9702M18.8432 3.20458C18.3904 2.75119 15.34 2.79345 14.6951 2.80262M18.8432 3.20458C19.296 3.65798 19.2538 6.71231 19.2446 7.35802"
-                    stroke="currentColor"
-                    strokeWidth="1.375"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </Link>
-            </div>
-          ))}
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 22 22"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-[18px] h-[18px]"
+                  >
+                    <path
+                      d="M10.1739 2.75C6.82897 2.75602 5.0774 2.83816 3.95801 3.95773C2.75 5.16593 2.75 7.11051 2.75 10.9996C2.75 14.8888 2.75 16.8334 3.95801 18.0415C5.16601 19.2498 7.11028 19.2498 10.9989 19.2498C14.8873 19.2498 16.8316 19.2498 18.0396 18.0415C19.1589 16.922 19.2411 15.1701 19.2471 11.8247"
+                      stroke="currentColor"
+                      strokeWidth="1.375"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M18.8432 3.20458L10.1282 11.9702M18.8432 3.20458C18.3904 2.75119 15.34 2.79345 14.6951 2.80262M18.8432 3.20458C19.296 3.65798 19.2538 6.71231 19.2446 7.35802"
+                      stroke="currentColor"
+                      strokeWidth="1.375"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </Link>
+              </div>
+            ))}
           </div>
-          </div>
-          )}
-          </div>
-          );
-          }
+        </div>
+      )}
+    </div>
+  );
+}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
+import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
 import { ProfilePanel } from "@/components/talent/profile/components/ProfilePanel";
 import { ProfileNav } from "@/components/talent/profile/components/ProfileNav";
 import { WorksGrid } from "@/components/talent/profile/components/WorksGrid";
@@ -12,6 +13,7 @@ import { CreateServiceModal } from "@/components/talent/profile/components/Creat
 import { UploadWorksModal } from "@/components/talent/profile/components/UploadWorksModal";
 import type { DashboardStats } from "@/lib/api/talent/types";
 import type { UIProfileData } from "@/lib/profileMapper";
+import type { Opportunity } from "@/lib/api/opportunities/types";
 
 interface TalentProfileProps {
   initialProfileData?: UIProfileData;
@@ -70,8 +72,9 @@ export function TalentProfile({
 }: TalentProfileProps) {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("works");
-  const [profileData, setProfileData] =
-    useState<UIProfileData>(initialProfileData || DEFAULT_PROFILE_DATA);
+  const [profileData, setProfileData] = useState<UIProfileData>(
+    initialProfileData || DEFAULT_PROFILE_DATA,
+  );
   const [stats, setStats] = useState<DashboardStats | null>(initialStats);
   const [isCreateServiceModalOpen, setIsCreateServiceModalOpen] =
     useState(false);
@@ -92,6 +95,11 @@ export function TalentProfile({
   const [recommendationsLoading, setRecommendationsLoading] = useState(
     !initialRecommendations || initialRecommendations.length === 0,
   );
+  const [cachedOpportunities, setCachedOpportunities] = useState<Opportunity[]>(
+    [],
+  );
+  const [opportunitiesLoading, setOpportunitiesLoading] = useState(true);
+  const { getSaved } = useOpportunitiesManager();
 
   useEffect(() => {
     setStats(initialStats);
@@ -118,6 +126,34 @@ export function TalentProfile({
       mainContent.scrollTop = 0;
     }
   }, [activeTab]);
+
+  useEffect(() => {
+    // Fetch saved opportunities
+    const fetchSavedOpportunities = async () => {
+      setOpportunitiesLoading(true);
+      try {
+        const response = await getSaved(100, 0);
+        console.log("TalentProfile getSaved response:", {
+          count: response.data?.length,
+          data: response.data?.map((o) => ({
+            id: o.id,
+            applied: o.applied,
+            saved: o.saved,
+          })),
+        });
+        setCachedOpportunities(response.data || []);
+      } catch (error) {
+        console.error("Failed to fetch saved opportunities:", error);
+        setCachedOpportunities([]);
+      } finally {
+        setOpportunitiesLoading(false);
+      }
+    };
+
+    if (activeTab === "opportunities") {
+      fetchSavedOpportunities();
+    }
+  }, [activeTab, getSaved]);
 
   const handleAddNewWork = () => {
     setIsUploadWorksModalOpen(true);
@@ -162,27 +198,29 @@ export function TalentProfile({
       {/* Profile Panel */}
       <div className="hidden lg:flex h-screen overflow-hidden">
         <ProfilePanel
-           user={{
-             fullName:
-               (profileData?.personal?.firstName || "") && (profileData?.personal?.lastName || "")
-                 ? `${profileData.personal.firstName} ${profileData.personal.lastName}`.trim()
-                 : user?.fullName || "User",
-             headline:
-               profileData?.personal?.headline || "Product & Interaction Designer",
-             profileImageUrl: profileData?.personal?.profileImageUrl,
-             location:
-               (profileData?.personal?.city && profileData?.personal?.state
-                 ? `${profileData.personal.city}, ${profileData.personal.state}`
-                 : profileData?.personal?.city || profileData?.personal?.state) ||
-               "—",
-           }}
+          user={{
+            fullName:
+              (profileData?.personal?.firstName || "") &&
+              (profileData?.personal?.lastName || "")
+                ? `${profileData.personal.firstName} ${profileData.personal.lastName}`.trim()
+                : user?.fullName || "User",
+            headline:
+              profileData?.personal?.headline ||
+              "Product & Interaction Designer",
+            profileImageUrl: profileData?.personal?.profileImageUrl,
+            location:
+              (profileData?.personal?.city && profileData?.personal?.state
+                ? `${profileData.personal.city}, ${profileData.personal.state}`
+                : profileData?.personal?.city ||
+                  profileData?.personal?.state) || "—",
+          }}
           stats={{
-             earnings: stats ? `${stats.earnings} Earned` : "—",
-             hired: stats?.hired ?? 0,
-             jobType: profileData?.professional?.category || "—",
-           }}
-           skills={
-             profileData?.professional?.skills || [
+            earnings: stats ? `${stats.earnings} Earned` : "—",
+            hired: stats?.hired ?? 0,
+            jobType: profileData?.professional?.category || "—",
+          }}
+          skills={
+            profileData?.professional?.skills || [
               "Website Design",
               "Mobile App Design",
               "Ui/Ux Design",
@@ -195,8 +233,8 @@ export function TalentProfile({
               "Motion Design",
             ]
           }
-           stack={
-             profileData?.professional?.stack || [
+          stack={
+            profileData?.professional?.stack || [
               { name: "Figma" },
               { name: "Rive" },
               { name: "Webflow" },
@@ -276,12 +314,54 @@ export function TalentProfile({
           {/* Opportunities Tab */}
           {activeTab === "opportunities" && (
             <OpportunitiesGrid
+              opportunities={cachedOpportunities.map((opp) => ({
+                id: opp.id,
+                companyName:
+                  opp.postedBy?.recruiterProfile?.company || opp.company,
+                companyLogo:
+                  opp.postedBy?.recruiterProfile?.profileImageUrl || opp.logo,
+                date: new Date(opp.createdAt).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                }),
+                type: (
+                  opp.type === "Job"
+                    ? "job_listing"
+                    : opp.type === "Internship"
+                      ? "internship"
+                      : "job_listing"
+                ) as "internship" | "job_listing",
+                title: opp.title,
+                skills: opp.tools || opp.tags || [],
+                rate:
+                  opp.compensationType === "Fixed"
+                    ? `$${opp.minBudget || 0}`
+                    : `$${opp.maxBudget || opp.minBudget || 0}${opp.paymentType ? `/${opp.paymentType}` : ""}`,
+                isSaved: true,
+                applied: opp.applied ?? false,
+              }))}
+              isLoading={opportunitiesLoading}
               onRemove={(opportunity) =>
                 console.log("Remove opportunity:", opportunity)
               }
               onApply={(opportunity) =>
                 console.log("Apply to opportunity:", opportunity)
               }
+              onApplicationSubmitted={(opportunityId) => {
+                // Refetch opportunities to get updated applied status
+                const fetchSavedOpportunities = async () => {
+                  try {
+                    const response = await getSaved(100, 0);
+                    setCachedOpportunities(response.data || []);
+                  } catch (error) {
+                    console.error(
+                      "Failed to fetch saved opportunities:",
+                      error,
+                    );
+                  }
+                };
+                fetchSavedOpportunities();
+              }}
             />
           )}
         </div>

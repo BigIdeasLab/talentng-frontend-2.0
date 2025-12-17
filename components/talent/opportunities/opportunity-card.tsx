@@ -1,25 +1,62 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Bookmark, Check } from "lucide-react";
 import { ApplicationStatusBanner } from "./application-status-banner";
 import { ApplicationModal } from "./application-modal";
 import type { DisplayOpportunity } from "./types";
 import { TYPE_CONFIG } from "@/types/opportunities";
+import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
 
 interface OpportunityCardProps {
   opportunity: DisplayOpportunity;
   onApplicationSubmitted?: (opportunityId: string) => void;
+  onSaveToggle?: (opportunityId: string, isSaved: boolean) => void;
 }
 
 export function OpportunityCard({
   opportunity,
   onApplicationSubmitted,
+  onSaveToggle,
 }: OpportunityCardProps) {
   const [showApplicationModal, setShowApplicationModal] = useState(false);
   const [isApplied, setIsApplied] = useState(opportunity.applied);
+  const [isSaved, setIsSaved] = useState(opportunity.saved ?? false);
+  const [isSavingLoading, setIsSavingLoading] = useState(false);
+  const { save: saveOpp, unsave: unsaveOpp } = useOpportunitiesManager();
   const config = TYPE_CONFIG[opportunity.type] || TYPE_CONFIG["job-listing"];
   const isVolunteer = opportunity.type === "Volunteer";
+
+  // Sync isApplied and isSaved when opportunity prop changes
+  useEffect(() => {
+    console.log("OpportunityCard useEffect - syncing state:", {
+      id: opportunity.id,
+      title: opportunity.title,
+      opportunity_applied: opportunity.applied,
+      opportunity_saved: opportunity.saved,
+      settingIsApplied: opportunity.applied ?? false,
+    });
+    setIsApplied(opportunity.applied ?? false);
+    setIsSaved(opportunity.saved ?? false);
+  }, [opportunity.id, opportunity.applied, opportunity.saved]);
+
+  const handleToggleSave = async () => {
+    setIsSavingLoading(true);
+    try {
+      if (isSaved) {
+        await unsaveOpp(opportunity.id);
+        setIsSaved(false);
+      } else {
+        await saveOpp(opportunity.id);
+        setIsSaved(true);
+      }
+      onSaveToggle?.(opportunity.id, !isSaved);
+    } catch (error) {
+      console.error("Failed to toggle save status:", error);
+    } finally {
+      setIsSavingLoading(false);
+    }
+  };
 
   return (
     <div className="relative">
@@ -122,18 +159,26 @@ export function OpportunityCard({
                 {/* Actions */}
                 <div className="flex items-center justify-end gap-1">
                   {/* Save Button */}
-                  <button className="flex items-center gap-1 px-4 py-2 h-8 bg-[#181B25] rounded-[40px] hover:bg-[#2a2d39] transition-colors">
-                    <Bookmark className="w-4 h-4 text-white" />
+                  <button
+                    onClick={handleToggleSave}
+                    disabled={isSavingLoading}
+                    className={`flex items-center gap-1 px-4 py-2 h-8 rounded-[40px] transition-colors ${
+                      isSaved
+                        ? "bg-[#5C30FF] hover:bg-[#4a26cc]"
+                        : "bg-[#181B25] hover:bg-[#2a2d39]"
+                    } ${isSavingLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
+                    <Bookmark
+                      className={`w-4 h-4 ${isSaved ? "fill-white" : ""} text-white`}
+                    />
                     <span className="text-[12px] font-medium font-inter-tight text-white text-center">
-                      Save
+                      {isSaved ? "Saved" : "Save"}
                     </span>
                   </button>
 
                   {/* Apply Button */}
                   <button
-                    onClick={() =>
-                      !isApplied && setShowApplicationModal(true)
-                    }
+                    onClick={() => !isApplied && setShowApplicationModal(true)}
                     disabled={isApplied}
                     className={`flex items-center gap-1 px-4 py-2 h-8 border-[0.822px] rounded-[40px] transition-colors ${
                       isApplied
@@ -165,10 +210,13 @@ export function OpportunityCard({
         opportunity={opportunity}
         onClose={() => setShowApplicationModal(false)}
         onSubmit={() => {
-            setShowApplicationModal(false);
-            setIsApplied(true);
-            onApplicationSubmitted?.(opportunity.id);
-          }}
+          console.log("OpportunityCard.onSubmit callback triggered for:", opportunity.id);
+          setShowApplicationModal(false);
+          setIsApplied(true);
+          console.log("OpportunityCard - set isApplied=true, about to call onApplicationSubmitted");
+          onApplicationSubmitted?.(opportunity.id);
+          console.log("OpportunityCard - onApplicationSubmitted called");
+        }}
       />
     </div>
   );

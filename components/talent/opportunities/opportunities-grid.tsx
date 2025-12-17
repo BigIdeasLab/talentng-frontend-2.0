@@ -16,16 +16,20 @@ interface OpportunitiesGridExtendedProps extends OpportunitiesGridProps {
 }
 
 export function OpportunitiesGrid({
-   opportunities,
-   onApplicationSubmitted,
-   onNextPage,
-   onPreviousPage,
-   hasNextPage = false,
-   hasPreviousPage = false,
-   currentPage = 1,
-   totalPages = 1,
- }: OpportunitiesGridExtendedProps) {
-   return (
+    opportunities,
+    onApplicationSubmitted,
+    onNextPage,
+    onPreviousPage,
+    hasNextPage = false,
+    hasPreviousPage = false,
+    currentPage = 1,
+    totalPages = 1,
+  }: OpportunitiesGridExtendedProps) {
+    console.log("📊 OpportunitiesGrid props:", {
+      hasOnApplicationSubmitted: !!onApplicationSubmitted,
+      opportunitiesCount: opportunities.length,
+    });
+    return (
     <div className="flex flex-col h-full">
       {/* Result Count */}
       <div className="flex-shrink-0 px-[25px] py-[12px] border-b border-[#E1E4EA]">
@@ -43,7 +47,15 @@ export function OpportunitiesGrid({
                 key={opportunity.id} 
                 opportunity={opportunity}
                 onApplicationSubmitted={(oppId: string) => {
-                  onApplicationSubmitted?.(oppId);
+                  console.log("🎯 OpportunitiesGrid wrapper callback triggered for:", oppId, {
+                    parentCallbackExists: !!onApplicationSubmitted,
+                  });
+                  if (onApplicationSubmitted) {
+                    console.log("✅ Calling parent onApplicationSubmitted");
+                    onApplicationSubmitted(oppId);
+                  } else {
+                    console.log("❌ Parent onApplicationSubmitted is undefined/null");
+                  }
                 }}
               />
             ))

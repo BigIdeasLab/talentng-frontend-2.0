@@ -1,8 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import { useState, useEffect } from "react";
 import { Bookmark, Check } from "lucide-react";
 import { EmptyState } from "./EmptyState";
+import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { ApplicationModal } from "@/components/talent/opportunities/application-modal";
+import type { DisplayOpportunity } from "@/components/talent/opportunities/types";
 
 type OpportunityType = "internship" | "job_listing";
 
@@ -15,6 +19,8 @@ interface Opportunity {
   title: string;
   skills: string[];
   rate: string;
+  isSaved?: boolean;
+  applied?: boolean;
 }
 
 interface OpportunitiesGridProps {
@@ -22,6 +28,8 @@ interface OpportunitiesGridProps {
   isLoading?: boolean;
   onRemove?: (opportunity: Opportunity) => void;
   onApply?: (opportunity: Opportunity) => void;
+  onSaveToggle?: (opportunityId: string, isSaved: boolean) => void;
+  onApplicationSubmitted?: (opportunityId: string) => void;
 }
 
 const defaultOpportunities: Opportunity[] = [
@@ -91,7 +99,88 @@ export function OpportunitiesGrid({
   isLoading = false,
   onRemove,
   onApply,
+  onSaveToggle,
+  onApplicationSubmitted,
 }: OpportunitiesGridProps) {
+  const [localSavedState, setLocalSavedState] = useState<{
+    [key: string]: boolean;
+  }>(
+    opportunities.reduce(
+      (acc, opp) => ({
+        ...acc,
+        [opp.id]: opp.isSaved ?? false,
+      }),
+      {},
+    ),
+  );
+  const [savingIds, setSavingIds] = useState<Set<string>>(new Set());
+  const [selectedOpportunity, setSelectedOpportunity] =
+    useState<DisplayOpportunity | null>(null);
+  const [showApplicationModal, setShowApplicationModal] = useState(false);
+  const [appliedIds, setAppliedIds] = useState<Set<string>>(
+    new Set(opportunities.filter((opp) => opp.applied).map((opp) => opp.id)),
+  );
+  const { save: saveOpp, unsave: unsaveOpp } = useOpportunitiesManager();
+
+  // Sync appliedIds when opportunities change
+  useEffect(() => {
+    const newAppliedIds = new Set(
+      opportunities.filter((opp) => opp.applied).map((opp) => opp.id),
+    );
+    setAppliedIds(newAppliedIds);
+  }, [opportunities]);
+
+  const handleToggleSave = async (opportunity: Opportunity) => {
+    setSavingIds((prev) => new Set(prev).add(opportunity.id));
+    try {
+      const currentSavedState = localSavedState[opportunity.id] ?? false;
+      if (currentSavedState) {
+        await unsaveOpp(opportunity.id);
+        setLocalSavedState((prev) => ({
+          ...prev,
+          [opportunity.id]: false,
+        }));
+      } else {
+        await saveOpp(opportunity.id);
+        setLocalSavedState((prev) => ({
+          ...prev,
+          [opportunity.id]: true,
+        }));
+      }
+      onSaveToggle?.(opportunity.id, !currentSavedState);
+    } catch (error) {
+      console.error("Failed to toggle save status:", error);
+    } finally {
+      setSavingIds((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(opportunity.id);
+        return newSet;
+      });
+    }
+  };
+
+  const handleApplyClick = (opportunity: Opportunity) => {
+    const displayOpp: DisplayOpportunity = {
+      id: opportunity.id,
+      companyName: opportunity.companyName,
+      companyLogo: opportunity.companyLogo,
+      date: opportunity.date,
+      type: opportunity.type === "internship" ? "Internship" : "Job",
+      title: opportunity.title,
+      skills: opportunity.skills,
+      rate: opportunity.rate,
+      status: "active",
+      applied: appliedIds.has(opportunity.id),
+    };
+    setSelectedOpportunity(displayOpp);
+    setShowApplicationModal(true);
+  };
+
+  const handleApplicationSubmit = (opportunityId: string) => {
+    setShowApplicationModal(false);
+    setAppliedIds((prev) => new Set(prev).add(opportunityId));
+    onApplicationSubmitted?.(opportunityId);
+  };
   if (isLoading) {
     return (
       <div className="w-full h-64 flex items-center justify-center">
@@ -211,8 +300,9 @@ export function OpportunitiesGrid({
                 <div className="flex justify-end items-center gap-[5px]">
                   {/* Remove Button */}
                   <button
-                    onClick={() => onRemove?.(opportunity)}
-                    className="flex h-[36px] px-[16px] py-[12px] items-center gap-[3px] rounded-[50px] bg-[#181B25] hover:bg-[#2a2d3a] transition-colors"
+                    onClick={() => handleToggleSave(opportunity)}
+                    disabled={savingIds.has(opportunity.id)}
+                    className="flex h-[36px] px-[16px] py-[12px] items-center gap-[3px] rounded-[50px] bg-[#181B25] hover:bg-[#2a2d3a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Bookmark
                       className="w-[15px] h-[15px]"
@@ -226,16 +316,31 @@ export function OpportunitiesGrid({
 
                   {/* Apply Button */}
                   <button
-                    onClick={() => onApply?.(opportunity)}
-                    className="flex h-[36px] px-[16px] py-[12px] items-center gap-[3px] rounded-[50px] border-[0.822px] border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4a24d6] transition-colors"
+                    onClick={() => handleApplyClick(opportunity)}
+                    disabled={appliedIds.has(opportunity.id)}
+                    className={`flex h-[36px] px-[16px] py-[12px] items-center gap-[3px] rounded-[50px] border-[0.822px] transition-colors ${
+                      appliedIds.has(opportunity.id)
+                        ? "bg-gray-200 border-gray-200 cursor-not-allowed"
+                        : "border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4a24d6]"
+                    }`}
                   >
                     <Check
-                      className="w-[15px] h-[15px]"
-                      color="white"
+                      className={`w-[15px] h-[15px] ${
+                        appliedIds.has(opportunity.id)
+                          ? "text-gray-600"
+                          : "text-white"
+                      }`}
+                      color={appliedIds.has(opportunity.id) ? "#999" : "white"}
                       strokeWidth={1.125}
                     />
-                    <span className="text-[12px] font-medium leading-normal font-inter-tight text-white">
-                      Apply
+                    <span
+                      className={`text-[12px] font-medium leading-normal font-inter-tight ${
+                        appliedIds.has(opportunity.id)
+                          ? "text-gray-600"
+                          : "text-white"
+                      }`}
+                    >
+                      {appliedIds.has(opportunity.id) ? "Applied" : "Apply"}
                     </span>
                   </button>
                 </div>
@@ -244,6 +349,16 @@ export function OpportunitiesGrid({
           </div>
         ))}
       </div>
+
+      {/* Application Modal */}
+      {selectedOpportunity && (
+        <ApplicationModal
+          isOpen={showApplicationModal}
+          opportunity={selectedOpportunity}
+          onClose={() => setShowApplicationModal(false)}
+          onSubmit={() => handleApplicationSubmit(selectedOpportunity!.id)}
+        />
+      )}
     </div>
   );
 }

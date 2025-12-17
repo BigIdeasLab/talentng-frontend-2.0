@@ -15,6 +15,7 @@ export interface DisplayOpportunity {
   status: "active" | "closed" | "draft";
   applicationStatus?: ApplicationStatus;
   applied?: boolean;
+  saved?: boolean;
 }
 
 // Grid component props

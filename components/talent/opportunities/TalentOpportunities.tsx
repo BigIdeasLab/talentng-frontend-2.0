@@ -124,12 +124,33 @@ export function TalentOpportunities() {
   }, [fetchOpportunitiesWithFilters]);
 
   // Transform API opportunities to display format
-   const opportunities = useMemo(() => {
-     return (apiOpportunities || []).map((opp) => ({
-       ...transformOpportunityToCard(opp),
-       applied: opp.applied || false,
-     }));
-   }, [apiOpportunities]);
+    const opportunities = useMemo(() => {
+      console.log("TalentOpportunities.useMemo - apiOpportunities:", {
+        count: apiOpportunities.length,
+        allAppliedStatuses: apiOpportunities.map(o => ({
+          id: o.id,
+          title: o.title,
+          applied: o.applied,
+        })),
+      });
+      const transformed = (apiOpportunities || []).map((opp) => {
+        const card = transformOpportunityToCard(opp);
+        const withApplied = {
+          ...card,
+          applied: opp.applied ?? false,
+        };
+        return withApplied;
+      });
+      console.log("TalentOpportunities.useMemo - transformed:", {
+        count: transformed.length,
+        allAppliedStatuses: transformed.map(o => ({
+          id: o.id,
+          title: o.title,
+          applied: o.applied,
+        })),
+      });
+      return transformed;
+    }, [apiOpportunities]);
 
   // Convert to display format for grid
   const displayOpportunities = useMemo(() => {
@@ -218,17 +239,35 @@ export function TalentOpportunities() {
   };
 
   const handleApplicationSubmitted = useCallback((opportunityId: string) => {
+    console.log("🔴 handleApplicationSubmitted EXECUTING for:", opportunityId);
     // Optimistically update the applied status locally
-    setApiOpportunities((prev) =>
-      prev.map((opp) =>
+    setApiOpportunities((prev) => {
+      const updated = prev.map((opp) =>
         opp.id === opportunityId ? { ...opp, applied: true } : opp
-      )
-    );
+      );
+      console.log("🟢 Optimistic update - setting applied=true for:", opportunityId);
+      return updated;
+    });
     // Then refetch to verify with backend
     setTimeout(() => {
-      fetchOpportunitiesWithFilters(offset);
+      console.log("🟡 Refetching opportunities after application for:", opportunityId);
+      fetchOpportunitiesWithFilters(0);
     }, 500);
-  }, [offset, fetchOpportunitiesWithFilters]);
+  }, [fetchOpportunitiesWithFilters]);
+
+  // Log when callback is created/updated
+  useEffect(() => {
+    console.log("⚙️  handleApplicationSubmitted useCallback dependencies changed:", {
+      offset,
+      hasFetchOpportunitiesWithFilters: !!fetchOpportunitiesWithFilters,
+    });
+  }, [fetchOpportunitiesWithFilters]);
+
+  // Debug log every render
+  console.log("📋 TalentOpportunities RENDER:", {
+    hasHandleApplicationSubmitted: !!handleApplicationSubmitted,
+    filteredOpportunitiesCount: filteredOpportunities?.length || 0,
+  });
 
   if (isLoading) {
     return (

@@ -47,6 +47,7 @@ export interface Opportunity {
    deletedAt: string | null;
    postedBy: PostedBy;
    applied?: boolean;
+   saved?: boolean;
 }
 
 export interface PaginationInfo {

@@ -26,6 +26,7 @@ export interface OpportunityCard {
   applicationCap?: number;
   closingDate?: string;
   applied?: boolean;
+  saved?: boolean;
 }
 
 // Component props
