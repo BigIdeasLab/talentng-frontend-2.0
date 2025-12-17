@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Bookmark, Check } from "lucide-react";
 import { ApplicationStatusBanner } from "./application-status-banner";
 import { ApplicationModal } from "./application-modal";
@@ -19,6 +20,7 @@ export function OpportunityCard({
   onApplicationSubmitted,
   onSaveToggle,
 }: OpportunityCardProps) {
+  const router = useRouter();
   const [showApplicationModal, setShowApplicationModal] = useState(false);
   const [isApplied, setIsApplied] = useState(opportunity.applied);
   const [isSaved, setIsSaved] = useState(opportunity.saved ?? false);
@@ -26,6 +28,10 @@ export function OpportunityCard({
   const { save: saveOpp, unsave: unsaveOpp } = useOpportunitiesManager();
   const config = TYPE_CONFIG[opportunity.type] || TYPE_CONFIG["job-listing"];
   const isVolunteer = opportunity.type === "Volunteer";
+
+  const handleCardClick = () => {
+    router.push(`/opportunities/${opportunity.id}`);
+  };
 
   // Sync isApplied and isSaved when opportunity prop changes
   // Only sync when opportunity ID changes (new card), otherwise preserve local state
@@ -54,7 +60,10 @@ export function OpportunityCard({
 
   return (
     <div className="relative">
-      <div className="flex flex-col items-center gap-4 pt-3 border border-[#E1E4EA] rounded-[16px] bg-white hover:shadow-md transition-shadow">
+      <div
+        onClick={handleCardClick}
+        className="flex flex-col items-center gap-4 pt-3 border border-[#E1E4EA] rounded-[16px] bg-white hover:shadow-md transition-shadow cursor-pointer"
+      >
         {/* Card Content */}
         <div className="flex flex-col items-start gap-3.5 w-full px-2.5 md:px-5">
           {/* Header Section */}
@@ -132,12 +141,15 @@ export function OpportunityCard({
         </div>
 
         {/* Footer Section */}
-        <div className="flex flex-col items-start gap-2 w-full px-2.5 border-t border-[#E1E4EA]">
+        <div className="flex flex-col items-start gap-2 w-full px-2.5 border-t border-[#E1E4EA] cursor-default">
           <div className="flex items-center justify-between w-full py-2.5">
             {isVolunteer ? (
               /* Learn More Button for Volunteer */
               <div className="flex items-center justify-end w-full h-8">
-                <button className="flex items-center gap-1 px-4 py-2 h-8 bg-[#5C30FF] border-[0.822px] border-[#5C30FF] rounded-[40px] hover:bg-[#4a26cc] transition-colors">
+                <button
+                  onClick={handleCardClick}
+                  className="flex items-center gap-1 px-4 py-2 h-8 bg-[#5C30FF] border-[0.822px] border-[#5C30FF] rounded-[40px] hover:bg-[#4a26cc] transition-colors"
+                >
                   <span className="text-[12px] font-medium font-inter-tight text-white text-center">
                     Learn More
                   </span>
