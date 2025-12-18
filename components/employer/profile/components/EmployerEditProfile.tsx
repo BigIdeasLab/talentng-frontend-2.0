@@ -9,49 +9,44 @@ import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { cn } from "@/lib/utils";
 import { getCurrentRecruiterProfile } from "@/lib/api/recruiter";
+import statesCities from "@/lib/data/states-cities.json";
 
 interface EmployerFormData {
   personal: {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
     profileImageUrl: string;
+    company: string;
+    bio: string;
+    state: string;
+    city: string;
   };
   professional: {
-    company: string;
     industry: string;
-    description: string;
     website: string;
     size: string;
-    founded: string;
+    stage: string;
+    operatingModel: string;
   };
   social: {
-    telegram: string;
-    twitter: string;
-    instagram: string;
     linkedin: string;
   };
 }
 
 const DEFAULT_EMPLOYER_DATA: EmployerFormData = {
   personal: {
-    firstName: "",
-    lastName: "",
-    phoneNumber: "",
     profileImageUrl: "",
+    company: "",
+    bio: "",
+    state: "",
+    city: "",
   },
   professional: {
-    company: "",
     industry: "",
-    description: "",
     website: "",
     size: "",
-    founded: "",
+    stage: "",
+    operatingModel: "",
   },
   social: {
-    telegram: "",
-    twitter: "",
-    instagram: "",
     linkedin: "",
   },
 };
@@ -210,45 +205,71 @@ function PersonalDetailsSection({
               </svg>
             </div>
 
-            {/* Name Fields */}
+            {/* Company Name */}
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-[13px] font-normal text-black font-inter-tight">
+                Company Name
+              </label>
+              <input
+                type="text"
+                value={formData.company}
+                onChange={(e) => onInputChange("company", e.target.value)}
+                placeholder="e.g., Tech Talents Inc"
+                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+              />
+            </div>
+
+            {/* Bio */}
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-[13px] font-normal text-black font-inter-tight">
+                Bio
+              </label>
+              <textarea
+                value={formData.bio}
+                onChange={(e) => onInputChange("bio", e.target.value)}
+                placeholder="Tell us about your company"
+                className="min-h-[100px] px-[12px] py-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent resize-none"
+              />
+            </div>
+
+            {/* State and City */}
             <div className="flex gap-[10px]">
               <div className="flex-1 flex flex-col gap-[10px]">
                 <label className="text-[13px] font-normal text-black font-inter-tight">
-                  First Name
+                  State
                 </label>
-                <input
-                  type="text"
-                  value={formData.firstName}
-                  onChange={(e) => onInputChange("firstName", e.target.value)}
+                <select
+                  value={formData.state}
+                  onChange={(e) => onInputChange("state", e.target.value)}
                   className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
-                />
+                >
+                  <option value="">Select State</option>
+                  {Object.keys(statesCities).map((state) => (
+                    <option key={state} value={state}>
+                      {state}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="flex-1 flex flex-col gap-[10px]">
                 <label className="text-[13px] font-normal text-black font-inter-tight">
-                  Last Name
+                  City
                 </label>
-                <input
-                  type="text"
-                  value={formData.lastName}
-                  onChange={(e) => onInputChange("lastName", e.target.value)}
+                <select
+                  value={formData.city}
+                  onChange={(e) => onInputChange("city", e.target.value)}
                   className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
-                />
+                >
+                  <option value="">Select City</option>
+                  {formData.state &&
+                    statesCities[formData.state as keyof typeof statesCities]?.major_cities?.map((city) => (
+                      <option key={city} value={city}>
+                        {city}
+                      </option>
+                    ))}
+                </select>
               </div>
-            </div>
-
-            {/* Phone Number */}
-            <div className="flex flex-col gap-[10px]">
-              <label className="text-[13px] font-normal text-black font-inter-tight">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                value={formData.phoneNumber}
-                onChange={(e) => onInputChange("phoneNumber", e.target.value)}
-                placeholder="+234 (0) 703 456 7890"
-                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
-              />
             </div>
 
             {/* Next Button */}
@@ -295,20 +316,6 @@ function CompanyDetailsSection({
         <>
           <div className="h-[1px] bg-[#E1E4EA]" />
           <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
-            {/* Company Name */}
-            <div className="flex flex-col gap-[10px]">
-              <label className="text-[13px] font-normal text-black font-inter-tight">
-                Company Name
-              </label>
-              <input
-                type="text"
-                value={formData.company}
-                onChange={(e) => onInputChange("company", e.target.value)}
-                placeholder="e.g., Innovate Design Studio"
-                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
-              />
-            </div>
-
             {/* Industry */}
             <div className="flex flex-col gap-[10px]">
               <label className="text-[13px] font-normal text-black font-inter-tight">
@@ -318,12 +325,12 @@ function CompanyDetailsSection({
                 type="text"
                 value={formData.industry}
                 onChange={(e) => onInputChange("industry", e.target.value)}
-                placeholder="e.g., Technology, Design, etc."
+                placeholder="e.g., Technology, Legal Services, etc."
                 className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
               />
             </div>
 
-            {/* Company Size and Founded Year */}
+            {/* Company Size and Stage */}
             <div className="flex gap-[10px]">
               <div className="flex-1 flex flex-col gap-[10px]">
                 <label className="text-[13px] font-normal text-black font-inter-tight">
@@ -335,25 +342,30 @@ function CompanyDetailsSection({
                   className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                 >
                   <option value="">Select size</option>
-                  <option value="1-10">1-10 employees</option>
-                  <option value="11-50">11-50 employees</option>
-                  <option value="51-200">51-200 employees</option>
-                  <option value="201-500">201-500 employees</option>
-                  <option value="500+">500+ employees</option>
+                  <option value="1-10 employees">1-10 employees</option>
+                  <option value="11-50 employees">11-50 employees</option>
+                  <option value="51-200 employees">51-200 employees</option>
+                  <option value="201-500 employees">201-500 employees</option>
+                  <option value="500+ employees">500+ employees</option>
                 </select>
               </div>
 
               <div className="flex-1 flex flex-col gap-[10px]">
                 <label className="text-[13px] font-normal text-black font-inter-tight">
-                  Founded Year
+                  Company Stage
                 </label>
-                <input
-                  type="text"
-                  value={formData.founded}
-                  onChange={(e) => onInputChange("founded", e.target.value)}
-                  placeholder="e.g., 2020"
+                <select
+                  value={formData.stage}
+                  onChange={(e) => onInputChange("stage", e.target.value)}
                   className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
-                />
+                >
+                  <option value="">Select stage</option>
+                  <option value="Seed">Seed</option>
+                  <option value="Series A">Series A</option>
+                  <option value="Series B">Series B</option>
+                  <option value="Series C">Series C</option>
+                  <option value="Established">Established</option>
+                </select>
               </div>
             </div>
 
@@ -371,17 +383,21 @@ function CompanyDetailsSection({
               />
             </div>
 
-            {/* Company Description */}
+            {/* Operating Model */}
             <div className="flex flex-col gap-[10px]">
               <label className="text-[13px] font-normal text-black font-inter-tight">
-                Description
+                Operating Model
               </label>
-              <textarea
-                value={formData.description}
-                onChange={(e) => onInputChange("description", e.target.value)}
-                placeholder="Tell us about your company"
-                className="min-h-[100px] px-[12px] py-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent resize-none"
-              />
+              <select
+                value={formData.operatingModel}
+                onChange={(e) => onInputChange("operatingModel", e.target.value)}
+                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+              >
+                <option value="">Select operating model</option>
+                <option value="Fully Remote">Fully Remote</option>
+                <option value="Hybrid">Hybrid</option>
+                <option value="On-site">On-site</option>
+              </select>
             </div>
 
             {/* Next Button */}
@@ -595,23 +611,20 @@ export function EmployerEditProfile() {
         // Map API response to form data
         setFormData({
           personal: {
-            firstName: profile.username || "",
-            lastName: "",
-            phoneNumber: "",
             profileImageUrl: profile.profileImageUrl || "",
+            company: profile.companyName || "",
+            bio: profile.bio || "",
+            state: profile.location?.split(",")[0]?.trim() || "",
+            city: profile.location?.split(",")[1]?.trim() || "",
           },
           professional: {
-            company: profile.companyName || "",
             industry: profile.industry || "",
-            description: profile.bio || "",
             website: profile.companyWebsite || "",
             size: profile.companySize || "",
-            founded: "",
+            stage: profile.companyStage || "",
+            operatingModel: profile.operatingModel || "",
           },
           social: {
-            telegram: "",
-            twitter: "",
-            instagram: "",
             linkedin: "",
           },
         });
