@@ -232,8 +232,8 @@ export function ProfileSwitcher() {
       return profile.profileImageUrl;
     }
 
-    // Check snake_case (API response format for recruiter)
-    if (role === "recruiter" && profile.profile_image_url) {
+    // Check snake_case (legacy API response format)
+    if (profile.profile_image_url) {
       return profile.profile_image_url;
     }
 

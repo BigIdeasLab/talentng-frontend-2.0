@@ -8,6 +8,7 @@ import { SectionHeader } from "@/components/talent/profile/components/edit/Secti
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { cn } from "@/lib/utils";
+import { getCurrentRecruiterProfile } from "@/lib/api/recruiter";
 
 interface EmployerFormData {
   personal: {
@@ -130,41 +131,21 @@ function PersonalDetailsSection({
   formData,
   onInputChange,
   sectionRef,
+  fileInputRef,
+  isUploading,
+  onFileChange,
 }: {
   isOpen: boolean;
   onToggle: () => void;
   formData: EmployerFormData["personal"];
   onInputChange: (field: string, value: string) => void;
   sectionRef: (el: HTMLDivElement | null) => void;
+  fileInputRef: React.RefObject<HTMLInputElement>;
+  isUploading: boolean;
+  onFileChange: (event: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
 }) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isUploading, setIsUploading] = useState(false);
-
   const handleProfileImageClick = () => {
     fileInputRef.current?.click();
-  };
-
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    setIsUploading(true);
-    try {
-      // TODO: Replace with actual API call to upload image
-      // const response = await updateProfileImage(file);
-      // if (response.profileImageUrl) {
-      //   onInputChange("profileImageUrl", response.profileImageUrl);
-      // }
-    } catch (error) {
-      console.error("Failed to upload profile image:", error);
-    } finally {
-      setIsUploading(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-    }
   };
 
   return (
@@ -188,7 +169,7 @@ function PersonalDetailsSection({
                 ref={fileInputRef}
                 type="file"
                 accept="image/*"
-                onChange={handleFileChange}
+                onChange={onFileChange}
                 className="hidden"
               />
               <button
@@ -598,8 +579,52 @@ export function EmployerEditProfile() {
   const [modalMessage, setModalMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Fetch recruiter profile data
+  useEffect(() => {
+    const fetchRecruiterProfile = async () => {
+      setIsLoading(true);
+      try {
+        const profile = await getCurrentRecruiterProfile();
+        console.log("Fetched recruiter profile:", profile);
+        
+        // Map API response to form data
+        setFormData({
+          personal: {
+            firstName: profile.username || "",
+            lastName: "",
+            phoneNumber: "",
+            profileImageUrl: profile.profileImageUrl || "",
+          },
+          professional: {
+            company: profile.companyName || "",
+            industry: profile.industry || "",
+            description: profile.bio || "",
+            website: profile.companyWebsite || "",
+            size: profile.companySize || "",
+            founded: "",
+          },
+          social: {
+            telegram: "",
+            twitter: "",
+            instagram: "",
+            linkedin: "",
+          },
+        });
+        setHasUnsavedChanges(false);
+      } catch (error) {
+        console.error("Failed to fetch recruiter profile:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRecruiterProfile();
+  }, []);
 
   // Warn on page leave
   useEffect(() => {
@@ -635,6 +660,29 @@ export function EmployerEditProfile() {
       },
     }));
     setHasUnsavedChanges(true);
+  };
+
+  const handleProfileImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      // TODO: Replace with actual API call to upload image
+      // const response = await updateRecruiterProfileImage(file);
+      // if (response.profileImageUrl) {
+      //   onInputChange("profileImageUrl", response.profileImageUrl);
+      // }
+    } catch (error) {
+      console.error("Failed to upload profile image:", error);
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
   };
 
   const handleProfessionalInputChange = (field: string, value: string) => {
@@ -699,6 +747,9 @@ export function EmployerEditProfile() {
               onToggle={() => toggleSection("personal")}
               formData={formData.personal}
               onInputChange={handlePersonalInputChange}
+              fileInputRef={fileInputRef}
+              isUploading={isUploading}
+              onFileChange={handleProfileImageUpload}
               sectionRef={(el) => {
                 if (el) sectionRefs.current["personal"] = el;
               }}
