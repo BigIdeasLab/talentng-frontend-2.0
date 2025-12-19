@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { userProfileApi, type User } from "@/lib/api/user-service";
@@ -20,6 +20,10 @@ const fetchUser = async (): Promise<User | null> => {
 export const useAuth = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  
+  // Check if token exists - this should be checked on every render
+  // to handle token expiry and refresh scenarios
+  const hasToken = typeof window !== 'undefined' && !!getAccessToken();
 
   const {
     data: user,
@@ -29,15 +33,16 @@ export const useAuth = () => {
     queryKey: ["user"],
     queryFn: fetchUser,
     staleTime: 0, // Always consider cache stale to ensure fresh data after login
+    enabled: hasToken, // Only run query if token exists in localStorage
+    retry: 1, // Retry once on failure (allows refresh to kick in)
   });
 
-  // Refetch user when auth tokens change (after login)
+  // Refetch user when tokens change (after login or after page reload)
   useEffect(() => {
-    const token = getAccessToken();
-    if (token) {
+    if (hasToken && !loading) {
       refetchUser();
     }
-  }, [refetchUser]);
+  }, [hasToken, refetchUser, loading]);
 
   const logout = async () => {
     try {
