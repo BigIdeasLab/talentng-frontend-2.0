@@ -110,38 +110,4 @@ export const shouldRefreshToken = (token: string | null): boolean => {
   return expiryTime > 0 && expiryTime < TOKEN_EXPIRY_THRESHOLD;
 };
 
-/**
- * Extract tokens from URL query params (for OAuth callbacks)
- */
-export const extractTokensFromUrl = (): TokenData | null => {
-  if (typeof window === 'undefined') return null;
-  
-  const params = new URLSearchParams(window.location.search);
-  const accessToken = params.get('accessToken');
-  const refreshToken = params.get('refreshToken');
-  const userId = params.get('userId');
-  
-  if (accessToken && refreshToken && userId) {
-    return { accessToken, refreshToken, userId };
-  }
-  
-  return null;
-};
 
-/**
- * Clean up URL by removing token params
- */
-export const cleanUrlTokenParams = (): void => {
-  if (typeof window === 'undefined') return;
-  
-  const params = new URLSearchParams(window.location.search);
-  params.delete('accessToken');
-  params.delete('refreshToken');
-  params.delete('userId');
-  
-  const newUrl = params.toString() 
-    ? `${window.location.pathname}?${params.toString()}`
-    : window.location.pathname;
-  
-  window.history.replaceState({}, document.title, newUrl);
-};

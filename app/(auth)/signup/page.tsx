@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 import { register } from "@/lib/api/auth-service";
-import { useOAuthCallback } from "@/hooks/useOAuthCallback";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -78,11 +78,9 @@ const Signup = () => {
     mutation.mutate(data);
   };
 
-  // Handle OAuth callback redirect - extracts tokens from URL and stores them
-  useOAuthCallback(() => {
-    toast.success("Sign up successful!");
-    router.push("/onboarding");
-  });
+  // OAuth callback is handled by middleware
+  // Backend sets cookies directly, frontend receives redirect to dashboard/onboarding
+  // No need to extract tokens from URL
 
   return (
     <div className="relative h-screen bg-white overflow-hidden">

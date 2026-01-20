@@ -18,6 +18,24 @@ type ApiOptions = {
 
 
 
+let isRefreshing = false;
+let refreshPromise: Promise<Response> | null = null;
+const failedQueue: Array<{
+  resolve: () => void;
+  reject: (error: Error) => void;
+}> = [];
+
+const processQueue = (success: boolean, error?: Error): void => {
+  failedQueue.forEach((prom) => {
+    if (success) {
+      prom.resolve();
+    } else {
+      prom.reject(error || new Error("Token refresh failed"));
+    }
+  });
+  failedQueue.length = 0;
+};
+
 const apiClient = async <T>(
   endpoint: string,
   options: ApiOptions = {}
@@ -44,15 +62,62 @@ const apiClient = async <T>(
     let response = await fetch(`${baseUrl}${endpoint}`, config);
 
     if (response.status === 401) {
-      // 401 means cookies are invalid/expired or missing
-      // Backend handles refresh with cookies automatically
-      // If we still get 401, user needs to re-authenticate
-      clearTokens(); // Clear any localStorage tokens
-      
-      if (typeof window !== "undefined") {
-        window.location.href = "/login";
+      // Access token expired, try to refresh
+      // If already refreshing, queue this request
+      if (isRefreshing && refreshPromise) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({
+            resolve: () => {
+              // Retry original request after refresh completes
+              fetch(`${baseUrl}${endpoint}`, config)
+                .then((res) => res.json())
+                .then(resolve)
+                .catch(reject);
+            },
+            reject,
+          });
+        });
       }
-      throw new Error("Unauthorized - please log in again");
+
+      // Attempt to refresh the token
+      isRefreshing = true;
+      refreshPromise = fetch(`${baseUrl}/auth/refresh`, {
+        method: "POST",
+        credentials: 'include', // Send refresh cookie
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}), // Backend reads from cookie, not body
+      });
+
+      try {
+        const refreshResponse = await refreshPromise;
+        isRefreshing = false;
+        refreshPromise = null;
+
+        if (refreshResponse.ok) {
+          // Tokens refreshed in cookies, retry original request
+          processQueue(true);
+          response = await fetch(`${baseUrl}${endpoint}`, config);
+        } else {
+          // Refresh failed, redirect to login
+          processQueue(false, new Error("Token refresh failed"));
+          clearTokens();
+          if (typeof window !== "undefined") {
+            window.location.href = "/login";
+          }
+          throw new Error("Session expired - please log in again");
+        }
+      } catch (error) {
+        processQueue(false, error as Error);
+        isRefreshing = false;
+        refreshPromise = null;
+        clearTokens();
+        if (typeof window !== "undefined") {
+          window.location.href = "/login";
+        }
+        throw error;
+      }
     }
 
     if (!response.ok) {

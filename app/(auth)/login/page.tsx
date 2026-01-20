@@ -9,7 +9,7 @@ import * as z from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { login } from "@/lib/api/auth-service";
-import { useOAuthCallback } from "@/hooks/useOAuthCallback";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -67,17 +67,9 @@ const Login = () => {
     },
   });
 
-  // Handle OAuth callback redirect - extracts tokens from URL and stores them
-  // IMPORTANT: Only redirect if we're actually on the login page (not if navigated elsewhere)
-  useOAuthCallback(() => {
-    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
-    
-    // Only redirect if still on login page
-    if (currentPath === '/login') {
-      toast.success("Login successful!");
-      router.push("/dashboard");
-    }
-  });
+  // OAuth callback is handled by middleware
+  // Backend sets cookies directly, frontend receives redirect to dashboard/onboarding
+  // No need to extract tokens from URL
 
   const onSubmit = (data: LoginFormValues) => {
     loginMutation.mutate(data);
