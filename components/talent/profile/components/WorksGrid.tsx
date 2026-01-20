@@ -182,7 +182,7 @@ export function WorksGrid({
           work={{
             id: selectedItem.id,
             title: selectedItem.key || "Untitled Work",
-            description: selectedItem.description || "",
+            description: "",
             images: [selectedItem.url],
             createdAt: selectedItem.createdAt,
           }}
