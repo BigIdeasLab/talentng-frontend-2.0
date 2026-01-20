@@ -20,9 +20,9 @@ export function ServiceDetailView({
   const thumbnails = service.images?.slice(1, 5) || [];
 
   return (
-    <div className="fixed inset-0 z-50 bg-white overflow-y-auto h-screen">
-      <div className="min-h-screen flex justify-center items-start bg-white">
-        <div className="w-full max-w-[990px] px-3 md:px-[210px] py-5 md:py-5">
+    <div className="fixed top-0 right-0 bottom-0 z-50 bg-white overflow-y-auto scrollbar-styled h-screen w-[calc(100%-80px)] md:w-[calc(100%-260px)] shadow-lg">
+      <div className="flex justify-center items-start bg-white min-h-screen">
+        <div className="w-full px-3 md:px-6 py-5 md:py-5">
           {/* Close Button - Fixed Position */}
           <button
             onClick={onClose}
