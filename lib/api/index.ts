@@ -1,11 +1,10 @@
 /**
  * Centralized API Client
  * Handles request configuration, authentication, and error handling
- * Uses Authorization header with localStorage tokens
+ * Uses HTTP-only cookies for token storage
  */
 
-import { getAccessToken, getRefreshToken, clearTokens } from "@/lib/auth";
-import { ensureValidToken, queueRequest, resetRefreshState } from "@/lib/token-refresh";
+import { clearTokens } from "@/lib/auth";
 
 const baseUrl =
   process.env.NEXT_PUBLIC_TALENTNG_API_URL || "http://localhost:3001";
@@ -17,70 +16,20 @@ type ApiOptions = {
   credentials?: RequestCredentials;
 };
 
-let isRefreshing = false;
-let refreshPromise: Promise<boolean> | null = null;
-const failedQueue: Array<{
-  resolve: () => void;
-  reject: (error: Error) => void;
-}> = [];
 
-const processQueue = (success: boolean, error?: Error): void => {
-  failedQueue.forEach((prom) => {
-    if (success) {
-      prom.resolve();
-    } else {
-      prom.reject(error || new Error("Token refresh failed"));
-    }
-  });
-
-  failedQueue.length = 0;
-};
 
 const apiClient = async <T>(
   endpoint: string,
   options: ApiOptions = {}
 ): Promise<T> => {
-  // If no token in localStorage but cookies exist (OAuth callback), extract from cookies
-  let accessToken = getAccessToken();
-  if (!accessToken && typeof document !== 'undefined') {
-    const cookieToken = document.cookie
-      .split('; ')
-      .find(c => c.startsWith('accessToken='))
-      ?.split('=')[1];
-    if (cookieToken) {
-      const refreshTokenCookie = document.cookie
-        .split('; ')
-        .find(c => c.startsWith('refreshToken='))
-        ?.split('=')[1];
-      const userIdCookie = document.cookie
-        .split('; ')
-        .find(c => c.startsWith('userId='))
-        ?.split('=')[1];
-      
-      if (refreshTokenCookie && userIdCookie) {
-        const { storeTokens } = require('@/lib/auth');
-        storeTokens({
-          accessToken: decodeURIComponent(cookieToken),
-          refreshToken: decodeURIComponent(refreshTokenCookie),
-          userId: decodeURIComponent(userIdCookie),
-        });
-        accessToken = decodeURIComponent(cookieToken);
-      }
-    }
-  }
-  
   const config: RequestInit = {
     method: options.method || "GET",
     headers: {
       "Content-Type": "application/json",
       ...options.headers,
     },
+    credentials: 'include', // Send cookies with every request
   };
-
-  // Add Authorization header if token exists
-  if (accessToken) {
-    (config.headers as Record<string, string>)["Authorization"] = `Bearer ${accessToken}`;
-  }
 
   if (options.body) {
     if (options.body instanceof FormData) {
@@ -95,111 +44,15 @@ const apiClient = async <T>(
     let response = await fetch(`${baseUrl}${endpoint}`, config);
 
     if (response.status === 401) {
-      // Don't attempt token refresh for certain auth endpoints
-      if (
-        endpoint.includes("/auth/verify-email/confirm") ||
-        endpoint.includes("/auth/reset-password")
-      ) {
-        const errorText = await response.text();
-        let errorData;
-        try {
-          errorData = JSON.parse(errorText);
-        } catch (e) {
-          errorData = { message: errorText || response.statusText };
-        }
-        const errorMessage =
-          errorData.message || errorData.error || "An error occurred during the API request.";
-        const error = new Error(errorMessage);
-        (error as any).status = response.status;
-        (error as any).data = errorData;
-        throw error;
+      // 401 means cookies are invalid/expired or missing
+      // Backend handles refresh with cookies automatically
+      // If we still get 401, user needs to re-authenticate
+      clearTokens(); // Clear any localStorage tokens
+      
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
       }
-
-      // If already refreshing, queue this request
-      if (isRefreshing && refreshPromise) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({
-            resolve: () => {
-              // Retry the original request with new token
-              const newToken = getAccessToken();
-              if (newToken) {
-                (config.headers as Record<string, string>)["Authorization"] = `Bearer ${newToken}`;
-              }
-              fetch(`${baseUrl}${endpoint}`, config)
-                .then((res) => res.json())
-                .then(resolve)
-                .catch(reject);
-            },
-            reject,
-          });
-        });
-      }
-
-      // Start refresh - but check if we even have a refresh token first
-       const refreshToken = getRefreshToken();
-       
-       if (!refreshToken) {
-         console.warn('[API] No refresh token available, clearing tokens and redirecting to login');
-         clearTokens();
-         // Also clear cookies
-         if (typeof document !== 'undefined') {
-           const cookieNames = ['accessToken', 'refreshToken', 'userId'];
-           const date = new Date();
-           date.setTime(date.getTime() - 1);
-           const expires = `expires=${date.toUTCString()}`;
-           cookieNames.forEach(name => {
-             document.cookie = `${name}=;path=/;${expires}`;
-           });
-         }
-         resetRefreshState();
-         
-         if (typeof window !== "undefined") {
-           window.location.href = "/login";
-         }
-         throw new Error("No refresh token available");
-       }
-       
-       isRefreshing = true;
-       refreshPromise = ensureValidToken(baseUrl);
-
-      try {
-        const refreshSuccess = await refreshPromise;
-        if (!refreshSuccess) {
-          throw new Error("Failed to refresh token");
-        }
-
-        processQueue(true);
-        isRefreshing = false;
-        refreshPromise = null;
-
-        // Retry with new token
-        const newToken = getAccessToken();
-        if (newToken) {
-          (config.headers as Record<string, string>)["Authorization"] = `Bearer ${newToken}`;
-        }
-        response = await fetch(`${baseUrl}${endpoint}`, config);
-      } catch (error) {
-        processQueue(false, error as Error);
-        clearTokens();
-        // Also clear cookies
-        if (typeof document !== 'undefined') {
-          const cookieNames = ['accessToken', 'refreshToken', 'userId'];
-          const date = new Date();
-          date.setTime(date.getTime() - 1);
-          const expires = `expires=${date.toUTCString()}`;
-          cookieNames.forEach(name => {
-            document.cookie = `${name}=;path=/;${expires}`;
-          });
-        }
-        isRefreshing = false;
-        refreshPromise = null;
-        resetRefreshState();
-
-        if (typeof window !== "undefined") {
-          window.location.href = "/login";
-        }
-        throw error;
-      }
+      throw new Error("Unauthorized - please log in again");
     }
 
     if (!response.ok) {

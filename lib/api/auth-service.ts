@@ -1,11 +1,10 @@
 /**
  * Authentication API Service
  * Handles all auth-related API calls
- * Stores tokens in localStorage after successful auth
+ * Tokens are stored in HTTP-only cookies by backend
  */
 
 import apiClient from "@/lib/api";
-import { storeTokens, clearTokens } from "@/lib/auth";
 import { getOrCreateDeviceId, getDeviceName } from "@/lib/device";
 import type { User } from "@/lib/types/auth";
 
@@ -23,42 +22,12 @@ export interface AuthResponse {
 }
 
 /**
- * Set cookie for server-side access
- */
-const setCookie = (name: string, value: string, maxAgeSeconds: number = 604800) => {
-  if (typeof document === 'undefined') return;
-
-  try {
-    // Format: name=value; path=/; max-age=X; samesite=strict
-    const secure = process.env.NODE_ENV === 'production' ? 'secure; ' : '';
-    const sameSite = 'samesite=strict';
-
-    const cookieString = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAgeSeconds}; ${secure}${sameSite}`;
-    document.cookie = cookieString;
-  } catch (error) {
-    console.error('[AUTH SERVICE] Error setting cookie:', name, error);
-  }
-};
-
-/**
  * Helper to store tokens from auth response
+ * Backend now sends tokens via HTTP-only cookies, so no localStorage storage needed
  */
 const handleAuthResponse = (response: AuthResponse): void => {
-  if ('accessToken' in response && response.accessToken && 'refreshToken' in response && response.refreshToken) {
-    const tokenData = {
-      accessToken: response.accessToken,
-      refreshToken: response.refreshToken,
-      userId: response.user?.id || response.userId || '',
-    };
-
-    // Store in localStorage for client-side
-    storeTokens(tokenData);
-
-    // Also set cookies for SSR
-    setCookie('accessToken', tokenData.accessToken, 86400); // 1 day in seconds
-    setCookie('refreshToken', tokenData.refreshToken, 604800); // 7 days in seconds
-    setCookie('userId', tokenData.userId, 604800); // 7 days in seconds
-  }
+  // Cookies are handled by backend and sent with every request
+  // No need to store tokens in localStorage
 };
 
 export const register = async (
@@ -151,22 +120,6 @@ export const resetPassword = async (
   };
 };
 
-/**
- * Clear tokens from cookies
- */
-const clearCookies = () => {
-  if (typeof document === 'undefined') return;
-
-  const cookieNames = ['accessToken', 'refreshToken', 'userId'];
-  const date = new Date();
-  date.setTime(date.getTime() - 1); // Set to past date to delete
-  const expires = `expires=${date.toUTCString()}`;
-
-  cookieNames.forEach(name => {
-    document.cookie = `${name}=;path=/;${expires}`;
-  });
-};
-
 export const logout = async (deviceId?: string): Promise<void> => {
   try {
     const id =
@@ -175,39 +128,35 @@ export const logout = async (deviceId?: string): Promise<void> => {
         ? localStorage.getItem("deviceId")
         : null);
 
+    // Backend clears cookies automatically on logout
     await apiClient<void>("/auth/logout", {
       method: "POST",
       body: id ? { deviceId: id } : {},
     });
   } catch (error) {
-    // Continue logout even if API call fails
     console.error("Logout API error:", error);
+    // Continue logout even if API call fails
   } finally {
-    clearTokens();
-    clearCookies();
-
+    // Clean up local state only
     if (typeof window !== "undefined") {
       localStorage.removeItem("deviceId");
-      // Force redirect to login
-      window.location.href = "/login";
     }
   }
 };
 
 export const logoutAllDevices = async (): Promise<void> => {
   try {
+    // Backend clears cookies automatically on logout
     await apiClient<void>("/auth/logout-all-devices", {
       method: "POST",
     });
   } catch (error) {
     console.error("Logout all devices API error:", error);
+    // Continue logout even if API call fails
   } finally {
-    clearTokens();
-    clearCookies();
-
+    // Clean up local state only
     if (typeof window !== "undefined") {
       localStorage.removeItem("deviceId");
-      window.location.href = "/login";
     }
   }
 };

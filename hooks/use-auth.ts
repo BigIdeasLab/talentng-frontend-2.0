@@ -4,8 +4,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { userProfileApi, type User } from "@/lib/api/user-service";
 import { logout as logoutAPI } from "@/lib/api/auth-service";
-import { clearTokens, getAccessToken } from "@/lib/auth";
-import { resetRefreshState } from "@/lib/token-refresh";
 
 const fetchUser = async (): Promise<User | null> => {
   try {
@@ -21,9 +19,9 @@ export const useAuth = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   
-  // Check if token exists - this should be checked on every render
-  // to handle token expiry and refresh scenarios
-  const hasToken = typeof window !== 'undefined' && !!getAccessToken();
+  // Check if user is authenticated by attempting to fetch user data
+  // Cookies are sent automatically with the request
+  const hasToken = true; // Always attempt to fetch, cookies will determine auth
 
   const {
     data: user,
@@ -51,16 +49,12 @@ export const useAuth = () => {
       console.error("Logout error:", error);
       // Continue logout even if API call fails
     } finally {
-      // Clear all tokens and state
-      clearTokens();
-      resetRefreshState();
+      // Clear frontend state (backend already cleared cookies)
       localStorage.removeItem("user");
       queryClient.setQueryData(["user"], null);
       
-      // Hard redirect to force middleware to re-check
-      if (typeof window !== "undefined") {
-        window.location.href = "/login";
-      }
+      // Redirect to login
+      router.push("/login");
     }
   };
 
