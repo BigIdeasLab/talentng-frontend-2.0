@@ -181,8 +181,8 @@ export function WorksGrid({
         <WorkDetailView
           work={{
             id: selectedItem.id,
-            title: selectedItem.key || "Untitled Work",
-            description: "",
+            title: selectedItem.title || "Untitled Work",
+            description: selectedItem.description || "",
             images: [selectedItem.url],
             createdAt: selectedItem.createdAt,
           }}

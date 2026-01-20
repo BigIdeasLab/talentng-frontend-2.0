@@ -13,6 +13,8 @@ export interface GalleryItem {
   url: string;
   mime: string;
   sizeBytes: string;
+  title: string;
+  description: string;
   createdAt: string;
 }
 

@@ -116,11 +116,20 @@ export async function deletePortfolioItem(
  */
 export async function uploadGalleryImages(
   files: File[],
+  title?: string,
+  description?: string,
 ): Promise<TalentProfile> {
   const formData = new FormData();
   files.forEach((file) => {
     formData.append("files", file);
   });
+
+  if (title) {
+    formData.append("title", title);
+  }
+  if (description) {
+    formData.append("description", description);
+  }
 
   return apiClient<TalentProfile>("/talent/gallery", {
     method: "POST",
@@ -346,10 +355,10 @@ export async function createRecommendation(
  * GET /talent/recommendations
  * Authentication: Required (JWT Bearer token)
  */
-export async function getTalentRecommendations(): Promise<TalentRecommendationDto[]> {
-  return apiClient<TalentRecommendationDto[]>(
-    `/talent/recommendations`,
-  );
+export async function getTalentRecommendations(): Promise<
+  TalentRecommendationDto[]
+> {
+  return apiClient<TalentRecommendationDto[]>(`/talent/recommendations`);
 }
 
 /**

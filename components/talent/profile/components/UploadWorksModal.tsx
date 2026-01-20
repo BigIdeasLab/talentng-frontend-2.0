@@ -101,7 +101,11 @@ export function UploadWorksModal({
 
     setIsLoading(true);
     try {
-      const result = await uploadGalleryImages(selectedFiles);
+      const result = await uploadGalleryImages(
+        selectedFiles,
+        formData.title,
+        formData.description,
+      );
 
       setSelectedFiles([]);
       setPreviewUrls([]);

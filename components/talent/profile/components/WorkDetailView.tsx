@@ -17,10 +17,7 @@ interface WorkDetailViewProps {
 const PLACEHOLDER_IMAGE =
   "https://api.builder.io/api/v1/image/assets/TEMP/780f63b8b0d88ebedad122515b826af8f4ef2c7a?width=1334";
 
-export function WorkDetailView({
-  work,
-  onClose,
-}: WorkDetailViewProps) {
+export function WorkDetailView({ work, onClose }: WorkDetailViewProps) {
   const mainImage = work.images?.[0] || PLACEHOLDER_IMAGE;
   const thumbnails = work.images?.slice(1, 5) || [];
 

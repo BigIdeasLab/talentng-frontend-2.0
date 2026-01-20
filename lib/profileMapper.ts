@@ -253,6 +253,8 @@ export function mapAPIToUI(apiData: Partial<APIProfileData> | any): UIProfileDat
       url: item.url || "",
       mime: item.mime || "",
       sizeBytes: item.sizeBytes || "",
+      title: item.title || "",
+      description: item.description || "",
       createdAt: item.createdAt || "",
     })),
     social: {
