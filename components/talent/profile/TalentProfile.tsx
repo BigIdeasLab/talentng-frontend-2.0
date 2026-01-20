@@ -11,7 +11,8 @@ import { RecommendationsGrid } from "@/components/talent/profile/components/Reco
 import { OpportunitiesGrid } from "@/components/talent/profile/components/OpportunitiesGrid";
 import { CreateServiceModal } from "@/components/talent/profile/components/CreateServiceModal";
 import { UploadWorksModal } from "@/components/talent/profile/components/UploadWorksModal";
-import type { DashboardStats } from "@/lib/api/talent/types";
+import { ServiceDetailView } from "./components/ServiceDetailView";
+import type { DashboardStats, Service } from "@/lib/api/talent/types";
 import type { UIProfileData } from "@/lib/profileMapper";
 import type { Opportunity } from "@/lib/api/opportunities/types";
 
@@ -79,6 +80,7 @@ export function TalentProfile({
   const [isCreateServiceModalOpen, setIsCreateServiceModalOpen] =
     useState(false);
   const [isUploadWorksModalOpen, setIsUploadWorksModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [serviceRefreshTrigger, setServiceRefreshTrigger] = useState(0);
   const [worksRefreshTrigger, setWorksRefreshTrigger] = useState(0);
   const [cachedServices, setCachedServices] = useState<any[]>(
@@ -279,9 +281,7 @@ export function TalentProfile({
           {activeTab === "services" && (
             <ServicesGrid
               onAddService={handleOpenCreateServiceModal}
-              onServiceClick={(service) =>
-                console.log("Service clicked:", service)
-              }
+              onServiceClick={setSelectedService}
               refreshTrigger={serviceRefreshTrigger}
               cachedServices={cachedServices}
               onServicesLoaded={setCachedServices}
@@ -316,13 +316,11 @@ export function TalentProfile({
                   month: "short",
                   day: "numeric",
                 }),
-                type: (
-                  opp.type === "Job"
-                    ? "job_listing"
-                    : opp.type === "Internship"
-                      ? "internship"
-                      : "job_listing"
-                ) as "internship" | "job_listing",
+                type: (opp.type === "Job"
+                  ? "job_listing"
+                  : opp.type === "Internship"
+                    ? "internship"
+                    : "job_listing") as "internship" | "job_listing",
                 title: opp.title,
                 skills: opp.tools || opp.tags || [],
                 rate: (() => {
@@ -384,6 +382,14 @@ export function TalentProfile({
         onClose={handleCloseCreateServiceModal}
         onSuccess={handleServiceCreated}
       />
+
+      {/* Service Detail View */}
+      {selectedService && (
+        <ServiceDetailView
+          service={selectedService}
+          onClose={() => setSelectedService(null)}
+        />
+      )}
     </div>
   );
 }
