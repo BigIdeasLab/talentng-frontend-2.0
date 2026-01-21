@@ -2,15 +2,16 @@
  * Server-side API Client
  * Used only in server components for secure API calls
  * Token comes from cookies via Next.js
+ * Handles token refresh on 401 responses
  */
 
 import { cookies } from "next/headers";
 
 const baseUrl =
-  process.env.NEXT_PUBLIC_TALENTNG_API_URL || 
-  (process.env.NODE_ENV === "production"
-    ? "https://api.talentng.com"
-    : "http://localhost:3001/api/v1");
+   process.env.NEXT_PUBLIC_TALENTNG_API_URL || 
+   (process.env.NODE_ENV === "production"
+     ? "https://api.talentng.com"
+     : "http://localhost:3001/api/v1");
 
 type ApiOptions = {
   headers?: Record<string, string>;
@@ -33,11 +34,18 @@ const serverApiClient = async <T>(
     return null as T;
   }
 
+  // Build Cookie header from all cookies so browser can manage them
+  const cookieHeader = cookieStore
+    .getAll()
+    .map((c) => `${c.name}=${c.value}`)
+    .join("; ");
+
   const config: RequestInit = {
     method: options.method || "GET",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
+      Cookie: cookieHeader,
       ...options.headers,
     },
   };
@@ -54,7 +62,41 @@ const serverApiClient = async <T>(
   try {
     const url = `${baseUrl}${endpoint}`;
 
-    const response = await fetch(url, config);
+    let response = await fetch(url, config);
+
+    // If token expired, attempt to refresh
+    if (response.status === 401) {
+      try {
+        const newCookieStore = await cookies();
+        const newCookieHeader = newCookieStore
+          .getAll()
+          .map((c) => `${c.name}=${c.value}`)
+          .join("; ");
+        
+        const refreshUrl = `${baseUrl}/auth/refresh`;
+        
+        const refreshResponse = await fetch(refreshUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Cookie: newCookieHeader,
+          },
+          body: JSON.stringify({}),
+        });
+
+        if (refreshResponse.ok) {
+          // The Set-Cookie headers have been sent by the response
+          // The browser will apply them automatically
+          // For this request, we can't access the new cookies (Server Component limitation)
+          // But on the next request, the new cookies will be available
+          
+          // Return null for now - next render will use the refreshed cookies
+          return null as T;
+        }
+      } catch (refreshError) {
+        // Token refresh failed, continue with original error
+      }
+    }
 
     if (!response.ok) {
       const errorText = await response.text();

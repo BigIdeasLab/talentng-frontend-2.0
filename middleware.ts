@@ -132,17 +132,9 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
 
-    // Verify token - if expired or invalid, let the client API handle refresh
-    // The API client has its own refresh logic and device-aware refresh token
-    const payload = await verifyToken(token, jwtSecret);
-    if (!payload) {
-      // Token is invalid/expired, redirect to login
-      // Client API will refresh on 401 responses with deviceId
-      const url = request.nextUrl.clone();
-      url.pathname = "/login";
-      url.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(url);
-    }
+    // Don't verify token expiry here - let the API client handle 401 responses
+    // The API client will attempt to refresh the token via /auth/refresh
+    // Only redirect to login if refresh actually fails
   }
 
   // Handle auth routes

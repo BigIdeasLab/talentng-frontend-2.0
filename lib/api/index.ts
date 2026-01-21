@@ -96,7 +96,8 @@ const apiClient = async <T>(
         refreshPromise = null;
 
         if (refreshResponse.ok) {
-          // Tokens refreshed in cookies, retry original request
+          // Browser already set cookies via Set-Cookie headers
+          // Retry original request with new token in cookies
           processQueue(true);
           response = await fetch(`${baseUrl}${endpoint}`, config);
         } else {

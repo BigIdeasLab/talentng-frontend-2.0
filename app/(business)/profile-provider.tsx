@@ -120,6 +120,8 @@ export function ProfileProvider({
     setIsLoading(false);
   }, [userRoles, activeRole]);
 
+
+
   // Compute current profile based on active role
   const currentProfile = useMemo(() => {
     return profiles[activeRole] || null;
