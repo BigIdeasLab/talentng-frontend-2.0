@@ -4,7 +4,6 @@ import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useCurrentProfile } from "@/hooks/useProfileData";
 import { useProfile } from "@/hooks/useProfile";
 import { ProfileSwitcher } from "../ProfileSwitcher";
 

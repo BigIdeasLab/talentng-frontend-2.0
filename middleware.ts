@@ -50,10 +50,11 @@ async function verifyToken(token: string, secret: string) {
 
 export async function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
-  const tokenFromCookie = request.cookies.get("accessToken")?.value;
   const tokenFromUrl = searchParams.get("accessToken");
   const refreshTokenFromUrl = searchParams.get("refreshToken");
   const userIdFromUrl = searchParams.get("userId");
+  const isNewUserFromUrl = searchParams.get("isNewUser");
+  const rolesFromUrl = searchParams.get("roles");
   const jwtSecret = process.env.JWT_SECRET;
 
   if (!jwtSecret) {
@@ -63,56 +64,55 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // If tokens are in the URL (OAuth callback), validate and set as cookies
-  // This ensures server components can read them on the NEXT request
-  if (tokenFromUrl) {
+  // If tokens are in the URL (OAuth callback), validate and redirect to store in localStorage
+  // Skip this processing for /redirect (it handles its own token storage)
+  if (tokenFromUrl && pathname !== "/redirect") {
+    const isNewUser = isNewUserFromUrl === "true";
+
+    // If already on onboarding, only proceed if it's a new user
+    // (existing users should be redirected to dashboard)
+    if (pathname === "/onboarding") {
+      if (!isNewUser) {
+        // Existing user should not be on onboarding, redirect to dashboard
+        const params = new URLSearchParams();
+        params.set("accessToken", tokenFromUrl);
+        if (refreshTokenFromUrl) params.set("refreshToken", refreshTokenFromUrl);
+        if (userIdFromUrl) params.set("userId", userIdFromUrl);
+        if (rolesFromUrl) params.set("roles", rolesFromUrl);
+        
+        const redirectUrl = `/redirect?${params.toString()}`;
+        return NextResponse.redirect(new URL(redirectUrl, request.url));
+      }
+      // New user on onboarding - allow it (TokenStorage component will handle)
+      return NextResponse.next();
+    }
+
     const payload = await verifyToken(tokenFromUrl, jwtSecret);
     if (payload) {
-      // Create a new response object to properly set cookies
-      const response = NextResponse.next({
-        request: {
-          headers: request.headers,
-        },
-      });
-      
-      // Set accessToken cookie (1 day)
-      response.cookies.set({
-        name: "accessToken",
-        value: tokenFromUrl,
-        httpOnly: false, // Allow JS access for client-side use
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge: 86400, // 1 day in seconds
-        path: "/",
-      });
-      
-      // Set refreshToken cookie (7 days)
-      if (refreshTokenFromUrl) {
-        response.cookies.set({
-          name: "refreshToken",
-          value: refreshTokenFromUrl,
-          httpOnly: false,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "strict",
-          maxAge: 604800, // 7 days in seconds
-          path: "/",
-        });
+      // For new users, go to onboarding; for existing users, go to dashboard
+      if (isNewUser) {
+        // Redirect to onboarding with tokens in query params
+        // Client component will read these and store in localStorage
+        const params = new URLSearchParams();
+        
+        params.set("accessToken", tokenFromUrl);
+        if (refreshTokenFromUrl) params.set("refreshToken", refreshTokenFromUrl);
+        if (userIdFromUrl) params.set("userId", userIdFromUrl);
+        
+        const redirectUrl = `/onboarding?${params.toString()}`;
+        return NextResponse.redirect(new URL(redirectUrl, request.url));
+      } else {
+        // Existing user - go to dashboard with tokens in query params
+        const params = new URLSearchParams();
+        
+        params.set("accessToken", tokenFromUrl);
+        if (refreshTokenFromUrl) params.set("refreshToken", refreshTokenFromUrl);
+        if (userIdFromUrl) params.set("userId", userIdFromUrl);
+        if (rolesFromUrl) params.set("roles", rolesFromUrl);
+        
+        const redirectUrl = `/redirect?${params.toString()}`;
+        return NextResponse.redirect(new URL(redirectUrl, request.url));
       }
-      
-      // Set userId cookie (7 days)
-      if (userIdFromUrl) {
-        response.cookies.set({
-          name: "userId",
-          value: userIdFromUrl,
-          httpOnly: false,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "strict",
-          maxAge: 604800, // 7 days in seconds
-          path: "/",
-        });
-      }
-      
-      return response;
     } else {
       // Invalid URL token, redirect to login without the bad token
       const url = new URL("/login", request.url);
@@ -120,47 +120,16 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  const token = tokenFromCookie;
-
-  // Handle protected routes
+  // Protected routes: Let client-side authentication handle it
+  // If user has no token, they'll get redirected to login by the client or on 401
   if (isProtectedRoute(pathname)) {
-    // If no token, redirect to login
-    if (!token) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/login";
-      url.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(url);
-    }
-
-    // Don't verify token expiry here - let the API client handle 401 responses
-    // The API client will attempt to refresh the token via /auth/refresh
-    // Only redirect to login if refresh actually fails
+    // Don't block - client components will handle authentication
+    // This allows pages to load with a spinner while the app checks auth
   }
 
-  // Handle auth routes
+  // Auth routes: Simple check - if coming from onboarding with tokens, allow
   if (isAuthRoute(pathname)) {
-    const payload = token ? await verifyToken(token, jwtSecret) : null;
-    if (payload) {
-      // Allow access to onboarding for users who haven't completed it
-      // (role is "general" or undefined/empty, or roles array is empty)
-      const userRole =
-        payload.role ||
-        (Array.isArray(payload.roles) && payload.roles.length > 0
-          ? payload.roles[0]
-          : undefined);
-      const hasCompletedOnboarding = userRole && userRole !== "general";
-
-      // Only redirect away from auth pages if user has completed onboarding
-      // Always allow /onboarding and /set-username for users who need to complete setup
-      if (
-        hasCompletedOnboarding &&
-        pathname !== "/onboarding" &&
-        pathname !== "/set-username"
-      ) {
-        // User is logged in and has completed onboarding, redirect from auth pages to their dashboard
-        return NextResponse.redirect(new URL("/dashboard", request.url));
-      }
-    }
+    // Let client determine if user should be redirected based on login state
   }
 
   return NextResponse.next();

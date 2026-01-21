@@ -10,6 +10,7 @@ export interface ProfileContextType {
   // User info
   userId: string | null;
   userRoles: string[];
+  setUserRoles: (roles: string[]) => void;
 
   // Current active role
   activeRole: string;
@@ -17,9 +18,11 @@ export interface ProfileContextType {
 
   // All profiles by role
   profiles: Record<string, TalentProfile | RecruiterProfile | MentorProfile | null>;
+  setProfiles: (profiles: Record<string, TalentProfile | RecruiterProfile | MentorProfile | null>) => void;
 
   // Mapped UI data by role
   profilesUI: Record<string, UIProfileData | null>;
+  setProfilesUI: (profilesUI: Record<string, UIProfileData | null>) => void;
 
   // Stats by role
   stats: Record<string, DashboardStats | any>;
@@ -31,11 +34,9 @@ export interface ProfileContextType {
 
   // Loading state
   isLoading: boolean;
+  setIsLoading: (loading: boolean) => void;
 
-  // Legacy fields for backward compatibility
-  initialProfileData: UIProfileData | null;
-  initialProfileRaw: TalentProfile | RecruiterProfile | MentorProfile | null;
-  recommendations: any[];
+  // Error state
   error: string | null;
 }
 
@@ -64,61 +65,21 @@ interface AllStats {
 
 interface ProfileProviderProps {
   children: ReactNode;
-  // New multi-role fields
-  profiles: AllProfiles;
-  profilesUI: AllProfilesUI;
-  stats: AllStats;
-  activeRole: string;
-  // Legacy fields
-  initialProfileData: UIProfileData | null;
-  initialProfileRaw: TalentProfile | RecruiterProfile | MentorProfile | null;
-  userId: string | null;
-  userRoles: string[];
-  recommendations: any[];
-  error: string | null;
 }
 
 export function ProfileProvider({
   children,
-  profiles: initialProfiles,
-  profilesUI: initialProfilesUI,
-  stats: initialStats,
-  activeRole: initialActiveRole,
-  initialProfileData,
-  initialProfileRaw,
-  userId: initialUserId,
-  userRoles: initialUserRoles,
-  recommendations: initialRecommendations,
-  error: initialError,
 }: ProfileProviderProps) {
-  // Initialize with default role first to avoid hydration mismatch
-  const [activeRole, setActiveRole] = useState(initialActiveRole);
-  const [profiles, setProfiles] = useState<Record<string, TalentProfile | RecruiterProfile | MentorProfile | null>>(initialProfiles as any);
-  const [profilesUI, setProfilesUI] = useState<Record<string, UIProfileData | null>>(initialProfilesUI as any);
-  const [userId, setUserId] = useState(initialUserId);
-  const [userRoles, setUserRoles] = useState(initialUserRoles);
-  const [error, setError] = useState(initialError);
-  const [isHydrated, setIsHydrated] = useState(false);
+  // Client-side state for profiles fetched after auth
+  const [activeRole, setActiveRole] = useState<string>("");
+  const [profiles, setProfiles] = useState<Record<string, TalentProfile | RecruiterProfile | MentorProfile | null>>({});
+  const [profilesUI, setProfilesUI] = useState<Record<string, UIProfileData | null>>({});
+  const [userId, setUserId] = useState<string | null>(null);
+  const [userRoles, setUserRoles] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Mark hydration complete and restore active role from localStorage
-  useEffect(() => {
-    setIsHydrated(true);
-
-    // Restore last active role from localStorage after hydration
-    if (userRoles.length > 0) {
-      const savedRole = localStorage.getItem("lastActiveRole");
-      if (savedRole && userRoles.includes(savedRole)) {
-        setActiveRole(savedRole);
-      } else if (!activeRole && userRoles.length > 0) {
-        // Set to first available role if no saved role exists
-        setActiveRole(userRoles[0]);
-      }
-    }
-
-    // Mark loading as complete - server-side fetching means data is already available
-    setIsLoading(false);
-  }, [userRoles, activeRole]);
+  // Empty - client-side loading is handled in AppLayoutClient
 
 
 
@@ -135,18 +96,19 @@ export function ProfileProvider({
   const value: ProfileContextType = {
     userId,
     userRoles,
+    setUserRoles,
     activeRole,
     setActiveRole,
-    profiles: profiles as Record<string, TalentProfile | RecruiterProfile | MentorProfile | null>,
+    profiles,
+    setProfiles,
     profilesUI,
-    stats: initialStats as Record<string, DashboardStats | any>,
+    setProfilesUI,
+    stats: {},
     currentProfile,
     currentProfileUI,
     currentStats: null,
     isLoading,
-    initialProfileData,
-    initialProfileRaw,
-    recommendations: initialRecommendations,
+    setIsLoading,
     error,
   };
 

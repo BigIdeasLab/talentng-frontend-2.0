@@ -16,6 +16,7 @@ import { useCompleteOnboarding } from "@/hooks/useUserApi";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { useTokenRefresh } from "@/hooks/useTokenRefresh";
+import { TokenStorage } from "./token-storage";
 
 
 const OnboardingPage = () => {
@@ -547,15 +548,18 @@ const OnboardingPage = () => {
 };
 
 const OnboardingPageWithSuspense = () => (
-  <Suspense
-    fallback={
-      <div className="h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
-      </div>
-    }
-  >
-    <OnboardingPage />
-  </Suspense>
+  <>
+    <TokenStorage />
+    <Suspense
+      fallback={
+        <div className="h-screen flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+        </div>
+      }
+    >
+      <OnboardingPage />
+    </Suspense>
+  </>
 );
 
 export default OnboardingPageWithSuspense;

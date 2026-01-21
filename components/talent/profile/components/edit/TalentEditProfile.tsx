@@ -18,7 +18,8 @@ import {
   mapAPIToUI,
   type UIProfileData,
 } from "@/lib/profileMapper";
-import { useCurrentProfile, useUpdateProfile } from "@/hooks/useProfileData";
+import { useProfile } from "@/hooks/useProfile";
+import { updateServerTalentProfile } from "@/lib/api/talent/server";
 
 const availableSkills = [
   "Website Design",
@@ -107,9 +108,9 @@ export function TalentEditProfile() {
   const skillsSelectRef = useRef<HTMLSelectElement | null>(null);
   const stackSelectRef = useRef<HTMLSelectElement | null>(null);
 
-  // Fetch profile data with React Query hook
-  const { data: profileData, isLoading } = useCurrentProfile();
-  const updateProfileMutation = useUpdateProfile();
+  // Get current profile from context
+  const { currentProfile, isLoading } = useProfile();
+  const profileData = currentProfile;
 
   // Load profile data when it becomes available
   useEffect(() => {
@@ -361,13 +362,16 @@ export function TalentEditProfile() {
     }));
   };
 
+  const [isSaving, setIsSaving] = useState(false);
+
   const handleSaveProfile = async () => {
     try {
+      setIsSaving(true);
       // Convert UI-friendly format to API format
       const apiData = mapUIToAPI(formData as UIProfileData);
 
-      // Send to API using mutation
-      await updateProfileMutation.mutateAsync(apiData);
+      // Send to API
+      await updateServerTalentProfile(apiData);
 
       setModalMessage("Profile saved successfully!");
       setIsSuccess(true);
@@ -377,6 +381,8 @@ export function TalentEditProfile() {
       setModalMessage("Failed to save profile. Please try again.");
       setIsSuccess(false);
       setModalOpen(true);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -390,7 +396,7 @@ export function TalentEditProfile() {
       <div className="flex-1 flex flex-col">
         <EditProfileActionBar
           onSave={handleSaveProfile}
-          isLoading={updateProfileMutation.isPending}
+          isLoading={isSaving}
         />
 
         <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">

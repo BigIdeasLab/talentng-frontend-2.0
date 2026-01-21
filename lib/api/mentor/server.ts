@@ -1,10 +1,10 @@
 /**
- * Server-side Mentor API Client
- * Used only in Next.js Server Components and Server Actions
- * Retrieves auth token from cookies via Next.js
+ * Mentor API Client (Server Exports)
+ * These functions are called from client-side hooks
+ * Uses the client API which reads tokens from localStorage
  */
 
-import serverApiClient from "@/lib/api/server-client";
+import apiClient from "@/lib/api";
 import type {
   MentorProfile,
   UpdateMentorProfileInput,
@@ -12,46 +12,46 @@ import type {
 } from "./types";
 
 /**
- * Get Current User's Mentor Profile (Server-side)
+ * Get Current User's Mentor Profile
  * GET /mentor/me
  */
 export async function getServerCurrentMentorProfile(): Promise<MentorProfile> {
-  return serverApiClient<MentorProfile>("/mentor/me");
+  return apiClient<MentorProfile>("/mentor/me");
 }
 
 /**
- * Update Current User's Mentor Profile (Server-side)
+ * Update Current User's Mentor Profile
  * PATCH /mentor/me
  */
 export async function updateServerMentorProfile(
   data: UpdateMentorProfileInput,
 ): Promise<MentorProfile> {
-  return serverApiClient<MentorProfile>("/mentor/me", {
+  return apiClient<MentorProfile>("/mentor/me", {
     method: "PATCH",
     body: data,
   });
 }
 
 /**
- * Get Mentor Profile by ID (Server-side)
+ * Get Mentor Profile by ID
  * GET /mentor/:id
  */
 export async function getServerMentorProfileById(
   id: string,
 ): Promise<MentorProfile> {
-  return serverApiClient<MentorProfile>(`/mentor/${id}`);
+  return apiClient<MentorProfile>(`/mentor/${id}`);
 }
 
 /**
- * Get All Mentors (Server-side, Public)
+ * Get All Mentors (Public)
  * GET /mentor
  */
 export async function getServerAllMentors(): Promise<MentorProfile[]> {
-  return serverApiClient<MentorProfile[]>("/mentor");
+  return apiClient<MentorProfile[]>("/mentor");
 }
 
 /**
- * Search Mentors (Server-side, Public)
+ * Search Mentors (Public)
  * GET /mentor/search
  */
 export async function getServerSearchMentors(
@@ -60,23 +60,23 @@ export async function getServerSearchMentors(
   const queryParams = new URLSearchParams();
   queryParams.append("q", query);
 
-  return serverApiClient<MentorProfile[]>(
+  return apiClient<MentorProfile[]>(
     `/mentor/search?${queryParams.toString()}`,
   );
 }
 
 /**
- * Get Mentor's Bookings (Server-side)
+ * Get Mentor's Bookings
  * GET /mentor/bookings
  */
 export async function getServerMentorBookings(): Promise<Booking[]> {
-  return serverApiClient<Booking[]>("/mentor/bookings");
+  return apiClient<Booking[]>("/mentor/bookings");
 }
 
 /**
- * Get Mentee's Bookings (Server-side)
+ * Get Mentee's Bookings
  * GET /mentor/my-bookings
  */
 export async function getServerMyMentorBookings(): Promise<Booking[]> {
-  return serverApiClient<Booking[]>("/mentor/my-bookings");
+  return apiClient<Booking[]>("/mentor/my-bookings");
 }

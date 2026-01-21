@@ -1,10 +1,10 @@
 /**
  * Centralized API Client
  * Handles request configuration, authentication, and error handling
- * Uses HTTP-only cookies for token storage
+ * Uses localStorage for token storage and Authorization headers
  */
 
-import { clearTokens } from "@/lib/auth";
+import { getAccessToken, getRefreshToken, storeTokens, clearTokens } from "@/lib/auth";
 
 const baseUrl =
   process.env.NEXT_PUBLIC_TALENTNG_API_URL || "http://localhost:3001";
@@ -40,14 +40,24 @@ const apiClient = async <T>(
   endpoint: string,
   options: ApiOptions = {}
 ): Promise<T> => {
+  // Get access token from localStorage
+  const accessToken = getAccessToken();
+
   const config: RequestInit = {
     method: options.method || "GET",
     headers: {
       "Content-Type": "application/json",
       ...options.headers,
     },
-    credentials: 'include', // Send cookies with every request
   };
+
+  // Add Authorization header if token exists
+  if (accessToken) {
+    config.headers = {
+      ...config.headers,
+      Authorization: `Bearer ${accessToken}`,
+    };
+  }
 
   if (options.body) {
     if (options.body instanceof FormData) {
@@ -79,15 +89,26 @@ const apiClient = async <T>(
         });
       }
 
-      // Attempt to refresh the token
+      // Attempt to refresh the token using refresh token
+      const refreshToken = getRefreshToken();
+      
+      if (!refreshToken) {
+        // No refresh token, user must log in again
+        clearTokens();
+        if (typeof window !== "undefined") {
+          window.location.href = "/login";
+        }
+        throw new Error("Session expired - please log in again");
+      }
+
       isRefreshing = true;
       refreshPromise = fetch(`${baseUrl}/auth/refresh`, {
         method: "POST",
-        credentials: 'include', // Send refresh cookie
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${refreshToken}`,
         },
-        body: JSON.stringify({}), // Backend reads from cookie, not body
+        body: JSON.stringify({}),
       });
 
       try {
@@ -96,8 +117,23 @@ const apiClient = async <T>(
         refreshPromise = null;
 
         if (refreshResponse.ok) {
-          // Browser already set cookies via Set-Cookie headers
-          // Retry original request with new token in cookies
+          const data = await refreshResponse.json();
+          
+          // Store new tokens in localStorage
+          if (data.accessToken && data.refreshToken) {
+            storeTokens({
+              accessToken: data.accessToken,
+              refreshToken: data.refreshToken,
+              userId: data.userId || '',
+            });
+          }
+
+          // Update config with new token and retry original request
+          config.headers = {
+            ...config.headers,
+            Authorization: `Bearer ${data.accessToken}`,
+          };
+
           processQueue(true);
           response = await fetch(`${baseUrl}${endpoint}`, config);
         } else {

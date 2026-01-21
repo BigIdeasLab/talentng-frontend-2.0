@@ -1,10 +1,10 @@
 /**
- * Server-side Talent API Client
- * Used only in Next.js Server Components and Server Actions
- * Retrieves auth token from cookies via Next.js
+ * Talent API Client (Server Exports)
+ * These functions are called from client-side hooks
+ * Uses the client API which reads tokens from localStorage
  */
 
-import serverApiClient from "@/lib/api/server-client";
+import apiClient from "@/lib/api";
 import type { APIProfileData } from "@/lib/profileMapper";
 import type {
   TalentProfile,
@@ -15,31 +15,44 @@ import type {
 } from "./types";
 
 /**
- * Get Current User's Talent Profile (Server-side)
+ * Get Current User's Talent Profile
  * GET /talent/me
  */
 export async function getServerCurrentProfile(): Promise<TalentProfile> {
-  return serverApiClient<TalentProfile>("/talent/me");
+  return apiClient<TalentProfile>("/talent/me");
 }
 
 /**
- * Get Dashboard Statistics (Server-side)
+ * Update Current User's Talent Profile
+ * PATCH /talent/me
+ */
+export async function updateServerTalentProfile(
+  data: APIProfileData,
+): Promise<TalentProfile> {
+  return apiClient<TalentProfile>("/talent/me", {
+    method: "PATCH",
+    body: data,
+  });
+}
+
+/**
+ * Get Dashboard Statistics
  * GET /talent/dashboard
  */
 export async function getServerDashboardStats(): Promise<DashboardStats> {
-  return serverApiClient<DashboardStats>("/talent/dashboard");
+  return apiClient<DashboardStats>("/talent/dashboard");
 }
 
 /**
- * Get My Services (Server-side)
+ * Get My Services
  * GET /talent/services
  */
 export async function getServerMyServices(): Promise<Service[]> {
-  return serverApiClient<Service[]>("/talent/services");
+  return apiClient<Service[]>("/talent/services");
 }
 
 /**
- * Get Talent's Services (Server-side, Public)
+ * Get Talent's Services (Public)
  * GET /talent/:talentId/services
  */
 export async function getServerTalentServices(
@@ -56,17 +69,17 @@ export async function getServerTalentServices(
     ? `/talent/${talentId}/services?${query}`
     : `/talent/${talentId}/services`;
 
-  return serverApiClient<Service[]>(endpoint);
+  return apiClient<Service[]>(endpoint);
 }
 
 /**
- * Get Talent's Recommendations (Server-side, Public)
+ * Get Talent's Recommendations (Public)
  * GET /talent/:talentUserId/recommendations
  */
 export async function getServerTalentRecommendations(
   talentUserId: string,
 ): Promise<TalentRecommendationDto[]> {
-  return serverApiClient<TalentRecommendationDto[]>(
+  return apiClient<TalentRecommendationDto[]>(
     `/talent/${talentUserId}/recommendations`,
   );
 }

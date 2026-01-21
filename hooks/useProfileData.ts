@@ -1,140 +1,125 @@
 "use client";
 
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import {
-  talentProfileApi,
-  talentRecommendationsApi,
-  talentServicesApi,
-} from "@/lib/api/talent-service";
+import { useEffect, useCallback } from "react";
+import { getServerCurrentProfile, getServerDashboardStats, getServerTalentRecommendations } from "@/lib/api/talent/server";
+import { getServerCurrentRecruiterProfile } from "@/lib/api/recruiter/server";
+import { getServerCurrentMentorProfile } from "@/lib/api/mentor/server";
 import { mapAPIToUI } from "@/lib/profileMapper";
-import type { TalentProfile } from "@/lib/api/talent-service";
-import type { UIProfileData } from "@/lib/profileMapper";
-
-// Query keys for consistency
-export const profileQueryKeys = {
-  all: ["profile"] as const,
-  current: () => [...profileQueryKeys.all, "current"] as const,
-  stats: () => [...profileQueryKeys.all, "stats"] as const,
-  recommendations: () => [...profileQueryKeys.all, "recommendations"] as const,
-  services: () => [...profileQueryKeys.all, "services"] as const,
-};
+import { useProfile } from "./useProfile";
+import { getAccessToken } from "@/lib/auth";
+import type { TalentProfile } from "@/lib/api/talent/types";
+import type { RecruiterProfile } from "@/lib/api/recruiter/types";
+import type { MentorProfile } from "@/lib/api/mentor/types";
 
 /**
- * Hook for fetching current user's talent profile
- * Caches for 5 minutes by default
- */
-export function useCurrentProfile() {
-  return useQuery({
-    queryKey: profileQueryKeys.current(),
-    queryFn: talentProfileApi.getCurrentProfile,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
-  });
-}
-
-/**
- * Hook for fetching dashboard statistics
- */
-export function useDashboardStats() {
-  return useQuery({
-    queryKey: profileQueryKeys.stats(),
-    queryFn: talentProfileApi.getDashboardStats,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
-  });
-}
-
-/**
- * Hook for fetching talent recommendations
- */
-export function useTalentRecommendations() {
-  return useQuery({
-    queryKey: profileQueryKeys.recommendations(),
-    queryFn: talentRecommendationsApi.getTalentRecommendations,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
-  });
-}
-
-/**
- * Hook for fetching my services
- */
-export function useMyServices() {
-  return useQuery({
-    queryKey: profileQueryKeys.services(),
-    queryFn: talentServicesApi.getMyServices,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
-  });
-}
-
-/**
- * Combined hook for fetching all profile-related data at once
- * Returns profile data mapped to UI format with stats, recommendations, and services
+ * Hook to fetch profile data client-side after user is authenticated
+ * Calls the API client which sends Authorization header with localStorage token
  */
 export function useProfileData() {
-  const profile = useCurrentProfile();
-  const stats = useDashboardStats();
-  const recommendations = useTalentRecommendations();
-  const services = useMyServices();
+  const {
+    setProfiles,
+    setProfilesUI,
+    setActiveRole,
+    setIsLoading,
+    setUserRoles,
+  } = useProfile();
 
-  const isLoading = profile.isLoading || stats.isLoading || recommendations.isLoading || services.isLoading;
-  const isError = profile.isError || stats.isError || recommendations.isError || services.isError;
-  const error = profile.error || stats.error || recommendations.error || services.error;
+  const fetchProfiles = useCallback(async () => {
+    // Check if user is authenticated
+    const accessToken = getAccessToken();
+    if (!accessToken) {
+      setIsLoading(false);
+      return;
+    }
 
-  const mappedProfileData = profile.data ? mapAPIToUI(profile.data) : null;
+    try {
+      setIsLoading(true);
 
-  return {
-    profile: mappedProfileData,
-    profileRaw: profile.data,
-    stats: stats.data,
-    recommendations: recommendations.data,
-    services: services.data,
-    isLoading,
-    isError,
-    error: error instanceof Error ? error.message : String(error),
-  };
-}
+      // Get user roles from localStorage (set by OAuth redirect or login)
+      const userRolesStr = localStorage.getItem("userRoles");
+      const userRoles = userRolesStr ? userRolesStr.split(",").map(r => r.trim().toLowerCase()) : [];
 
-/**
- * Hook for updating profile
- */
-export function useUpdateProfile() {
-  const queryClient = useQueryClient();
+      // Update context with user roles
+      setUserRoles(userRoles);
 
-  return useMutation({
-    mutationFn: talentProfileApi.updateProfile,
-    onSuccess: (updatedProfile) => {
-      // Invalidate and refetch profile query
-      queryClient.setQueryData(profileQueryKeys.current(), updatedProfile);
-    },
-  });
-}
+      // Fetch profiles only for roles the user actually has
+      const fetchPromises: Promise<any>[] = [];
+      const roleMap: Record<string, string> = {};
 
-/**
- * Hook for updating profile image
- */
-export function useUpdateProfileImage() {
-  const queryClient = useQueryClient();
+      if (userRoles.includes("talent")) {
+        roleMap["talent"] = "talent";
+        fetchPromises.push(getServerCurrentProfile().catch(() => null));
+      } else {
+        fetchPromises.push(Promise.resolve(null));
+      }
 
-  return useMutation({
-    mutationFn: talentProfileApi.updateProfileImage,
-    onSuccess: (updatedProfile) => {
-      queryClient.setQueryData(profileQueryKeys.current(), updatedProfile);
-    },
-  });
-}
+      if (userRoles.includes("recruiter")) {
+        roleMap["recruiter"] = "recruiter";
+        fetchPromises.push(getServerCurrentRecruiterProfile().catch(() => null));
+      } else {
+        fetchPromises.push(Promise.resolve(null));
+      }
 
-/**
- * Hook for updating cover image
- */
-export function useUpdateCoverImage() {
-  const queryClient = useQueryClient();
+      if (userRoles.includes("mentor")) {
+        roleMap["mentor"] = "mentor";
+        fetchPromises.push(getServerCurrentMentorProfile().catch(() => null));
+      } else {
+        fetchPromises.push(Promise.resolve(null));
+      }
 
-  return useMutation({
-    mutationFn: talentProfileApi.updateCoverImage,
-    onSuccess: (updatedProfile) => {
-      queryClient.setQueryData(profileQueryKeys.current(), updatedProfile);
-    },
-  });
+      const [talentProfile, recruiterProfile, mentorProfile] = await Promise.all(fetchPromises);
+
+      // Build profiles and UI from responses
+      const profiles: Record<string, TalentProfile | RecruiterProfile | MentorProfile | null> = {};
+      const profilesUI: Record<string, any> = {};
+      const availableRoles: string[] = [];
+
+      if (talentProfile) {
+        profiles.talent = talentProfile;
+        profilesUI.talent = mapAPIToUI(talentProfile);
+        availableRoles.push("talent");
+      }
+
+      if (recruiterProfile) {
+        profiles.recruiter = recruiterProfile;
+        profilesUI.recruiter = mapAPIToUI(recruiterProfile);
+        availableRoles.push("recruiter");
+      }
+
+      if (mentorProfile) {
+        profiles.mentor = mentorProfile;
+        profilesUI.mentor = mapAPIToUI(mentorProfile);
+        availableRoles.push("mentor");
+      }
+
+      // Set profiles in context
+      setProfiles(profiles);
+      setProfilesUI(profilesUI);
+
+      // Set default active role
+      if (availableRoles.length > 0) {
+        const savedRole = localStorage.getItem("lastActiveRole");
+        if (savedRole && availableRoles.includes(savedRole)) {
+          setActiveRole(savedRole);
+        } else {
+          setActiveRole(availableRoles[0]);
+        }
+      } else {
+        // User has roles but no profiles yet (new account that hasn't completed onboarding)
+        // This is OK - just leave activeRole unset, layout will show appropriate UI
+        console.log("No profiles found for user with roles:", userRoles);
+      }
+    } catch (error) {
+      console.error("Error fetching profile data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [setProfiles, setProfilesUI, setActiveRole, setIsLoading, setUserRoles]);
+
+  // Fetch profiles on mount
+  useEffect(() => {
+    fetchProfiles();
+  }, [fetchProfiles]);
+
+  return { fetchProfiles };
 }
