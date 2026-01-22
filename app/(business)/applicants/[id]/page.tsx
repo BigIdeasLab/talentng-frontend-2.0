@@ -79,6 +79,9 @@ export default function ApplicantProposalPage() {
   const applicantId = parseInt(params.id as string);
   const applicant = mockApplicantDetails[applicantId];
 
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false);
+
   if (!applicant) {
     return (
       <div className="h-screen flex items-center justify-center bg-white">
