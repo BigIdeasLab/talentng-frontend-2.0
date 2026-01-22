@@ -381,7 +381,10 @@ export default function ApplicantProposalPage() {
                 </button>
 
                 {/* Schedule Interview Button */}
-                <button className="flex items-center gap-1 h-8 px-[14px_20px_14px_14px] py-[12px] rounded-[8px] border border-[#E6E7EA] bg-white hover:bg-gray-50 transition-colors">
+                <button
+                  onClick={() => setIsScheduleModalOpen(true)}
+                  className="flex items-center gap-1 h-8 px-[14px_20px_14px_14px] py-[12px] rounded-[8px] border border-[#E6E7EA] bg-white hover:bg-gray-50 transition-colors"
+                >
                   <svg
                     width="13"
                     height="13"
