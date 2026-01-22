@@ -427,7 +427,10 @@ export default function ApplicantProposalPage() {
                 </button>
 
                 {/* Decline Button */}
-                <button className="flex items-center justify-center gap-1 h-8 px-3 py-[12px] rounded-[8px] border border-[#E6E7EA] bg-white hover:bg-gray-50 transition-colors">
+                <button
+                  onClick={() => setIsDeclineModalOpen(true)}
+                  className="flex items-center justify-center gap-1 h-8 px-3 py-[12px] rounded-[8px] border border-[#E6E7EA] bg-white hover:bg-gray-50 transition-colors"
+                >
                   <svg
                     width="15"
                     height="15"
