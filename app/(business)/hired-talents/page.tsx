@@ -21,23 +21,27 @@ const mockHiredTalents: HiredTalent[] = [
     id: 1,
     name: "Elias Johnson",
     role: "Product Designer",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/b0919034a0c003e89a9b8eec7e38617e20342656?width=100",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/b0919034a0c003e89a9b8eec7e38617e20342656?width=100",
     opportunity: "Mobile App Designer",
     hiredDate: "Feb 20 2026",
     location: "Port Harcourt, NG",
     previousHires: "8x Previously Hired",
-    statusMessage: "Congratulations! You have been hired for the Mobile App Designer position. Welcome to the team!",
+    statusMessage:
+      "Congratulations! You have been hired for the Mobile App Designer position. Welcome to the team!",
   },
   {
     id: 2,
     name: "Elias Johnson",
     role: "Product Designer",
-    avatar: "https://api.builder.io/api/v1/image/assets/TEMP/b0919034a0c003e89a9b8eec7e38617e20342656?width=100",
+    avatar:
+      "https://api.builder.io/api/v1/image/assets/TEMP/b0919034a0c003e89a9b8eec7e38617e20342656?width=100",
     opportunity: "Mobile App Designer",
     hiredDate: "Feb 20 2026",
     location: "Port Harcourt, NG",
     previousHires: "8x Previously Hired",
-    statusMessage: "Congratulations! You have been hired for the Mobile App Designer position. Welcome to the team!",
+    statusMessage:
+      "Congratulations! You have been hired for the Mobile App Designer position. Welcome to the team!",
   },
 ];
 
@@ -272,7 +276,9 @@ export default function HiredTalentsPage() {
                       />
                     </svg>
                     <p className="font-inter-tight text-sm text-[#181B25]">
-                      <span className="text-[15px] text-[#525866]">Hired on:</span>{" "}
+                      <span className="text-[15px] text-[#525866]">
+                        Hired on:
+                      </span>{" "}
                       {talent.hiredDate}
                     </p>
                   </div>

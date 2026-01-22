@@ -9,14 +9,11 @@ interface DeclineApplicationModalProps {
   jobTitle: string;
 }
 
-export const DeclineApplicationModal: React.FC<DeclineApplicationModalProps> = ({
-  isOpen,
-  onClose,
-  applicantName,
-  jobTitle,
-}) => {
+export const DeclineApplicationModal: React.FC<
+  DeclineApplicationModalProps
+> = ({ isOpen, onClose, applicantName, jobTitle }) => {
   const [message, setMessage] = useState(
-    `Dear ${applicantName},\n\nThank you for your interest in the ${jobTitle} position at Chowdeck Nigeria.\n\nAfter careful consideration, we have decided to move forward with other candidates whose qualifications more closely match our current needs.\n\nWe appreciate the time you invested in applying and wish you the best in your future endeavors.\n\nBest regards,\nChowdeck Nigeria Team`
+    `Dear ${applicantName},\n\nThank you for your interest in the ${jobTitle} position at Chowdeck Nigeria.\n\nAfter careful consideration, we have decided to move forward with other candidates whose qualifications more closely match our current needs.\n\nWe appreciate the time you invested in applying and wish you the best in your future endeavors.\n\nBest regards,\nChowdeck Nigeria Team`,
   );
 
   if (!isOpen) return null;
@@ -115,7 +112,9 @@ export const DeclineApplicationModal: React.FC<DeclineApplicationModalProps> = (
               {/* Sending To */}
               <div className="flex flex-col gap-5">
                 <div className="font-inter-tight text-sm text-black">
-                  <span className="text-[#525866] font-normal">Sending to: </span>
+                  <span className="text-[#525866] font-normal">
+                    Sending to:{" "}
+                  </span>
                   <span className="font-medium">{applicantName}</span>
                   <span className="text-[#525866] font-normal"> for </span>
                   <span className="font-medium">{jobTitle}</span>

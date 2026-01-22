@@ -18,7 +18,7 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [message, setMessage] = useState(
-    `Dear ${applicantName},\n\nWe are pleased to inform you that you have been selected for an interview for the ${jobTitle} position at Chowdeck Nigeria.\n\nPlease confirm your availability for the scheduled date and time. We look forward to meeting you!\n\nBest regards,\nChowdeck Nigeria Team`
+    `Dear ${applicantName},\n\nWe are pleased to inform you that you have been selected for an interview for the ${jobTitle} position at Chowdeck Nigeria.\n\nPlease confirm your availability for the scheduled date and time. We look forward to meeting you!\n\nBest regards,\nChowdeck Nigeria Team`,
   );
 
   if (!isOpen) return null;
@@ -112,7 +112,9 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
               {/* Sending To */}
               <div className="flex flex-col gap-5">
                 <div className="font-inter-tight text-sm text-black">
-                  <span className="text-[#525866] font-normal">Sending to: </span>
+                  <span className="text-[#525866] font-normal">
+                    Sending to:{" "}
+                  </span>
                   <span className="font-medium">{applicantName}</span>
                   <span className="text-[#525866] font-normal"> for </span>
                   <span className="font-medium">{jobTitle}</span>

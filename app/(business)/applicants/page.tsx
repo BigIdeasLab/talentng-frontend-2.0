@@ -481,7 +481,7 @@ export default function ApplicantsPage() {
 
                 {/* Actions */}
                 <div className="flex items-center justify-end gap-1 flex-shrink-0">
-                  <button 
+                  <button
                     onClick={() => router.push(`/applicants/${applicant.id}`)}
                     className="flex items-center justify-center h-8 px-[8px] py-[12px] rounded-[50px] bg-[#181B25] hover:bg-[#2a2d3a] transition-colors flex-shrink-0"
                   >
