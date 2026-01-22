@@ -2,6 +2,9 @@
 
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
+import { useState } from "react";
+import { ScheduleInterviewModal } from "@/components/employer/applicants/ScheduleInterviewModal";
+import { DeclineApplicationModal } from "@/components/employer/applicants/DeclineApplicationModal";
 
 interface ApplicantDetail {
   id: number;
