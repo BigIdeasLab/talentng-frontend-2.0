@@ -228,7 +228,10 @@ export default function ApplicantsPage() {
             <h1 className="font-inter-tight text-[21px] font-medium text-black leading-[18px]">
               Applicants &gt; UI Designer
             </h1>
-            <div className="flex items-center gap-[5px] px-[14px] py-[7px] rounded-[8px] border border-[#E1E4EA]">
+            <Link
+              href="/hired-talents"
+              className="flex items-center gap-[5px] px-[14px] py-[7px] rounded-[8px] border border-[#E1E4EA] hover:bg-gray-50 transition-colors cursor-pointer"
+            >
               <svg
                 width="14"
                 height="14"
@@ -261,7 +264,7 @@ export default function ApplicantsPage() {
               <span className="font-inter-tight text-[13px] font-normal text-[#525866] leading-normal">
                 Hired Talents (1)
               </span>
-            </div>
+            </Link>
           </div>
         </div>
 
