@@ -469,6 +469,21 @@ export default function ApplicantProposalPage() {
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      <ScheduleInterviewModal
+        isOpen={isScheduleModalOpen}
+        onClose={() => setIsScheduleModalOpen(false)}
+        applicantName={applicant.name}
+        jobTitle={applicant.appliedFor.title}
+      />
+
+      <DeclineApplicationModal
+        isOpen={isDeclineModalOpen}
+        onClose={() => setIsDeclineModalOpen(false)}
+        applicantName={applicant.name}
+        jobTitle={applicant.appliedFor.title}
+      />
     </div>
   );
 }
