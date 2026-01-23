@@ -178,11 +178,9 @@ export function useOpportunitiesManager() {
       saveMutation.error ||
       unsaveMutation.error ||
       null,
-    getAll: (params?: GetOpportunitiesParams) =>
-      getOpportunities(params),
+    getAll: (params?: GetOpportunitiesParams) => getOpportunities(params),
     getById: (id: string) => getOpportunityById(id),
-    create: (data: Partial<Opportunity>) =>
-      createMutation.mutateAsync(data),
+    create: (data: Partial<Opportunity>) => createMutation.mutateAsync(data),
     update: (id: string, data: Partial<Opportunity>) =>
       updateMutation.mutateAsync({ id, data }),
     post: (id: string) => postOpportunity(id),

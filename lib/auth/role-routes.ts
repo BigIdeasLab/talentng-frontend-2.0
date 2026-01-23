@@ -37,7 +37,10 @@ export const ROLE_ROUTES: Record<string, Role[]> = {
 /**
  * Check if a user with given roles can access a route
  */
-export const canAccessRoute = (pathname: string, userRoles: string[]): boolean => {
+export const canAccessRoute = (
+  pathname: string,
+  userRoles: string[],
+): boolean => {
   // If no roles, deny access to protected routes
   if (!userRoles || userRoles.length === 0) {
     return false;

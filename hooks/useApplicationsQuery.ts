@@ -77,14 +77,10 @@ export function useApplications() {
   return {
     isLoading: submitMutation.isPending || statusMutation.isPending,
     error: submitMutation.error || statusMutation.error || null,
-    getAll: (opportunityId: string) =>
-      getApplications({ opportunityId }),
+    getAll: (opportunityId: string) => getApplications({ opportunityId }),
     getById: (id: string) => getApplicationById(id),
-    submit: (data: {
-      opportunityId: string;
-      note?: string;
-      files?: File[];
-    }) => submitMutation.mutateAsync(data),
+    submit: (data: { opportunityId: string; note?: string; files?: File[] }) =>
+      submitMutation.mutateAsync(data),
     updateStatus: (applicationId: string, status: string) =>
       statusMutation.mutateAsync({ applicationId, status }),
   };

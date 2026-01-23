@@ -33,7 +33,5 @@ export default function DiscoverTalentPage() {
 
   if (isLoading) return <PageLoadingState message="Loading talents..." />;
 
-  return (
-    <DiscoverTalentClient initialTalents={talents} initialError={error} />
-  );
+  return <DiscoverTalentClient initialTalents={talents} initialError={error} />;
 }

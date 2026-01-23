@@ -406,94 +406,104 @@ export default function ApplicantsPage() {
               {/* Table Body */}
               <div className="px-[24px] py-[19px] flex flex-col gap-[19px] overflow-y-auto flex-1">
                 {mockApplicants.map((applicant, index) => (
-              <div
-                key={applicant.id}
-                className="grid grid-cols-[22px_153px_68px_102px_93px_85px_68px_170px] gap-3 items-center flex-shrink-0"
-              >
-                {/* S/N */}
-                <span className="font-inter-tight text-[13px] font-normal text-black text-center">
-                  {index + 1}.
-                </span>
-
-                {/* Talents */}
-                <div className="flex items-center gap-[8px]">
-                  <img
-                    src={applicant.avatar}
-                    alt={applicant.name}
-                    className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-                  />
-                  <div className="flex flex-col gap-[8px]">
-                    <span className="font-inter-tight text-[13px] font-medium text-black text-center leading-normal">
-                      {applicant.name}
-                    </span>
-                    <span className="font-inter-tight text-[12px] font-light text-[#525866] leading-normal">
-                      {applicant.role}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Hires */}
-                <span className="font-inter-tight text-[13px] font-normal text-black leading-normal">
-                  {applicant.hires}
-                </span>
-
-                {/* Opportunity */}
-                <div className="flex flex-col gap-[8px]">
-                  <span className="font-inter-tight text-[12px] font-normal text-black leading-normal">
-                    {applicant.opportunity.title}
-                  </span>
-                  {applicant.opportunity.type && (
-                    <span className="font-inter-tight text-[11px] font-normal text-[#606060] leading-normal">
-                      {applicant.opportunity.type}
-                    </span>
-                  )}
-                </div>
-
-                {/* Location */}
-                <span className="font-inter-tight text-[13px] font-normal text-black leading-normal">
-                  {applicant.location}
-                </span>
-
-                {/* Date Applied */}
-                <span className="font-inter-tight text-[13px] font-normal text-black leading-normal">
-                  {applicant.dateApplied}
-                </span>
-
-                {/* Status */}
-                <div
-                  className="flex items-center justify-center px-[20px] py-0 h-[18px] rounded-[50px]"
-                  style={{
-                    backgroundColor: statusStylesLocal[applicant.status].bg,
-                  }}
-                >
-                  <span
-                    className="font-inter-tight text-[11px] font-semibold text-center leading-normal"
-                    style={{ color: statusStylesLocal[applicant.status].text }}
+                  <div
+                    key={applicant.id}
+                    className="grid grid-cols-[22px_153px_68px_102px_93px_85px_68px_170px] gap-3 items-center flex-shrink-0"
                   >
-                    {applicant.status}
-                  </span>
-                </div>
-
-                {/* Actions */}
-                <div className="flex items-center justify-end gap-1 flex-shrink-0">
-                  <button
-                    onClick={() => router.push(`/applicants/${applicant.id}`)}
-                    className="flex items-center justify-center h-8 px-[8px] py-[12px] rounded-[50px] bg-[#181B25] hover:bg-[#2a2d3a] transition-colors flex-shrink-0"
-                  >
-                    <span className="font-inter-tight text-[12px] font-medium text-white text-center leading-normal">
-                      View Proposal
+                    {/* S/N */}
+                    <span className="font-inter-tight text-[13px] font-normal text-black text-center">
+                      {index + 1}.
                     </span>
-                  </button>
-                  {applicant.status !== "Rejected" &&
-                    applicant.status !== "Hired" && (
-                      <button style={{ backgroundColor: COLORS.primary, borderColor: COLORS.primary }} className="flex items-center justify-center h-8 px-[20px] py-[12px] rounded-[50px] border hover:opacity-90 transition-colors flex-shrink-0">
+
+                    {/* Talents */}
+                    <div className="flex items-center gap-[8px]">
+                      <img
+                        src={applicant.avatar}
+                        alt={applicant.name}
+                        className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                      />
+                      <div className="flex flex-col gap-[8px]">
+                        <span className="font-inter-tight text-[13px] font-medium text-black text-center leading-normal">
+                          {applicant.name}
+                        </span>
+                        <span className="font-inter-tight text-[12px] font-light text-[#525866] leading-normal">
+                          {applicant.role}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Hires */}
+                    <span className="font-inter-tight text-[13px] font-normal text-black leading-normal">
+                      {applicant.hires}
+                    </span>
+
+                    {/* Opportunity */}
+                    <div className="flex flex-col gap-[8px]">
+                      <span className="font-inter-tight text-[12px] font-normal text-black leading-normal">
+                        {applicant.opportunity.title}
+                      </span>
+                      {applicant.opportunity.type && (
+                        <span className="font-inter-tight text-[11px] font-normal text-[#606060] leading-normal">
+                          {applicant.opportunity.type}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Location */}
+                    <span className="font-inter-tight text-[13px] font-normal text-black leading-normal">
+                      {applicant.location}
+                    </span>
+
+                    {/* Date Applied */}
+                    <span className="font-inter-tight text-[13px] font-normal text-black leading-normal">
+                      {applicant.dateApplied}
+                    </span>
+
+                    {/* Status */}
+                    <div
+                      className="flex items-center justify-center px-[20px] py-0 h-[18px] rounded-[50px]"
+                      style={{
+                        backgroundColor: statusStylesLocal[applicant.status].bg,
+                      }}
+                    >
+                      <span
+                        className="font-inter-tight text-[11px] font-semibold text-center leading-normal"
+                        style={{
+                          color: statusStylesLocal[applicant.status].text,
+                        }}
+                      >
+                        {applicant.status}
+                      </span>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center justify-end gap-1 flex-shrink-0">
+                      <button
+                        onClick={() =>
+                          router.push(`/applicants/${applicant.id}`)
+                        }
+                        className="flex items-center justify-center h-8 px-[8px] py-[12px] rounded-[50px] bg-[#181B25] hover:bg-[#2a2d3a] transition-colors flex-shrink-0"
+                      >
                         <span className="font-inter-tight text-[12px] font-medium text-white text-center leading-normal">
-                          Hire
+                          View Proposal
                         </span>
                       </button>
-                    )}
-                </div>
-              </div>
+                      {applicant.status !== "Rejected" &&
+                        applicant.status !== "Hired" && (
+                          <button
+                            style={{
+                              backgroundColor: COLORS.primary,
+                              borderColor: COLORS.primary,
+                            }}
+                            className="flex items-center justify-center h-8 px-[20px] py-[12px] rounded-[50px] border hover:opacity-90 transition-colors flex-shrink-0"
+                          >
+                            <span className="font-inter-tight text-[12px] font-medium text-white text-center leading-normal">
+                              Hire
+                            </span>
+                          </button>
+                        )}
+                    </div>
+                  </div>
                 ))}
               </div>
             </>

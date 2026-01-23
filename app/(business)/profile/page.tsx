@@ -13,7 +13,11 @@ export default function ProfilePage() {
   const { activeRole } = useProfile();
   const role = activeRole || "talent";
 
-  const { data: profileData, isLoading, error } = usePageData({
+  const {
+    data: profileData,
+    isLoading,
+    error,
+  } = usePageData({
     fetchFn: fetchProfileByRole,
     transform: mapAPIToUI,
     defaultData: DEFAULT_PROFILE_DATA,

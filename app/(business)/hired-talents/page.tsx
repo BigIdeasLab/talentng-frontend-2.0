@@ -316,11 +316,17 @@ export default function HiredTalentsPage() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <span style={{ color: COLORS.success }} className="font-inter-tight text-[10px] font-medium">
+                    <span
+                      style={{ color: COLORS.success }}
+                      className="font-inter-tight text-[10px] font-medium"
+                    >
                       Status Message Sent
                     </span>
                   </div>
-                  <p style={{ color: COLORS.success }} className="font-inter-tight text-[10px] font-normal">
+                  <p
+                    style={{ color: COLORS.success }}
+                    className="font-inter-tight text-[10px] font-normal"
+                  >
                     {talent.statusMessage}
                   </p>
                 </div>

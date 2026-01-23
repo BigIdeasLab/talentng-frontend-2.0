@@ -12,6 +12,7 @@
 This is a Next.js 16 + React + TypeScript SaaS frontend for TalentNG, a talent marketplace platform. The codebase has been refactored for maintainability, scalability, and developer experience.
 
 ### Key Metrics
+
 - **Lines Reduced**: 373 → 176 (53% reduction)
 - **Pages Refactored**: 6 major pages
 - **New Utilities**: 18 files created
@@ -24,6 +25,7 @@ This is a Next.js 16 + React + TypeScript SaaS frontend for TalentNG, a talent m
 ## Architecture Overview
 
 ### Tech Stack
+
 - **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript (strict mode)
 - **UI Components**: Shadcn UI (via @/components/ui)
@@ -116,16 +118,19 @@ components/
 The app supports 4 roles: `talent`, `recruiter`, `mentor`, `employer`
 
 **Profile Context** (`app/(business)/profile-provider.tsx`):
+
 ```typescript
 const { userRoles, activeRole, setActiveRole } = useProfile();
 ```
 
 **Middleware Role Check** (`lib/auth/role-routes.ts`):
+
 - Prevents unauthorized access at middleware level
 - Redirects to appropriate page based on role
 - Routes are configured in `ROLE_ROUTES` constant
 
 **Page-Level Rendering**:
+
 ```typescript
 // Option 1: Factory pattern
 export default createRoleBasedPage({
@@ -148,21 +153,25 @@ switch (role) {
 Three-tier approach for data flow:
 
 **Service Layer** (`lib/services/*.ts`):
+
 - Pure API functions (no React hooks)
 - Can be used in server actions, services, etc.
 - Re-exported from lib/api
 
 **Hooks Layer** (`hooks/*.ts`):
+
 - React Query wrappers for services
 - Individual hooks per operation (useQuery, useMutation)
 - No manual state management
 
 **Components**:
+
 - Consume hooks directly
 - Get `data`, `isLoading`, `error` from hooks
 - Call mutations via `mutate()`/`mutateAsync()`
 
 Example:
+
 ```typescript
 // Service layer (pure API)
 export { getOpportunities, createOpportunity } from "@/lib/api/opportunities";
@@ -185,6 +194,7 @@ function ListOpportunities() {
 ### 3. Centralized Constants
 
 **Colors** (`lib/constants/colors.ts`):
+
 ```typescript
 import { COLORS } from "@/lib/constants";
 
@@ -194,15 +204,17 @@ className={`text-[${COLORS.primary}]`}  // Works in Tailwind JIT
 ```
 
 **Status Styles** (`lib/constants/status-styles.ts`):
+
 ```typescript
 import { STATUS_STYLES } from "@/lib/constants";
 
-const style = STATUS_STYLES["In Review"];  // { bg, text, dot }
+const style = STATUS_STYLES["In Review"]; // { bg, text, dot }
 ```
 
 ### 4. Type Organization
 
 Centralized types in `lib/types/index.ts`:
+
 ```typescript
 export type {
   // Auth
@@ -216,12 +228,13 @@ export type {
   // Applications
   Application,
   // etc.
-} from "./..."
+} from "./...";
 ```
 
 ### 5. Form Validation
 
 Using **React Hook Form + Zod**:
+
 ```typescript
 const schema = z.object({
   email: z.string().email("Invalid email"),
@@ -232,6 +245,7 @@ const form = useForm({ resolver: zodResolver(schema) });
 ```
 
 Errors shown via:
+
 - `<FormErrorMessage error={apiError} />` - API errors
 - `<FormField ... render={({ fieldState: { error } })} />` - Validation errors
 
@@ -262,6 +276,7 @@ export function getRedirectForRole(userRoles: string[]): string {
 ### Token Management
 
 Tokens stored in localStorage via `lib/auth.ts`:
+
 ```typescript
 export const storeTokens = (data: TokenData) => {
   localStorage.setItem("accessToken", data.accessToken);
@@ -286,6 +301,7 @@ Auto-refresh logic in `lib/token-refresh.ts`
 ### Profile Context
 
 Stores:
+
 - `activeRole` - Currently selected role
 - `userRoles` - Array of roles user has
 - `profiles` - Role-specific profile data
@@ -293,6 +309,7 @@ Stores:
 - `stats` - Profile statistics
 
 Usage:
+
 ```typescript
 const { activeRole, userRoles, setActiveRole } = useProfile();
 ```
@@ -300,12 +317,14 @@ const { activeRole, userRoles, setActiveRole } = useProfile();
 ### React Query
 
 Used for API data caching:
+
 - Automatic deduplication of identical requests
 - Background refetch on window focus
 - Built-in loading/error/success states
 - Manual invalidation after mutations
 
 Example:
+
 ```typescript
 const { data, isLoading, error } = useQuery({
   queryKey: ["opportunities"],
@@ -323,6 +342,7 @@ const mutation = useMutation({
 ### Local Component State
 
 For UI-only state (modals, filters, etc.):
+
 ```typescript
 const [isOpen, setIsOpen] = useState(false);
 const [filters, setFilters] = useState({});
@@ -334,26 +354,27 @@ const [filters, setFilters] = useState({});
 
 ### Phase 1: Foundation (Completed ✅)
 
-| Item | Files | Status | Lines Saved |
-|------|-------|--------|------------|
-| Type Organization | 1 new file | ✅ | - |
-| Error Boundaries | 2 new files | ✅ | - |
-| Empty States | 1 new file | ✅ | - |
-| Form Error Component | 1 new file | ✅ | - |
-| Page Utilities | 4 new files | ✅ | ~150 per page |
-| Constants | 2 new files | ✅ | ~50 instances |
+| Item                 | Files       | Status | Lines Saved   |
+| -------------------- | ----------- | ------ | ------------- |
+| Type Organization    | 1 new file  | ✅     | -             |
+| Error Boundaries     | 2 new files | ✅     | -             |
+| Empty States         | 1 new file  | ✅     | -             |
+| Form Error Component | 1 new file  | ✅     | -             |
+| Page Utilities       | 4 new files | ✅     | ~150 per page |
+| Constants            | 2 new files | ✅     | ~50 instances |
 
 ### Phase 2: Security & Architecture (Completed ✅)
 
-| Item | Files | Status | Impact |
-|------|-------|--------|--------|
-| Middleware Role Check | 1 new file | ✅ | Prevents unauthorized access |
-| Service/Hook Separation | 5 new files | ✅ | Improves testability |
-| Constants Throughout | 10 files | ✅ | Single source of truth |
+| Item                    | Files       | Status | Impact                       |
+| ----------------------- | ----------- | ------ | ---------------------------- |
+| Middleware Role Check   | 1 new file  | ✅     | Prevents unauthorized access |
+| Service/Hook Separation | 5 new files | ✅     | Improves testability         |
+| Constants Throughout    | 10 files    | ✅     | Single source of truth       |
 
 ### What Remains
 
 See NEXT_STEPS.md for future work:
+
 - Mock data extraction (pending)
 - Dynamic page refactoring (lower priority)
 - React Query optimization (if needed)
@@ -365,14 +386,15 @@ See NEXT_STEPS.md for future work:
 ### Adding a New Role-Based Page
 
 1. **Create page file**:
+
    ```typescript
    // app/(business)/my-page/page.tsx
    "use client";
-   
+
    import { createRoleBasedPage } from "@/lib/page-utils";
    import { TalentView } from "@/components/talent/...";
    import { RecruiterView } from "@/components/recruiter/...";
-   
+
    export default createRoleBasedPage({
      talent: <TalentView />,
      recruiter: <RecruiterView />,
@@ -388,12 +410,14 @@ See NEXT_STEPS.md for future work:
 ### Fetching Data
 
 1. **Create service** (if new API):
+
    ```typescript
    // lib/services/my-service.ts
    export { getMyData, createMyData } from "@/lib/api/my-endpoint";
    ```
 
 2. **Create hooks**:
+
    ```typescript
    // hooks/useMyData.ts
    export function useMyDataQuery() {
@@ -469,11 +493,13 @@ import { COLORS } from "@/lib/constants";
 ## Testing
 
 ### Setup
+
 - **Test Runner**: Vitest
 - **Testing Library**: React Testing Library
 - **Config**: vitest.config.ts
 
 ### Run Tests
+
 ```bash
 npm run test           # Run tests
 npm run test:watch    # Watch mode
@@ -481,6 +507,7 @@ npm run test:ui       # UI mode
 ```
 
 ### Example Test
+
 ```typescript
 import { render, screen } from "@testing-library/react";
 import { MyComponent } from "./my-component";
@@ -498,16 +525,19 @@ describe("MyComponent", () => {
 ## Performance Considerations
 
 ### Code Splitting
+
 - Pages are automatically code-split
 - Dynamic imports for large components
 - Route-based bundles in Next.js
 
 ### Caching
+
 - React Query caches API responses
 - Service worker for offline support (optional)
 - Browser caching via response headers
 
 ### Optimization
+
 - Images optimized via Next.js Image component
 - CSS minified in production
 - Tree-shaking removes unused code
@@ -518,6 +548,7 @@ describe("MyComponent", () => {
 ## Deployment
 
 ### Pre-deployment Checks
+
 ```bash
 # Type check
 npm run typecheck
@@ -530,13 +561,16 @@ npm run lint
 ```
 
 ### Environment Variables
+
 Create `.env.local`:
+
 ```
 NEXT_PUBLIC_API_BASE_URL=https://api.example.com
 JWT_SECRET=your-secret-key
 ```
 
 ### Build & Deploy
+
 ```bash
 # Production build
 npm run build
@@ -550,22 +584,26 @@ npm run start
 ## Troubleshooting
 
 ### Build Fails
+
 1. Check TypeScript: `npm run typecheck`
 2. Clear cache: `rm -rf .next`
 3. Reinstall dependencies: `npm install`
 
 ### Type Errors
+
 - Check imports are from `lib/types`
 - Use proper TypeScript generics
 - Run `npm run typecheck` to find all errors
 
 ### API Calls Fail
+
 - Check token is valid (inspect localStorage)
 - Verify `JWT_SECRET` env var
 - Check network tab in DevTools
 - Verify API endpoint is correct
 
 ### Role Access Issues
+
 - Verify role is in `userRoles` array
 - Check role-based route mapping in `lib/auth/role-routes.ts`
 - Clear localStorage and re-login
@@ -576,6 +614,7 @@ npm run start
 ## Resources
 
 ### Documentation
+
 - [Next.js 16 Docs](https://nextjs.org)
 - [React 19 Docs](https://react.dev)
 - [TypeScript Docs](https://www.typescriptlang.org)
@@ -585,6 +624,7 @@ npm run start
 - [React Query](https://tanstack.com/query)
 
 ### Project Files
+
 - **REFACTORING_GUIDE.md** - Developer patterns and examples
 - **STRUCTURE_ANALYSIS.md** - Architecture deep dive
 - **SERVICE_HOOK_MIGRATION.md** - Service/hook refactoring details
@@ -595,6 +635,7 @@ npm run start
 ## Support
 
 For questions or issues:
+
 1. Check troubleshooting section above
 2. Review relevant documentation file
 3. Check code comments in relevant files

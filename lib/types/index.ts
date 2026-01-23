@@ -1,9 +1,9 @@
 /**
  * Central Type Exports
- * 
+ *
  * Single import point for all type definitions across the application.
  * Organized by domain/feature for easy navigation.
- * 
+ *
  * Usage: import type { User, Opportunity } from "@/lib/types"
  */
 
@@ -18,7 +18,13 @@ export type { User, LoginResponse } from "./auth";
 // ============================================================================
 
 export type { TalentProfile, PortfolioItem } from "./profile";
-export type { Service, Recommendation, WorkItem, StackItem, SocialLink } from "./business";
+export type {
+  Service,
+  Recommendation,
+  WorkItem,
+  StackItem,
+  SocialLink,
+} from "./business";
 
 // ============================================================================
 // Opportunities & Applications
