@@ -157,7 +157,8 @@ export function EditOpportunityForm({
       });
       router.push("/opportunities");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to update opportunity";
+      const message =
+        error instanceof Error ? error.message : "Failed to update opportunity";
       toast({
         title: "Error",
         description: message,
@@ -483,7 +484,9 @@ export function EditOpportunityForm({
                 </span>
                 <svg
                   className={`w-5 h-5 text-gray-600 transition-transform ${
-                    expandedSection === "application-settings" ? "rotate-180" : ""
+                    expandedSection === "application-settings"
+                      ? "rotate-180"
+                      : ""
                   }`}
                   fill="none"
                   stroke="currentColor"

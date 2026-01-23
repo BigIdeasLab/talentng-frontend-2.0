@@ -1,7 +1,7 @@
 /**
  * Centralized User API Hook
  * Single point of access for all user API operations
- * 
+ *
  * Consolidates all user API calls from scattered components
  * Provides consistent error handling and loading states
  */

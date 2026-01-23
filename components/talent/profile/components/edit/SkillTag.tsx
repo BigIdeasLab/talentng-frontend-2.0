@@ -9,7 +9,10 @@ export function SkillTag({ skill, onRemove }: SkillTagProps) {
       <span className="text-[11px] font-normal text-black font-inter-tight leading-[105%]">
         {skill}
       </span>
-      <button onClick={onRemove} className="hover:opacity-70 transition-opacity">
+      <button
+        onClick={onRemove}
+        className="hover:opacity-70 transition-opacity"
+      >
         <svg
           width="13"
           height="13"

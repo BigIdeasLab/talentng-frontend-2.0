@@ -226,20 +226,26 @@ export const CompanyDetailsStep = ({
               {/* Website */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Website <span className="text-[13px] text-[#919191]">(optional)</span>
+                  Website{" "}
+                  <span className="text-[13px] text-[#919191]">(optional)</span>
                 </label>
                 <input
                   type="url"
                   name="website"
                   value={formData.website || ""}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, website: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      website: e.target.value,
+                    }))
+                  }
                   placeholder="https://company.com"
                   className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight] text-black focus:ring-2 focus:ring-purple-600 focus:outline-none"
                 />
               </div>
-              </form>
-              </div>
-              </div>
+            </form>
+          </div>
+        </div>
 
         {/* Right side - Profile Preview */}
         <div className="hidden md:flex flex-col items-center justify-center p-6 md:p-10 md:pl-6 bg-white relative overflow-hidden h-full">
@@ -276,10 +282,10 @@ export const CompanyDetailsStep = ({
               {/* Main Profile Card */}
               <div className="relative w-[290px] h-[330px] rounded-[20px] bg-white shadow-[1.74px_0_20.88px_0_rgba(0,0,0,0.25)] p-[20px_10px] flex flex-col items-center">
                 {/* Company Name and Stage */}
-                  <div className="flex flex-col items-center gap-[11px] w-full">
-                    <h3 className="text-[21.7px] text-black font-medium font-[Inter_Tight] leading-[105%]">
-                      {companyData?.companyName || "Company"}
-                    </h3>
+                <div className="flex flex-col items-center gap-[11px] w-full">
+                  <h3 className="text-[21.7px] text-black font-medium font-[Inter_Tight] leading-[105%]">
+                    {companyData?.companyName || "Company"}
+                  </h3>
                   <p className="text-[14.9px] text-[#919191] text-center font-light font-[Inter_Tight] leading-[105%]">
                     {formData.companyStage || "Company Stage"}
                   </p>

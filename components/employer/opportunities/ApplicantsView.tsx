@@ -15,11 +15,11 @@ interface ApplicantsViewProps {
   closingDate?: string;
 }
 
-export function ApplicantsView({ 
-  opportunityId, 
-  applicationCount = 0, 
-  applicationCap, 
-  closingDate 
+export function ApplicantsView({
+  opportunityId,
+  applicationCount = 0,
+  applicationCap,
+  closingDate,
 }: ApplicantsViewProps) {
   const { toast } = useToast();
   const { getAll, isLoading, error } = useApplications();
@@ -36,7 +36,8 @@ export function ApplicantsView({
       const data = await getAll(opportunityId);
       setApplicants(data || []);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to load applicants";
+      const message =
+        err instanceof Error ? err.message : "Failed to load applicants";
       toast({
         title: "Error",
         description: message,
@@ -68,7 +69,8 @@ export function ApplicantsView({
     });
   };
 
-  const isNearingCap = applicationCap && applicationCount >= applicationCap * 0.8;
+  const isNearingCap =
+    applicationCap && applicationCount >= applicationCap * 0.8;
 
   return (
     <div className="h-screen bg-white p-4 md:p-6 overflow-hidden flex flex-col">
@@ -102,10 +104,13 @@ export function ApplicantsView({
           </h1>
           <div className="text-right">
             <p className="text-sm font-medium text-black">
-              {applicationCount} {applicationCount === 1 ? "applicant" : "applicants"}
+              {applicationCount}{" "}
+              {applicationCount === 1 ? "applicant" : "applicants"}
             </p>
             {getCapStatusText() && (
-              <p className={`text-xs ${isNearingCap ? "text-orange-600" : "text-gray-500"}`}>
+              <p
+                className={`text-xs ${isNearingCap ? "text-orange-600" : "text-gray-500"}`}
+              >
                 {getCapStatusText()}
               </p>
             )}
@@ -138,7 +143,10 @@ export function ApplicantsView({
         {closingDate && (
           <div className="mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
             <p className="text-xs font-medium text-gray-700">
-              Closes on: <span className="font-semibold">{formatClosingDate(closingDate)}</span>
+              Closes on:{" "}
+              <span className="font-semibold">
+                {formatClosingDate(closingDate)}
+              </span>
             </p>
           </div>
         )}
@@ -162,8 +170,8 @@ export function ApplicantsView({
               <p className="text-red-500">{error}</p>
             </div>
           ) : (
-            <ApplicantsTable 
-              searchQuery={searchQuery} 
+            <ApplicantsTable
+              searchQuery={searchQuery}
               sortBy={sortBy}
               applicants={applicants}
             />

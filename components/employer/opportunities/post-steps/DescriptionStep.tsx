@@ -39,7 +39,10 @@ export function DescriptionStep({
   const validateForm = (): boolean => {
     const newErrors: ValidationErrors = {};
 
-    if (!formData.description.trim() || formData.description.trim().length < 30) {
+    if (
+      !formData.description.trim() ||
+      formData.description.trim().length < 30
+    ) {
       newErrors.description = "Description must be at least 30 characters";
     }
     if (formData.keyResponsibilities.length === 0) {
@@ -71,7 +74,8 @@ export function DescriptionStep({
         ],
       });
       setResponsibilityInput("");
-      if (errors.keyResponsibilities) setErrors({ ...errors, keyResponsibilities: "" });
+      if (errors.keyResponsibilities)
+        setErrors({ ...errors, keyResponsibilities: "" });
     }
   };
 
@@ -206,7 +210,9 @@ export function DescriptionStep({
             }`}
           />
           {errors.description && (
-            <span className="font-inter-tight text-[12px] text-red-500">{errors.description}</span>
+            <span className="font-inter-tight text-[12px] text-red-500">
+              {errors.description}
+            </span>
           )}
         </div>
 
@@ -216,7 +222,9 @@ export function DescriptionStep({
             Key Responsibilities
           </label>
           {errors.keyResponsibilities && (
-            <span className="font-inter-tight text-[12px] text-red-500">{errors.keyResponsibilities}</span>
+            <span className="font-inter-tight text-[12px] text-red-500">
+              {errors.keyResponsibilities}
+            </span>
           )}
           <div className="flex flex-col gap-2 border border-[#E1E4EA] rounded-[8px] p-3">
             {/* List of added responsibilities */}
@@ -331,7 +339,9 @@ export function DescriptionStep({
             Tags (Skills)
           </label>
           {errors.tags && (
-            <span className="font-inter-tight text-[12px] text-red-500">{errors.tags}</span>
+            <span className="font-inter-tight text-[12px] text-red-500">
+              {errors.tags}
+            </span>
           )}
           <div className="relative">
             <div className="flex flex-wrap gap-2 p-3 border border-[#E1E4EA] rounded-[8px] min-h-[46px]">
@@ -430,7 +440,9 @@ export function DescriptionStep({
             Tools
           </label>
           {errors.tools && (
-            <span className="font-inter-tight text-[12px] text-red-500">{errors.tools}</span>
+            <span className="font-inter-tight text-[12px] text-red-500">
+              {errors.tools}
+            </span>
           )}
           <div className="relative overflow-visible">
             <div className="flex flex-wrap gap-2 p-3 border border-[#E1E4EA] rounded-[8px] min-h-[46px]">

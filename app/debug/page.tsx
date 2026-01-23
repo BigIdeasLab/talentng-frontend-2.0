@@ -5,7 +5,9 @@ export default function DebugPage() {
     <div style={{ padding: "20px", fontFamily: "monospace" }}>
       <h1>Debug Page</h1>
       <div id="output"></div>
-      <script dangerouslySetInnerHTML={{__html: `
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
         const output = document.getElementById('output');
         const accessToken = localStorage.getItem('accessToken');
         const refreshToken = localStorage.getItem('refreshToken');
@@ -19,7 +21,9 @@ export default function DebugPage() {
           <hr />
           <p><a href="/onboarding">Go to Onboarding</a></p>
         \`;
-      `}} />
+      `,
+        }}
+      />
     </div>
   );
 }

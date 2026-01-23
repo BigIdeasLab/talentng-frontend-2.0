@@ -36,7 +36,7 @@ export function BudgetScopeStep({
     if (!selectedPayment) {
       newErrors.paymentType = "Payment type is required";
     }
-    
+
     const minBudgetNum = parseInt(formData.minBudget?.replace(/,/g, "") || "0");
     const maxBudgetNum = parseInt(formData.maxBudget?.replace(/,/g, "") || "0");
 
@@ -47,7 +47,8 @@ export function BudgetScopeStep({
       newErrors.maxBudget = "Maximum budget is required";
     }
     if (minBudgetNum > 0 && maxBudgetNum > 0 && minBudgetNum > maxBudgetNum) {
-      newErrors.maxBudget = "Maximum budget must be greater than or equal to minimum budget";
+      newErrors.maxBudget =
+        "Maximum budget must be greater than or equal to minimum budget";
     }
     if (!formData.duration) {
       newErrors.duration = "Duration is required";
@@ -210,7 +211,9 @@ export function BudgetScopeStep({
             Duration
           </label>
           {errors.duration && (
-            <span className="font-inter-tight text-[12px] text-red-500">{errors.duration}</span>
+            <span className="font-inter-tight text-[12px] text-red-500">
+              {errors.duration}
+            </span>
           )}
           <div className="relative">
             <select
@@ -254,7 +257,9 @@ export function BudgetScopeStep({
             Start date
           </label>
           {errors.startDate && (
-            <span className="font-inter-tight text-[12px] text-red-500">{errors.startDate}</span>
+            <span className="font-inter-tight text-[12px] text-red-500">
+              {errors.startDate}
+            </span>
           )}
           <div className="relative">
             <input
@@ -276,14 +281,17 @@ export function BudgetScopeStep({
             Experience Level
           </label>
           {errors.experienceLevel && (
-            <span className="font-inter-tight text-[12px] text-red-500">{errors.experienceLevel}</span>
+            <span className="font-inter-tight text-[12px] text-red-500">
+              {errors.experienceLevel}
+            </span>
           )}
           <div className="relative">
             <select
               value={formData.experienceLevel}
               onChange={(e) => {
                 updateFormData({ experienceLevel: e.target.value });
-                if (errors.experienceLevel) setErrors({ ...errors, experienceLevel: "" });
+                if (errors.experienceLevel)
+                  setErrors({ ...errors, experienceLevel: "" });
               }}
               className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none focus:border-[#5C30FF] transition-colors bg-white"
             >

@@ -16,7 +16,10 @@ export function FormSectionComponent({
   forwardedRef,
 }: FormSectionComponentProps) {
   return (
-    <div ref={forwardedRef} className="border border-gray-300 rounded-[16px] overflow-hidden">
+    <div
+      ref={forwardedRef}
+      className="border border-gray-300 rounded-[16px] overflow-hidden"
+    >
       <button
         onClick={onToggle}
         className="w-full px-5 py-4 bg-gray-50 flex items-center justify-between hover:bg-gray-100 transition-colors"

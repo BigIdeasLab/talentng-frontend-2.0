@@ -37,19 +37,20 @@ export function ApplicationModal({
   if (!opportunity) return null;
 
   const noteLength = note.length;
-  const isValidNote = noteLength === 0 || (noteLength >= 10 && noteLength <= 500);
+  const isValidNote =
+    noteLength === 0 || (noteLength >= 10 && noteLength <= 500);
   const isFormValid = isValidNote && !opportunity.applied;
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    
+
     const newAttachments = files.map((file) => ({
       fileName: file.name,
       file,
     }));
 
     setAttachments((prev) => [...prev, ...newAttachments]);
-    
+
     // Reset input
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -78,7 +79,7 @@ export function ApplicationModal({
         title: "Success",
         description: "Application submitted successfully",
       });
-      
+
       // Reset form after success
       setTimeout(() => {
         setNote("");
@@ -90,7 +91,11 @@ export function ApplicationModal({
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to submit application";
-      console.error("ApplicationModal.handleSubmit - CAUGHT ERROR:", { opportunityId: opportunity.id, error: message, fullError: err });
+      console.error("ApplicationModal.handleSubmit - CAUGHT ERROR:", {
+        opportunityId: opportunity.id,
+        error: message,
+        fullError: err,
+      });
       setError(message);
       toast({
         title: "Error",
@@ -118,7 +123,10 @@ export function ApplicationModal({
         title="Application Submitted"
         description={`Your application for "${opportunity.title}" has been submitted successfully. The opportunity poster will review your application shortly.`}
         footer={
-          <Button onClick={handleClose} className="w-full bg-green-600 hover:bg-green-700">
+          <Button
+            onClick={handleClose}
+            className="w-full bg-green-600 hover:bg-green-700"
+          >
             Done
           </Button>
         }
@@ -129,14 +137,13 @@ export function ApplicationModal({
   return (
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity ${
-        isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        isOpen
+          ? "opacity-100 pointer-events-auto"
+          : "opacity-0 pointer-events-none"
       }`}
     >
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50"
-        onClick={handleClose}
-      />
+      <div className="absolute inset-0 bg-black/50" onClick={handleClose} />
 
       {/* Modal */}
       <div className="relative bg-white rounded-[16px] w-full max-w-[500px] mx-4 max-h-[90vh] overflow-y-auto shadow-lg">
@@ -264,17 +271,17 @@ export function ApplicationModal({
           {opportunity.applied ? (
             <div className="p-3 bg-yellow-50 rounded-[10px] border border-yellow-200">
               <p className="text-[12px] text-yellow-900 font-inter-tight">
-                <span className="font-medium">Already Applied:</span> You have already
-                applied for this opportunity. You can only submit one application per
-                opportunity.
+                <span className="font-medium">Already Applied:</span> You have
+                already applied for this opportunity. You can only submit one
+                application per opportunity.
               </p>
             </div>
           ) : (
             <div className="p-3 bg-blue-50 rounded-[10px] border border-blue-200">
               <p className="text-[12px] text-blue-900 font-inter-tight">
-                <span className="font-medium">Note:</span> You can only apply once
-                to this opportunity. The opportunity poster will be notified of your
-                application.
+                <span className="font-medium">Note:</span> You can only apply
+                once to this opportunity. The opportunity poster will be
+                notified of your application.
               </p>
             </div>
           )}

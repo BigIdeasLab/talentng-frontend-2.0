@@ -6,31 +6,32 @@ import { EmptyState } from "./empty-state";
 import type { OpportunitiesGridProps } from "./types";
 
 interface OpportunitiesGridExtendedProps extends OpportunitiesGridProps {
-   onApplicationSubmitted?: (opportunityId: string) => void;
-   onNextPage?: () => void;
-   onPreviousPage?: () => void;
-   hasNextPage?: boolean;
-   hasPreviousPage?: boolean;
-   currentPage?: number;
-   totalPages?: number;
+  onApplicationSubmitted?: (opportunityId: string) => void;
+  onNextPage?: () => void;
+  onPreviousPage?: () => void;
+  hasNextPage?: boolean;
+  hasPreviousPage?: boolean;
+  currentPage?: number;
+  totalPages?: number;
 }
 
 export function OpportunitiesGrid({
-    opportunities,
-    onApplicationSubmitted,
-    onNextPage,
-    onPreviousPage,
-    hasNextPage = false,
-    hasPreviousPage = false,
-    currentPage = 1,
-    totalPages = 1,
-  }: OpportunitiesGridExtendedProps) {
-    return (
+  opportunities,
+  onApplicationSubmitted,
+  onNextPage,
+  onPreviousPage,
+  hasNextPage = false,
+  hasPreviousPage = false,
+  currentPage = 1,
+  totalPages = 1,
+}: OpportunitiesGridExtendedProps) {
+  return (
     <div className="flex flex-col h-full">
       {/* Result Count */}
       <div className="flex-shrink-0 px-[25px] py-[12px] border-b border-[#E1E4EA]">
         <p className="text-[12px] text-gray-600">
-          {opportunities.length} opportunit{opportunities.length !== 1 ? "ies" : "y"} found
+          {opportunities.length} opportunit
+          {opportunities.length !== 1 ? "ies" : "y"} found
         </p>
       </div>
 
@@ -39,14 +40,14 @@ export function OpportunitiesGrid({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px] pb-8">
           {opportunities.length > 0 ? (
             opportunities.map((opportunity) => (
-              <OpportunityCard 
-                key={opportunity.id} 
+              <OpportunityCard
+                key={opportunity.id}
                 opportunity={opportunity}
                 onApplicationSubmitted={(oppId: string) => {
-                   if (onApplicationSubmitted) {
-                     onApplicationSubmitted(oppId);
-                   }
-                 }}
+                  if (onApplicationSubmitted) {
+                    onApplicationSubmitted(oppId);
+                  }
+                }}
               />
             ))
           ) : (

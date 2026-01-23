@@ -47,7 +47,9 @@ export const MentorProfileStep = ({
   const [formData, setFormData] = useState<MentorProfileFormData>({
     firstName: initialData?.firstName || "",
     lastName: initialData?.lastName || "",
-    username: initialData?.username || (isAddingRole && currentUsername ? currentUsername : ""),
+    username:
+      initialData?.username ||
+      (isAddingRole && currentUsername ? currentUsername : ""),
     location: initialData?.location || "",
     bio: initialData?.bio || "",
     state: initialLocation.state,
@@ -98,9 +100,16 @@ export const MentorProfileStep = ({
     } else if (usernameError) {
       setUsernameStatus("idle");
     } else if (usernameAvailabilityData) {
-      setUsernameStatus(usernameAvailabilityData.available ? "available" : "taken");
+      setUsernameStatus(
+        usernameAvailabilityData.available ? "available" : "taken",
+      );
     }
-  }, [formData.username, checkingUsername, usernameError, usernameAvailabilityData]);
+  }, [
+    formData.username,
+    checkingUsername,
+    usernameError,
+    usernameAvailabilityData,
+  ]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -178,7 +187,12 @@ export const MentorProfileStep = ({
       }
 
       if (usernameStatus !== "available") {
-        if (usernameStatus === "checking" || usernameStatus === "taken" || usernameStatus === "idle" || usernameStatus === "invalid") {
+        if (
+          usernameStatus === "checking" ||
+          usernameStatus === "taken" ||
+          usernameStatus === "idle" ||
+          usernameStatus === "invalid"
+        ) {
           return;
         }
       }

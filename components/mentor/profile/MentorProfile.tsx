@@ -97,14 +97,16 @@ export function MentorProfile({
                     Mentorship Topics
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {profileData.mentorshipTopics.slice(0, 3).map((topic, idx) => (
-                      <span
-                        key={idx}
-                        className="inline-block bg-green-100 text-green-700 text-xs font-medium px-3 py-1 rounded-full"
-                      >
-                        {topic}
-                      </span>
-                    ))}
+                    {profileData.mentorshipTopics
+                      .slice(0, 3)
+                      .map((topic, idx) => (
+                        <span
+                          key={idx}
+                          className="inline-block bg-green-100 text-green-700 text-xs font-medium px-3 py-1 rounded-full"
+                        >
+                          {topic}
+                        </span>
+                      ))}
                     {profileData.mentorshipTopics.length > 3 && (
                       <span className="text-xs text-gray-600">
                         +{profileData.mentorshipTopics.length - 3} more

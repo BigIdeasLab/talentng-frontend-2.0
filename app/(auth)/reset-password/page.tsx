@@ -82,11 +82,11 @@ const ResetPassword = () => {
     onSuccess: (response) => {
       console.log("✅ Password reset successful");
       console.log("needsOnboarding:", response.needsOnboarding);
-      
+
       setError("");
       toast.success("Password reset successfully!");
       // Tokens are already stored by resetPassword via auth-service
-      
+
       if (response.needsOnboarding) {
         console.log("🔄 Redirecting to onboarding");
         router.push("/onboarding");
@@ -200,8 +200,8 @@ const ResetPassword = () => {
                                     error
                                       ? "bg-[#E63C231A]"
                                       : mutation.isSuccess
-                                      ? "bg-[#008B471A]"
-                                      : "bg-[#F5F5F5]"
+                                        ? "bg-[#008B471A]"
+                                        : "bg-[#F5F5F5]"
                                   }`}
                                 >
                                   <InputOTP maxLength={6} {...field}>
@@ -214,8 +214,8 @@ const ResetPassword = () => {
                                             error
                                               ? "text-[#E63C23]"
                                               : mutation.isSuccess
-                                              ? "text-[#008B47]"
-                                              : "text-black"
+                                                ? "text-[#008B47]"
+                                                : "text-black"
                                           }`}
                                         />
                                       ))}
@@ -360,7 +360,12 @@ const ResetPassword = () => {
                       {/* Reset Button */}
                       <Button
                         type="submit"
-                        disabled={mutation.isPending || !email || !isPasswordValid || resetCode.length !== 6}
+                        disabled={
+                          mutation.isPending ||
+                          !email ||
+                          !isPasswordValid ||
+                          resetCode.length !== 6
+                        }
                         className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base mt-1"
                       >
                         {mutation.isPending ? (
@@ -374,7 +379,9 @@ const ResetPassword = () => {
 
                   {/* Back to Login Link */}
                   <p className="text-center text-xs md:text-sm">
-                    <span className="text-gray-400">Remember your password? </span>
+                    <span className="text-gray-400">
+                      Remember your password?{" "}
+                    </span>
                     <Link
                       href="/login"
                       className="text-[#5C30FF] font-medium hover:underline"

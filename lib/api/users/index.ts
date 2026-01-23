@@ -8,7 +8,7 @@ import type { UsernameAvailability } from "./types";
 import type { User } from "@/lib/types/auth";
 
 export const checkUsernameAvailability = async (
-  username: string
+  username: string,
 ): Promise<UsernameAvailability> => {
   const endpoint = `/users/me/username-available/${encodeURIComponent(username)}`;
   return apiClient<UsernameAvailability>(endpoint);
@@ -24,9 +24,7 @@ export const getCurrentUser = async (): Promise<User> => {
 /**
  * Complete user onboarding
  */
-export const completeOnboarding = async (
-  formData: FormData
-): Promise<any> => {
+export const completeOnboarding = async (formData: FormData): Promise<any> => {
   return apiClient<any>("/users/me/onboard", {
     method: "POST",
     body: formData,

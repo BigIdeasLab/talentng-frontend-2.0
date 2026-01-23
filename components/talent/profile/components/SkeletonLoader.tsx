@@ -56,7 +56,10 @@ export function GridContentSkeleton() {
     <div className="w-full px-[20px] py-[20px]">
       <div className="space-y-4">
         {Array.from({ length: 4 }).map((_, idx) => (
-          <div key={idx} className="h-16 bg-gray-200 animate-pulse rounded-lg" />
+          <div
+            key={idx}
+            className="h-16 bg-gray-200 animate-pulse rounded-lg"
+          />
         ))}
       </div>
     </div>

@@ -16,7 +16,7 @@ import type {
 
 export const register = async (
   email: string,
-  password: string
+  password: string,
 ): Promise<LoginResponse> => {
   return apiClient<LoginResponse>("/auth/register", {
     method: "POST",
@@ -27,7 +27,7 @@ export const register = async (
 
 export const login = async (
   email: string,
-  password: string
+  password: string,
 ): Promise<LoginResponse> => {
   const deviceId = getOrCreateDeviceId();
   const deviceName = getDeviceName();
@@ -48,7 +48,7 @@ export const verifyEmailSend = async (email: string): Promise<void> => {
 
 export const verifyEmailConfirm = async (
   email: string,
-  verificationCode: string
+  verificationCode: string,
 ): Promise<LoginResponse> => {
   return apiClient<LoginResponse>("/auth/verify-email/confirm", {
     method: "POST",
@@ -67,7 +67,7 @@ export const forgotPassword = async (email: string): Promise<void> => {
 export const resetPassword = async (
   email: string,
   resetCode: string,
-  newPassword: string
+  newPassword: string,
 ): Promise<LoginResponse> => {
   return apiClient<LoginResponse>("/auth/reset-password", {
     method: "POST",
@@ -77,7 +77,9 @@ export const resetPassword = async (
 };
 
 export const logout = async (deviceId?: string): Promise<void> => {
-  const id = deviceId || (typeof window !== "undefined" ? localStorage.getItem("deviceId") : null);
+  const id =
+    deviceId ||
+    (typeof window !== "undefined" ? localStorage.getItem("deviceId") : null);
 
   const result = await apiClient<void>("/auth/logout", {
     method: "POST",
@@ -120,7 +122,8 @@ export const createPassword = async (password: string): Promise<void> => {
 };
 
 export const refreshAuthToken = async (): Promise<AuthResponse> => {
-  const deviceId = typeof window !== "undefined" ? localStorage.getItem("deviceId") : null;
+  const deviceId =
+    typeof window !== "undefined" ? localStorage.getItem("deviceId") : null;
 
   return apiClient<AuthResponse>("/auth/refresh", {
     method: "POST",
@@ -130,4 +133,11 @@ export const refreshAuthToken = async (): Promise<AuthResponse> => {
 };
 
 // Export types
-export type { LoginCredentials, RegisterCredentials, AuthResponse, VerifyEmailRequest, ResetPasswordRequest, LoginResponse };
+export type {
+  LoginCredentials,
+  RegisterCredentials,
+  AuthResponse,
+  VerifyEmailRequest,
+  ResetPasswordRequest,
+  LoginResponse,
+};

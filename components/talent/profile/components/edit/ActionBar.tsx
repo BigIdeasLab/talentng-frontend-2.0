@@ -6,7 +6,10 @@ interface EditProfileActionBarProps {
   isLoading?: boolean;
 }
 
-export function EditProfileActionBar({ onSave, isLoading }: EditProfileActionBarProps) {
+export function EditProfileActionBar({
+  onSave,
+  isLoading,
+}: EditProfileActionBarProps) {
   return (
     <div className="h-[56px] border-b border-[#E1E4EA] flex items-center justify-end px-[80px] gap-2 bg-white">
       <Link href="/profile">

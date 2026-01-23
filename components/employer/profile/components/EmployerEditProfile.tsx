@@ -263,7 +263,9 @@ function PersonalDetailsSection({
                 >
                   <option value="">Select City</option>
                   {formData.state &&
-                    statesCities[formData.state as keyof typeof statesCities]?.major_cities?.map((city) => (
+                    statesCities[
+                      formData.state as keyof typeof statesCities
+                    ]?.major_cities?.map((city) => (
                       <option key={city} value={city}>
                         {city}
                       </option>
@@ -274,7 +276,7 @@ function PersonalDetailsSection({
 
             {/* Next Button */}
             <div className="flex justify-end">
-              <button 
+              <button
                 onClick={() => {}}
                 className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal"
               >
@@ -390,7 +392,9 @@ function CompanyDetailsSection({
               </label>
               <select
                 value={formData.operatingModel}
-                onChange={(e) => onInputChange("operatingModel", e.target.value)}
+                onChange={(e) =>
+                  onInputChange("operatingModel", e.target.value)
+                }
                 className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
               >
                 <option value="">Select operating model</option>
@@ -402,7 +406,7 @@ function CompanyDetailsSection({
 
             {/* Next Button */}
             <div className="flex justify-end">
-              <button 
+              <button
                 onClick={() => {}}
                 className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal"
               >
@@ -607,7 +611,7 @@ export function EmployerEditProfile() {
       try {
         const profile = await getCurrentRecruiterProfile();
         console.log("Fetched recruiter profile:", profile);
-        
+
         // Map API response to form data
         setFormData({
           personal: {

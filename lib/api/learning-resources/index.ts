@@ -7,7 +7,7 @@ import apiClient from "@/lib/api";
 import type { LearningResource, GetLearningResourcesParams } from "./types";
 
 export const getLearningResources = async (
-  params?: GetLearningResourcesParams
+  params?: GetLearningResourcesParams,
 ): Promise<LearningResource[]> => {
   const query = new URLSearchParams();
   if (params) {

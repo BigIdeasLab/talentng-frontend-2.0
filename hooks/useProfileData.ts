@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useCallback } from "react";
-import { getServerCurrentProfile, getServerDashboardStats, getServerTalentRecommendations } from "@/lib/api/talent/server";
+import {
+  getServerCurrentProfile,
+  getServerDashboardStats,
+  getServerTalentRecommendations,
+} from "@/lib/api/talent/server";
 import { getServerCurrentRecruiterProfile } from "@/lib/api/recruiter/server";
 import { getServerCurrentMentorProfile } from "@/lib/api/mentor/server";
 import { mapAPIToUI } from "@/lib/profileMapper";
@@ -37,7 +41,9 @@ export function useProfileData() {
 
       // Get user roles from localStorage (set by OAuth redirect or login)
       const userRolesStr = localStorage.getItem("userRoles");
-      const userRoles = userRolesStr ? userRolesStr.split(",").map(r => r.trim().toLowerCase()) : [];
+      const userRoles = userRolesStr
+        ? userRolesStr.split(",").map((r) => r.trim().toLowerCase())
+        : [];
 
       // Update context with user roles
       setUserRoles(userRoles);
@@ -55,7 +61,9 @@ export function useProfileData() {
 
       if (userRoles.includes("recruiter")) {
         roleMap["recruiter"] = "recruiter";
-        fetchPromises.push(getServerCurrentRecruiterProfile().catch(() => null));
+        fetchPromises.push(
+          getServerCurrentRecruiterProfile().catch(() => null),
+        );
       } else {
         fetchPromises.push(Promise.resolve(null));
       }
@@ -67,10 +75,14 @@ export function useProfileData() {
         fetchPromises.push(Promise.resolve(null));
       }
 
-      const [talentProfile, recruiterProfile, mentorProfile] = await Promise.all(fetchPromises);
+      const [talentProfile, recruiterProfile, mentorProfile] =
+        await Promise.all(fetchPromises);
 
       // Build profiles and UI from responses
-      const profiles: Record<string, TalentProfile | RecruiterProfile | MentorProfile | null> = {};
+      const profiles: Record<
+        string,
+        TalentProfile | RecruiterProfile | MentorProfile | null
+      > = {};
       const profilesUI: Record<string, any> = {};
       const availableRoles: string[] = [];
 

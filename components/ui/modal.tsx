@@ -45,11 +45,18 @@ export const Modal: React.FC<ModalProps> = ({
       />
 
       {/* Modal Content */}
-      <div className={cn("relative bg-white rounded-lg shadow-lg w-full mx-4", sizeClasses[size])}>
+      <div
+        className={cn(
+          "relative bg-white rounded-lg shadow-lg w-full mx-4",
+          sizeClasses[size],
+        )}
+      >
         {/* Header */}
         {(title || description) && (
           <div className="border-b border-gray-200 px-6 py-4">
-            {title && <h2 className="text-lg font-semibold text-black">{title}</h2>}
+            {title && (
+              <h2 className="text-lg font-semibold text-black">{title}</h2>
+            )}
             {description && (
               <p className="text-sm text-gray-600 mt-1">{description}</p>
             )}

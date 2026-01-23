@@ -7,11 +7,7 @@ interface SectionHeaderProps {
   onToggle: () => void;
 }
 
-export function SectionHeader({
-  title,
-  isOpen,
-  onToggle,
-}: SectionHeaderProps) {
+export function SectionHeader({ title, isOpen, onToggle }: SectionHeaderProps) {
   return (
     <button
       onClick={onToggle}

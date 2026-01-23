@@ -34,13 +34,13 @@ export const SelectRoleStep = ({
   existingRoles?: string[];
   isAddingRole?: boolean;
 }) => {
-   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
+  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
 
-   useEffect(() => {
-     // console.log("User roles:", existingRoles);
-   }, [existingRoles]);
+  useEffect(() => {
+    // console.log("User roles:", existingRoles);
+  }, [existingRoles]);
 
-   const roles = [
+  const roles = [
     {
       id: "talent",
       label: "As Talent",

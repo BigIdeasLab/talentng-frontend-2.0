@@ -69,7 +69,11 @@ export function PortfolioSection({
                         type="text"
                         value={item.title}
                         onChange={(e) =>
-                          onUpdatePortfolioItem?.(index, "title", e.target.value)
+                          onUpdatePortfolioItem?.(
+                            index,
+                            "title",
+                            e.target.value,
+                          )
                         }
                         placeholder="Project title"
                         className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"

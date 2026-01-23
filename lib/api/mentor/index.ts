@@ -154,12 +154,9 @@ export async function getMyMentorBookings(): Promise<Booking[]> {
 export async function cancelMentorBooking(
   bookingId: string,
 ): Promise<{ message: string }> {
-  return apiClient<{ message: string }>(
-    `/mentor/booking/${bookingId}/cancel`,
-    {
-      method: "PATCH",
-    },
-  );
+  return apiClient<{ message: string }>(`/mentor/booking/${bookingId}/cancel`, {
+    method: "PATCH",
+  });
 }
 
 /**

@@ -19,7 +19,10 @@ export function StackTag({ tool, onRemove }: StackTagProps) {
           {tool.name}
         </span>
       </div>
-      <button onClick={onRemove} className="hover:opacity-70 transition-opacity">
+      <button
+        onClick={onRemove}
+        className="hover:opacity-70 transition-opacity"
+      >
         <svg
           width="13"
           height="13"

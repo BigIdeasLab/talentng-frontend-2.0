@@ -37,11 +37,12 @@ const ForgotPassword = () => {
   });
 
   const mutation = useMutation({
-    mutationFn: (data: ForgotPasswordFormValues) =>
-      forgotPassword(data.email),
+    mutationFn: (data: ForgotPasswordFormValues) => forgotPassword(data.email),
     onSuccess: (_, variables) => {
       toast.success("Check your email for a 6-digit reset code!");
-      router.push(`/reset-password?email=${encodeURIComponent(variables.email)}`);
+      router.push(
+        `/reset-password?email=${encodeURIComponent(variables.email)}`,
+      );
     },
     onError: (error: any) => {
       const message =
@@ -86,7 +87,8 @@ const ForgotPassword = () => {
                       Reset Password
                     </h1>
                     <p className="text-xs md:text-sm font-light text-gray-400">
-                      We'll send you a 6-digit code via email to reset your password.
+                      We'll send you a 6-digit code via email to reset your
+                      password.
                     </p>
                   </div>
 

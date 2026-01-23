@@ -69,14 +69,18 @@ export const CompanyProfileStep = ({
   const [formData, setFormData] = useState<CompanyFormData>({
     companyName: initialData?.companyName || "",
     industry: initialData?.industry || "",
-    username: initialData?.username || (isAddingRole && currentUsername ? currentUsername : ""),
+    username:
+      initialData?.username ||
+      (isAddingRole && currentUsername ? currentUsername : ""),
     location: initialData?.location || "",
     bio: initialData?.bio || "",
     state: initialLocation.state,
     city: initialLocation.city,
   });
 
-  const [profileLogo, setProfileLogo] = useState<File | null>(initialLogo || null);
+  const [profileLogo, setProfileLogo] = useState<File | null>(
+    initialLogo || null,
+  );
   const [logoPreview, setLogoPreview] = useState<string | null>(
     initialLogo ? URL.createObjectURL(initialLogo) : null,
   );
@@ -140,7 +144,9 @@ export const CompanyProfileStep = ({
   }, [formData.username]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));

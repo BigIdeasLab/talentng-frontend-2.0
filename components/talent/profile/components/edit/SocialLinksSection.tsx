@@ -155,9 +155,7 @@ export function SocialLinksSection({
                   <input
                     type="text"
                     placeholder="Paste Link Here"
-                    value={
-                      socialData[platform.key as keyof typeof socialData]
-                    }
+                    value={socialData[platform.key as keyof typeof socialData]}
                     onChange={(e) =>
                       onInputChange(platform.key, e.target.value)
                     }

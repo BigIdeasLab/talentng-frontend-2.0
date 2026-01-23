@@ -17,8 +17,16 @@ export interface ProfileContextType {
   setActiveRole: (role: string) => void;
 
   // All profiles by role
-  profiles: Record<string, TalentProfile | RecruiterProfile | MentorProfile | null>;
-  setProfiles: (profiles: Record<string, TalentProfile | RecruiterProfile | MentorProfile | null>) => void;
+  profiles: Record<
+    string,
+    TalentProfile | RecruiterProfile | MentorProfile | null
+  >;
+  setProfiles: (
+    profiles: Record<
+      string,
+      TalentProfile | RecruiterProfile | MentorProfile | null
+    >,
+  ) => void;
 
   // Mapped UI data by role
   profilesUI: Record<string, UIProfileData | null>;
@@ -40,10 +48,17 @@ export interface ProfileContextType {
   error: string | null;
 }
 
-export const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
+export const ProfileContext = createContext<ProfileContextType | undefined>(
+  undefined,
+);
 
 interface AllProfiles {
-  [key: string]: TalentProfile | RecruiterProfile | MentorProfile | null | undefined;
+  [key: string]:
+    | TalentProfile
+    | RecruiterProfile
+    | MentorProfile
+    | null
+    | undefined;
   talent?: TalentProfile | null;
   recruiter?: RecruiterProfile | null;
   mentor?: MentorProfile | null;
@@ -67,21 +82,21 @@ interface ProfileProviderProps {
   children: ReactNode;
 }
 
-export function ProfileProvider({
-  children,
-}: ProfileProviderProps) {
+export function ProfileProvider({ children }: ProfileProviderProps) {
   // Client-side state for profiles fetched after auth
   const [activeRole, setActiveRole] = useState<string>("");
-  const [profiles, setProfiles] = useState<Record<string, TalentProfile | RecruiterProfile | MentorProfile | null>>({});
-  const [profilesUI, setProfilesUI] = useState<Record<string, UIProfileData | null>>({});
+  const [profiles, setProfiles] = useState<
+    Record<string, TalentProfile | RecruiterProfile | MentorProfile | null>
+  >({});
+  const [profilesUI, setProfilesUI] = useState<
+    Record<string, UIProfileData | null>
+  >({});
   const [userId, setUserId] = useState<string | null>(null);
   const [userRoles, setUserRoles] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Empty - client-side loading is handled in AppLayoutClient
-
-
 
   // Compute current profile based on active role
   const currentProfile = useMemo(() => {
@@ -113,8 +128,6 @@ export function ProfileProvider({
   };
 
   return (
-    <ProfileContext.Provider value={value}>
-      {children}
-    </ProfileContext.Provider>
+    <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>
   );
 }

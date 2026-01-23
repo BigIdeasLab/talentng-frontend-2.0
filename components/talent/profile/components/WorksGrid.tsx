@@ -139,7 +139,9 @@ export function WorksGrid({
               {/* 3-Dot Menu Button */}
               <div className="absolute top-2 right-2">
                 <button
-                  onClick={() => setOpenMenuId(openMenuId === item.id ? null : item.id)}
+                  onClick={() =>
+                    setOpenMenuId(openMenuId === item.id ? null : item.id)
+                  }
                   className="p-2 bg-white text-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100"
                 >
                   <MoreVertical className="w-4 h-4" />

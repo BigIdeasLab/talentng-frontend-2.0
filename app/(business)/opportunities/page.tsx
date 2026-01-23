@@ -18,8 +18,12 @@ interface PaginationData {
 
 function OpportunitiesContent() {
   const searchParams = useSearchParams();
-  const { userRoles, activeRole, setActiveRole, isLoading: profileLoading } =
-    useProfile();
+  const {
+    userRoles,
+    activeRole,
+    setActiveRole,
+    isLoading: profileLoading,
+  } = useProfile();
   const [opportunities, setOpportunities] = useState<OpportunityData[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,8 +41,11 @@ function OpportunitiesContent() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { opportunities: fetchedOpportunities, pagination: fetchedPagination, error: fetchError } =
-          await getOpportunitiesData();
+        const {
+          opportunities: fetchedOpportunities,
+          pagination: fetchedPagination,
+          error: fetchError,
+        } = await getOpportunitiesData();
         setOpportunities(fetchedOpportunities);
         setPagination(fetchedPagination);
         setError(fetchError);

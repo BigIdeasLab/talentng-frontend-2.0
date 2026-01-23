@@ -18,7 +18,7 @@ const DEFAULT_TOOL_ICON =
 export function getToolInfo(toolName: string): Tool {
   const toolId = toolName.toLowerCase().replace(/\s+/g, "-");
   const tool = toolsData.find(
-    (t) => t.id === toolId || t.name.toLowerCase() === toolName.toLowerCase()
+    (t) => t.id === toolId || t.name.toLowerCase() === toolName.toLowerCase(),
   );
 
   if (tool) {
@@ -57,7 +57,7 @@ export function searchTools(query: string): Tool[] {
     (tool) =>
       tool.name.toLowerCase().includes(lowerQuery) ||
       tool.category.toLowerCase().includes(lowerQuery) ||
-      tool.id.includes(lowerQuery)
+      tool.id.includes(lowerQuery),
   );
 }
 

@@ -25,10 +25,12 @@ export interface Application {
   };
 }
 
-export async function getApplications(params: { opportunityId: string }): Promise<Application[]> {
+export async function getApplications(params: {
+  opportunityId: string;
+}): Promise<Application[]> {
   try {
     const response = await apiClient<Application[]>(
-      `/applications?opportunityId=${params.opportunityId}`
+      `/applications?opportunityId=${params.opportunityId}`,
     );
     return response;
   } catch (error) {
@@ -37,9 +39,13 @@ export async function getApplications(params: { opportunityId: string }): Promis
   }
 }
 
-export async function getApplicationById(applicationId: string): Promise<Application> {
+export async function getApplicationById(
+  applicationId: string,
+): Promise<Application> {
   try {
-    const response = await apiClient<Application>(`/applications/${applicationId}`);
+    const response = await apiClient<Application>(
+      `/applications/${applicationId}`,
+    );
     return response;
   } catch (error) {
     console.error("Error fetching application:", error);
@@ -88,13 +94,16 @@ export async function submitApplication(data: {
 
 export async function updateApplicationStatus(
   applicationId: string,
-  status: string
+  status: string,
 ): Promise<Application> {
   try {
-    const response = await apiClient<Application>(`/applications/${applicationId}`, {
-      method: "PATCH",
-      body: { status },
-    });
+    const response = await apiClient<Application>(
+      `/applications/${applicationId}`,
+      {
+        method: "PATCH",
+        body: { status },
+      },
+    );
     return response;
   } catch (error) {
     console.error("Error updating application:", error);

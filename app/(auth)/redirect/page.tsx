@@ -49,11 +49,13 @@ function AuthRedirectContent() {
 
 export default function AuthRedirectPage() {
   return (
-    <Suspense fallback={
-      <div className="h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="h-screen flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+        </div>
+      }
+    >
       <AuthRedirectContent />
     </Suspense>
   );

@@ -5,11 +5,7 @@
  */
 
 import apiClient from "@/lib/api";
-import type {
-  MentorProfile,
-  UpdateMentorProfileInput,
-  Booking,
-} from "./types";
+import type { MentorProfile, UpdateMentorProfileInput, Booking } from "./types";
 
 /**
  * Get Current User's Mentor Profile
@@ -60,9 +56,7 @@ export async function getServerSearchMentors(
   const queryParams = new URLSearchParams();
   queryParams.append("q", query);
 
-  return apiClient<MentorProfile[]>(
-    `/mentor/search?${queryParams.toString()}`,
-  );
+  return apiClient<MentorProfile[]>(`/mentor/search?${queryParams.toString()}`);
 }
 
 /**

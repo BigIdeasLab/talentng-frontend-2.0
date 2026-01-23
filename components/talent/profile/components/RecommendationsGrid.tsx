@@ -28,7 +28,10 @@ function mapApiRecommendationToUI(
 ): Recommendation {
   return {
     id: apiRec.id,
-    name: apiRec.recommendedBy?.username || apiRec.recommendedBy?.email || "Anonymous",
+    name:
+      apiRec.recommendedBy?.username ||
+      apiRec.recommendedBy?.email ||
+      "Anonymous",
     date: new Date(apiRec.createdAt).toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
@@ -50,7 +53,9 @@ export function RecommendationsGrid({
   const [recommendations, setRecommendations] = useState<Recommendation[]>(
     externalRecommendations || cachedRecommendations || [],
   );
-  const [isLoading, setIsLoading] = useState(externalIsLoading && cachedRecommendations.length === 0);
+  const [isLoading, setIsLoading] = useState(
+    externalIsLoading && cachedRecommendations.length === 0,
+  );
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {

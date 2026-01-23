@@ -33,7 +33,11 @@ interface ApplicantsTableProps {
   applicants: Applicant[];
 }
 
-export function ApplicantsTable({ searchQuery, sortBy, applicants }: ApplicantsTableProps) {
+export function ApplicantsTable({
+  searchQuery,
+  sortBy,
+  applicants,
+}: ApplicantsTableProps) {
   const formatDate = (isoDate: string) => {
     const date = new Date(isoDate);
     return date.toLocaleDateString("en-US", {
@@ -44,7 +48,9 @@ export function ApplicantsTable({ searchQuery, sortBy, applicants }: ApplicantsT
   };
 
   const filteredApplicants = (applicants || []).filter((applicant) =>
-    applicant.user?.talentProfile?.fullName?.toLowerCase().includes(searchQuery.toLowerCase()),
+    applicant.user?.talentProfile?.fullName
+      ?.toLowerCase()
+      .includes(searchQuery.toLowerCase()),
   );
 
   return (
@@ -102,7 +108,9 @@ export function ApplicantsTable({ searchQuery, sortBy, applicants }: ApplicantsT
                     {applicant.user?.talentProfile?.fullName || "Unknown"}
                   </div>
                   <div className="font-inter-tight text-[12px] font-light text-[#525866]">
-                    {applicant.user?.talentProfile?.headline || applicant.user?.talentProfile?.category || ""}
+                    {applicant.user?.talentProfile?.headline ||
+                      applicant.user?.talentProfile?.category ||
+                      ""}
                   </div>
                 </div>
               </div>
@@ -155,7 +163,9 @@ export function ApplicantsTable({ searchQuery, sortBy, applicants }: ApplicantsT
                       {applicant.user?.talentProfile?.fullName || "Unknown"}
                     </div>
                     <div className="font-inter-tight text-[12px] font-light text-[#525866]">
-                      {applicant.user?.talentProfile?.headline || applicant.user?.talentProfile?.category || ""}
+                      {applicant.user?.talentProfile?.headline ||
+                        applicant.user?.talentProfile?.category ||
+                        ""}
                     </div>
                   </div>
                 </div>
@@ -163,37 +173,39 @@ export function ApplicantsTable({ searchQuery, sortBy, applicants }: ApplicantsT
 
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div>
-                    <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
-                      Category
-                    </div>
-                    <div className="font-inter-tight text-[12px] text-black">
-                      {applicant.user?.talentProfile?.category || "-"}
-                    </div>
+                  <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
+                    Category
                   </div>
-                  <div>
-                    <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
-                      Skills
-                    </div>
-                    <div className="font-inter-tight text-[12px] text-black">
-                      {applicant.user?.talentProfile?.skills?.slice(0, 2).join(", ") || "-"}
-                    </div>
+                  <div className="font-inter-tight text-[12px] text-black">
+                    {applicant.user?.talentProfile?.category || "-"}
                   </div>
-                  <div>
-                    <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
-                      Location
-                    </div>
-                    <div className="font-inter-tight text-[12px] text-black">
-                      {applicant.user?.talentProfile?.location || "-"}
-                    </div>
+                </div>
+                <div>
+                  <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
+                    Skills
                   </div>
-                  <div>
-                    <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
-                      Date Applied
-                    </div>
-                    <div className="font-inter-tight text-[12px] text-black">
-                      {formatDate(applicant.createdAt)}
-                    </div>
+                  <div className="font-inter-tight text-[12px] text-black">
+                    {applicant.user?.talentProfile?.skills
+                      ?.slice(0, 2)
+                      .join(", ") || "-"}
                   </div>
+                </div>
+                <div>
+                  <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
+                    Location
+                  </div>
+                  <div className="font-inter-tight text-[12px] text-black">
+                    {applicant.user?.talentProfile?.location || "-"}
+                  </div>
+                </div>
+                <div>
+                  <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
+                    Date Applied
+                  </div>
+                  <div className="font-inter-tight text-[12px] text-black">
+                    {formatDate(applicant.createdAt)}
+                  </div>
+                </div>
               </div>
 
               <div className="flex items-center gap-1.5">

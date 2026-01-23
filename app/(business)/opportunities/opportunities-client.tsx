@@ -81,13 +81,13 @@ export function OpportunitiesClient({
         });
 
         // Filter by active filter type (client-side filtering)
-         const filtered = newOpportunities.filter((opp) => {
-           if (filter === "all") return true;
-           if (filter === "applied") return opp.applied === true;
-           return opp.type === filter;
-         });
+        const filtered = newOpportunities.filter((opp) => {
+          if (filter === "all") return true;
+          if (filter === "applied") return opp.applied === true;
+          return opp.type === filter;
+        });
 
-         setOpportunities(filtered);
+        setOpportunities(filtered);
         setPagination(newPagination);
         setError(fetchError);
         setOffset(pageOffset);
@@ -135,8 +135,8 @@ export function OpportunitiesClient({
     // Optimistically update the applied status locally
     setOpportunities((prev) =>
       prev.map((opp) =>
-        opp.id === opportunityId ? { ...opp, applied: true } : opp
-      )
+        opp.id === opportunityId ? { ...opp, applied: true } : opp,
+      ),
     );
   }, []);
 

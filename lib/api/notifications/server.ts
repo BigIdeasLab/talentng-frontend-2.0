@@ -13,7 +13,7 @@ import type { Notification } from "./types";
 export async function getServerNotifications(
   userId: string,
   read?: boolean,
-  type?: string
+  type?: string,
 ): Promise<Notification[]> {
   const query = new URLSearchParams({ userId });
   if (read !== undefined) {

@@ -16,7 +16,7 @@ export const getMentorById = async (id: string): Promise<Mentor> => {
 };
 
 export const getMentorAvailability = async (
-  mentorId: string
+  mentorId: string,
 ): Promise<MentorAvailability[]> => {
   return apiClient<MentorAvailability[]>(`/mentor/${mentorId}/availability`);
 };
@@ -25,7 +25,7 @@ export const bookSession = async (
   mentorId: string,
   startTime: string,
   topic?: string,
-  note?: string
+  note?: string,
 ): Promise<any> => {
   return apiClient<any>(`/mentor/booking`, {
     method: "POST",

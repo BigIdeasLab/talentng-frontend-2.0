@@ -1,10 +1,10 @@
 /**
  * Centralized User API Service (Client-side)
  * Single source of truth for all user API interactions
- * 
+ *
  * Any changes to user API calls should be made here
  * This ensures consistent error handling, logging, and debugging
- * 
+ *
  * NOTE: This is for client-side APIs only
  * For server-side APIs, import directly from ./users/server
  */

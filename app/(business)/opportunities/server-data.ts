@@ -87,7 +87,10 @@ export async function getOpportunitiesData(params?: {
         hasNextPage: false,
         hasPreviousPage: false,
       },
-      error: error instanceof Error ? error.message : "Failed to fetch opportunities",
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch opportunities",
     };
   }
 }

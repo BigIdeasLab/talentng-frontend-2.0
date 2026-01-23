@@ -12,7 +12,7 @@ import { LoadingScreen } from "@/components/layouts/LoadingScreen";
 export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
   const { activeRole, isLoading } = useProfile();
-  
+
   // Fetch profile data client-side
   useProfileData();
 
@@ -27,9 +27,11 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
       <div className="h-screen w-full flex items-center justify-center bg-white">
         <div className="text-center">
           <h2 className="text-2xl font-semibold text-black mb-4">Welcome!</h2>
-          <p className="text-gray-600 mb-6">Please complete your profile to get started.</p>
+          <p className="text-gray-600 mb-6">
+            Please complete your profile to get started.
+          </p>
           <button
-            onClick={() => window.location.href = "/onboarding"}
+            onClick={() => (window.location.href = "/onboarding")}
             className="px-6 py-2 bg-[#5C30FF] text-white rounded-lg hover:bg-[#4a1fe5] transition-colors"
           >
             Go to Onboarding

@@ -8,7 +8,13 @@ interface SearchBarProps {
   filterCount?: number;
 }
 
-export function SearchBar({ searchQuery, onSearchChange, onFilterClick, isLoading = false, filterCount = 0 }: SearchBarProps) {
+export function SearchBar({
+  searchQuery,
+  onSearchChange,
+  onFilterClick,
+  isLoading = false,
+  filterCount = 0,
+}: SearchBarProps) {
   return (
     <div className="flex items-center gap-[8px] mb-[19px]">
       {/* Search Bar */}

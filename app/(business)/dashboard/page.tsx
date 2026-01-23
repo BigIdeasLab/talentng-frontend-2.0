@@ -11,7 +11,7 @@ import { MentorDashboard } from "@/components/mentor/dashboard/MentorDashboard";
 function DashboardContent() {
   const searchParams = useSearchParams();
   const { userRoles, activeRole, setActiveRole } = useProfile();
-  
+
   // Handle switchRole query parameter (from add-role onboarding)
   useEffect(() => {
     const switchRole = searchParams.get("switchRole");
@@ -19,7 +19,7 @@ function DashboardContent() {
       setActiveRole(switchRole);
     }
   }, [searchParams, userRoles, setActiveRole]);
-  
+
   const role = activeRole || userRoles?.[0] || "talent";
 
   switch (role) {

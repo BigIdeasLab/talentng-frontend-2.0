@@ -39,7 +39,9 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
 
           {/* Recommendations Tab */}
           {activeTab === "recommendations" && (
-            <TalentRecommendationsGrid recommendations={profile.recommendations || []} />
+            <TalentRecommendationsGrid
+              recommendations={profile.recommendations || []}
+            />
           )}
 
           {/* About Tab */}
@@ -59,28 +61,32 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
                 )}
 
                 {/* Work Experience */}
-                {profile.workExperience && profile.workExperience.length > 0 && (
-                  <div className="flex flex-col gap-[12px]">
-                    <h2 className="text-[16px] font-semibold text-black">
-                      Experience
-                    </h2>
-                    <div className="space-y-[16px]">
-                       {profile.workExperience.map((exp, idx) => (
-                         <div key={exp.id || `exp-${idx}`} className="flex flex-col gap-[6px]">
-                          <p className="text-[14px] font-medium text-black">
-                            {exp.role}
-                          </p>
-                          <p className="text-[13px] text-gray-600">
-                            {exp.company}
-                          </p>
-                          <p className="text-[12px] text-gray-500">
-                            {exp.duration}
-                          </p>
-                        </div>
-                      ))}
+                {profile.workExperience &&
+                  profile.workExperience.length > 0 && (
+                    <div className="flex flex-col gap-[12px]">
+                      <h2 className="text-[16px] font-semibold text-black">
+                        Experience
+                      </h2>
+                      <div className="space-y-[16px]">
+                        {profile.workExperience.map((exp, idx) => (
+                          <div
+                            key={exp.id || `exp-${idx}`}
+                            className="flex flex-col gap-[6px]"
+                          >
+                            <p className="text-[14px] font-medium text-black">
+                              {exp.role}
+                            </p>
+                            <p className="text-[13px] text-gray-600">
+                              {exp.company}
+                            </p>
+                            <p className="text-[12px] text-gray-500">
+                              {exp.duration}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {/* Education */}
                 {profile.education && profile.education.length > 0 && (
@@ -89,8 +95,11 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
                       Education
                     </h2>
                     <div className="space-y-[16px]">
-                       {profile.education.map((edu, idx) => (
-                         <div key={edu.id || `edu-${idx}`} className="flex flex-col gap-[6px]">
+                      {profile.education.map((edu, idx) => (
+                        <div
+                          key={edu.id || `edu-${idx}`}
+                          className="flex flex-col gap-[6px]"
+                        >
                           <p className="text-[14px] font-medium text-black">
                             {edu.degree}
                           </p>

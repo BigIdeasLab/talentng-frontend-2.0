@@ -1,7 +1,7 @@
 /**
  * Server-side data fetching for discover talent page
  * This runs on the server and passes data to client components
- * 
+ *
  * Uses centralized talent API from @/lib/api/talent-service
  */
 
@@ -69,13 +69,14 @@ export async function getDiscoverTalentData(
     } = params;
 
     const filters: any = {};
-    
+
     if (searchQuery) filters.q = searchQuery;
     if (category && category !== "All") filters.category = category;
     if (skills && skills.length > 0) filters.skills = skills.join(",");
     if (location) filters.location = location;
-    if (availability && availability !== "All") filters.availability = availability;
-    
+    if (availability && availability !== "All")
+      filters.availability = availability;
+
     filters.limit = limit;
     filters.offset = offset;
 

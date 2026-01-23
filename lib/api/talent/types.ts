@@ -28,13 +28,13 @@ export interface DashboardStats {
 }
 
 export interface TalentFilterParams {
-   q?: string;
-   category?: string;
-   skills?: string;
-   location?: string;
-   availability?: string;
-   limit?: number;
-   offset?: number;
+  q?: string;
+  category?: string;
+  skills?: string;
+  location?: string;
+  availability?: string;
+  limit?: number;
+  offset?: number;
 }
 
 export interface TalentPaginationInfo {

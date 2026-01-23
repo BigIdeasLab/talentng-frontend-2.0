@@ -46,11 +46,11 @@ const Login = () => {
     onSuccess: async (response) => {
       console.log("✅ Login successful");
       console.log("needsOnboarding:", response.needsOnboarding);
-      
+
       // Tokens are already stored in localStorage by auth-service.login()
       // via handleAuthResponse(). This ensures they're available before redirect.
       console.log("✅ Tokens stored in localStorage");
-      
+
       toast.success("Login successful!");
 
       if (response.needsOnboarding) {

@@ -8,7 +8,10 @@ interface TalentWorksGridProps {
   onItemClick?: (item: GalleryItem) => void;
 }
 
-export function TalentWorksGrid({ gallery, onItemClick }: TalentWorksGridProps) {
+export function TalentWorksGrid({
+  gallery,
+  onItemClick,
+}: TalentWorksGridProps) {
   if (!gallery || gallery.length === 0) {
     return (
       <div className="flex items-center justify-center p-[25px] min-h-[400px]">

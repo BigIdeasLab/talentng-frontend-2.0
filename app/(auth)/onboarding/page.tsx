@@ -18,15 +18,18 @@ import { useAuth } from "@/hooks/use-auth";
 import { useTokenRefresh } from "@/hooks/useTokenRefresh";
 import { TokenStorage } from "./token-storage";
 
-
 const OnboardingPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
   const [profileData, setProfileData] = useState<ProfileData | undefined>();
   const [companyData, setCompanyData] = useState<any | undefined>();
-  const [companyDetailsData, setCompanyDetailsData] = useState<any | undefined>();
+  const [companyDetailsData, setCompanyDetailsData] = useState<
+    any | undefined
+  >();
   const [mentorData, setMentorData] = useState<any | undefined>();
-  const [mentorExpertiseData, setMentorExpertiseData] = useState<any | undefined>();
+  const [mentorExpertiseData, setMentorExpertiseData] = useState<
+    any | undefined
+  >();
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -35,19 +38,19 @@ const OnboardingPage = () => {
   const { refetchUser, user } = useAuth();
   const completeOnboardingMutation = useCompleteOnboarding();
   const { ensureValidTokenBeforeOperation } = useTokenRefresh();
-  
+
   // OAuth callback is handled by middleware
   // Backend sets cookies directly, frontend receives redirect to onboarding
   // No need to extract tokens from URL
-  
+
   // Check if we're in "add role" mode
   const isAddingRole = searchParams.get("mode") === "add-role";
-  
+
   // Get existing roles from query params (passed from ProfileSwitcher) or user data
   const rolesFromParams = searchParams.get("roles");
   const existingRoles = rolesFromParams
-    ? rolesFromParams.split(",").map(role => role.toLowerCase())
-    : (user?.roles || []).map(role => role.toLowerCase());
+    ? rolesFromParams.split(",").map((role) => role.toLowerCase())
+    : (user?.roles || []).map((role) => role.toLowerCase());
 
   const handleRoleSelect = (role: Role) => {
     setSelectedRole(role);
@@ -99,15 +102,17 @@ const OnboardingPage = () => {
         location: mentorData.location,
         bio: mentorData.bio,
       };
-      
+
       // Details contains: expertise, experience, mentorshipStyle, linkedIn
       const detailsData = {
-        expertise: Array.isArray(data.expertise) ? data.expertise : [data.expertise],
+        expertise: Array.isArray(data.expertise)
+          ? data.expertise
+          : [data.expertise],
         experience: data.experience,
         mentorshipStyle: data.mentorshipStyle,
         linkedIn: data.linkedIn,
       };
-      
+
       formData.append("profile", JSON.stringify(profileData));
       formData.append("details", JSON.stringify(detailsData));
 
@@ -127,9 +132,11 @@ const OnboardingPage = () => {
       await refetchUser();
       toast({
         title: "Success",
-        description: isAddingRole ? "Your new role has been successfully added." : "Your profile has been successfully created.",
+        description: isAddingRole
+          ? "Your new role has been successfully added."
+          : "Your profile has been successfully created.",
       });
-      
+
       // If adding a role, redirect with the new role selected
       if (isAddingRole) {
         router.push("/dashboard?switchRole=mentor");
@@ -153,7 +160,8 @@ const OnboardingPage = () => {
         toast({
           variant: "destructive",
           title: "Request Timeout",
-          description: "The request took too long to process. Please try again or contact support if the problem persists.",
+          description:
+            "The request took too long to process. Please try again or contact support if the problem persists.",
           duration: 10000,
         });
       } else {
@@ -193,14 +201,14 @@ const OnboardingPage = () => {
       if (!companyData) {
         throw new Error("Company profile data is missing");
       }
-      
+
       // Profile contains: username, location, bio
       const profileData = {
         username: companyData.username,
         location: companyData.location,
         bio: companyData.bio,
       };
-      
+
       // Details contains: companyName, industry, companySize, companyStage, operatingModel, website
       const detailsData: any = {
         companyName: companyData.companyName,
@@ -209,12 +217,12 @@ const OnboardingPage = () => {
         companyStage: data.companyStage,
         operatingModel: data.operatingModel,
       };
-      
+
       // Add website if provided
       if (data.website) {
         detailsData.website = data.website;
       }
-      
+
       formData.append("profile", JSON.stringify(profileData));
       formData.append("details", JSON.stringify(detailsData));
 
@@ -228,9 +236,11 @@ const OnboardingPage = () => {
       await refetchUser();
       toast({
         title: "Success",
-        description: isAddingRole ? "Your new role has been successfully added." : "Your profile has been successfully created.",
+        description: isAddingRole
+          ? "Your new role has been successfully added."
+          : "Your profile has been successfully created.",
       });
-      
+
       // If adding a role, redirect with the new role selected
       if (isAddingRole) {
         router.push("/dashboard?switchRole=recruiter");
@@ -254,7 +264,8 @@ const OnboardingPage = () => {
         toast({
           variant: "destructive",
           title: "Request Timeout",
-          description: "The request took too long to process. Please try again or contact support if the problem persists.",
+          description:
+            "The request took too long to process. Please try again or contact support if the problem persists.",
           duration: 10000,
         });
       } else {
@@ -311,7 +322,7 @@ const OnboardingPage = () => {
         bio: companyData.bio,
       };
       formData.append("profile", JSON.stringify(profileDataForSubmit));
-      
+
       // Details contains: companyName, industry, companySize, companyStage, operatingModel
       const detailsDataForSubmit = {
         companyName: companyData.companyName,
@@ -345,7 +356,10 @@ const OnboardingPage = () => {
       console.log("=== ONBOARDING SUBMISSION ===", {
         role: roleValue,
         profile: profileData,
-        details: { ...data, profileImage: profileImage ? profileImage.name : null },
+        details: {
+          ...data,
+          profileImage: profileImage ? profileImage.name : null,
+        },
       });
     } else {
       console.log("=== ONBOARDING SUBMISSION ===", {
@@ -358,7 +372,8 @@ const OnboardingPage = () => {
 
     try {
       // Ensure token is valid before submitting large profile data
-      const tokenValid = await ensureValidTokenBeforeOperation('profile completion');
+      const tokenValid =
+        await ensureValidTokenBeforeOperation("profile completion");
       if (!tokenValid) {
         setIsLoading(false);
         return;
@@ -369,15 +384,17 @@ const OnboardingPage = () => {
       await refetchUser();
       toast({
         title: "Success",
-        description: isAddingRole ? "Your new role has been successfully added." : "Your profile has been successfully created.",
+        description: isAddingRole
+          ? "Your new role has been successfully added."
+          : "Your profile has been successfully created.",
       });
-      
+
       // Get the role value for redirect
       let redirectRole = selectedRole;
       if (selectedRole === "employer") {
         redirectRole = "recruiter";
       }
-      
+
       // If adding a role, redirect with the new role selected
       if (isAddingRole) {
         router.push(`/dashboard?switchRole=${redirectRole}`);
@@ -403,7 +420,8 @@ const OnboardingPage = () => {
         toast({
           variant: "destructive",
           title: "Request Timeout",
-          description: "The request took too long to process. Please try again or contact support if the problem persists.",
+          description:
+            "The request took too long to process. Please try again or contact support if the problem persists.",
           duration: 10000,
         });
       } else {
@@ -508,8 +526,8 @@ const OnboardingPage = () => {
                 currentUsername={user?.username}
               />
             ) : (
-              <CreateProfileStep 
-                onNext={handleProfileNext} 
+              <CreateProfileStep
+                onNext={handleProfileNext}
                 onBack={handleBack}
                 initialData={profileData}
                 initialImage={profileImage as File | undefined}
@@ -517,8 +535,8 @@ const OnboardingPage = () => {
                 currentUsername={user?.username}
               />
             )}
-            </div>
-            )}
+          </div>
+        )}
         {currentStep === 3 && (
           <div className="h-full flex flex-col overflow-hidden">
             {selectedRole === "employer" ? (

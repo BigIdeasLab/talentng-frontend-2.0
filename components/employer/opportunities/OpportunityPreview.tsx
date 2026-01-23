@@ -84,7 +84,14 @@ const DEFAULT_FORM_DATA: FormData = {
     "Experience with modern development tools and CI/CD pipelines",
     "Strong problem-solving skills and attention to detail",
   ],
-  tags: ["Full-Stack", "React", "Node.js", "Web Development", "API Design", "Database Design"],
+  tags: [
+    "Full-Stack",
+    "React",
+    "Node.js",
+    "Web Development",
+    "API Design",
+    "Database Design",
+  ],
   tools: ["VSCode", "Git", "Docker", "PostgreSQL", "MongoDB", "AWS"],
   category: "Engineering",
   workMode: "hybrid",
@@ -233,7 +240,8 @@ export function OpportunityPreview() {
       });
       router.push("/opportunities?tab=draft");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to save draft";
+      const message =
+        error instanceof Error ? error.message : "Failed to save draft";
       toast({
         title: "Error",
         description: message,
@@ -283,7 +291,8 @@ export function OpportunityPreview() {
       });
       router.push("/opportunities");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to post opportunity";
+      const message =
+        error instanceof Error ? error.message : "Failed to post opportunity";
       toast({
         title: "Error",
         description: message,

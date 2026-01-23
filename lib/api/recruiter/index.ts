@@ -107,7 +107,8 @@ export async function listRecruiterProfiles(
     if (filters.location) queryParams.append("location", filters.location);
     if (filters.companyName)
       queryParams.append("companyName", filters.companyName);
-    if (filters.visibility) queryParams.append("visibility", filters.visibility);
+    if (filters.visibility)
+      queryParams.append("visibility", filters.visibility);
     if (filters.isFeatured !== undefined)
       queryParams.append("isFeatured", String(filters.isFeatured));
   }
@@ -139,4 +140,8 @@ export async function batchUpdateRecruiterProfile(
 }
 
 // Export types
-export type { RecruiterProfile, UpdateRecruiterProfileInput, RecruiterFilterParams } from "./types";
+export type {
+  RecruiterProfile,
+  UpdateRecruiterProfileInput,
+  RecruiterFilterParams,
+} from "./types";

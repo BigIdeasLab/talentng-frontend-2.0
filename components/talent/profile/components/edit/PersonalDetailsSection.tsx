@@ -239,7 +239,7 @@ export function PersonalDetailsSection({
 
             {/* Next Button */}
             <div className="flex justify-end">
-              <button 
+              <button
                 onClick={onNext}
                 className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal"
               >

@@ -9,7 +9,7 @@ import {
   storeTokens,
   clearTokens,
   shouldRefreshToken,
-} from './auth';
+} from "./auth";
 
 let isRefreshing = false;
 let refreshPromise: Promise<boolean> | null = null;
@@ -29,7 +29,7 @@ const processQueue = (success: boolean, error?: any): void => {
       prom.reject(error);
     }
   });
-  
+
   failedQueue.length = 0;
 };
 
@@ -38,7 +38,7 @@ const processQueue = (success: boolean, error?: any): void => {
  */
 export const refreshAccessToken = async (apiUrl: string): Promise<boolean> => {
   const refreshToken = getRefreshToken();
-  
+
   if (!refreshToken) {
     clearTokens();
     return false;
@@ -46,9 +46,9 @@ export const refreshAccessToken = async (apiUrl: string): Promise<boolean> => {
 
   try {
     const response = await fetch(`${apiUrl}/auth/refresh`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refreshToken }),
     });
 
@@ -58,12 +58,12 @@ export const refreshAccessToken = async (apiUrl: string): Promise<boolean> => {
     }
 
     const data = await response.json();
-    
+
     if (data.accessToken && data.refreshToken) {
       storeTokens({
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
-        userId: data.userId || data.user?.id || '',
+        userId: data.userId || data.user?.id || "",
       });
       return true;
     }
@@ -71,7 +71,7 @@ export const refreshAccessToken = async (apiUrl: string): Promise<boolean> => {
     clearTokens();
     return false;
   } catch (error) {
-    console.error('Token refresh failed:', error);
+    console.error("Token refresh failed:", error);
     clearTokens();
     return false;
   }
@@ -97,7 +97,7 @@ export const ensureValidToken = async (apiUrl: string): Promise<boolean> => {
   // Check if token needs refresh
   if (shouldRefreshToken(accessToken)) {
     isRefreshing = true;
-    
+
     refreshPromise = refreshAccessToken(apiUrl)
       .then((success) => {
         isRefreshing = false;

@@ -8,10 +8,10 @@
 import { cookies } from "next/headers";
 
 const baseUrl =
-   process.env.NEXT_PUBLIC_TALENTNG_API_URL || 
-   (process.env.NODE_ENV === "production"
-     ? "https://api.talentng.com"
-     : "http://localhost:3001/api/v1");
+  process.env.NEXT_PUBLIC_TALENTNG_API_URL ||
+  (process.env.NODE_ENV === "production"
+    ? "https://api.talentng.com"
+    : "http://localhost:3001/api/v1");
 
 type ApiOptions = {
   headers?: Record<string, string>;
@@ -21,7 +21,7 @@ type ApiOptions = {
 
 const serverApiClient = async <T>(
   endpoint: string,
-  options: ApiOptions = {}
+  options: ApiOptions = {},
 ): Promise<T> => {
   // Get token from cookies - must be awaited in Next.js 15+
   const cookieStore = await cookies();
@@ -72,9 +72,9 @@ const serverApiClient = async <T>(
           .getAll()
           .map((c) => `${c.name}=${c.value}`)
           .join("; ");
-        
+
         const refreshUrl = `${baseUrl}/auth/refresh`;
-        
+
         const refreshResponse = await fetch(refreshUrl, {
           method: "POST",
           headers: {
@@ -89,7 +89,7 @@ const serverApiClient = async <T>(
           // The browser will apply them automatically
           // For this request, we can't access the new cookies (Server Component limitation)
           // But on the next request, the new cookies will be available
-          
+
           // Return null for now - next render will use the refreshed cookies
           return null as T;
         }
@@ -108,7 +108,9 @@ const serverApiClient = async <T>(
       }
 
       const errorMessage =
-        errorData.message || errorData.error || `API Error: ${response.statusText}`;
+        errorData.message ||
+        errorData.error ||
+        `API Error: ${response.statusText}`;
 
       const error = new Error(errorMessage);
       (error as any).status = response.status;

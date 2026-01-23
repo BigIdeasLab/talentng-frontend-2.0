@@ -31,9 +31,15 @@ export function ServicesGrid({
   onLoadingChange,
 }: ServicesGridProps) {
   const { toast } = useToast();
-  const { data: hookServices, isLoading: hookIsLoading, error: hookError } = useMyServices();
+  const {
+    data: hookServices,
+    isLoading: hookIsLoading,
+    error: hookError,
+  } = useMyServices();
   const [services, setServices] = useState<Service[]>(cachedServices);
-  const [isLoading, setIsLoading] = useState(parentIsLoading && cachedServices.length === 0);
+  const [isLoading, setIsLoading] = useState(
+    parentIsLoading && cachedServices.length === 0,
+  );
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -65,12 +71,20 @@ export function ServicesGrid({
         errorMessage = "You don't have permission to view these services";
       } else {
         errorMessage =
-          hookError instanceof Error ? hookError.message : "Failed to load services";
+          hookError instanceof Error
+            ? hookError.message
+            : "Failed to load services";
       }
       setError(errorMessage);
       setServices([]);
     }
-  }, [hookServices, hookIsLoading, hookError, onLoadingChange, onServicesLoaded]);
+  }, [
+    hookServices,
+    hookIsLoading,
+    hookError,
+    onLoadingChange,
+    onServicesLoaded,
+  ]);
 
   if (isLoading) {
     return (

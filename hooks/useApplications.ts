@@ -42,27 +42,24 @@ export function useApplications(): UseApplicationsReturn {
         setIsLoading(false);
       }
     },
-    []
+    [],
   );
 
-  const getById = useCallback(
-    async (id: string): Promise<Application> => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        return await getApplicationById(id);
-      } catch (err) {
-        const errorMsg =
-          err instanceof Error ? err.message : "Failed to fetch application";
-        setError(errorMsg);
-        console.error("Failed to fetch application:", err);
-        throw err;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    []
-  );
+  const getById = useCallback(async (id: string): Promise<Application> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      return await getApplicationById(id);
+    } catch (err) {
+      const errorMsg =
+        err instanceof Error ? err.message : "Failed to fetch application";
+      setError(errorMsg);
+      console.error("Failed to fetch application:", err);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const submit = useCallback(
     async (data: {
@@ -84,7 +81,7 @@ export function useApplications(): UseApplicationsReturn {
         setIsLoading(false);
       }
     },
-    []
+    [],
   );
 
   const updateStatus = useCallback(
@@ -103,7 +100,7 @@ export function useApplications(): UseApplicationsReturn {
         setIsLoading(false);
       }
     },
-    []
+    [],
   );
 
   return {

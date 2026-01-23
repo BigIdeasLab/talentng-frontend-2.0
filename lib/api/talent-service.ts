@@ -1,7 +1,7 @@
 /**
  * Centralized Talent API Service
  * Single source of truth for all talent API interactions
- * 
+ *
  * Any changes to talent API calls should be made here
  * This ensures consistent error handling, logging, and debugging
  */

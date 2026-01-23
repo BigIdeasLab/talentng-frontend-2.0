@@ -4,19 +4,23 @@
  */
 
 import apiClient from "@/lib/api";
-import type { Application, ApplicationSubmission, ApplicationResponse } from "./types";
+import type {
+  Application,
+  ApplicationSubmission,
+  ApplicationResponse,
+} from "./types";
 
 /**
  * Submit an application with optional note and attachments
  * Handles FormData for file uploads
  */
 export const submitApplication = async (
-  submission: ApplicationSubmission & { files?: File[] }
+  submission: ApplicationSubmission & { files?: File[] },
 ): Promise<ApplicationResponse> => {
   // Create FormData for multipart upload
   const formData = new FormData();
   formData.append("opportunityId", submission.opportunityId);
-  
+
   if (submission.note) {
     formData.append("note", submission.note);
   }
@@ -38,7 +42,7 @@ export const submitApplication = async (
  * Legacy method - submit basic application
  */
 export const applyToOpportunity = async (
-  application: Application
+  application: Application,
 ): Promise<ApplicationResponse> => {
   return apiClient<ApplicationResponse>("/applications", {
     method: "POST",
@@ -77,7 +81,9 @@ export const getApplicationsWithFilters = async (params: {
 /**
  * Delete an application
  */
-export const deleteApplication = async (applicationId: string): Promise<void> => {
+export const deleteApplication = async (
+  applicationId: string,
+): Promise<void> => {
   return apiClient<void>(`/applications/${applicationId}`, {
     method: "DELETE",
   });

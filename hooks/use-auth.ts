@@ -19,7 +19,7 @@ const fetchUser = async (): Promise<User | null> => {
 export const useAuth = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  
+
   // Check if user is authenticated by attempting to fetch user data
   // Cookies are sent automatically with the request
   const hasToken = true; // Always attempt to fetch, cookies will determine auth
@@ -54,7 +54,7 @@ export const useAuth = () => {
       resetRefreshState();
       localStorage.removeItem("user");
       queryClient.setQueryData(["user"], null);
-      
+
       // Redirect to login
       router.push("/login");
     }

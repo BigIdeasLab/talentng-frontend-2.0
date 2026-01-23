@@ -42,6 +42,8 @@ export async function getServerRecruiterProfileByUserId(
  * List All Recruiter Profiles
  * GET /recruiter
  */
-export async function getServerListRecruiterProfiles(): Promise<RecruiterProfile[]> {
+export async function getServerListRecruiterProfiles(): Promise<
+  RecruiterProfile[]
+> {
   return apiClient<RecruiterProfile[]>("/recruiter");
 }

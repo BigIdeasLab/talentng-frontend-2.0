@@ -7,7 +7,10 @@ interface LoadingSpinnerProps {
   size?: "sm" | "md" | "lg";
 }
 
-export function LoadingSpinner({ label = "Loading", size = "md" }: LoadingSpinnerProps) {
+export function LoadingSpinner({
+  label = "Loading",
+  size = "md",
+}: LoadingSpinnerProps) {
   const sizeMap = {
     sm: "w-4 h-4",
     md: "w-6 h-6",

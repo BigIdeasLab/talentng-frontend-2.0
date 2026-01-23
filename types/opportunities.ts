@@ -7,7 +7,11 @@ export type TabType = "open" | "closed" | "draft";
 export type SortType = "newest" | "oldest" | "rate-high" | "rate-low";
 
 // Opportunity types
-export type OpportunityType = "job-listing" | "internship" | "volunteer" | "part-time";
+export type OpportunityType =
+  | "job-listing"
+  | "internship"
+  | "volunteer"
+  | "part-time";
 export type OpportunityStatus = "active" | "closed" | "draft";
 
 // Card display interface (for UI rendering)
@@ -97,7 +101,11 @@ export const TYPE_CONFIG: Record<string, TypeConfig> = {
 };
 
 // Form section types
-export type FormSection = "basic-info" | "description" | "budget-scope" | "application-settings";
+export type FormSection =
+  | "basic-info"
+  | "description"
+  | "budget-scope"
+  | "application-settings";
 
 // Filter/search params
 export interface OpportunitiesFilters {

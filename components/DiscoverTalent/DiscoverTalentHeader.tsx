@@ -32,7 +32,9 @@ export function DiscoverTalentHeader({
   error = null,
 }: DiscoverTalentHeaderProps) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [appliedFilters, setAppliedFilters] = useState<FilterState | null>(null);
+  const [appliedFilters, setAppliedFilters] = useState<FilterState | null>(
+    null,
+  );
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const debounceTimer = useRef<NodeJS.Timeout>();
 
@@ -54,7 +56,7 @@ export function DiscoverTalentHeader({
         onSearchChange(value);
       }, CONSTANTS.DEBOUNCE_DELAY);
     },
-    [onSearchChange]
+    [onSearchChange],
   );
 
   const handleClearSearch = useCallback(() => {
@@ -71,20 +73,21 @@ export function DiscoverTalentHeader({
         handleClearSearch();
       }
     },
-    [searchQuery, handleClearSearch]
+    [searchQuery, handleClearSearch],
   );
 
   const handleCategoryChange = useCallback(
     (category: string) => {
       onCategoryChange(category);
     },
-    [onCategoryChange]
+    [onCategoryChange],
   );
 
   const getFilterCount = (): number => {
     if (!appliedFilters) return 0;
     let count = 0;
-    if (appliedFilters.categories.length > 0) count += appliedFilters.categories.length;
+    if (appliedFilters.categories.length > 0)
+      count += appliedFilters.categories.length;
     if (appliedFilters.skills.length > 0) count += appliedFilters.skills.length;
     if (appliedFilters.location) count += 1;
     if (appliedFilters.availability !== "All") count += 1;
@@ -105,7 +108,7 @@ export function DiscoverTalentHeader({
           <div
             className={cn(
               "flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border rounded-[8px] transition-colors",
-              error ? "border-red-500 bg-red-50" : "border-[#E1E4EA]"
+              error ? "border-red-500 bg-red-50" : "border-[#E1E4EA]",
             )}
           >
             {isLoading ? (
@@ -114,29 +117,29 @@ export function DiscoverTalentHeader({
               <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
             )}
             <input
-               type="text"
-               placeholder={CONSTANTS.PLACEHOLDER}
-               value={localSearchQuery}
-               onChange={(e) => handleSearchChange(e.target.value)}
-               onKeyDown={handleKeyDown}
-               maxLength={CONSTANTS.SEARCH_MAX_LENGTH}
-               aria-label="Search talents"
-               aria-busy={isLoading}
-               aria-describedby={error ? "search-error" : undefined}
-               className={cn(
-                 "flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent transition-opacity"
-               )}
-             />
+              type="text"
+              placeholder={CONSTANTS.PLACEHOLDER}
+              value={localSearchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              onKeyDown={handleKeyDown}
+              maxLength={CONSTANTS.SEARCH_MAX_LENGTH}
+              aria-label="Search talents"
+              aria-busy={isLoading}
+              aria-describedby={error ? "search-error" : undefined}
+              className={cn(
+                "flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent transition-opacity",
+              )}
+            />
             {localSearchQuery && !isLoading && (
-               <button
-                 onClick={handleClearSearch}
-                 className="flex-shrink-0 text-[#B2B2B2] hover:text-black transition-colors"
-                 aria-label="Clear search"
-                 type="button"
-               >
-                 <X className="w-[15px] h-[15px]" />
-               </button>
-             )}
+              <button
+                onClick={handleClearSearch}
+                className="flex-shrink-0 text-[#B2B2B2] hover:text-black transition-colors"
+                aria-label="Clear search"
+                type="button"
+              >
+                <X className="w-[15px] h-[15px]" />
+              </button>
+            )}
           </div>
 
           {/* Filter Button */}
@@ -146,7 +149,7 @@ export function DiscoverTalentHeader({
               disabled={isLoading}
               className={cn(
                 "h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 relative transition-opacity disabled:opacity-60 disabled:cursor-not-allowed",
-                isLoading ? "bg-gray-100" : "bg-[#F5F5F5]"
+                isLoading ? "bg-gray-100" : "bg-[#F5F5F5]",
               )}
               aria-label="Filter results"
             >
@@ -183,7 +186,10 @@ export function DiscoverTalentHeader({
       </div>
 
       {/* Category Tabs */}
-      <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide" role="tablist">
+      <div
+        className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide"
+        role="tablist"
+      >
         {["All", ...categories].map((category) => (
           <button
             key={category}
@@ -196,7 +202,7 @@ export function DiscoverTalentHeader({
               "px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors disabled:opacity-60 disabled:cursor-not-allowed",
               selectedCategory === category
                 ? "text-black font-medium border-b-2 border-black"
-                : "text-black/30 font-medium hover:text-black/50"
+                : "text-black/30 font-medium hover:text-black/50",
             )}
           >
             <span className="text-[13px] font-inter-tight">{category}</span>

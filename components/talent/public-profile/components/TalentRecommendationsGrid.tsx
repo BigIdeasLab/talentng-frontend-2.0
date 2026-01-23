@@ -93,9 +93,7 @@ export function TalentRecommendationsGrid({
                     <span
                       key={`${rec.id}-star-${i}`}
                       className={`text-sm ${
-                        i < rec.rating!
-                          ? "text-yellow-400"
-                          : "text-gray-300"
+                        i < rec.rating! ? "text-yellow-400" : "text-gray-300"
                       }`}
                     >
                       ★

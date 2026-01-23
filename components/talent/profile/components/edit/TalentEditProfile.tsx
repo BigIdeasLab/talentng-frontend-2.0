@@ -394,10 +394,7 @@ export function TalentEditProfile() {
       />
 
       <div className="flex-1 flex flex-col">
-        <EditProfileActionBar
-          onSave={handleSaveProfile}
-          isLoading={isSaving}
-        />
+        <EditProfileActionBar onSave={handleSaveProfile} isLoading={isSaving} />
 
         <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">

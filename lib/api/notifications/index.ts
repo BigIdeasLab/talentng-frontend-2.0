@@ -9,7 +9,7 @@ import type { Notification, GetNotificationsParams } from "./types";
 export const getNotifications = async (
   userId: string,
   read?: boolean,
-  type?: string
+  type?: string,
 ): Promise<Notification[]> => {
   const query = new URLSearchParams({ userId });
   if (read !== undefined) {
@@ -23,7 +23,7 @@ export const getNotifications = async (
 };
 
 export const markNotificationAsRead = async (
-  notificationId: string
+  notificationId: string,
 ): Promise<Notification> => {
   const endpoint = `/notifications/${notificationId}`;
   return apiClient<Notification>(endpoint, {

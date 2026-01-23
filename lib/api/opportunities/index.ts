@@ -4,10 +4,14 @@
  */
 
 import apiClient from "@/lib/api";
-import type { Opportunity, GetOpportunitiesParams, PaginatedOpportunitiesResponse } from "./types";
+import type {
+  Opportunity,
+  GetOpportunitiesParams,
+  PaginatedOpportunitiesResponse,
+} from "./types";
 
 export const getOpportunities = async (
-  params?: GetOpportunitiesParams
+  params?: GetOpportunitiesParams,
 ): Promise<PaginatedOpportunitiesResponse> => {
   const query = new URLSearchParams();
   if (params) {
@@ -30,7 +34,7 @@ export const getOpportunityById = async (id: string): Promise<Opportunity> => {
 };
 
 export const createOpportunity = async (
-  data: Partial<Opportunity>
+  data: Partial<Opportunity>,
 ): Promise<Opportunity> => {
   return apiClient<Opportunity>("/opportunities", {
     method: "POST",
@@ -40,7 +44,7 @@ export const createOpportunity = async (
 
 export const updateOpportunity = async (
   id: string,
-  data: Partial<Opportunity>
+  data: Partial<Opportunity>,
 ): Promise<Opportunity> => {
   return apiClient<Opportunity>(`/opportunities/${id}`, {
     method: "PATCH",
@@ -75,24 +79,28 @@ export const unsaveOpportunity = async (id: string): Promise<void> => {
 };
 
 export const getSaveStatus = async (
-  id: string
+  id: string,
 ): Promise<{ saved: boolean }> => {
   return apiClient<{ saved: boolean }>(`/opportunities/${id}/is-saved`);
 };
 
 export const getSavedOpportunities = async (
   limit = 20,
-  offset = 0
+  offset = 0,
 ): Promise<PaginatedOpportunitiesResponse> => {
   const query = new URLSearchParams({
     limit: String(limit),
     offset: String(offset),
   });
   const response = await apiClient<PaginatedOpportunitiesResponse>(
-    `/opportunities/saved?${query.toString()}`
+    `/opportunities/saved?${query.toString()}`,
   );
   return response;
 };
 
 // Export types
-export type { Opportunity, GetOpportunitiesParams, PaginatedOpportunitiesResponse };
+export type {
+  Opportunity,
+  GetOpportunitiesParams,
+  PaginatedOpportunitiesResponse,
+};

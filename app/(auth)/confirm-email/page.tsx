@@ -70,7 +70,7 @@ const ConfirmEmailPage = () => {
       console.log("✅ Email verification successful");
       console.log("Response data:", data);
       console.log("needsOnboarding:", data?.needsOnboarding);
-      
+
       setError("");
       toast.success("Email verified successfully!");
 
@@ -88,7 +88,10 @@ const ConfirmEmailPage = () => {
     onError: (error: any) => {
       console.error("❌ Verification error:", error);
       // Handle specific error messages from backend
-      if (error.message && error.message.includes("Invalid verification code")) {
+      if (
+        error.message &&
+        error.message.includes("Invalid verification code")
+      ) {
         setError("Invalid code");
       } else if (error.message && error.message.includes("expired")) {
         setError("Code expired");
@@ -222,8 +225,8 @@ const ConfirmEmailPage = () => {
                                     error
                                       ? "bg-[#E63C231A]"
                                       : mutation.isSuccess
-                                      ? "bg-[#008B471A]"
-                                      : "bg-[#F5F5F5]"
+                                        ? "bg-[#008B471A]"
+                                        : "bg-[#F5F5F5]"
                                   }`}
                                 >
                                   <InputOTP maxLength={6} {...field}>
@@ -236,8 +239,8 @@ const ConfirmEmailPage = () => {
                                             error
                                               ? "text-[#E63C23]"
                                               : mutation.isSuccess
-                                              ? "text-[#008B47]"
-                                              : "text-black"
+                                                ? "text-[#008B47]"
+                                                : "text-black"
                                           }`}
                                         />
                                       ))}

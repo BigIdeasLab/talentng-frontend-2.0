@@ -32,7 +32,7 @@ const handleAuthResponse = (response: AuthResponse): void => {
 
 export const register = async (
   email: string,
-  password: string
+  password: string,
 ): Promise<AuthResponse> => {
   const response = await apiClient<AuthResponse>("/auth/register", {
     method: "POST",
@@ -50,7 +50,7 @@ export const register = async (
 
 export const login = async (
   email: string,
-  password: string
+  password: string,
 ): Promise<AuthResponse> => {
   const deviceId = getOrCreateDeviceId();
   const deviceName = getDeviceName();
@@ -78,7 +78,7 @@ export const verifyEmailSend = async (email: string): Promise<void> => {
 
 export const verifyEmailConfirm = async (
   email: string,
-  verificationCode: string
+  verificationCode: string,
 ): Promise<AuthResponse> => {
   const response = await apiClient<AuthResponse>("/auth/verify-email/confirm", {
     method: "POST",
@@ -104,7 +104,7 @@ export const forgotPassword = async (email: string): Promise<void> => {
 export const resetPassword = async (
   email: string,
   resetCode: string,
-  newPassword: string
+  newPassword: string,
 ): Promise<AuthResponse> => {
   const response = await apiClient<AuthResponse>("/auth/reset-password", {
     method: "POST",
@@ -124,9 +124,7 @@ export const logout = async (deviceId?: string): Promise<void> => {
   try {
     const id =
       deviceId ||
-      (typeof window !== "undefined"
-        ? localStorage.getItem("deviceId")
-        : null);
+      (typeof window !== "undefined" ? localStorage.getItem("deviceId") : null);
 
     // Backend clears cookies automatically on logout
     await apiClient<void>("/auth/logout", {

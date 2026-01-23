@@ -46,8 +46,6 @@ async function verifyToken(token: string, secret: string) {
   }
 }
 
-
-
 export async function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
   const tokenFromUrl = searchParams.get("accessToken");
@@ -76,10 +74,11 @@ export async function middleware(request: NextRequest) {
         // Existing user should not be on onboarding, redirect to dashboard
         const params = new URLSearchParams();
         params.set("accessToken", tokenFromUrl);
-        if (refreshTokenFromUrl) params.set("refreshToken", refreshTokenFromUrl);
+        if (refreshTokenFromUrl)
+          params.set("refreshToken", refreshTokenFromUrl);
         if (userIdFromUrl) params.set("userId", userIdFromUrl);
         if (rolesFromUrl) params.set("roles", rolesFromUrl);
-        
+
         const redirectUrl = `/redirect?${params.toString()}`;
         return NextResponse.redirect(new URL(redirectUrl, request.url));
       }
@@ -94,22 +93,24 @@ export async function middleware(request: NextRequest) {
         // Redirect to onboarding with tokens in query params
         // Client component will read these and store in localStorage
         const params = new URLSearchParams();
-        
+
         params.set("accessToken", tokenFromUrl);
-        if (refreshTokenFromUrl) params.set("refreshToken", refreshTokenFromUrl);
+        if (refreshTokenFromUrl)
+          params.set("refreshToken", refreshTokenFromUrl);
         if (userIdFromUrl) params.set("userId", userIdFromUrl);
-        
+
         const redirectUrl = `/onboarding?${params.toString()}`;
         return NextResponse.redirect(new URL(redirectUrl, request.url));
       } else {
         // Existing user - go to dashboard with tokens in query params
         const params = new URLSearchParams();
-        
+
         params.set("accessToken", tokenFromUrl);
-        if (refreshTokenFromUrl) params.set("refreshToken", refreshTokenFromUrl);
+        if (refreshTokenFromUrl)
+          params.set("refreshToken", refreshTokenFromUrl);
         if (userIdFromUrl) params.set("userId", userIdFromUrl);
         if (rolesFromUrl) params.set("roles", rolesFromUrl);
-        
+
         const redirectUrl = `/redirect?${params.toString()}`;
         return NextResponse.redirect(new URL(redirectUrl, request.url));
       }

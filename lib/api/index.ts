@@ -4,7 +4,12 @@
  * Uses localStorage for token storage and Authorization headers
  */
 
-import { getAccessToken, getRefreshToken, storeTokens, clearTokens } from "@/lib/auth";
+import {
+  getAccessToken,
+  getRefreshToken,
+  storeTokens,
+  clearTokens,
+} from "@/lib/auth";
 
 const baseUrl =
   process.env.NEXT_PUBLIC_TALENTNG_API_URL || "http://localhost:3001";
@@ -15,8 +20,6 @@ type ApiOptions = {
   body?: any;
   credentials?: RequestCredentials;
 };
-
-
 
 let isRefreshing = false;
 let refreshPromise: Promise<Response> | null = null;
@@ -38,7 +41,7 @@ const processQueue = (success: boolean, error?: Error): void => {
 
 const apiClient = async <T>(
   endpoint: string,
-  options: ApiOptions = {}
+  options: ApiOptions = {},
 ): Promise<T> => {
   // Get access token from localStorage
   const accessToken = getAccessToken();
@@ -91,7 +94,7 @@ const apiClient = async <T>(
 
       // Attempt to refresh the token using refresh token
       const refreshToken = getRefreshToken();
-      
+
       if (!refreshToken) {
         // No refresh token, user must log in again
         clearTokens();
@@ -118,13 +121,13 @@ const apiClient = async <T>(
 
         if (refreshResponse.ok) {
           const data = await refreshResponse.json();
-          
+
           // Store new tokens in localStorage
           if (data.accessToken && data.refreshToken) {
             storeTokens({
               accessToken: data.accessToken,
               refreshToken: data.refreshToken,
-              userId: data.userId || '',
+              userId: data.userId || "",
             });
           }
 
@@ -168,7 +171,9 @@ const apiClient = async <T>(
 
       // Extract error message from backend response
       let errorMessage =
-        errorData.message || errorData.error || "An error occurred during the API request.";
+        errorData.message ||
+        errorData.error ||
+        "An error occurred during the API request.";
 
       // Handle specific error types with user-friendly messages
       if (
@@ -178,7 +183,8 @@ const apiClient = async <T>(
         errorMessage =
           "The request took too long to process. Please try again. If the problem persists, the server may be experiencing high load.";
       } else if (errorMessage.includes("Database error")) {
-        errorMessage = "A database error occurred. Please try again in a moment.";
+        errorMessage =
+          "A database error occurred. Please try again in a moment.";
       } else if (response.status === 500) {
         errorMessage = "Server error. Please try again later.";
       }

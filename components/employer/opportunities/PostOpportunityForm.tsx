@@ -149,7 +149,8 @@ export function PostOpportunityForm() {
       });
       router.push("/opportunities?tab=draft");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to save draft";
+      const message =
+        error instanceof Error ? error.message : "Failed to save draft";
       toast({
         title: "Error",
         description: message,

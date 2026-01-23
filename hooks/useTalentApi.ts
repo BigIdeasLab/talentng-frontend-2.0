@@ -1,7 +1,7 @@
 /**
  * Centralized Talent API Hook
  * Single point of access for all talent API operations
- * 
+ *
  * Consolidates all talent API calls from scattered components
  * Provides consistent error handling and loading states
  */
@@ -161,15 +161,21 @@ export function useTalentRecommendations() {
 
 export function useCreateRecommendation() {
   return useMutation({
-    mutationFn: ({ talentUserId, data }: { talentUserId: string; data: CreateRecommendationDto }) =>
-      talentRecommendationsApi.createRecommendation(talentUserId, data),
+    mutationFn: ({
+      talentUserId,
+      data,
+    }: {
+      talentUserId: string;
+      data: CreateRecommendationDto;
+    }) => talentRecommendationsApi.createRecommendation(talentUserId, data),
   });
 }
 
 export function useGetRecommendationStats(talentUserId: string) {
   return useQuery({
     queryKey: ["recommendation-stats", talentUserId],
-    queryFn: () => talentRecommendationsApi.getRecommendationStats(talentUserId),
+    queryFn: () =>
+      talentRecommendationsApi.getRecommendationStats(talentUserId),
     staleTime: 5 * 60 * 1000,
   });
 }

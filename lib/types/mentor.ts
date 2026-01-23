@@ -1,4 +1,3 @@
-
 export interface Mentor {
   id: string;
   userId: string;
@@ -7,10 +6,10 @@ export interface Mentor {
   bio: string;
   expertise: string[];
   experience: any[]; // Replace 'any' with a more specific type if you have one
-  availability: 'full_time' | 'part_time' | 'contract' | 'unavailable';
+  availability: "full_time" | "part_time" | "contract" | "unavailable";
   location: string;
   links: any; // Replace 'any' with a more specific type if you have one
-  visibility: 'public' | 'private';
+  visibility: "public" | "private";
   isFeatured: boolean;
   featuredUntil: string | null;
   views: number;

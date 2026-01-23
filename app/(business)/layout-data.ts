@@ -4,7 +4,11 @@
  * Data is passed to ProfileProvider and available to all app pages
  */
 
-import { getServerCurrentProfile, getServerDashboardStats, getServerTalentRecommendations } from "@/lib/api/talent/server";
+import {
+  getServerCurrentProfile,
+  getServerDashboardStats,
+  getServerTalentRecommendations,
+} from "@/lib/api/talent/server";
 import { getServerCurrentRecruiterProfile } from "@/lib/api/recruiter/server";
 import { getServerCurrentMentorProfile } from "@/lib/api/mentor/server";
 import { mapAPIToUI } from "@/lib/profileMapper";
@@ -28,8 +32,8 @@ const mapRecommendationToUI = (apiRec: any) => ({
 });
 
 export async function getBusinessLayoutData() {
-   try {
-     // console.log("[Layout Data] Fetching profile data on server...");
+  try {
+    // console.log("[Layout Data] Fetching profile data on server...");
 
     // Fetch all profiles in parallel on server
     // Note: Some profiles may not exist (404), which is expected and handled gracefully
@@ -80,7 +84,11 @@ export async function getBusinessLayoutData() {
     }
 
     // Get user ID from any profile
-    const userId = talentProfile?.userId || recruiterProfile?.userId || mentorProfile?.userId || null;
+    const userId =
+      talentProfile?.userId ||
+      recruiterProfile?.userId ||
+      mentorProfile?.userId ||
+      null;
 
     // Set default active role to first available
     const activeRole = userRoles[0] || "";
@@ -117,7 +125,12 @@ export async function getBusinessLayoutData() {
 }
 
 interface AllProfiles {
-  [key: string]: TalentProfile | RecruiterProfile | MentorProfile | null | undefined;
+  [key: string]:
+    | TalentProfile
+    | RecruiterProfile
+    | MentorProfile
+    | null
+    | undefined;
   talent?: TalentProfile | null;
   recruiter?: RecruiterProfile | null;
   mentor?: MentorProfile | null;
