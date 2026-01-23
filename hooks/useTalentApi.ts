@@ -138,7 +138,7 @@ export function useAddServiceReview() {
  */
 export function useUploadGalleryImages() {
   return useMutation({
-    mutationFn: talentGalleryApi.uploadGalleryImages,
+    mutationFn: (files: File[]) => talentGalleryApi.uploadGalleryImages(files),
   });
 }
 

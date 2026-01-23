@@ -62,7 +62,7 @@ const serverApiClient = async <T>(
   try {
     const url = `${baseUrl}${endpoint}`;
 
-    let response = await fetch(url, config);
+    const response = await fetch(url, config);
 
     // If token expired, attempt to refresh
     if (response.status === 401) {
@@ -107,7 +107,7 @@ const serverApiClient = async <T>(
         errorData = { message: errorText || response.statusText };
       }
 
-      let errorMessage =
+      const errorMessage =
         errorData.message || errorData.error || `API Error: ${response.statusText}`;
 
       const error = new Error(errorMessage);

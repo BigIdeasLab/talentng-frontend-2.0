@@ -24,4 +24,4 @@ export interface OpportunitiesGridProps {
 }
 
 // Legacy alias for backward compatibility
-export interface Opportunity extends DisplayOpportunity {}
+export type Opportunity = DisplayOpportunity;

@@ -107,7 +107,7 @@ export default function ProfilePage() {
   const displayProfile = profileData || DEFAULT_PROFILE_DATA;
 
   switch (role) {
-    case "recruiter":
+    case "recruiter": {
       // Calculate profile completion percentage
       const recruiterProfile = profileData as any;
       const completionFields = [
@@ -137,7 +137,8 @@ export default function ProfilePage() {
           completionPercentage={completionPercentage}
         />
       );
-    case "mentor":
+    }
+    case "mentor": {
       return (
         <MentorProfile
           initialProfileData={displayProfile}
@@ -148,8 +149,9 @@ export default function ProfilePage() {
           initialError={error}
         />
       );
+    }
     case "talent":
-    default:
+    default: {
       return (
         <TalentProfile
           initialProfileData={displayProfile}
@@ -160,5 +162,6 @@ export default function ProfilePage() {
           initialError={error}
         />
       );
+    }
   }
 }

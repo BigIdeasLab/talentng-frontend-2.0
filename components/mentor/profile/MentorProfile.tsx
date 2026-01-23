@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import type { MentorProfile } from "@/lib/api/mentor/types";
+import type { MentorProfile as MentorProfileType } from "@/lib/api/mentor/types";
 import { Button } from "@/components/ui/button";
 
 interface MentorProfileProps {
-  initialProfileData?: Partial<MentorProfile>;
+  initialProfileData?: Partial<MentorProfileType>;
   initialUserId?: string | null;
   initialStats?: any;
   initialRecommendations?: any[];
@@ -21,7 +21,7 @@ export function MentorProfile({
   initialServices = [],
   initialError = null,
 }: MentorProfileProps) {
-  const profileData = initialProfileData as MentorProfile;
+  const profileData = initialProfileData as MentorProfileType;
 
   return (
     <div className="flex flex-col h-full bg-white md:flex-row">

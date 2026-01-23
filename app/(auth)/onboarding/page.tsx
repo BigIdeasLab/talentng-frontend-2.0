@@ -84,7 +84,7 @@ const OnboardingPage = () => {
     try {
       const formData = new FormData();
 
-      let roleValue: "TALENT" | "RECRUITER" | "MENTOR" = "MENTOR";
+      const roleValue: "TALENT" | "RECRUITER" | "MENTOR" = "MENTOR";
       formData.append("role", roleValue);
 
       if (!mentorData) {

@@ -60,7 +60,7 @@ export interface PaginationInfo {
   hasPreviousPage: boolean;
 }
 
-export interface PaginationInfoOptional extends Partial<PaginationInfo> {}
+export type PaginationInfoOptional = Partial<PaginationInfo>;
 
 export interface PaginatedOpportunitiesResponse {
   data: Opportunity[];

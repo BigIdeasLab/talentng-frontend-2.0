@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type {
   TabType,
-  OpportunityCard,
+  OpportunityCard as OpportunityCardType,
   OpportunityCardProps,
 } from "@/types/opportunities";
 import { TYPE_CONFIG } from "@/types/opportunities";
