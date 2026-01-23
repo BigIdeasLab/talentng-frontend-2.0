@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Users } from "lucide-react";
+import { COLORS, STATUS_STYLES } from "@/lib/constants";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface Applicant {
   id: number;
@@ -172,24 +175,8 @@ const mockApplicants: Applicant[] = [
   },
 ];
 
-const statusStyles = {
-  "In Review": {
-    bg: "#DBE9FE",
-    text: "#5C30FF",
-  },
-  Pending: {
-    bg: "#FEF3C7",
-    text: "#92400D",
-  },
-  Rejected: {
-    bg: "#FEE2E1",
-    text: "#991B1B",
-  },
-  Hired: {
-    bg: "#D1FAE5",
-    text: "#076046",
-  },
-};
+// Use centralized status styles from constants
+const statusStylesLocal = STATUS_STYLES;
 
 export default function ApplicantsPage() {
   const router = useRouter();
@@ -378,39 +365,47 @@ export default function ApplicantsPage() {
 
         {/* Table */}
         <div className="rounded-[16px] border border-[#E1E4EA] bg-white overflow-hidden flex flex-col flex-1">
-          {/* Table Header */}
-          <div className="px-[14px] py-[16px] border-b border-[#E1E4EA]">
-            <div className="grid grid-cols-[22px_153px_68px_102px_93px_85px_68px_170px] gap-3">
-              <span className="font-inter-tight text-[13px] font-medium text-[#525866] text-center">
-                S/N
-              </span>
-              <span className="font-inter-tight text-[13px] font-medium text-[#525866] text-center">
-                Talents
-              </span>
-              <span className="font-inter-tight text-[13px] font-medium text-[#525866]">
-                Hires
-              </span>
-              <span className="font-inter-tight text-[13px] font-medium text-[#525866]">
-                Opportunity
-              </span>
-              <span className="font-inter-tight text-[13px] font-medium text-[#525866]">
-                Location
-              </span>
-              <span className="font-inter-tight text-[13px] font-medium text-[#525866]">
-                Date Applied
-              </span>
-              <span className="font-inter-tight text-[13px] font-medium text-[#525866]">
-                Status
-              </span>
-              <span className="font-inter-tight text-[13px] font-medium text-[#525866] text-center">
-                Actions
-              </span>
-            </div>
-          </div>
+          {mockApplicants.length === 0 ? (
+            <EmptyState
+              icon={Users}
+              title="No applicants yet"
+              description="When candidates apply to this opportunity, they'll appear here"
+            />
+          ) : (
+            <>
+              {/* Table Header */}
+              <div className="px-[14px] py-[16px] border-b border-[#E1E4EA]">
+                <div className="grid grid-cols-[22px_153px_68px_102px_93px_85px_68px_170px] gap-3">
+                  <span className="font-inter-tight text-[13px] font-medium text-[#525866] text-center">
+                    S/N
+                  </span>
+                  <span className="font-inter-tight text-[13px] font-medium text-[#525866] text-center">
+                    Talents
+                  </span>
+                  <span className="font-inter-tight text-[13px] font-medium text-[#525866]">
+                    Hires
+                  </span>
+                  <span className="font-inter-tight text-[13px] font-medium text-[#525866]">
+                    Opportunity
+                  </span>
+                  <span className="font-inter-tight text-[13px] font-medium text-[#525866]">
+                    Location
+                  </span>
+                  <span className="font-inter-tight text-[13px] font-medium text-[#525866]">
+                    Date Applied
+                  </span>
+                  <span className="font-inter-tight text-[13px] font-medium text-[#525866]">
+                    Status
+                  </span>
+                  <span className="font-inter-tight text-[13px] font-medium text-[#525866] text-center">
+                    Actions
+                  </span>
+                </div>
+              </div>
 
-          {/* Table Body */}
-          <div className="px-[24px] py-[19px] flex flex-col gap-[19px] overflow-y-auto flex-1">
-            {mockApplicants.map((applicant, index) => (
+              {/* Table Body */}
+              <div className="px-[24px] py-[19px] flex flex-col gap-[19px] overflow-y-auto flex-1">
+                {mockApplicants.map((applicant, index) => (
               <div
                 key={applicant.id}
                 className="grid grid-cols-[22px_153px_68px_102px_93px_85px_68px_170px] gap-3 items-center flex-shrink-0"
@@ -468,12 +463,12 @@ export default function ApplicantsPage() {
                 <div
                   className="flex items-center justify-center px-[20px] py-0 h-[18px] rounded-[50px]"
                   style={{
-                    backgroundColor: statusStyles[applicant.status].bg,
+                    backgroundColor: statusStylesLocal[applicant.status].bg,
                   }}
                 >
                   <span
                     className="font-inter-tight text-[11px] font-semibold text-center leading-normal"
-                    style={{ color: statusStyles[applicant.status].text }}
+                    style={{ color: statusStylesLocal[applicant.status].text }}
                   >
                     {applicant.status}
                   </span>
@@ -491,7 +486,7 @@ export default function ApplicantsPage() {
                   </button>
                   {applicant.status !== "Rejected" &&
                     applicant.status !== "Hired" && (
-                      <button className="flex items-center justify-center h-8 px-[20px] py-[12px] rounded-[50px] border border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4a26cc] transition-colors flex-shrink-0">
+                      <button style={{ backgroundColor: COLORS.primary, borderColor: COLORS.primary }} className="flex items-center justify-center h-8 px-[20px] py-[12px] rounded-[50px] border hover:opacity-90 transition-colors flex-shrink-0">
                         <span className="font-inter-tight text-[12px] font-medium text-white text-center leading-normal">
                           Hire
                         </span>
@@ -499,8 +494,10 @@ export default function ApplicantsPage() {
                     )}
                 </div>
               </div>
-            ))}
-          </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

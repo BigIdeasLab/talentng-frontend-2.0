@@ -13,8 +13,7 @@ import { CompanyDetailsStep } from "@/components/onboarding/CompanyDetailsStep";
 import { MentorProfileStep } from "@/components/onboarding/MentorProfileStep";
 import { MentorExpertiseStep } from "@/components/onboarding/MentorExpertiseStep";
 import { useCompleteOnboarding } from "@/hooks/useUserApi";
-import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/use-auth";
+import { useToast, useAuth } from "@/hooks";
 import { useTokenRefresh } from "@/hooks/useTokenRefresh";
 import { TokenStorage } from "./token-storage";
 

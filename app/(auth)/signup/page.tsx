@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 import { register } from "@/lib/api/auth-service";
+import { COLORS } from "@/lib/constants";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { FormErrorMessage } from "@/components/forms/FormErrorMessage";
 
 const signUpSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -41,6 +43,7 @@ const Signup = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const passwordChecks = {
     length: password.length >= 8,
@@ -63,6 +66,7 @@ const Signup = () => {
   const mutation = useMutation({
     mutationFn: (data: SignUpFormValues) => register(data.email, data.password),
     onSuccess: (data: any, variables) => {
+      setApiError(null);
       toast.success("Check your email for verification code!");
       router.push(
         `/confirm-email?email=${encodeURIComponent(variables.email)}`,
@@ -70,7 +74,7 @@ const Signup = () => {
     },
     onError: (error: any) => {
       const message = error.message || "An error occurred. Please try again.";
-      toast.error(message);
+      setApiError(message);
     },
   });
 
@@ -124,6 +128,9 @@ const Signup = () => {
                       onSubmit={form.handleSubmit(onSubmit)}
                       className="flex flex-col gap-2"
                     >
+                      {/* API Error Message */}
+                      <FormErrorMessage error={apiError} />
+
                       {/* Email Field */}
                       <div className="flex flex-col gap-2">
                         <label className="text-xs md:text-sm font-medium text-black">
@@ -301,7 +308,8 @@ const Signup = () => {
                       <Button
                         type="submit"
                         disabled={mutation.isPending}
-                        className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base mt-1"
+                        style={{ backgroundColor: COLORS.primary }}
+                        className="w-full h-[48px] rounded-[10px] text-white font-semibold text-sm md:text-base mt-1 hover:opacity-90 disabled:opacity-50"
                       >
                         {mutation.isPending ? (
                           <Loader2 size={18} className="animate-spin" />
@@ -359,7 +367,8 @@ const Signup = () => {
                     </span>
                     <Link
                       href="/login"
-                      className="text-[#5C30FF] font-medium hover:underline"
+                      style={{ color: COLORS.primary }}
+                      className="font-medium hover:underline"
                     >
                       Log in
                     </Link>

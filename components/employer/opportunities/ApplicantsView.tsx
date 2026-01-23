@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useApplications } from "@/hooks/useApplications";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { ApplicantsTable } from "./ApplicantsTable";
 import { ApplicantsHeader } from "./ApplicantsHeader";
 import type { Application } from "@/lib/api/applications";

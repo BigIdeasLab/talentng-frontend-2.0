@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { MoreVertical, Loader } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { EmptyState } from "./EmptyState";
 import { WorkDetailView } from "./WorkDetailView";
 import { deleteGalleryItem } from "@/lib/api/talent";

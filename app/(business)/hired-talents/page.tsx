@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { COLORS } from "@/lib/constants";
 
 interface HiredTalent {
   id: number;
@@ -302,24 +303,24 @@ export default function HiredTalentsPage() {
                     >
                       <path
                         d="M2 2H10C10.55 2 11 2.45 11 3V9C11 9.55 10.55 10 10 10H2C1.45 10 1 9.55 1 9V3C1 2.45 1.45 2 2 2Z"
-                        stroke="#008B47"
+                        stroke={COLORS.success}
                         strokeWidth="1.2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       />
                       <path
                         d="M11 3L6 6.5L1 3"
-                        stroke="#008B47"
+                        stroke={COLORS.success}
                         strokeWidth="1.2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <span className="font-inter-tight text-[10px] font-medium text-[#008B47]">
+                    <span style={{ color: COLORS.success }} className="font-inter-tight text-[10px] font-medium">
                       Status Message Sent
                     </span>
                   </div>
-                  <p className="font-inter-tight text-[10px] font-normal text-[#008B47]">
+                  <p style={{ color: COLORS.success }} className="font-inter-tight text-[10px] font-normal">
                     {talent.statusMessage}
                   </p>
                 </div>

@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { BasicInfoStep } from "./post-steps/BasicInfoStep";
 import { DescriptionStep } from "./post-steps/DescriptionStep";
 import { BudgetScopeStep } from "./post-steps/BudgetScopeStep";

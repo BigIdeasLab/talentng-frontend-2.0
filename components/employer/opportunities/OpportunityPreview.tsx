@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useProfile } from "@/hooks/useProfile";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { getToolInfo } from "@/lib/utils/tools";
 
 const typeConfig: Record<

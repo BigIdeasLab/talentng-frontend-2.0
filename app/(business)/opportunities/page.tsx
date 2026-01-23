@@ -1,13 +1,12 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useSwitchRoleParam, PageLoadingState } from "@/lib/page-utils";
 import { useProfile } from "@/hooks/useProfile";
 import { EmployerOpportunities } from "@/components/employer/opportunities/EmployerOpportunities";
 import { OpportunitiesClient } from "./opportunities-client";
 import { getOpportunitiesData } from "./server-data";
 import type { OpportunityData } from "./server-data";
-import { Spinner } from "@/components/ui/spinner";
 
 interface PaginationData {
   currentPage: number;
@@ -16,26 +15,23 @@ interface PaginationData {
   hasPreviousPage: boolean;
 }
 
-function OpportunitiesContent() {
-  const searchParams = useSearchParams();
-  const {
-    userRoles,
-    activeRole,
-    setActiveRole,
-    isLoading: profileLoading,
-  } = useProfile();
-  const [opportunities, setOpportunities] = useState<OpportunityData[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [pagination, setPagination] = useState<PaginationData | null>(null);
+interface OpportunitiesState {
+  opportunities: OpportunityData[];
+  pagination: PaginationData | null;
+  error: string | null;
+}
 
-  // Handle switchRole query parameter
-  useEffect(() => {
-    const switchRole = searchParams.get("switchRole");
-    if (switchRole && userRoles.includes(switchRole)) {
-      setActiveRole(switchRole);
-    }
-  }, [searchParams, userRoles, setActiveRole]);
+export default function OpportunitiesPage() {
+  // Handle switchRole query parameter (from add-role onboarding)
+  useSwitchRoleParam();
+
+  const { activeRole, userRoles, isLoading: profileLoading } = useProfile();
+  const [data, setData] = useState<OpportunitiesState>({
+    opportunities: [],
+    pagination: null,
+    error: null,
+  });
+  const [isLoading, setIsLoading] = useState(true);
 
   // Fetch opportunities data
   useEffect(() => {
@@ -46,11 +42,18 @@ function OpportunitiesContent() {
           pagination: fetchedPagination,
           error: fetchError,
         } = await getOpportunitiesData();
-        setOpportunities(fetchedOpportunities);
-        setPagination(fetchedPagination);
-        setError(fetchError);
+
+        setData({
+          opportunities: fetchedOpportunities,
+          pagination: fetchedPagination,
+          error: fetchError,
+        });
       } catch (err: any) {
-        setError(err.message);
+        setData({
+          opportunities: [],
+          pagination: null,
+          error: err.message,
+        });
       } finally {
         setIsLoading(false);
       }
@@ -59,12 +62,8 @@ function OpportunitiesContent() {
     fetchData();
   }, []);
 
-  if (profileLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <Spinner size="lg" className="text-blue-600" />
-      </div>
-    );
+  if (profileLoading || isLoading) {
+    return <PageLoadingState message="Loading opportunities..." />;
   }
 
   const role = activeRole || userRoles?.[0] || "talent";
@@ -73,29 +72,14 @@ function OpportunitiesContent() {
     case "recruiter":
       return <EmployerOpportunities />;
     case "talent":
-      return (
-        <OpportunitiesClient
-          initialOpportunities={opportunities}
-          initialError={error}
-          initialPagination={pagination}
-        />
-      );
     case "mentor":
     default:
       return (
         <OpportunitiesClient
-          initialOpportunities={opportunities}
-          initialError={error}
-          initialPagination={pagination}
+          initialOpportunities={data.opportunities}
+          initialError={data.error}
+          initialPagination={data.pagination}
         />
       );
   }
-}
-
-export default function OpportunitiesPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <OpportunitiesContent />
-    </Suspense>
-  );
 }

@@ -5,7 +5,7 @@ import { X, Upload, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { useApplications } from "@/hooks/useApplications";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import type { DisplayOpportunity } from "./types";
 
 interface ApplicationModalProps {

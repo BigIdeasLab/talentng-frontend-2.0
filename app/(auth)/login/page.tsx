@@ -9,6 +9,7 @@ import * as z from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { login } from "@/lib/api/auth-service";
+import { COLORS } from "@/lib/constants";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +20,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { FormErrorMessage } from "@/components/forms/FormErrorMessage";
 
 import type { AuthResponse } from "@/lib/api/auth-service";
 
@@ -32,6 +34,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 const Login = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -51,6 +54,7 @@ const Login = () => {
       // via handleAuthResponse(). This ensures they're available before redirect.
       console.log("✅ Tokens stored in localStorage");
 
+      setApiError(null);
       toast.success("Login successful!");
 
       if (response.needsOnboarding) {
@@ -63,7 +67,7 @@ const Login = () => {
     },
     onError: (error: any) => {
       const message = error.message || "Login failed. Please try again.";
-      toast.error(message);
+      setApiError(message);
     },
   });
 
@@ -117,6 +121,9 @@ const Login = () => {
                       onSubmit={form.handleSubmit(onSubmit)}
                       className="flex flex-col gap-2"
                     >
+                      {/* API Error Message */}
+                      <FormErrorMessage error={apiError} />
+
                       {/* Email Field */}
                       <div className="flex flex-col gap-2">
                         <label className="text-xs md:text-sm font-medium text-black">
@@ -184,7 +191,8 @@ const Login = () => {
                       <div className="text-right">
                         <Link
                           href="/forgot-password"
-                          className="text-xs md:text-sm text-[#5C30FF] font-medium hover:underline"
+                          style={{ color: COLORS.primary }}
+                          className="text-xs md:text-sm font-medium hover:underline"
                         >
                           Forgot password?
                         </Link>
@@ -194,7 +202,8 @@ const Login = () => {
                       <Button
                         type="submit"
                         disabled={loginMutation.isPending}
-                        className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base mt-1"
+                        style={{ backgroundColor: COLORS.primary }}
+                        className="w-full h-[48px] rounded-[10px] text-white font-semibold text-sm md:text-base mt-1 hover:opacity-90 disabled:opacity-50"
                       >
                         {loginMutation.isPending ? (
                           <Loader2 size={18} className="animate-spin" />
@@ -250,7 +259,8 @@ const Login = () => {
                     <span className="text-gray-400">New here? </span>
                     <Link
                       href="/signup"
-                      className="text-[#5C30FF] font-medium hover:underline"
+                      style={{ color: COLORS.primary }}
+                      className="font-medium hover:underline"
                     >
                       Create an account
                     </Link>

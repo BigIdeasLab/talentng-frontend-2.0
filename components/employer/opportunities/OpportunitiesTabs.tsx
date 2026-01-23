@@ -1,6 +1,6 @@
 "use client";
 
-import type { TabType } from "@/types/opportunities";
+import type { TabType } from "@/lib/types";
 
 interface OpportunitiesTabsProps {
   activeTab: TabType;

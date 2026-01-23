@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/input-otp";
 
 import { resetPassword } from "@/lib/api/auth-service";
+import { COLORS } from "@/lib/constants";
 import type { AuthResponse } from "@/lib/api/auth-service";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { FormErrorMessage } from "@/components/forms/FormErrorMessage";
 
 const resetPasswordSchema = z.object({
   resetCode: z
@@ -159,7 +161,7 @@ const ResetPassword = () => {
                     <rect width="60" height="60" rx="12" fill="#F5F5F5" />
                     <path
                       d="M30 18C26.6863 18 24 20.6863 24 24V28H22C20.8954 28 20 28.8954 20 30V42C20 43.1046 20.8954 44 22 44H38C39.1046 44 40 43.1046 40 42V30C40 28.8954 39.1046 28 38 28H36V24C36 20.6863 33.3137 18 30 18ZM26 24C26 21.7909 27.7909 20 30 20C32.2091 20 34 21.7909 34 24V28H26V24ZM22 30H38V42H22V30ZM30 34C30.5523 34 31 34.4477 31 35V39C31 39.5523 30.5523 40 30 40C29.4477 40 29 39.5523 29 39V35C29 34.4477 29.4477 34 30 34Z"
-                      fill="#5C30FF"
+                      fill={COLORS.primary}
                     />
                   </svg>
 
@@ -182,6 +184,9 @@ const ResetPassword = () => {
                       onSubmit={form.handleSubmit(handleSubmit)}
                       className="flex flex-col gap-2"
                     >
+                      {/* API Error Message */}
+                      <FormErrorMessage error={error || undefined} />
+
                       {/* Reset Code Field */}
                       <FormField
                         control={form.control}
@@ -190,11 +195,6 @@ const ResetPassword = () => {
                           <FormItem>
                             <FormControl>
                               <div className="flex flex-col gap-2.5">
-                                {error && (
-                                  <p className="text-[#E63C23] text-center text-[15px] font-normal font-inter-tight">
-                                    {error}
-                                  </p>
-                                )}
                                 <div
                                   className={`flex justify-center items-center rounded-[10px] py-[5px] px-[54px] ${
                                     error
@@ -203,6 +203,11 @@ const ResetPassword = () => {
                                         ? "bg-[#008B471A]"
                                         : "bg-[#F5F5F5]"
                                   }`}
+                                  style={{
+                                    backgroundColor: mutation.isSuccess
+                                      ? `${COLORS.success}1A`
+                                      : undefined,
+                                  }}
                                 >
                                   <InputOTP maxLength={6} {...field}>
                                     <InputOTPGroup className="flex items-center gap-0">
@@ -214,9 +219,14 @@ const ResetPassword = () => {
                                             error
                                               ? "text-[#E63C23]"
                                               : mutation.isSuccess
-                                                ? "text-[#008B47]"
+                                                ? "text-black"
                                                 : "text-black"
                                           }`}
+                                          style={{
+                                            color: mutation.isSuccess
+                                              ? COLORS.success
+                                              : undefined,
+                                          }}
                                         />
                                       ))}
                                     </InputOTPGroup>
@@ -366,7 +376,8 @@ const ResetPassword = () => {
                           !isPasswordValid ||
                           resetCode.length !== 6
                         }
-                        className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base mt-1"
+                        style={{ backgroundColor: COLORS.primary }}
+                        className="w-full h-[48px] rounded-[10px] text-white font-semibold text-sm md:text-base mt-1 hover:opacity-90 disabled:opacity-50"
                       >
                         {mutation.isPending ? (
                           <Loader2 size={18} className="animate-spin" />
@@ -384,7 +395,8 @@ const ResetPassword = () => {
                     </span>
                     <Link
                       href="/login"
-                      className="text-[#5C30FF] font-medium hover:underline"
+                      style={{ color: COLORS.primary }}
+                      className="font-medium hover:underline"
                     >
                       Sign in
                     </Link>

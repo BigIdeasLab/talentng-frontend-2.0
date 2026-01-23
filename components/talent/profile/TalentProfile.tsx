@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
 import { ProfilePanel } from "@/components/talent/profile/components/ProfilePanel";
 import { ProfileNav } from "@/components/talent/profile/components/ProfileNav";

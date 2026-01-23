@@ -13,6 +13,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { verifyEmailSend, verifyEmailConfirm } from "@/lib/api/auth-service";
+import { COLORS } from "@/lib/constants";
 
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 
@@ -225,9 +226,14 @@ const ConfirmEmailPage = () => {
                                     error
                                       ? "bg-[#E63C231A]"
                                       : mutation.isSuccess
-                                        ? "bg-[#008B471A]"
+                                        ? "bg-[#F5F5F5]"
                                         : "bg-[#F5F5F5]"
                                   }`}
+                                  style={{
+                                    backgroundColor: mutation.isSuccess
+                                      ? `${COLORS.success}1A`
+                                      : undefined,
+                                  }}
                                 >
                                   <InputOTP maxLength={6} {...field}>
                                     <InputOTPGroup className="flex items-center gap-0">
@@ -239,9 +245,14 @@ const ConfirmEmailPage = () => {
                                             error
                                               ? "text-[#E63C23]"
                                               : mutation.isSuccess
-                                                ? "text-[#008B47]"
+                                                ? "text-black"
                                                 : "text-black"
                                           }`}
+                                          style={{
+                                            color: mutation.isSuccess
+                                              ? COLORS.success
+                                              : undefined,
+                                          }}
                                         />
                                       ))}
                                     </InputOTPGroup>
@@ -261,7 +272,8 @@ const ConfirmEmailPage = () => {
                     <button
                       onClick={() => resendMutation.mutate()}
                       disabled={resendCountdown > 0 || resendMutation.isPending}
-                      className="text-[#5C30FF] font-medium hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+                      style={{ color: COLORS.primary }}
+                      className="font-medium hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {resendCountdown > 0
                         ? `Resend in ${resendCountdown}s`

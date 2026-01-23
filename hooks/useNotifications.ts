@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { getNotifications } from "@/lib/api";
 import { Notification } from "@/lib/types/notification";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "./useAuth";
 
 export function useNotifications() {
   const { user } = useAuth();

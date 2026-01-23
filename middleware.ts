@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
+import {
+  ROLE_ROUTES,
+  isPublicRoute,
+  canAccessRoute,
+  getRedirectForRole,
+} from "@/lib/auth/role-routes";
 
 const protectedRoutes = [
   "/dashboard",
@@ -13,24 +19,15 @@ const protectedRoutes = [
   "/projects",
   "/discover-talent",
   "/support",
-];
-
-const authRoutes = [
-  "/login",
-  "/signup",
-  "/confirm-email",
-  "/forgot-password",
-  "/forgot-password-confirmation",
-  "/reset-password",
-  "/onboarding",
+  "/employer",
+  "/applicants",
+  "/hired-talents",
+  "/mentor",
+  "/talent-profile",
 ];
 
 const isProtectedRoute = (pathname: string) => {
   return protectedRoutes.some((route) => pathname.startsWith(route));
-};
-
-const isAuthRoute = (pathname: string) => {
-  return authRoutes.some((route) => pathname.startsWith(route));
 };
 
 async function verifyToken(token: string, secret: string) {
@@ -44,6 +41,26 @@ async function verifyToken(token: string, secret: string) {
     }
     return null;
   }
+}
+
+/**
+ * Extract roles from JWT payload
+ */
+function extractRolesFromToken(payload: any): string[] {
+  if (!payload) return [];
+
+  // Try different possible role field names
+  const roles =
+    payload.roles ||
+    payload.userRoles ||
+    payload.role ||
+    (Array.isArray(payload.role) ? payload.role : []);
+
+  if (Array.isArray(roles)) {
+    return roles;
+  }
+
+  return [];
 }
 
 export async function middleware(request: NextRequest) {
@@ -121,16 +138,31 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Protected routes: Let client-side authentication handle it
-  // If user has no token, they'll get redirected to login by the client or on 401
+  // Protected routes: Check role-based access
   if (isProtectedRoute(pathname)) {
-    // Don't block - client components will handle authentication
-    // This allows pages to load with a spinner while the app checks auth
-  }
+    // Try to get token from cookies/storage (set by client)
+    // For server-side verification, we'd need to check Authorization header or cookies
+    // For now, we let the client components handle it and fallback to client-side checks
 
-  // Auth routes: Simple check - if coming from onboarding with tokens, allow
-  if (isAuthRoute(pathname)) {
-    // Let client determine if user should be redirected based on login state
+    // Extract roles from stored tokens if available
+    const authHeader = request.headers.get("authorization");
+    if (authHeader?.startsWith("Bearer ")) {
+      const token = authHeader.slice(7);
+      const payload = await verifyToken(token, jwtSecret);
+
+      if (payload) {
+        const userRoles = extractRolesFromToken(payload);
+
+        // Check if user has access to this route
+        if (!canAccessRoute(pathname, userRoles)) {
+          // User doesn't have the required role - redirect to appropriate page
+          const redirectUrl = getRedirectForRole(userRoles);
+          return NextResponse.redirect(new URL(redirectUrl, request.url));
+        }
+      }
+    }
+    // If no valid token in header, let client-side auth handle it
+    // Client components will redirect to login if needed
   }
 
   return NextResponse.next();

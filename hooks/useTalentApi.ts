@@ -1,9 +1,9 @@
 /**
- * Centralized Talent API Hook
- * Single point of access for all talent API operations
+ * Centralized Talent API Hooks
+ * Single point of access for all talent-related React Query hooks
  *
- * Consolidates all talent API calls from scattered components
- * Provides consistent error handling and loading states
+ * These hooks wrap the talent service layer with React Query for
+ * caching, invalidation, and state management
  */
 
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -21,7 +21,7 @@ import {
   type TalentRecommendationDto,
   type CreateRecommendationDto,
   type TalentFilterParams,
-} from "@/lib/api/talent-service";
+} from "@/lib/services/talent-api-service";
 
 /**
  * Profile Hooks

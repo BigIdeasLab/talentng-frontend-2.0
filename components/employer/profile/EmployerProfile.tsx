@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/hooks";
 import { EmployerProfilePanel } from "./EmployerProfilePanel";
 import { EmployerProfileNav } from "./EmployerProfileNav";
 import { OpportunitiesTab } from "./tabs/OpportunitiesTab";

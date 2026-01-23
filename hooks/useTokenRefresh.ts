@@ -5,7 +5,7 @@
 
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "./useToast";
 import { ensureValidToken, resetRefreshState } from "@/lib/token-refresh";
 import { getAccessToken, clearTokens } from "@/lib/auth";
 

@@ -9,12 +9,14 @@ import type {
   SortType,
   OpportunityCard,
   OpportunityType,
-} from "@/types/opportunities";
+} from "@/lib/types";
 import { transformOpportunityToCard } from "@/lib/utils/opportunities";
 import { OpportunitiesHeader } from "./OpportunitiesHeader";
 import { SearchAndFilters } from "./SearchAndFilters";
 import { OpportunitiesTabs } from "./OpportunitiesTabs";
 import { OpportunityCard as OpportunityCardComponent } from "./OpportunityCard";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Briefcase } from "lucide-react";
 
 export function EmployerOpportunities() {
   const router = useRouter();
@@ -116,27 +118,23 @@ export function EmployerOpportunities() {
         {/* Tabs */}
         <OpportunitiesTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-        {/* Opportunities Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {filteredOpportunities.map((opportunity) => (
-            <OpportunityCardComponent
-              key={opportunity.id}
-              opportunity={opportunity}
-              activeTab={activeTab}
-              onMutationSuccess={fetchOpportunities}
-            />
-          ))}
-        </div>
-
-        {/* Empty State */}
-        {filteredOpportunities.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <p className="text-gray-500 text-xs mb-1.5">
-              No opportunities found
-            </p>
-            <p className="text-gray-400 text-[11px]">
-              Try adjusting your search or filters
-            </p>
+        {/* Opportunities Grid or Empty State */}
+        {filteredOpportunities.length === 0 ? (
+          <EmptyState
+            icon={Briefcase}
+            title="No opportunities found"
+            description="Try adjusting your search or filters to find what you're looking for"
+          />
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {filteredOpportunities.map((opportunity) => (
+              <OpportunityCardComponent
+                key={opportunity.id}
+                opportunity={opportunity}
+                activeTab={activeTab}
+                onMutationSuccess={fetchOpportunities}
+              />
+            ))}
           </div>
         )}
       </div>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useProfile } from "@/hooks/useProfile";
 import { useProfileData } from "@/hooks/useProfileData";
+import { COLORS } from "@/lib/constants";
 import { TalentSidebar } from "@/components/layouts/sidebars/TalentSidebar";
 import { RecruiterSidebar } from "@/components/layouts/sidebars/RecruiterSidebar";
 import { MentorSidebar } from "@/components/layouts/sidebars/MentorSidebar";
@@ -32,7 +33,10 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
           </p>
           <button
             onClick={() => (window.location.href = "/onboarding")}
-            className="px-6 py-2 bg-[#5C30FF] text-white rounded-lg hover:bg-[#4a1fe5] transition-colors"
+            style={{
+              backgroundColor: COLORS.primary,
+            }}
+            className="px-6 py-2 text-white rounded-lg transition-colors hover:opacity-90"
           >
             Go to Onboarding
           </button>

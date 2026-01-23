@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { SortType } from "@/types/opportunities";
+import type { SortType } from "@/lib/types";
 
 interface SearchAndFiltersProps {
   searchQuery: string;

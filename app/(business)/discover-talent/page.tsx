@@ -1,8 +1,9 @@
 "use client";
 
-import { DiscoverTalentClient } from "./discover-talent-client";
-import { useProfile } from "@/hooks/useProfile";
 import { useEffect, useState } from "react";
+import { useProfile } from "@/hooks/useProfile";
+import { PageLoadingState } from "@/lib/page-utils";
+import { DiscoverTalentClient } from "./discover-talent-client";
 import { getDiscoverTalentData } from "./server-data";
 import type { TalentData } from "./server-data";
 
@@ -30,19 +31,9 @@ export default function DiscoverTalentPage() {
     fetchData();
   }, []);
 
-  switch (role) {
-    case "recruiter":
-      return (
-        <DiscoverTalentClient initialTalents={talents} initialError={error} />
-      );
-    case "mentor":
-      return (
-        <DiscoverTalentClient initialTalents={talents} initialError={error} />
-      );
-    case "talent":
-    default:
-      return (
-        <DiscoverTalentClient initialTalents={talents} initialError={error} />
-      );
-  }
+  if (isLoading) return <PageLoadingState message="Loading talents..." />;
+
+  return (
+    <DiscoverTalentClient initialTalents={talents} initialError={error} />
+  );
 }

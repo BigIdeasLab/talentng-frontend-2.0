@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import {
@@ -16,7 +16,7 @@ import type {
   TabType,
   OpportunityCard as OpportunityCardType,
   OpportunityCardProps,
-} from "@/types/opportunities";
+} from "@/lib/types";
 import { TYPE_CONFIG } from "@/types/opportunities";
 import { getApplications, type Application } from "@/lib/api/applications";
 

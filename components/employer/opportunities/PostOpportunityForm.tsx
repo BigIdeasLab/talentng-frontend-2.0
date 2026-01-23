@@ -3,8 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
-import { useToast } from "@/hooks/use-toast";
-import type { FormSection } from "@/types/opportunities";
+import { useToast } from "@/hooks";
+import type { FormSection } from "@/lib/types";
 import { FormSectionComponent } from "./FormSection";
 import { BasicInfoStep } from "./post-steps/BasicInfoStep";
 import { DescriptionStep } from "./post-steps/DescriptionStep";

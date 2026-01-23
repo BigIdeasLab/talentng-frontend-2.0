@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Briefcase, Star } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks";
 import { EmptyState } from "./EmptyState";
 import { useMyServices } from "@/hooks/useTalentApi";
 import type { Service } from "@/lib/api/talent-service";

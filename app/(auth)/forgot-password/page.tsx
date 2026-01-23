@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 import { forgotPassword } from "@/lib/api/auth-service";
+import { COLORS } from "@/lib/constants";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +20,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { FormErrorMessage } from "@/components/forms/FormErrorMessage";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
@@ -28,6 +30,7 @@ type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 
 const ForgotPassword = () => {
   const router = useRouter();
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const form = useForm<ForgotPasswordFormValues>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -39,6 +42,7 @@ const ForgotPassword = () => {
   const mutation = useMutation({
     mutationFn: (data: ForgotPasswordFormValues) => forgotPassword(data.email),
     onSuccess: (_, variables) => {
+      setApiError(null);
       toast.success("Check your email for a 6-digit reset code!");
       router.push(
         `/reset-password?email=${encodeURIComponent(variables.email)}`,
@@ -47,7 +51,7 @@ const ForgotPassword = () => {
     onError: (error: any) => {
       const message =
         error.message || "Failed to send reset link. Please try again.";
-      toast.error(message);
+      setApiError(message);
     },
   });
 
@@ -98,6 +102,9 @@ const ForgotPassword = () => {
                       onSubmit={form.handleSubmit(handleSubmit)}
                       className="flex flex-col gap-3 w-full"
                     >
+                      {/* API Error Message */}
+                      <FormErrorMessage error={apiError} />
+
                       {/* Email Field */}
                       <div className="flex flex-col gap-2">
                         <label className="text-xs md:text-sm font-medium text-black">
@@ -127,7 +134,8 @@ const ForgotPassword = () => {
                         <Button
                           type="submit"
                           disabled={mutation.isPending}
-                          className="w-full h-[48px] rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-semibold text-sm md:text-base disabled:bg-gray-400 disabled:cursor-not-allowed"
+                          style={{ backgroundColor: COLORS.primary }}
+                          className="w-full h-[48px] rounded-[10px] text-white font-semibold text-sm md:text-base hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {mutation.isPending ? (
                             <Loader2 size={18} className="animate-spin" />
