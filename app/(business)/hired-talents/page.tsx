@@ -51,18 +51,18 @@ export default function HiredTalentsPage() {
   const [sortBy, setSortBy] = useState("Newest");
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="px-4 md:px-10 py-6 md:py-8">
+    <div className="h-screen bg-white overflow-hidden flex flex-col">
+      <div className="flex-1 overflow-y-auto px-3 md:px-8 py-5 md:py-6">
         {/* Header Section */}
-        <div className="flex flex-col gap-6 md:gap-8 mb-8">
+        <div className="flex flex-col gap-5 md:gap-6 mb-6">
           {/* Back Button */}
           <Link
             href="/opportunities"
-            className="flex items-center gap-2.5 text-black/30 hover:text-black/50 transition-colors w-fit"
+            className="flex items-center gap-2 text-black/30 hover:text-black/50 transition-colors w-fit"
           >
             <svg
-              width="16"
-              height="16"
+              width="14"
+              height="14"
               viewBox="0 0 16 16"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -72,29 +72,29 @@ export default function HiredTalentsPage() {
                 fill="#B2B2B2"
               />
             </svg>
-            <span className="font-inter-tight text-[15px] font-normal">
+            <span className="font-inter-tight text-[13px] font-normal">
               Back to opportunities
             </span>
           </Link>
 
           {/* Title and Description */}
-          <div className="flex flex-col gap-2.5">
-            <h1 className="font-inter-tight text-[25px] font-medium text-black leading-5">
+          <div className="flex flex-col gap-2">
+            <h1 className="font-inter-tight text-[21px] font-medium text-black leading-5">
               Hired Talents
             </h1>
-            <p className="font-inter-tight text-[15px] font-normal text-black/30">
+            <p className="font-inter-tight text-[13px] font-normal text-black/30">
               View all talents you&apos;ve hired across opportunities
             </p>
           </div>
         </div>
 
         {/* Search and Filters */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 mb-8">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mb-6">
           {/* Search Container */}
-          <div className="flex-1 max-w-full sm:max-w-[689px] flex items-center gap-[7px] px-[15px] py-[9px] rounded-[10px] border border-[#E1E4EA]">
+          <div className="flex-1 max-w-full sm:max-w-[550px] flex items-center gap-[6px] px-[12px] py-[7px] rounded-[8px] border border-[#E1E4EA]">
             <svg
-              width="18"
-              height="18"
+              width="15"
+              height="15"
               viewBox="0 0 18 18"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -119,16 +119,16 @@ export default function HiredTalentsPage() {
               placeholder="Search name or Role Or Opportunity"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 font-inter-tight text-[15px] font-normal text-black placeholder:text-black/30 outline-none bg-transparent capitalize"
+              className="flex-1 font-inter-tight text-[13px] font-normal text-black placeholder:text-black/30 outline-none bg-transparent capitalize"
             />
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
             {/* Filter Button */}
-            <button className="flex items-center gap-1.5 px-[18px] py-[9px] rounded-[10px] bg-[#F5F5F5] hover:bg-[#e8e8e8] transition-colors">
+            <button className="flex items-center gap-1 px-[14px] py-[7px] rounded-[8px] bg-[#F5F5F5] hover:bg-[#e8e8e8] transition-colors">
               <svg
-                width="18"
-                height="18"
+                width="15"
+                height="15"
                 viewBox="0 0 18 18"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -172,19 +172,19 @@ export default function HiredTalentsPage() {
                   strokeWidth="1.125"
                 />
               </svg>
-              <span className="font-inter-tight text-[15px] font-normal text-black">
+              <span className="font-inter-tight text-[13px] font-normal text-black">
                 Filter
               </span>
             </button>
 
             {/* Sort Button */}
-            <button className="flex items-center gap-1.5 px-[18px] py-[9px] rounded-[10px] bg-[#F5F5F5] hover:bg-[#e8e8e8] transition-colors">
-              <span className="font-inter-tight text-[15px] font-normal text-black">
+            <button className="flex items-center gap-1 px-[14px] py-[7px] rounded-[8px] bg-[#F5F5F5] hover:bg-[#e8e8e8] transition-colors">
+              <span className="font-inter-tight text-[13px] font-normal text-black">
                 {sortBy}
               </span>
               <svg
-                width="16"
-                height="16"
+                width="13"
+                height="13"
                 viewBox="0 0 16 16"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -199,32 +199,32 @@ export default function HiredTalentsPage() {
         </div>
 
         {/* Talents Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {mockHiredTalents.map((talent) => (
             <div
               key={talent.id}
-              className="flex flex-col gap-5 p-5 rounded-xl border border-[#E5E7EB] bg-white"
+              className="flex flex-col gap-4 p-4 rounded-[10px] border border-[#E5E7EB] bg-white flex-shrink-0"
             >
               {/* Profile Section */}
-              <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-4">
                 {/* Header */}
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-3">
                   <img
                     src={talent.avatar}
                     alt={talent.name}
-                    className="w-[50px] h-[50px] rounded-full object-cover flex-shrink-0"
+                    className="w-[42px] h-[42px] rounded-full object-cover flex-shrink-0"
                   />
-                  <div className="flex-1 flex flex-col justify-center gap-3">
-                    <div className="flex flex-col gap-1.5">
-                      <h3 className="font-inter-tight text-base font-bold text-black">
+                  <div className="flex-1 flex flex-col justify-center gap-2">
+                    <div className="flex flex-col gap-1">
+                      <h3 className="font-inter-tight text-[13px] font-bold text-black">
                         {talent.name}
                       </h3>
-                      <p className="font-inter-tight text-sm font-normal text-[#525866]">
+                      <p className="font-inter-tight text-[11px] font-normal text-[#525866]">
                         {talent.role}
                       </p>
                     </div>
-                    <div className="flex items-center justify-center w-fit px-6 h-[22px] rounded-full bg-[#D1FAE5]">
-                      <span className="font-inter-tight text-xs font-semibold text-[#076046]">
+                    <div className="flex items-center justify-center w-fit px-5 h-[18px] rounded-full bg-[#D1FAE5]">
+                      <span className="font-inter-tight text-[10px] font-semibold text-[#076046]">
                         Hired
                       </span>
                     </div>
@@ -232,16 +232,16 @@ export default function HiredTalentsPage() {
                 </div>
 
                 {/* Details */}
-                <div className="flex flex-col gap-3">
-                  <p className="font-inter-tight text-sm text-[#525866]">
-                    <span className="text-[15px]">Opportunity</span>
-                    <span className="text-base">: </span>
+                <div className="flex flex-col gap-2">
+                  <p className="font-inter-tight text-[11px] text-[#525866]">
+                    <span className="text-[12px]">Opportunity</span>
+                    <span className="text-[11px]">: </span>
                     <span className="text-black">{talent.opportunity}</span>
                   </p>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1">
                     <svg
-                      width="18"
-                      height="18"
+                      width="15"
+                      height="15"
                       viewBox="0 0 18 18"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
@@ -275,27 +275,27 @@ export default function HiredTalentsPage() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <p className="font-inter-tight text-sm text-[#181B25]">
-                      <span className="text-[15px] text-[#525866]">
+                    <p className="font-inter-tight text-[11px] text-[#181B25]">
+                      <span className="text-[12px] text-[#525866]">
                         Hired on:
                       </span>{" "}
                       {talent.hiredDate}
                     </p>
                   </div>
-                  <p className="font-inter-tight text-sm text-[#525866]">
+                  <p className="font-inter-tight text-[11px] text-[#525866]">
                     {talent.location} • {talent.previousHires}
                   </p>
                 </div>
               </div>
 
               {/* Status Message and Action */}
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-3">
                 {/* Status Message */}
-                <div className="flex flex-col gap-2 p-3 rounded-[10px] bg-[#ECFDF5]">
-                  <div className="flex items-center gap-2">
+                <div className="flex flex-col gap-1.5 p-2.5 rounded-[8px] bg-[#ECFDF5]">
+                  <div className="flex items-center gap-1.5">
                     <svg
-                      width="12"
-                      height="12"
+                      width="10"
+                      height="10"
                       viewBox="0 0 12 12"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
@@ -315,18 +315,18 @@ export default function HiredTalentsPage() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <span className="font-inter-tight text-xs font-medium text-[#008B47]">
+                    <span className="font-inter-tight text-[10px] font-medium text-[#008B47]">
                       Status Message Sent
                     </span>
                   </div>
-                  <p className="font-inter-tight text-xs font-normal text-[#008B47]">
+                  <p className="font-inter-tight text-[10px] font-normal text-[#008B47]">
                     {talent.statusMessage}
                   </p>
                 </div>
 
                 {/* View Profile Button */}
-                <button className="flex items-center justify-center h-9 px-5 rounded-[10px] border border-[#E6E7EA] hover:bg-gray-50 transition-colors">
-                  <span className="font-inter-tight text-sm font-medium text-black">
+                <button className="flex items-center justify-center h-7 px-4 rounded-[8px] border border-[#E6E7EA] hover:bg-gray-50 transition-colors">
+                  <span className="font-inter-tight text-[11px] font-medium text-black">
                     View Profile
                   </span>
                 </button>
