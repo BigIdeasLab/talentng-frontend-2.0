@@ -12,6 +12,7 @@ interface TalentGridProps {
   hasPreviousPage?: boolean;
   currentPage?: number;
   totalPages?: number;
+  totalTalents?: number;
 }
 
 export function TalentGrid({
@@ -22,13 +23,16 @@ export function TalentGrid({
   hasPreviousPage = false,
   currentPage = 1,
   totalPages = 1,
+  totalTalents,
 }: TalentGridProps) {
+  const displayCount = totalTalents ?? talents.length;
+
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* Result Count */}
       <div className="flex-shrink-0 px-[25px] py-[12px] border-b border-[#E1E4EA]">
         <p className="text-[12px] text-gray-600">
-          {talents.length} talent{talents.length !== 1 ? "s" : ""} found
+          {displayCount} talent{displayCount !== 1 ? "s" : ""} found
         </p>
       </div>
 

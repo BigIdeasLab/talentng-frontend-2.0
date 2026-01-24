@@ -13,11 +13,13 @@ import type { FilterState } from "@/components/DiscoverTalent";
 interface DiscoverTalentClientProps {
   initialTalents: TalentData[];
   initialError: string | null;
+  initialPagination?: any;
 }
 
 export function DiscoverTalentClient({
   initialTalents,
   initialError,
+  initialPagination,
 }: DiscoverTalentClientProps) {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,7 +28,7 @@ export function DiscoverTalentClient({
   const [error, setError] = useState<string | null>(initialError);
   const [filters, setFilters] = useState<FilterState | null>(null);
   const [offset, setOffset] = useState(0);
-  const [pagination, setPagination] = useState<any>(null);
+  const [pagination, setPagination] = useState<any>(initialPagination);
   const LIMIT = 20;
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialLoadRef = useRef(true);
@@ -135,6 +137,7 @@ export function DiscoverTalentClient({
           hasPreviousPage={pagination?.hasPreviousPage || false}
           currentPage={pagination?.currentPage || 1}
           totalPages={pagination?.totalPages || 1}
+          totalTalents={pagination?.total}
         />
       )}
     </div>

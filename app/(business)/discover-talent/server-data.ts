@@ -48,9 +48,17 @@ export interface GetDiscoverTalentDataParams {
   offset?: number;
 }
 
+export interface PaginationData {
+  total?: number;
+  currentPage: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
 export interface GetDiscoverTalentDataResponse {
   talents: TalentData[];
-  pagination: any;
+  pagination: PaginationData;
   error: string | null;
 }
 

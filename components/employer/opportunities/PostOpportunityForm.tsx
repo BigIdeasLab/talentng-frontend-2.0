@@ -22,9 +22,10 @@ const DEFAULT_FORM_DATA = {
   workMode: "",
   location: "",
   paymentType: "" as "weekly" | "monthly" | "hourly" | "",
+  priceMode: "range" as "range" | "fixed",
   minBudget: "",
   maxBudget: "",
-  maxHours: "",
+  price: "",
   duration: "",
   startDate: "",
   experienceLevel: "",
@@ -94,9 +95,10 @@ export function PostOpportunityForm() {
       setFormData((prev: typeof formData) => ({
         ...prev,
         paymentType: "",
+        priceMode: "range",
         minBudget: "",
         maxBudget: "",
-        maxHours: "",
+        price: "",
         duration: "",
         startDate: "",
         experienceLevel: "",
@@ -121,11 +123,22 @@ export function PostOpportunityForm() {
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, []);
 
+  const buildCompensation = (): string => {
+    if (!formData.paymentType) return "";
+
+    if (formData.priceMode === "range") {
+      return `${formData.minBudget}-${formData.maxBudget} ${formData.paymentType}`;
+    } else {
+      return `${formData.price} ${formData.paymentType}`;
+    }
+  };
+
   const transformFormData = (status: "draft" | "active" = "draft") => ({
     ...formData,
+    compensation: buildCompensation(),
     minBudget: formData.minBudget ? Number(formData.minBudget) : undefined,
     maxBudget: formData.maxBudget ? Number(formData.maxBudget) : undefined,
-    maxHours: formData.maxHours ? Number(formData.maxHours) : undefined,
+    price: formData.price ? Number(formData.price) : undefined,
     applicationCap: formData.applicationCap
       ? Number(formData.applicationCap)
       : undefined,
@@ -316,15 +329,17 @@ export function PostOpportunityForm() {
                 <BudgetScopeStep
                   formData={{
                     paymentType: formData.paymentType,
+                    priceMode: formData.priceMode,
                     minBudget: formData.minBudget,
                     maxBudget: formData.maxBudget,
-                    maxHours: formData.maxHours,
+                    price: formData.price,
                     duration: formData.duration,
                     startDate: formData.startDate,
                     experienceLevel: formData.experienceLevel,
                   }}
                   updateFormData={updateFormData}
                   onSubmit={handleSave}
+                  onNext={() => toggleSection("application-settings")}
                 />
               </FormSectionComponent>
             )}
@@ -402,6 +417,7 @@ export function PostOpportunityForm() {
                       </p>
                       <input
                         type="date"
+                        min={new Date().toISOString().split("T")[0]}
                         value={formData.closingDate}
                         onChange={(e) =>
                           updateFormData({ closingDate: e.target.value })
@@ -418,6 +434,14 @@ export function PostOpportunityForm() {
                         is reached or the closing date passes.
                       </p>
                     </div>
+
+                    {/* Preview Button */}
+                    <button
+                      onClick={handleSave}
+                      className="w-full h-[44px] bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors mt-4"
+                    >
+                      Preview
+                    </button>
                   </div>
                 </>
               )}

@@ -48,6 +48,7 @@ export interface Opportunity {
   postedBy: PostedBy;
   applied?: boolean;
   saved?: boolean;
+  similar?: Opportunity[];
 }
 
 export interface PaginationInfo {

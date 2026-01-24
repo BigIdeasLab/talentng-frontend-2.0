@@ -5,15 +5,17 @@ import { useState } from "react";
 interface BudgetScopeStepProps {
   formData: {
     paymentType: "weekly" | "monthly" | "hourly" | "";
+    priceMode: "range" | "fixed";
     minBudget: string;
     maxBudget: string;
-    maxHours: string;
+    price: string;
     duration: string;
     startDate: string;
     experienceLevel: string;
   };
   updateFormData: (data: Partial<BudgetScopeStepProps["formData"]>) => void;
   onSubmit: () => void;
+  onNext?: () => void;
 }
 
 interface ValidationErrors {
@@ -24,11 +26,15 @@ export function BudgetScopeStep({
   formData,
   updateFormData,
   onSubmit,
+  onNext,
 }: BudgetScopeStepProps) {
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [selectedPayment, setSelectedPayment] = useState<
     "weekly" | "monthly" | "hourly" | ""
   >(formData.paymentType);
+  const [selectedPriceMode, setSelectedPriceMode] = useState<"range" | "fixed">(
+    formData.priceMode
+  );
 
   const validateForm = (): boolean => {
     const newErrors: ValidationErrors = {};
@@ -37,19 +43,27 @@ export function BudgetScopeStep({
       newErrors.paymentType = "Payment type is required";
     }
 
-    const minBudgetNum = parseInt(formData.minBudget?.replace(/,/g, "") || "0");
-    const maxBudgetNum = parseInt(formData.maxBudget?.replace(/,/g, "") || "0");
+    if (formData.priceMode === "range") {
+      const minBudgetNum = parseInt(formData.minBudget?.replace(/,/g, "") || "0");
+      const maxBudgetNum = parseInt(formData.maxBudget?.replace(/,/g, "") || "0");
 
-    if (!formData.minBudget || minBudgetNum === 0) {
-      newErrors.minBudget = "Minimum budget is required";
+      if (!formData.minBudget || minBudgetNum === 0) {
+        newErrors.minBudget = "Minimum budget is required";
+      }
+      if (!formData.maxBudget || maxBudgetNum === 0) {
+        newErrors.maxBudget = "Maximum budget is required";
+      }
+      if (minBudgetNum > 0 && maxBudgetNum > 0 && minBudgetNum > maxBudgetNum) {
+        newErrors.maxBudget =
+          "Maximum budget must be greater than or equal to minimum budget";
+      }
+    } else if (formData.priceMode === "fixed") {
+      const priceNum = parseInt(formData.price?.replace(/,/g, "") || "0");
+      if (!formData.price || priceNum === 0) {
+        newErrors.price = "Price is required";
+      }
     }
-    if (!formData.maxBudget || maxBudgetNum === 0) {
-      newErrors.maxBudget = "Maximum budget is required";
-    }
-    if (minBudgetNum > 0 && maxBudgetNum > 0 && minBudgetNum > maxBudgetNum) {
-      newErrors.maxBudget =
-        "Maximum budget must be greater than or equal to minimum budget";
-    }
+
     if (!formData.duration) {
       newErrors.duration = "Duration is required";
     }
@@ -75,6 +89,26 @@ export function BudgetScopeStep({
     updateFormData({ paymentType: type });
   };
 
+  const handlePriceModeSelect = (mode: "range" | "fixed") => {
+    setSelectedPriceMode(mode);
+    
+    // Clear unused fields based on selected mode
+    if (mode === "fixed") {
+      updateFormData({ priceMode: mode, minBudget: "", maxBudget: "" });
+    } else {
+      updateFormData({ priceMode: mode, price: "" });
+    }
+    
+    // Clear pricing errors when switching modes
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      delete newErrors.minBudget;
+      delete newErrors.maxBudget;
+      delete newErrors.price;
+      return newErrors;
+    });
+  };
+
   const formatNumberWithCommas = (value: string): string => {
     // Remove all non-digit characters
     const digits = value.replace(/\D/g, "");
@@ -82,12 +116,62 @@ export function BudgetScopeStep({
     return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Allow: backspace, delete, tab, escape, enter
+    const allowedKeys = ["Backspace", "Delete", "Tab", "Escape", "Enter"];
+    if (allowedKeys.includes(e.key)) {
+      return;
+    }
+
+    // Block anything that's not a number
+    if (!/[0-9]/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
   const handleBudgetChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: "minBudget" | "maxBudget" | "maxHours",
+    field: "minBudget" | "maxBudget" | "price",
   ) => {
     const value = e.target.value;
-    const formatted = formatNumberWithCommas(value);
+    
+    // Extract only digits (removes any letters or special characters)
+    const digitsOnly = value.replace(/\D/g, "");
+    
+    const formatted = formatNumberWithCommas(digitsOnly);
+    
+    // Real-time validation for range mode
+    if (selectedPriceMode === "range" && (field === "minBudget" || field === "maxBudget")) {
+      // Get the actual values that will be compared
+      const newMinBudget = field === "minBudget" ? formatted : formData.minBudget;
+      const newMaxBudget = field === "maxBudget" ? formatted : formData.maxBudget;
+      
+      const minNum = parseInt(newMinBudget.replace(/,/g, "") || "0");
+      const maxNum = parseInt(newMaxBudget.replace(/,/g, "") || "0");
+
+      if (minNum > 0 && maxNum > 0 && minNum > maxNum) {
+        setErrors((prev) => ({
+          ...prev,
+          maxBudget: "Max must be greater than or equal to min",
+        }));
+      } else {
+        setErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors.maxBudget;
+          return newErrors;
+        });
+      }
+    }
+    
+    // Clear price error when user types in price field
+    if (field === "price" && errors.price) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors.price;
+        return newErrors;
+      });
+    }
+    
     updateFormData({ [field]: formatted });
   };
 
@@ -143,16 +227,85 @@ export function BudgetScopeStep({
         </div>
 
         {/* Pricing */}
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-3">
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Pricing
           </label>
-          {(errors.minBudget || errors.maxBudget) && (
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => handlePriceModeSelect("range")}
+              className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors ${
+                selectedPriceMode === "range"
+                  ? "border-[#5C30FF] bg-[#5C30FF]/5 text-black"
+                  : "border-[#E1E4EA] text-[#99A0AE] hover:border-[#5C30FF]/50"
+              }`}
+            >
+              Range (Min - Max)
+            </button>
+            <button
+              type="button"
+              onClick={() => handlePriceModeSelect("fixed")}
+              className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors ${
+                selectedPriceMode === "fixed"
+                  ? "border-[#5C30FF] bg-[#5C30FF]/5 text-black"
+                  : "border-[#E1E4EA] text-[#99A0AE] hover:border-[#5C30FF]/50"
+              }`}
+            >
+              Fixed Price
+            </button>
+          </div>
+
+          {(errors.minBudget || errors.maxBudget || errors.price) && (
             <span className="font-inter-tight text-[12px] text-red-500">
-              {errors.minBudget || errors.maxBudget}
+              {errors.minBudget || errors.maxBudget || errors.price}
             </span>
           )}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+
+          {selectedPriceMode === "range" ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[13px] text-black font-medium pointer-events-none">
+                  ₦
+                </span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="Min Budget"
+                  value={formData.minBudget || ""}
+                  onChange={(e) => {
+                    handleBudgetChange(e, "minBudget");
+                    if (errors.minBudget) setErrors({ ...errors, minBudget: "" });
+                  }}
+                  onKeyDown={handleKeyDown}
+                  disabled={!selectedPriceMode}
+                  className={`w-full pl-6 pr-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed ${
+                    errors.minBudget ? "border-red-500" : "border-[#E1E4EA]"
+                  }`}
+                />
+              </div>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[13px] text-black font-medium pointer-events-none">
+                  ₦
+                </span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="Max Budget"
+                  value={formData.maxBudget || ""}
+                  onChange={(e) => {
+                    handleBudgetChange(e, "maxBudget");
+                    if (errors.maxBudget) setErrors({ ...errors, maxBudget: "" });
+                  }}
+                  onKeyDown={handleKeyDown}
+                  disabled={!selectedPriceMode}
+                  className={`w-full pl-6 pr-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed ${
+                    errors.maxBudget ? "border-red-500" : "border-[#E1E4EA]"
+                  }`}
+                />
+              </div>
+            </div>
+          ) : (
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[13px] text-black font-medium pointer-events-none">
                 ₦
@@ -160,49 +313,17 @@ export function BudgetScopeStep({
               <input
                 type="text"
                 inputMode="numeric"
-                placeholder="Min Budget"
-                value={formData.minBudget}
-                onChange={(e) => {
-                  handleBudgetChange(e, "minBudget");
-                  if (errors.minBudget) setErrors({ ...errors, minBudget: "" });
-                }}
-                className={`w-full pl-6 pr-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors ${
-                  errors.minBudget ? "border-red-500" : "border-[#E1E4EA]"
+                placeholder="Price"
+                value={formData.price || ""}
+                onChange={(e) => handleBudgetChange(e, "price")}
+                onKeyDown={handleKeyDown}
+                disabled={!selectedPriceMode}
+                className={`w-full pl-6 pr-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed ${
+                  errors.price ? "border-red-500" : "border-[#E1E4EA]"
                 }`}
               />
             </div>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[13px] text-black font-medium pointer-events-none">
-                ₦
-              </span>
-              <input
-                type="text"
-                inputMode="numeric"
-                placeholder="Max Budget"
-                value={formData.maxBudget}
-                onChange={(e) => {
-                  handleBudgetChange(e, "maxBudget");
-                  if (errors.maxBudget) setErrors({ ...errors, maxBudget: "" });
-                }}
-                className={`w-full pl-6 pr-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors ${
-                  errors.maxBudget ? "border-red-500" : "border-[#E1E4EA]"
-                }`}
-              />
-            </div>
-            <div className="relative">
-              <input
-                type="text"
-                inputMode="numeric"
-                placeholder="Max Hours"
-                value={formData.maxHours}
-                onChange={(e) => handleBudgetChange(e, "maxHours")}
-                className="w-full pr-8 pl-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors"
-              />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[13px] text-gray-500 font-medium pointer-events-none">
-                hrs
-              </span>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Duration */}
@@ -322,10 +443,14 @@ export function BudgetScopeStep({
 
       {/* Submit Button */}
       <button
-        onClick={handleSubmit}
+        onClick={() => {
+          if (validateForm() && onNext) {
+            onNext();
+          }
+        }}
         className="w-full h-[44px] bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
       >
-        Preview
+        Next
       </button>
     </div>
   );

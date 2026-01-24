@@ -78,14 +78,14 @@ export function OpportunitiesClient({
           searchQuery,
           limit: LIMIT,
           offset: pageOffset,
+          type: filter === "all" || filter === "applied" ? undefined : filter,
         });
 
-        // Filter by active filter type (client-side filtering)
-        const filtered = newOpportunities.filter((opp) => {
-          if (filter === "all") return true;
-          if (filter === "applied") return opp.applied === true;
-          return opp.type === filter;
-        });
+        // Filter by "applied" status if that's the active filter
+        const filtered = 
+          filter === "applied"
+            ? newOpportunities.filter((opp) => opp.applied === true)
+            : newOpportunities;
 
         setOpportunities(filtered);
         setPagination(newPagination);
@@ -203,6 +203,7 @@ export function OpportunitiesClient({
             hasPreviousPage={pagination?.hasPreviousPage || false}
             currentPage={pagination?.currentPage || 1}
             totalPages={pagination?.totalPages || 1}
+            totalOpportunities={pagination?.total}
           />
         )}
       </div>

@@ -13,6 +13,7 @@ interface OpportunitiesGridExtendedProps extends OpportunitiesGridProps {
   hasPreviousPage?: boolean;
   currentPage?: number;
   totalPages?: number;
+  totalOpportunities?: number;
 }
 
 export function OpportunitiesGrid({
@@ -24,14 +25,17 @@ export function OpportunitiesGrid({
   hasPreviousPage = false,
   currentPage = 1,
   totalPages = 1,
+  totalOpportunities,
 }: OpportunitiesGridExtendedProps) {
+  const displayCount = totalOpportunities ?? opportunities.length;
+
   return (
     <div className="flex flex-col h-full">
       {/* Result Count */}
       <div className="flex-shrink-0 px-[25px] py-[12px] border-b border-[#E1E4EA]">
         <p className="text-[12px] text-gray-600">
-          {opportunities.length} opportunit
-          {opportunities.length !== 1 ? "ies" : "y"} found
+          {displayCount} opportunit
+          {displayCount !== 1 ? "ies" : "y"} found
         </p>
       </div>
 

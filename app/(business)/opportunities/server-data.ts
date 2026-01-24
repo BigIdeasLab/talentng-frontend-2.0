@@ -4,6 +4,7 @@ import type { DisplayOpportunity } from "@/components/talent/opportunities/types
 export type OpportunityData = DisplayOpportunity;
 
 interface PaginationData {
+  total?: number;
   currentPage: number;
   totalPages: number;
   hasNextPage: boolean;
@@ -39,6 +40,7 @@ export async function getOpportunitiesData(params?: {
   status?: string;
   limit?: number;
   offset?: number;
+  type?: string;
 }): Promise<OpportunitiesResponse> {
   try {
     const response = await getOpportunities({
@@ -46,6 +48,7 @@ export async function getOpportunitiesData(params?: {
       limit: params?.limit || 20,
       offset: params?.offset || 0,
       ...(params?.searchQuery && { q: params.searchQuery }),
+      ...(params?.type && { type: params.type }),
     });
 
     const opportunities: OpportunityData[] = (response.data || []).map(

@@ -48,9 +48,10 @@ export function EditOpportunityForm({
     workMode: string;
     location: string;
     paymentType: "weekly" | "monthly" | "hourly" | "";
+    priceMode: "range" | "fixed";
     minBudget: string;
     maxBudget: string;
-    maxHours: string;
+    price: string;
     duration: string;
     startDate: string;
     experienceLevel: string;
@@ -71,9 +72,10 @@ export function EditOpportunityForm({
       workMode: "",
       location: "",
       paymentType: "",
+      priceMode: "range",
       minBudget: "",
       maxBudget: "",
-      maxHours: "",
+      price: "",
       duration: "",
       startDate: "",
       experienceLevel: "",
@@ -107,9 +109,10 @@ export function EditOpportunityForm({
           workMode: data.workType || "",
           location: data.location || "",
           paymentType,
+          priceMode: (data.priceMode || "range") as "range" | "fixed",
           minBudget: data.minBudget ? String(data.minBudget) : "",
           maxBudget: data.maxBudget ? String(data.maxBudget) : "",
-          maxHours: data.maxHours ? String(data.maxHours) : "",
+          price: data.price ? String(data.price) : "",
           duration: data.duration || "",
           startDate: data.startDate
             ? new Date(data.startDate).toISOString().split("T")[0]
@@ -120,7 +123,9 @@ export function EditOpportunityForm({
           applicationCap: data.applicationCap
             ? String(data.applicationCap)
             : "",
-          closingDate: data.closingDate || "",
+          closingDate: data.closingDate
+            ? new Date(data.closingDate).toISOString().split("T")[0]
+            : "",
         });
       } catch (error) {
         console.error("Error fetching opportunity:", error);
@@ -134,16 +139,30 @@ export function EditOpportunityForm({
     fetchOpportunity();
   }, [opportunityId, router]);
 
+  const buildCompensation = (): string => {
+    if (!formData.paymentType) return "";
+
+    if (formData.priceMode === "range") {
+      return `${formData.minBudget}-${formData.maxBudget} ${formData.paymentType}`;
+    } else {
+      return `${formData.price} ${formData.paymentType}`;
+    }
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
     try {
       const updateData = {
         ...formData,
+        compensation: buildCompensation(),
         minBudget: formData.minBudget ? Number(formData.minBudget) : undefined,
         maxBudget: formData.maxBudget ? Number(formData.maxBudget) : undefined,
-        maxHours: formData.maxHours ? Number(formData.maxHours) : undefined,
+        price: formData.price ? Number(formData.price) : undefined,
         startDate: formData.startDate
           ? new Date(formData.startDate).toISOString()
+          : undefined,
+        closingDate: formData.closingDate
+          ? new Date(formData.closingDate).toISOString()
           : undefined,
         applicationCap: formData.applicationCap
           ? Number(formData.applicationCap)
@@ -192,9 +211,10 @@ export function EditOpportunityForm({
       setFormData((prev: typeof formData) => ({
         ...prev,
         paymentType: "",
+        priceMode: "range",
         minBudget: "",
         maxBudget: "",
-        maxHours: "",
+        price: "",
         duration: "",
         startDate: "",
         experienceLevel: "",
@@ -220,6 +240,14 @@ export function EditOpportunityForm({
   const handleCloseModal = () => {
     setShowExitModal(false);
     setPendingNavigation(null);
+  };
+
+  const handlePreview = () => {
+    const searchParams = new URLSearchParams();
+    searchParams.set("data", JSON.stringify(formData));
+    searchParams.set("edit", opportunityId);
+    searchParams.set("status", formData.status);
+    router.push(`/opportunities/preview?${searchParams.toString()}`);
   };
 
   if (isLoading) {
@@ -300,12 +328,11 @@ export function EditOpportunityForm({
               Cancel
             </button>
             <button
-              onClick={handleSave}
+              onClick={handlePreview}
               disabled={isSaving}
-              className="px-5 py-2 bg-[#5C30FF] border border-[#5C30FF] rounded-full font-inter-tight text-[13px] font-normal text-white hover:bg-[#4a26cc] transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="px-5 py-2 bg-[#5C30FF] border border-[#5C30FF] rounded-full font-inter-tight text-[13px] font-normal text-white hover:bg-[#4a26cc] transition-colors disabled:opacity-50"
             >
-              {isSaving && <Loader2 size={14} className="animate-spin" />}
-              {isSaving ? "Saving..." : "Save Changes"}
+              Preview & Save
             </button>
           </div>
         </div>
@@ -452,9 +479,10 @@ export function EditOpportunityForm({
                       <BudgetScopeStep
                         formData={{
                           paymentType: formData.paymentType,
+                          priceMode: formData.priceMode,
                           minBudget: formData.minBudget,
                           maxBudget: formData.maxBudget,
-                          maxHours: formData.maxHours,
+                          price: formData.price,
                           duration: formData.duration,
                           startDate: formData.startDate,
                           experienceLevel: formData.experienceLevel,

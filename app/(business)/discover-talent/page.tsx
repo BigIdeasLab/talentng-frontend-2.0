@@ -12,15 +12,17 @@ export default function DiscoverTalentPage() {
   const role = userRoles?.[0] || "talent";
   const [talents, setTalents] = useState<TalentData[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [pagination, setPagination] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { talents: fetchedTalents, error: fetchError } =
+        const { talents: fetchedTalents, error: fetchError, pagination: fetchPagination } =
           await getDiscoverTalentData();
         setTalents(fetchedTalents);
         setError(fetchError);
+        setPagination(fetchPagination);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -33,5 +35,5 @@ export default function DiscoverTalentPage() {
 
   if (isLoading) return <PageLoadingState message="Loading talents..." />;
 
-  return <DiscoverTalentClient initialTalents={talents} initialError={error} />;
+  return <DiscoverTalentClient initialTalents={talents} initialError={error} initialPagination={pagination} />;
 }
