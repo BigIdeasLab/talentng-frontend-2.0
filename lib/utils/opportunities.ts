@@ -39,11 +39,13 @@ export const mapOpportunityType = (type: string): OpportunityCard["type"] => {
 export const transformOpportunityToCard = (
   opp: Opportunity,
 ): OpportunityCard => {
-  const paymentType = (opp.paymentType ? 
-    (["weekly", "monthly", "hourly"].includes(opp.paymentType.toLowerCase()) 
-      ? (opp.paymentType.toLowerCase() as "weekly" | "monthly" | "hourly")
-      : "") 
-    : "") as "weekly" | "monthly" | "hourly" | "";
+  const paymentType = (
+    opp.paymentType
+      ? ["weekly", "monthly", "hourly"].includes(opp.paymentType.toLowerCase())
+        ? (opp.paymentType.toLowerCase() as "weekly" | "monthly" | "hourly")
+        : ""
+      : ""
+  ) as "weekly" | "monthly" | "hourly" | "";
 
   const result: OpportunityCard = {
     id: opp.id || "",
