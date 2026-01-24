@@ -301,17 +301,29 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                 {!isVolunteer &&
                   ((opportunity.priceMode === "range" &&
                     (opportunity.minBudget || opportunity.maxBudget)) ||
-                    (opportunity.priceMode === "fixed" && opportunity.price)) && (
+                    (opportunity.priceMode === "fixed" &&
+                      opportunity.price)) && (
                     <div className="flex flex-col gap-2.5">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="font-inter-tight text-[15px] font-medium text-black">
                           {opportunity.priceMode === "range" ? (
                             <>
-                              ₦{Number(opportunity.minBudget || "0").toLocaleString()} - ₦
-                              {Number(opportunity.maxBudget || "0").toLocaleString()}
+                              ₦
+                              {Number(
+                                opportunity.minBudget || "0",
+                              ).toLocaleString()}{" "}
+                              - ₦
+                              {Number(
+                                opportunity.maxBudget || "0",
+                              ).toLocaleString()}
                             </>
                           ) : (
-                            <>₦{Number(opportunity.price || "0").toLocaleString()}</>
+                            <>
+                              ₦
+                              {Number(
+                                opportunity.price || "0",
+                              ).toLocaleString()}
+                            </>
                           )}
                           {opportunity.paymentType && (
                             <span>
