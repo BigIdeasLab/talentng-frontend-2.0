@@ -25,6 +25,12 @@ export interface OpportunityCard {
   category?: string;
   skills: string[];
   rate: string;
+  priceMode?: "range" | "fixed";
+  minBudget?: number;
+  maxBudget?: number;
+  price?: number;
+  paymentType?: "weekly" | "monthly" | "hourly" | "";
+  duration?: string;
   applicantsCount: number;
   status: OpportunityStatus;
   applicationCap?: number;

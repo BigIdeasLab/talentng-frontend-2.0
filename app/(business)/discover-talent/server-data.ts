@@ -58,7 +58,7 @@ export interface PaginationData {
 
 export interface GetDiscoverTalentDataResponse {
   talents: TalentData[];
-  pagination: PaginationData;
+  pagination: PaginationData | null;
   error: string | null;
 }
 

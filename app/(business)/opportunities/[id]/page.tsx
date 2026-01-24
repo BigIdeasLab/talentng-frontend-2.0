@@ -1,10 +1,28 @@
-import { OpportunityDetails } from "@/components/employer/opportunities/OpportunityDetails";
+"use client";
 
-export default async function OpportunityPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-  return <OpportunityDetails opportunityId={id} />;
+import { useProfile } from "@/hooks/useProfile";
+import { PageLoadingState } from "@/lib/page-utils";
+import { OpportunityDetails as EmployerOpportunityDetails } from "@/components/employer/opportunities/OpportunityDetails";
+import { OpportunityDetails as TalentOpportunityDetails } from "@/components/talent/opportunities/OpportunityDetails";
+import { useParams } from "next/navigation";
+
+export default function OpportunityPage() {
+  const params = useParams();
+  const id = params.id as string;
+  const { activeRole, userRoles, isLoading: profileLoading } = useProfile();
+
+  if (profileLoading) {
+    return <PageLoadingState message="Loading opportunity details..." />;
+  }
+
+  const role = activeRole || userRoles?.[0] || "talent";
+
+  switch (role) {
+    case "recruiter":
+      return <EmployerOpportunityDetails opportunityId={id} />;
+    case "talent":
+    case "mentor":
+    default:
+      return <TalentOpportunityDetails opportunityId={id} />;
+  }
 }

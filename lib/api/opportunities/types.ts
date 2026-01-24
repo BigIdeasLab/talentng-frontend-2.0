@@ -30,6 +30,8 @@ export interface Opportunity {
   experienceLevel: "Junior" | "Mid" | "Senior" | string;
   minBudget: number;
   maxBudget: number;
+  priceMode?: "range" | "fixed";
+  price?: number;
   paymentType: "weekly" | "monthly" | "hourly" | string;
   tools: string[];
   duration: string;

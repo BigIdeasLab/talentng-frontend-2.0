@@ -6,7 +6,6 @@ import { useProfile } from "@/hooks/useProfile";
 import { getToolInfo } from "@/lib/utils/tools";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
 import { ApplicationModal } from "@/components/talent/opportunities/application-modal";
-import { SimilarOpportunitiesSection } from "./SimilarOpportunitiesSection";
 import type { DisplayOpportunity } from "@/components/talent/opportunities/types";
 import type { Opportunity } from "@/lib/api/opportunities/types";
 
@@ -629,12 +628,6 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
             </div>
           </div>
         </div>
-
-        {/* Similar Jobs Section */}
-        <SimilarOpportunitiesSection
-          similarOpportunities={opportunity.similar}
-          onRefresh={fetchOpportunityDetails}
-        />
       </div>
 
       {/* Application Modal */}

@@ -33,7 +33,7 @@ export function BudgetScopeStep({
     "weekly" | "monthly" | "hourly" | ""
   >(formData.paymentType);
   const [selectedPriceMode, setSelectedPriceMode] = useState<"range" | "fixed">(
-    formData.priceMode
+    formData.priceMode,
   );
 
   const validateForm = (): boolean => {
@@ -44,8 +44,12 @@ export function BudgetScopeStep({
     }
 
     if (formData.priceMode === "range") {
-      const minBudgetNum = parseInt(formData.minBudget?.replace(/,/g, "") || "0");
-      const maxBudgetNum = parseInt(formData.maxBudget?.replace(/,/g, "") || "0");
+      const minBudgetNum = parseInt(
+        formData.minBudget?.replace(/,/g, "") || "0",
+      );
+      const maxBudgetNum = parseInt(
+        formData.maxBudget?.replace(/,/g, "") || "0",
+      );
 
       if (!formData.minBudget || minBudgetNum === 0) {
         newErrors.minBudget = "Minimum budget is required";
@@ -91,14 +95,14 @@ export function BudgetScopeStep({
 
   const handlePriceModeSelect = (mode: "range" | "fixed") => {
     setSelectedPriceMode(mode);
-    
+
     // Clear unused fields based on selected mode
     if (mode === "fixed") {
       updateFormData({ priceMode: mode, minBudget: "", maxBudget: "" });
     } else {
       updateFormData({ priceMode: mode, price: "" });
     }
-    
+
     // Clear pricing errors when switching modes
     setErrors((prev) => {
       const newErrors = { ...prev };
@@ -134,18 +138,23 @@ export function BudgetScopeStep({
     field: "minBudget" | "maxBudget" | "price",
   ) => {
     const value = e.target.value;
-    
+
     // Extract only digits (removes any letters or special characters)
     const digitsOnly = value.replace(/\D/g, "");
-    
+
     const formatted = formatNumberWithCommas(digitsOnly);
-    
+
     // Real-time validation for range mode
-    if (selectedPriceMode === "range" && (field === "minBudget" || field === "maxBudget")) {
+    if (
+      selectedPriceMode === "range" &&
+      (field === "minBudget" || field === "maxBudget")
+    ) {
       // Get the actual values that will be compared
-      const newMinBudget = field === "minBudget" ? formatted : formData.minBudget;
-      const newMaxBudget = field === "maxBudget" ? formatted : formData.maxBudget;
-      
+      const newMinBudget =
+        field === "minBudget" ? formatted : formData.minBudget;
+      const newMaxBudget =
+        field === "maxBudget" ? formatted : formData.maxBudget;
+
       const minNum = parseInt(newMinBudget.replace(/,/g, "") || "0");
       const maxNum = parseInt(newMaxBudget.replace(/,/g, "") || "0");
 
@@ -162,7 +171,7 @@ export function BudgetScopeStep({
         });
       }
     }
-    
+
     // Clear price error when user types in price field
     if (field === "price" && errors.price) {
       setErrors((prev) => {
@@ -171,7 +180,7 @@ export function BudgetScopeStep({
         return newErrors;
       });
     }
-    
+
     updateFormData({ [field]: formatted });
   };
 
@@ -275,7 +284,8 @@ export function BudgetScopeStep({
                   value={formData.minBudget || ""}
                   onChange={(e) => {
                     handleBudgetChange(e, "minBudget");
-                    if (errors.minBudget) setErrors({ ...errors, minBudget: "" });
+                    if (errors.minBudget)
+                      setErrors({ ...errors, minBudget: "" });
                   }}
                   onKeyDown={handleKeyDown}
                   disabled={!selectedPriceMode}
@@ -295,7 +305,8 @@ export function BudgetScopeStep({
                   value={formData.maxBudget || ""}
                   onChange={(e) => {
                     handleBudgetChange(e, "maxBudget");
-                    if (errors.maxBudget) setErrors({ ...errors, maxBudget: "" });
+                    if (errors.maxBudget)
+                      setErrors({ ...errors, maxBudget: "" });
                   }}
                   onKeyDown={handleKeyDown}
                   disabled={!selectedPriceMode}

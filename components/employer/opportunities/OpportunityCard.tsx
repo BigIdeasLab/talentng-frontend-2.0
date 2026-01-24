@@ -420,7 +420,42 @@ export function OpportunityCard({
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-3 border-t border-[#E1E4EA]">
           {opportunity.type !== "volunteer" && (
             <div className="text-[15px] font-medium font-inter-tight text-black">
-              {opportunity.rate}
+              {opportunity.priceMode === "fixed" ? (
+                <>
+                  ₦{(opportunity.price || 0).toLocaleString()}
+                  {opportunity.paymentType && (
+                    <span>
+                      /
+                      {opportunity.paymentType === "hourly"
+                        ? "hr"
+                        : opportunity.paymentType === "weekly"
+                          ? "wk"
+                          : "mo"}
+                    </span>
+                  )}
+                </>
+              ) : (
+                <>
+                  ₦{(opportunity.minBudget || 0).toLocaleString()} - ₦
+                  {(opportunity.maxBudget || 0).toLocaleString()}
+                  {opportunity.paymentType && (
+                    <span>
+                      /
+                      {opportunity.paymentType === "hourly"
+                        ? "hr"
+                        : opportunity.paymentType === "weekly"
+                          ? "wk"
+                          : "mo"}
+                    </span>
+                  )}
+                </>
+              )}
+              {opportunity.duration && (
+                <>
+                  <span className="mx-1.5">•</span>
+                  <span>{opportunity.duration}</span>
+                </>
+              )}
             </div>
           )}
 

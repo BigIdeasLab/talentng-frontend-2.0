@@ -18,8 +18,11 @@ export default function DiscoverTalentPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { talents: fetchedTalents, error: fetchError, pagination: fetchPagination } =
-          await getDiscoverTalentData();
+        const {
+          talents: fetchedTalents,
+          error: fetchError,
+          pagination: fetchPagination,
+        } = await getDiscoverTalentData();
         setTalents(fetchedTalents);
         setError(fetchError);
         setPagination(fetchPagination);
@@ -35,5 +38,11 @@ export default function DiscoverTalentPage() {
 
   if (isLoading) return <PageLoadingState message="Loading talents..." />;
 
-  return <DiscoverTalentClient initialTalents={talents} initialError={error} initialPagination={pagination} />;
+  return (
+    <DiscoverTalentClient
+      initialTalents={talents}
+      initialError={error}
+      initialPagination={pagination}
+    />
+  );
 }

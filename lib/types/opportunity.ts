@@ -10,6 +10,11 @@ export interface Opportunity {
   employmentType: string | null;
   location: string;
   compensation: string;
+  priceMode?: "range" | "fixed";
+  price?: number;
+  minBudget?: number;
+  maxBudget?: number;
+  paymentType?: "weekly" | "monthly" | "hourly" | "";
   tags: string[];
   status: string;
   postedById: string;

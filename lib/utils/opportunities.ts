@@ -39,7 +39,13 @@ export const mapOpportunityType = (type: string): OpportunityCard["type"] => {
 export const transformOpportunityToCard = (
   opp: Opportunity,
 ): OpportunityCard => {
-  const result = {
+  const paymentType = (opp.paymentType ? 
+    (["weekly", "monthly", "hourly"].includes(opp.paymentType.toLowerCase()) 
+      ? (opp.paymentType.toLowerCase() as "weekly" | "monthly" | "hourly")
+      : "") 
+    : "") as "weekly" | "monthly" | "hourly" | "";
+
+  const result: OpportunityCard = {
     id: opp.id || "",
     companyName:
       opp.postedBy?.recruiterProfile?.company || opp.company || "Company",
@@ -51,6 +57,12 @@ export const transformOpportunityToCard = (
     category: opp.category,
     skills: opp.tags || [],
     rate: `₦${Math.round(opp.minBudget || 0).toLocaleString()} - ₦${Math.round(opp.maxBudget || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`,
+    priceMode: opp.priceMode || "range",
+    minBudget: opp.minBudget,
+    maxBudget: opp.maxBudget,
+    price: opp.price,
+    paymentType,
+    duration: opp.duration,
     applicantsCount: opp.applicationCount || 0,
     status: (opp.status || "draft") as "active" | "closed" | "draft",
     applicationCap: opp.applicationCap,

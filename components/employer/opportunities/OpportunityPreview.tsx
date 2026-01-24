@@ -239,9 +239,16 @@ export function OpportunityPreview() {
 
   const handleSaveDraft = async () => {
     try {
+      console.log("handleSaveDraft called", {
+        isEditMode,
+        opportunityId,
+        formDataType: formData.type,
+      });
+
       const draftData = {
         ...formData,
         compensation: buildCompensation(),
+        priceMode: formData.priceMode,
         minBudget: formData.minBudget
           ? Number(String(formData.minBudget).replace(/\D/g, "")) || undefined
           : undefined,
@@ -263,6 +270,8 @@ export function OpportunityPreview() {
         status: "draft",
       };
 
+      console.log("draftData prepared:", draftData);
+
       // Map type field to allowed values
       const validTypes = ["Internship", "Volunteer", "Job", "PartTime"];
       const mappedType = validTypes.includes(draftData.type)
@@ -273,6 +282,8 @@ export function OpportunityPreview() {
         ...draftData,
         type: mappedType,
       };
+
+      console.log("finalData ready:", finalData);
 
       if (isEditMode && opportunityId) {
         await update(opportunityId, finalData);
@@ -303,6 +314,7 @@ export function OpportunityPreview() {
       const opportunityData = {
         ...formData,
         compensation: buildCompensation(),
+        priceMode: formData.priceMode,
         minBudget: formData.minBudget
           ? Number(String(formData.minBudget).replace(/\D/g, "")) || undefined
           : undefined,
@@ -808,29 +820,27 @@ export function OpportunityPreview() {
 
                 {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row items-stretch gap-2 pt-4">
-                  {!isEditMode || opportunityStatus === "closed" ? (
-                    <button
-                      onClick={handleSaveDraft}
-                      className="flex-1 h-[48px] flex items-center justify-center gap-1.5 bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
+                  <button
+                    onClick={handleSaveDraft}
+                    className="flex-1 h-[48px] flex items-center justify-center gap-1.5 bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M4 17.9808V9.70753C4 6.07416 4 4.25748 5.17157 3.12874C6.34315 2 8.22876 2 12 2C15.7712 2 17.6569 2 18.8284 3.12874C20 4.25748 20 6.07416 20 9.70753V17.9808C20 20.2867 20 21.4396 19.2272 21.8523C17.7305 22.6514 14.9232 19.9852 13.59 19.1824C12.8168 18.7168 12.4302 18.484 12 18.484C11.5698 18.484 11.1832 18.7168 10.41 19.1824C9.0768 19.9852 6.26947 22.6514 4.77285 21.8523C4 21.4396 4 20.2867 4 17.9808Z"
-                          stroke="white"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      Draft
-                    </button>
-                  ) : null}
+                      <path
+                        d="M4 17.9808V9.70753C4 6.07416 4 4.25748 5.17157 3.12874C6.34315 2 8.22876 2 12 2C15.7712 2 17.6569 2 18.8284 3.12874C20 4.25748 20 6.07416 20 9.70753V17.9808C20 20.2867 20 21.4396 19.2272 21.8523C17.7305 22.6514 14.9232 19.9852 13.59 19.1824C12.8168 18.7168 12.4302 18.484 12 18.484C11.5698 18.484 11.1832 18.7168 10.41 19.1824C9.0768 19.9852 6.26947 22.6514 4.77285 21.8523C4 21.4396 4 20.2867 4 17.9808Z"
+                        stroke="white"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    Draft
+                  </button>
                   <button
                     onClick={handlePost}
                     className="flex-1 h-[48px] flex items-center justify-center gap-2 bg-[#5C30FF] border border-[#5C30FF] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#4a26cc] transition-colors"

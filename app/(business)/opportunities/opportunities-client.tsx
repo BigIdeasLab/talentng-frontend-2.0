@@ -82,7 +82,7 @@ export function OpportunitiesClient({
         });
 
         // Filter by "applied" status if that's the active filter
-        const filtered = 
+        const filtered =
           filter === "applied"
             ? newOpportunities.filter((opp) => opp.applied === true)
             : newOpportunities;
