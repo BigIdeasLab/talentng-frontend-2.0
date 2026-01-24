@@ -37,7 +37,8 @@ export function ApplicationModal({
 
   if (!opportunity) return null;
 
-  const isFormValid = proposal.trim().length > 0 && selectedProjects.length <= 3;
+  const isFormValid =
+    proposal.trim().length > 0 && selectedProjects.length <= 3;
 
   const handleRemoveProject = (projectId: string) => {
     setSelectedProjects((prev) => prev.filter((p) => p.id !== projectId));
