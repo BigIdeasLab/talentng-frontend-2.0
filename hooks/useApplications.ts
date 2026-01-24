@@ -17,6 +17,7 @@ interface UseApplicationsReturn {
   submit: (data: {
     opportunityId: string;
     note?: string;
+    projectIds?: string[];
     files?: File[];
   }) => Promise<Application>;
   updateStatus: (applicationId: string, status: string) => Promise<Application>;
@@ -65,6 +66,7 @@ export function useApplications(): UseApplicationsReturn {
     async (data: {
       opportunityId: string;
       note?: string;
+      projectIds?: string[];
       files?: File[];
     }): Promise<Application> => {
       setIsLoading(true);

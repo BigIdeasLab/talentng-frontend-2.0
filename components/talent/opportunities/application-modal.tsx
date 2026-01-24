@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { X, Upload, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { X, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Modal } from "@/components/ui/modal";
 import { useApplications } from "@/hooks/useApplications";
 import { useToast } from "@/hooks";
 import type { DisplayOpportunity } from "./types";
+import { ProjectSelectionModal } from "./project-selection-modal";
 
 interface ApplicationModalProps {
   isOpen: boolean;
@@ -15,9 +15,11 @@ interface ApplicationModalProps {
   onSubmit?: () => void;
 }
 
-interface Attachment {
-  fileName: string;
-  file: File;
+export interface Project {
+  id: string;
+  title: string;
+  image: string;
+  tags: string[];
 }
 
 export function ApplicationModal({
@@ -28,37 +30,22 @@ export function ApplicationModal({
 }: ApplicationModalProps) {
   const { toast } = useToast();
   const { submit, isLoading: isSubmitting } = useApplications();
-  const [note, setNote] = useState("");
-  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [proposal, setProposal] = useState("");
+  const [selectedProjects, setSelectedProjects] = useState<Project[]>([]);
+  const [showProjectSelection, setShowProjectSelection] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!opportunity) return null;
 
-  const noteLength = note.length;
-  const isValidNote =
-    noteLength === 0 || (noteLength >= 10 && noteLength <= 500);
-  const isFormValid = isValidNote && !opportunity.applied;
+  const isFormValid = proposal.trim().length > 0 && selectedProjects.length <= 3;
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-
-    const newAttachments = files.map((file) => ({
-      fileName: file.name,
-      file,
-    }));
-
-    setAttachments((prev) => [...prev, ...newAttachments]);
-
-    // Reset input
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
+  const handleRemoveProject = (projectId: string) => {
+    setSelectedProjects((prev) => prev.filter((p) => p.id !== projectId));
   };
 
-  const removeAttachment = (index: number) => {
-    setAttachments((prev) => prev.filter((_, i) => i !== index));
+  const handleProjectsSelected = (projects: Project[]) => {
+    setSelectedProjects(projects);
+    setShowProjectSelection(false);
   };
 
   const handleSubmit = async () => {
@@ -67,14 +54,13 @@ export function ApplicationModal({
     setError(null);
 
     try {
-      // Submit application via API
       await submit({
         opportunityId: opportunity.id,
-        note: note.trim() || undefined,
-        files: attachments.map((a) => a.file),
+        note: proposal.trim() || undefined,
+        projectIds: selectedProjects.map((p) => p.id),
+        files: [], // We're not using files in this flow anymore
       });
 
-      setSuccess(true);
       toast({
         title: "Success",
         description: "Application submitted successfully",
@@ -82,9 +68,9 @@ export function ApplicationModal({
 
       // Reset form after success
       setTimeout(() => {
-        setNote("");
-        setAttachments([]);
-        setSuccess(false);
+        setProposal("");
+        setSelectedProjects([]);
+        setError(null);
         onSubmit?.();
         onClose();
       }, 1500);
@@ -107,206 +93,133 @@ export function ApplicationModal({
 
   const handleClose = () => {
     if (!isSubmitting) {
-      setNote("");
-      setAttachments([]);
+      setProposal("");
+      setSelectedProjects([]);
       setError(null);
-      setSuccess(false);
       onClose();
     }
   };
 
-  if (success) {
-    return (
-      <Modal
-        isOpen={isOpen}
-        onClose={() => {}}
-        title="Application Submitted"
-        description={`Your application for "${opportunity.title}" has been submitted successfully. The opportunity poster will review your application shortly.`}
-        footer={
-          <Button
-            onClick={handleClose}
-            className="w-full bg-green-600 hover:bg-green-700"
-          >
-            Done
-          </Button>
-        }
-      />
-    );
-  }
+  if (!isOpen) return null;
 
   return (
-    <div
-      className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity ${
-        isOpen
-          ? "opacity-100 pointer-events-auto"
-          : "opacity-0 pointer-events-none"
-      }`}
-    >
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50" onClick={handleClose} />
+    <>
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        {/* Backdrop */}
+        <div className="absolute inset-0 bg-black/50" onClick={handleClose} />
 
-      {/* Modal */}
-      <div className="relative bg-white rounded-[16px] w-full max-w-[500px] mx-4 max-h-[90vh] overflow-y-auto shadow-lg">
-        {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-[#E1E4EA] px-6 py-4 flex items-start justify-between">
-          <div className="flex flex-col gap-1">
-            <h2 className="text-[17px] font-medium font-inter-tight text-black">
-              Apply for Opportunity
+        {/* Modal */}
+        <div className="relative bg-white rounded-[17px] w-full max-w-[515px] mx-4 max-h-[95vh] overflow-y-auto shadow-[0_0_15px_0_rgba(0,0,0,0.15)]">
+          {/* Content */}
+          <div className="p-[20px_16px] flex flex-col items-center gap-[30px]">
+            {/* Title */}
+            <h2 className="w-full text-center text-black font-inter-tight text-[15px] font-medium leading-[15px] capitalize flex-shrink-0">
+              Apply with your TalentNG profile
             </h2>
-            <p className="text-[13px] text-[#525866] font-inter-tight">
-              {opportunity.title}
-            </p>
-          </div>
-          <button
-            onClick={handleClose}
-            disabled={isSubmitting}
-            className="p-1 hover:bg-gray-100 rounded transition-colors disabled:opacity-50"
-          >
-            <X size={20} className="text-gray-600" />
-          </button>
-        </div>
 
-        {/* Content */}
-        <div className="px-6 py-5 flex flex-col gap-5">
-          {/* Error Message */}
-          {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-[10px]">
-              <p className="text-[13px] text-red-600 font-inter-tight">
-                {error}
-              </p>
-            </div>
-          )}
-
-          {/* Note Field */}
-          <div className="flex flex-col gap-2">
-            <label className="text-[14px] font-medium font-inter-tight text-black">
-              Cover Note{" "}
-              <span className="text-gray-400 font-normal">
-                (Optional, 10-500 characters)
-              </span>
-            </label>
-            <textarea
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="Tell the opportunity poster why you're interested in this role..."
-              disabled={isSubmitting}
-              className="w-full h-[100px] px-3 py-2.5 border border-[#E1E4EA] rounded-[10px] font-inter-tight text-[13px] resize-none focus:outline-none focus:border-[#5C30FF] disabled:bg-gray-50"
-            />
-            <div className="flex items-center justify-between">
-              <p
-                className={`text-[11px] font-inter-tight ${
-                  isValidNote || noteLength === 0
-                    ? "text-gray-400"
-                    : "text-red-600"
-                }`}
-              >
-                {noteLength} / 500
-              </p>
-              {!isValidNote && noteLength > 0 && (
-                <p className="text-[11px] text-red-600 font-inter-tight">
-                  {noteLength < 10
-                    ? `${10 - noteLength} more characters required`
-                    : "Maximum 500 characters"}
-                </p>
+            {/* Form Content */}
+            <div className="w-full flex flex-col gap-[22px]">
+              {/* Error Message */}
+              {error && (
+                <div className="p-2.5 bg-red-50 border border-red-200 rounded-[8px] flex-shrink-0">
+                  <p className="text-[11px] text-red-600 font-inter-tight">
+                    {error}
+                  </p>
+                </div>
               )}
-            </div>
-          </div>
 
-          {/* File Attachments */}
-          <div className="flex flex-col gap-2">
-            <label className="text-[14px] font-medium font-inter-tight text-black">
-              Attachments{" "}
-              <span className="text-gray-400 font-normal">(Optional)</span>
-            </label>
-            <p className="text-[12px] text-gray-500 font-inter-tight">
-              Add resume, portfolio, or other relevant documents
-            </p>
-
-            {/* File Upload Button */}
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isSubmitting}
-              className="flex items-center justify-center gap-2 py-3 border-2 border-dashed border-[#E1E4EA] rounded-[10px] hover:border-[#5C30FF] hover:bg-blue-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Upload size={16} className="text-gray-600" />
-              <span className="text-[13px] font-inter-tight text-gray-600">
-                Upload files
-              </span>
-            </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              onChange={handleFileUpload}
-              disabled={isSubmitting}
-              className="hidden"
-              accept=".pdf,.doc,.docx,.txt,.jpg,.png,.jpeg"
-            />
-
-            {/* Attached Files List */}
-            {attachments.length > 0 && (
-              <div className="flex flex-col gap-2">
-                {attachments.map((attachment, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-[10px] border border-[#E1E4EA]"
-                  >
-                    <span className="text-[12px] font-inter-tight text-black truncate">
-                      {attachment.fileName}
-                    </span>
-                    <button
-                      onClick={() => removeAttachment(index)}
-                      disabled={isSubmitting}
-                      className="p-1 hover:bg-red-100 rounded transition-colors disabled:opacity-50"
-                    >
-                      <X size={16} className="text-red-600" />
-                    </button>
-                  </div>
-                ))}
+              {/* Your Proposal */}
+              <div className="flex flex-col gap-[10px] flex-shrink-0">
+                <label className="text-[#525866] font-inter-tight text-[14px] font-normal">
+                  Your Proposal
+                </label>
+                <textarea
+                  value={proposal}
+                  onChange={(e) => setProposal(e.target.value)}
+                  placeholder="Type here"
+                  disabled={isSubmitting}
+                  className="w-full px-[12px] py-[18px] pb-[120px] border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[14px] text-black placeholder:text-[#99A0AE] resize-none focus:outline-none focus:border-[#5C30FF] disabled:bg-gray-50"
+                />
               </div>
-            )}
+
+              {/* Attach Relevant Projects */}
+              <div className="flex flex-col gap-[12px] flex-shrink-0">
+                <div className="flex flex-col gap-[10px]">
+                  <label className="text-[#525866] font-inter-tight text-[14px] font-normal">
+                    Attach Relevant Projects (Optional: Max 3)
+                  </label>
+                  <button
+                    onClick={() => setShowProjectSelection(true)}
+                    disabled={isSubmitting}
+                    className="flex items-center gap-[6px] px-[12px] py-[16px] border border-[#E1E4EA] rounded-[8px] hover:border-[#5C30FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <LinkIcon size={20} className="text-[#525866]" />
+                    <span className="text-[#525866] font-inter-tight text-[14px] font-normal">
+                      Attach here
+                    </span>
+                  </button>
+                </div>
+
+                {/* Selected Projects */}
+                {selectedProjects.length > 0 && (
+                  <div className="flex items-center gap-[3.5px] overflow-x-auto flex-shrink-0">
+                    {selectedProjects.map((project) => (
+                      <div
+                        key={project.id}
+                        className="relative w-[158px] h-[120px] flex-shrink-0"
+                      >
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          className="absolute left-0 top-[8px] w-[149px] h-[112px] object-cover rounded-[7px]"
+                        />
+                        <button
+                          onClick={() => handleRemoveProject(project.id)}
+                          disabled={isSubmitting}
+                          className="absolute right-0 top-0 w-[17px] h-[17px] bg-white rounded-full shadow-[0_0_15px_0_rgba(0,0,0,0.3)] flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 flex-shrink-0"
+                        >
+                          <svg
+                            width="13"
+                            height="13"
+                            viewBox="0 0 15 15"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M10.7213 3.57324L3.5747 10.7198M10.7208 10.7203L3.57422 3.57375"
+                              stroke="#525866"
+                              strokeWidth="1.90588"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Submit Button */}
+              <button
+                onClick={handleSubmit}
+                disabled={!isFormValid || isSubmitting}
+                className="w-full px-[160px] py-[18px] rounded-[20px] border border-[#5C30FF] bg-[#5C30FF] text-white text-center font-inter-tight text-[13px] font-normal leading-normal hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+              >
+                {isSubmitting ? "Submitting..." : "Submit Application"}
+              </button>
+            </div>
           </div>
-
-          {/* Info Box */}
-          {opportunity.applied ? (
-            <div className="p-3 bg-yellow-50 rounded-[10px] border border-yellow-200">
-              <p className="text-[12px] text-yellow-900 font-inter-tight">
-                <span className="font-medium">Already Applied:</span> You have
-                already applied for this opportunity. You can only submit one
-                application per opportunity.
-              </p>
-            </div>
-          ) : (
-            <div className="p-3 bg-blue-50 rounded-[10px] border border-blue-200">
-              <p className="text-[12px] text-blue-900 font-inter-tight">
-                <span className="font-medium">Note:</span> You can only apply
-                once to this opportunity. The opportunity poster will be
-                notified of your application.
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Footer */}
-        <div className="sticky bottom-0 bg-white border-t border-[#E1E4EA] px-6 py-4 flex gap-3">
-          <Button
-            variant="outline"
-            onClick={handleClose}
-            disabled={isSubmitting}
-            className="flex-1"
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            disabled={!isFormValid || isSubmitting}
-            className="flex-1 bg-[#5C30FF] hover:bg-[#4a26cc] flex items-center justify-center gap-2"
-          >
-            {isSubmitting && <Loader2 size={16} className="animate-spin" />}
-            {isSubmitting ? "Submitting..." : "Submit Application"}
-          </Button>
         </div>
       </div>
-    </div>
+
+      {/* Project Selection Modal */}
+      <ProjectSelectionModal
+        isOpen={showProjectSelection}
+        onClose={() => setShowProjectSelection(false)}
+        selectedProjects={selectedProjects}
+        onProjectsSelected={handleProjectsSelected}
+      />
+    </>
   );
 }
