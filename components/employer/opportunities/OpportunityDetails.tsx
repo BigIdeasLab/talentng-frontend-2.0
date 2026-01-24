@@ -111,6 +111,7 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
     return date.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
+      year: "numeric",
     });
   };
 
@@ -298,23 +299,43 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
               <div className="flex flex-col gap-4">
                 {/* Budget - Hidden for Volunteer */}
                 {!isVolunteer &&
-                  (opportunity.minBudget || opportunity.maxBudget) && (
+                  ((opportunity.priceMode === "range" &&
+                    (opportunity.minBudget || opportunity.maxBudget)) ||
+                    (opportunity.priceMode === "fixed" && opportunity.price)) && (
                     <div className="flex flex-col gap-2.5">
-                      <span className="font-inter-tight text-[15px] font-medium text-black leading-normal">
-                        ₦{opportunity.minBudget || "0"} - ₦
-                        {opportunity.maxBudget || "0"}
-                        {opportunity.paymentType && (
-                          <span className="text-[13px]">
-                            /
-                            {opportunity.paymentType === "hourly"
-                              ? "hr"
-                              : opportunity.paymentType === "weekly"
-                                ? "wk"
-                                : "mo"}
-                          </span>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="font-inter-tight text-[15px] font-medium text-black">
+                          {opportunity.priceMode === "range" ? (
+                            <>
+                              ₦{Number(opportunity.minBudget || "0").toLocaleString()} - ₦
+                              {Number(opportunity.maxBudget || "0").toLocaleString()}
+                            </>
+                          ) : (
+                            <>₦{Number(opportunity.price || "0").toLocaleString()}</>
+                          )}
+                          {opportunity.paymentType && (
+                            <span>
+                              /
+                              {opportunity.paymentType === "hourly"
+                                ? "hr"
+                                : opportunity.paymentType === "weekly"
+                                  ? "wk"
+                                  : "mo"}
+                            </span>
+                          )}
+                        </span>
+                        {opportunity.duration && (
+                          <>
+                            <span className="font-inter-tight text-[15px] font-medium text-black">
+                              •
+                            </span>
+                            <span className="font-inter-tight text-[15px] font-medium text-black">
+                              {opportunity.duration}
+                            </span>
+                          </>
                         )}
-                      </span>
-                      <span className="font-inter-tight text-[12px] font-light text-[#525866] leading-normal">
+                      </div>
+                      <span className="font-inter-tight text-[12px] font-light text-[#525866]">
                         Budget
                       </span>
                     </div>
@@ -408,7 +429,7 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                     </div>
                     <div className="flex flex-col gap-1">
                       <span className="font-inter-tight text-[12px] font-medium text-black leading-normal">
-                        {opportunity.startDate}
+                        {formatDate(opportunity.startDate)}
                       </span>
                       <span className="font-inter-tight text-[11px] font-light text-[#525866] leading-normal">
                         Start Date

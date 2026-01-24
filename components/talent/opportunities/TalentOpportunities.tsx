@@ -2,10 +2,7 @@
 
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
-import { Spinner } from "@/components/ui/spinner";
 import { TalentOpportunitiesHeader } from "./header";
-import { SearchBar } from "./search-bar";
-import { FilterTabs } from "./filter-tabs";
 import { OpportunitiesGrid } from "./opportunities-grid";
 import {
   OpportunitiesFilterModal,
@@ -13,13 +10,8 @@ import {
 } from "./OpportunitiesFilterModal";
 import { OpportunitiesGridSkeleton } from "./OpportunitySkeleton";
 import type { FilterType, DisplayOpportunity } from "./types";
-import type { OpportunityCard, OpportunityType } from "@/types/opportunities";
-import {
-  formatDate,
-  getPaymentTypeAbbr,
-  mapOpportunityType,
-  transformOpportunityToCard,
-} from "@/lib/utils/opportunities";
+import type { OpportunityCard } from "@/types/opportunities";
+import { transformOpportunityToCard } from "@/lib/utils/opportunities";
 
 // Helper function to convert filter types to API format
 const convertFilterTypesToAPI = (types: string[]): string[] => {
@@ -156,17 +148,6 @@ export function TalentOpportunities() {
   const displayOpportunities = useMemo(() => {
     return opportunities.map(mapOpportunityToDisplay);
   }, [opportunities]);
-
-  // Helper to map tab filter type to API type for comparison
-  const mapTabTypeToAPI = (tabType: string): string => {
-    const typeMap: Record<string, string> = {
-      "job-listing": "Job",
-      internship: "Internship",
-      volunteer: "Volunteer",
-      "part-time": "PartTime",
-    };
-    return typeMap[tabType] || tabType;
-  };
 
   // Filter opportunities based on active tab only (applied/not applied)
   // Server-side filters already applied, no need for client-side filtering

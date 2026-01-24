@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useProfile } from "@/hooks/useProfile";
 import { getToolInfo } from "@/lib/utils/tools";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
 import { ApplicationModal } from "@/components/talent/opportunities/application-modal";
@@ -46,7 +45,6 @@ interface OpportunityDetailsProps {
 
 export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
   const router = useRouter();
-  const { currentProfile, currentProfileUI } = useProfile();
   const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
@@ -139,6 +137,7 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
     return date.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
+      year: "numeric",
     });
   };
 
@@ -322,27 +321,59 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
           {/* Right Column - Summary Card */}
           <div className="flex flex-col gap-2 sticky top-0 h-fit">
             {/* Job Details Card */}
-            <div className="border border-[#E1E4EA] rounded-[16px] p-4 flex flex-col gap-4">
+            <div className="border border-[#E1E4EA] rounded-[16px] p-5 flex flex-col gap-4">
               <div className="flex flex-col gap-4">
                 {/* Budget - Hidden for Volunteer */}
                 {!isVolunteer &&
-                  (opportunity.minBudget || opportunity.maxBudget) && (
+                  ((opportunity.priceMode === "range" &&
+                    (opportunity.minBudget || opportunity.maxBudget)) ||
+                    (opportunity.priceMode === "fixed" &&
+                      opportunity.price)) && (
                     <div className="flex flex-col gap-2.5">
-                      <span className="font-inter-tight text-[15px] font-medium text-black leading-normal">
-                        ₦{opportunity.minBudget || "0"} - ₦
-                        {opportunity.maxBudget || "0"}
-                        {opportunity.paymentType && (
-                          <span className="text-[13px]">
-                            /
-                            {opportunity.paymentType === "hourly"
-                              ? "hr"
-                              : opportunity.paymentType === "weekly"
-                                ? "wk"
-                                : "mo"}
-                          </span>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="font-inter-tight text-[17px] font-medium text-black">
+                          {opportunity.priceMode === "range" ? (
+                            <>
+                              ₦
+                              {Number(
+                                opportunity.minBudget || "0",
+                              ).toLocaleString()}{" "}
+                              - ₦
+                              {Number(
+                                opportunity.maxBudget || "0",
+                              ).toLocaleString()}
+                            </>
+                          ) : (
+                            <>
+                              ₦
+                              {Number(
+                                opportunity.price || "0",
+                              ).toLocaleString()}
+                            </>
+                          )}
+                          {opportunity.paymentType && (
+                            <span>
+                              /
+                              {opportunity.paymentType === "hourly"
+                                ? "hr"
+                                : opportunity.paymentType === "weekly"
+                                  ? "wk"
+                                  : "mo"}
+                            </span>
+                          )}
+                        </span>
+                        {opportunity.duration && (
+                          <>
+                            <span className="font-inter-tight text-[17px] font-medium text-black">
+                              •
+                            </span>
+                            <span className="font-inter-tight text-[17px] font-medium text-black">
+                              {opportunity.duration}
+                            </span>
+                          </>
                         )}
-                      </span>
-                      <span className="font-inter-tight text-[12px] font-light text-[#525866] leading-normal">
+                      </div>
+                      <span className="font-inter-tight text-[12px] font-light text-[#525866]">
                         Budget
                       </span>
                     </div>
@@ -351,23 +382,23 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                 {/* Employment Type */}
                 {opportunity.employmentType && (
                   <div className="flex items-center gap-2">
-                    <div className="w-[28px] h-[28px] rounded-full bg-[#F5F5F5] flex items-center justify-center flex-shrink-0">
+                    <div className="w-[30px] h-[30px] rounded-full bg-[#F5F5F5] flex items-center justify-center flex-shrink-0">
                       <svg
-                        width="16"
-                        height="16"
+                        width="17"
+                        height="17"
                         viewBox="0 0 20 20"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          d="M1.6665 11.6663C1.6665 9.32559 1.6665 8.15518 2.22827 7.31444C2.47147 6.95047 2.78397 6.63797 3.14794 6.39477C3.98868 5.83301 5.15907 5.83301 7.49984 5.83301H12.4998C14.8406 5.83301 16.011 5.83301 16.8518 6.39477C17.2157 6.63797 17.5282 6.95047 17.7714 7.31444C18.3332 8.15518 18.3332 9.32559 18.3332 11.6663C18.3332 14.0071 18.3332 15.1775 17.7714 16.0183C17.5282 16.3822 17.2157 16.6947 16.8518 16.9379C16.011 17.4997 14.8406 17.4997 12.4998 17.4997H7.49984C5.15907 17.4997 3.98868 17.4997 3.14794 16.9379C2.78397 16.6947 2.47147 16.3822 2.22827 16.0183C1.6665 15.1775 1.6665 14.0071 1.6665 11.6663Z"
+                          d="M1.66602 11.6663C1.66602 9.32559 1.66602 8.15518 2.22778 7.31444C2.47098 6.95047 2.78348 6.63797 3.14745 6.39477C3.98819 5.83301 5.15858 5.83301 7.49935 5.83301H12.4993C14.8401 5.83301 16.0105 5.83301 16.8513 6.39477C17.2152 6.63797 17.5277 6.95047 17.7709 7.31444C18.3327 8.15518 18.3327 9.32559 18.3327 11.6663C18.3327 14.0071 18.3327 15.1775 17.7709 16.0183C17.5277 16.3822 17.2152 16.6947 16.8513 16.9379C16.0105 17.4997 14.8401 17.4997 12.4993 17.4997H7.49935C5.15858 17.4997 3.98819 17.4997 3.14745 16.9379C2.78348 16.6947 2.47098 16.3822 2.22778 16.0183C1.66602 15.1775 1.66602 14.0071 1.66602 11.6663Z"
                           stroke="#606060"
                           strokeWidth="1.25"
                           strokeLinecap="round"
                           strokeLinejoin="round"
                         />
                         <path
-                          d="M13.3334 5.83333C13.3334 4.26198 13.3334 3.47631 12.8452 2.98816C12.3571 2.5 11.5714 2.5 10.0001 2.5C8.42875 2.5 7.64306 2.5 7.15491 2.98816C6.66675 3.47631 6.66675 4.26198 6.66675 5.83333"
+                          d="M13.3337 5.83333C13.3337 4.26198 13.3337 3.47631 12.8455 2.98816C12.3573 2.5 11.5717 2.5 10.0003 2.5C8.42899 2.5 7.6433 2.5 7.15515 2.98816C6.66699 3.47631 6.66699 4.26198 6.66699 5.83333"
                           stroke="#606060"
                           strokeWidth="1.25"
                           strokeLinecap="round"
@@ -382,11 +413,11 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                         />
                       </svg>
                     </div>
-                    <div className="flex flex-col gap-1">
-                      <span className="font-inter-tight text-[12px] font-medium text-black leading-normal">
+                    <div className="flex flex-col gap-1.5">
+                      <span className="font-inter-tight text-[13px] font-medium text-black">
                         {opportunity.employmentType}
                       </span>
-                      <span className="font-inter-tight text-[11px] font-light text-[#525866] leading-normal">
+                      <span className="font-inter-tight text-[12px] font-light text-[#525866]">
                         Job Type
                       </span>
                     </div>
@@ -396,16 +427,16 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                 {/* Start Date */}
                 {opportunity.startDate && (
                   <div className="flex items-center gap-2">
-                    <div className="w-[28px] h-[28px] rounded-full bg-[#F5F5F5] flex items-center justify-center flex-shrink-0">
+                    <div className="w-[30px] h-[30px] rounded-full bg-[#F5F5F5] flex items-center justify-center flex-shrink-0">
                       <svg
-                        width="16"
-                        height="16"
+                        width="17"
+                        height="17"
                         viewBox="0 0 20 20"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          d="M13.3334 1.66699V5.00033M6.66675 1.66699V5.00033"
+                          d="M13.3337 1.66699V5.00033M6.66699 1.66699V5.00033"
                           stroke="#606060"
                           strokeWidth="1.25"
                           strokeLinecap="round"
@@ -426,7 +457,7 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                           strokeLinejoin="round"
                         />
                         <path
-                          d="M9.99633 11.667H10.0038M9.99633 15.0003H10.0038M13.3259 11.667H13.3334M6.66675 11.667H6.67422M6.66675 15.0003H6.67422"
+                          d="M9.99658 11.667H10.0041M9.99658 15.0003H10.0041M13.3262 11.667H13.3337M6.66699 11.667H6.67447M6.66699 15.0003H6.67447"
                           stroke="#606060"
                           strokeWidth="1.66667"
                           strokeLinecap="round"
@@ -434,11 +465,11 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                         />
                       </svg>
                     </div>
-                    <div className="flex flex-col gap-1">
-                      <span className="font-inter-tight text-[12px] font-medium text-black leading-normal">
-                        {opportunity.startDate}
+                    <div className="flex flex-col gap-1.5">
+                      <span className="font-inter-tight text-[13px] font-medium text-black">
+                        {formatDate(opportunity.startDate)}
                       </span>
-                      <span className="font-inter-tight text-[11px] font-light text-[#525866] leading-normal">
+                      <span className="font-inter-tight text-[12px] font-light text-[#525866]">
                         Start Date
                       </span>
                     </div>
@@ -448,16 +479,16 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                 {/* Location */}
                 {opportunity.location && (
                   <div className="flex items-center gap-2">
-                    <div className="w-[28px] h-[28px] rounded-full bg-[#F5F5F5] flex items-center justify-center flex-shrink-0">
+                    <div className="w-[30px] h-[30px] rounded-full bg-[#F5F5F5] flex items-center justify-center flex-shrink-0">
                       <svg
-                        width="16"
-                        height="16"
+                        width="17"
+                        height="17"
                         viewBox="0 0 20 20"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          d="M12.9166 9.16667C12.9166 10.7775 11.6108 12.0833 9.99992 12.0833C8.38909 12.0833 7.08325 10.7775 7.08325 9.16667C7.08325 7.55583 8.38909 6.25 9.99992 6.25C11.6108 6.25 12.9166 7.55583 12.9166 9.16667Z"
+                          d="M12.9163 9.16667C12.9163 10.7775 11.6105 12.0833 9.99967 12.0833C8.38884 12.0833 7.08301 10.7775 7.08301 9.16667C7.08301 7.55583 8.38884 6.25 9.99967 6.25C11.6105 6.25 12.9163 7.55583 12.9163 9.16667Z"
                           stroke="#606060"
                           strokeWidth="1.25"
                         />
@@ -468,11 +499,11 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                         />
                       </svg>
                     </div>
-                    <div className="flex flex-col gap-1">
-                      <span className="font-inter-tight text-[12px] font-medium text-black leading-normal">
+                    <div className="flex flex-col gap-1.5">
+                      <span className="font-inter-tight text-[13px] font-medium text-black">
                         {opportunity.location}
                       </span>
-                      <span className="font-inter-tight text-[11px] font-light text-[#525866] leading-normal">
+                      <span className="font-inter-tight text-[12px] font-light text-[#525866]">
                         Location
                       </span>
                     </div>
@@ -482,16 +513,16 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                 {/* Experience Level */}
                 {opportunity.experienceLevel && (
                   <div className="flex items-center gap-2">
-                    <div className="w-[28px] h-[28px] rounded-full bg-[#F5F5F5] flex items-center justify-center flex-shrink-0">
+                    <div className="w-[30px] h-[30px] rounded-full bg-[#F5F5F5] flex items-center justify-center flex-shrink-0">
                       <svg
-                        width="16"
-                        height="16"
+                        width="17"
+                        height="17"
                         viewBox="0 0 20 20"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          d="M5.0744 12.4987C4.75906 11.7899 4.58325 11.0013 4.58325 10.1703C4.58325 7.08397 7.00838 4.58203 9.99992 4.58203C12.9915 4.58203 15.4166 7.08397 15.4166 10.1703C15.4166 11.0013 15.2408 11.7899 14.9254 12.4987"
+                          d="M5.07416 12.4987C4.75882 11.7899 4.58301 11.0013 4.58301 10.1703C4.58301 7.08397 7.00813 4.58203 9.99967 4.58203C12.9913 4.58203 15.4163 7.08397 15.4163 10.1703C15.4163 11.0013 15.2405 11.7899 14.9252 12.4987"
                           stroke="#606060"
                           strokeWidth="1.25"
                           strokeLinecap="round"
@@ -511,7 +542,7 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                           strokeLinejoin="round"
                         />
                         <path
-                          d="M2.50008 9.99902H1.66675"
+                          d="M2.50033 9.99902H1.66699"
                           stroke="#606060"
                           strokeWidth="1.25"
                           strokeLinecap="round"
@@ -525,14 +556,14 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                           strokeLinejoin="round"
                         />
                         <path
-                          d="M4.69741 4.69668L4.10815 4.10742"
+                          d="M4.69766 4.69668L4.1084 4.10742"
                           stroke="#606060"
                           strokeWidth="1.25"
                           strokeLinecap="round"
                           strokeLinejoin="round"
                         />
                         <path
-                          d="M12.0974 16.0875C12.9394 15.8152 13.2771 15.0445 13.3721 14.2694C13.4004 14.0378 13.2099 13.8457 12.9766 13.8457L7.06396 13.8459C6.82263 13.8459 6.62882 14.0507 6.65763 14.2903C6.75067 15.064 6.98551 15.6291 7.8778 16.0875M12.0974 16.0875C12.0974 16.0875 8.02468 16.0875 7.8778 16.0875M12.0974 16.0875C11.9962 17.7084 11.5281 18.3503 10.0056 18.3323C8.37709 18.3624 8.00245 17.569 7.8778 16.0875"
+                          d="M12.0979 16.0875C12.9399 15.8152 13.2776 15.0445 13.3726 14.2694C13.4009 14.0378 13.2104 13.8457 12.9771 13.8457L7.06445 13.8459C6.82312 13.8459 6.6293 14.0507 6.65812 14.2903C6.75116 15.064 6.986 15.6291 7.87829 16.0875M12.0979 16.0875C12.0979 16.0875 8.02517 16.0875 7.87829 16.0875M12.0979 16.0875C11.9967 17.7084 11.5286 18.3503 10.0061 18.3323C8.37758 18.3624 8.00294 17.569 7.87829 16.0875"
                           stroke="#606060"
                           strokeWidth="1.25"
                           strokeLinecap="round"
@@ -540,11 +571,11 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                         />
                       </svg>
                     </div>
-                    <div className="flex flex-col gap-2.5">
-                      <span className="font-inter-tight text-[12px] font-medium text-black leading-normal">
+                    <div className="flex flex-col gap-1.5">
+                      <span className="font-inter-tight text-[13px] font-medium text-black">
                         {opportunity.experienceLevel}
                       </span>
-                      <span className="font-inter-tight text-[11px] font-light text-[#525866] leading-normal">
+                      <span className="font-inter-tight text-[12px] font-light text-[#525866]">
                         Experience Level
                       </span>
                     </div>
