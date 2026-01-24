@@ -26,10 +26,26 @@ export function ApplicantsView({
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [applicants, setApplicants] = useState<Application[]>([]);
+  const [opportunityTitle, setOpportunityTitle] = useState("");
 
   useEffect(() => {
-    fetchApplicants();
+    fetchOpportunityAndApplicants();
   }, [opportunityId]);
+
+  const fetchOpportunityAndApplicants = async () => {
+    await fetchOpportunity();
+    await fetchApplicants();
+  };
+
+  const fetchOpportunity = async () => {
+    try {
+      const { getOpportunityById } = await import("@/lib/api/opportunities");
+      const data = await getOpportunityById(opportunityId);
+      setOpportunityTitle(data?.title || "");
+    } catch (err) {
+      console.error("Error fetching opportunity:", err);
+    }
+  };
 
   const fetchApplicants = async () => {
     try {
@@ -174,6 +190,7 @@ export function ApplicantsView({
               searchQuery={searchQuery}
               sortBy={sortBy}
               applicants={applicants}
+              opportunityTitle={opportunityTitle}
             />
           )}
         </div>

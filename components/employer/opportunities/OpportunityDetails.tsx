@@ -114,6 +114,14 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
     });
   };
 
+  const handleEdit = () => {
+    router.push(`/opportunities/edit/${opportunityId}`);
+  };
+
+  const handleViewApplicants = () => {
+    router.push(`/opportunities/${opportunityId}/applicants`);
+  };
+
   return (
     <div className="h-screen bg-white overflow-hidden flex flex-col">
       {/* Header */}
@@ -545,6 +553,26 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                     </div>
                   </div>
                 )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex justify-between items-center gap-2">
+                <button
+                  onClick={handleEdit}
+                  className="flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] bg-[#181B25] hover:bg-[#2a2d3a] transition-colors"
+                >
+                  <span className="font-inter-tight text-[14px] font-normal text-white leading-normal">
+                    Edit
+                  </span>
+                </button>
+                <button
+                  onClick={handleViewApplicants}
+                  className="flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] border border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4a26cc] transition-colors"
+                >
+                  <span className="font-inter-tight text-[14px] font-normal text-white leading-normal">
+                    Applicants
+                  </span>
+                </button>
               </div>
             </div>
 

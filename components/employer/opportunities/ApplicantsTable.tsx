@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 interface Applicant {
   id: string;
   userId: string;
@@ -10,6 +8,10 @@ interface Applicant {
   note?: string;
   createdAt: string;
   updatedAt: string;
+  opportunity?: {
+    id: string;
+    title: string;
+  };
   user: {
     id: string;
     username: string;
@@ -31,12 +33,13 @@ interface ApplicantsTableProps {
   searchQuery: string;
   sortBy: string;
   applicants: Applicant[];
+  opportunityTitle?: string;
 }
 
 export function ApplicantsTable({
   searchQuery,
-  sortBy,
   applicants,
+  opportunityTitle,
 }: ApplicantsTableProps) {
   const formatDate = (isoDate: string) => {
     const date = new Date(isoDate);
@@ -57,7 +60,7 @@ export function ApplicantsTable({
     <div className="border border-[#E1E4EA] rounded-[16px] overflow-hidden">
       {/* Table Header - Hidden on mobile */}
       <div className="hidden lg:block px-3 py-4 border-b border-[#E1E4EA]">
-        <div className="grid grid-cols-[35px_1fr_100px_115px_115px_100px_160px] gap-3 items-center">
+        <div className="grid grid-cols-[35px_1fr_100px_130px_100px_115px_85px_140px] gap-3 items-center">
           <div className="font-inter-tight text-[13px] font-medium text-[#525866]">
             S/N
           </div>
@@ -68,13 +71,16 @@ export function ApplicantsTable({
             Hires
           </div>
           <div className="font-inter-tight text-[13px] font-medium text-[#525866]">
-            Earnings
+            Opportunity
           </div>
           <div className="font-inter-tight text-[13px] font-medium text-[#525866]">
             Location
           </div>
           <div className="font-inter-tight text-[13px] font-medium text-[#525866]">
             Date Applied
+          </div>
+          <div className="font-inter-tight text-[13px] font-medium text-[#525866]">
+            Status
           </div>
           <div className="font-inter-tight text-[13px] font-medium text-[#525866] text-right">
             Actions
@@ -90,7 +96,7 @@ export function ApplicantsTable({
             className="px-3 py-4 hover:bg-gray-50/50 transition-colors"
           >
             {/* Desktop Layout */}
-            <div className="hidden lg:grid grid-cols-[35px_1fr_100px_115px_115px_100px_160px] gap-3 items-center">
+            <div className="hidden lg:grid grid-cols-[35px_1fr_100px_130px_100px_115px_85px_140px] gap-3 items-center">
               {/* S/N */}
               <div className="font-inter-tight text-[13px] font-normal text-black">
                 {index + 1}.
@@ -120,9 +126,9 @@ export function ApplicantsTable({
                 -
               </div>
 
-              {/* Earnings */}
+              {/* Opportunity */}
               <div className="font-inter-tight text-[13px] font-normal text-black">
-                -
+                {opportunityTitle || "-"}
               </div>
 
               {/* Location */}
@@ -133,6 +139,11 @@ export function ApplicantsTable({
               {/* Date Applied */}
               <div className="font-inter-tight text-[13px] font-normal text-black">
                 {formatDate(applicant.createdAt)}
+              </div>
+
+              {/* Status */}
+              <div className="font-inter-tight text-[13px] font-normal text-black capitalize">
+                {applicant.status || "pending"}
               </div>
 
               {/* Actions */}
@@ -174,20 +185,10 @@ export function ApplicantsTable({
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div>
                   <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
-                    Category
+                    Opportunity
                   </div>
                   <div className="font-inter-tight text-[12px] text-black">
-                    {applicant.user?.talentProfile?.category || "-"}
-                  </div>
-                </div>
-                <div>
-                  <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
-                    Skills
-                  </div>
-                  <div className="font-inter-tight text-[12px] text-black">
-                    {applicant.user?.talentProfile?.skills
-                      ?.slice(0, 2)
-                      .join(", ") || "-"}
+                    {opportunityTitle || "-"}
                   </div>
                 </div>
                 <div>
@@ -204,6 +205,14 @@ export function ApplicantsTable({
                   </div>
                   <div className="font-inter-tight text-[12px] text-black">
                     {formatDate(applicant.createdAt)}
+                  </div>
+                </div>
+                <div>
+                  <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
+                    Status
+                  </div>
+                  <div className="font-inter-tight text-[12px] text-black capitalize">
+                    {applicant.status || "pending"}
                   </div>
                 </div>
               </div>
