@@ -11,6 +11,7 @@ interface ProjectSelectionModalProps {
   onClose: () => void;
   selectedProjects: Project[];
   onProjectsSelected: (projects: Project[]) => void;
+  onWorkUploaded?: (newWork: GalleryItem) => void;
 }
 
 export function ProjectSelectionModal({
@@ -18,6 +19,7 @@ export function ProjectSelectionModal({
   onClose,
   selectedProjects,
   onProjectsSelected,
+  onWorkUploaded,
 }: ProjectSelectionModalProps) {
   const [tempSelected, setTempSelected] = useState<Project[]>(selectedProjects);
   const [projects, setProjects] = useState<GalleryItem[]>([]);
@@ -113,6 +115,9 @@ export function ProjectSelectionModal({
         const newItem = result.gallery[result.gallery.length - 1];
         setProjects((prev) => [...prev, newItem]);
 
+        // Notify parent that work was uploaded
+        onWorkUploaded?.(newItem);
+
         // Auto-select the uploaded work
         const newProject: Project = {
           id: newItem.id,
@@ -196,15 +201,15 @@ export function ProjectSelectionModal({
         </div>
 
         {/* Upload Section */}
-        {!showUploadForm && (
-          <div className="px-[16px] pt-[16px] pb-[12px] border-b border-[#E1E4EA] flex-shrink-0">
+        {!showUploadForm && projects.length === 0 && (
+          <div className="px-[16px] pt-[16px] pb-[16px] flex-shrink-0">
             <button
               onClick={() => setShowUploadForm(true)}
               disabled={isUploading}
               className="w-full flex items-center justify-center gap-[8px] px-[12px] py-[12px] border border-[#5C30FF] border-dashed rounded-[8px] hover:bg-[#F0F7FF] transition-colors disabled:opacity-50"
             >
               <Upload size={16} className="text-[#5C30FF]" />
-              <span className="text-[#5C30FF] font-inter-tight text-[12px] font-normal">
+              <span className="text-[#5C30FF] font-inter-tight text-[13px] font-medium">
                 Upload Work
               </span>
             </button>
@@ -214,11 +219,11 @@ export function ProjectSelectionModal({
         {showUploadForm && (
           <form
             onSubmit={handleUpload}
-            className="px-[16px] pt-[16px] pb-[12px] border-b border-[#E1E4EA] bg-[#F5F5F5] flex-shrink-0"
+            className="px-[16px] pt-[16px] pb-[16px] flex-shrink-0 border-b border-[#E1E4EA]"
           >
-            <div className="space-y-[8px]">
+            <div className="flex flex-col gap-[18px]">
               {uploadPreview && (
-                <div className="w-full h-[80px] rounded-[6px] overflow-hidden bg-gray-200">
+                <div className="w-full h-[100px] rounded-[8px] overflow-hidden bg-gray-200">
                   <img
                     src={uploadPreview}
                     alt="preview"
@@ -238,44 +243,54 @@ export function ProjectSelectionModal({
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isUploading}
-                className="w-full px-[12px] py-[10px] border border-dashed border-[#5C30FF] rounded-[6px] text-[11px] text-[#5C30FF] hover:bg-[#F0F7FF] transition-colors disabled:opacity-50"
+                className="w-full px-[12px] py-[16px] border border-[#E1E4EA] rounded-[8px] text-[14px] text-[#525866] hover:border-[#5C30FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {selectedFile ? selectedFile.name : "Select File"}
               </button>
-              <input
-                type="text"
-                name="title"
-                placeholder="Work title"
-                value={uploadData.title}
-                onChange={(e) =>
-                  setUploadData((prev) => ({ ...prev, title: e.target.value }))
-                }
-                disabled={isUploading}
-                className="w-full px-[10px] py-[8px] border border-[#E1E4EA] rounded-[6px] text-[11px] placeholder:text-[#99A0AE] focus:outline-none focus:border-[#5C30FF] disabled:bg-gray-50"
-              />
-              <textarea
-                name="description"
-                placeholder="Description (optional)"
-                value={uploadData.description}
-                onChange={(e) =>
-                  setUploadData((prev) => ({
-                    ...prev,
-                    description: e.target.value,
-                  }))
-                }
-                disabled={isUploading}
-                maxLength={100}
-                className="w-full px-[10px] py-[8px] pb-[30px] border border-[#E1E4EA] rounded-[6px] text-[11px] placeholder:text-[#99A0AE] resize-none focus:outline-none focus:border-[#5C30FF] disabled:bg-gray-50"
-              />
-              <div className="flex gap-[8px]">
+              <div className="flex flex-col gap-[10px]">
+                <label className="text-[#525866] font-inter-tight text-[14px] font-normal">
+                  Work Title
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  placeholder="Enter work title"
+                  value={uploadData.title}
+                  onChange={(e) =>
+                    setUploadData((prev) => ({ ...prev, title: e.target.value }))
+                  }
+                  disabled={isUploading}
+                  className="w-full px-[12px] py-[12px] border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[14px] text-black placeholder:text-[#99A0AE] focus:outline-none focus:border-[#5C30FF] disabled:bg-gray-50"
+                />
+              </div>
+              <div className="flex flex-col gap-[10px]">
+                <label className="text-[#525866] font-inter-tight text-[14px] font-normal">
+                  Description (Optional)
+                </label>
+                <textarea
+                  name="description"
+                  placeholder="Add a description"
+                  value={uploadData.description}
+                  onChange={(e) =>
+                    setUploadData((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
+                  disabled={isUploading}
+                  maxLength={100}
+                  className="w-full px-[12px] py-[12px] pb-[60px] border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[14px] text-black placeholder:text-[#99A0AE] resize-none focus:outline-none focus:border-[#5C30FF] disabled:bg-gray-50"
+                />
+              </div>
+              <div className="flex gap-[12px]">
                 <button
                   type="submit"
                   disabled={isUploading || !selectedFile}
-                  className="flex-1 px-[12px] py-[8px] bg-[#5C30FF] text-white rounded-[6px] text-[11px] font-normal hover:bg-[#4a26cc] disabled:opacity-50 transition-colors flex items-center justify-center gap-[4px]"
+                  className="flex-1 py-[16px] bg-[#5C30FF] text-white rounded-[20px] font-inter-tight text-[13px] font-normal hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-[6px]"
                 >
                   {isUploading ? (
                     <>
-                      <Loader size={12} className="animate-spin" />
+                      <Loader size={14} className="animate-spin" />
                       Uploading...
                     </>
                   ) : (
@@ -292,7 +307,7 @@ export function ProjectSelectionModal({
                     if (fileInputRef.current) fileInputRef.current.value = "";
                   }}
                   disabled={isUploading}
-                  className="flex-1 px-[12px] py-[8px] border border-[#E1E4EA] rounded-[6px] text-[11px] hover:bg-gray-100 transition-colors disabled:opacity-50"
+                  className="flex-1 py-[16px] border border-[#E1E4EA] rounded-[20px] text-[#525866] font-inter-tight text-[13px] font-normal hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancel
                 </button>
@@ -315,7 +330,7 @@ export function ProjectSelectionModal({
             </div>
           )}
 
-          {!isLoading && !error && projects.length === 0 && (
+          {!isLoading && !error && projects.length === 0 && !showUploadForm && (
             <div className="flex items-center justify-center h-full">
               <p className="text-sm text-[#525866]">No works added yet</p>
             </div>

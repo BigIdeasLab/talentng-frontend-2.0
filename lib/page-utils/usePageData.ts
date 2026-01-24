@@ -82,7 +82,7 @@ export function usePageData<T>(
     };
 
     fetchData();
-  }, [activeRole, config]);
+  }, [activeRole, config.fetchFn, config.transform, config.debug]);
 
   return {
     data,
