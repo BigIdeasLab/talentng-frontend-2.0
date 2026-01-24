@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useProfile } from "@/hooks/useProfile";
 import { getToolInfo } from "@/lib/utils/tools";
 import type { Opportunity } from "@/lib/api/opportunities/types";
 
@@ -113,15 +112,6 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
       day: "numeric",
       year: "numeric",
     });
-  };
-
-  const getPaymentTypeAbbr = (paymentType?: string): string => {
-    if (!paymentType) return "mo";
-    const type = paymentType.toLowerCase();
-    if (type === "hourly") return "hr";
-    if (type === "weekly") return "wk";
-    if (type === "yearly" || type === "annual") return "yr";
-    return "mo";
   };
 
   return (

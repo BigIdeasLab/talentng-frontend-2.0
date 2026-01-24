@@ -12,11 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type {
-  TabType,
-  OpportunityCard as OpportunityCardType,
-  OpportunityCardProps,
-} from "@/lib/types";
+import type { OpportunityCardProps } from "@/lib/types";
 import { TYPE_CONFIG } from "@/types/opportunities";
 import { getApplications, type Application } from "@/lib/api/applications";
 
