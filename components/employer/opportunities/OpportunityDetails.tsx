@@ -4,9 +4,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useProfile } from "@/hooks/useProfile";
 import { getToolInfo } from "@/lib/utils/tools";
-import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
-import { ApplicationModal } from "@/components/talent/opportunities/application-modal";
-import type { DisplayOpportunity } from "@/components/talent/opportunities/types";
 import type { Opportunity } from "@/lib/api/opportunities/types";
 
 const typeConfig: Record<
@@ -45,14 +42,8 @@ interface OpportunityDetailsProps {
 
 export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
   const router = useRouter();
-  const { currentProfile, currentProfileUI } = useProfile();
   const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSaved, setIsSaved] = useState(false);
-  const [isApplied, setIsApplied] = useState(false);
-  const [isSavingLoading, setIsSavingLoading] = useState(false);
-  const [showApplicationModal, setShowApplicationModal] = useState(false);
-  const { save: saveOpp, unsave: unsaveOpp } = useOpportunitiesManager();
 
   useEffect(() => {
     fetchOpportunityDetails();
@@ -68,24 +59,6 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
       console.error("Error fetching opportunity:", error);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleToggleSave = async () => {
-    if (!opportunity) return;
-    setIsSavingLoading(true);
-    try {
-      if (isSaved) {
-        await unsaveOpp(opportunity.id);
-        setIsSaved(false);
-      } else {
-        await saveOpp(opportunity.id);
-        setIsSaved(true);
-      }
-    } catch (error) {
-      console.error("Failed to toggle save status:", error);
-    } finally {
-      setIsSavingLoading(false);
     }
   };
 
@@ -152,52 +125,52 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
 
   return (
     <div className="h-screen bg-white overflow-hidden flex flex-col">
-      <div className="mx-auto w-full px-3 py-3 md:px-4 md:py-4 flex flex-col flex-1 overflow-y-auto">
-        {/* Header */}
-        <div className="flex flex-col gap-2 pb-3 border-b border-gray-100 mb-7 flex-shrink-0">
-          <div className="flex items-center justify-between gap-3">
-            <h1 className="font-inter-tight text-[14px] font-medium text-black">
-              Opportunity Details
-            </h1>
-            <button
-              onClick={() => router.back()}
-              className="px-4 py-1.5 border border-[#F5F5F5] rounded-full font-inter-tight text-[11px] font-normal text-black hover:bg-gray-50 transition-colors"
-            >
-              Back
-            </button>
-          </div>
+      {/* Header */}
+      <div className="mx-auto w-full px-3 py-3 md:px-4 md:py-4 flex flex-col gap-2 pb-3 border-b border-gray-100 flex-shrink-0">
+        <div className="flex items-center justify-between gap-3">
+          <h1 className="font-inter-tight text-[14px] font-medium text-black">
+            Opportunity Details
+          </h1>
+          <button
+            onClick={() => router.back()}
+            className="px-4 py-1.5 border border-[#F5F5F5] rounded-full font-inter-tight text-[11px] font-normal text-black hover:bg-gray-50 transition-colors"
+          >
+            Back
+          </button>
         </div>
+      </div>
 
+      <div className="mx-auto w-full px-3 py-3 md:px-4 md:py-4 flex flex-col flex-1 overflow-y-auto">
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-5 lg:gap-2">
           {/* Left Column - Opportunity Details */}
-          <div className="flex flex-col gap-8">
-            {/* Header */}
-            <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-9 overflow-y-auto pr-2">
+            {/* Job Header */}
+            <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-4">
                 <img
                   src={getCompanyLogo()}
                   alt="Company Logo"
-                  className="w-[70px] h-[70px] rounded-[70px] object-cover"
+                  className="w-[75px] h-[75px] rounded-full object-cover"
                 />
                 <div className="flex flex-col gap-3">
-                  <h2 className="font-inter-tight text-[16px] font-medium text-black leading-4">
+                  <h2 className="font-inter-tight text-[17px] font-medium text-black leading-5">
                     {opportunity.title}
                   </h2>
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="font-inter-tight text-[13px] font-normal text-black/30 text-center leading-normal">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-inter-tight text-[15px] font-normal text-black/30">
                       {opportunity.company}
                     </span>
-                    <span className="font-inter-tight text-[13px] font-normal text-black/30 text-center leading-normal">
+                    <span className="font-inter-tight text-[15px] font-normal text-black/30">
                       •
                     </span>
-                    <span className="font-inter-tight text-[13px] font-normal text-black/30 text-center leading-normal">
+                    <span className="font-inter-tight text-[15px] font-normal text-black/30">
                       {formatDate(opportunity.createdAt)}
                     </span>
                   </div>
                 </div>
                 <div
-                  className="inline-flex items-center gap-1 px-2 py-2 rounded-lg w-fit"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-2.5 rounded-lg w-fit"
                   style={{ backgroundColor: config.bgColor }}
                 >
                   <div
@@ -205,7 +178,7 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                     style={{ backgroundColor: config.dotColor }}
                   />
                   <span
-                    className="font-inter-tight text-[11px] font-normal leading-normal"
+                    className="font-inter-tight text-[12px] font-normal"
                     style={{ color: config.textColor }}
                   >
                     {config.label}
@@ -215,13 +188,13 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
 
               {/* Skills */}
               {tags.length > 0 && (
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-2">
                   {tags.map((skill, index) => (
                     <div
                       key={index}
-                      className="inline-flex items-center justify-center gap-1.5 px-2.5 py-2 bg-[#F5F5F5] rounded-[20px]"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#5C30FF]/10 border border-[#5C30FF] rounded-full"
                     >
-                      <span className="font-inter-tight text-[11px] text-black font-normal leading-[105%]">
+                      <span className="font-inter-tight text-[12px] text-[#5C30FF] font-medium">
                         {skill}
                       </span>
                     </div>
@@ -230,13 +203,13 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
               )}
             </div>
 
-            {/* About */}
+            {/* About the Role */}
             {opportunity.description && (
-              <div className="flex flex-col gap-3">
-                <h3 className="font-inter-tight text-[13px] font-medium text-black leading-[105%]">
+              <div className="flex flex-col gap-4">
+                <h3 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
                   About the Role
                 </h3>
-                <p className="font-inter-tight text-[12px] font-normal text-black leading-[170%]">
+                <p className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
                   {opportunity.description}
                 </p>
               </div>
@@ -244,52 +217,70 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
 
             {/* Key Responsibilities */}
             {keyResponsibilities.length > 0 && (
-              <div className="flex flex-col gap-3">
-                <h3 className="font-inter-tight text-[13px] font-medium text-black leading-[105%]">
+              <div className="flex flex-col gap-4">
+                <h3 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
                   Key Responsibilities
                 </h3>
-                <p className="font-inter-tight text-[12px] font-normal text-black leading-[170%]">
-                  {keyResponsibilities.join("\n\n")}
-                </p>
+                <div className="flex flex-col gap-2">
+                  {keyResponsibilities.map((item, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <span className="text-[#5C30FF] text-[14px] flex-shrink-0 pt-0.5">
+                        •
+                      </span>
+                      <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
+                        {item}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
-            {/* Required Skills & Qualifications */}
+            {/* Requirements */}
             {requirements.length > 0 && (
-              <div className="flex flex-col gap-3">
-                <h3 className="font-inter-tight text-[13px] font-medium text-black leading-[105%]">
-                  Required Skills & Qualifications
+              <div className="flex flex-col gap-4">
+                <h3 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
+                  Requirements
                 </h3>
-                <p className="font-inter-tight text-[12px] font-normal text-black leading-[170%]">
-                  {requirements.join("\n")}
-                </p>
+                <div className="flex flex-col gap-2">
+                  {requirements.map((item, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <span className="text-[#5C30FF] text-[14px] flex-shrink-0 pt-0.5">
+                        •
+                      </span>
+                      <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
+                        {item}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
             {/* Tools Needed */}
             {tools.length > 0 && (
-              <div className="flex flex-col gap-3">
-                <h3 className="font-inter-tight text-[13px] font-medium text-black leading-[105%]">
+              <div className="flex flex-col gap-4">
+                <h3 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
                   Tools Needed
                 </h3>
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-2">
                   {tools.map((tool, index) => {
                     const toolInfo = getToolInfo(tool);
                     return (
                       <div
                         key={index}
-                        className="inline-flex items-center justify-center gap-1.5 px-2.5 py-2 bg-[#F5F5F5] rounded-[20px]"
+                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#5C30FF]/10 border border-[#5C30FF] rounded-full"
                       >
                         <img
                           src={toolInfo.logo}
                           alt={tool}
-                          className="w-3.5 h-3.5 object-contain"
+                          className="w-4 h-4 object-contain"
                           onError={(e) => {
                             (e.target as HTMLImageElement).style.display =
                               "none";
                           }}
                         />
-                        <span className="font-inter-tight text-[11px] text-black font-normal leading-[105%]">
+                        <span className="font-inter-tight text-[12px] text-[#5C30FF] font-medium">
                           {tool}
                         </span>
                       </div>
@@ -301,7 +292,7 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
           </div>
 
           {/* Right Column - Summary Card */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 sticky top-0 h-fit">
             {/* Job Details Card */}
             <div className="border border-[#E1E4EA] rounded-[16px] p-4 flex flex-col gap-4">
               <div className="flex flex-col gap-4">
@@ -532,70 +523,6 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                   </div>
                 )}
               </div>
-
-              {/* Save and Apply Buttons */}
-              <div className="flex justify-between items-center gap-2">
-                <button
-                  onClick={handleToggleSave}
-                  disabled={isSavingLoading}
-                  className={`flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] transition-colors ${
-                    isSaved
-                      ? "bg-[#5C30FF] hover:bg-[#4a26cc]"
-                      : "bg-[#181B25] hover:bg-[#2a2d3a]"
-                  } ${isSavingLoading ? "opacity-50 cursor-not-allowed" : ""}`}
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill={isSaved ? "white" : "none"}
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M4 17.9808V9.70753C4 6.07416 4 4.25748 5.17157 3.12874C6.34315 2 8.22876 2 12 2C15.7712 2 17.6569 2 18.8284 3.12874C20 4.25748 20 6.07416 20 9.70753V17.9808C20 20.2867 20 21.4396 19.2272 21.8523C17.7305 22.6514 14.9232 19.9852 13.59 19.1824C12.8168 18.7168 12.4302 18.484 12 18.484C11.5698 18.484 11.1832 18.7168 10.41 19.1824C9.0768 19.9852 6.26947 22.6514 4.77285 21.8523C4 21.4396 4 20.2867 4 17.9808Z"
-                      stroke="white"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <span className="font-inter-tight text-[14px] font-normal text-white leading-normal">
-                    {isSaved ? "Saved" : "Save"}
-                  </span>
-                </button>
-                <button
-                  onClick={() => !isApplied && setShowApplicationModal(true)}
-                  disabled={isApplied}
-                  className={`flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] border transition-colors ${
-                    isApplied
-                      ? "bg-gray-200 border-gray-200 cursor-not-allowed"
-                      : "bg-[#5C30FF] border-[#5C30FF] hover:bg-[#4a26cc]"
-                  }`}
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M5 14L8.5 17.5L19 6.5"
-                      stroke={isApplied ? "#999" : "white"}
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <span
-                    className={`font-inter-tight text-[14px] font-normal leading-normal ${
-                      isApplied ? "text-gray-600" : "text-white"
-                    }`}
-                  >
-                    {isApplied ? "Applied" : "Apply"}
-                  </span>
-                </button>
-              </div>
             </div>
 
             {/* Company Card */}
@@ -629,37 +556,6 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
           </div>
         </div>
       </div>
-
-      {/* Application Modal */}
-      {opportunity && (
-        <ApplicationModal
-          isOpen={showApplicationModal}
-          opportunity={
-            {
-              id: opportunity.id,
-              title: opportunity.title,
-              companyName: opportunity.company,
-              companyLogo: getCompanyLogo(),
-              date: formatDate(opportunity.createdAt),
-              type: opportunity.type,
-              category: opportunity.category,
-              skills: tags,
-              rate: `₦${Math.round(parseFloat(opportunity.minBudget?.toString() || "0") || 0).toLocaleString()} - ₦${Math.round(parseFloat(opportunity.maxBudget?.toString() || "0") || 0).toLocaleString()} / ${getPaymentTypeAbbr(opportunity.paymentType)}`,
-              status: (opportunity.status || "draft") as
-                | "active"
-                | "closed"
-                | "draft",
-              applied: isApplied,
-              saved: isSaved,
-            } as DisplayOpportunity
-          }
-          onClose={() => setShowApplicationModal(false)}
-          onSubmit={() => {
-            setShowApplicationModal(false);
-            setIsApplied(true);
-          }}
-        />
-      )}
     </div>
   );
 }

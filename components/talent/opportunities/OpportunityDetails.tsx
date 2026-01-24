@@ -153,52 +153,52 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
 
   return (
     <div className="h-screen bg-white overflow-hidden flex flex-col">
-      <div className="mx-auto w-full px-3 py-3 md:px-4 md:py-4 flex flex-col flex-1 overflow-y-auto">
-        {/* Header */}
-        <div className="flex flex-col gap-2 pb-3 border-b border-gray-100 mb-7 flex-shrink-0">
-          <div className="flex items-center justify-between gap-3">
-            <h1 className="font-inter-tight text-[14px] font-medium text-black">
-              Opportunity Details
-            </h1>
-            <button
-              onClick={() => router.back()}
-              className="px-4 py-1.5 border border-[#F5F5F5] rounded-full font-inter-tight text-[11px] font-normal text-black hover:bg-gray-50 transition-colors"
-            >
-              Back
-            </button>
-          </div>
+      {/* Header */}
+      <div className="mx-auto w-full px-3 py-3 md:px-4 md:py-4 flex flex-col gap-2 pb-3 border-b border-gray-100 flex-shrink-0">
+        <div className="flex items-center justify-between gap-3">
+          <h1 className="font-inter-tight text-[14px] font-medium text-black">
+            Opportunity Details
+          </h1>
+          <button
+            onClick={() => router.back()}
+            className="px-4 py-1.5 border border-[#F5F5F5] rounded-full font-inter-tight text-[11px] font-normal text-black hover:bg-gray-50 transition-colors"
+          >
+            Back
+          </button>
         </div>
+      </div>
 
+      <div className="mx-auto w-full px-3 py-3 md:px-4 md:py-4 flex flex-col flex-1 overflow-y-auto">
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-5 lg:gap-2">
           {/* Left Column - Opportunity Details */}
-          <div className="flex flex-col gap-8">
-            {/* Header */}
-            <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-9 overflow-y-auto pr-2">
+            {/* Job Header */}
+            <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-4">
                 <img
                   src={getCompanyLogo()}
                   alt="Company Logo"
-                  className="w-[70px] h-[70px] rounded-[70px] object-cover"
+                  className="w-[75px] h-[75px] rounded-full object-cover"
                 />
                 <div className="flex flex-col gap-3">
-                  <h2 className="font-inter-tight text-[16px] font-medium text-black leading-4">
+                  <h2 className="font-inter-tight text-[17px] font-medium text-black leading-5">
                     {opportunity.title}
                   </h2>
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="font-inter-tight text-[13px] font-normal text-black/30 text-center leading-normal">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-inter-tight text-[15px] font-normal text-black/30">
                       {opportunity.company}
                     </span>
-                    <span className="font-inter-tight text-[13px] font-normal text-black/30 text-center leading-normal">
+                    <span className="font-inter-tight text-[15px] font-normal text-black/30">
                       •
                     </span>
-                    <span className="font-inter-tight text-[13px] font-normal text-black/30 text-center leading-normal">
+                    <span className="font-inter-tight text-[15px] font-normal text-black/30">
                       {formatDate(opportunity.createdAt)}
                     </span>
                   </div>
                 </div>
                 <div
-                  className="inline-flex items-center gap-1 px-2 py-2 rounded-lg w-fit"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-2.5 rounded-lg w-fit"
                   style={{ backgroundColor: config.bgColor }}
                 >
                   <div
@@ -206,7 +206,7 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                     style={{ backgroundColor: config.dotColor }}
                   />
                   <span
-                    className="font-inter-tight text-[11px] font-normal leading-normal"
+                    className="font-inter-tight text-[12px] font-normal"
                     style={{ color: config.textColor }}
                   >
                     {config.label}
@@ -216,13 +216,13 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
 
               {/* Skills */}
               {tags.length > 0 && (
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-2">
                   {tags.map((skill, index) => (
                     <div
                       key={index}
-                      className="inline-flex items-center justify-center gap-1.5 px-2.5 py-2 bg-[#F5F5F5] rounded-[20px]"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#5C30FF]/10 border border-[#5C30FF] rounded-full"
                     >
-                      <span className="font-inter-tight text-[11px] text-black font-normal leading-[105%]">
+                      <span className="font-inter-tight text-[12px] text-[#5C30FF] font-medium">
                         {skill}
                       </span>
                     </div>
@@ -231,13 +231,13 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
               )}
             </div>
 
-            {/* About */}
+            {/* About the Role */}
             {opportunity.description && (
-              <div className="flex flex-col gap-3">
-                <h3 className="font-inter-tight text-[13px] font-medium text-black leading-[105%]">
+              <div className="flex flex-col gap-4">
+                <h3 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
                   About the Role
                 </h3>
-                <p className="font-inter-tight text-[12px] font-normal text-black leading-[170%]">
+                <p className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
                   {opportunity.description}
                 </p>
               </div>
@@ -245,52 +245,70 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
 
             {/* Key Responsibilities */}
             {keyResponsibilities.length > 0 && (
-              <div className="flex flex-col gap-3">
-                <h3 className="font-inter-tight text-[13px] font-medium text-black leading-[105%]">
+              <div className="flex flex-col gap-4">
+                <h3 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
                   Key Responsibilities
                 </h3>
-                <p className="font-inter-tight text-[12px] font-normal text-black leading-[170%]">
-                  {keyResponsibilities.join("\n\n")}
-                </p>
+                <div className="flex flex-col gap-2">
+                  {keyResponsibilities.map((item, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <span className="text-[#5C30FF] text-[14px] flex-shrink-0 pt-0.5">
+                        •
+                      </span>
+                      <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
+                        {item}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
-            {/* Required Skills & Qualifications */}
+            {/* Requirements */}
             {requirements.length > 0 && (
-              <div className="flex flex-col gap-3">
-                <h3 className="font-inter-tight text-[13px] font-medium text-black leading-[105%]">
-                  Required Skills & Qualifications
+              <div className="flex flex-col gap-4">
+                <h3 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
+                  Requirements
                 </h3>
-                <p className="font-inter-tight text-[12px] font-normal text-black leading-[170%]">
-                  {requirements.join("\n")}
-                </p>
+                <div className="flex flex-col gap-2">
+                  {requirements.map((item, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <span className="text-[#5C30FF] text-[14px] flex-shrink-0 pt-0.5">
+                        •
+                      </span>
+                      <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
+                        {item}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
             {/* Tools Needed */}
             {tools.length > 0 && (
-              <div className="flex flex-col gap-3">
-                <h3 className="font-inter-tight text-[13px] font-medium text-black leading-[105%]">
+              <div className="flex flex-col gap-4">
+                <h3 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
                   Tools Needed
                 </h3>
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-2">
                   {tools.map((tool, index) => {
                     const toolInfo = getToolInfo(tool);
                     return (
                       <div
                         key={index}
-                        className="inline-flex items-center justify-center gap-1.5 px-2.5 py-2 bg-[#F5F5F5] rounded-[20px]"
+                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#5C30FF]/10 border border-[#5C30FF] rounded-full"
                       >
                         <img
                           src={toolInfo.logo}
                           alt={tool}
-                          className="w-3.5 h-3.5 object-contain"
+                          className="w-4 h-4 object-contain"
                           onError={(e) => {
                             (e.target as HTMLImageElement).style.display =
                               "none";
                           }}
                         />
-                        <span className="font-inter-tight text-[11px] text-black font-normal leading-[105%]">
+                        <span className="font-inter-tight text-[12px] text-[#5C30FF] font-medium">
                           {tool}
                         </span>
                       </div>
@@ -302,7 +320,7 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
           </div>
 
           {/* Right Column - Summary Card */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 sticky top-0 h-fit">
             {/* Job Details Card */}
             <div className="border border-[#E1E4EA] rounded-[16px] p-4 flex flex-col gap-4">
               <div className="flex flex-col gap-4">
