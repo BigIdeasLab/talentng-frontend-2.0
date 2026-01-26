@@ -4,7 +4,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -28,7 +28,7 @@ export async function GET(
     console.error("Error fetching application:", error);
     return NextResponse.json(
       { error: "Failed to fetch application" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

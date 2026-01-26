@@ -11,7 +11,7 @@ interface ScheduleInterviewModalProps {
   onSchedule: (
     applicationId: string,
     scheduledDate: string,
-    message: string
+    message: string,
   ) => Promise<void>;
 }
 

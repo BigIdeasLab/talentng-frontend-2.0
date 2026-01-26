@@ -20,7 +20,7 @@ interface UseRequireRoleOptions {
  */
 export function useRequireRole(
   allowedRoles: AllowedRole[] = ["recruiter"],
-  redirectTo: string = "/opportunities"
+  redirectTo: string = "/opportunities",
 ): boolean {
   const router = useRouter();
   const { activeRole, userRoles, isLoading } = useProfile();

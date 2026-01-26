@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const opportunityId = searchParams.get("opportunityId");
-    
+
     let url = `${API_BASE_URL}/api/v1/applications`;
     if (opportunityId) {
       url += `?opportunityId=${opportunityId}`;
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     console.error("Error fetching applications:", error);
     return NextResponse.json(
       { error: "Failed to fetch applications" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

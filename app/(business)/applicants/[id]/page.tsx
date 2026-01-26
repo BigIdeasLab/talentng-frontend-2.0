@@ -52,7 +52,10 @@ export default function ApplicantProposalPage() {
     }
   };
 
-  const handleHireApplicant = async (applicationId: string, message: string) => {
+  const handleHireApplicant = async (
+    applicationId: string,
+    message: string,
+  ) => {
     try {
       await updateStatus(applicationId, "hired");
       toast({
@@ -75,7 +78,7 @@ export default function ApplicantProposalPage() {
 
   const handleDeclineApplicant = async (
     applicationId: string,
-    note: string
+    note: string,
   ) => {
     try {
       await updateStatus(applicationId, "rejected");
@@ -100,24 +103,27 @@ export default function ApplicantProposalPage() {
   const handleScheduleInterview = async (
     applicationId: string,
     scheduledDate: string,
-    message: string
+    message: string,
   ) => {
     try {
       // Call the schedule interview endpoint
-      const response = await apiClient(`/applications/${applicationId}/schedule-interview`, {
-        method: "POST",
-        body: {
-          scheduledDate,
-          message,
+      const response = await apiClient(
+        `/applications/${applicationId}/schedule-interview`,
+        {
+          method: "POST",
+          body: {
+            scheduledDate,
+            message,
+          },
         },
-      });
-      
+      );
+
       toast({
         title: "Success",
         description: "Interview has been scheduled",
         variant: "default",
       });
-      
+
       // Refresh the applicant data
       fetchApplicant();
     } catch (err) {

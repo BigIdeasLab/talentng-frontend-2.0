@@ -38,7 +38,8 @@ export default function DiscoverTalentPage() {
     fetchData();
   }, []);
 
-  if (isLoading || !hasAccess) return <PageLoadingState message="Loading talents..." />;
+  if (isLoading || !hasAccess)
+    return <PageLoadingState message="Loading talents..." />;
 
   return (
     <DiscoverTalentClient

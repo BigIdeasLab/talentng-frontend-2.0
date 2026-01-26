@@ -13,7 +13,14 @@ interface DeclineApplicationModalProps {
 
 export const DeclineApplicationModal: React.FC<
   DeclineApplicationModalProps
-> = ({ isOpen, onClose, applicantName, jobTitle, applicationId, onDecline }) => {
+> = ({
+  isOpen,
+  onClose,
+  applicantName,
+  jobTitle,
+  applicationId,
+  onDecline,
+}) => {
   const [message, setMessage] = useState(
     `Dear ${applicantName},\n\nThank you for your interest in the ${jobTitle} position at Chowdeck Nigeria.\n\nAfter careful consideration, we have decided to move forward with other candidates whose qualifications more closely match our current needs.\n\nWe appreciate the time you invested in applying and wish you the best in your future endeavors.\n\nBest regards,\nChowdeck Nigeria Team`,
   );
@@ -159,9 +166,12 @@ export const DeclineApplicationModal: React.FC<
               </div>
               <div className="flex justify-between items-center">
                 <p className="font-inter-tight text-xs text-[#525866]">
-                  This message will be sent to the talent via email notification.
+                  This message will be sent to the talent via email
+                  notification.
                 </p>
-                <span className={`font-inter-tight text-xs ${message.trim().length >= 10 ? "text-[#008B47]" : "text-[#EE4142]"}`}>
+                <span
+                  className={`font-inter-tight text-xs ${message.trim().length >= 10 ? "text-[#008B47]" : "text-[#EE4142]"}`}
+                >
                   {message.trim().length}/10 min
                 </span>
               </div>

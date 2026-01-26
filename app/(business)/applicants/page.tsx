@@ -8,7 +8,10 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
 import { useApplications } from "@/hooks/useApplications";
-import { mapApplicationsToUI, type MappedApplicant } from "@/lib/mappers/application";
+import {
+  mapApplicationsToUI,
+  type MappedApplicant,
+} from "@/lib/mappers/application";
 
 // Map status to UI display
 const statusDisplayMap = {

@@ -124,9 +124,7 @@ export const HireApplicationModal: React.FC<HireApplicationModalProps> = ({
               {/* Hiring Info */}
               <div className="flex flex-col gap-5">
                 <div className="font-inter-tight text-sm text-black">
-                  <span className="text-[#525866] font-normal">
-                    Hiring:{" "}
-                  </span>
+                  <span className="text-[#525866] font-normal">Hiring: </span>
                   <span className="font-medium">{applicantName}</span>
                   <span className="text-[#525866] font-normal"> for </span>
                   <span className="font-medium">{jobTitle}</span>

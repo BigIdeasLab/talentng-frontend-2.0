@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { mapApplicationsToUI, type MappedApplicant } from "@/lib/mappers/application";
+import {
+  mapApplicationsToUI,
+  type MappedApplicant,
+} from "@/lib/mappers/application";
 import apiClient, { type Application } from "@/lib/api";
 
 export function useAllApplications() {
@@ -19,14 +22,15 @@ export function useAllApplications() {
         setIsLoading(true);
         setError(null);
         const data = await apiClient<Application[]>("/applications");
-        
+
         if (!isCancelled && isMountedRef.current) {
           const mapped = mapApplicationsToUI(data);
           setApplicants(mapped);
         }
       } catch (err) {
         if (!isCancelled && isMountedRef.current) {
-          const message = err instanceof Error ? err.message : "Failed to load applicants";
+          const message =
+            err instanceof Error ? err.message : "Failed to load applicants";
           setError(message);
           console.error("Error fetching applicants:", err);
           setApplicants([]);
@@ -59,7 +63,8 @@ export function useAllApplications() {
       const mapped = mapApplicationsToUI(data);
       setApplicants(mapped);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to load applicants";
+      const message =
+        err instanceof Error ? err.message : "Failed to load applicants";
       setError(message);
       console.error("Error fetching applicants:", err);
       setApplicants([]);
