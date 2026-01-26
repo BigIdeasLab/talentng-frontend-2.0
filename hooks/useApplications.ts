@@ -12,7 +12,7 @@ import {
 interface UseApplicationsReturn {
   isLoading: boolean;
   error: string | null;
-  getAll: (opportunityId: string) => Promise<Application[]>;
+  getAll: (opportunityId?: string) => Promise<Application[]>;
   getById: (id: string) => Promise<Application>;
   submit: (data: {
     opportunityId: string;
@@ -28,11 +28,13 @@ export function useApplications(): UseApplicationsReturn {
   const [error, setError] = useState<string | null>(null);
 
   const getAll = useCallback(
-    async (opportunityId: string): Promise<Application[]> => {
+    async (opportunityId?: string): Promise<Application[]> => {
       setIsLoading(true);
       setError(null);
       try {
-        return await getApplications({ opportunityId });
+        return await getApplications(
+          opportunityId ? { opportunityId } : undefined,
+        );
       } catch (err) {
         const errorMsg =
           err instanceof Error ? err.message : "Failed to fetch applications";

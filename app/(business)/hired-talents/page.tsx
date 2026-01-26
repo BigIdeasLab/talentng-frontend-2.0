@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { COLORS } from "@/lib/constants";
+import { useRequireRole } from "@/hooks/useRequireRole";
+import { PageLoadingState } from "@/lib/page-utils";
 
 interface HiredTalent {
   id: number;
@@ -50,6 +52,11 @@ export default function HiredTalentsPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("Newest");
+  const hasAccess = useRequireRole(["recruiter"]);
+
+  if (!hasAccess) {
+    return <PageLoadingState message="Checking access..." />;
+  }
 
   return (
     <div className="h-screen bg-white overflow-hidden flex flex-col">

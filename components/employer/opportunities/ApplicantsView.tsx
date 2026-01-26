@@ -116,7 +116,7 @@ export function ApplicantsView({
         {/* Page Title and Stats */}
         <div className="flex items-center justify-between mb-4">
           <h1 className="font-inter-tight text-[21px] font-medium text-black">
-            Applicants
+            {opportunityTitle && `${opportunityTitle} > `}Applicants
           </h1>
           <div className="text-right">
             <p className="text-sm font-medium text-black">

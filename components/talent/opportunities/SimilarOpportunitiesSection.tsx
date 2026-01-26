@@ -45,9 +45,9 @@ const convertToDisplayOpportunity = (opp: Opportunity): DisplayOpportunity => {
   }
 
   const paymentType = opp.paymentType
-    ? (["weekly", "monthly", "hourly"].includes(opp.paymentType.toLowerCase())
-        ? (opp.paymentType.toLowerCase() as "weekly" | "monthly" | "hourly")
-        : undefined)
+    ? ["weekly", "monthly", "hourly"].includes(opp.paymentType.toLowerCase())
+      ? (opp.paymentType.toLowerCase() as "weekly" | "monthly" | "hourly")
+      : undefined
     : undefined;
 
   return {

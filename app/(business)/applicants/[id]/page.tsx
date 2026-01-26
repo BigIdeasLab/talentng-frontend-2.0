@@ -2,91 +2,149 @@
 
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRequireRole } from "@/hooks/useRequireRole";
+import { PageLoadingState } from "@/lib/page-utils";
+import { useToast } from "@/hooks";
 import { ScheduleInterviewModal } from "@/components/employer/applicants/ScheduleInterviewModal";
 import { DeclineApplicationModal } from "@/components/employer/applicants/DeclineApplicationModal";
+import { HireApplicationModal } from "@/components/employer/applicants/HireApplicationModal";
+import { useApplications } from "@/hooks/useApplications";
+import apiClient from "@/lib/api";
+import type { Application } from "@/lib/api/applications";
 
-interface ApplicantDetail {
-  id: number;
-  name: string;
-  role: string;
-  avatar: string;
-  status: "In Review" | "Pending" | "Rejected" | "Hired";
-  hires: string;
-  earned: string;
-  location: string;
-  date: string;
-  appliedFor: {
-    title: string;
-    company: string;
-    type: string;
-  };
-  proposal: string;
-  projects: string[];
-}
-
-const mockApplicantDetails: Record<number, ApplicantDetail> = {
-  1: {
-    id: 1,
-    name: "Elias Johnson",
-    role: "Product Designer",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/bf4658bdd77efde92d861ae46eff1510ed5c0512?width=140",
-    status: "In Review",
-    hires: "6x",
-    earned: "$20,000",
-    location: "Enugu, NG",
-    date: "May 30, 2026",
-    appliedFor: {
-      title: "UI/UX Intern",
-      company: "Chowdeck Nigeria",
-      type: "Internship",
-    },
-    proposal: `Hi Chowdeck,
-I'm excited to apply for the Mobile App Designer role. I specialize in creating clean, user-friendly mobile experiences backed by strong UX thinking and modern UI execution. I've worked on multiple app projects where I improved user flow, design consistency, and overall engagement.
-
-I'd love the opportunity to bring fresh ideas, smooth interactions, and strong visual design to your product. I'm confident I can contribute value from day one.`,
-    projects: [
-      "https://api.builder.io/api/v1/image/assets/TEMP/f88bf6ecb5e256589de97e76eb6e0f72c74c7b80?width=500",
-      "https://api.builder.io/api/v1/image/assets/TEMP/575e7dd78919b4457fddd237a46a909f5ada31b0?width=500",
-      "https://api.builder.io/api/v1/image/assets/TEMP/e75b6b24d06dec4f79f0549f7e45539bb99cd003?width=500",
-    ],
-  },
-};
-
-const statusStyles = {
-  "In Review": {
-    bg: "#DBE9FE",
-    text: "#5C30FF",
-  },
-  Pending: {
-    bg: "#FEF3C7",
-    text: "#92400D",
-  },
-  Rejected: {
-    bg: "#FEE2E1",
-    text: "#991B1B",
-  },
-  Hired: {
-    bg: "#D1FAE5",
-    text: "#076046",
-  },
+const statusDisplayMap = {
+  applied: { label: "In Review", bg: "#DBE9FE", text: "#5C30FF" },
+  shortlisted: { label: "Shortlisted", bg: "#FEF3C7", text: "#92400D" },
+  rejected: { label: "Rejected", bg: "#FEE2E1", text: "#991B1B" },
+  hired: { label: "Hired", bg: "#D1FAE5", text: "#076046" },
 };
 
 export default function ApplicantProposalPage() {
   const router = useRouter();
   const params = useParams();
-  const applicantId = parseInt(params.id as string);
-  const applicant = mockApplicantDetails[applicantId];
+  const applicationId = params.id as string;
+  const hasAccess = useRequireRole(["recruiter"]);
 
+  const [applicant, setApplicant] = useState<Application | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false);
+  const [isHireModalOpen, setIsHireModalOpen] = useState(false);
+  const { getById, isLoading, updateStatus } = useApplications();
+  const { toast } = useToast();
 
-  if (!applicant) {
+  useEffect(() => {
+    if (!hasAccess) return;
+    fetchApplicant();
+  }, [hasAccess, applicationId, getById]);
+
+  const fetchApplicant = async () => {
+    try {
+      setError(null);
+      const data = await getById(applicationId);
+      setApplicant(data);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Failed to load applicant";
+      setError(message);
+      console.error("Error fetching applicant:", err);
+    }
+  };
+
+  const handleHireApplicant = async (applicationId: string, message: string) => {
+    try {
+      await updateStatus(applicationId, "hired");
+      toast({
+        title: "Success",
+        description: "Talent has been hired successfully",
+        variant: "default",
+      });
+      router.push("/applicants");
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to hire talent";
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      throw err;
+    }
+  };
+
+  const handleDeclineApplicant = async (
+    applicationId: string,
+    note: string
+  ) => {
+    try {
+      await updateStatus(applicationId, "rejected");
+      toast({
+        title: "Success",
+        description: "Application has been declined",
+        variant: "default",
+      });
+      router.push("/applicants");
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to decline application";
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      throw err;
+    }
+  };
+
+  const handleScheduleInterview = async (
+    applicationId: string,
+    scheduledDate: string,
+    message: string
+  ) => {
+    try {
+      // Call the schedule interview endpoint
+      const response = await apiClient(`/applications/${applicationId}/schedule-interview`, {
+        method: "POST",
+        body: {
+          scheduledDate,
+          message,
+        },
+      });
+      
+      toast({
+        title: "Success",
+        description: "Interview has been scheduled",
+        variant: "default",
+      });
+      
+      // Refresh the applicant data
+      fetchApplicant();
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to schedule interview";
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      throw err;
+    }
+  };
+
+  if (!hasAccess) {
+    return <PageLoadingState message="Checking access..." />;
+  }
+
+  if (isLoading) {
+    return <PageLoadingState message="Loading applicant details..." />;
+  }
+
+  if (error || !applicant) {
     return (
       <div className="h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <p className="text-gray-500 mb-4">Applicant not found</p>
+          <p className="text-gray-500 mb-4">{error || "Applicant not found"}</p>
           <Link
             href="/applicants"
             className="px-4 py-2 bg-[#5C30FF] text-white rounded-lg hover:bg-[#4a26cc]"
@@ -97,6 +155,9 @@ export default function ApplicantProposalPage() {
       </div>
     );
   }
+
+  const projects = applicant.user.talentProfile.gallery || [];
+  const statusDisplay = statusDisplayMap[applicant.status];
 
   return (
     <div className="h-screen bg-white overflow-hidden flex flex-col">
@@ -131,30 +192,30 @@ export default function ApplicantProposalPage() {
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-[10px]">
                   <img
-                    src={applicant.avatar}
-                    alt={applicant.name}
+                    src={applicant.user.talentProfile.profileImageUrl}
+                    alt={applicant.user.talentProfile.fullName}
                     className="w-[59px] h-[59px] rounded-full object-cover"
                   />
                   <div className="flex flex-col justify-center gap-[10px]">
                     <div className="flex flex-col gap-[10px]">
                       <h1 className="font-inter-tight text-[20px] font-bold text-black leading-normal">
-                        {applicant.name}
+                        {applicant.user.talentProfile.fullName}
                       </h1>
                       <p className="font-inter-tight text-[13px] font-normal text-[#525866] leading-normal">
-                        {applicant.role}
+                        {applicant.user.talentProfile.headline}
                       </p>
                     </div>
                     <div
                       className="flex items-center justify-center w-fit px-[20px] h-[18px] rounded-[50px]"
                       style={{
-                        backgroundColor: statusStyles[applicant.status].bg,
+                        backgroundColor: statusDisplay.bg,
                       }}
                     >
                       <span
                         className="font-inter-tight text-[12px] font-semibold text-center leading-normal"
-                        style={{ color: statusStyles[applicant.status].text }}
+                        style={{ color: statusDisplay.text }}
                       >
-                        {applicant.status}
+                        {statusDisplay.label}
                       </span>
                     </div>
                   </div>
@@ -189,7 +250,7 @@ export default function ApplicantProposalPage() {
                   </svg>
                   <span className="font-inter-tight text-[12px] font-normal text-black leading-normal">
                     <span className="text-[#606060] text-[12px]">Hires:</span>{" "}
-                    {applicant.hires}
+                    {applicant.user.talentProfile.hiredCount}x
                   </span>
                 </div>
 
@@ -216,7 +277,10 @@ export default function ApplicantProposalPage() {
                   </svg>
                   <span className="font-inter-tight text-[12px] font-normal text-black leading-normal">
                     <span className="text-[#606060] text-[12px]">Earned:</span>{" "}
-                    {applicant.earned}
+                    ₦
+                    {Number(
+                      applicant.user.talentProfile.earnings || "0",
+                    ).toLocaleString()}
                   </span>
                 </div>
 
@@ -241,7 +305,7 @@ export default function ApplicantProposalPage() {
                     />
                   </svg>
                   <span className="font-inter-tight text-[12px] font-normal text-black leading-normal">
-                    {applicant.location}
+                    {applicant.user.talentProfile.location}
                   </span>
                 </div>
 
@@ -284,7 +348,11 @@ export default function ApplicantProposalPage() {
                     />
                   </svg>
                   <span className="font-inter-tight text-[12px] font-normal text-black leading-normal">
-                    {applicant.date}
+                    {new Date(applicant.createdAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
                   </span>
                 </div>
               </div>
@@ -297,10 +365,10 @@ export default function ApplicantProposalPage() {
               </h2>
               <div className="flex flex-col gap-[10px] p-[18px_12px_24px_12px] rounded-[8px] border border-[#E1E4EA] bg-[#F5F5F5]">
                 <h3 className="font-inter-tight text-[15px] font-normal text-black leading-[18px]">
-                  {applicant.appliedFor.title}
+                  {applicant.opportunity.title}
                 </h3>
                 <p className="font-inter-tight text-[13px] font-normal text-[#606060] leading-[18px]">
-                  {applicant.appliedFor.company} • {applicant.appliedFor.type}
+                  {applicant.opportunity.company} • {applicant.opportunity.type}
                 </p>
               </div>
             </div>
@@ -312,31 +380,33 @@ export default function ApplicantProposalPage() {
               </h2>
               <div className="p-[18px_12px] rounded-[8px] border border-[#E1E4EA] bg-[#F5F5F5]">
                 <p className="font-inter-tight text-[13px] font-normal text-black leading-[19px] whitespace-pre-line">
-                  {applicant.proposal}
+                  {applicant.note || "No proposal provided"}
                 </p>
               </div>
             </div>
 
             {/* Attached Projects Section */}
-            <div className="flex flex-col gap-[18px] p-[18px] pt-[23px] rounded-[10px] border border-[#E1E4EA] bg-white">
-              <h2 className="font-inter-tight text-[15px] font-semibold text-black leading-normal">
-                Attach Projects ({applicant.projects.length})
-              </h2>
-              <div className="flex items-center gap-[4px]">
-                {applicant.projects.map((project, index) => (
-                  <div
-                    key={index}
-                    className="w-[210px] h-[160px] flex-shrink-0"
-                  >
-                    <img
-                      src={project}
-                      alt={`Project ${index + 1}`}
-                      className="w-full h-full rounded-[12px] object-cover"
-                    />
-                  </div>
-                ))}
+            {projects.length > 0 && (
+              <div className="flex flex-col gap-[18px] p-[18px] pt-[23px] rounded-[10px] border border-[#E1E4EA] bg-white">
+                <h2 className="font-inter-tight text-[15px] font-semibold text-black leading-normal">
+                  Attach Projects ({projects.length})
+                </h2>
+                <div className="flex items-center gap-[4px]">
+                  {projects.map((project, index) => (
+                    <div
+                      key={index}
+                      className="w-[210px] h-[160px] flex-shrink-0"
+                    >
+                      <img
+                        src={project.url}
+                        alt={project.title || `Project ${index + 1}`}
+                        className="w-full h-full rounded-[12px] object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Actions Section */}
             <div className="flex flex-col gap-[18px] p-[18px] pt-[23px] rounded-[10px] border border-[#E1E4EA] bg-white">
@@ -345,7 +415,11 @@ export default function ApplicantProposalPage() {
               </h2>
               <div className="flex items-center gap-[10px]">
                 {/* Hire Talent Button */}
-                <button className="flex items-center gap-[5px] h-8 px-3 rounded-[8px] border border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4a26cc] transition-colors">
+                <button
+                  onClick={() => setIsHireModalOpen(true)}
+                  disabled={applicant.status === "hired"}
+                  className="flex items-center gap-[5px] h-8 px-3 rounded-[8px] border border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4a26cc] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
                   <svg
                     width="15"
                     height="15"
@@ -471,19 +545,36 @@ export default function ApplicantProposalPage() {
       </div>
 
       {/* Modals */}
-      <ScheduleInterviewModal
-        isOpen={isScheduleModalOpen}
-        onClose={() => setIsScheduleModalOpen(false)}
-        applicantName={applicant.name}
-        jobTitle={applicant.appliedFor.title}
-      />
+      {applicant && (
+        <>
+          <ScheduleInterviewModal
+            isOpen={isScheduleModalOpen}
+            onClose={() => setIsScheduleModalOpen(false)}
+            applicantName={applicant.user.talentProfile.fullName}
+            jobTitle={applicant.opportunity.title}
+            applicationId={applicant.id}
+            onSchedule={handleScheduleInterview}
+          />
 
-      <DeclineApplicationModal
-        isOpen={isDeclineModalOpen}
-        onClose={() => setIsDeclineModalOpen(false)}
-        applicantName={applicant.name}
-        jobTitle={applicant.appliedFor.title}
-      />
+          <DeclineApplicationModal
+            isOpen={isDeclineModalOpen}
+            onClose={() => setIsDeclineModalOpen(false)}
+            applicantName={applicant.user.talentProfile.fullName}
+            jobTitle={applicant.opportunity.title}
+            applicationId={applicant.id}
+            onDecline={handleDeclineApplicant}
+          />
+
+          <HireApplicationModal
+            isOpen={isHireModalOpen}
+            onClose={() => setIsHireModalOpen(false)}
+            applicantName={applicant.user.talentProfile.fullName}
+            jobTitle={applicant.opportunity.title}
+            applicationId={applicant.id}
+            onHire={handleHireApplicant}
+          />
+        </>
+      )}
     </div>
   );
 }

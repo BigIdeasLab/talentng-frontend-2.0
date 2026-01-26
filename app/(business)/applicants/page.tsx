@@ -1,219 +1,75 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Users } from "lucide-react";
-import { COLORS, STATUS_STYLES } from "@/lib/constants";
 import { EmptyState } from "@/components/ui/empty-state";
+import { useRequireRole } from "@/hooks/useRequireRole";
+import { PageLoadingState } from "@/lib/page-utils";
+import { useApplications } from "@/hooks/useApplications";
+import { mapApplicationsToUI, type MappedApplicant } from "@/lib/mappers/application";
 
-interface Applicant {
-  id: number;
-  name: string;
-  role: string;
-  avatar: string;
-  hires: string;
-  opportunity: {
-    title: string;
-    type: string;
-  };
-  location: string;
-  dateApplied: string;
-  status: "In Review" | "Pending" | "Rejected" | "Hired";
-}
-
-const mockApplicants: Applicant[] = [
-  {
-    id: 1,
-    name: "Elias Johnson",
-    role: "Product Designer",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/77a2d0f5eaf5e0f9f0f0c283d2661d2eaacaca2e?width=80",
-    hires: "5x Hired",
-    opportunity: {
-      title: "UI/UX Intern",
-      type: "Internship",
-    },
-    location: "California, US",
-    dateApplied: "Dec 25 2025",
-    status: "In Review",
-  },
-  {
-    id: 2,
-    name: "Michael Chen",
-    role: "UI/UX Designer",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/52cd7411e700d6427cb4097ede0436c16b0e4b3a?width=80",
-    hires: "3x Hired",
-    opportunity: {
-      title: "Mobile App Designer",
-      type: "Internship",
-    },
-    location: "Texas, US",
-    dateApplied: "Jan 10 2026",
-    status: "Pending",
-  },
-  {
-    id: 3,
-    name: "Oluwatobi Adeyemi",
-    role: "Interaction Designer",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/a227b791b8d836bd9c83846d5c563de1bf8e9070?width=80",
-    hires: "8x Hired",
-    opportunity: {
-      title: "Mobile App Designer",
-      type: "Internship",
-    },
-    location: "New York, US",
-    dateApplied: "Feb 20 2026",
-    status: "Rejected",
-  },
-  {
-    id: 4,
-    name: "Sophia Taylor",
-    role: "Interaction Designer",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/f25e66bac38da7360668fa7a0c3be5e28bf26714?width=80",
-    hires: "2x Hired",
-    opportunity: {
-      title: "$8,000 Earned",
-      type: "",
-    },
-    location: "Florida, US",
-    dateApplied: "Mar 05 2026",
-    status: "Hired",
-  },
-  {
-    id: 5,
-    name: "Olivia Brown",
-    role: "Motion Designer",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/d2d5c07ec3c8a76d67b41bc18c688b38f8aa3e9c?width=80",
-    hires: "4x Hired",
-    opportunity: {
-      title: "$12,000 Earned",
-      type: "",
-    },
-    location: "Illinois, US",
-    dateApplied: "Apr 12 2026",
-    status: "Pending",
-  },
-  {
-    id: 6,
-    name: "Ethan Garcia",
-    role: "Design Researcher",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/1461b9e5fcd47d64b053df42baf38ee3fcbdae04?width=80",
-    hires: "6x Hired",
-    opportunity: {
-      title: "$28,000 Earned",
-      type: "",
-    },
-    location: "Washington, US",
-    dateApplied: "May 30 2026",
-    status: "Rejected",
-  },
-  {
-    id: 7,
-    name: "Isabella Martinez",
-    role: "Prototype Specialist",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/bbf2e154aac73c36beae6c0e53a329fb237a4bf3?width=80",
-    hires: "1x Hired",
-    opportunity: {
-      title: "$5,000 Earned",
-      type: "",
-    },
-    location: "Oregon, US",
-    dateApplied: "Jun 15 2026",
-    status: "Pending",
-  },
-  {
-    id: 8,
-    name: "Noah White",
-    role: "Design Systems Architect",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/87ce74c19b2f896eb0af92f5338b866048bfa1eb?width=80",
-    hires: "7x Hired",
-    opportunity: {
-      title: "$22,500 Earned",
-      type: "",
-    },
-    location: "Ohio, US",
-    dateApplied: "Jul 22 2026",
-    status: "In Review",
-  },
-  {
-    id: 9,
-    name: "Liam Johnson",
-    role: "Graphic Designer",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/17e0f8649d5b2acbdf3b84f9659212f2c54c411f?width=80",
-    hires: "9x Hired",
-    opportunity: {
-      title: "$40,000 Earned",
-      type: "",
-    },
-    location: "Nevada, US",
-    dateApplied: "Aug 18 2026",
-    status: "Pending",
-  },
-  {
-    id: 10,
-    name: "Ava Patel",
-    role: "Product Designer",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/01cb677bd95bceffde4832706067054e07742b6d?width=80",
-    hires: "10x Hired",
-    opportunity: {
-      title: "$50,000 Earned",
-      type: "",
-    },
-    location: "Ohio, US",
-    dateApplied: "Sep 12 2026",
-    status: "Hired",
-  },
-];
-
-// Use centralized status styles from constants
-const statusStylesLocal = STATUS_STYLES;
+// Map status to UI display
+const statusDisplayMap = {
+  applied: { label: "In Review", bg: "#DBE9FE", text: "#5C30FF" },
+  shortlisted: { label: "Shortlisted", bg: "#FEF3C7", text: "#92400D" },
+  rejected: { label: "Rejected", bg: "#FEE2E1", text: "#991B1B" },
+  hired: { label: "Hired", bg: "#D1FAE5", text: "#076046" },
+};
 
 export default function ApplicantsPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("Newest");
+  const [_sortBy, _setSortBy] = useState("Newest");
+  const [applicants, setApplicants] = useState<MappedApplicant[]>([]);
+  const { getAll, isLoading, error } = useApplications();
+  const hasAccess = useRequireRole(["recruiter"]);
+
+  useEffect(() => {
+    if (hasAccess) {
+      getAll().then((data) => {
+        setApplicants(mapApplicationsToUI(data));
+      });
+    }
+  }, [hasAccess, getAll]);
+
+  if (!hasAccess) {
+    return <PageLoadingState message="Checking access..." />;
+  }
+
+  if (isLoading) {
+    return <PageLoadingState message="Loading applicants..." />;
+  }
+
+  if (error) {
+    return (
+      <div className="h-screen bg-white flex items-center justify-center p-4">
+        <div className="text-center">
+          <h2 className="text-xl font-medium text-black mb-2">
+            Failed to load applicants
+          </h2>
+          <p className="text-sm text-[#525866] mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-[#5C30FF] text-white rounded-lg text-sm hover:bg-[#4a24cc] transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen bg-white overflow-hidden flex flex-col">
       <div className="flex-1 overflow-y-auto p-4 md:p-6">
         {/* Header Section */}
         <div className="flex flex-col gap-[19px] mb-[24px]">
-          {/* Back Button */}
-          <Link
-            href="/opportunities"
-            className="flex items-center gap-[8px] text-black/30 hover:text-black/50 transition-colors w-fit"
-          >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M9.783 11.7826C9.71332 11.8525 9.63053 11.9079 9.53937 11.9458C9.4482 11.9837 9.35046 12.0031 9.25175 12.0031C9.15304 12.0031 9.0553 11.9837 8.96414 11.9458C8.87297 11.9079 8.79018 11.8525 8.7205 11.7826L5.7205 8.78255C5.65058 8.71287 5.5951 8.63008 5.55725 8.53891C5.5194 8.44775 5.49991 8.35001 5.49991 8.2513C5.49991 8.15259 5.5194 8.05485 5.55725 7.96369C5.5951 7.87252 5.65058 7.78973 5.7205 7.72005L8.7205 4.72005C8.8614 4.57915 9.0525 4.5 9.25175 4.5C9.45101 4.5 9.64211 4.57915 9.783 4.72005C9.9239 4.86095 10.0031 5.05204 10.0031 5.2513C10.0031 5.45056 9.9239 5.64165 9.783 5.78255L7.31488 8.25193L9.78488 10.7213C9.85449 10.7911 9.90966 10.8739 9.94724 10.965C9.98482 11.0561 10.0041 11.1538 10.0039 11.2523C10.0037 11.3509 9.98413 11.4484 9.94623 11.5394C9.90832 11.6304 9.85286 11.713 9.783 11.7826Z"
-                fill="#B2B2B2"
-              />
-            </svg>
-            <span className="font-inter-tight text-[13px] font-normal leading-normal">
-              Back to opportunities
-            </span>
-          </Link>
-
           {/* Title and Hired Talents */}
           <div className="flex items-center justify-between">
             <h1 className="font-inter-tight text-[21px] font-medium text-black leading-[18px]">
-              Applicants &gt; UI Designer
+              Applicants
             </h1>
             <Link
               href="/hired-talents"
@@ -346,7 +202,7 @@ export default function ApplicantsPage() {
           {/* Sort Button */}
           <button className="flex items-center gap-[5px] px-[14px] py-[7px] rounded-[8px] bg-[#F5F5F5] hover:bg-[#e8e8e8] transition-colors flex-shrink-0">
             <span className="font-inter-tight text-[13px] font-normal text-black leading-normal">
-              {sortBy}
+              {_sortBy}
             </span>
             <svg
               width="14"
@@ -365,11 +221,11 @@ export default function ApplicantsPage() {
 
         {/* Table */}
         <div className="rounded-[16px] border border-[#E1E4EA] bg-white overflow-hidden flex flex-col flex-1">
-          {mockApplicants.length === 0 ? (
+          {applicants.length === 0 ? (
             <EmptyState
               icon={Users}
               title="No applicants yet"
-              description="When candidates apply to this opportunity, they'll appear here"
+              description="When candidates apply to opportunities, they'll appear here"
             />
           ) : (
             <>
@@ -405,7 +261,7 @@ export default function ApplicantsPage() {
 
               {/* Table Body */}
               <div className="px-[24px] py-[19px] flex flex-col gap-[19px] overflow-y-auto flex-1">
-                {mockApplicants.map((applicant, index) => (
+                {applicants.map((applicant, index) => (
                   <div
                     key={applicant.id}
                     className="grid grid-cols-[22px_153px_68px_102px_93px_85px_68px_170px] gap-3 items-center flex-shrink-0"
@@ -463,16 +319,16 @@ export default function ApplicantsPage() {
                     <div
                       className="flex items-center justify-center px-[20px] py-0 h-[18px] rounded-[50px]"
                       style={{
-                        backgroundColor: statusStylesLocal[applicant.status].bg,
+                        backgroundColor: statusDisplayMap[applicant.status].bg,
                       }}
                     >
                       <span
                         className="font-inter-tight text-[11px] font-semibold text-center leading-normal"
                         style={{
-                          color: statusStylesLocal[applicant.status].text,
+                          color: statusDisplayMap[applicant.status].text,
                         }}
                       >
-                        {applicant.status}
+                        {statusDisplayMap[applicant.status].label}
                       </span>
                     </div>
 
@@ -488,12 +344,12 @@ export default function ApplicantsPage() {
                           View Proposal
                         </span>
                       </button>
-                      {applicant.status !== "Rejected" &&
-                        applicant.status !== "Hired" && (
+                      {applicant.status !== "rejected" &&
+                        applicant.status !== "hired" && (
                           <button
                             style={{
-                              backgroundColor: COLORS.primary,
-                              borderColor: COLORS.primary,
+                              backgroundColor: "#5C30FF",
+                              borderColor: "#5C30FF",
                             }}
                             className="flex items-center justify-center h-8 px-[20px] py-[12px] rounded-[50px] border hover:opacity-90 transition-colors flex-shrink-0"
                           >

@@ -2,20 +2,25 @@
 
 import React, { useState } from "react";
 
-interface DeclineApplicationModalProps {
+interface HireApplicationModalProps {
   isOpen: boolean;
   onClose: () => void;
   applicantName: string;
   jobTitle: string;
   applicationId: string;
-  onDecline: (applicationId: string, note: string) => Promise<void>;
+  onHire: (applicationId: string, message: string) => Promise<void>;
 }
 
-export const DeclineApplicationModal: React.FC<
-  DeclineApplicationModalProps
-> = ({ isOpen, onClose, applicantName, jobTitle, applicationId, onDecline }) => {
+export const HireApplicationModal: React.FC<HireApplicationModalProps> = ({
+  isOpen,
+  onClose,
+  applicantName,
+  jobTitle,
+  applicationId,
+  onHire,
+}) => {
   const [message, setMessage] = useState(
-    `Dear ${applicantName},\n\nThank you for your interest in the ${jobTitle} position at Chowdeck Nigeria.\n\nAfter careful consideration, we have decided to move forward with other candidates whose qualifications more closely match our current needs.\n\nWe appreciate the time you invested in applying and wish you the best in your future endeavors.\n\nBest regards,\nChowdeck Nigeria Team`,
+    `Dear ${applicantName},\n\nCongratulations! We are pleased to offer you the position of ${jobTitle} at Chowdeck Nigeria.\n\nWe were impressed by your qualifications and believe you would be a great fit for our team.\n\nPlease confirm your acceptance and we will proceed with the next steps.\n\nWe look forward to working with you!\n\nBest regards,\nChowdeck Nigeria Team`,
   );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,24 +33,17 @@ export const DeclineApplicationModal: React.FC<
     }
   };
 
-  const isMessageValid = message.trim().length >= 10;
-
   const handleSubmit = async () => {
-    if (!isMessageValid) {
-      setError("Message must be at least 10 characters");
-      return;
-    }
-
     try {
       setIsLoading(true);
       setError(null);
-      await onDecline(applicationId, message);
+      await onHire(applicationId, message);
       onClose();
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "Failed to decline application";
+        err instanceof Error ? err.message : "Failed to hire talent";
       setError(errorMessage);
-      console.error("Error declining application:", err);
+      console.error("Error hiring talent:", err);
     } finally {
       setIsLoading(false);
     }
@@ -75,37 +73,30 @@ export const DeclineApplicationModal: React.FC<
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                    <g clipPath="url(#clip0_2218_40738)">
+                    <g clipPath="url(#clip0_hire)">
                       <path
-                        d="M9.99935 18.3337C14.6017 18.3337 18.3327 14.6027 18.3327 10.0003C18.3327 5.39795 14.6017 1.66699 9.99935 1.66699C5.39698 1.66699 1.66602 5.39795 1.66602 10.0003C1.66602 14.6027 5.39698 18.3337 9.99935 18.3337Z"
-                        stroke="#EE4142"
+                        d="M16.5 8.31039V9.00039C16.4991 10.6177 15.9754 12.1914 15.007 13.4868C14.0386 14.7821 12.6775 15.7297 11.1265 16.1883C9.57557 16.6469 7.91794 16.5918 6.40085 16.0313C4.88376 15.4708 3.58849 14.435 2.70822 13.0782C1.82795 11.7214 1.40984 10.1164 1.51626 8.50262C1.62267 6.88881 2.24791 5.35263 3.29871 4.12319C4.34951 2.89375 5.76959 2.03692 7.34714 1.6805C8.92469 1.32407 10.5752 1.48714 12.0525 2.14539"
+                        stroke="#5C30FF"
                         strokeWidth="1.6"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       />
                       <path
-                        d="M12.5 7.5L7.5 12.5"
-                        stroke="#EE4142"
-                        strokeWidth="1.6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M7.5 7.5L12.5 12.5"
-                        stroke="#EE4142"
+                        d="M16.5 3L9 10.5075L6.75 8.2575"
+                        stroke="#5C30FF"
                         strokeWidth="1.6"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       />
                     </g>
                     <defs>
-                      <clipPath id="clip0_2218_40738">
+                      <clipPath id="clip0_hire">
                         <rect width="20" height="20" fill="white" />
                       </clipPath>
                     </defs>
                   </svg>
                   <h2 className="font-inter-tight text-lg font-bold text-black">
-                    Decline Application
+                    Hire Talent
                   </h2>
                 </div>
                 <button
@@ -130,11 +121,11 @@ export const DeclineApplicationModal: React.FC<
                 </button>
               </div>
 
-              {/* Sending To */}
+              {/* Hiring Info */}
               <div className="flex flex-col gap-5">
                 <div className="font-inter-tight text-sm text-black">
                   <span className="text-[#525866] font-normal">
-                    Sending to:{" "}
+                    Hiring:{" "}
                   </span>
                   <span className="font-medium">{applicantName}</span>
                   <span className="text-[#525866] font-normal"> for </span>
@@ -147,7 +138,7 @@ export const DeclineApplicationModal: React.FC<
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-4">
                 <label className="font-inter-tight text-sm text-black">
-                  Message to Talent
+                  Offer Message
                 </label>
                 <div className="relative">
                   <textarea
@@ -157,14 +148,9 @@ export const DeclineApplicationModal: React.FC<
                   />
                 </div>
               </div>
-              <div className="flex justify-between items-center">
-                <p className="font-inter-tight text-xs text-[#525866]">
-                  This message will be sent to the talent via email notification.
-                </p>
-                <span className={`font-inter-tight text-xs ${message.trim().length >= 10 ? "text-[#008B47]" : "text-[#EE4142]"}`}>
-                  {message.trim().length}/10 min
-                </span>
-              </div>
+              <p className="font-inter-tight text-xs text-[#525866]">
+                This message will be sent to the talent via email notification.
+              </p>
             </div>
 
             {/* Error Message */}
@@ -188,14 +174,14 @@ export const DeclineApplicationModal: React.FC<
             </button>
             <button
               onClick={handleSubmit}
-              disabled={isLoading || !isMessageValid}
-              className={`h-10 px-6 rounded-[10px] border border-[#EE4142] bg-[#EE4142] font-inter-tight text-sm font-medium text-white transition-colors ${
-                isLoading || !isMessageValid
+              disabled={isLoading}
+              className={`h-10 px-6 rounded-[10px] border border-[#5C30FF] bg-[#5C30FF] font-inter-tight text-sm font-medium text-white transition-colors ${
+                isLoading
                   ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-[#d13520]"
+                  : "hover:bg-[#4a26cc]"
               }`}
             >
-              {isLoading ? "Declining..." : "Decline & Send"}
+              {isLoading ? "Hiring..." : "Hire & Send"}
             </button>
           </div>
         </div>

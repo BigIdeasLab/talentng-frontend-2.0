@@ -80,9 +80,17 @@ const apiClient = async <T>(
       if (isRefreshing && refreshPromise) {
         return new Promise((resolve, reject) => {
           failedQueue.push({
-            resolve: () => {
+            resolve: async () => {
               // Retry original request after refresh completes
-              fetch(`${baseUrl}${endpoint}`, config)
+              const newAccessToken = getAccessToken();
+              const retryConfig = {
+                ...config,
+                headers: {
+                  ...config.headers,
+                  Authorization: `Bearer ${newAccessToken}`,
+                },
+              };
+              fetch(`${baseUrl}${endpoint}`, retryConfig)
                 .then((res) => res.json())
                 .then(resolve)
                 .catch(reject);

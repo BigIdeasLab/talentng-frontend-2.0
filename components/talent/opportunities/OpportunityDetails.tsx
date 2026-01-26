@@ -63,6 +63,14 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
       const { getOpportunityById } = await import("@/lib/api/opportunities");
       const data = await getOpportunityById(opportunityId);
       setOpportunity(data);
+      // Set applied status from opportunity data
+      if (data?.applied !== undefined) {
+        setIsApplied(data.applied);
+      }
+      // Set saved status from opportunity data
+      if (data?.saved !== undefined) {
+        setIsSaved(data.saved);
+      }
     } catch (error) {
       console.error("Error fetching opportunity:", error);
     } finally {

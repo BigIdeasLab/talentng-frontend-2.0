@@ -4,7 +4,7 @@ export interface Application {
   id: string;
   userId: string;
   opportunityId: string;
-  status: string;
+  status: "applied" | "shortlisted" | "rejected" | "hired";
   note?: string;
   galleryIds?: string[];
   createdAt: string;
@@ -22,17 +22,30 @@ export interface Application {
       location: string;
       profileImageUrl: string;
       category: string;
+      gallery?: Array<{ url: string; title: string }>;
+      hiredCount: number;
+      earnings: string;
     };
+  };
+  opportunity: {
+    id: string;
+    title: string;
+    company: string;
+    type: string;
+    description?: string;
+    location: string;
   };
 }
 
-export async function getApplications(params: {
-  opportunityId: string;
+export async function getApplications(params?: {
+  opportunityId?: string;
 }): Promise<Application[]> {
   try {
-    const response = await apiClient<Application[]>(
-      `/applications?opportunityId=${params.opportunityId}`,
-    );
+    let endpoint = "/applications";
+    if (params?.opportunityId) {
+      endpoint += `?opportunityId=${params.opportunityId}`;
+    }
+    const response = await apiClient<Application[]>(endpoint);
     return response;
   } catch (error) {
     console.error("Error fetching applications:", error);

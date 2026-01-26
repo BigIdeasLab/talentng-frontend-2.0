@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useProfile } from "@/hooks/useProfile";
 import { PageLoadingState } from "@/lib/page-utils";
+import { useRequireRole } from "@/hooks/useRequireRole";
 import { DiscoverTalentClient } from "./discover-talent-client";
 import { getDiscoverTalentData } from "./server-data";
 import type { TalentData } from "./server-data";
@@ -10,6 +11,7 @@ import type { TalentData } from "./server-data";
 export default function DiscoverTalentPage() {
   const { userRoles } = useProfile();
   const role = userRoles?.[0] || "talent";
+  const hasAccess = useRequireRole(["recruiter"]);
   const [talents, setTalents] = useState<TalentData[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [pagination, setPagination] = useState<any>(null);
@@ -36,7 +38,7 @@ export default function DiscoverTalentPage() {
     fetchData();
   }, []);
 
-  if (isLoading) return <PageLoadingState message="Loading talents..." />;
+  if (isLoading || !hasAccess) return <PageLoadingState message="Loading talents..." />;
 
   return (
     <DiscoverTalentClient

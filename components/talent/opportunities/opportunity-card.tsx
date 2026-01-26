@@ -29,8 +29,6 @@ export function OpportunityCard({
   const config = TYPE_CONFIG[opportunity.type] || TYPE_CONFIG["job-listing"];
   const isVolunteer = opportunity.type === "Volunteer";
 
-
-
   const handleCardClick = () => {
     router.push(`/opportunities/${opportunity.id}`);
   };
@@ -163,22 +161,12 @@ export function OpportunityCard({
                 <div className="flex items-center gap-1.5 flex-wrap">
                   <span className="text-[15px] font-medium font-inter-tight text-black">
                     {opportunity.priceMode === "fixed" ? (
-                      <>
-                        ₦
-                        {Number(
-                          opportunity.price || "0",
-                        ).toLocaleString()}
-                      </>
+                      <>₦{Number(opportunity.price || "0").toLocaleString()}</>
                     ) : (
                       <>
-                        ₦
-                        {Number(
-                          opportunity.minBudget || "0",
-                        ).toLocaleString()}{" "}
+                        ₦{Number(opportunity.minBudget || "0").toLocaleString()}{" "}
                         - ₦
-                        {Number(
-                          opportunity.maxBudget || "0",
-                        ).toLocaleString()}
+                        {Number(opportunity.maxBudget || "0").toLocaleString()}
                       </>
                     )}
                     {opportunity.paymentType && (
@@ -192,23 +180,16 @@ export function OpportunityCard({
                       </span>
                     )}
                   </span>
-                  {opportunity.duration && (
-                    <>
-                      <span className="text-[15px] font-medium font-inter-tight text-black">
-                        •
-                      </span>
-                      <span className="text-[15px] font-medium font-inter-tight text-black">
-                        {opportunity.duration}
-                      </span>
-                    </>
-                  )}
                 </div>
 
                 {/* Actions */}
                 <div className="flex items-center justify-end gap-1">
                   {/* Save Button */}
                   <button
-                    onClick={handleToggleSave}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleToggleSave();
+                    }}
                     disabled={isSavingLoading}
                     className={`flex items-center gap-1 px-4 py-2 h-8 rounded-[40px] transition-colors ${
                       isSaved
@@ -226,7 +207,10 @@ export function OpportunityCard({
 
                   {/* Apply Button */}
                   <button
-                    onClick={() => !isApplied && setShowApplicationModal(true)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!isApplied) setShowApplicationModal(true);
+                    }}
                     disabled={isApplied}
                     className={`flex items-center gap-1 px-4 py-2 h-8 border-[0.822px] rounded-[40px] transition-colors ${
                       isApplied

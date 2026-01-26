@@ -7,6 +7,12 @@ interface ScheduleInterviewModalProps {
   onClose: () => void;
   applicantName: string;
   jobTitle: string;
+  applicationId: string;
+  onSchedule: (
+    applicationId: string,
+    scheduledDate: string,
+    message: string
+  ) => Promise<void>;
 }
 
 export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
@@ -14,12 +20,16 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   onClose,
   applicantName,
   jobTitle,
+  applicationId,
+  onSchedule,
 }) => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [message, setMessage] = useState(
     `Dear ${applicantName},\n\nWe are pleased to inform you that you have been selected for an interview for the ${jobTitle} position at Chowdeck Nigeria.\n\nPlease confirm your availability for the scheduled date and time. We look forward to meeting you!\n\nBest regards,\nChowdeck Nigeria Team`,
   );
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
@@ -29,10 +39,30 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
     }
   };
 
-  const handleSubmit = () => {
-    // Handle scheduling logic here
-    console.log({ date, time, message });
-    onClose();
+  const handleSubmit = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      // Combine date and time into ISO 8601 format
+      if (!date || !time) {
+        setError("Please select both date and time");
+        return;
+      }
+
+      // Create a proper ISO 8601 datetime string
+      const scheduledDateTime = new Date(`${date}T${time}:00`).toISOString();
+
+      await onSchedule(applicationId, scheduledDateTime, message);
+      onClose();
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to schedule interview";
+      setError(errorMessage);
+      console.error("Error scheduling interview:", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const isFormValid = date && time;
@@ -173,26 +203,36 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                 This message will be sent to the talent via email notification.
               </p>
             </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="p-3 rounded-[8px] bg-[#FEE2E1] border border-[#EE4142]">
+                <p className="font-inter-tight text-sm text-[#991B1B]">
+                  {error}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Footer Actions */}
           <div className="flex justify-end items-center gap-2">
             <button
               onClick={onClose}
-              className="h-10 px-5 rounded-[10px] border border-[#E6E7EA] font-inter-tight text-sm font-medium text-black hover:bg-gray-50 transition-colors"
+              disabled={isLoading}
+              className="h-10 px-5 rounded-[10px] border border-[#E6E7EA] font-inter-tight text-sm font-medium text-black hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
             <button
               onClick={handleSubmit}
-              disabled={!isFormValid}
+              disabled={isLoading || !isFormValid}
               className={`h-10 px-6 rounded-[10px] border border-[#5C30FF] font-inter-tight text-sm font-medium text-white transition-colors ${
-                isFormValid
-                  ? "bg-[#5C30FF] hover:bg-[#4a26cc]"
-                  : "bg-[#5C30FF] opacity-50 cursor-not-allowed"
+                isLoading || !isFormValid
+                  ? "bg-[#5C30FF] opacity-50 cursor-not-allowed"
+                  : "bg-[#5C30FF] hover:bg-[#4a26cc]"
               }`}
             >
-              Schedule & Send
+              {isLoading ? "Scheduling..." : "Schedule & Send"}
             </button>
           </div>
         </div>
