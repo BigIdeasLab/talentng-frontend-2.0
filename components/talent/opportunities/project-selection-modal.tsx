@@ -257,7 +257,10 @@ export function ProjectSelectionModal({
                   placeholder="Enter work title"
                   value={uploadData.title}
                   onChange={(e) =>
-                    setUploadData((prev) => ({ ...prev, title: e.target.value }))
+                    setUploadData((prev) => ({
+                      ...prev,
+                      title: e.target.value,
+                    }))
                   }
                   disabled={isUploading}
                   className="w-full px-[12px] py-[12px] border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[14px] text-black placeholder:text-[#99A0AE] focus:outline-none focus:border-[#5C30FF] disabled:bg-gray-50"
