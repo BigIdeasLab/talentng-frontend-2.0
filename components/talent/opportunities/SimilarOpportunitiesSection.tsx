@@ -44,6 +44,12 @@ const convertToDisplayOpportunity = (opp: Opportunity): DisplayOpportunity => {
     rate = opp.compensation;
   }
 
+  const paymentType = opp.paymentType
+    ? (["weekly", "monthly", "hourly"].includes(opp.paymentType.toLowerCase())
+        ? (opp.paymentType.toLowerCase() as "weekly" | "monthly" | "hourly")
+        : undefined)
+    : undefined;
+
   return {
     id: opp.id,
     companyName: opp.company || "Unknown Company",
@@ -57,6 +63,12 @@ const convertToDisplayOpportunity = (opp: Opportunity): DisplayOpportunity => {
     status: (opp.status as "active" | "closed" | "draft") || "draft",
     applied: opp.applied || false,
     saved: opp.saved || false,
+    priceMode: opp.priceMode,
+    minBudget: opp.minBudget,
+    maxBudget: opp.maxBudget,
+    price: opp.price,
+    paymentType,
+    duration: opp.duration,
   };
 };
 

@@ -6,7 +6,7 @@ export interface Application {
   opportunityId: string;
   status: string;
   note?: string;
-  projectIds?: string[];
+  galleryIds?: string[];
   createdAt: string;
   updatedAt: string;
   user: {
@@ -57,7 +57,7 @@ export async function getApplicationById(
 export async function submitApplication(data: {
   opportunityId: string;
   note?: string;
-  projectIds?: string[];
+  galleryIds?: string[];
   files?: File[];
 }): Promise<Application> {
   try {
@@ -68,9 +68,9 @@ export async function submitApplication(data: {
       if (data.note) {
         formData.append("note", data.note);
       }
-      if (data.projectIds && data.projectIds.length > 0) {
-        data.projectIds.forEach((projectId) => {
-          formData.append("projectIds", projectId);
+      if (data.galleryIds && data.galleryIds.length > 0) {
+        data.galleryIds.forEach((galleryId) => {
+          formData.append("galleryIds", galleryId);
         });
       }
       data.files.forEach((file) => {
@@ -89,7 +89,7 @@ export async function submitApplication(data: {
         body: {
           opportunityId: data.opportunityId,
           note: data.note,
-          projectIds: data.projectIds,
+          galleryIds: data.galleryIds,
         },
       });
       return response;

@@ -22,6 +22,12 @@ export interface DisplayOpportunity {
   applicationStatus?: ApplicationStatus;
   applied?: boolean;
   saved?: boolean;
+  priceMode?: "range" | "fixed";
+  minBudget?: string | number;
+  maxBudget?: string | number;
+  price?: string | number;
+  paymentType?: "hourly" | "weekly" | "monthly";
+  duration?: string;
 }
 
 // Grid component props

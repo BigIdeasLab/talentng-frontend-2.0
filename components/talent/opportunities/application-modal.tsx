@@ -38,7 +38,7 @@ export function ApplicationModal({
   if (!opportunity) return null;
 
   const isFormValid =
-    proposal.trim().length > 0 && selectedProjects.length <= 3;
+    proposal.trim().length >= 10 && selectedProjects.length <= 3;
 
   const handleRemoveProject = (projectId: string) => {
     setSelectedProjects((prev) => prev.filter((p) => p.id !== projectId));
@@ -58,7 +58,7 @@ export function ApplicationModal({
       await submit({
         opportunityId: opportunity.id,
         note: proposal.trim() || undefined,
-        projectIds: selectedProjects.map((p) => p.id),
+        galleryIds: selectedProjects.map((p) => p.id),
         files: [], // We're not using files in this flow anymore
       });
 
@@ -131,13 +131,18 @@ export function ApplicationModal({
 
               {/* Your Proposal */}
               <div className="flex flex-col gap-[10px] flex-shrink-0">
-                <label className="text-[#525866] font-inter-tight text-[14px] font-normal">
-                  Your Proposal
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="text-[#525866] font-inter-tight text-[14px] font-normal">
+                    Your Proposal
+                  </label>
+                  <span className="text-[#99A0AE] font-inter-tight text-[12px]">
+                    {proposal.trim().length}/10 min
+                  </span>
+                </div>
                 <textarea
                   value={proposal}
                   onChange={(e) => setProposal(e.target.value)}
-                  placeholder="Type here"
+                  placeholder="Type here (minimum 10 characters)"
                   disabled={isSubmitting}
                   className="w-full px-[12px] py-[18px] pb-[120px] border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[14px] text-black placeholder:text-[#99A0AE] resize-none focus:outline-none focus:border-[#5C30FF] disabled:bg-gray-50"
                 />

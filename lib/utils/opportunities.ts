@@ -72,12 +72,20 @@ export const transformOpportunityToCard = (
     applied: opp.applied ?? false,
     saved: opp.saved ?? false,
   };
-  if (opp.applied) {
-    console.log("transformOpportunityToCard - APPLIED:", {
-      id: opp.id,
+  if (opp.id === "3a87dd6c-c207-4e3d-aa72-ca52cec4e510") {
+    console.log("transformOpportunityToCard - input opp:", {
       title: opp.title,
-      oppApplied: opp.applied,
-      resultApplied: result.applied,
+      price: opp.price,
+      priceMode: opp.priceMode,
+      paymentType: opp.paymentType,
+      duration: opp.duration,
+    });
+    console.log("transformOpportunityToCard - result:", {
+      title: result.title,
+      price: result.price,
+      priceMode: result.priceMode,
+      paymentType: result.paymentType,
+      duration: result.duration,
     });
   }
   return result;

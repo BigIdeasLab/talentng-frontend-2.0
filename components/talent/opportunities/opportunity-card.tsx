@@ -29,6 +29,8 @@ export function OpportunityCard({
   const config = TYPE_CONFIG[opportunity.type] || TYPE_CONFIG["job-listing"];
   const isVolunteer = opportunity.type === "Volunteer";
 
+
+
   const handleCardClick = () => {
     router.push(`/opportunities/${opportunity.id}`);
   };
@@ -157,9 +159,49 @@ export function OpportunityCard({
               </div>
             ) : (
               <>
-                {/* Rate */}
-                <div className="text-[15px] font-medium font-inter-tight text-black">
-                  {opportunity.rate}
+                {/* Budget */}
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-[15px] font-medium font-inter-tight text-black">
+                    {opportunity.priceMode === "fixed" ? (
+                      <>
+                        ₦
+                        {Number(
+                          opportunity.price || "0",
+                        ).toLocaleString()}
+                      </>
+                    ) : (
+                      <>
+                        ₦
+                        {Number(
+                          opportunity.minBudget || "0",
+                        ).toLocaleString()}{" "}
+                        - ₦
+                        {Number(
+                          opportunity.maxBudget || "0",
+                        ).toLocaleString()}
+                      </>
+                    )}
+                    {opportunity.paymentType && (
+                      <span>
+                        /
+                        {opportunity.paymentType === "hourly"
+                          ? "hr"
+                          : opportunity.paymentType === "weekly"
+                            ? "wk"
+                            : "mo"}
+                      </span>
+                    )}
+                  </span>
+                  {opportunity.duration && (
+                    <>
+                      <span className="text-[15px] font-medium font-inter-tight text-black">
+                        •
+                      </span>
+                      <span className="text-[15px] font-medium font-inter-tight text-black">
+                        {opportunity.duration}
+                      </span>
+                    </>
+                  )}
                 </div>
 
                 {/* Actions */}

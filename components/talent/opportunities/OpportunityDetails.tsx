@@ -707,6 +707,12 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                 | "draft",
               applied: isApplied,
               saved: isSaved,
+              priceMode: opportunity.priceMode,
+              minBudget: opportunity.minBudget,
+              maxBudget: opportunity.maxBudget,
+              price: opportunity.price,
+              paymentType: opportunity.paymentType,
+              duration: opportunity.duration,
             } as DisplayOpportunity
           }
           onClose={() => setShowApplicationModal(false)}

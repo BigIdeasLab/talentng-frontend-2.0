@@ -67,6 +67,12 @@ export async function getOpportunitiesData(params?: {
         status: (opp.status || "draft") as "active" | "closed" | "draft",
         applied: opp.applied || opp.userHasApplied || false,
         saved: opp.saved || opp.userHasSaved || false,
+        priceMode: opp.priceMode,
+        minBudget: opp.minBudget,
+        maxBudget: opp.maxBudget,
+        price: opp.price,
+        paymentType: opp.paymentType,
+        duration: opp.duration,
       }),
     );
 
