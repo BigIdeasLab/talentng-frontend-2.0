@@ -65,29 +65,29 @@ export async function getBusinessLayoutData() {
     const profilesUI: AllProfilesUI = {};
     const userRoles: string[] = [];
 
-    if (talentProfile) {
-      profiles.talent = talentProfile;
-      profilesUI.talent = mapAPIToUI(talentProfile);
+    if (talentProfile?.profile) {
+      profiles.talent = talentProfile.profile;
+      profilesUI.talent = mapAPIToUI(talentProfile.profile);
       userRoles.push("talent");
     }
 
-    if (recruiterProfile) {
-      profiles.recruiter = recruiterProfile;
-      profilesUI.recruiter = mapAPIToUI(recruiterProfile);
+    if (recruiterProfile?.profile) {
+      profiles.recruiter = recruiterProfile.profile;
+      profilesUI.recruiter = mapAPIToUI(recruiterProfile.profile);
       userRoles.push("recruiter");
     }
 
-    if (mentorProfile) {
-      profiles.mentor = mentorProfile;
-      profilesUI.mentor = mapAPIToUI(mentorProfile);
+    if (mentorProfile?.profile) {
+      profiles.mentor = mentorProfile.profile;
+      profilesUI.mentor = mapAPIToUI(mentorProfile.profile);
       userRoles.push("mentor");
     }
 
     // Get user ID from any profile
     const userId =
-      talentProfile?.userId ||
-      recruiterProfile?.userId ||
-      mentorProfile?.userId ||
+      talentProfile?.profile?.userId ||
+      recruiterProfile?.profile?.userId ||
+      mentorProfile?.profile?.userId ||
       null;
 
     // Set default active role to first available

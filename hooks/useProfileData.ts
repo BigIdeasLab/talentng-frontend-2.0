@@ -61,7 +61,9 @@ export function useProfileData() {
 
       if (userRoles.includes("recruiter")) {
         roleMap["recruiter"] = "recruiter";
-        fetchPromises.push(getServerCurrentRecruiterProfile().catch(() => null));
+        fetchPromises.push(
+          getServerCurrentRecruiterProfile().catch(() => null),
+        );
       } else {
         fetchPromises.push(Promise.resolve(null));
       }

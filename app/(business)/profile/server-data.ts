@@ -31,17 +31,28 @@ export async function getProfilePageData() {
   try {
     const profileRes = await getServerCurrentProfile();
 
-    const mappedUIData = mapAPIToUI(profileRes);
+    if (!profileRes.profile) {
+      return {
+        profileData: null,
+        userId: null,
+        stats: null,
+        recommendations: [],
+        services: [],
+        error: "Profile not found",
+      };
+    }
+
+    const mappedUIData = mapAPIToUI(profileRes.profile);
 
     const [statsRes, recommendationsRes, servicesRes] = await Promise.all([
       getServerDashboardStats(),
-      getServerTalentRecommendations(profileRes.userId),
+      getServerTalentRecommendations(profileRes.profile.userId),
       getServerMyServices(),
     ]);
 
     return {
       profileData: mappedUIData,
-      userId: profileRes.userId,
+      userId: profileRes.profile.userId,
       stats: statsRes,
       recommendations: recommendationsRes.map(mapRecommendationToUI),
       services: servicesRes || [],

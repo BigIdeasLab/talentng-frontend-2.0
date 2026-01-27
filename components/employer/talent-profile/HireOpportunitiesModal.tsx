@@ -128,9 +128,7 @@ export function HireOpportunitiesModal({
           <button
             onClick={handleHire}
             disabled={
-              isLoading ||
-              !selectedOpportunityId ||
-              opportunities.length === 0
+              isLoading || !selectedOpportunityId || opportunities.length === 0
             }
             className="flex-1 px-4 py-2 rounded-[8px] bg-[#5C30FF] hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-medium text-white transition-colors"
           >
