@@ -2,10 +2,12 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Spinner } from "@/components/ui/spinner";
 import { getTalentProfileByUserId } from "@/lib/api/talent";
 import type { TalentProfile } from "@/lib/api/talent/types";
-import { TalentProfileView } from "@/components/talent/public-profile/TalentProfileView";
+import { useRequireRole } from "@/hooks/useRequireRole";
+import { PageLoadingState } from "@/lib/page-utils";
+import { TalentProfileView as RecruiterTalentProfileView } from "@/components/employer/talent-profile/TalentProfileView";
+import { TalentProfileView as PublicTalentProfileView } from "@/components/talent/public-profile/TalentProfileView";
 
 export default function TalentProfilePage() {
   const params = useParams();
@@ -13,6 +15,7 @@ export default function TalentProfilePage() {
   const [profile, setProfile] = useState<TalentProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const isRecruiter = useRequireRole(["recruiter"]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -35,23 +38,27 @@ export default function TalentProfilePage() {
   }, [userId]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Spinner size="lg" />
-      </div>
-    );
+    return <PageLoadingState message="Loading talent profile..." />;
   }
 
   if (error || !profile) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="h-screen bg-white flex items-center justify-center p-4">
         <div className="text-center">
-          <p className="text-red-500 mb-4">Error loading talent profile</p>
-          <p className="text-gray-600">{error}</p>
+          <h2 className="text-xl font-medium text-black mb-2">
+            Failed to load profile
+          </h2>
+          <p className="text-sm text-[#525866]">{error || "Profile not found"}</p>
         </div>
       </div>
     );
   }
 
-  return <TalentProfileView profile={profile} />;
+  // Show recruiter view if user has recruiter role
+  if (isRecruiter) {
+    return <RecruiterTalentProfileView profile={profile} />;
+  }
+
+  // Show public view for others
+  return <PublicTalentProfileView profile={profile} />;
 }

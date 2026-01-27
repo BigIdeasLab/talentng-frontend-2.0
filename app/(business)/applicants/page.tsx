@@ -293,7 +293,7 @@ export default function ApplicantsPage() {
                     {/* Talents */}
                     <button
                       onClick={() =>
-                        router.push(`/talent-profile/${applicant.userId}`)
+                        router.push(`/discover-talent/${applicant.userId}`)
                       }
                       className="flex items-center gap-[8px] hover:opacity-80 transition-opacity text-left h-full"
                     >

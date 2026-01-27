@@ -165,11 +165,23 @@ export default function HiredTalentsPage() {
       setEditingRecommendation(null);
     } catch (error) {
       console.error("Error submitting recommendation:", error);
+      
+      // Handle specific error cases
+      let errorDescription = editingRecommendation
+        ? "Failed to update recommendation"
+        : "Failed to add recommendation";
+      
+      if (error instanceof Error) {
+        if (error.message.includes("403")) {
+          errorDescription = "You don't have permission to add recommendations";
+        } else if (error.message.includes("409")) {
+          errorDescription = error.message; // Use backend message
+        }
+      }
+      
       toast?.({
         title: "Error",
-        description: editingRecommendation
-          ? "Failed to update recommendation"
-          : "Failed to add recommendation",
+        description: errorDescription,
       });
     }
   };
@@ -185,9 +197,17 @@ export default function HiredTalentsPage() {
       });
     } catch (error) {
       console.error("Error deleting recommendation:", error);
+      
+      let errorDescription = "Failed to delete recommendation";
+      if (error instanceof Error) {
+        if (error.message.includes("403")) {
+          errorDescription = "You don't have permission to delete this recommendation";
+        }
+      }
+      
       toast?.({
         title: "Error",
-        description: "Failed to delete recommendation",
+        description: errorDescription,
       });
     }
   };
@@ -376,7 +396,7 @@ export default function HiredTalentsPage() {
                   {/* Header */}
                   <button
                     onClick={() =>
-                      router.push(`/talent-profile/${talent.userId}`)
+                      router.push(`/discover-talent/${talent.userId}`)
                     }
                     className="flex items-start gap-3 hover:opacity-80 transition-opacity text-left"
                   >

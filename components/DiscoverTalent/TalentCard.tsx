@@ -13,7 +13,7 @@ export function TalentCard({ talent }: TalentCardProps) {
   const router = useRouter();
 
   const handleViewProfile = () => {
-    router.push(`/talent-profile/${talent.userId}`);
+    router.push(`/discover-talent/${talent.userId}`);
   };
 
   return (
