@@ -102,18 +102,18 @@ const mockNotifications: Notification[] = [
 
 export function TalentNotifications() {
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-sm overflow-hidden">
+    <div className="min-h-screen bg-white px-4 py-8">
+      <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-          <h1 className="text-2xl font-bold text-gray-900">Notification</h1>
-          <button className="text-gray-400 hover:text-gray-600">
-            <X size={24} />
+        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+          <h1 className="text-xl font-semibold text-gray-900">Notification</h1>
+          <button className="text-gray-400 hover:text-gray-600 transition-colors">
+            <X size={24} strokeWidth={1.5} />
           </button>
         </div>
 
         {/* Notifications List */}
-        <div className="divide-y divide-gray-200">
+        <div>
           {mockNotifications.map((notification) => (
             <NotificationItem
               key={notification.id}
