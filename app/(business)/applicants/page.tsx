@@ -233,12 +233,12 @@ export default function ApplicantsPage() {
           ) : (
             <>
               {/* Table Header */}
-              <div className="px-[14px] py-[16px] border-b border-[#E1E4EA]">
-                <div className="grid grid-cols-[22px_153px_68px_102px_93px_85px_68px_170px] gap-3">
+              <div className="px-[24px] py-[16px] border-b border-[#E1E4EA]">
+                <div className="grid grid-cols-[40px_1fr_80px_1.2fr_140px_120px_110px_1.3fr] gap-4">
                   <span className="font-inter-tight text-[13px] font-medium text-[#525866] text-center">
                     S/N
                   </span>
-                  <span className="font-inter-tight text-[13px] font-medium text-[#525866] text-center">
+                  <span className="font-inter-tight text-[13px] font-medium text-[#525866] text-left">
                     Talents
                   </span>
                   <span className="font-inter-tight text-[13px] font-medium text-[#525866]">
@@ -253,10 +253,10 @@ export default function ApplicantsPage() {
                   <span className="font-inter-tight text-[13px] font-medium text-[#525866]">
                     Date Applied
                   </span>
-                  <span className="font-inter-tight text-[13px] font-medium text-[#525866]">
+                  <span className="font-inter-tight text-[13px] font-medium text-[#525866] text-center">
                     Status
                   </span>
-                  <span className="font-inter-tight text-[13px] font-medium text-[#525866] text-center">
+                  <span className="font-inter-tight text-[13px] font-medium text-[#525866] text-right">
                     Actions
                   </span>
                 </div>
@@ -267,76 +267,89 @@ export default function ApplicantsPage() {
                 {applicants.map((applicant, index) => (
                   <div
                     key={applicant.id}
-                    className="grid grid-cols-[22px_153px_68px_102px_93px_85px_68px_170px] gap-3 items-center flex-shrink-0"
+                    className="grid grid-cols-[40px_1fr_80px_1.2fr_140px_120px_110px_1.3fr] gap-4 items-center py-2 flex-shrink-0"
                   >
                     {/* S/N */}
-                    <span className="font-inter-tight text-[13px] font-normal text-black text-center">
-                      {index + 1}.
-                    </span>
+                    <div className="flex items-center justify-center h-full">
+                      <span className="font-inter-tight text-[13px] font-normal text-black">
+                        {index + 1}.
+                      </span>
+                    </div>
 
                     {/* Talents */}
-                    <div className="flex items-center gap-[8px]">
+                    <button
+                      onClick={() => router.push(`/talent-profile/${applicant.userId}`)}
+                      className="flex items-center gap-[8px] hover:opacity-80 transition-opacity text-left h-full"
+                    >
                       <img
                         src={applicant.avatar}
                         alt={applicant.name}
                         className="w-8 h-8 rounded-full object-cover flex-shrink-0"
                       />
-                      <div className="flex flex-col gap-[8px]">
-                        <span className="font-inter-tight text-[13px] font-medium text-black text-center leading-normal">
+                      <div className="flex flex-col gap-1 min-w-0">
+                        <span className="font-inter-tight text-[13px] font-medium text-black leading-tight truncate">
                           {applicant.name}
                         </span>
-                        <span className="font-inter-tight text-[12px] font-light text-[#525866] leading-normal">
+                        <span className="font-inter-tight text-[12px] font-light text-[#525866] leading-tight truncate">
                           {applicant.role}
                         </span>
                       </div>
-                    </div>
+                    </button>
 
                     {/* Hires */}
-                    <span className="font-inter-tight text-[13px] font-normal text-black leading-normal">
-                      {applicant.hires}
-                    </span>
+                    <div className="flex items-center justify-start h-full">
+                      <span className="font-inter-tight text-[13px] font-normal text-black">
+                        {applicant.hires}
+                      </span>
+                    </div>
 
                     {/* Opportunity */}
-                    <div className="flex flex-col gap-[8px]">
-                      <span className="font-inter-tight text-[12px] font-normal text-black leading-normal">
+                    <div className="flex flex-col gap-1 h-full justify-center min-w-0">
+                      <span className="font-inter-tight text-[12px] font-normal text-black leading-tight truncate">
                         {applicant.opportunity.title}
                       </span>
                       {applicant.opportunity.type && (
-                        <span className="font-inter-tight text-[11px] font-normal text-[#606060] leading-normal">
+                        <span className="font-inter-tight text-[11px] font-normal text-[#606060] leading-tight truncate">
                           {applicant.opportunity.type}
                         </span>
                       )}
                     </div>
 
                     {/* Location */}
-                    <span className="font-inter-tight text-[13px] font-normal text-black leading-normal">
-                      {applicant.location}
-                    </span>
-
-                    {/* Date Applied */}
-                    <span className="font-inter-tight text-[13px] font-normal text-black leading-normal">
-                      {applicant.dateApplied}
-                    </span>
-
-                    {/* Status */}
-                    <div
-                      className="flex items-center justify-center px-[20px] py-0 h-[18px] rounded-[50px]"
-                      style={{
-                        backgroundColor: statusDisplayMap[applicant.status].bg,
-                      }}
-                    >
-                      <span
-                        className="font-inter-tight text-[11px] font-semibold text-center leading-normal"
-                        style={{
-                          color: statusDisplayMap[applicant.status].text,
-                        }}
-                      >
-                        {statusDisplayMap[applicant.status].label}
+                    <div className="flex items-center justify-start h-full">
+                      <span className="font-inter-tight text-[13px] font-normal text-black truncate">
+                        {applicant.location}
                       </span>
                     </div>
 
+                    {/* Date Applied */}
+                    <div className="flex items-center justify-start h-full">
+                      <span className="font-inter-tight text-[13px] font-normal text-black truncate">
+                        {applicant.dateApplied}
+                      </span>
+                    </div>
+
+                    {/* Status */}
+                    <div className="flex items-center justify-center h-full">
+                      <div
+                        className="flex items-center justify-center px-[20px] py-1 rounded-[50px]"
+                        style={{
+                          backgroundColor: statusDisplayMap[applicant.status].bg,
+                        }}
+                      >
+                        <span
+                          className="font-inter-tight text-[11px] font-semibold text-center leading-tight"
+                          style={{
+                            color: statusDisplayMap[applicant.status].text,
+                          }}
+                        >
+                          {statusDisplayMap[applicant.status].label}
+                        </span>
+                      </div>
+                    </div>
+
                     {/* Actions */}
-                    <div className="flex items-center justify-end gap-1 flex-shrink-0">
+                    <div className="flex items-center justify-end gap-1 h-full flex-shrink-0">
                       <button
                         onClick={() =>
                           router.push(`/applicants/${applicant.id}`)

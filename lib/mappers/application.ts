@@ -2,6 +2,7 @@ import type { Application } from "@/lib/api/applications";
 
 export interface MappedApplicant {
   id: string;
+  userId: string;
   name: string;
   role: string;
   avatar: string;
@@ -19,6 +20,7 @@ export interface MappedApplicant {
 export function mapApplicationToUI(app: Application): MappedApplicant {
   return {
     id: app.id,
+    userId: app.userId,
     name: app.user.talentProfile.fullName,
     role: app.user.talentProfile.headline,
     avatar: app.user.talentProfile.profileImageUrl,

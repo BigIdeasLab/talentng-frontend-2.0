@@ -204,3 +204,26 @@ export async function completeInterview(
     throw error;
   }
 }
+
+export async function addRecommendation(
+  applicationId: string,
+  data: {
+    title: string;
+    comment: string;
+    rating: number;
+  },
+): Promise<Application> {
+  try {
+    const response = await apiClient<Application>(
+      `/applications/${applicationId}/recommendation`,
+      {
+        method: "POST",
+        body: data,
+      },
+    );
+    return response;
+  } catch (error) {
+    console.error("Error adding recommendation:", error);
+    throw error;
+  }
+}

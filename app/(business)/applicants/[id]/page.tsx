@@ -18,7 +18,9 @@ import {
   rescheduleInterview,
   cancelInterview,
   completeInterview,
+  addRecommendation,
 } from "@/lib/api/applications";
+import { RecommendationModal } from "@/components/employer/opportunities/RecommendationModal";
 import type { Application, ApplicationInterview } from "@/lib/api/applications";
 
 const statusDisplayMap = {
@@ -43,6 +45,8 @@ export default function ApplicantProposalPage() {
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [selectedInterview, setSelectedInterview] =
     useState<ApplicationInterview | null>(null);
+  const [isRecommendationModalOpen, setIsRecommendationModalOpen] =
+    useState(false);
   const { getById, isLoading, updateStatus } = useApplications();
   const { toast } = useToast();
 
@@ -243,6 +247,34 @@ export default function ApplicantProposalPage() {
     }
   };
 
+  const handleAddRecommendation = async (data: {
+    title: string;
+    comment: string;
+    rating: number;
+  }) => {
+    if (!applicant) return;
+
+    try {
+      const response = await addRecommendation(applicant.id, data);
+      setApplicant(response);
+      toast({
+        title: "Success",
+        description: "Recommendation added successfully",
+        variant: "default",
+      });
+      setIsRecommendationModalOpen(false);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to add recommendation";
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      throw err;
+    }
+  };
+
   if (!hasAccess) {
     return <PageLoadingState message="Checking access..." />;
   }
@@ -301,7 +333,10 @@ export default function ApplicantProposalPage() {
             <div className="flex flex-col gap-[18px] p-[18px] rounded-[10px] border border-[#E1E4EA] bg-white">
               {/* Profile Header */}
               <div className="flex items-start justify-between">
-                <div className="flex items-center gap-[10px]">
+                <button
+                  onClick={() => router.push(`/talent-profile/${applicant.user.id}`)}
+                  className="flex items-center gap-[10px] hover:opacity-80 transition-opacity text-left"
+                >
                   <img
                     src={applicant.user.talentProfile.profileImageUrl}
                     alt={applicant.user.talentProfile.fullName}
@@ -330,7 +365,7 @@ export default function ApplicantProposalPage() {
                       </span>
                     </div>
                   </div>
-                </div>
+                </button>
               </div>
 
               {/* Stats Section */}
@@ -998,6 +1033,30 @@ export default function ApplicantProposalPage() {
                     Decline
                   </span>
                 </button>
+
+                {/* Add Recommendation Button (for hired talents) */}
+                {applicant.status === "hired" && (
+                  <button
+                    onClick={() => setIsRecommendationModalOpen(true)}
+                    className="flex items-center justify-center gap-1 h-8 px-3 py-[12px] rounded-[8px] border border-[#008B47] bg-[#008B47] hover:bg-[#007038] transition-colors"
+                  >
+                    <svg
+                      width="15"
+                      height="15"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11C11 10 13 11 13 9C13 7.9 12.1 7 11 7C9.9 7 9 7.9 9 9H7C7 7.29 8.29 6 10 6C11.71 6 13 7.29 13 9C13 10 12 11.5 12 12V13H13V13Z"
+                        fill="white"
+                      />
+                    </svg>
+                    <span className="font-inter-tight text-[12px] font-medium text-white text-center leading-normal">
+                      Add Recommendation
+                    </span>
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -1067,6 +1126,14 @@ export default function ApplicantProposalPage() {
               />
             </>
           )}
+
+          <RecommendationModal
+            isOpen={isRecommendationModalOpen}
+            onClose={() => setIsRecommendationModalOpen(false)}
+            applicantName={applicant.user.talentProfile.fullName}
+            jobTitle={applicant.opportunity.title}
+            onSubmit={handleAddRecommendation}
+          />
         </>
       )}
     </div>
