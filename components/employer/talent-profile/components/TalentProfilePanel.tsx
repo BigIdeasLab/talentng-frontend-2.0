@@ -153,8 +153,25 @@ export function TalentProfilePanel({
       {/* Hire Button */}
       <button
         onClick={onHireClick}
-        className="w-full mt-[20px] px-4 py-2 rounded-[8px] bg-[#5C30FF] hover:bg-[#4a26cc] transition-colors text-white text-[13px] font-medium font-inter-tight"
+        className="w-full mt-[20px] px-6 py-3 rounded-full bg-[#1A1D2E] hover:bg-[#252A3E] transition-colors text-white text-[14px] font-medium font-inter-tight flex items-center justify-center gap-2"
       >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M2.5 3.75C2.5 2.92157 3.17157 2.25 4 2.25H12C12.8284 2.25 13.5 2.92157 13.5 3.75V10C13.5 10.8284 12.8284 11.5 12 11.5H5L2.5 13.5V3.75Z"
+            fill="white"
+          />
+          <path
+            d="M7.5 15.75C7.5 14.9116 8.17157 14.25 9 14.25H17C17.8284 14.25 18.5 14.9116 18.5 15.75V22C18.5 22.8284 17.8284 23.5 17 23.5H10L7.5 25.5V15.75Z"
+            fill="white"
+            opacity="0.5"
+          />
+        </svg>
         Hire {profile.fullName?.split(" ")[0] || "Talent"}
       </button>
 
