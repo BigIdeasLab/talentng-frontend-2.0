@@ -164,10 +164,10 @@ export function HireOpportunitiesModal({
         )}
 
         {/* Actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3 mt-8">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-2 rounded-[8px] border border-[#E1E4EA] font-inter-tight text-[13px] font-medium text-black hover:bg-gray-50 transition-colors"
+            className="flex-1 px-4 py-3 rounded-lg border border-[#E1E4EA] font-inter-tight text-[15px] font-medium text-black hover:bg-gray-50 transition-colors"
           >
             Cancel
           </button>
@@ -176,9 +176,25 @@ export function HireOpportunitiesModal({
             disabled={
               isLoading || !selectedOpportunityId || opportunities.length === 0
             }
-            className="flex-1 px-4 py-2 rounded-[8px] bg-[#5C30FF] hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-medium text-white transition-colors"
+            className="flex-1 px-4 py-3 rounded-lg bg-[#5C30FF] hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[15px] font-medium text-white transition-colors flex items-center justify-center gap-2"
           >
-            {isLoading ? "Hiring..." : "Hire for Opportunity"}
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="10" cy="10" r="9" fill="white" opacity="0.3" />
+              <path
+                d="M7 10L9 12L13 8"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            {isLoading ? "Hiring..." : "Continue Hire"}
           </button>
         </div>
       </div>
