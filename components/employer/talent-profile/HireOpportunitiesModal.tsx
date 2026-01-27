@@ -50,8 +50,8 @@ export function HireOpportunitiesModal({
               Hire {talentName}
             </h2>
             <p className="font-inter-tight text-[15px] text-[#525866] mt-2 leading-relaxed">
-              Select the opportunity you want to hire this talent for. They will receive an
-              email notification.
+              Select the opportunity you want to hire this talent for. They will
+              receive an email notification.
             </p>
           </div>
           <button
