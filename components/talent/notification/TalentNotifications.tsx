@@ -101,10 +101,7 @@ export function TalentNotifications() {
   return (
     <div className="flex-1 overflow-y-auto scrollbar-styled">
       {mockNotifications.map((notification) => (
-        <NotificationItem
-          key={notification.id}
-          notification={notification}
-        />
+        <NotificationItem key={notification.id} notification={notification} />
       ))}
     </div>
   );

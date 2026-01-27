@@ -44,7 +44,9 @@ export function NotificationItem({ notification }: NotificationItemProps) {
             {notification.hasAlert && (
               <div className="w-1.5 h-1.5 bg-red-600 rounded-full flex-shrink-0"></div>
             )}
-            <p className="text-[10px] text-gray-500">{notification.timestamp}</p>
+            <p className="text-[10px] text-gray-500">
+              {notification.timestamp}
+            </p>
           </div>
           {notification.hasAction && (
             <a

@@ -109,7 +109,7 @@ export function TalentSidebar({
             const isActive = pathname === item.href;
             const isNotification = item.id === "notification";
             const MenuComponent = isNotification ? "button" : "a";
-            
+
             return (
               <MenuComponent
                 key={item.id}
