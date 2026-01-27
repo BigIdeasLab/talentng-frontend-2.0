@@ -1,10 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
-import {
-  NotificationItem,
-  type Notification,
-} from "./NotificationItem";
+import { NotificationItem, type Notification } from "./NotificationItem";
 
 const mockNotifications: Notification[] = [
   {
@@ -43,7 +40,8 @@ const mockNotifications: Notification[] = [
     company: "Jumia Nigeria",
     logo: "J",
     logoColor: "bg-orange-500",
-    message: 'just filled the position you applied for. "Senior Product Designer"',
+    message:
+      'just filled the position you applied for. "Senior Product Designer"',
     timestamp: "35 Minutes Ago",
     hasAction: false,
     hasAlert: false,
