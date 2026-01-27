@@ -67,3 +67,43 @@ export interface ApplicationResponse {
   note?: string;
   createdAt: string;
 }
+
+export interface ScheduleInterviewInput {
+  scheduledDate: string; // ISO timestamp
+  message?: string;
+  meetingLink?: string;
+}
+
+export interface CompleteInterviewInput {
+  notes?: string;
+  rating?: number;
+  verdict?: "pass" | "fail";
+}
+
+export interface RescheduleInterviewInput {
+  newDate: string; // ISO timestamp
+  message?: string;
+}
+
+export interface CreateRecommendationInput {
+  title: string;
+  comment?: string;
+  rating?: number;
+}
+
+export interface SendInvitationInput {
+  opportunityId: string;
+  talentIds: string[];
+}
+
+export interface RespondToInvitationInput {
+  response: "accepted" | "declined";
+}
+
+export interface InvitationResponse {
+  talentId: string;
+  success: boolean;
+  applicationId?: string;
+  data?: Application;
+  error?: string;
+}

@@ -1,6 +1,6 @@
 /**
  * Applications API Client
- * Handles all application-related API calls
+ * Handles all application-related API calls for talent hiring workflow
  */
 
 import apiClient from "@/lib/api";
@@ -9,6 +9,7 @@ import type {
   ApplicationInterview,
   ApplicationSubmission,
   ApplicationResponse,
+  InvitationResponse,
 } from "./types";
 
 /**
@@ -90,10 +91,162 @@ export const deleteApplication = async (
   });
 };
 
+/**
+ * Update application status (shortlist, reject, hire)
+ * PATCH /applications/{id}
+ */
+export const updateApplicationStatus = async (
+  applicationId: string,
+  status: "shortlisted" | "rejected" | "hired",
+): Promise<Application> => {
+  return apiClient<Application>(`/applications/${applicationId}`, {
+    method: "PATCH",
+    body: { status },
+  });
+};
+
+/**
+ * Schedule an interview for an application
+ * POST /applications/{id}/schedule-interview
+ */
+export const scheduleInterview = async (
+  applicationId: string,
+  input: {
+    scheduledDate: string;
+    message?: string;
+    meetingLink?: string;
+  },
+): Promise<Application> => {
+  return apiClient<Application>(
+    `/applications/${applicationId}/schedule-interview`,
+    {
+      method: "POST",
+      body: input,
+    },
+  );
+};
+
+/**
+ * Reschedule an interview
+ * POST /applications/{id}/interviews/{interviewId}/reschedule
+ */
+export const rescheduleInterview = async (
+  applicationId: string,
+  interviewId: string,
+  input: {
+    newDate: string;
+    message?: string;
+  },
+): Promise<Application> => {
+  return apiClient<Application>(
+    `/applications/${applicationId}/interviews/${interviewId}/reschedule`,
+    {
+      method: "POST",
+      body: input,
+    },
+  );
+};
+
+/**
+ * Cancel an interview
+ * DELETE /applications/{id}/interviews/{interviewId}
+ */
+export const cancelInterview = async (
+  applicationId: string,
+  interviewId: string,
+  reason?: string,
+): Promise<Application> => {
+  return apiClient<Application>(
+    `/applications/${applicationId}/interviews/${interviewId}`,
+    {
+      method: "DELETE",
+      body: reason ? { reason } : undefined,
+    },
+  );
+};
+
+/**
+ * Complete an interview (mark as done and add notes/rating)
+ * POST /applications/{id}/interviews/{interviewId}/complete
+ */
+export const completeInterview = async (
+  applicationId: string,
+  interviewId: string,
+  input: {
+    notes?: string;
+    rating?: number;
+    verdict?: "pass" | "fail";
+  },
+): Promise<Application> => {
+  return apiClient<Application>(
+    `/applications/${applicationId}/interviews/${interviewId}/complete`,
+    {
+      method: "POST",
+      body: input,
+    },
+  );
+};
+
+/**
+ * Send job invitations to talents
+ * POST /applications/invitations/send
+ */
+export const sendInvitations = async (input: {
+  opportunityId: string;
+  talentIds: string[];
+}): Promise<InvitationResponse[]> => {
+  return apiClient<InvitationResponse[]>("/applications/invitations/send", {
+    method: "POST",
+    body: input,
+  });
+};
+
+/**
+ * Respond to an invitation (accept/decline)
+ * PATCH /applications/invitations/{id}/respond
+ */
+export const respondToInvitation = async (
+  applicationId: string,
+  response: "accepted" | "declined",
+): Promise<Application> => {
+  return apiClient<Application>(
+    `/applications/invitations/${applicationId}/respond`,
+    {
+      method: "PATCH",
+      body: { response },
+    },
+  );
+};
+
+/**
+ * Leave a recommendation for a hired talent
+ * POST /applications/{id}/recommendation
+ */
+export const leaveRecommendation = async (
+  applicationId: string,
+  input: {
+    title: string;
+    comment?: string;
+    rating?: number;
+  },
+): Promise<any> => {
+  return apiClient(`/applications/${applicationId}/recommendation`, {
+    method: "POST",
+    body: input,
+  });
+};
+
 // Export types
 export type {
   Application,
   ApplicationInterview,
   ApplicationSubmission,
   ApplicationResponse,
-};
+  ScheduleInterviewInput,
+  CompleteInterviewInput,
+  RescheduleInterviewInput,
+  CreateRecommendationInput,
+  SendInvitationInput,
+  RespondToInvitationInput,
+  InvitationResponse,
+} from "./types";

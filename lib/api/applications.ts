@@ -227,3 +227,42 @@ export async function addRecommendation(
     throw error;
   }
 }
+
+export async function sendInvitations(input: {
+  opportunityId: string;
+  talentIds: string[];
+}): Promise<any[]> {
+  try {
+    const response = await apiClient<any[]>("/applications/invitations/send", {
+      method: "POST",
+      body: input,
+    });
+    return response;
+  } catch (error) {
+    console.error("Error sending invitations:", error);
+    throw error;
+  }
+}
+
+export async function scheduleInterview(
+  applicationId: string,
+  input: {
+    scheduledDate: string;
+    message?: string;
+    meetingLink?: string;
+  },
+): Promise<Application> {
+  try {
+    const response = await apiClient<Application>(
+      `/applications/${applicationId}/schedule-interview`,
+      {
+        method: "POST",
+        body: input,
+      },
+    );
+    return response;
+  } catch (error) {
+    console.error("Error scheduling interview:", error);
+    throw error;
+  }
+}

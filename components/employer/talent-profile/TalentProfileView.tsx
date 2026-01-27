@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks";
+import { useProfile } from "@/hooks/useProfile";
 import type { TalentProfile } from "@/lib/api/talent/types";
 import type { Opportunity } from "@/lib/api/opportunities";
 import { getOpportunities } from "@/lib/api/opportunities";
+import { sendInvitations } from "@/lib/api/applications";
 import { TalentProfilePanel } from "./components/TalentProfilePanel";
 import { TalentProfileNav } from "./components/TalentProfileNav";
 import { TalentWorksGrid } from "./components/TalentWorksGrid";
@@ -21,6 +23,7 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
   const [isHireModalOpen, setIsHireModalOpen] = useState(false);
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
   const { toast } = useToast();
+  const { currentProfile } = useProfile();
 
   useEffect(() => {
     if (isHireModalOpen) {
@@ -30,7 +33,17 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
 
   const fetchOpportunities = async () => {
     try {
-      const response = await getOpportunities({ status: "active" });
+      const userId = currentProfile?.userId;
+      if (!userId) {
+        console.warn("User ID not available");
+        return;
+      }
+
+      // Fetch only opportunities posted by the current recruiter
+      const response = await getOpportunities({
+        status: "active",
+        postedById: userId,
+      });
       setOpportunities(response.data || []);
     } catch (error) {
       console.error("Failed to fetch opportunities:", error);
@@ -42,18 +55,34 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
     }
   };
 
-  const handleHire = async (_opportunityId: string) => {
+  const handleHire = async (opportunityId: string) => {
     try {
-      // TODO: Implement hire action - create application and update status to "hired"
-      toast?.({
-        title: "Success",
-        description: `${profile.fullName} has been hired for the opportunity`,
+      // Send invitation to the talent for this opportunity
+      // This creates an application with sourceType="invited"
+      const results = await sendInvitations({
+        opportunityId,
+        talentIds: [profile.userId], // Use userId, not profile id
       });
+
+      // Check if invitation was successful
+      const result = results[0];
+      if (result.success) {
+        toast?.({
+          title: "Success",
+          description: `Invitation sent to ${profile.fullName} for the opportunity`,
+        });
+        setIsHireModalOpen(false);
+      } else {
+        throw new Error(result.error || "Failed to send invitation");
+      }
     } catch (error) {
       console.error("Failed to hire talent:", error);
       toast?.({
         title: "Error",
-        description: "Failed to hire talent",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to send invitation to talent",
         variant: "destructive",
       });
     }

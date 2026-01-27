@@ -1,5 +1,13 @@
 "use client";
 
+import { useState } from "react";
+import { useToast } from "@/hooks";
+import {
+  updateApplicationStatus,
+  scheduleInterview,
+} from "@/lib/api/applications";
+import { HireApplicationModal } from "@/components/employer/applicants/HireApplicationModal";
+
 interface Applicant {
   id: string;
   userId: string;
@@ -41,6 +49,13 @@ export function ApplicantsTable({
   applicants,
   opportunityTitle,
 }: ApplicantsTableProps) {
+  const { toast } = useToast();
+  const [selectedApplicant, setSelectedApplicant] = useState<Applicant | null>(
+    null,
+  );
+  const [isHireModalOpen, setIsHireModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const formatDate = (isoDate: string) => {
     const date = new Date(isoDate);
     return date.toLocaleDateString("en-US", {
@@ -55,6 +70,32 @@ export function ApplicantsTable({
       ?.toLowerCase()
       .includes(searchQuery.toLowerCase()),
   );
+
+  const handleHireClick = (applicant: Applicant) => {
+    setSelectedApplicant(applicant);
+    setIsHireModalOpen(true);
+  };
+
+  const handleHire = async (
+    applicationId: string,
+    message: string,
+  ): Promise<void> => {
+    try {
+      setIsLoading(true);
+      // Update application status to "hired"
+      await updateApplicationStatus(applicationId, "hired");
+
+      toast({
+        title: "Success",
+        description: `${selectedApplicant?.user?.talentProfile?.fullName} has been hired successfully!`,
+      });
+    } catch (error) {
+      console.error("Error hiring applicant:", error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="border border-[#E1E4EA] rounded-[16px] overflow-hidden">
@@ -151,7 +192,10 @@ export function ApplicantsTable({
                 <button className="px-3 py-1.5 bg-[#181B25] text-white rounded-full font-inter-tight text-[12px] font-medium hover:bg-[#2a2d35] transition-colors whitespace-nowrap">
                   View Profile
                 </button>
-                <button className="px-3 py-1.5 bg-[#5C30FF] text-white rounded-full font-inter-tight text-[12px] font-medium border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors whitespace-nowrap">
+                <button
+                  onClick={() => handleHireClick(applicant)}
+                  className="px-3 py-1.5 bg-[#5C30FF] text-white rounded-full font-inter-tight text-[12px] font-medium border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors whitespace-nowrap"
+                >
                   Hire
                 </button>
               </div>
@@ -221,7 +265,10 @@ export function ApplicantsTable({
                 <button className="flex-1 px-3 py-1.5 bg-[#181B25] text-white rounded-full font-inter-tight text-[11px] font-medium hover:bg-[#2a2d35] transition-colors">
                   View Profile
                 </button>
-                <button className="flex-1 px-3 py-1.5 bg-[#5C30FF] text-white rounded-full font-inter-tight text-[11px] font-medium border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors">
+                <button
+                  onClick={() => handleHireClick(applicant)}
+                  className="flex-1 px-3 py-1.5 bg-[#5C30FF] text-white rounded-full font-inter-tight text-[11px] font-medium border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors"
+                >
                   Hire
                 </button>
               </div>
@@ -236,6 +283,24 @@ export function ApplicantsTable({
             No applicants found
           </p>
         </div>
+      )}
+
+      {/* Hire Modal */}
+      {selectedApplicant && (
+        <HireApplicationModal
+          isOpen={isHireModalOpen}
+          onClose={() => {
+            setIsHireModalOpen(false);
+            setSelectedApplicant(null);
+          }}
+          applicantName={
+            selectedApplicant.user?.talentProfile?.fullName || "Applicant"
+          }
+          jobTitle={opportunityTitle || "Position"}
+          companyName="Your Company"
+          applicationId={selectedApplicant.id}
+          onHire={handleHire}
+        />
       )}
     </div>
   );
