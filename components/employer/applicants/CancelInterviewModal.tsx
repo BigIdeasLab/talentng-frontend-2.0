@@ -130,7 +130,9 @@ export const CancelInterviewModal: React.FC<CancelInterviewModalProps> = ({
               {/* Warning Message */}
               <div className="flex flex-col gap-5">
                 <div className="font-inter-tight text-sm text-black">
-                  <span className="text-[#525866] font-normal">Cancelling for: </span>
+                  <span className="text-[#525866] font-normal">
+                    Cancelling for:{" "}
+                  </span>
                   <span className="font-medium">{applicantName}</span>
                   <span className="text-[#525866] font-normal"> for </span>
                   <span className="font-medium">{jobTitle}</span>

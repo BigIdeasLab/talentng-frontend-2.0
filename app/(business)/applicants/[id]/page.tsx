@@ -14,7 +14,11 @@ import { CancelInterviewModal } from "@/components/employer/applicants/CancelInt
 import { ApplicantDetailSkeleton } from "@/components/skeletons/ApplicantDetailSkeleton";
 import { useApplications } from "@/hooks/useApplications";
 import apiClient from "@/lib/api";
-import { rescheduleInterview, cancelInterview, completeInterview } from "@/lib/api/applications";
+import {
+  rescheduleInterview,
+  cancelInterview,
+  completeInterview,
+} from "@/lib/api/applications";
 import type { Application, ApplicationInterview } from "@/lib/api/applications";
 
 const statusDisplayMap = {
@@ -742,14 +746,18 @@ export default function ApplicantProposalPage() {
                           const scheduledTime = new Date(
                             interview.scheduledDate,
                           ).getTime();
-                          const tenMinutesAfter = scheduledTime + 10 * 60 * 1000;
+                          const tenMinutesAfter =
+                            scheduledTime + 10 * 60 * 1000;
                           const isTimeToComplete =
                             new Date().getTime() > tenMinutesAfter;
 
                           return isTimeToComplete ? (
                             <button
                               onClick={() =>
-                                handleCompleteInterview(applicant.id, interview.id)
+                                handleCompleteInterview(
+                                  applicant.id,
+                                  interview.id,
+                                )
                               }
                               className="flex items-center justify-center gap-1 h-8 px-3 py-[12px] rounded-[8px] border border-[#008B47] bg-[#D1FAE5] hover:bg-[#A7F3D0] transition-colors text-[12px] font-medium text-[#008B47]"
                             >
