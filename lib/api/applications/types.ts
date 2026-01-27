@@ -28,6 +28,16 @@ export interface Opportunity {
   location: string;
 }
 
+export interface ApplicationInterview {
+  id: string;
+  applicationId: string;
+  scheduledDate: string;
+  message?: string;
+  status: "scheduled" | "completed" | "cancelled" | "rescheduled";
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Application {
   id: string;
   userId: string;
@@ -40,6 +50,7 @@ export interface Application {
   updatedAt: string;
   user: User;
   opportunity: Opportunity;
+  interviews?: ApplicationInterview[];
 }
 
 export interface ApplicationSubmission {

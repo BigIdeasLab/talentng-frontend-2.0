@@ -1,5 +1,16 @@
 import apiClient from "./index";
 
+export interface ApplicationInterview {
+  id: string;
+  applicationId: string;
+  scheduledDate: string;
+  message?: string;
+  meetingLink?: string;
+  status: "scheduled" | "completed" | "cancelled" | "rescheduled";
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Application {
   id: string;
   userId: string;
@@ -35,6 +46,7 @@ export interface Application {
     description?: string;
     location: string;
   };
+  interviews?: ApplicationInterview[];
 }
 
 export async function getApplications(params?: {
@@ -128,6 +140,67 @@ export async function updateApplicationStatus(
     return response;
   } catch (error) {
     console.error("Error updating application:", error);
+    throw error;
+  }
+}
+
+export async function rescheduleInterview(
+  applicationId: string,
+  interviewId: string,
+  scheduledDate: string,
+  message: string,
+  meetingLink?: string,
+): Promise<Application> {
+  try {
+    const response = await apiClient<Application>(
+      `/applications/${applicationId}/interviews/${interviewId}/reschedule`,
+      {
+        method: "POST",
+        body: { scheduledDate, message, meetingLink },
+      },
+    );
+    return response;
+  } catch (error) {
+    console.error("Error rescheduling interview:", error);
+    throw error;
+  }
+}
+
+export async function cancelInterview(
+  applicationId: string,
+  interviewId: string,
+  reason: string,
+): Promise<Application> {
+  try {
+    const response = await apiClient<Application>(
+      `/applications/${applicationId}/interviews/${interviewId}/cancel`,
+      {
+        method: "POST",
+        body: { reason },
+      },
+    );
+    return response;
+  } catch (error) {
+    console.error("Error cancelling interview:", error);
+    throw error;
+  }
+}
+
+export async function completeInterview(
+  applicationId: string,
+  interviewId: string,
+): Promise<Application> {
+  try {
+    const response = await apiClient<Application>(
+      `/applications/${applicationId}/interviews/${interviewId}/complete`,
+      {
+        method: "POST",
+        body: {},
+      },
+    );
+    return response;
+  } catch (error) {
+    console.error("Error completing interview:", error);
     throw error;
   }
 }

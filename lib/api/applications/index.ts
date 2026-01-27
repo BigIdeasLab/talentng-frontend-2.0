@@ -6,6 +6,7 @@
 import apiClient from "@/lib/api";
 import type {
   Application,
+  ApplicationInterview,
   ApplicationSubmission,
   ApplicationResponse,
 } from "./types";
@@ -90,4 +91,9 @@ export const deleteApplication = async (
 };
 
 // Export types
-export type { Application, ApplicationSubmission, ApplicationResponse };
+export type {
+  Application,
+  ApplicationInterview,
+  ApplicationSubmission,
+  ApplicationResponse,
+};

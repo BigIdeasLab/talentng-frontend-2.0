@@ -1,37 +1,43 @@
 "use client";
 
 import React, { useState } from "react";
+import type { ApplicationInterview } from "@/lib/api/applications";
 
-interface ScheduleInterviewModalProps {
+interface RescheduleInterviewModalProps {
   isOpen: boolean;
   onClose: () => void;
   applicantName: string;
   jobTitle: string;
   companyName: string;
+  interview: ApplicationInterview;
   applicationId: string;
-  onSchedule: (
+  onReschedule: (
     applicationId: string,
+    interviewId: string,
     scheduledDate: string,
     message: string,
     meetingLink?: string,
   ) => Promise<void>;
 }
 
-export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
+export const RescheduleInterviewModal: React.FC<
+  RescheduleInterviewModalProps
+> = ({
   isOpen,
   onClose,
   applicantName,
   jobTitle,
   companyName,
+  interview,
   applicationId,
-  onSchedule,
+  onReschedule,
 }) => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [message, setMessage] = useState(
-    `Dear ${applicantName},\n\nWe are pleased to inform you that you have been selected for an interview for the ${jobTitle} position at ${companyName}.\n\nPlease confirm your availability for the scheduled date and time. We look forward to meeting you!\n\nBest regards,\n${companyName} Team`,
+    `Dear ${applicantName},\n\nWe are rescheduling your interview for the ${jobTitle} position.\n\nPlease confirm your availability for the new scheduled date and time. We look forward to meeting you!\n\nBest regards,\n${companyName} Team`,
   );
-  const [meetingLink, setMeetingLink] = useState("");
+  const [meetingLink, setMeetingLink] = useState(interview.meetingLink || "");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -48,17 +54,16 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
       setIsLoading(true);
       setError(null);
 
-      // Combine date and time into ISO 8601 format
       if (!date || !time) {
         setError("Please select both date and time");
         return;
       }
 
-      // Create a proper ISO 8601 datetime string
       const scheduledDateTime = new Date(`${date}T${time}:00`).toISOString();
 
-      await onSchedule(
+      await onReschedule(
         applicationId,
+        interview.id,
         scheduledDateTime,
         message,
         meetingLink || undefined,
@@ -66,9 +71,9 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
       onClose();
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "Failed to schedule interview";
+        err instanceof Error ? err.message : "Failed to reschedule interview";
       setError(errorMessage);
-      console.error("Error scheduling interview:", err);
+      console.error("Error rescheduling interview:", err);
     } finally {
       setIsLoading(false);
     }
@@ -123,7 +128,7 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                     />
                   </svg>
                   <h2 className="font-inter-tight text-lg font-bold text-black">
-                    Schedule Interview
+                    Reschedule Interview
                   </h2>
                 </div>
                 <button
@@ -152,7 +157,7 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
               <div className="flex flex-col gap-5">
                 <div className="font-inter-tight text-sm text-black">
                   <span className="text-[#525866] font-normal">
-                    Sending to:{" "}
+                    Rescheduling for:{" "}
                   </span>
                   <span className="font-medium">{applicantName}</span>
                   <span className="text-[#525866] font-normal"> for </span>
@@ -164,7 +169,7 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                   {/* Interview Date */}
                   <div className="flex-1 flex flex-col gap-2.5">
                     <label className="font-inter-tight text-sm font-medium text-black">
-                      Interview Date
+                      New Interview Date
                     </label>
                     <div className="relative">
                       <input
@@ -179,7 +184,7 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                   {/* Interview Time */}
                   <div className="flex-1 flex flex-col gap-2.5">
                     <label className="font-inter-tight text-sm font-medium text-black">
-                      Interview Time
+                      New Interview Time
                     </label>
                     <div className="relative">
                       <input
@@ -211,7 +216,7 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                 </div>
               </div>
               <p className="font-inter-tight text-xs text-[#525866]">
-                Add a Zoom, Google Meet, or other video conferencing link.
+                Update the meeting link if needed.
               </p>
             </div>
 
@@ -262,7 +267,7 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                   : "bg-[#5C30FF] hover:bg-[#4a26cc]"
               }`}
             >
-              {isLoading ? "Scheduling..." : "Schedule & Send"}
+              {isLoading ? "Rescheduling..." : "Reschedule & Notify"}
             </button>
           </div>
         </div>

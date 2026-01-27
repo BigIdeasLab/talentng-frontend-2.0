@@ -7,6 +7,7 @@ interface DeclineApplicationModalProps {
   onClose: () => void;
   applicantName: string;
   jobTitle: string;
+  companyName: string;
   applicationId: string;
   onDecline: (applicationId: string, note: string) => Promise<void>;
 }
@@ -18,11 +19,12 @@ export const DeclineApplicationModal: React.FC<
   onClose,
   applicantName,
   jobTitle,
+  companyName,
   applicationId,
   onDecline,
 }) => {
   const [message, setMessage] = useState(
-    `Dear ${applicantName},\n\nThank you for your interest in the ${jobTitle} position at Chowdeck Nigeria.\n\nAfter careful consideration, we have decided to move forward with other candidates whose qualifications more closely match our current needs.\n\nWe appreciate the time you invested in applying and wish you the best in your future endeavors.\n\nBest regards,\nChowdeck Nigeria Team`,
+    `Dear ${applicantName},\n\nThank you for your interest in the ${jobTitle} position at ${companyName}.\n\nAfter careful consideration, we have decided to move forward with other candidates whose qualifications more closely match our current needs.\n\nWe appreciate the time you invested in applying and wish you the best in your future endeavors.\n\nBest regards,\n${companyName} Team`,
   );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

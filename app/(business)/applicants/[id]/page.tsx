@@ -9,9 +9,13 @@ import { useToast } from "@/hooks";
 import { ScheduleInterviewModal } from "@/components/employer/applicants/ScheduleInterviewModal";
 import { DeclineApplicationModal } from "@/components/employer/applicants/DeclineApplicationModal";
 import { HireApplicationModal } from "@/components/employer/applicants/HireApplicationModal";
+import { RescheduleInterviewModal } from "@/components/employer/applicants/RescheduleInterviewModal";
+import { CancelInterviewModal } from "@/components/employer/applicants/CancelInterviewModal";
+import { ApplicantDetailSkeleton } from "@/components/skeletons/ApplicantDetailSkeleton";
 import { useApplications } from "@/hooks/useApplications";
 import apiClient from "@/lib/api";
-import type { Application } from "@/lib/api/applications";
+import { rescheduleInterview, cancelInterview, completeInterview } from "@/lib/api/applications";
+import type { Application, ApplicationInterview } from "@/lib/api/applications";
 
 const statusDisplayMap = {
   applied: { label: "In Review", bg: "#DBE9FE", text: "#5C30FF" },
@@ -31,6 +35,10 @@ export default function ApplicantProposalPage() {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false);
   const [isHireModalOpen, setIsHireModalOpen] = useState(false);
+  const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState(false);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [selectedInterview, setSelectedInterview] =
+    useState<ApplicationInterview | null>(null);
   const { getById, isLoading, updateStatus } = useApplications();
   const { toast } = useToast();
 
@@ -54,7 +62,7 @@ export default function ApplicantProposalPage() {
 
   const handleHireApplicant = async (
     applicationId: string,
-    message: string,
+    _message: string,
   ) => {
     try {
       await updateStatus(applicationId, "hired");
@@ -78,7 +86,7 @@ export default function ApplicantProposalPage() {
 
   const handleDeclineApplicant = async (
     applicationId: string,
-    note: string,
+    _note: string,
   ) => {
     try {
       await updateStatus(applicationId, "rejected");
@@ -104,31 +112,124 @@ export default function ApplicantProposalPage() {
     applicationId: string,
     scheduledDate: string,
     message: string,
+    meetingLink?: string,
   ) => {
     try {
       // Call the schedule interview endpoint
-      const response = await apiClient(
+      const response = await apiClient<Application>(
         `/applications/${applicationId}/schedule-interview`,
         {
           method: "POST",
           body: {
             scheduledDate,
             message,
+            meetingLink,
           },
         },
       );
+
+      // Update the applicant state with the response
+      if (response) {
+        setApplicant(response);
+      }
 
       toast({
         title: "Success",
         description: "Interview has been scheduled",
         variant: "default",
       });
-
-      // Refresh the applicant data
-      fetchApplicant();
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to schedule interview";
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      throw err;
+    }
+  };
+
+  const handleRescheduleInterview = async (
+    applicationId: string,
+    interviewId: string,
+    scheduledDate: string,
+    message: string,
+    meetingLink?: string,
+  ) => {
+    try {
+      const response = await rescheduleInterview(
+        applicationId,
+        interviewId,
+        scheduledDate,
+        message,
+        meetingLink,
+      );
+
+      setApplicant(response);
+      toast({
+        title: "Success",
+        description: "Interview has been rescheduled",
+        variant: "default",
+      });
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to reschedule interview";
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      throw err;
+    }
+  };
+
+  const handleCancelInterview = async (
+    applicationId: string,
+    interviewId: string,
+    reason: string,
+  ) => {
+    try {
+      const response = await cancelInterview(
+        applicationId,
+        interviewId,
+        reason,
+      );
+
+      setApplicant(response);
+      toast({
+        title: "Success",
+        description: "Interview has been cancelled and talent notified",
+        variant: "default",
+      });
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to cancel interview";
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      throw err;
+    }
+  };
+
+  const handleCompleteInterview = async (
+    applicationId: string,
+    interviewId: string,
+  ) => {
+    try {
+      const response = await completeInterview(applicationId, interviewId);
+
+      setApplicant(response);
+      toast({
+        title: "Success",
+        description: "Interview marked as completed",
+        variant: "default",
+      });
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to complete interview";
       toast({
         title: "Error",
         description: errorMessage,
@@ -143,7 +244,7 @@ export default function ApplicantProposalPage() {
   }
 
   if (isLoading) {
-    return <PageLoadingState message="Loading applicant details..." />;
+    return <ApplicantDetailSkeleton />;
   }
 
   if (error || !applicant) {
@@ -376,8 +477,353 @@ export default function ApplicantProposalPage() {
                 <p className="font-inter-tight text-[13px] font-normal text-[#606060] leading-[18px]">
                   {applicant.opportunity.company} • {applicant.opportunity.type}
                 </p>
+
+                {/* Interview Preview - Show meeting link if exists */}
+                {applicant.interviews &&
+                  applicant.interviews.length > 0 &&
+                  applicant.interviews[0].meetingLink && (
+                    <div className="pt-[8px] border-t border-[#E1E4EA]">
+                      {applicant.interviews[0].status === "completed" ? (
+                        <button
+                          disabled
+                          className="inline-flex items-center gap-[6px] px-3 py-2 rounded-[8px] bg-[#D1FAE5] text-[#076046] text-[12px] font-medium cursor-not-allowed"
+                        >
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M20 6L9 17L4 12"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                          Meeting Completed
+                        </button>
+                      ) : (
+                        <a
+                          href={applicant.interviews[0].meetingLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-[6px] px-3 py-2 rounded-[8px] bg-[#5C30FF] hover:bg-[#4a26cc] transition-colors text-white text-[12px] font-medium"
+                        >
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"
+                              stroke="white"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                          Join Meeting
+                        </a>
+                      )}
+                    </div>
+                  )}
               </div>
             </div>
+
+            {/* Interview Information Section */}
+            {applicant.interviews && applicant.interviews.length > 0 ? (
+              <>
+                {applicant.interviews.map((interview, index) => (
+                  <div
+                    key={interview.id}
+                    className="flex flex-col gap-[18px] p-[18px] pt-[23px] rounded-[10px] border border-[#E1E4EA] bg-white"
+                  >
+                    <div className="flex items-center justify-between">
+                      <h2 className="font-inter-tight text-[15px] font-semibold text-black leading-normal">
+                        Interview Details{" "}
+                        {applicant.interviews &&
+                          applicant.interviews.length > 1 &&
+                          `(${index + 1})`}
+                      </h2>
+                      <div
+                        className="flex items-center justify-center px-[12px] h-[18px] rounded-[50px]"
+                        style={{
+                          backgroundColor:
+                            interview.status === "scheduled"
+                              ? "#FEF3C7"
+                              : interview.status === "completed"
+                                ? "#D1FAE5"
+                                : interview.status === "cancelled"
+                                  ? "#FEE2E1"
+                                  : "#DBE9FE",
+                          color:
+                            interview.status === "scheduled"
+                              ? "#92400D"
+                              : interview.status === "completed"
+                                ? "#076046"
+                                : interview.status === "cancelled"
+                                  ? "#991B1B"
+                                  : "#5C30FF",
+                        }}
+                      >
+                        <span className="font-inter-tight text-[11px] font-semibold leading-normal capitalize">
+                          {interview.status}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-[16px]">
+                      {/* Interview Date and Time */}
+                      <div className="flex items-start gap-[12px] p-[12px] rounded-[8px] bg-[#F5F5F5] border border-[#E1E4EA]">
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="mt-0.5 flex-shrink-0"
+                        >
+                          <path
+                            d="M12.6667 2.66699H3.33333C2.59695 2.66699 2 3.26395 2 4.00033V13.3337C2 14.07 2.59695 14.667 3.33333 14.667H12.6667C13.403 14.667 14 14.07 14 13.3337V4.00033C14 3.26395 13.403 2.66699 12.6667 2.66699Z"
+                            stroke="#525866"
+                            strokeWidth="1.6"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M10.666 1.33301V3.99967"
+                            stroke="#525866"
+                            strokeWidth="1.6"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M5.33398 1.33301V3.99967"
+                            stroke="#525866"
+                            strokeWidth="1.6"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M2 6.66699H14"
+                            stroke="#525866"
+                            strokeWidth="1.6"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        <div className="flex flex-col gap-[4px]">
+                          <p className="font-inter-tight text-[12px] font-medium text-[#525866]">
+                            Scheduled Date & Time
+                          </p>
+                          <p className="font-inter-tight text-[14px] font-semibold text-black">
+                            {new Date(
+                              interview.scheduledDate,
+                            ).toLocaleDateString("en-US", {
+                              weekday: "long",
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })}{" "}
+                            at{" "}
+                            {new Date(
+                              interview.scheduledDate,
+                            ).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Interview Meeting Link */}
+                      {interview.meetingLink && (
+                        <div className="flex flex-col gap-[8px]">
+                          <p className="font-inter-tight text-[12px] font-medium text-[#525866]">
+                            Meeting Link
+                          </p>
+                          <a
+                            href={interview.meetingLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-[6px] px-3 py-2 rounded-[8px] bg-[#5C30FF] hover:bg-[#4a26cc] transition-colors text-white text-[12px] font-medium w-fit"
+                          >
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                stroke="white"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                            Join Meeting
+                          </a>
+                        </div>
+                      )}
+
+                      {/* Interview Message/Instructions */}
+                      {interview.message && (
+                        <div className="flex flex-col gap-[8px]">
+                          <p className="font-inter-tight text-[12px] font-medium text-[#525866]">
+                            Message / Instructions
+                          </p>
+                          <div className="p-[12px] rounded-[8px] bg-[#F5F5F5] border border-[#E1E4EA]">
+                            <p className="font-inter-tight text-[13px] font-normal text-black leading-[19px] whitespace-pre-line">
+                              {interview.message}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Reschedule / Cancel Interview Buttons */}
+                    {(interview.status === "scheduled" ||
+                      interview.status === "rescheduled") && (
+                      <div className="flex items-center gap-[10px] pt-[8px]">
+                        <button
+                          onClick={() => {
+                            setSelectedInterview(interview);
+                            setIsRescheduleModalOpen(true);
+                          }}
+                          className="flex items-center gap-1 h-8 px-[14px] py-[12px] rounded-[8px] border border-[#E6E7EA] bg-white hover:bg-gray-50 transition-colors text-[12px] font-medium text-black"
+                        >
+                          <svg
+                            width="13"
+                            height="13"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M12.6667 2.66699H3.33333C2.59695 2.66699 2 3.26395 2 4.00033V13.3337C2 14.07 2.59695 14.667 3.33333 14.667H12.6667C13.403 14.667 14 14.07 14 13.3337V4.00033C14 3.26395 13.403 2.66699 12.6667 2.66699Z"
+                              stroke="black"
+                              strokeWidth="1.6"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M10.666 1.33301V3.99967"
+                              stroke="black"
+                              strokeWidth="1.6"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M5.33398 1.33301V3.99967"
+                              stroke="black"
+                              strokeWidth="1.6"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M2 6.66699H14"
+                              stroke="black"
+                              strokeWidth="1.6"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                          Reschedule
+                        </button>
+                        {(() => {
+                          // Check if meeting time + 10 min has passed
+                          const scheduledTime = new Date(
+                            interview.scheduledDate,
+                          ).getTime();
+                          const tenMinutesAfter = scheduledTime + 10 * 60 * 1000;
+                          const isTimeToComplete =
+                            new Date().getTime() > tenMinutesAfter;
+
+                          return isTimeToComplete ? (
+                            <button
+                              onClick={() =>
+                                handleCompleteInterview(applicant.id, interview.id)
+                              }
+                              className="flex items-center justify-center gap-1 h-8 px-3 py-[12px] rounded-[8px] border border-[#008B47] bg-[#D1FAE5] hover:bg-[#A7F3D0] transition-colors text-[12px] font-medium text-[#008B47]"
+                            >
+                              <svg
+                                width="15"
+                                height="15"
+                                viewBox="0 0 18 18"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5Z"
+                                  stroke="#008B47"
+                                  strokeWidth="1.6"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                                <path
+                                  d="M12.75 7.5L8.25 12L6 9.75"
+                                  stroke="#008B47"
+                                  strokeWidth="1.6"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                              Completed
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => {
+                                setSelectedInterview(interview);
+                                setIsCancelModalOpen(true);
+                              }}
+                              className="flex items-center justify-center gap-1 h-8 px-3 py-[12px] rounded-[8px] border border-[#E6E7EA] bg-white hover:bg-gray-50 transition-colors text-[12px] font-medium text-[#EE4142]"
+                            >
+                              <svg
+                                width="15"
+                                height="15"
+                                viewBox="0 0 18 18"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5Z"
+                                  stroke="#EE4142"
+                                  strokeWidth="1.6"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                                <path
+                                  d="M11.25 6.75L6.75 11.25"
+                                  stroke="#EE4142"
+                                  strokeWidth="1.6"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                                <path
+                                  d="M6.75 6.75L11.25 11.25"
+                                  stroke="#EE4142"
+                                  strokeWidth="1.6"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                              Cancel
+                            </button>
+                          );
+                        })()}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </>
+            ) : null}
 
             {/* Proposal Section */}
             <div className="flex flex-col gap-[18px] p-[18px] pt-[23px] rounded-[10px] border border-[#E1E4EA] bg-white">
@@ -558,6 +1004,7 @@ export default function ApplicantProposalPage() {
             onClose={() => setIsScheduleModalOpen(false)}
             applicantName={applicant.user.talentProfile.fullName}
             jobTitle={applicant.opportunity.title}
+            companyName={applicant.opportunity.company}
             applicationId={applicant.id}
             onSchedule={handleScheduleInterview}
           />
@@ -567,6 +1014,7 @@ export default function ApplicantProposalPage() {
             onClose={() => setIsDeclineModalOpen(false)}
             applicantName={applicant.user.talentProfile.fullName}
             jobTitle={applicant.opportunity.title}
+            companyName={applicant.opportunity.company}
             applicationId={applicant.id}
             onDecline={handleDeclineApplicant}
           />
@@ -576,9 +1024,41 @@ export default function ApplicantProposalPage() {
             onClose={() => setIsHireModalOpen(false)}
             applicantName={applicant.user.talentProfile.fullName}
             jobTitle={applicant.opportunity.title}
+            companyName={applicant.opportunity.company}
             applicationId={applicant.id}
             onHire={handleHireApplicant}
           />
+
+          {selectedInterview && (
+            <>
+              <RescheduleInterviewModal
+                isOpen={isRescheduleModalOpen}
+                onClose={() => {
+                  setIsRescheduleModalOpen(false);
+                  setSelectedInterview(null);
+                }}
+                applicantName={applicant.user.talentProfile.fullName}
+                jobTitle={applicant.opportunity.title}
+                companyName={applicant.opportunity.company}
+                interview={selectedInterview}
+                applicationId={applicant.id}
+                onReschedule={handleRescheduleInterview}
+              />
+
+              <CancelInterviewModal
+                isOpen={isCancelModalOpen}
+                onClose={() => {
+                  setIsCancelModalOpen(false);
+                  setSelectedInterview(null);
+                }}
+                applicantName={applicant.user.talentProfile.fullName}
+                jobTitle={applicant.opportunity.title}
+                interview={selectedInterview}
+                applicationId={applicant.id}
+                onCancel={handleCancelInterview}
+              />
+            </>
+          )}
         </>
       )}
     </div>

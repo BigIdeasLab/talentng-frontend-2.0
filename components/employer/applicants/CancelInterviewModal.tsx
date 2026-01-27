@@ -1,29 +1,32 @@
 "use client";
 
 import React, { useState } from "react";
+import type { ApplicationInterview } from "@/lib/api/applications";
 
-interface HireApplicationModalProps {
+interface CancelInterviewModalProps {
   isOpen: boolean;
   onClose: () => void;
   applicantName: string;
   jobTitle: string;
-  companyName: string;
+  interview: ApplicationInterview;
   applicationId: string;
-  onHire: (applicationId: string, message: string) => Promise<void>;
+  onCancel: (
+    applicationId: string,
+    interviewId: string,
+    reason: string,
+  ) => Promise<void>;
 }
 
-export const HireApplicationModal: React.FC<HireApplicationModalProps> = ({
+export const CancelInterviewModal: React.FC<CancelInterviewModalProps> = ({
   isOpen,
   onClose,
   applicantName,
   jobTitle,
-  companyName,
+  interview,
   applicationId,
-  onHire,
+  onCancel,
 }) => {
-  const [message, setMessage] = useState(
-    `Dear ${applicantName},\n\nCongratulations! We are pleased to offer you the position of ${jobTitle} at ${companyName}.\n\nWe were impressed by your qualifications and believe you would be a great fit for our team.\n\nPlease confirm your acceptance and we will proceed with the next steps.\n\nWe look forward to working with you!\n\nBest regards,\n${companyName} Team`,
-  );
+  const [reason, setReason] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,17 +42,25 @@ export const HireApplicationModal: React.FC<HireApplicationModalProps> = ({
     try {
       setIsLoading(true);
       setError(null);
-      await onHire(applicationId, message);
+
+      if (!reason.trim()) {
+        setError("Please provide a reason for cancellation");
+        return;
+      }
+
+      await onCancel(applicationId, interview.id, reason);
       onClose();
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "Failed to hire talent";
+        err instanceof Error ? err.message : "Failed to cancel interview";
       setError(errorMessage);
-      console.error("Error hiring talent:", err);
+      console.error("Error cancelling interview:", err);
     } finally {
       setIsLoading(false);
     }
   };
+
+  const isFormValid = reason.trim().length > 0;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -61,7 +72,7 @@ export const HireApplicationModal: React.FC<HireApplicationModalProps> = ({
 
       {/* Modal Content */}
       <div className="relative bg-white rounded-xl border border-[#E4E6EC] shadow-[0_0_15px_0_rgba(0,0,0,0.15)] w-full max-w-[512px] mx-4">
-        <div className="flex flex-col gap-10 p-6">
+        <div className="flex flex-col gap-9 p-6">
           {/* Header */}
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-8">
@@ -75,30 +86,23 @@ export const HireApplicationModal: React.FC<HireApplicationModalProps> = ({
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                    <g clipPath="url(#clip0_hire)">
-                      <path
-                        d="M16.5 8.31039V9.00039C16.4991 10.6177 15.9754 12.1914 15.007 13.4868C14.0386 14.7821 12.6775 15.7297 11.1265 16.1883C9.57557 16.6469 7.91794 16.5918 6.40085 16.0313C4.88376 15.4708 3.58849 14.435 2.70822 13.0782C1.82795 11.7214 1.40984 10.1164 1.51626 8.50262C1.62267 6.88881 2.24791 5.35263 3.29871 4.12319C4.34951 2.89375 5.76959 2.03692 7.34714 1.6805C8.92469 1.32407 10.5752 1.48714 12.0525 2.14539"
-                        stroke="#5C30FF"
-                        strokeWidth="1.6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M16.5 3L9 10.5075L6.75 8.2575"
-                        stroke="#5C30FF"
-                        strokeWidth="1.6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_hire">
-                        <rect width="20" height="20" fill="white" />
-                      </clipPath>
-                    </defs>
+                    <path
+                      d="M9 1.66699C4.87 1.66699 1.66667 4.87033 1.66667 9.00033C1.66667 13.1303 4.87 16.334 9 16.334C13.13 16.334 16.3333 13.1303 16.3333 9.00033"
+                      stroke="#EE4142"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M11.6667 4.33301L9 6.99967L6.33333 4.33301"
+                      stroke="#EE4142"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                   <h2 className="font-inter-tight text-lg font-bold text-black">
-                    Hire Talent
+                    Cancel Interview
                   </h2>
                 </div>
                 <button
@@ -123,33 +127,66 @@ export const HireApplicationModal: React.FC<HireApplicationModalProps> = ({
                 </button>
               </div>
 
-              {/* Hiring Info */}
+              {/* Warning Message */}
               <div className="flex flex-col gap-5">
                 <div className="font-inter-tight text-sm text-black">
-                  <span className="text-[#525866] font-normal">Hiring: </span>
+                  <span className="text-[#525866] font-normal">Cancelling for: </span>
                   <span className="font-medium">{applicantName}</span>
                   <span className="text-[#525866] font-normal"> for </span>
                   <span className="font-medium">{jobTitle}</span>
                 </div>
+
+                {/* Warning Box */}
+                <div className="p-4 rounded-[10px] bg-[#FEF3C7] border border-[#F59E0B] flex gap-3">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="flex-shrink-0 mt-0.5"
+                  >
+                    <path
+                      d="M10 1.66699C5.4 1.66699 1.66667 5.40033 1.66667 10.0003C1.66667 14.6003 5.4 18.334 10 18.334C14.6 18.334 18.3333 14.6003 18.3333 10.0003C18.3333 5.40033 14.6 1.66699 10 1.66699Z"
+                      stroke="#F59E0B"
+                      strokeWidth="1.5"
+                    />
+                    <path
+                      d="M10 6.66699V10.0003M10 13.334H10.0083"
+                      stroke="#F59E0B"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <div className="flex-1">
+                    <p className="font-inter-tight text-sm text-[#92400D] font-medium">
+                      This action will notify the talent and cannot be easily
+                      undone.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Message Section */}
+            {/* Reason Section */}
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-4">
-                <label className="font-inter-tight text-sm text-black">
-                  Offer Message
+                <label className="font-inter-tight text-sm text-black font-medium">
+                  Reason for Cancellation
                 </label>
                 <div className="relative">
                   <textarea
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    className="w-full h-[177px] p-3 rounded-[10px] border-2 border-[#5C30FF] font-inter-tight text-sm text-black leading-5 resize-none focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-[#5C30FF]"
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                    placeholder="Enter the reason for cancelling this interview..."
+                    className="w-full h-[120px] p-3 rounded-[10px] border border-[#E1E4EA] font-inter-tight text-sm text-black leading-5 resize-none focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent placeholder:text-[#B2B2B2]"
                   />
                 </div>
               </div>
               <p className="font-inter-tight text-xs text-[#525866]">
-                This message will be sent to the talent via email notification.
+                The talent will be notified about this cancellation with the
+                reason you provide.
               </p>
             </div>
 
@@ -170,18 +207,18 @@ export const HireApplicationModal: React.FC<HireApplicationModalProps> = ({
               disabled={isLoading}
               className="h-10 px-5 rounded-[10px] border border-[#E6E7EA] font-inter-tight text-sm font-medium text-black hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Cancel
+              Keep Interview
             </button>
             <button
               onClick={handleSubmit}
-              disabled={isLoading}
-              className={`h-10 px-6 rounded-[10px] border border-[#5C30FF] bg-[#5C30FF] font-inter-tight text-sm font-medium text-white transition-colors ${
-                isLoading
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-[#4a26cc]"
+              disabled={isLoading || !isFormValid}
+              className={`h-10 px-6 rounded-[10px] font-inter-tight text-sm font-medium text-white transition-colors ${
+                isLoading || !isFormValid
+                  ? "bg-[#EE4142] opacity-50 cursor-not-allowed"
+                  : "bg-[#EE4142] hover:bg-[#d63536]"
               }`}
             >
-              {isLoading ? "Hiring..." : "Hire & Send"}
+              {isLoading ? "Cancelling..." : "Cancel Interview"}
             </button>
           </div>
         </div>
