@@ -48,7 +48,9 @@ export default function TalentProfilePage() {
           <h2 className="text-xl font-medium text-black mb-2">
             Failed to load profile
           </h2>
-          <p className="text-sm text-[#525866]">{error || "Profile not found"}</p>
+          <p className="text-sm text-[#525866]">
+            {error || "Profile not found"}
+          </p>
         </div>
       </div>
     );

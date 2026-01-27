@@ -152,25 +152,25 @@ export default function ApplicantProposalPage() {
         description: "Interview has been scheduled",
         variant: "default",
       });
-      } catch (err) {
+    } catch (err) {
       let errorMessage =
         err instanceof Error ? err.message : "Failed to schedule interview";
-      
+
       // Handle specific error cases
       if (err instanceof Error) {
         if (err.message.includes("403")) {
           errorMessage = "You don't have permission to schedule interviews";
         }
       }
-      
+
       toast({
         title: "Error",
         description: errorMessage,
         variant: "destructive",
       });
       throw err;
-      }
-      };
+    }
+  };
 
   const handleRescheduleInterview = async (
     applicationId: string,
@@ -197,14 +197,14 @@ export default function ApplicantProposalPage() {
     } catch (err) {
       let errorMessage =
         err instanceof Error ? err.message : "Failed to reschedule interview";
-      
+
       // Handle specific error cases
       if (err instanceof Error) {
         if (err.message.includes("403")) {
           errorMessage = "You don't have permission to reschedule interviews";
         }
       }
-      
+
       toast({
         title: "Error",
         description: errorMessage,
@@ -212,9 +212,9 @@ export default function ApplicantProposalPage() {
       });
       throw err;
     }
-    };
+  };
 
-    const handleCancelInterview = async (
+  const handleCancelInterview = async (
     applicationId: string,
     interviewId: string,
     reason: string,
@@ -235,14 +235,14 @@ export default function ApplicantProposalPage() {
     } catch (err) {
       let errorMessage =
         err instanceof Error ? err.message : "Failed to cancel interview";
-      
+
       // Handle specific error cases
       if (err instanceof Error) {
         if (err.message.includes("403")) {
           errorMessage = "You don't have permission to cancel interviews";
         }
       }
-      
+
       toast({
         title: "Error",
         description: errorMessage,
@@ -250,9 +250,9 @@ export default function ApplicantProposalPage() {
       });
       throw err;
     }
-    };
+  };
 
-    const handleCompleteInterview = async (
+  const handleCompleteInterview = async (
     applicationId: string,
     interviewId: string,
   ) => {
@@ -268,14 +268,14 @@ export default function ApplicantProposalPage() {
     } catch (err) {
       let errorMessage =
         err instanceof Error ? err.message : "Failed to complete interview";
-      
+
       // Handle specific error cases
       if (err instanceof Error) {
         if (err.message.includes("403")) {
           errorMessage = "You don't have permission to complete interviews";
         }
       }
-      
+
       toast({
         title: "Error",
         description: errorMessage,
@@ -283,9 +283,9 @@ export default function ApplicantProposalPage() {
       });
       throw err;
     }
-    };
+  };
 
-    if (!hasAccess) {
+  if (!hasAccess) {
     return <PageLoadingState message="Checking access..." />;
   }
 

@@ -165,12 +165,12 @@ export default function HiredTalentsPage() {
       setEditingRecommendation(null);
     } catch (error) {
       console.error("Error submitting recommendation:", error);
-      
+
       // Handle specific error cases
       let errorDescription = editingRecommendation
         ? "Failed to update recommendation"
         : "Failed to add recommendation";
-      
+
       if (error instanceof Error) {
         if (error.message.includes("403")) {
           errorDescription = "You don't have permission to add recommendations";
@@ -178,7 +178,7 @@ export default function HiredTalentsPage() {
           errorDescription = error.message; // Use backend message
         }
       }
-      
+
       toast?.({
         title: "Error",
         description: errorDescription,
@@ -197,14 +197,15 @@ export default function HiredTalentsPage() {
       });
     } catch (error) {
       console.error("Error deleting recommendation:", error);
-      
+
       let errorDescription = "Failed to delete recommendation";
       if (error instanceof Error) {
         if (error.message.includes("403")) {
-          errorDescription = "You don't have permission to delete this recommendation";
+          errorDescription =
+            "You don't have permission to delete this recommendation";
         }
       }
-      
+
       toast?.({
         title: "Error",
         description: errorDescription,
