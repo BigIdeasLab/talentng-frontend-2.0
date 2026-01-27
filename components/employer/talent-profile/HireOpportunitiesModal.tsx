@@ -42,24 +42,25 @@ export function HireOpportunitiesModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-[12px] max-w-[500px] w-full p-6 shadow-lg">
+      <div className="bg-white rounded-[12px] max-w-[600px] w-full p-8 shadow-lg">
         {/* Header */}
-        <div className="flex items-start justify-between mb-6">
+        <div className="flex items-start justify-between mb-4">
           <div>
-            <h2 className="font-inter-tight text-[20px] font-semibold text-black">
+            <h2 className="font-inter-tight text-[24px] font-semibold text-black">
               Hire {talentName}
             </h2>
-            <p className="font-inter-tight text-[13px] text-[#525866] mt-1">
-              Select an opportunity to hire this talent for
+            <p className="font-inter-tight text-[15px] text-[#525866] mt-2 leading-relaxed">
+              Select the opportunity you want to hire this talent for. They will receive an
+              email notification.
             </p>
           </div>
           <button
             onClick={onClose}
-            className="text-black/30 hover:text-black/50 transition-colors"
+            className="text-black/30 hover:text-black/50 transition-colors flex-shrink-0 ml-4"
           >
             <svg
-              width="20"
-              height="20"
+              width="24"
+              height="24"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -74,6 +75,11 @@ export function HireOpportunitiesModal({
             </svg>
           </button>
         </div>
+
+        {/* Section Label */}
+        <h3 className="font-inter-tight text-[16px] font-semibold text-black mt-6 mb-4">
+          Your Listed Opportunities
+        </h3>
 
         {/* Opportunities List */}
         {opportunities.length === 0 ? (
