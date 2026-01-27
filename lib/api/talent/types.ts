@@ -263,3 +263,9 @@ export interface UpdateRecommendationDto {
   comment?: string;
   rating?: number;
 }
+
+export interface TalentProfileResponse {
+  profile: TalentProfile | null;
+  isProfileCreated: boolean;
+  message?: string;
+}

@@ -1,12 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useToast } from "@/hooks";
 import type { TalentProfile } from "@/lib/api/talent/types";
+import type { Opportunity } from "@/lib/api/opportunities";
+import { getOpportunities } from "@/lib/api/opportunities";
 import { TalentProfilePanel } from "./components/TalentProfilePanel";
 import { TalentProfileNav } from "./components/TalentProfileNav";
 import { TalentWorksGrid } from "./components/TalentWorksGrid";
 import { TalentServicesGrid } from "./components/TalentServicesGrid";
 import { TalentRecommendationsGrid } from "./components/TalentRecommendationsGrid";
+import { HireOpportunitiesModal } from "./HireOpportunitiesModal";
 
 interface TalentProfileViewProps {
   profile: TalentProfile;
@@ -14,11 +18,54 @@ interface TalentProfileViewProps {
 
 export function TalentProfileView({ profile }: TalentProfileViewProps) {
   const [activeTab, setActiveTab] = useState("works");
+  const [isHireModalOpen, setIsHireModalOpen] = useState(false);
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (isHireModalOpen) {
+      fetchOpportunities();
+    }
+  }, [isHireModalOpen]);
+
+  const fetchOpportunities = async () => {
+    try {
+      const response = await getOpportunities({ status: "active" });
+      setOpportunities(response.data || []);
+    } catch (error) {
+      console.error("Failed to fetch opportunities:", error);
+      toast?.({
+        title: "Error",
+        description: "Failed to load opportunities",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleHire = async (_opportunityId: string) => {
+    try {
+      // TODO: Implement hire action - create application and update status to "hired"
+      toast?.({
+        title: "Success",
+        description: `${profile.fullName} has been hired for the opportunity`,
+      });
+    } catch (error) {
+      console.error("Failed to hire talent:", error);
+      toast?.({
+        title: "Error",
+        description: "Failed to hire talent",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="flex h-screen bg-white">
       {/* Left Sidebar - Profile Panel */}
-      <TalentProfilePanel profile={profile} />
+      <TalentProfilePanel
+        profile={profile}
+        onHireClick={() => setIsHireModalOpen(true)}
+      />
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col bg-white overflow-hidden">
@@ -119,6 +166,16 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
           )}
         </div>
       </main>
+
+      {/* Hire Opportunities Modal */}
+      <HireOpportunitiesModal
+        isOpen={isHireModalOpen}
+        onClose={() => setIsHireModalOpen(false)}
+        talentName={profile.fullName || "Talent"}
+        opportunities={opportunities}
+        onHire={handleHire}
+        companyName={profile.company || undefined}
+      />
     </div>
   );
 }

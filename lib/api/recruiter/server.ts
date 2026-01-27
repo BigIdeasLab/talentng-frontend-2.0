@@ -5,14 +5,19 @@
  */
 
 import apiClient from "@/lib/api";
-import type { RecruiterProfile, UpdateRecruiterProfileInput } from "./types";
+import type {
+  RecruiterProfile,
+  RecruiterProfileResponse,
+  UpdateRecruiterProfileInput,
+} from "./types";
 
 /**
  * Get Current User's Recruiter Profile
  * GET /recruiter/me
+ * Returns profile response with isProfileCreated flag
  */
-export async function getServerCurrentRecruiterProfile(): Promise<RecruiterProfile> {
-  return apiClient<RecruiterProfile>("/recruiter/me");
+export async function getServerCurrentRecruiterProfile(): Promise<RecruiterProfileResponse> {
+  return apiClient<RecruiterProfileResponse>("/recruiter/me");
 }
 
 /**

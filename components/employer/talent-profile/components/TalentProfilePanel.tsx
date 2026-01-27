@@ -14,12 +14,14 @@ interface TalentProfilePanelProps {
     instagram?: string;
     linkedin?: string;
   };
+  onHireClick?: () => void;
 }
 
 export function TalentProfilePanel({
   profile,
   completionPercentage = 0,
   socialLinks,
+  onHireClick,
 }: TalentProfilePanelProps) {
   const displayedSkills = profile.skills?.slice(0, 4) || [];
   const skillsRemaining = Math.max(0, (profile.skills?.length || 0) - 4);
@@ -147,6 +149,14 @@ export function TalentProfilePanel({
           </div>
         </div>
       </div>
+
+      {/* Hire Button */}
+      <button
+        onClick={onHireClick}
+        className="w-full mt-[20px] px-4 py-2 rounded-[8px] bg-[#5C30FF] hover:bg-[#4a26cc] transition-colors text-white text-[13px] font-medium font-inter-tight"
+      >
+        Hire {profile.fullName?.split(" ")[0] || "Talent"}
+      </button>
 
       {/* Skills Section */}
       {displayedSkills.length > 0 && (

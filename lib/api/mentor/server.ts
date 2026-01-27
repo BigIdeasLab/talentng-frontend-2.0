@@ -5,14 +5,20 @@
  */
 
 import apiClient from "@/lib/api";
-import type { MentorProfile, UpdateMentorProfileInput, Booking } from "./types";
+import type {
+  MentorProfile,
+  MentorProfileResponse,
+  UpdateMentorProfileInput,
+  Booking,
+} from "./types";
 
 /**
  * Get Current User's Mentor Profile
  * GET /mentor/me
+ * Returns profile response with isProfileCreated flag
  */
-export async function getServerCurrentMentorProfile(): Promise<MentorProfile> {
-  return apiClient<MentorProfile>("/mentor/me");
+export async function getServerCurrentMentorProfile(): Promise<MentorProfileResponse> {
+  return apiClient<MentorProfileResponse>("/mentor/me");
 }
 
 /**

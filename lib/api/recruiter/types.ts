@@ -46,3 +46,9 @@ export interface RecruiterFilterParams {
   visibility?: Visibility;
   isFeatured?: boolean;
 }
+
+export interface RecruiterProfileResponse {
+  profile: RecruiterProfile | null;
+  isProfileCreated: boolean;
+  message?: string;
+}

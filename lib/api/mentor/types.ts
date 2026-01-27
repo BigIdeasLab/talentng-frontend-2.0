@@ -80,3 +80,9 @@ export interface MentorSearchFilters {
   isFeatured?: boolean;
   visibility?: Visibility;
 }
+
+export interface MentorProfileResponse {
+  profile: MentorProfile | null;
+  isProfileCreated: boolean;
+  message?: string;
+}

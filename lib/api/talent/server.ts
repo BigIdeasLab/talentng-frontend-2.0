@@ -8,6 +8,7 @@ import apiClient from "@/lib/api";
 import type { APIProfileData } from "@/lib/profileMapper";
 import type {
   TalentProfile,
+  TalentProfileResponse,
   DashboardStats,
   Service,
   TalentRecommendationDto,
@@ -17,9 +18,10 @@ import type {
 /**
  * Get Current User's Talent Profile
  * GET /talent/me
+ * Returns profile response with isProfileCreated flag
  */
-export async function getServerCurrentProfile(): Promise<TalentProfile> {
-  return apiClient<TalentProfile>("/talent/me");
+export async function getServerCurrentProfile(): Promise<TalentProfileResponse> {
+  return apiClient<TalentProfileResponse>("/talent/me");
 }
 
 /**

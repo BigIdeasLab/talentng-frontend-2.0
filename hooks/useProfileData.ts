@@ -61,9 +61,7 @@ export function useProfileData() {
 
       if (userRoles.includes("recruiter")) {
         roleMap["recruiter"] = "recruiter";
-        fetchPromises.push(
-          getServerCurrentRecruiterProfile().catch(() => null),
-        );
+        fetchPromises.push(getServerCurrentRecruiterProfile().catch(() => null));
       } else {
         fetchPromises.push(Promise.resolve(null));
       }
@@ -86,21 +84,21 @@ export function useProfileData() {
       const profilesUI: Record<string, any> = {};
       const availableRoles: string[] = [];
 
-      if (talentProfile) {
-        profiles.talent = talentProfile;
-        profilesUI.talent = mapAPIToUI(talentProfile);
+      if (talentProfile?.isProfileCreated && talentProfile?.profile) {
+        profiles.talent = talentProfile.profile;
+        profilesUI.talent = mapAPIToUI(talentProfile.profile);
         availableRoles.push("talent");
       }
 
-      if (recruiterProfile) {
-        profiles.recruiter = recruiterProfile;
-        profilesUI.recruiter = mapAPIToUI(recruiterProfile);
+      if (recruiterProfile?.isProfileCreated && recruiterProfile?.profile) {
+        profiles.recruiter = recruiterProfile.profile;
+        profilesUI.recruiter = mapAPIToUI(recruiterProfile.profile);
         availableRoles.push("recruiter");
       }
 
-      if (mentorProfile) {
-        profiles.mentor = mentorProfile;
-        profilesUI.mentor = mapAPIToUI(mentorProfile);
+      if (mentorProfile?.isProfileCreated && mentorProfile?.profile) {
+        profiles.mentor = mentorProfile.profile;
+        profilesUI.mentor = mapAPIToUI(mentorProfile.profile);
         availableRoles.push("mentor");
       }
 
