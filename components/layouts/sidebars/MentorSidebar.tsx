@@ -8,6 +8,7 @@ import { ProfileSwitcher } from "../ProfileSwitcher";
 interface SidebarProps {
   activeItem?: string;
   onItemSelect?: (item: string) => void;
+  onNotificationClick?: () => void;
 }
 
 interface MenuItem {
@@ -255,10 +256,9 @@ const menuItems: MenuItem[] = [
   },
   {
     id: "notification",
-    label: "Notification",
+    label: "Notifications",
     icon: <NotificationIcon />,
     badge: 3,
-    href: "/notifications",
   },
   {
     id: "opportunities",
@@ -281,8 +281,14 @@ const otherItems: Omit<MenuItem, "badge">[] = [
 export function MentorSidebar({
   activeItem = "dashboard",
   onItemSelect,
+  onNotificationClick,
 }: SidebarProps) {
   const pathname = usePathname();
+
+  const handleNotificationClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    onNotificationClick?.();
+  };
 
   return (
     <aside className="hidden md:flex w-[250px] flex-col bg-white border-r border-[#E1E4EA] h-screen overflow-hidden">
@@ -311,12 +317,20 @@ export function MentorSidebar({
         <div className="flex flex-col gap-[6px]">
           {menuItems.map((item) => {
             const isActive = pathname === item.href;
-            const MenuComponent = item.href ? Link : "button";
+            const isNotification = item.id === "notification";
+            const MenuComponent = isNotification ? "button" : "a";
+            
             return (
               <MenuComponent
                 key={item.id}
-                href={item.href || "#"}
-                onClick={() => onItemSelect?.(item.id)}
+                href={isNotification ? undefined : item.href}
+                onClick={(e: any) => {
+                  if (isNotification) {
+                    handleNotificationClick(e);
+                  } else {
+                    onItemSelect?.(item.id);
+                  }
+                }}
                 className={cn(
                   "w-full flex items-center gap-[8px] px-[12px] py-[6px] rounded-lg transition-colors relative flex-shrink-0",
                   isActive

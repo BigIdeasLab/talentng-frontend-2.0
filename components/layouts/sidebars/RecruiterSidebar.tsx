@@ -10,6 +10,7 @@ import { ProfileSwitcher } from "../ProfileSwitcher";
 interface SidebarProps {
   activeItem?: string;
   onItemSelect?: (item: string) => void;
+  onNotificationClick?: () => void;
 }
 
 interface MenuItem {
@@ -249,6 +250,41 @@ const SettingsIcon = () => (
   </svg>
 );
 
+const BellIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M15.8333 11.5037C15.8333 11.2157 15.8333 11.0717 15.79 10.9433C15.664 10.5703 15.3319 10.4257 14.9991 10.2741C14.625 10.1037 14.438 10.0185 14.2527 10.0035C14.0423 9.98649 13.8315 10.0318 13.6517 10.1327C13.4133 10.2665 13.247 10.5207 13.0768 10.7275C12.2907 11.6823 11.8976 12.1598 11.7538 12.6863C11.6377 13.1112 11.6377 13.5555 11.7538 13.9803C11.9635 14.7482 12.6263 15.392 13.1169 15.9878C13.3678 16.2926 13.4933 16.445 13.6517 16.5339C13.8315 16.6348 14.0423 16.6802 14.2527 16.6632C14.438 16.6482 14.625 16.563 14.9991 16.3926C15.3319 16.241 15.664 16.0963 15.79 15.7233C15.8333 15.595 15.8333 15.451 15.8333 15.1629V11.5037Z"
+      stroke="#525866"
+      strokeWidth="1.25"
+    />
+    <path
+      d="M8.08337 17.5C6.93279 18.6111 5.06728 18.6111 3.91669 17.5"
+      stroke="#525866"
+      strokeWidth="1.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M10.1667 11.5037C10.1667 11.1411 10.1769 10.8151 10.4701 10.5601C10.5768 10.4674 10.7182 10.403 11.001 10.2741C11.375 10.1038 11.5621 10.0186 11.7474 10.0036C12.3035 9.95864 12.6026 10.3381 12.9233 10.7276C13.7094 11.6824 14.1025 12.1598 14.2463 12.6863C14.3624 13.1111 14.3624 13.5555 14.2463 13.9803C14.0365 14.7482 13.3738 15.3918 12.8832 15.9876C12.574 16.3632 12.2786 16.706 11.7474 16.663C11.5621 16.648 11.375 16.5628 11.001 16.3924C10.7182 16.2636 10.5768 16.1992 10.4701 16.1065C10.1769 15.8515 10.1667 15.5256 10.1667 15.1628V11.5037Z"
+      stroke="#525866"
+      strokeWidth="1.25"
+    />
+    <path
+      d="M18.3333 13.3334V10.0001C18.3333 5.39771 14.6024 1.66675 10 1.66675C5.39771 1.66675 1.66667 5.39771 1.66667 10.0001L1.66667 13.3334"
+      stroke="#525866"
+      strokeWidth="1.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 const menuItems: MenuItem[] = [
   {
     id: "dashboard",
@@ -273,6 +309,12 @@ const menuItems: MenuItem[] = [
     label: "Applicants",
     icon: <WorkIcon />,
     href: "/applicants",
+  },
+  {
+    id: "notification",
+    label: "Notifications",
+    icon: <BellIcon />,
+    badge: 5,
   },
   {
     id: "mentorship",
@@ -301,9 +343,15 @@ const otherItems: Omit<MenuItem, "badge">[] = [
 export function RecruiterSidebar({
   activeItem = "dashboard",
   onItemSelect,
+  onNotificationClick,
 }: SidebarProps) {
   const pathname = usePathname();
   const { currentProfile, currentProfileUI } = useProfile();
+
+  const handleNotificationClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    onNotificationClick?.();
+  };
 
   const profile = useMemo(() => {
     return currentProfileUI || currentProfile;
@@ -335,12 +383,20 @@ export function RecruiterSidebar({
           <div className="flex flex-col gap-[6px]">
             {menuItems.map((item) => {
               const isActive = pathname === item.href;
-              const MenuComponent = item.href ? Link : "button";
+              const isNotification = item.id === "notification";
+              const MenuComponent = isNotification ? "button" : "a";
+              
               return (
                 <MenuComponent
                   key={item.id}
-                  href={item.href || "#"}
-                  onClick={() => onItemSelect?.(item.id)}
+                  href={isNotification ? undefined : item.href}
+                  onClick={(e: any) => {
+                    if (isNotification) {
+                      handleNotificationClick(e);
+                    } else {
+                      onItemSelect?.(item.id);
+                    }
+                  }}
                   className={cn(
                     "w-full flex items-center gap-[8px] px-[12px] py-[6px] rounded-lg transition-colors relative flex-shrink-0",
                     isActive

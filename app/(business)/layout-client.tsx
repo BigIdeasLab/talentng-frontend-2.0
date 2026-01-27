@@ -9,9 +9,11 @@ import { RecruiterSidebar } from "@/components/layouts/sidebars/RecruiterSidebar
 import { MentorSidebar } from "@/components/layouts/sidebars/MentorSidebar";
 import { MobileSidebar } from "@/components/talent/profile/components/MobileSidebar";
 import { LoadingScreen } from "@/components/layouts/LoadingScreen";
+import { NotificationsModal } from "@/components/layouts/modals/NotificationsModal";
 
 export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const { activeRole, isLoading } = useProfile();
 
   // Fetch profile data client-side
@@ -58,6 +60,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
           <RecruiterSidebar
             activeItem={activeNavItem}
             onItemSelect={setActiveNavItem}
+            onNotificationClick={() => setIsNotificationsOpen(true)}
           />
         );
       case "mentor":
@@ -65,6 +68,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
           <MentorSidebar
             activeItem={activeNavItem}
             onItemSelect={setActiveNavItem}
+            onNotificationClick={() => setIsNotificationsOpen(true)}
           />
         );
       case "talent":
@@ -73,6 +77,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
           <TalentSidebar
             activeItem={activeNavItem}
             onItemSelect={setActiveNavItem}
+            onNotificationClick={() => setIsNotificationsOpen(true)}
           />
         );
     }
@@ -98,6 +103,12 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
 
       {/* Children Content */}
       <div className="flex-1 overflow-hidden">{children}</div>
+
+      {/* Notifications Modal */}
+      <NotificationsModal
+        isOpen={isNotificationsOpen}
+        onClose={() => setIsNotificationsOpen(false)}
+      />
     </div>
   );
 }
