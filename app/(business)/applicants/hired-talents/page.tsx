@@ -85,9 +85,8 @@ export default function HiredTalentsPage() {
   const [selectedTalentUserId, setSelectedTalentUserId] = useState<
     string | null
   >(null);
-  const [editingRecommendation, setEditingRecommendation] = useState<
-    TalentRecommendationDto | null
-  >(null);
+  const [editingRecommendation, setEditingRecommendation] =
+    useState<TalentRecommendationDto | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const hasAccess = useRequireRole(["recruiter"]);
   const { getAll } = useApplications();
@@ -216,26 +215,26 @@ export default function HiredTalentsPage() {
         {/* Header Section */}
         <div className="flex flex-col gap-5 md:gap-6 mb-6">
           {/* Back Button */}
-           <Link
-             href="/applicants"
-             className="flex items-center gap-2 text-black/30 hover:text-black/50 transition-colors w-fit"
-           >
-             <svg
-               width="14"
-               height="14"
-               viewBox="0 0 16 16"
-               fill="none"
-               xmlns="http://www.w3.org/2000/svg"
-             >
-               <path
-                 d="M9.783 11.7826C9.71332 11.8525 9.63053 11.9079 9.53937 11.9458C9.4482 11.9837 9.35046 12.0031 9.25175 12.0031C9.15304 12.0031 9.0553 11.9837 8.96414 11.9458C8.87297 11.9079 8.79018 11.8525 8.7205 11.7826L5.7205 8.78255C5.65058 8.71287 5.5951 8.63008 5.55725 8.53891C5.5194 8.44775 5.49991 8.35001 5.49991 8.2513C5.49991 8.15259 5.5194 8.05485 5.55725 7.96369C5.5951 7.87252 5.65058 7.78973 5.7205 7.72005L8.7205 4.72005C8.8614 4.57915 9.0525 4.5 9.25175 4.5C9.45101 4.5 9.64211 4.57915 9.783 4.72005C9.9239 4.86095 10.0031 5.05204 10.0031 5.2513C10.0031 5.45056 9.9239 5.64165 9.783 5.78255L7.31488 8.25193L9.78488 10.7213C9.85449 10.7911 9.90966 10.8739 9.94724 10.965C9.98482 11.0561 10.0041 11.1538 10.0039 11.2523C10.0037 11.3509 9.98413 11.4484 9.94623 11.5394C9.90832 11.6304 9.85286 11.713 9.783 11.7826Z"
-                 fill="#B2B2B2"
-               />
-             </svg>
-             <span className="font-inter-tight text-[13px] font-normal">
-               Back to applicants
-             </span>
-           </Link>
+          <Link
+            href="/applicants"
+            className="flex items-center gap-2 text-black/30 hover:text-black/50 transition-colors w-fit"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9.783 11.7826C9.71332 11.8525 9.63053 11.9079 9.53937 11.9458C9.4482 11.9837 9.35046 12.0031 9.25175 12.0031C9.15304 12.0031 9.0553 11.9837 8.96414 11.9458C8.87297 11.9079 8.79018 11.8525 8.7205 11.7826L5.7205 8.78255C5.65058 8.71287 5.5951 8.63008 5.55725 8.53891C5.5194 8.44775 5.49991 8.35001 5.49991 8.2513C5.49991 8.15259 5.5194 8.05485 5.55725 7.96369C5.5951 7.87252 5.65058 7.78973 5.7205 7.72005L8.7205 4.72005C8.8614 4.57915 9.0525 4.5 9.25175 4.5C9.45101 4.5 9.64211 4.57915 9.783 4.72005C9.9239 4.86095 10.0031 5.05204 10.0031 5.2513C10.0031 5.45056 9.9239 5.64165 9.783 5.78255L7.31488 8.25193L9.78488 10.7213C9.85449 10.7911 9.90966 10.8739 9.94724 10.965C9.98482 11.0561 10.0041 11.1538 10.0039 11.2523C10.0037 11.3509 9.98413 11.4484 9.94623 11.5394C9.90832 11.6304 9.85286 11.713 9.783 11.7826Z"
+                fill="#B2B2B2"
+              />
+            </svg>
+            <span className="font-inter-tight text-[13px] font-normal">
+              Back to applicants
+            </span>
+          </Link>
 
           {/* Title and Description */}
           <div className="flex flex-col gap-2">
@@ -338,9 +337,9 @@ export default function HiredTalentsPage() {
             </button>
 
             {/* Sort Button */}
-             <button className="flex items-center gap-1 px-[14px] py-[7px] rounded-[8px] bg-[#F5F5F5] hover:bg-[#e8e8e8] transition-colors">
-               <span className="font-inter-tight text-[13px] font-normal text-black">
-                 {_sortBy}
+            <button className="flex items-center gap-1 px-[14px] py-[7px] rounded-[8px] bg-[#F5F5F5] hover:bg-[#e8e8e8] transition-colors">
+              <span className="font-inter-tight text-[13px] font-normal text-black">
+                {_sortBy}
               </span>
               <svg
                 width="13"
@@ -468,170 +467,180 @@ export default function HiredTalentsPage() {
                   <p className="font-inter-tight text-[11px] text-[#525866]">
                     {talent.location} • {talent.previousHires}x Previously Hired
                   </p>
-                  </div>
+                </div>
 
-                  {/* Recommendations and Actions */}
-                  <div className="flex flex-col gap-3 pt-2 border-t border-[#E5E7EB]">
-                    {/* Recommendations Display */}
-                    {talent.recommendations.length > 0 && (
-                      <div className="flex flex-col gap-2">
-                        <p className="font-inter-tight text-[12px] font-semibold text-black">
-                          Recommendation
-                        </p>
-                        {talent.recommendations.map((rec) => (
-                          <div
-                            key={rec.id}
-                            className="flex flex-col gap-1 p-2 rounded-lg bg-[#D1FAE5] border border-[#A7D8BD] relative"
-                          >
-                            <div className="flex items-start justify-between gap-1">
-                              <div className="flex-1">
-                                <p className="font-inter-tight text-[10px] font-semibold text-[#076046]">
-                                  {rec.title}
-                                </p>
-                              </div>
-                              {/* 3-dot menu */}
-                              <div className="relative">
-                                <button
-                                  onClick={() =>
-                                    setOpenMenuId(
-                                      openMenuId === rec.id ? null : rec.id,
-                                    )
-                                  }
-                                  className="p-1 hover:bg-[#BFE8D7] rounded transition-colors"
+                {/* Recommendations and Actions */}
+                <div className="flex flex-col gap-3 pt-2 border-t border-[#E5E7EB]">
+                  {/* Recommendations Display */}
+                  {talent.recommendations.length > 0 && (
+                    <div className="flex flex-col gap-2">
+                      <p className="font-inter-tight text-[12px] font-semibold text-black">
+                        Recommendation
+                      </p>
+                      {talent.recommendations.map((rec) => (
+                        <div
+                          key={rec.id}
+                          className="flex flex-col gap-1 p-2 rounded-lg bg-[#D1FAE5] border border-[#A7D8BD] relative"
+                        >
+                          <div className="flex items-start justify-between gap-1">
+                            <div className="flex-1">
+                              <p className="font-inter-tight text-[10px] font-semibold text-[#076046]">
+                                {rec.title}
+                              </p>
+                            </div>
+                            {/* 3-dot menu */}
+                            <div className="relative">
+                              <button
+                                onClick={() =>
+                                  setOpenMenuId(
+                                    openMenuId === rec.id ? null : rec.id,
+                                  )
+                                }
+                                className="p-1 hover:bg-[#BFE8D7] rounded transition-colors"
+                              >
+                                <svg
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
                                 >
-                                  <svg
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
+                                  <circle cx="6" cy="12" r="2" fill="#076046" />
+                                  <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="2"
+                                    fill="#076046"
+                                  />
+                                  <circle
+                                    cx="18"
+                                    cy="12"
+                                    r="2"
+                                    fill="#076046"
+                                  />
+                                </svg>
+                              </button>
+
+                              {/* Dropdown menu */}
+                              {openMenuId === rec.id && (
+                                <div className="absolute right-0 top-full mt-1 bg-white border border-[#E1E4EA] rounded-lg shadow-lg z-10">
+                                  <button
+                                    onClick={() => {
+                                      setSelectedTalentUserId(talent.userId);
+                                      setEditingRecommendation(rec);
+                                      setIsRecommendationModalOpen(true);
+                                      setOpenMenuId(null);
+                                    }}
+                                    className="w-full text-left px-3 py-2 text-[11px] font-medium text-black hover:bg-gray-50 flex items-center gap-2 border-b border-[#E1E4EA] whitespace-nowrap"
                                   >
-                                    <circle cx="6" cy="12" r="2" fill="#076046" />
-                                    <circle cx="12" cy="12" r="2" fill="#076046" />
-                                    <circle cx="18" cy="12" r="2" fill="#076046" />
-                                  </svg>
-                                </button>
-
-                                {/* Dropdown menu */}
-                                {openMenuId === rec.id && (
-                                  <div className="absolute right-0 top-full mt-1 bg-white border border-[#E1E4EA] rounded-lg shadow-lg z-10">
-                                    <button
-                                      onClick={() => {
-                                        setSelectedTalentUserId(talent.userId);
-                                        setEditingRecommendation(rec);
-                                        setIsRecommendationModalOpen(true);
-                                        setOpenMenuId(null);
-                                      }}
-                                      className="w-full text-left px-3 py-2 text-[11px] font-medium text-black hover:bg-gray-50 flex items-center gap-2 border-b border-[#E1E4EA] whitespace-nowrap"
+                                    <svg
+                                      width="14"
+                                      height="14"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
                                     >
-                                      <svg
-                                        width="14"
-                                        height="14"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                      >
-                                        <path
-                                          d="M3 17.25V21h3.75L17.81 9.94m-4.75-4.75l3.75-3.75a2.121 2.121 0 013 3l-3.75 3.75m-2 2h6"
-                                          stroke="#076046"
-                                          strokeWidth="1.5"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                        />
-                                      </svg>
-                                      Edit
-                                    </button>
-                                    <button
-                                      onClick={() =>
-                                        handleDeleteRecommendation(rec.id)
-                                      }
-                                      className="w-full text-left px-3 py-2 text-[11px] font-medium text-red-600 hover:bg-red-50 flex items-center gap-2 whitespace-nowrap"
+                                      <path
+                                        d="M3 17.25V21h3.75L17.81 9.94m-4.75-4.75l3.75-3.75a2.121 2.121 0 013 3l-3.75 3.75m-2 2h6"
+                                        stroke="#076046"
+                                        strokeWidth="1.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                    </svg>
+                                    Edit
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      handleDeleteRecommendation(rec.id)
+                                    }
+                                    className="w-full text-left px-3 py-2 text-[11px] font-medium text-red-600 hover:bg-red-50 flex items-center gap-2 whitespace-nowrap"
+                                  >
+                                    <svg
+                                      width="14"
+                                      height="14"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
                                     >
-                                      <svg
-                                        width="14"
-                                        height="14"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                      >
-                                        <path
-                                          d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14zM10 11v6m4-6v6"
-                                          stroke="currentColor"
-                                          strokeWidth="1.5"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                        />
-                                      </svg>
-                                      Delete
-                                    </button>
-                                  </div>
-                                )}
-                              </div>
+                                      <path
+                                        d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14zM10 11v6m4-6v6"
+                                        stroke="currentColor"
+                                        strokeWidth="1.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                    </svg>
+                                    Delete
+                                  </button>
+                                </div>
+                              )}
                             </div>
-
-                            <div className="flex items-center gap-1">
-                              <span className="font-inter-tight text-[10px] font-semibold text-yellow-500">
-                                {"★".repeat(rec.rating || 0)}
-                              </span>
-                              <span className="font-inter-tight text-[10px] text-[#076046]">
-                                {rec.rating}/5
-                              </span>
-                            </div>
-                            <p className="font-inter-tight text-[10px] text-[#076046] leading-tight">
-                              {rec.comment}
-                            </p>
                           </div>
-                        ))}
-                      </div>
-                    )}
 
-                    {/* Add Recommendation Button - Only show if no recommendations exist */}
-                    {talent.recommendations.length === 0 && (
-                      <button
-                        onClick={() => {
-                          setSelectedTalentUserId(talent.userId);
-                          setIsRecommendationModalOpen(true);
-                        }}
-                        className="flex items-center justify-center h-7 px-4 rounded-[8px] border border-[#E6E7EA] hover:bg-gray-50 transition-colors"
-                      >
-                        <span className="font-inter-tight text-[11px] font-medium text-black">
-                          Add Recommendation
-                        </span>
-                      </button>
-                    )}
-                  </div>
-                  </div>
+                          <div className="flex items-center gap-1">
+                            <span className="font-inter-tight text-[10px] font-semibold text-yellow-500">
+                              {"★".repeat(rec.rating || 0)}
+                            </span>
+                            <span className="font-inter-tight text-[10px] text-[#076046]">
+                              {rec.rating}/5
+                            </span>
+                          </div>
+                          <p className="font-inter-tight text-[10px] text-[#076046] leading-tight">
+                            {rec.comment}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Add Recommendation Button - Only show if no recommendations exist */}
+                  {talent.recommendations.length === 0 && (
+                    <button
+                      onClick={() => {
+                        setSelectedTalentUserId(talent.userId);
+                        setIsRecommendationModalOpen(true);
+                      }}
+                      className="flex items-center justify-center h-7 px-4 rounded-[8px] border border-[#E6E7EA] hover:bg-gray-50 transition-colors"
+                    >
+                      <span className="font-inter-tight text-[11px] font-medium text-black">
+                        Add Recommendation
+                      </span>
+                    </button>
+                  )}
+                </div>
+              </div>
             ))}
           </div>
         )}
-        </div>
+      </div>
 
-        {/* Recommendation Modal */}
-        {isRecommendationModalOpen && selectedTalentUserId && (
-         <RecommendationModal
-           isOpen={isRecommendationModalOpen}
-           onClose={() => {
-             setIsRecommendationModalOpen(false);
-             setSelectedTalentUserId(null);
-             setEditingRecommendation(null);
-           }}
-           onSubmit={handleRecommendationSubmit}
-           applicantName={
-             hiredTalents.find((t) => t.userId === selectedTalentUserId)
-               ?.name || ""
-           }
-           initialData={
-             editingRecommendation
-               ? {
-                   title: editingRecommendation.title,
-                   comment: editingRecommendation.comment || "",
-                   rating: editingRecommendation.rating || 5,
-                 }
-               : undefined
-           }
-           isEditing={!!editingRecommendation}
-         />
-         )}
-        </div>
-        );
-        }
+      {/* Recommendation Modal */}
+      {isRecommendationModalOpen && selectedTalentUserId && (
+        <RecommendationModal
+          isOpen={isRecommendationModalOpen}
+          onClose={() => {
+            setIsRecommendationModalOpen(false);
+            setSelectedTalentUserId(null);
+            setEditingRecommendation(null);
+          }}
+          onSubmit={handleRecommendationSubmit}
+          applicantName={
+            hiredTalents.find((t) => t.userId === selectedTalentUserId)?.name ||
+            ""
+          }
+          initialData={
+            editingRecommendation
+              ? {
+                  title: editingRecommendation.title,
+                  comment: editingRecommendation.comment || "",
+                  rating: editingRecommendation.rating || 5,
+                }
+              : undefined
+          }
+          isEditing={!!editingRecommendation}
+        />
+      )}
+    </div>
+  );
+}

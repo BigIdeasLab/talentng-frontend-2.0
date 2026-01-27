@@ -32,15 +32,26 @@ function mapApiRecommendationToUI(
   apiRec: TalentRecommendationDto,
 ): Recommendation {
   console.log("[mapApiRecommendationToUI] Input:", apiRec);
-  console.log("[mapApiRecommendationToUI] recommendedBy:", apiRec.recommendedBy);
-  console.log("[mapApiRecommendationToUI] companyImage from API:", apiRec.recommendedBy?.companyImage);
-  console.log("[mapApiRecommendationToUI] profileImageUrl from API:", apiRec.recommendedBy?.profileImageUrl);
-  
+  console.log(
+    "[mapApiRecommendationToUI] recommendedBy:",
+    apiRec.recommendedBy,
+  );
+  console.log(
+    "[mapApiRecommendationToUI] companyImage from API:",
+    apiRec.recommendedBy?.companyImage,
+  );
+  console.log(
+    "[mapApiRecommendationToUI] profileImageUrl from API:",
+    apiRec.recommendedBy?.profileImageUrl,
+  );
+
   const mapped = {
     id: apiRec.id,
     name: apiRec.recommendedBy?.company || "Anonymous",
     company: undefined, // Don't duplicate company
-    companyImage: apiRec.recommendedBy?.companyImage || apiRec.recommendedBy?.profileImageUrl,
+    companyImage:
+      apiRec.recommendedBy?.companyImage ||
+      apiRec.recommendedBy?.profileImageUrl,
     date: new Date(apiRec.createdAt).toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
@@ -52,7 +63,7 @@ function mapApiRecommendationToUI(
     rating: apiRec.rating || 0,
     isVerified: apiRec.isVerified || false,
   };
-  
+
   console.log("[mapApiRecommendationToUI] Mapped output:", mapped);
   return mapped;
 }
@@ -75,9 +86,18 @@ export function RecommendationsGrid({
 
   useEffect(() => {
     console.log("[RecommendationsGrid] Component mounted");
-    console.log("[RecommendationsGrid] externalRecommendations:", externalRecommendations);
-    console.log("[RecommendationsGrid] cachedRecommendations:", cachedRecommendations);
-    console.log("[RecommendationsGrid] Current recommendations state:", recommendations);
+    console.log(
+      "[RecommendationsGrid] externalRecommendations:",
+      externalRecommendations,
+    );
+    console.log(
+      "[RecommendationsGrid] cachedRecommendations:",
+      cachedRecommendations,
+    );
+    console.log(
+      "[RecommendationsGrid] Current recommendations state:",
+      recommendations,
+    );
   }, [recommendations]);
 
   useEffect(() => {
@@ -93,8 +113,14 @@ export function RecommendationsGrid({
         onRecommendationsLoaded?.(mapped);
         onLoadingChange?.(false);
       } catch (err) {
-        const errorMsg = err instanceof Error ? err.message : "Failed to fetch recommendations";
-        console.error("[RecommendationsGrid] Error fetching recommendations:", err);
+        const errorMsg =
+          err instanceof Error
+            ? err.message
+            : "Failed to fetch recommendations";
+        console.error(
+          "[RecommendationsGrid] Error fetching recommendations:",
+          err,
+        );
         setError(errorMsg);
         onLoadingChange?.(false);
       } finally {
@@ -122,7 +148,12 @@ export function RecommendationsGrid({
     // Fetch if no data is provided
     console.log("[RecommendationsGrid] No cached data, fetching from API");
     fetchRecommendations();
-  }, [cachedRecommendations, externalRecommendations, onRecommendationsLoaded, onLoadingChange]);
+  }, [
+    cachedRecommendations,
+    externalRecommendations,
+    onRecommendationsLoaded,
+    onLoadingChange,
+  ]);
 
   if (isLoading) {
     return (
@@ -156,87 +187,93 @@ export function RecommendationsGrid({
     <div className="w-full px-[15px] py-[15px]">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-[8px]">
         {recommendations.map((recommendation, idx) => {
-          console.log(`[RecommendationsGrid] Rendering recommendation ${idx}:`, recommendation);
-          console.log(`[RecommendationsGrid] companyImage for ${idx}:`, recommendation.companyImage);
-          
+          console.log(
+            `[RecommendationsGrid] Rendering recommendation ${idx}:`,
+            recommendation,
+          );
+          console.log(
+            `[RecommendationsGrid] companyImage for ${idx}:`,
+            recommendation.companyImage,
+          );
+
           return (
-          <button
-            key={recommendation.id}
-            onClick={() => onRecommendationClick?.(recommendation)}
-            className="flex flex-col items-start gap-[12px] p-[16px] rounded-[12px] border border-[#E1E4EA] text-left hover:shadow-md transition-shadow bg-white"
-          >
-            {/* Header with Avatar and Info */}
-            <div className="flex items-start justify-between w-full">
-              <div className="flex items-start gap-[10px] flex-1">
-                {/* Company Logo */}
-                <div className="relative w-[40px] h-[40px] rounded-full overflow-hidden bg-white flex-shrink-0 flex items-center justify-center">
-                  {recommendation.companyImage ? (
-                    <Image
-                      src={recommendation.companyImage}
-                      alt={recommendation.name}
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  ) : recommendation.avatar ? (
-                    <Image
-                      src={recommendation.avatar}
-                      alt={recommendation.name}
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  ) : (
-                    <span className="text-white text-sm font-semibold">
-                      {recommendation.name.charAt(0).toUpperCase()}
+            <button
+              key={recommendation.id}
+              onClick={() => onRecommendationClick?.(recommendation)}
+              className="flex flex-col items-start gap-[12px] p-[16px] rounded-[12px] border border-[#E1E4EA] text-left hover:shadow-md transition-shadow bg-white"
+            >
+              {/* Header with Avatar and Info */}
+              <div className="flex items-start justify-between w-full">
+                <div className="flex items-start gap-[10px] flex-1">
+                  {/* Company Logo */}
+                  <div className="relative w-[40px] h-[40px] rounded-full overflow-hidden bg-white flex-shrink-0 flex items-center justify-center">
+                    {recommendation.companyImage ? (
+                      <Image
+                        src={recommendation.companyImage}
+                        alt={recommendation.name}
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                    ) : recommendation.avatar ? (
+                      <Image
+                        src={recommendation.avatar}
+                        alt={recommendation.name}
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                    ) : (
+                      <span className="text-white text-sm font-semibold">
+                        {recommendation.name.charAt(0).toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Company Name and Date */}
+                  <div className="flex flex-col items-start gap-[2px] flex-1 min-w-0">
+                    <h3 className="text-[13px] font-semibold leading-normal font-inter-tight text-black">
+                      {recommendation.name}
+                    </h3>
+                    <span className="text-[11px] font-light leading-normal font-inter-tight text-[#A0A0A0]">
+                      {recommendation.date}
                     </span>
-                  )}
+                  </div>
                 </div>
 
-                {/* Company Name and Date */}
-                <div className="flex flex-col items-start gap-[2px] flex-1 min-w-0">
-                  <h3 className="text-[13px] font-semibold leading-normal font-inter-tight text-black">
-                    {recommendation.name}
-                  </h3>
-                  <span className="text-[11px] font-light leading-normal font-inter-tight text-[#A0A0A0]">
-                    {recommendation.date}
-                  </span>
+                {/* Rating Stars */}
+                <div className="flex gap-[2px] flex-shrink-0">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <span
+                      key={star}
+                      className={`text-sm ${
+                        star <= recommendation.rating
+                          ? "text-yellow-400"
+                          : "text-gray-300"
+                      }`}
+                    >
+                      ★
+                    </span>
+                  ))}
                 </div>
               </div>
 
-              {/* Rating Stars */}
-              <div className="flex gap-[2px] flex-shrink-0">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <span
-                    key={star}
-                    className={`text-sm ${
-                      star <= recommendation.rating
-                        ? "text-yellow-400"
-                        : "text-gray-300"
-                    }`}
-                  >
-                    ★
-                  </span>
-                ))}
-              </div>
-            </div>
+              {/* Title */}
+              {recommendation.title && (
+                <div className="w-full">
+                  <p className="text-[12px] font-semibold leading-normal font-inter-tight text-black">
+                    {recommendation.title}
+                  </p>
+                </div>
+              )}
 
-            {/* Title */}
-            {recommendation.title && (
-              <div className="w-full">
-                <p className="text-[12px] font-semibold leading-normal font-inter-tight text-black">
-                  {recommendation.title}
+              {/* Recommendation Text */}
+              {recommendation.text && (
+                <p className="text-[12px] font-normal leading-[18px] font-inter-tight text-[#525866] w-full line-clamp-3">
+                  {recommendation.text}
                 </p>
-              </div>
-            )}
-
-            {/* Recommendation Text */}
-            {recommendation.text && (
-              <p className="text-[12px] font-normal leading-[18px] font-inter-tight text-[#525866] w-full line-clamp-3">
-                {recommendation.text}
-              </p>
-            )}
-          </button>
+              )}
+            </button>
           );
         })}
       </div>

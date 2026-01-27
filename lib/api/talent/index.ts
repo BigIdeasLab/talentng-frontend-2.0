@@ -20,6 +20,7 @@ import type {
   TalentRecommendationDto,
   RecommendationStatsDto,
   CreateRecommendationDto,
+  UpdateRecommendationDto,
 } from "./types";
 
 /**
@@ -422,9 +423,6 @@ export async function deleteRecommendation(
     },
   );
 }
-
-// Export functions and types
-export { getTalentRecommendationsByUserId };
 
 export type {
   TalentProfile,

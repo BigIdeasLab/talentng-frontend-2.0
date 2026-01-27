@@ -31,7 +31,11 @@ const statusDisplayMap = {
 // Map interview status to UI display
 const interviewStatusDisplayMap = {
   scheduled: { label: "Interview Scheduled", bg: "#EDE9FE", text: "#5C30FF" },
-  rescheduled: { label: "Interview Rescheduled", bg: "#FEF3C7", text: "#92400D" },
+  rescheduled: {
+    label: "Interview Rescheduled",
+    bg: "#FEF3C7",
+    text: "#92400D",
+  },
 };
 
 export default function ApplicantProposalPage() {
@@ -274,11 +278,11 @@ export default function ApplicantProposalPage() {
   }
 
   const projects = applicant.user.talentProfile.gallery || [];
-  
+
   // Get the latest interview status if application is shortlisted
   const latestInterview = applicant.interviews?.[0];
   const interviewStatus = latestInterview?.status;
-  
+
   // Determine which status to display
   let statusDisplay = statusDisplayMap[applicant.status];
   if (applicant.status === "shortlisted") {
@@ -361,7 +365,6 @@ export default function ApplicantProposalPage() {
                     </div>
                   </div>
                 </button>
-
               </div>
 
               {/* Stats Section */}
@@ -482,8 +485,6 @@ export default function ApplicantProposalPage() {
                 <p className="font-inter-tight text-[13px] font-normal text-[#606060] leading-[18px]">
                   {applicant.opportunity.company} • {applicant.opportunity.type}
                 </p>
-
-
               </div>
             </div>
 
@@ -638,38 +639,38 @@ export default function ApplicantProposalPage() {
                       </div>
 
                       {/* Interview Meeting Link */}
-                       {interview.meetingLink && (
-                         <div className="flex flex-col gap-[8px]">
-                           <p className="font-inter-tight text-[12px] font-medium text-[#525866]">
-                             Meeting Link
-                           </p>
-                           <a
-                             href={interview.meetingLink}
-                             target="_blank"
-                             rel="noopener noreferrer"
-                             className="inline-flex items-center gap-[6px] px-3 py-2 rounded-[8px] bg-[#5C30FF] hover:bg-[#4a26cc] transition-colors text-white text-[12px] font-medium w-fit"
-                           >
-                             <svg
-                               width="14"
-                               height="14"
-                               viewBox="0 0 24 24"
-                               fill="none"
-                               xmlns="http://www.w3.org/2000/svg"
-                             >
-                               <path
-                                 d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"
-                                 stroke="white"
-                                 strokeWidth="2"
-                                 strokeLinecap="round"
-                                 strokeLinejoin="round"
-                               />
-                             </svg>
-                             Join Meeting
-                           </a>
-                         </div>
-                       )}
+                      {interview.meetingLink && (
+                        <div className="flex flex-col gap-[8px]">
+                          <p className="font-inter-tight text-[12px] font-medium text-[#525866]">
+                            Meeting Link
+                          </p>
+                          <a
+                            href={interview.meetingLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-[6px] px-3 py-2 rounded-[8px] bg-[#5C30FF] hover:bg-[#4a26cc] transition-colors text-white text-[12px] font-medium w-fit"
+                          >
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                stroke="white"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                            Join Meeting
+                          </a>
+                        </div>
+                      )}
 
-                       {/* Interview Message/Instructions */}
+                      {/* Interview Message/Instructions */}
                       {interview.message && (
                         <div className="flex flex-col gap-[8px]">
                           <p className="font-inter-tight text-[12px] font-medium text-[#525866]">
@@ -992,8 +993,6 @@ export default function ApplicantProposalPage() {
                 </button>
               </div>
             </div>
-
-
           </div>
         </div>
       </div>
@@ -1061,7 +1060,6 @@ export default function ApplicantProposalPage() {
               />
             </>
           )}
-
         </>
       )}
     </div>

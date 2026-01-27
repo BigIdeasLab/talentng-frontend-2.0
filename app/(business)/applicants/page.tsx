@@ -24,7 +24,11 @@ const statusDisplayMap = {
 // Map interview status to UI display
 const interviewStatusDisplayMap = {
   scheduled: { label: "Interview Scheduled", bg: "#EDE9FE", text: "#5C30FF" },
-  rescheduled: { label: "Interview Rescheduled", bg: "#FEF3C7", text: "#92400D" },
+  rescheduled: {
+    label: "Interview Rescheduled",
+    bg: "#FEF3C7",
+    text: "#92400D",
+  },
 };
 
 export default function ApplicantsPage() {
@@ -38,10 +42,7 @@ export default function ApplicantsPage() {
   useEffect(() => {
     if (hasAccess) {
       getAll().then((data) => {
-        console.log("Raw applicants data:", data);
-        const mapped = mapApplicationsToUI(data);
-        console.log("Mapped applicants:", mapped);
-        setApplicants(mapped);
+        setApplicants(mapApplicationsToUI(data));
       });
     }
   }, [hasAccess, getAll]);
@@ -345,77 +346,77 @@ export default function ApplicantsPage() {
                     </div>
 
                     {/* Status */}
-                     <div className="flex items-center justify-center h-full">
-                       <div
-                         className="flex items-center justify-center px-[20px] py-1 rounded-[50px]"
-                         style={{
-                           backgroundColor: (() => {
-                             if (
-                               applicant.status === "shortlisted" &&
-                               applicant.interviewStatus === "cancelled"
-                             ) {
-                               return statusDisplayMap["applied"].bg;
-                             }
-                             if (
-                               applicant.status === "shortlisted" &&
-                               applicant.interviewStatus &&
-                               (applicant.interviewStatus === "scheduled" ||
-                                 applicant.interviewStatus === "rescheduled")
-                             ) {
-                               return interviewStatusDisplayMap[
-                                 applicant.interviewStatus
-                               ].bg;
-                             }
-                             return statusDisplayMap[applicant.status].bg;
-                           })(),
-                         }}
-                       >
-                         <span
-                           className="font-inter-tight text-[11px] font-semibold text-center leading-tight"
-                           style={{
-                             color: (() => {
-                               if (
-                                 applicant.status === "shortlisted" &&
-                                 applicant.interviewStatus === "cancelled"
-                               ) {
-                                 return statusDisplayMap["applied"].text;
-                               }
-                               if (
-                                 applicant.status === "shortlisted" &&
-                                 applicant.interviewStatus &&
-                                 (applicant.interviewStatus === "scheduled" ||
-                                   applicant.interviewStatus === "rescheduled")
-                               ) {
-                                 return interviewStatusDisplayMap[
-                                   applicant.interviewStatus
-                                 ].text;
-                               }
-                               return statusDisplayMap[applicant.status].text;
-                             })(),
-                           }}
-                         >
-                           {(() => {
-                             if (
-                               applicant.status === "shortlisted" &&
-                               applicant.interviewStatus === "cancelled"
-                             ) {
-                               return statusDisplayMap["applied"].label;
-                             }
-                             if (
-                               applicant.status === "shortlisted" &&
-                               applicant.interviewStatus &&
-                               (applicant.interviewStatus === "scheduled" ||
-                                 applicant.interviewStatus === "rescheduled")
-                             ) {
-                               return interviewStatusDisplayMap[
-                                 applicant.interviewStatus
-                               ].label;
-                             }
-                             return statusDisplayMap[applicant.status].label;
-                           })()}
-                         </span>
-                       </div>
-                     </div>
+                    <div className="flex items-center justify-center h-full">
+                      <div
+                        className="flex items-center justify-center px-[20px] py-1 rounded-[50px]"
+                        style={{
+                          backgroundColor: (() => {
+                            if (
+                              applicant.status === "shortlisted" &&
+                              applicant.interviewStatus === "cancelled"
+                            ) {
+                              return statusDisplayMap["applied"].bg;
+                            }
+                            if (
+                              applicant.status === "shortlisted" &&
+                              applicant.interviewStatus &&
+                              (applicant.interviewStatus === "scheduled" ||
+                                applicant.interviewStatus === "rescheduled")
+                            ) {
+                              return interviewStatusDisplayMap[
+                                applicant.interviewStatus
+                              ].bg;
+                            }
+                            return statusDisplayMap[applicant.status].bg;
+                          })(),
+                        }}
+                      >
+                        <span
+                          className="font-inter-tight text-[11px] font-semibold text-center leading-tight"
+                          style={{
+                            color: (() => {
+                              if (
+                                applicant.status === "shortlisted" &&
+                                applicant.interviewStatus === "cancelled"
+                              ) {
+                                return statusDisplayMap["applied"].text;
+                              }
+                              if (
+                                applicant.status === "shortlisted" &&
+                                applicant.interviewStatus &&
+                                (applicant.interviewStatus === "scheduled" ||
+                                  applicant.interviewStatus === "rescheduled")
+                              ) {
+                                return interviewStatusDisplayMap[
+                                  applicant.interviewStatus
+                                ].text;
+                              }
+                              return statusDisplayMap[applicant.status].text;
+                            })(),
+                          }}
+                        >
+                          {(() => {
+                            if (
+                              applicant.status === "shortlisted" &&
+                              applicant.interviewStatus === "cancelled"
+                            ) {
+                              return statusDisplayMap["applied"].label;
+                            }
+                            if (
+                              applicant.status === "shortlisted" &&
+                              applicant.interviewStatus &&
+                              (applicant.interviewStatus === "scheduled" ||
+                                applicant.interviewStatus === "rescheduled")
+                            ) {
+                              return interviewStatusDisplayMap[
+                                applicant.interviewStatus
+                              ].label;
+                            }
+                            return statusDisplayMap[applicant.status].label;
+                          })()}
+                        </span>
+                      </div>
+                    </div>
 
                     {/* Actions */}
                     <div className="flex items-center justify-end gap-1 h-full flex-shrink-0">
