@@ -278,7 +278,9 @@ export default function ApplicantsPage() {
 
                     {/* Talents */}
                     <button
-                      onClick={() => router.push(`/talent-profile/${applicant.userId}`)}
+                      onClick={() =>
+                        router.push(`/talent-profile/${applicant.userId}`)
+                      }
                       className="flex items-center gap-[8px] hover:opacity-80 transition-opacity text-left h-full"
                     >
                       <img
@@ -334,7 +336,8 @@ export default function ApplicantsPage() {
                       <div
                         className="flex items-center justify-center px-[20px] py-1 rounded-[50px]"
                         style={{
-                          backgroundColor: statusDisplayMap[applicant.status].bg,
+                          backgroundColor:
+                            statusDisplayMap[applicant.status].bg,
                         }}
                       >
                         <span

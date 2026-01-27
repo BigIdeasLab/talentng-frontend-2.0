@@ -334,7 +334,9 @@ export default function ApplicantProposalPage() {
               {/* Profile Header */}
               <div className="flex items-start justify-between">
                 <button
-                  onClick={() => router.push(`/talent-profile/${applicant.user.id}`)}
+                  onClick={() =>
+                    router.push(`/talent-profile/${applicant.user.id}`)
+                  }
                   className="flex items-center gap-[10px] hover:opacity-80 transition-opacity text-left"
                 >
                   <img

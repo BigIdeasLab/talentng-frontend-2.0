@@ -52,9 +52,8 @@ export default function OpportunityApplicantsPage() {
   const [error, setError] = useState<string | null>(null);
   const [isRecommendationModalOpen, setIsRecommendationModalOpen] =
     useState(false);
-  const [selectedApplicant, setSelectedApplicant] = useState<MappedApplicant | null>(
-    null,
-  );
+  const [selectedApplicant, setSelectedApplicant] =
+    useState<MappedApplicant | null>(null);
   const { getAll, isLoading } = useApplications();
   const { toast } = useToast();
 
