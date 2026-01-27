@@ -6,11 +6,8 @@ import { useState, useEffect } from "react";
 import { Users } from "lucide-react";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
-import { useToast } from "@/hooks";
 import { EmptyState } from "@/components/ui/empty-state";
-import { RecommendationModal } from "@/components/employer/opportunities/RecommendationModal";
 import { useApplications } from "@/hooks/useApplications";
-import { addRecommendation } from "@/lib/api/applications";
 import type { Application } from "@/lib/api/applications";
 
 const statusDisplayMap: Record<
@@ -50,12 +47,7 @@ export default function OpportunityApplicantsPage() {
   const [applicants, setApplicants] = useState<MappedApplicant[]>([]);
   const [opportunityTitle, setOpportunityTitle] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [isRecommendationModalOpen, setIsRecommendationModalOpen] =
-    useState(false);
-  const [selectedApplicant, setSelectedApplicant] =
-    useState<MappedApplicant | null>(null);
   const { getAll, isLoading } = useApplications();
-  const { toast } = useToast();
 
   useEffect(() => {
     if (hasAccess) {
@@ -81,33 +73,6 @@ export default function OpportunityApplicantsPage() {
         err instanceof Error ? err.message : "Failed to load applicants";
       setError(message);
       console.error("Error fetching opportunity and applicants:", err);
-    }
-  };
-
-  const handleAddRecommendation = async (data: {
-    title: string;
-    comment: string;
-    rating: number;
-  }) => {
-    if (!selectedApplicant) return;
-
-    try {
-      await addRecommendation(selectedApplicant.id, data);
-      toast({
-        title: "Success",
-        description: "Recommendation added successfully",
-        variant: "default",
-      });
-      setIsRecommendationModalOpen(false);
-      setSelectedApplicant(null);
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to add recommendation";
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive",
-      });
     }
   };
 
@@ -472,14 +437,11 @@ export default function OpportunityApplicantsPage() {
                         )}
                       {applicant.status === "hired" && (
                         <button
-                          onClick={() => {
-                            setSelectedApplicant(applicant);
-                            setIsRecommendationModalOpen(true);
-                          }}
-                          className="flex items-center justify-center h-8 px-[20px] py-[12px] rounded-[50px] bg-[#008B47] hover:bg-[#007038] transition-colors flex-shrink-0"
+                          disabled
+                          className="flex items-center justify-center h-8 px-[20px] py-[12px] rounded-[50px] bg-[#008B47] cursor-default opacity-70 flex-shrink-0"
                         >
                           <span className="font-inter-tight text-[12px] font-medium text-white text-center leading-normal">
-                            Add Recommendation
+                            Hired
                           </span>
                         </button>
                       )}
@@ -491,20 +453,6 @@ export default function OpportunityApplicantsPage() {
           )}
         </div>
       </div>
-
-      {/* Recommendation Modal */}
-      {selectedApplicant && (
-        <RecommendationModal
-          isOpen={isRecommendationModalOpen}
-          onClose={() => {
-            setIsRecommendationModalOpen(false);
-            setSelectedApplicant(null);
-          }}
-          applicantName={selectedApplicant.name}
-          jobTitle={selectedApplicant.opportunity.title}
-          onSubmit={handleAddRecommendation}
-        />
-      )}
     </div>
   );
 }

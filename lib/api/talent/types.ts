@@ -236,6 +236,9 @@ export interface TalentRecommendationDto {
     id: string;
     username?: string;
     email: string;
+    company?: string;
+    companyImage?: string;
+    profileImageUrl?: string;
   };
   recommendedById?: string;
   createdAt: string | Date;
@@ -251,6 +254,12 @@ export interface RecommendationStatsDto {
 
 export interface CreateRecommendationDto {
   title: string;
+  comment?: string;
+  rating?: number;
+}
+
+export interface UpdateRecommendationDto {
+  title?: string;
   comment?: string;
   rating?: number;
 }

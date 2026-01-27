@@ -15,9 +15,14 @@ export interface MappedApplicant {
   location: string;
   dateApplied: string;
   status: "applied" | "shortlisted" | "rejected" | "hired";
+  interviewStatus?: "scheduled" | "rescheduled" | "completed" | "cancelled";
 }
 
 export function mapApplicationToUI(app: Application): MappedApplicant {
+  // Get the latest interview status if application is shortlisted
+  const latestInterview = app.interviews?.[0];
+  const interviewStatus = latestInterview?.status;
+
   return {
     id: app.id,
     userId: app.userId,
@@ -37,6 +42,7 @@ export function mapApplicationToUI(app: Application): MappedApplicant {
       day: "numeric",
     }),
     status: app.status,
+    interviewStatus,
   };
 }
 

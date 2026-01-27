@@ -362,6 +362,19 @@ export async function getTalentRecommendations(): Promise<
 }
 
 /**
+ * 23a. Get Recommendations for a Specific Talent
+ * GET /talent/:talentUserId/recommendations
+ * Authentication: Not required (Public endpoint)
+ */
+export async function getTalentRecommendationsByUserId(
+  talentUserId: string,
+): Promise<TalentRecommendationDto[]> {
+  return apiClient<TalentRecommendationDto[]>(
+    `/talent/${talentUserId}/recommendations`,
+  );
+}
+
+/**
  * 24. Get Recommendation Statistics
  * GET /talent/:talentUserId/recommendations/stats
  * Authentication: Not required (Public endpoint)
@@ -371,6 +384,25 @@ export async function getRecommendationStats(
 ): Promise<RecommendationStatsDto> {
   return apiClient<RecommendationStatsDto>(
     `/talent/${talentUserId}/recommendations/stats`,
+  );
+}
+
+/**
+ * 24a. Update a Recommendation
+ * PATCH /talent/recommendations/:recommendationId
+ * Authentication: Required (JWT Bearer Token)
+ * You can only update your own recommendations
+ */
+export async function updateRecommendation(
+  recommendationId: string,
+  data: Partial<CreateRecommendationDto>,
+): Promise<TalentRecommendationDto> {
+  return apiClient<TalentRecommendationDto>(
+    `/talent/recommendations/${recommendationId}`,
+    {
+      method: "PATCH",
+      body: data,
+    },
   );
 }
 
@@ -391,7 +423,9 @@ export async function deleteRecommendation(
   );
 }
 
-// Export types
+// Export functions and types
+export { getTalentRecommendationsByUserId };
+
 export type {
   TalentProfile,
   DashboardStats,
@@ -405,4 +439,5 @@ export type {
   TalentRecommendationDto,
   RecommendationStatsDto,
   CreateRecommendationDto,
+  UpdateRecommendationDto,
 };

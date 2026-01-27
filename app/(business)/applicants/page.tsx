@@ -21,6 +21,12 @@ const statusDisplayMap = {
   hired: { label: "Hired", bg: "#D1FAE5", text: "#076046" },
 };
 
+// Map interview status to UI display
+const interviewStatusDisplayMap = {
+  scheduled: { label: "Interview Scheduled", bg: "#EDE9FE", text: "#5C30FF" },
+  rescheduled: { label: "Interview Rescheduled", bg: "#FEF3C7", text: "#92400D" },
+};
+
 export default function ApplicantsPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,7 +38,10 @@ export default function ApplicantsPage() {
   useEffect(() => {
     if (hasAccess) {
       getAll().then((data) => {
-        setApplicants(mapApplicationsToUI(data));
+        console.log("Raw applicants data:", data);
+        const mapped = mapApplicationsToUI(data);
+        console.log("Mapped applicants:", mapped);
+        setApplicants(mapped);
       });
     }
   }, [hasAccess, getAll]);
@@ -64,6 +73,10 @@ export default function ApplicantsPage() {
     );
   }
 
+  const hiredCount = applicants.filter(
+    (applicant) => applicant.status === "hired",
+  ).length;
+
   return (
     <div className="h-screen bg-white overflow-hidden flex flex-col">
       <div className="flex-1 overflow-y-auto p-4 md:p-6">
@@ -75,7 +88,7 @@ export default function ApplicantsPage() {
               Applicants
             </h1>
             <Link
-              href="/hired-talents"
+              href="/applicants/hired-talents"
               className="flex items-center gap-[5px] px-[14px] py-[7px] rounded-[8px] border border-[#E1E4EA] hover:bg-gray-50 transition-colors cursor-pointer"
             >
               <svg
@@ -108,7 +121,7 @@ export default function ApplicantsPage() {
                 />
               </svg>
               <span className="font-inter-tight text-[13px] font-normal text-[#525866] leading-normal">
-                Hired Talents (1)
+                Hired Talents ({hiredCount})
               </span>
             </Link>
           </div>
@@ -332,24 +345,77 @@ export default function ApplicantsPage() {
                     </div>
 
                     {/* Status */}
-                    <div className="flex items-center justify-center h-full">
-                      <div
-                        className="flex items-center justify-center px-[20px] py-1 rounded-[50px]"
-                        style={{
-                          backgroundColor:
-                            statusDisplayMap[applicant.status].bg,
-                        }}
-                      >
-                        <span
-                          className="font-inter-tight text-[11px] font-semibold text-center leading-tight"
-                          style={{
-                            color: statusDisplayMap[applicant.status].text,
-                          }}
-                        >
-                          {statusDisplayMap[applicant.status].label}
-                        </span>
-                      </div>
-                    </div>
+                     <div className="flex items-center justify-center h-full">
+                       <div
+                         className="flex items-center justify-center px-[20px] py-1 rounded-[50px]"
+                         style={{
+                           backgroundColor: (() => {
+                             if (
+                               applicant.status === "shortlisted" &&
+                               applicant.interviewStatus === "cancelled"
+                             ) {
+                               return statusDisplayMap["applied"].bg;
+                             }
+                             if (
+                               applicant.status === "shortlisted" &&
+                               applicant.interviewStatus &&
+                               (applicant.interviewStatus === "scheduled" ||
+                                 applicant.interviewStatus === "rescheduled")
+                             ) {
+                               return interviewStatusDisplayMap[
+                                 applicant.interviewStatus
+                               ].bg;
+                             }
+                             return statusDisplayMap[applicant.status].bg;
+                           })(),
+                         }}
+                       >
+                         <span
+                           className="font-inter-tight text-[11px] font-semibold text-center leading-tight"
+                           style={{
+                             color: (() => {
+                               if (
+                                 applicant.status === "shortlisted" &&
+                                 applicant.interviewStatus === "cancelled"
+                               ) {
+                                 return statusDisplayMap["applied"].text;
+                               }
+                               if (
+                                 applicant.status === "shortlisted" &&
+                                 applicant.interviewStatus &&
+                                 (applicant.interviewStatus === "scheduled" ||
+                                   applicant.interviewStatus === "rescheduled")
+                               ) {
+                                 return interviewStatusDisplayMap[
+                                   applicant.interviewStatus
+                                 ].text;
+                               }
+                               return statusDisplayMap[applicant.status].text;
+                             })(),
+                           }}
+                         >
+                           {(() => {
+                             if (
+                               applicant.status === "shortlisted" &&
+                               applicant.interviewStatus === "cancelled"
+                             ) {
+                               return statusDisplayMap["applied"].label;
+                             }
+                             if (
+                               applicant.status === "shortlisted" &&
+                               applicant.interviewStatus &&
+                               (applicant.interviewStatus === "scheduled" ||
+                                 applicant.interviewStatus === "rescheduled")
+                             ) {
+                               return interviewStatusDisplayMap[
+                                 applicant.interviewStatus
+                               ].label;
+                             }
+                             return statusDisplayMap[applicant.status].label;
+                           })()}
+                         </span>
+                       </div>
+                     </div>
 
                     {/* Actions */}
                     <div className="flex items-center justify-end gap-1 h-full flex-shrink-0">
@@ -366,6 +432,9 @@ export default function ApplicantsPage() {
                       {applicant.status !== "rejected" &&
                         applicant.status !== "hired" && (
                           <button
+                            onClick={() =>
+                              router.push(`/applicants/${applicant.id}`)
+                            }
                             style={{
                               backgroundColor: "#5C30FF",
                               borderColor: "#5C30FF",
@@ -377,6 +446,16 @@ export default function ApplicantsPage() {
                             </span>
                           </button>
                         )}
+                      {applicant.status === "hired" && (
+                        <button
+                          disabled
+                          className="flex items-center justify-center h-8 px-[20px] py-[12px] rounded-[50px] bg-[#008B47] cursor-default opacity-70 flex-shrink-0"
+                        >
+                          <span className="font-inter-tight text-[12px] font-medium text-white text-center leading-normal">
+                            Hired
+                          </span>
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}

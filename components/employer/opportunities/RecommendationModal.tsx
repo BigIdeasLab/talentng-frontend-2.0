@@ -1,30 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface RecommendationModalProps {
   isOpen: boolean;
   onClose: () => void;
   applicantName: string;
-  jobTitle: string;
   onSubmit: (data: {
     title: string;
     comment: string;
     rating: number;
   }) => Promise<void>;
+  initialData?: {
+    title: string;
+    comment: string;
+    rating: number;
+  };
+  isEditing?: boolean;
 }
 
 export function RecommendationModal({
   isOpen,
   onClose,
   applicantName,
-  jobTitle,
   onSubmit,
+  initialData,
+  isEditing,
 }: RecommendationModalProps) {
   const [title, setTitle] = useState("");
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(5);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      if (initialData) {
+        setTitle(initialData.title);
+        setComment(initialData.comment);
+        setRating(initialData.rating);
+      } else {
+        setTitle("");
+        setComment("");
+        setRating(5);
+      }
+    }
+  }, [isOpen, initialData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,10 +69,12 @@ export function RecommendationModal({
         <div className="flex items-start justify-between mb-6">
           <div>
             <h2 className="font-inter-tight text-[20px] font-semibold text-black">
-              Add Recommendation
+              {isEditing ? "Edit Recommendation" : "Recommend"} {applicantName}
             </h2>
             <p className="font-inter-tight text-[13px] text-[#525866] mt-1">
-              {applicantName} • {jobTitle}
+              {isEditing
+                ? "Update your feedback about this talent"
+                : "Share your feedback about this talent"}
             </p>
           </div>
           <button
@@ -79,10 +101,10 @@ export function RecommendationModal({
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {/* Title/Position */}
+          {/* Title */}
           <div className="flex flex-col gap-2">
             <label className="font-inter-tight text-[13px] font-semibold text-black">
-              Position/Title
+              Title
             </label>
             <input
               type="text"
@@ -147,7 +169,11 @@ export function RecommendationModal({
               disabled={isLoading || !title || !comment}
               className="flex-1 px-4 py-2 rounded-[8px] bg-[#5C30FF] hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-medium text-white transition-colors"
             >
-              {isLoading ? "Submitting..." : "Submit Recommendation"}
+              {isLoading
+                ? "Submitting..."
+                : isEditing
+                  ? "Update Recommendation"
+                  : "Send Recommendation"}
             </button>
           </div>
         </form>
