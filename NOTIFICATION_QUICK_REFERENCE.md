@@ -24,7 +24,7 @@ export function MyComponent() {
     <div>
       <p>Unread: {unreadCount}</p>
       <button onClick={markAllAsRead}>Clear All</button>
-      
+
       {notifications.map(n => (
         <div key={n.id} onClick={() => markAsRead(n.id)}>
           {n.payload.title}
@@ -58,41 +58,41 @@ const notifications = await getNotifications();
 const unread = await getNotifications({ read: false });
 
 // Get by type
-const jobAlerts = await getNotifications({ type: 'job_alert' });
+const jobAlerts = await getNotifications({ type: "job_alert" });
 
 // Get single notification
-const notification = await getNotificationById('notif-123');
+const notification = await getNotificationById("notif-123");
 
 // Mark as read
-await markNotificationAsRead('notif-123');
+await markNotificationAsRead("notif-123");
 
 // Mark all as read
 await markAllNotificationsAsRead();
 
 // Custom update
-await updateNotification('notif-123', { 
-  readAt: new Date().toISOString() 
+await updateNotification("notif-123", {
+  readAt: new Date().toISOString(),
 });
 
 // Delete (admin only)
-await deleteNotification('notif-123');
+await deleteNotification("notif-123");
 
 // Create (admin only)
 await createNotification({
-  userId: 'user-id',
-  type: 'job_alert',
+  userId: "user-id",
+  type: "job_alert",
   payload: JSON.stringify({
-    title: 'New Job',
-    message: 'Check this out'
+    title: "New Job",
+    message: "Check this out",
   }),
-  channels: ['email', 'push'],
+  channels: ["email", "push"],
 });
 
 // Get counts
 const count = await getUnreadNotificationsCount();
 
 // Get by type
-const alerts = await getNotificationsByType('application_update');
+const alerts = await getNotificationsByType("application_update");
 
 // Get failed (admin only)
 const failed = await getFailedNotifications();
@@ -103,34 +103,34 @@ const failed = await getFailedNotifications();
 ```typescript
 // Get notifications with filters
 await getNotifications({
-  userId: 'user-123',      // Filter by user
-  type: 'job_alert',       // Filter by type
-  deliveryStatus: 'sent',  // Filter by status
-  read: false,             // Filter by read status
+  userId: "user-123", // Filter by user
+  type: "job_alert", // Filter by type
+  deliveryStatus: "sent", // Filter by status
+  read: false, // Filter by read status
 });
 ```
 
 ## Notification Types
 
 ```typescript
-type NotificationType = 
-  | 'admin_notice'
-  | 'job_alert'
-  | 'message'
-  | 'profile_update'
-  | 'application_update'
-  | 'system_alert';
+type NotificationType =
+  | "admin_notice"
+  | "job_alert"
+  | "message"
+  | "profile_update"
+  | "application_update"
+  | "system_alert";
 
-type NotificationChannel = 'email' | 'push' | 'in_app' | 'sms';
+type NotificationChannel = "email" | "push" | "in_app" | "sms";
 
-type DeliveryStatus = 'queued' | 'sent' | 'failed';
+type DeliveryStatus = "queued" | "sent" | "failed";
 ```
 
 ## Error Handling
 
 ```typescript
 try {
-  await markNotificationAsRead('notif-123');
+  await markNotificationAsRead("notif-123");
 } catch (error) {
   console.error(error.message);
   // User-friendly error message
@@ -159,12 +159,14 @@ const notifications = useNotificationSocket();
 ## Common Patterns
 
 ### Refresh Notifications
+
 ```typescript
 const { fetchNotifications } = useNotifications();
 await fetchNotifications();
 ```
 
 ### Auto-refresh Every 30 Seconds
+
 ```typescript
 const { fetchNotifications } = useNotifications();
 
@@ -175,11 +177,13 @@ useEffect(() => {
 ```
 
 ### Get Unread Count Only
+
 ```typescript
 const { unreadCount } = useNotifications();
 ```
 
 ### Show Unread Badge
+
 ```typescript
 const { unreadCount } = useNotifications();
 
@@ -194,18 +198,20 @@ return (
 ```
 
 ### Handle Notification Click
+
 ```typescript
 const { markAsRead } = useNotifications();
 
 const handleClick = async (notificationId: string) => {
   // Do action
-  
+
   // Then mark as read
   await markAsRead(notificationId);
 };
 ```
 
 ### Debounced Mark as Read
+
 ```typescript
 import { useDebounce } from "@/hooks/useDebounce";
 
@@ -236,14 +242,15 @@ NEXT_PUBLIC_TALENTNG_API_URL=http://localhost:3001
 ## Testing
 
 ### Mock Notifications
+
 ```typescript
 const mockNotification: Notification = {
-  id: '1',
-  userId: 'user-123',
-  type: 'job_alert',
-  payload: { title: 'Test', message: 'Test message' },
-  channels: ['email'],
-  deliveryStatus: 'sent',
+  id: "1",
+  userId: "user-123",
+  type: "job_alert",
+  payload: { title: "Test", message: "Test message" },
+  channels: ["email"],
+  deliveryStatus: "sent",
   readAt: null,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),

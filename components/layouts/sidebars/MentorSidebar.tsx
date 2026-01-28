@@ -214,6 +214,56 @@ const SupportIcon = () => (
   </svg>
 );
 
+const ApplicationIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M3.33333 5C3.33333 3.89543 4.22876 3 5.33333 3H14.6667C15.7712 3 16.6667 3.89543 16.6667 5V15C16.6667 16.1046 15.7712 17 14.6667 17H5.33333C4.22876 17 3.33333 16.1046 3.33333 15V5Z"
+      stroke="#525866"
+      strokeWidth="1.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M3.33333 7.5H16.6667"
+      stroke="#525866"
+      strokeWidth="1.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const MentorshipIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M10 10C11.6569 10 13 8.65685 13 7C13 5.34315 11.6569 4 10 4C8.34315 4 7 5.34315 7 7C7 8.65685 8.34315 10 10 10Z"
+      stroke="#525866"
+      strokeWidth="1.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M3.5 17C3.5 14.5147 6.13401 12.5 10 12.5C13.866 12.5 16.5 14.5147 16.5 17"
+      stroke="#525866"
+      strokeWidth="1.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 const SettingsIcon = () => (
   <svg
     width="20"

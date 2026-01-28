@@ -25,10 +25,10 @@ export function useNotifications() {
       setLoading(true);
       setError(null);
       try {
-         const fetchedNotifications = await getNotifications({
-           userId: user.id,
-         });
-         setNotifications(fetchedNotifications);
+        const fetchedNotifications = await getNotifications({
+          userId: user.id,
+        });
+        setNotifications(fetchedNotifications);
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : "Failed to fetch notifications.";
@@ -67,24 +67,21 @@ export function useNotifications() {
   /**
    * Mark a specific notification as read
    */
-  const markAsRead = useCallback(
-    async (notificationId: string) => {
-      try {
-        const updated = await markNotificationAsRead(notificationId);
-        setNotifications((prev) =>
-          prev.map((n) => (n.id === notificationId ? updated : n)),
-        );
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error
-            ? err.message
-            : "Failed to mark notification as read.";
-        setError(errorMessage);
-        console.error("Error marking notification as read:", err);
-      }
-    },
-    [],
-  );
+  const markAsRead = useCallback(async (notificationId: string) => {
+    try {
+      const updated = await markNotificationAsRead(notificationId);
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === notificationId ? updated : n)),
+      );
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Failed to mark notification as read.";
+      setError(errorMessage);
+      console.error("Error marking notification as read:", err);
+    }
+  }, []);
 
   /**
    * Mark all notifications as read

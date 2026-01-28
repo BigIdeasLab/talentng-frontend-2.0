@@ -66,11 +66,13 @@ interface Notification {
 All methods are located in `lib/api/notifications/index.ts`:
 
 #### 1. Create Notification (Admin Only)
+
 ```typescript
 createNotification(payload: CreateNotificationPayload): Promise<Notification>
 ```
 
 #### 2. Get Notifications
+
 ```typescript
 getNotifications(filters?: GetNotificationsFilters): Promise<Notification[]>
 
@@ -86,27 +88,32 @@ await getNotifications({ deliveryStatus: 'failed' });
 ```
 
 #### 3. Get Notification by ID
+
 ```typescript
 getNotificationById(notificationId: string): Promise<Notification>
 ```
 
 #### 4. Update Notification
+
 ```typescript
 updateNotification(notificationId: string, payload: UpdateNotificationPayload): Promise<Notification>
 ```
 
 #### 5. Mark as Read
+
 ```typescript
 markNotificationAsRead(notificationId: string): Promise<Notification>
 markAllNotificationsAsRead(): Promise<void>
 ```
 
 #### 6. Delete Notification (Admin Only)
+
 ```typescript
 deleteNotification(notificationId: string): Promise<Notification>
 ```
 
 #### 7. Helper Methods
+
 ```typescript
 getUnreadNotificationsCount(): Promise<number>
 getNotificationsByType(type: string): Promise<Notification[]>
@@ -119,16 +126,16 @@ The `useNotifications` hook provides a complete interface for managing notificat
 
 ```typescript
 const {
-  notifications,              // Current notifications array
-  loading,                    // Loading state
-  error,                      // Error message
-  unreadCount,                // Count of unread notifications
-  fetchNotifications,         // Fetch all notifications
-  fetchUnreadNotifications,   // Fetch only unread
-  markAsRead,                 // Mark specific notification as read
-  markAllAsRead,              // Mark all as read
-  isNotificationOpen,         // Modal open state
-  setIsNotificationOpen,      // Toggle modal
+  notifications, // Current notifications array
+  loading, // Loading state
+  error, // Error message
+  unreadCount, // Count of unread notifications
+  fetchNotifications, // Fetch all notifications
+  fetchUnreadNotifications, // Fetch only unread
+  markAsRead, // Mark specific notification as read
+  markAllAsRead, // Mark all as read
+  isNotificationOpen, // Modal open state
+  setIsNotificationOpen, // Toggle modal
 } = useNotifications();
 ```
 
@@ -140,11 +147,11 @@ const {
 import { useNotifications } from "@/hooks/useNotifications";
 
 export function MyComponent() {
-  const { 
-    notifications, 
-    loading, 
-    error, 
-    unreadCount, 
+  const {
+    notifications,
+    loading,
+    error,
+    unreadCount,
     markAsRead,
     markAllAsRead
   } = useNotifications();
@@ -156,9 +163,9 @@ export function MyComponent() {
     <div>
       <h2>Notifications ({unreadCount} unread)</h2>
       <button onClick={markAllAsRead}>Mark All as Read</button>
-      
+
       {notifications.map(notif => (
-        <div 
+        <div
           key={notif.id}
           onClick={() => markAsRead(notif.id)}
         >
@@ -182,6 +189,7 @@ The modal that displays notifications based on user role:
 ```
 
 Automatically renders:
+
 - `TalentNotifications` for talent users
 - `EmployerNotifications` for recruiter users
 - `MentorNotifications` for mentor users
@@ -239,16 +247,16 @@ Get notifications by various criteria:
 await getNotifications({ read: false });
 
 // By type
-await getNotifications({ type: 'job_alert' });
+await getNotifications({ type: "job_alert" });
 
 // By delivery status
-await getNotifications({ deliveryStatus: 'sent' });
+await getNotifications({ deliveryStatus: "sent" });
 
 // Multiple filters
-await getNotifications({ 
-  userId: 'user-id',
-  read: false, 
-  type: 'application_update' 
+await getNotifications({
+  userId: "user-id",
+  read: false,
+  type: "application_update",
 });
 ```
 
@@ -280,7 +288,7 @@ const { markAsRead } = useNotifications();
 
 const handleNotificationClick = (notificationId: string) => {
   // Do something with the notification
-  
+
   // Mark as read
   await markAsRead(notificationId);
 };
@@ -357,7 +365,7 @@ Mark multiple notifications as read efficiently:
 
 ```typescript
 const handleMarkMultipleAsRead = async (ids: string[]) => {
-  await Promise.all(ids.map(id => markAsRead(id)));
+  await Promise.all(ids.map((id) => markAsRead(id)));
 };
 ```
 
@@ -376,7 +384,7 @@ const mockNotifications: Notification[] = [
     type: "job_alert",
     payload: {
       title: "New Job Match",
-      message: "A new job matches your profile"
+      message: "A new job matches your profile",
     },
     channels: ["email", "push"],
     deliveryStatus: "sent",
@@ -445,17 +453,21 @@ interface Notification {
 For detailed API documentation, see the Notification API Implementation Guide provided by the backend team.
 
 ### Base URL
+
 ```
 /api/notifications
 ```
 
 ### Authentication
+
 All requests require:
+
 ```
 Authorization: Bearer <JWT_TOKEN>
 ```
 
 ### Status Codes
+
 - **200**: Success (GET, PATCH, DELETE)
 - **201**: Created (POST)
 - **400**: Bad Request
@@ -467,6 +479,7 @@ Authorization: Bearer <JWT_TOKEN>
 ## Support
 
 For issues or questions:
+
 1. Check this documentation
 2. Review the API specification
 3. Check browser console for errors

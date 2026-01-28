@@ -49,14 +49,26 @@ export function EmployerNotifications() {
   const getTypeColors = (type: string) => {
     switch (type) {
       case "success":
-        return { bg: "bg-green-100", badge: "bg-green-500", text: "text-green-700" };
+        return {
+          bg: "bg-green-100",
+          badge: "bg-green-500",
+          text: "text-green-700",
+        };
       case "warning":
-        return { bg: "bg-yellow-100", badge: "bg-yellow-500", text: "text-yellow-700" };
+        return {
+          bg: "bg-yellow-100",
+          badge: "bg-yellow-500",
+          text: "text-yellow-700",
+        };
       case "error":
         return { bg: "bg-red-100", badge: "bg-red-500", text: "text-red-700" };
       case "info":
       default:
-        return { bg: "bg-blue-100", badge: "bg-blue-500", text: "text-blue-700" };
+        return {
+          bg: "bg-blue-100",
+          badge: "bg-blue-500",
+          text: "text-blue-700",
+        };
     }
   };
 
@@ -78,7 +90,9 @@ export function EmployerNotifications() {
    * Get display element: image > icon > default emoji
    * Backend handles image selection (user photo, logo, or app logo)
    */
-  const getDisplayElement = (payload: InAppNotificationPayload | Record<string, any>) => {
+  const getDisplayElement = (
+    payload: InAppNotificationPayload | Record<string, any>,
+  ) => {
     if (!payload) {
       return { type: "emoji", value: "📌" };
     }
@@ -94,15 +108,15 @@ export function EmployerNotifications() {
     const iconName = inAppPayload.icon?.toLowerCase() || "";
     const iconMap: Record<string, string> = {
       "check-circle": "✓",
-      "calendar": "📅",
+      calendar: "📅",
       "x-circle": "✕",
       "alert-triangle": "⚠",
-      "clock": "🕐",
-      "wallet": "💰",
-      "message": "💬",
-      "user": "👤",
-      "star": "⭐",
-      "heart": "❤️",
+      clock: "🕐",
+      wallet: "💰",
+      message: "💬",
+      user: "👤",
+      star: "⭐",
+      heart: "❤️",
     };
 
     return { type: "emoji", value: iconMap[iconName] || "📌" };
@@ -111,8 +125,10 @@ export function EmployerNotifications() {
   /**
    * Format notification for display
    */
-  const formatNotification = (notification: typeof notifications[0]) => {
-    const payload = notification.payload as InAppNotificationPayload | Record<string, any>;
+  const formatNotification = (notification: (typeof notifications)[0]) => {
+    const payload = notification.payload as
+      | InAppNotificationPayload
+      | Record<string, any>;
     const title = (payload.title as string) || "Notification";
     const message = (payload.message as string) || "";
     const payloadType = (payload as InAppNotificationPayload).type || "info";
@@ -138,7 +154,7 @@ export function EmployerNotifications() {
 
   const handleNotificationClick = async (
     notificationId: string,
-    action?: InAppNotificationPayload["action"]
+    action?: InAppNotificationPayload["action"],
   ) => {
     await markAsRead(notificationId);
     if (action?.route) {
@@ -158,7 +174,9 @@ export function EmployerNotifications() {
             className={`flex gap-3 px-5 py-4 border-b border-gray-100 hover:bg-gray-50 transition-colors ${
               formatted.isUnread ? colors.bg : ""
             }`}
-            onClick={() => handleNotificationClick(notification.id, formatted.action)}
+            onClick={() =>
+              handleNotificationClick(notification.id, formatted.action)
+            }
             role="button"
             tabIndex={0}
           >
@@ -200,7 +218,9 @@ export function EmployerNotifications() {
               <div className="flex flex-col gap-0.5 mt-1.5">
                 <div className="flex items-center gap-1.5">
                   {formatted.isUnread && (
-                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${colors.badge}`}></div>
+                    <div
+                      className={`w-2 h-2 rounded-full flex-shrink-0 ${colors.badge}`}
+                    ></div>
                   )}
                   <p className="text-[10px] text-gray-500">
                     {formatted.timestamp}
@@ -217,7 +237,10 @@ export function EmployerNotifications() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleNotificationClick(notification.id, formatted.action);
+                      handleNotificationClick(
+                        notification.id,
+                        formatted.action,
+                      );
                     }}
                     className="text-[10px] text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-0.5 mt-1"
                   >
