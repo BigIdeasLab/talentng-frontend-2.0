@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useProfile } from "@/hooks/useProfile";
 import { useProfileData } from "@/hooks/useProfileData";
+import { useNotifications } from "@/hooks/useNotifications";
 import { COLORS } from "@/lib/constants";
 import { TalentSidebar } from "@/components/layouts/sidebars/TalentSidebar";
 import { RecruiterSidebar } from "@/components/layouts/sidebars/RecruiterSidebar";
@@ -15,6 +16,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const { activeRole, isLoading } = useProfile();
+  const { unreadCount } = useNotifications();
 
   // Fetch profile data client-side
   useProfileData();
@@ -61,6 +63,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
             activeItem={activeNavItem}
             onItemSelect={setActiveNavItem}
             onNotificationClick={() => setIsNotificationsOpen(true)}
+            notificationCount={unreadCount}
           />
         );
       case "mentor":
@@ -69,6 +72,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
             activeItem={activeNavItem}
             onItemSelect={setActiveNavItem}
             onNotificationClick={() => setIsNotificationsOpen(true)}
+            notificationCount={unreadCount}
           />
         );
       case "talent":
@@ -78,6 +82,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
             activeItem={activeNavItem}
             onItemSelect={setActiveNavItem}
             onNotificationClick={() => setIsNotificationsOpen(true)}
+            notificationCount={unreadCount}
           />
         );
     }

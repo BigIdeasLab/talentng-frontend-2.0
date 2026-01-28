@@ -169,16 +169,11 @@ const OnboardingPage = () => {
         formData.append("profileImage", profileImage);
       }
 
-      // Log complete submission data
-      console.log("=== ONBOARDING SUBMISSION ===", {
-        role: roleValue,
-        profile: profileData,
-        details: detailsData,
-      });
-
       await completeOnboardingMutation.mutateAsync(formData);
 
+      // Refetch user data to get updated roles
       await refetchUser();
+      
       toast({
         title: "Success",
         description: isAddingRole
@@ -188,7 +183,10 @@ const OnboardingPage = () => {
 
       // If adding a role, redirect with the new role selected
       if (isAddingRole) {
-        router.push("/dashboard?switchRole=mentor");
+        const newRole = selectedRole === "employer" ? "recruiter" : selectedRole;
+        // Small delay to ensure user data is fully synced before redirecting
+        await new Promise(resolve => setTimeout(resolve, 500));
+        router.push(`/dashboard?switchRole=${newRole}`);
       } else {
         router.push("/dashboard");
       }

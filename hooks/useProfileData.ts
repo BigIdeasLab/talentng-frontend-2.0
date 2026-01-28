@@ -119,7 +119,6 @@ export function useProfileData() {
       } else {
         // User has roles but no profiles yet (new account that hasn't completed onboarding)
         // This is OK - just leave activeRole unset, layout will show appropriate UI
-        console.log("No profiles found for user with roles:", userRoles);
       }
     } catch (error) {
       console.error("Error fetching profile data:", error);

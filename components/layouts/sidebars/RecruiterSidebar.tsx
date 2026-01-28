@@ -11,6 +11,7 @@ interface SidebarProps {
   activeItem?: string;
   onItemSelect?: (item: string) => void;
   onNotificationClick?: () => void;
+  notificationCount?: number;
 }
 
 interface MenuItem {
@@ -340,13 +341,60 @@ const otherItems: Omit<MenuItem, "badge">[] = [
   },
 ];
 
+const getMenuItems = (notificationCount?: number): MenuItem[] => [
+  {
+    id: "dashboard",
+    label: "Dashboard",
+    icon: <DashboardIcon />,
+    href: "/dashboard",
+  },
+  {
+    id: "discover-talent",
+    label: "Discover Talent",
+    icon: <TelescopeIcon />,
+    href: "/discover-talent",
+  },
+  {
+    id: "create-opportunities",
+    label: "Create Opportuities",
+    icon: <WorkIcon />,
+    href: "/opportunities",
+  },
+  {
+    id: "applicants",
+    label: "Applicants",
+    icon: <WorkIcon />,
+    href: "/applicants",
+  },
+  {
+    id: "notification",
+    label: "Notifications",
+    icon: <BellIcon />,
+    badge: notificationCount,
+  },
+  {
+    id: "mentorship",
+    label: "Mentorship",
+    icon: <StudentCardIcon />,
+    href: "/mentorship",
+  },
+  {
+    id: "learning",
+    label: "Learning",
+    icon: <MortarboardIcon />,
+    href: "/learning",
+  },
+];
+
 export function RecruiterSidebar({
   activeItem = "dashboard",
   onItemSelect,
   onNotificationClick,
+  notificationCount = 0,
 }: SidebarProps) {
   const pathname = usePathname();
   const { currentProfile, currentProfileUI } = useProfile();
+  const menuItems = getMenuItems(notificationCount);
 
   const handleNotificationClick = (e: React.MouseEvent) => {
     e.preventDefault();

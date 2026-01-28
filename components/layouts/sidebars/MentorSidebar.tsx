@@ -9,6 +9,7 @@ interface SidebarProps {
   activeItem?: string;
   onItemSelect?: (item: string) => void;
   onNotificationClick?: () => void;
+  notificationCount?: number;
 }
 
 interface MenuItem {
@@ -278,12 +279,62 @@ const otherItems: Omit<MenuItem, "badge">[] = [
   },
 ];
 
+const getMenuItems = (notificationCount?: number): MenuItem[] => {
+  const items = [
+    {
+      id: "dashboard",
+      label: "Dashboard",
+      icon: <DashboardIcon />,
+      href: "/dashboard",
+    },
+    {
+      id: "student-card",
+      label: "Student Cards",
+      icon: <StudentCardIcon />,
+      href: "/student-cards",
+    },
+    {
+      id: "application",
+      label: "Applications",
+      icon: <ApplicationIcon />,
+      href: "/applications",
+    },
+    {
+      id: "mentorship",
+      label: "Mentorship",
+      icon: <MentorshipIcon />,
+      href: "/mentorship",
+    },
+    {
+      id: "session-management",
+      label: "Session Management",
+      icon: <FileIcon />,
+      href: "/sessions",
+    },
+    {
+      id: "notification",
+      label: "Notifications",
+      icon: <NotificationIcon />,
+      badge: notificationCount,
+    },
+    {
+      id: "opportunities",
+      label: "Opportuities",
+      icon: <WorkIcon />,
+      href: "/opportunities",
+    },
+  ];
+  return items;
+};
+
 export function MentorSidebar({
   activeItem = "dashboard",
   onItemSelect,
   onNotificationClick,
+  notificationCount = 0,
 }: SidebarProps) {
   const pathname = usePathname();
+  const menuItems = getMenuItems(notificationCount);
 
   const handleNotificationClick = (e: React.MouseEvent) => {
     e.preventDefault();
