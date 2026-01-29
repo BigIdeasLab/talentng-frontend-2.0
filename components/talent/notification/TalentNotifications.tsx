@@ -10,10 +10,17 @@ interface TalentNotificationsProps {
   onActionClick?: () => void;
 }
 
-export function TalentNotifications({ onActionClick }: TalentNotificationsProps) {
+export function TalentNotifications({
+  onActionClick,
+}: TalentNotificationsProps) {
   const router = useRouter();
   const [allNotifications, setAllNotifications] = useState<any[]>([]);
-  const { notifications: talentNotifications, loading, error, markAsRead } = useNotifications("talent");
+  const {
+    notifications: talentNotifications,
+    loading,
+    error,
+    markAsRead,
+  } = useNotifications("talent");
   const { notifications: generalNotifications } = useNotifications("general");
 
   // Combine talent and general notifications
@@ -21,11 +28,11 @@ export function TalentNotifications({ onActionClick }: TalentNotificationsProps)
     const combined = [
       ...talentNotifications,
       ...generalNotifications.filter(
-        (gn) => !talentNotifications.some((tn) => tn.id === gn.id)
+        (gn) => !talentNotifications.some((tn) => tn.id === gn.id),
       ),
     ].sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
     setAllNotifications(combined);
   }, [talentNotifications, generalNotifications]);
@@ -147,7 +154,7 @@ export function TalentNotifications({ onActionClick }: TalentNotificationsProps)
   /**
    * Format notification for display
    */
-  const formatNotification = (notification: (typeof notifications)[0]) => {
+  const formatNotification = (notification: (typeof allNotifications)[0]) => {
     const payload = notification.payload as
       | InAppNotificationPayload
       | Record<string, any>;
@@ -186,13 +193,16 @@ export function TalentNotifications({ onActionClick }: TalentNotificationsProps)
 
     if (action?.route) {
       router.push(action.route);
-    } else if (action?.actionType === "respond_invitation" && metadata?.relatedId) {
+    } else if (
+      action?.actionType === "respond_invitation" &&
+      metadata?.relatedId
+    ) {
       // For invitation responses, navigate to opportunity details with applicationId
       const opportunityId = metadata.relatedId;
       const applicationId = action.id;
       router.push(`/opportunities/${opportunityId}?appId=${applicationId}`);
     }
-    
+
     // Close modal after marking as read and initiating navigation
     if (isActionButton) {
       onActionClick?.();
@@ -217,7 +227,12 @@ export function TalentNotifications({ onActionClick }: TalentNotificationsProps)
               if (target.closest("button")) {
                 return;
               }
-              handleNotificationClick(notification.id, formatted.action, formatted.metadata, true)
+              handleNotificationClick(
+                notification.id,
+                formatted.action,
+                formatted.metadata,
+                true,
+              );
             }}
             role="button"
             tabIndex={0}

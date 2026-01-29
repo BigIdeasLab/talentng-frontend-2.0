@@ -10,7 +10,9 @@ import {
 import type { Notification } from "@/lib/types/notification";
 import { useAuth } from "./useAuth";
 
-export function useNotifications(recipientRole?: "talent" | "recruiter" | "general") {
+export function useNotifications(
+  recipientRole?: "talent" | "recruiter" | "general",
+) {
   const { user } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(false);
@@ -114,15 +116,15 @@ export function useNotifications(recipientRole?: "talent" | "recruiter" | "gener
   const unreadCount = notifications.filter((n) => !n.readAt).length;
 
   /**
-    * Trigger a refresh of notifications (used by real-time socket)
-    */
+   * Trigger a refresh of notifications (used by real-time socket)
+   */
   const refreshNotifications = useCallback(() => {
     setForceRefreshTrigger((prev) => prev + 1);
   }, []);
 
   /**
-    * Initial fetch on component mount and when refresh is triggered
-    */
+   * Initial fetch on component mount and when refresh is triggered
+   */
   useEffect(() => {
     fetchNotifications();
   }, [fetchNotifications, forceRefreshTrigger]);
@@ -140,4 +142,4 @@ export function useNotifications(recipientRole?: "talent" | "recruiter" | "gener
     setIsNotificationOpen,
     refreshNotifications,
   };
-  }
+}

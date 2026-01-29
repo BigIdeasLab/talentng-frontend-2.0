@@ -44,7 +44,10 @@ interface OpportunityDetailsProps {
   applicationId?: string;
 }
 
-export function OpportunityDetails({ opportunityId, applicationId }: OpportunityDetailsProps) {
+export function OpportunityDetails({
+  opportunityId,
+  applicationId,
+}: OpportunityDetailsProps) {
   const router = useRouter();
   const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -52,8 +55,11 @@ export function OpportunityDetails({ opportunityId, applicationId }: Opportunity
   const [isApplied, setIsApplied] = useState(false);
   const [isSavingLoading, setIsSavingLoading] = useState(false);
   const [showApplicationModal, setShowApplicationModal] = useState(false);
-  const [isRespondingToInvitation, setIsRespondingToInvitation] = useState(false);
-  const [invitationResponse, setInvitationResponse] = useState<"accepted" | "declined" | null>(null);
+  const [isRespondingToInvitation, setIsRespondingToInvitation] =
+    useState(false);
+  const [invitationResponse, setInvitationResponse] = useState<
+    "accepted" | "declined" | null
+  >(null);
   const { save: saveOpp, unsave: unsaveOpp } = useOpportunitiesManager();
 
   useEffect(() => {
@@ -99,7 +105,9 @@ export function OpportunityDetails({ opportunityId, applicationId }: Opportunity
     }
   };
 
-  const handleRespondToInvitation = async (response: "accepted" | "declined") => {
+  const handleRespondToInvitation = async (
+    response: "accepted" | "declined",
+  ) => {
     if (!applicationId) return;
     setIsRespondingToInvitation(true);
     try {
@@ -618,7 +626,9 @@ export function OpportunityDetails({ opportunityId, applicationId }: Opportunity
                 <div className="flex justify-between items-center gap-2">
                   <button
                     onClick={() => handleRespondToInvitation("declined")}
-                    disabled={isRespondingToInvitation || invitationResponse !== null}
+                    disabled={
+                      isRespondingToInvitation || invitationResponse !== null
+                    }
                     className={`flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] border transition-colors ${
                       invitationResponse === "declined"
                         ? "bg-gray-200 border-gray-200 cursor-not-allowed"
@@ -634,7 +644,11 @@ export function OpportunityDetails({ opportunityId, applicationId }: Opportunity
                     >
                       <path
                         d="M18 6L6 18M6 6L18 18"
-                        stroke={invitationResponse === "declined" ? "#999" : "currentColor"}
+                        stroke={
+                          invitationResponse === "declined"
+                            ? "#999"
+                            : "currentColor"
+                        }
                         strokeWidth="1.5"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -642,15 +656,21 @@ export function OpportunityDetails({ opportunityId, applicationId }: Opportunity
                     </svg>
                     <span
                       className={`font-inter-tight text-[14px] font-normal leading-normal ${
-                        invitationResponse === "declined" ? "text-gray-600" : "text-[#525866]"
+                        invitationResponse === "declined"
+                          ? "text-gray-600"
+                          : "text-[#525866]"
                       }`}
                     >
-                      {invitationResponse === "declined" ? "Declined" : "Decline"}
+                      {invitationResponse === "declined"
+                        ? "Declined"
+                        : "Decline"}
                     </span>
                   </button>
                   <button
                     onClick={() => handleRespondToInvitation("accepted")}
-                    disabled={isRespondingToInvitation || invitationResponse !== null}
+                    disabled={
+                      isRespondingToInvitation || invitationResponse !== null
+                    }
                     className={`flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] transition-colors ${
                       invitationResponse === "accepted"
                         ? "bg-green-100 border-green-100 cursor-not-allowed"
@@ -666,7 +686,11 @@ export function OpportunityDetails({ opportunityId, applicationId }: Opportunity
                     >
                       <path
                         d="M5 14L8.5 17.5L19 6.5"
-                        stroke={invitationResponse === "accepted" ? "#22c55e" : "white"}
+                        stroke={
+                          invitationResponse === "accepted"
+                            ? "#22c55e"
+                            : "white"
+                        }
                         strokeWidth="1.5"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -674,10 +698,14 @@ export function OpportunityDetails({ opportunityId, applicationId }: Opportunity
                     </svg>
                     <span
                       className={`font-inter-tight text-[14px] font-normal leading-normal ${
-                        invitationResponse === "accepted" ? "text-green-700" : "text-white"
+                        invitationResponse === "accepted"
+                          ? "text-green-700"
+                          : "text-white"
                       }`}
                     >
-                      {invitationResponse === "accepted" ? "Accepted" : "Accept Offer"}
+                      {invitationResponse === "accepted"
+                        ? "Accepted"
+                        : "Accept Offer"}
                     </span>
                   </button>
                 </div>

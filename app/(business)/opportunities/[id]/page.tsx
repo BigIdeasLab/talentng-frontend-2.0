@@ -25,6 +25,11 @@ export default function OpportunityPage() {
     case "talent":
     case "mentor":
     default:
-      return <TalentOpportunityDetails opportunityId={id} applicationId={applicationId} />;
+      return (
+        <TalentOpportunityDetails
+          opportunityId={id}
+          applicationId={applicationId}
+        />
+      );
   }
 }

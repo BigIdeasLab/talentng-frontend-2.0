@@ -10,10 +10,17 @@ interface EmployerNotificationsProps {
   onActionClick?: () => void;
 }
 
-export function EmployerNotifications({ onActionClick }: EmployerNotificationsProps) {
+export function EmployerNotifications({
+  onActionClick,
+}: EmployerNotificationsProps) {
   const router = useRouter();
   const [allNotifications, setAllNotifications] = useState<any[]>([]);
-  const { notifications: recruiterNotifications, loading, error, markAsRead } = useNotifications("recruiter");
+  const {
+    notifications: recruiterNotifications,
+    loading,
+    error,
+    markAsRead,
+  } = useNotifications("recruiter");
   const { notifications: generalNotifications } = useNotifications("general");
 
   // Combine recruiter and general notifications
@@ -21,11 +28,11 @@ export function EmployerNotifications({ onActionClick }: EmployerNotificationsPr
     const combined = [
       ...recruiterNotifications,
       ...generalNotifications.filter(
-        (gn) => !recruiterNotifications.some((rn) => rn.id === gn.id)
+        (gn) => !recruiterNotifications.some((rn) => rn.id === gn.id),
       ),
     ].sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
     setAllNotifications(combined);
   }, [recruiterNotifications, generalNotifications]);
@@ -146,7 +153,7 @@ export function EmployerNotifications({ onActionClick }: EmployerNotificationsPr
   /**
    * Format notification for display
    */
-  const formatNotification = (notification: (typeof notifications)[0]) => {
+  const formatNotification = (notification: (typeof allNotifications)[0]) => {
     const payload = notification.payload as
       | InAppNotificationPayload
       | Record<string, any>;
@@ -182,7 +189,7 @@ export function EmployerNotifications({ onActionClick }: EmployerNotificationsPr
     if (action?.route) {
       router.push(action.route);
     }
-    
+
     // Close modal after marking as read and initiating navigation
     if (isActionButton) {
       onActionClick?.();
@@ -206,7 +213,7 @@ export function EmployerNotifications({ onActionClick }: EmployerNotificationsPr
               if (target.closest("button")) {
                 return;
               }
-              handleNotificationClick(notification.id, formatted.action, true)
+              handleNotificationClick(notification.id, formatted.action, true);
             }}
             role="button"
             tabIndex={0}

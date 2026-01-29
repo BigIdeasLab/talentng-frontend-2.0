@@ -24,7 +24,7 @@ interface UseNotificationSocketProps {
 
 /**
  * Hook to subscribe to real-time notification updates via SSE (Server-Sent Events)
- * 
+ *
  * Usage:
  * ```tsx
  * useNotificationSocket({
@@ -42,7 +42,7 @@ export function useNotificationSocket({
   onNotificationRead,
   enabled = true,
 }: UseNotificationSocketProps) {
-  const { user, accessToken } = useAuth();
+  const { user } = useAuth();
   const eventSourceRef = useRef<EventSource | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const reconnectAttemptsRef = useRef(0);
@@ -53,7 +53,7 @@ export function useNotificationSocket({
    * Connect to notification stream
    */
   const connect = useCallback(() => {
-    if (!user || !accessToken || !enabled || eventSourceRef.current) {
+    if (!user || !enabled || eventSourceRef.current) {
       return;
     }
 
@@ -109,7 +109,7 @@ export function useNotificationSocket({
       // Handle connection open
       eventSourceRef.current.addEventListener("open", () => {
         console.log(
-          `Connected to notification stream for role: ${recipientRole}`
+          `Connected to notification stream for role: ${recipientRole}`,
         );
         reconnectAttemptsRef.current = 0;
       });
@@ -127,7 +127,7 @@ export function useNotificationSocket({
           reconnectAttemptsRef.current += 1;
 
           console.log(
-            `Reconnecting in ${delay}ms (attempt ${reconnectAttemptsRef.current}/${maxReconnectAttempts})`
+            `Reconnecting in ${delay}ms (attempt ${reconnectAttemptsRef.current}/${maxReconnectAttempts})`,
           );
 
           reconnectTimeoutRef.current = setTimeout(() => {
@@ -135,14 +135,21 @@ export function useNotificationSocket({
           }, delay);
         } else {
           console.error(
-            `Failed to connect to notification stream after ${maxReconnectAttempts} attempts`
+            `Failed to connect to notification stream after ${maxReconnectAttempts} attempts`,
           );
         }
       });
     } catch (error) {
       console.error("Error creating notification stream connection:", error);
     }
-  }, [user, accessToken, recipientRole, enabled, onCountUpdate, onNotificationCreated, onNotificationRead]);
+  }, [
+    user,
+    recipientRole,
+    enabled,
+    onCountUpdate,
+    onNotificationCreated,
+    onNotificationRead,
+  ]);
 
   /**
    * Disconnect from stream
@@ -163,14 +170,14 @@ export function useNotificationSocket({
 
   // Connect on mount and when dependencies change
   useEffect(() => {
-    if (enabled && user && accessToken) {
+    if (enabled && user) {
       connect();
     }
 
     return () => {
       disconnect();
     };
-  }, [enabled, user, accessToken, connect, disconnect]);
+  }, [enabled, user, connect, disconnect]);
 
   // Manual reconnect method
   const reconnect = useCallback(() => {

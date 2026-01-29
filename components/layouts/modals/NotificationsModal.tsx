@@ -38,11 +38,8 @@ export function NotificationsModal({
   return (
     <>
       {/* Backdrop - closes modal when clicked */}
-      <div
-        className="fixed inset-0 z-40"
-        onClick={onClose}
-      />
-      
+      <div className="fixed inset-0 z-40" onClick={onClose} />
+
       {/* Modal */}
       <div className="fixed left-[250px] top-0 bottom-0 w-[350px] z-50">
         <div

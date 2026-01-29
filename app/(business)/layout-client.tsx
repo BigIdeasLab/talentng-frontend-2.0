@@ -18,24 +18,26 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [totalUnreadCount, setTotalUnreadCount] = useState(0);
   const { activeRole, isLoading } = useProfile();
-  
+
   // Map active role to recipient role for notifications
-  const getRecipientRole = (role: string | null): "talent" | "recruiter" | "general" => {
+  const getRecipientRole = (
+    role: string | null,
+  ): "talent" | "recruiter" | "general" => {
     if (role === "recruiter") return "recruiter";
     if (role === "talent" || role === "mentor") return "talent";
     return "general";
   };
-  
+
   // Fetch role-specific notifications
-  const { 
+  const {
     unreadCount: roleUnreadCount,
-    refreshNotifications: refreshRoleNotifications
+    refreshNotifications: refreshRoleNotifications,
   } = useNotifications(activeRole ? getRecipientRole(activeRole) : undefined);
-  
+
   // Fetch general notifications
-  const { 
+  const {
     unreadCount: generalUnreadCount,
-    refreshNotifications: refreshGeneralNotifications
+    refreshNotifications: refreshGeneralNotifications,
   } = useNotifications("general");
 
   // Subscribe to role-specific notification updates
@@ -57,7 +59,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
     },
     enabled: !!activeRole,
   });
-  
+
   // Combine counts for sidebar display
   useEffect(() => {
     setTotalUnreadCount(roleUnreadCount + generalUnreadCount);

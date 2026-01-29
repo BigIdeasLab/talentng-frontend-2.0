@@ -27,7 +27,11 @@ export interface NotificationAction {
   label: string;
   route?: string;
   id: string;
-  actionType?: "respond_invitation" | "view_message" | "view_interview" | string;
+  actionType?:
+    | "respond_invitation"
+    | "view_message"
+    | "view_interview"
+    | string;
 }
 
 export interface NotificationMetadata {
