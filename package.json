@@ -19,7 +19,7 @@
     "@tanstack/query-sync-storage-persister": "^5.90.13",
     "@tanstack/react-query-persist-client": "^5.90.13",
     "jose": "^6.1.0",
-    "next": "16.0.10",
+    "next": "^16.1.6",
     "zod": "^3.25.76"
   },
   "devDependencies": {

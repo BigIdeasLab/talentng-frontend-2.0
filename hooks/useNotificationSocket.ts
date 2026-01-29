@@ -4,6 +4,11 @@ import { useEffect, useCallback, useRef } from "react";
 import { useAuth } from "./useAuth";
 import { getAccessToken } from "@/lib/auth";
 
+// Type guard for EventSource availability
+const isEventSourceAvailable = (): boolean => {
+  return typeof window !== "undefined" && "EventSource" in window;
+};
+
 interface NotificationStreamEvent {
   type: string;
   data: {
@@ -44,7 +49,7 @@ export function useNotificationSocket({
   enabled = true,
 }: UseNotificationSocketProps) {
   const { user, loading } = useAuth();
-  const eventSourceRef = useRef<EventSource | null>(null);
+   const eventSourceRef = useRef<any>(null); // EventSource type
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const reconnectAttemptsRef = useRef(0);
   const maxReconnectAttempts = 5;
@@ -55,7 +60,7 @@ export function useNotificationSocket({
    */
   const connect = useCallback(() => {
     // Only connect if user is authenticated (not loading), enabled, and not already connected
-    if (!user || loading || !enabled || eventSourceRef.current) {
+    if (!user || loading || !enabled || eventSourceRef.current || !isEventSourceAvailable()) {
       return;
     }
 
@@ -71,10 +76,10 @@ export function useNotificationSocket({
       }
 
       // EventSource automatically sends cookies with requests to same-origin URLs
-      eventSourceRef.current = new EventSource(streamUrl.toString());
+      eventSourceRef.current = new window.EventSource(streamUrl.toString());
 
       // Handle incoming messages
-      eventSourceRef.current.addEventListener("message", (event) => {
+      eventSourceRef.current.addEventListener("message", (event: any) => {
         try {
           const data: NotificationStreamEvent = JSON.parse(event.data);
 
@@ -124,7 +129,7 @@ export function useNotificationSocket({
       });
 
       // Handle connection errors
-      eventSourceRef.current.addEventListener("error", (error) => {
+      eventSourceRef.current.addEventListener("error", (error: any) => {
         console.error("Notification stream error:", error);
         eventSourceRef.current?.close();
         eventSourceRef.current = null;
@@ -182,8 +187,9 @@ export function useNotificationSocket({
   useEffect(() => {
     // Only connect when user is authenticated and auth is done loading
     // DISABLED: Backend /api/v1/notifications/stream endpoint returns 404
-    if (false && enabled && user && !loading) {
-      connect();
+    if (enabled && user && !loading && isEventSourceAvailable()) {
+      // Re-enabled when endpoint is ready
+      // connect();
     }
 
     return () => {
