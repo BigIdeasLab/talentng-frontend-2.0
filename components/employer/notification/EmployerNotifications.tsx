@@ -1,13 +1,34 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useNotifications } from "@/hooks/useNotifications";
 import { formatDistanceToNow } from "date-fns";
 import type { InAppNotificationPayload } from "@/lib/types/notification";
 
-export function EmployerNotifications() {
+interface EmployerNotificationsProps {
+  onActionClick?: () => void;
+}
+
+export function EmployerNotifications({ onActionClick }: EmployerNotificationsProps) {
   const router = useRouter();
-  const { notifications, loading, error, markAsRead } = useNotifications();
+  const [allNotifications, setAllNotifications] = useState<any[]>([]);
+  const { notifications: recruiterNotifications, loading, error, markAsRead } = useNotifications("recruiter");
+  const { notifications: generalNotifications } = useNotifications("general");
+
+  // Combine recruiter and general notifications
+  useEffect(() => {
+    const combined = [
+      ...recruiterNotifications,
+      ...generalNotifications.filter(
+        (gn) => !recruiterNotifications.some((rn) => rn.id === gn.id)
+      ),
+    ].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+    setAllNotifications(combined);
+  }, [recruiterNotifications, generalNotifications]);
 
   if (loading) {
     return (
@@ -30,7 +51,7 @@ export function EmployerNotifications() {
     );
   }
 
-  if (notifications.length === 0) {
+  if (allNotifications.length === 0) {
     return (
       <div className="flex items-center justify-center h-full bg-gray-50">
         <div className="text-center">
@@ -155,16 +176,22 @@ export function EmployerNotifications() {
   const handleNotificationClick = async (
     notificationId: string,
     action?: InAppNotificationPayload["action"],
+    isActionButton: boolean = false,
   ) => {
     await markAsRead(notificationId);
     if (action?.route) {
       router.push(action.route);
     }
+    
+    // Close modal after marking as read and initiating navigation
+    if (isActionButton) {
+      onActionClick?.();
+    }
   };
 
   return (
     <div className="flex-1 overflow-y-auto scrollbar-styled">
-      {notifications.map((notification) => {
+      {allNotifications.map((notification) => {
         const formatted = formatNotification(notification);
         const colors = getTypeColors(formatted.payloadType);
 
@@ -174,9 +201,13 @@ export function EmployerNotifications() {
             className={`flex gap-3 px-5 py-4 border-b border-gray-100 hover:bg-gray-50 transition-colors ${
               formatted.isUnread ? colors.bg : ""
             }`}
-            onClick={() =>
-              handleNotificationClick(notification.id, formatted.action)
-            }
+            onClick={(e) => {
+              const target = e.target as HTMLElement;
+              if (target.closest("button")) {
+                return;
+              }
+              handleNotificationClick(notification.id, formatted.action, true)
+            }}
             role="button"
             tabIndex={0}
           >
@@ -240,6 +271,7 @@ export function EmployerNotifications() {
                       handleNotificationClick(
                         notification.id,
                         formatted.action,
+                        true,
                       );
                     }}
                     className="text-[10px] text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-0.5 mt-1"

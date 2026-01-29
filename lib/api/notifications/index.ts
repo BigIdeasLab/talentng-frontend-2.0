@@ -49,6 +49,9 @@ export const getNotifications = async (
   if (filters?.read !== undefined) {
     query.append("read", String(filters.read));
   }
+  if (filters?.recipientRole) {
+    query.append("recipientRole", filters.recipientRole);
+  }
 
   const endpoint = `/notifications${query.toString() ? `?${query.toString()}` : ""}`;
   return apiClient<Notification[]>(endpoint);

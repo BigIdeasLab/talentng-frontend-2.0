@@ -25,8 +25,9 @@ export type RelatedType =
 
 export interface NotificationAction {
   label: string;
-  route: string;
+  route?: string;
   id: string;
+  actionType?: "respond_invitation" | "view_message" | "view_interview" | string;
 }
 
 export interface NotificationMetadata {
@@ -76,4 +77,5 @@ export interface GetNotificationsFilters {
   type?: NotificationType;
   deliveryStatus?: DeliveryStatus;
   read?: boolean;
+  recipientRole?: "talent" | "recruiter" | "general";
 }

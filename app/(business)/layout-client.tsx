@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useProfile } from "@/hooks/useProfile";
 import { useProfileData } from "@/hooks/useProfileData";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useNotificationSocket } from "@/hooks/useNotificationSocket";
 import { COLORS } from "@/lib/constants";
 import { TalentSidebar } from "@/components/layouts/sidebars/TalentSidebar";
 import { RecruiterSidebar } from "@/components/layouts/sidebars/RecruiterSidebar";
@@ -15,8 +16,52 @@ import { NotificationsModal } from "@/components/layouts/modals/NotificationsMod
 export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [totalUnreadCount, setTotalUnreadCount] = useState(0);
   const { activeRole, isLoading } = useProfile();
-  const { unreadCount } = useNotifications();
+  
+  // Map active role to recipient role for notifications
+  const getRecipientRole = (role: string | null): "talent" | "recruiter" | "general" => {
+    if (role === "recruiter") return "recruiter";
+    if (role === "talent" || role === "mentor") return "talent";
+    return "general";
+  };
+  
+  // Fetch role-specific notifications
+  const { 
+    unreadCount: roleUnreadCount,
+    refreshNotifications: refreshRoleNotifications
+  } = useNotifications(activeRole ? getRecipientRole(activeRole) : undefined);
+  
+  // Fetch general notifications
+  const { 
+    unreadCount: generalUnreadCount,
+    refreshNotifications: refreshGeneralNotifications
+  } = useNotifications("general");
+
+  // Subscribe to role-specific notification updates
+  useNotificationSocket({
+    recipientRole: activeRole ? getRecipientRole(activeRole) : "talent",
+    onCountUpdate: (unread) => {
+      // Update state when count changes
+      setTotalUnreadCount((prev) => unread);
+    },
+    onNotificationCreated: () => {
+      // Refresh notifications when new one arrives
+      refreshRoleNotifications();
+      refreshGeneralNotifications();
+    },
+    onNotificationRead: () => {
+      // Refresh notifications when one is marked as read
+      refreshRoleNotifications();
+      refreshGeneralNotifications();
+    },
+    enabled: !!activeRole,
+  });
+  
+  // Combine counts for sidebar display
+  useEffect(() => {
+    setTotalUnreadCount(roleUnreadCount + generalUnreadCount);
+  }, [roleUnreadCount, generalUnreadCount]);
 
   // Fetch profile data client-side
   useProfileData();
@@ -63,7 +108,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
             activeItem={activeNavItem}
             onItemSelect={setActiveNavItem}
             onNotificationClick={() => setIsNotificationsOpen(true)}
-            notificationCount={unreadCount}
+            notificationCount={totalUnreadCount}
           />
         );
       case "mentor":
@@ -72,7 +117,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
             activeItem={activeNavItem}
             onItemSelect={setActiveNavItem}
             onNotificationClick={() => setIsNotificationsOpen(true)}
-            notificationCount={unreadCount}
+            notificationCount={totalUnreadCount}
           />
         );
       case "talent":
@@ -82,7 +127,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
             activeItem={activeNavItem}
             onItemSelect={setActiveNavItem}
             onNotificationClick={() => setIsNotificationsOpen(true)}
-            notificationCount={unreadCount}
+            notificationCount={totalUnreadCount}
           />
         );
     }

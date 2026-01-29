@@ -123,10 +123,19 @@ export { useToast, toast } from "./useToast";
 /**
  * useNotifications() - API notifications (not UI toasts)
  *
- * Returns: { notifications, loading, error, unreadCount, fetchNotifications, ... }
+ * Returns: { notifications, loading, error, unreadCount, fetchNotifications, refreshNotifications, ... }
  * Fetches notifications from backend API
  */
 export { useNotifications } from "./useNotifications";
+
+/**
+ * useNotificationSocket() - Real-time notification updates via SSE
+ *
+ * Returns: { reconnect, disconnect, isConnected }
+ * Subscribes to Server-Sent Events for instant notification count & creation/read updates
+ * Usage: useNotificationSocket({ recipientRole: 'talent', onCountUpdate, onNotificationCreated, ... })
+ */
+export { useNotificationSocket } from "./useNotificationSocket";
 
 // ============================================================================
 // Utility Hooks

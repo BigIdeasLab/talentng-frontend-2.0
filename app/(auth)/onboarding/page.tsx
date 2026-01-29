@@ -171,9 +171,6 @@ const OnboardingPage = () => {
 
       await completeOnboardingMutation.mutateAsync(formData);
 
-      // Refetch user data to get updated roles
-      await refetchUser();
-
       toast({
         title: "Success",
         description: isAddingRole
@@ -181,12 +178,13 @@ const OnboardingPage = () => {
           : "Your profile has been successfully created.",
       });
 
+      // Refetch user data in background (don't await)
+      refetchUser();
+
       // If adding a role, redirect with the new role selected
       if (isAddingRole) {
         const newRole =
           selectedRole === "employer" ? "recruiter" : selectedRole;
-        // Small delay to ensure user data is fully synced before redirecting
-        await new Promise((resolve) => setTimeout(resolve, 500));
         router.push(`/dashboard?switchRole=${newRole}`);
       } else {
         router.push("/dashboard");
@@ -419,23 +417,17 @@ const OnboardingPage = () => {
     }
 
     try {
-      // Ensure token is valid before submitting large profile data
-      const tokenValid =
-        await ensureValidTokenBeforeOperation("profile completion");
-      if (!tokenValid) {
-        setIsLoading(false);
-        return;
-      }
-
       await completeOnboardingMutation.mutateAsync(formData);
 
-      await refetchUser();
       toast({
         title: "Success",
         description: isAddingRole
           ? "Your new role has been successfully added."
           : "Your profile has been successfully created.",
       });
+
+      // Refetch user data in background (don't await)
+      refetchUser();
 
       // Get the role value for redirect
       let redirectRole = selectedRole;

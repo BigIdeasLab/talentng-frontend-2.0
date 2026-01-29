@@ -10,15 +10,16 @@ import {
 import type { Notification } from "@/lib/types/notification";
 import { useAuth } from "./useAuth";
 
-export function useNotifications() {
+export function useNotifications(recipientRole?: "talent" | "recruiter" | "general") {
   const { user } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [forceRefreshTrigger, setForceRefreshTrigger] = useState(0);
 
   /**
-   * Fetch all notifications for the current user
+   * Fetch all notifications for the current user, optionally filtered by recipient role
    */
   const fetchNotifications = useCallback(async () => {
     if (user) {
@@ -27,6 +28,7 @@ export function useNotifications() {
       try {
         const fetchedNotifications = await getNotifications({
           userId: user.id,
+          recipientRole,
         });
         setNotifications(fetchedNotifications);
       } catch (err) {
@@ -38,10 +40,10 @@ export function useNotifications() {
         setLoading(false);
       }
     }
-  }, [user]);
+  }, [user, recipientRole]);
 
   /**
-   * Fetch unread notifications only
+   * Fetch unread notifications only, optionally filtered by recipient role
    */
   const fetchUnreadNotifications = useCallback(async () => {
     if (user) {
@@ -51,6 +53,7 @@ export function useNotifications() {
         const fetchedNotifications = await getNotifications({
           userId: user.id,
           read: false,
+          recipientRole,
         });
         setNotifications(fetchedNotifications);
       } catch (err) {
@@ -62,7 +65,7 @@ export function useNotifications() {
         setLoading(false);
       }
     }
-  }, [user]);
+  }, [user, recipientRole]);
 
   /**
    * Mark a specific notification as read
@@ -111,11 +114,18 @@ export function useNotifications() {
   const unreadCount = notifications.filter((n) => !n.readAt).length;
 
   /**
-   * Initial fetch on component mount
-   */
+    * Trigger a refresh of notifications (used by real-time socket)
+    */
+  const refreshNotifications = useCallback(() => {
+    setForceRefreshTrigger((prev) => prev + 1);
+  }, []);
+
+  /**
+    * Initial fetch on component mount and when refresh is triggered
+    */
   useEffect(() => {
     fetchNotifications();
-  }, [fetchNotifications]);
+  }, [fetchNotifications, forceRefreshTrigger]);
 
   return {
     notifications,
@@ -128,5 +138,6 @@ export function useNotifications() {
     markAllAsRead,
     isNotificationOpen,
     setIsNotificationOpen,
+    refreshNotifications,
   };
-}
+  }
