@@ -49,7 +49,7 @@ export function useNotificationSocket({
   enabled = true,
 }: UseNotificationSocketProps) {
   const { user, loading } = useAuth();
-   const eventSourceRef = useRef<any>(null); // EventSource type
+  const eventSourceRef = useRef<any>(null); // EventSource type
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const reconnectAttemptsRef = useRef(0);
   const maxReconnectAttempts = 5;
@@ -60,7 +60,13 @@ export function useNotificationSocket({
    */
   const connect = useCallback(() => {
     // Only connect if user is authenticated (not loading), enabled, and not already connected
-    if (!user || loading || !enabled || eventSourceRef.current || !isEventSourceAvailable()) {
+    if (
+      !user ||
+      loading ||
+      !enabled ||
+      eventSourceRef.current ||
+      !isEventSourceAvailable()
+    ) {
       return;
     }
 
