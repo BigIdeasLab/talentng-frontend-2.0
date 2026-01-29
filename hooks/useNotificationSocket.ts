@@ -50,8 +50,6 @@ export function useNotificationSocket({
   const maxReconnectAttempts = 5;
   const baseReconnectDelay = 1000; // 1 second
 
-
-
   /**
    * Connect to notification stream
    */
@@ -151,8 +149,8 @@ export function useNotificationSocket({
         }
       });
     } catch (error) {
-       console.error("Error creating notification stream connection:", error);
-     }
+      console.error("Error creating notification stream connection:", error);
+    }
   }, [
     user,
     loading,

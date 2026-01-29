@@ -85,7 +85,9 @@ export function OpportunityDetails({
       // Initialize invitation response state from API data
       // Find the application in the applications array that matches the applicationId
       if (applicationId && data?.applications) {
-        const currentApp = data.applications.find((app) => app.id === applicationId);
+        const currentApp = data.applications.find(
+          (app) => app.id === applicationId,
+        );
         if (currentApp?.inviteResponse) {
           setInvitationResponse(currentApp.inviteResponse);
         }
@@ -137,7 +139,7 @@ export function OpportunityDetails({
       }, 1500);
     } catch (error) {
       console.error("Failed to respond to invitation:", error);
-      
+
       // Check if it's a "already responded" error
       const errorMsg = error instanceof Error ? error.message : "";
       if (errorMsg.includes("already responded")) {
