@@ -24,6 +24,9 @@ export function HireOpportunitiesModal({
     string | null
   >(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [sentInvitations, setSentInvitations] = useState<Set<string>>(
+    new Set(),
+  );
 
   const handleHire = async () => {
     if (!selectedOpportunityId) return;
@@ -31,11 +34,21 @@ export function HireOpportunitiesModal({
     setIsLoading(true);
     try {
       await onHire(selectedOpportunityId);
+      // Track the sent invitation locally
+      setSentInvitations((prev) => new Set([...prev, selectedOpportunityId]));
       setSelectedOpportunityId(null);
       onClose();
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Determine which opportunities have been invited based on backend data or local tracking
+  const getInvitationStatus = (oppId: string) => {
+    return opportunities.find((o) => o.id === oppId)?.invitationSent ||
+      sentInvitations.has(oppId)
+      ? true
+      : false;
   };
 
   if (!isOpen) return null;
@@ -90,76 +103,104 @@ export function HireOpportunitiesModal({
           </div>
         ) : (
           <div className="flex flex-col gap-2.5 mb-6 max-h-[280px] overflow-y-auto scrollbar-styled">
-            {opportunities.map((opp) => (
-              <button
-                key={opp.id}
-                onClick={() => setSelectedOpportunityId(opp.id)}
-                className={`p-3 rounded-[10px] border-2 text-left transition-colors flex items-center gap-3 flex-shrink-0 ${
-                  selectedOpportunityId === opp.id
-                    ? "border-[#5C30FF] bg-[#F8F6FF]"
-                    : "border-[#E1E4EA] bg-white hover:border-[#D0D4DC]"
-                }`}
-              >
-                {/* Icon */}
-                <div className="flex-shrink-0 w-10 h-10 rounded-[8px] bg-[#EAE6FF] flex items-center justify-center">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M4 6C4 4.89543 4.89543 4 6 4H8C8.26522 4 8.52109 4.10536 8.70711 4.29289L10.4142 6H18C19.1046 6 20 6.89543 20 8V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V6Z"
-                      fill="#5C30FF"
-                    />
-                  </svg>
-                </div>
-
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <p className="font-inter-tight text-[13px] font-semibold text-black">
-                    {opp.title}
-                  </p>
-                  <p className="font-inter-tight text-[11px] text-[#525866] mt-0.5">
-                    {companyName}
-                  </p>
-                </div>
-
-                {/* Badge and Checkmark */}
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <div
-                    className={`px-2.5 py-0.5 rounded-full font-inter-tight text-[10px] font-medium whitespace-nowrap ${
-                      opp.type === "Job"
-                        ? "bg-[#5C30FF] text-white"
-                        : opp.type === "Internship"
-                          ? "bg-[#D4F1E8] text-[#0B7563]"
-                          : "bg-[#FEE8C1] text-[#8B5C00]"
-                    }`}
-                  >
-                    {opp.type || "Position"}
-                  </div>
-                  {selectedOpportunityId === opp.id && (
+            {opportunities.map((opp) => {
+              const isInvitationSent = getInvitationStatus(opp.id);
+              return (
+                <button
+                  key={opp.id}
+                  onClick={() =>
+                    !isInvitationSent && setSelectedOpportunityId(opp.id)
+                  }
+                  disabled={isInvitationSent}
+                  className={`p-3 rounded-[10px] border-2 text-left transition-colors flex items-center gap-3 flex-shrink-0 ${
+                    isInvitationSent
+                      ? "border-[#D1D5DB] bg-[#F9FAFB] opacity-60 cursor-not-allowed"
+                      : selectedOpportunityId === opp.id
+                        ? "border-[#5C30FF] bg-[#F8F6FF]"
+                        : "border-[#E1E4EA] bg-white hover:border-[#D0D4DC]"
+                  }`}
+                >
+                  {/* Icon */}
+                  <div className="flex-shrink-0 w-10 h-10 rounded-[8px] bg-[#EAE6FF] flex items-center justify-center">
                     <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 20 20"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
-                      <circle cx="10" cy="10" r="9" fill="#5C30FF" />
                       <path
-                        d="M7 10L9 12L13 8"
-                        stroke="white"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                        d="M4 6C4 4.89543 4.89543 4 6 4H8C8.26522 4 8.52109 4.10536 8.70711 4.29289L10.4142 6H18C19.1046 6 20 6.89543 20 8V18C20 19.1046 19.1046 20 18 20H6C4.89543 20 4 19.1046 4 18V6Z"
+                        fill="#5C30FF"
                       />
                     </svg>
-                  )}
-                </div>
-              </button>
-            ))}
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-inter-tight text-[13px] font-semibold text-black">
+                      {opp.title}
+                    </p>
+                    <p className="font-inter-tight text-[11px] text-[#525866] mt-0.5">
+                      {companyName}
+                    </p>
+                  </div>
+
+                  {/* Badge and Checkmark */}
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <div
+                      className={`px-2.5 py-0.5 rounded-full font-inter-tight text-[10px] font-medium whitespace-nowrap ${
+                        isInvitationSent
+                          ? "bg-[#E0E7FF] text-[#4F46E5]"
+                          : opp.type === "Job"
+                            ? "bg-[#5C30FF] text-white"
+                            : opp.type === "Internship"
+                              ? "bg-[#D4F1E8] text-[#0B7563]"
+                              : "bg-[#FEE8C1] text-[#8B5C00]"
+                      }`}
+                    >
+                      {isInvitationSent ? "Invited" : opp.type || "Position"}
+                    </div>
+                    {!isInvitationSent && selectedOpportunityId === opp.id && (
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <circle cx="10" cy="10" r="9" fill="#5C30FF" />
+                        <path
+                          d="M7 10L9 12L13 8"
+                          stroke="white"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    )}
+                    {isInvitationSent && (
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <circle cx="10" cy="10" r="9" fill="#4F46E5" />
+                        <path
+                          d="M7 10L9 12L13 8"
+                          stroke="white"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
           </div>
         )}
 
@@ -174,7 +215,10 @@ export function HireOpportunitiesModal({
           <button
             onClick={handleHire}
             disabled={
-              isLoading || !selectedOpportunityId || opportunities.length === 0
+              isLoading ||
+              !selectedOpportunityId ||
+              opportunities.length === 0 ||
+              getInvitationStatus(selectedOpportunityId || "")
             }
             className="flex-1 px-3.5 py-2.5 rounded-[8px] bg-[#5C30FF] hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[12px] font-medium text-white transition-colors flex items-center justify-center gap-1.5"
           >
@@ -194,7 +238,11 @@ export function HireOpportunitiesModal({
                 strokeLinejoin="round"
               />
             </svg>
-            {isLoading ? "Hiring..." : "Continue Hire"}
+            {isLoading
+              ? "Hiring..."
+              : getInvitationStatus(selectedOpportunityId || "")
+                ? "Already Invited"
+                : "Continue Hire"}
           </button>
         </div>
       </div>

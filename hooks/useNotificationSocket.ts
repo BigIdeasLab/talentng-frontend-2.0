@@ -2,6 +2,7 @@
 
 import { useEffect, useCallback, useRef } from "react";
 import { useAuth } from "./useAuth";
+import { getAccessToken } from "@/lib/auth";
 
 interface NotificationStreamEvent {
   type: string;
@@ -42,18 +43,21 @@ export function useNotificationSocket({
   onNotificationRead,
   enabled = true,
 }: UseNotificationSocketProps) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const eventSourceRef = useRef<EventSource | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const reconnectAttemptsRef = useRef(0);
   const maxReconnectAttempts = 5;
   const baseReconnectDelay = 1000; // 1 second
 
+
+
   /**
    * Connect to notification stream
    */
   const connect = useCallback(() => {
-    if (!user || !enabled || eventSourceRef.current) {
+    // Only connect if user is authenticated (not loading), enabled, and not already connected
+    if (!user || loading || !enabled || eventSourceRef.current) {
       return;
     }
 
@@ -62,6 +66,13 @@ export function useNotificationSocket({
       const streamUrl = new URL("/api/v1/notifications/stream", apiUrl);
       streamUrl.searchParams.append("recipientRole", recipientRole);
 
+      // Pass token as query parameter for EventSource authentication
+      const token = getAccessToken();
+      if (token) {
+        streamUrl.searchParams.append("token", token);
+      }
+
+      // EventSource automatically sends cookies with requests to same-origin URLs
       eventSourceRef.current = new EventSource(streamUrl.toString());
 
       // Handle incoming messages
@@ -140,10 +151,11 @@ export function useNotificationSocket({
         }
       });
     } catch (error) {
-      console.error("Error creating notification stream connection:", error);
-    }
+       console.error("Error creating notification stream connection:", error);
+     }
   }, [
     user,
+    loading,
     recipientRole,
     enabled,
     onCountUpdate,
@@ -170,14 +182,16 @@ export function useNotificationSocket({
 
   // Connect on mount and when dependencies change
   useEffect(() => {
-    if (enabled && user) {
+    // Only connect when user is authenticated and auth is done loading
+    // DISABLED: Backend /api/v1/notifications/stream endpoint returns 404
+    if (false && enabled && user && !loading) {
       connect();
     }
 
     return () => {
       disconnect();
     };
-  }, [enabled, user, connect, disconnect]);
+  }, [enabled, user, loading, connect, disconnect]);
 
   // Manual reconnect method
   const reconnect = useCallback(() => {

@@ -14,7 +14,7 @@ export interface MappedApplicant {
   };
   location: string;
   dateApplied: string;
-  status: "applied" | "shortlisted" | "rejected" | "hired";
+  status: "invited" | "applied" | "shortlisted" | "rejected" | "hired";
   interviewStatus?: "scheduled" | "rescheduled" | "completed" | "cancelled";
 }
 

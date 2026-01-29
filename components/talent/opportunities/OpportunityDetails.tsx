@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getToolInfo } from "@/lib/utils/tools";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { useAuth } from "@/hooks/useAuth";
 import { ApplicationModal } from "@/components/talent/opportunities/application-modal";
 import { SimilarOpportunitiesSection } from "./SimilarOpportunitiesSection";
 import type { DisplayOpportunity } from "@/components/talent/opportunities/types";
@@ -49,6 +50,7 @@ export function OpportunityDetails({
   applicationId,
 }: OpportunityDetailsProps) {
   const router = useRouter();
+  const { user } = useAuth();
   const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
@@ -80,6 +82,14 @@ export function OpportunityDetails({
       if (data?.saved !== undefined) {
         setIsSaved(data.saved);
       }
+      // Initialize invitation response state from API data
+      // Find the application in the applications array that matches the applicationId
+      if (applicationId && data?.applications) {
+        const currentApp = data.applications.find((app) => app.id === applicationId);
+        if (currentApp?.inviteResponse) {
+          setInvitationResponse(currentApp.inviteResponse);
+        }
+      }
     } catch (error) {
       console.error("Error fetching opportunity:", error);
     } finally {
@@ -109,17 +119,36 @@ export function OpportunityDetails({
     response: "accepted" | "declined",
   ) => {
     if (!applicationId) return;
+
+    // Prevent double responses
+    if (invitationResponse !== null) {
+      alert("You already responded to this invitation.");
+      return;
+    }
+
     setIsRespondingToInvitation(true);
     try {
       const module = await import("@/lib/api/applications/index");
       await module.respondToInvitation(applicationId, response);
+      // Optimistic UI update - disable buttons immediately
       setInvitationResponse(response);
       setTimeout(() => {
         router.push("/opportunities");
       }, 1500);
     } catch (error) {
       console.error("Failed to respond to invitation:", error);
-      alert("Failed to respond to invitation. Please try again.");
+      
+      // Check if it's a "already responded" error
+      const errorMsg = error instanceof Error ? error.message : "";
+      if (errorMsg.includes("already responded")) {
+        // User already responded - refresh to get the actual state
+        await fetchOpportunityDetails();
+        alert("You already responded to this invitation.");
+      } else {
+        // Reset state on other errors to allow retry
+        setInvitationResponse(null);
+        alert("Failed to respond to invitation. Please try again.");
+      }
     } finally {
       setIsRespondingToInvitation(false);
     }
@@ -623,91 +652,105 @@ export function OpportunityDetails({
               {/* Save and Apply Buttons OR Accept/Decline for Invitations */}
               {applicationId ? (
                 // Accept/Decline buttons for invitations
-                <div className="flex justify-between items-center gap-2">
-                  <button
-                    onClick={() => handleRespondToInvitation("declined")}
-                    disabled={
-                      isRespondingToInvitation || invitationResponse !== null
-                    }
-                    className={`flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] border transition-colors ${
-                      invitationResponse === "declined"
-                        ? "bg-gray-200 border-gray-200 cursor-not-allowed"
-                        : "bg-white border-[#E1E4EA] hover:bg-gray-50 text-[#525866]"
-                    } ${isRespondingToInvitation ? "opacity-50 cursor-not-allowed" : ""}`}
-                  >
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M18 6L6 18M6 6L18 18"
-                        stroke={
-                          invitationResponse === "declined"
-                            ? "#999"
-                            : "currentColor"
-                        }
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <span
-                      className={`font-inter-tight text-[14px] font-normal leading-normal ${
+                <div className="flex flex-col gap-3">
+                  {invitationResponse && (
+                    <div className="p-3 rounded-lg bg-blue-50 border border-blue-200">
+                      <p className="text-sm text-blue-700 font-medium">
+                        You already responded:{" "}
+                        <span className="capitalize">
+                          {invitationResponse === "accepted"
+                            ? "Accepted the offer"
+                            : "Declined the offer"}
+                        </span>
+                      </p>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center gap-2">
+                    <button
+                      onClick={() => handleRespondToInvitation("declined")}
+                      disabled={
+                        isRespondingToInvitation || invitationResponse !== null
+                      }
+                      className={`flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] border transition-colors ${
                         invitationResponse === "declined"
-                          ? "text-gray-600"
-                          : "text-[#525866]"
-                      }`}
+                          ? "bg-gray-200 border-gray-200 cursor-not-allowed"
+                          : "bg-white border-[#E1E4EA] hover:bg-gray-50 text-[#525866]"
+                      } ${isRespondingToInvitation ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
-                      {invitationResponse === "declined"
-                        ? "Declined"
-                        : "Decline"}
-                    </span>
-                  </button>
-                  <button
-                    onClick={() => handleRespondToInvitation("accepted")}
-                    disabled={
-                      isRespondingToInvitation || invitationResponse !== null
-                    }
-                    className={`flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] transition-colors ${
-                      invitationResponse === "accepted"
-                        ? "bg-green-100 border-green-100 cursor-not-allowed"
-                        : "bg-[#5C30FF] hover:bg-[#4a26cc]"
-                    } ${isRespondingToInvitation ? "opacity-50 cursor-not-allowed" : ""}`}
-                  >
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M5 14L8.5 17.5L19 6.5"
-                        stroke={
-                          invitationResponse === "accepted"
-                            ? "#22c55e"
-                            : "white"
-                        }
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <span
-                      className={`font-inter-tight text-[14px] font-normal leading-normal ${
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M18 6L6 18M6 6L18 18"
+                          stroke={
+                            invitationResponse === "declined"
+                              ? "#999"
+                              : "currentColor"
+                          }
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <span
+                        className={`font-inter-tight text-[14px] font-normal leading-normal ${
+                          invitationResponse === "declined"
+                            ? "text-gray-600"
+                            : "text-[#525866]"
+                        }`}
+                      >
+                        {invitationResponse === "declined"
+                          ? "Declined"
+                          : "Decline"}
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => handleRespondToInvitation("accepted")}
+                      disabled={
+                        isRespondingToInvitation || invitationResponse !== null
+                      }
+                      className={`flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] transition-colors ${
                         invitationResponse === "accepted"
-                          ? "text-green-700"
-                          : "text-white"
-                      }`}
+                          ? "bg-green-100 border-green-100 cursor-not-allowed"
+                          : "bg-[#5C30FF] hover:bg-[#4a26cc]"
+                      } ${isRespondingToInvitation ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
-                      {invitationResponse === "accepted"
-                        ? "Accepted"
-                        : "Accept Offer"}
-                    </span>
-                  </button>
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M5 14L8.5 17.5L19 6.5"
+                          stroke={
+                            invitationResponse === "accepted"
+                              ? "#22c55e"
+                              : "white"
+                          }
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <span
+                        className={`font-inter-tight text-[14px] font-normal leading-normal ${
+                          invitationResponse === "accepted"
+                            ? "text-green-700"
+                            : "text-white"
+                        }`}
+                      >
+                        {invitationResponse === "accepted"
+                          ? "Accepted"
+                          : "Accept Offer"}
+                      </span>
+                    </button>
+                  </div>
                 </div>
               ) : (
                 // Save and Apply buttons for regular opportunities

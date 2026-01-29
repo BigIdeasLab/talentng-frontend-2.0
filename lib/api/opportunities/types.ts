@@ -11,6 +11,18 @@ export interface PostedBy {
   recruiterProfile: RecruiterProfile;
 }
 
+export interface ApplicationForOpportunity {
+  id: string;
+  userId: string;
+  status: "invited" | "applied" | "shortlisted" | "rejected" | "hired";
+  sourceType: "applied" | "invited";
+  inviteResponse?: "accepted" | "declined" | null;
+  respondedAt?: string | null;
+  invitedAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface Opportunity {
   id: string;
   type: "Job" | "Internship" | "Mentorship" | string;
@@ -51,6 +63,10 @@ export interface Opportunity {
   applied?: boolean;
   saved?: boolean;
   similar?: Opportunity[];
+  applications?: ApplicationForOpportunity[];
+  inviteResponse?: "accepted" | "declined" | null;
+  respondedAt?: string | null;
+  invitationSent?: boolean;
 }
 
 export interface PaginationInfo {
