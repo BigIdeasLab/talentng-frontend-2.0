@@ -28,11 +28,13 @@ export const SelectRoleStep = ({
   onBack,
   existingRoles = [],
   isAddingRole = false,
+  isLoadingRoles = false,
 }: {
   onNext: (role: Role) => void;
   onBack?: () => void;
   existingRoles?: string[];
   isAddingRole?: boolean;
+  isLoadingRoles?: boolean;
 }) => {
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
 
@@ -122,25 +124,30 @@ export const SelectRoleStep = ({
         </div>
 
         {/* Role Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full max-w-[640px] flex-shrink-0">
-          {roles.map((role) => {
-            const completed = isRoleCompleted(role.id);
-            return (
-              <button
-                key={role.id}
-                onClick={() => !completed && setSelectedRole(role.id as Role)}
-                disabled={completed}
-                className={`flex flex-col overflow-hidden transition-all rounded-[10px] relative ${
-                  completed
-                    ? "opacity-50 cursor-not-allowed"
-                    : selectedRole === role.id
-                      ? "ring-2 ring-[#5C30FF]"
-                      : "hover:shadow-md"
-                }`}
-                title={
-                  completed ? `You're already onboarded as ${role.label}` : ""
-                }
-              >
+         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full max-w-[640px] flex-shrink-0">
+           {roles.map((role) => {
+             const completed = isRoleCompleted(role.id);
+             const isDisabled = completed || isLoadingRoles;
+             return (
+               <button
+                 key={role.id}
+                 onClick={() => !isDisabled && setSelectedRole(role.id as Role)}
+                 disabled={isDisabled}
+                 className={`flex flex-col overflow-hidden transition-all rounded-[10px] relative ${
+                   isDisabled
+                     ? "opacity-50 cursor-not-allowed"
+                     : selectedRole === role.id
+                       ? "ring-2 ring-[#5C30FF]"
+                       : "hover:shadow-md"
+                 }`}
+                 title={
+                   isLoadingRoles
+                     ? "Loading your profile information..."
+                     : completed
+                       ? `You're already onboarded as ${role.label}`
+                       : ""
+                 }
+               >
                 {/* Image */}
                 <div className="relative w-full aspect-square bg-[#E3E3E3] overflow-hidden">
                   <img
@@ -149,14 +156,25 @@ export const SelectRoleStep = ({
                     className="w-full h-full object-cover"
                   />
 
-                  {/* Completed Badge */}
-                  {completed && (
+                  {/* Loading or Completed Badge */}
+                  {(completed || isLoadingRoles) && (
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                       <div className="flex flex-col items-center gap-1">
-                        <CheckIcon />
-                        <span className="text-white text-xs font-medium">
-                          Completed
-                        </span>
+                        {isLoadingRoles ? (
+                          <>
+                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            <span className="text-white text-xs font-medium">
+                              Loading...
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <CheckIcon />
+                            <span className="text-white text-xs font-medium">
+                              Completed
+                            </span>
+                          </>
+                        )}
                       </div>
                     </div>
                   )}

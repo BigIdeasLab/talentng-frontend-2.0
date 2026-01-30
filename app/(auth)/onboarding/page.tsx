@@ -36,6 +36,7 @@ const OnboardingPage = () => {
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [completedRoles, setCompletedRoles] = useState<string[]>([]);
+  const [isLoadingRoles, setIsLoadingRoles] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
@@ -55,6 +56,13 @@ const OnboardingPage = () => {
   useEffect(() => {
     if (isAddingRole) {
       const fetchCompletedRoles = async () => {
+        setIsLoadingRoles(true);
+        const fetchStartTime =
+          typeof window !== "undefined" ? window.performance.now() : 0;
+        console.log("[ONBOARDING] Starting to fetch completed roles", {
+          timestamp: fetchStartTime,
+        });
+
         const completed: string[] = [];
 
         try {
@@ -84,7 +92,16 @@ const OnboardingPage = () => {
           // Profile doesn't exist or error occurred
         }
 
+        const fetchEndTime =
+          typeof window !== "undefined" ? window.performance.now() : 0;
+        console.log("[ONBOARDING] Completed roles fetched", {
+          duration: `${(fetchEndTime - fetchStartTime).toFixed(0)}ms`,
+          completedRoles: completed,
+          timestamp: fetchEndTime,
+        });
+
         setCompletedRoles(completed);
+        setIsLoadingRoles(false);
       };
 
       fetchCompletedRoles();
@@ -246,21 +263,28 @@ const OnboardingPage = () => {
         refetchUser();
       }
 
-      // If adding a role, redirect with the new role selected
-      if (isAddingRole) {
+      // If adding a role, update completedRoles immediately and stay on page
+      if (isAddingRole && selectedRole) {
         const newRole =
           selectedRole === "employer" ? "recruiter" : selectedRole;
-        const redirectTime =
-          typeof window !== "undefined" ? window.performance.now() : 0;
-        console.log("[ONBOARDING] Redirecting with new role", {
+        console.log("[ONBOARDING] Updating completedRoles with new role", {
           newRole,
-          url: `/dashboard?switchRole=${newRole}`,
-          timestamp: redirectTime,
+          previousRoles: completedRoles,
         });
-        router.push(`/dashboard?switchRole=${newRole}`);
+        // Add the new role to completedRoles so the SelectRoleStep disables it
+        setCompletedRoles((prev) => [...prev, newRole as string]);
+       // Reset form for next role
+       setCurrentStep(1);
+       setSelectedRole(null);
+       setProfileData(undefined);
+       setCompanyData(undefined);
+       setCompanyDetailsData(undefined);
+       setMentorData(undefined);
+       setMentorExpertiseData(undefined);
+       setProfileImage(null);
       } else {
-        console.log("[ONBOARDING] Redirecting to dashboard");
-        router.push("/dashboard");
+       console.log("[ONBOARDING] Redirecting to dashboard");
+       router.push("/dashboard");
       }
     } catch (error: any) {
       let errorMessage = "An unknown error occurred.";
@@ -407,13 +431,23 @@ const OnboardingPage = () => {
         redirectRole = "recruiter";
       }
 
-      // If adding a role, redirect with the new role selected
-      if (isAddingRole) {
-        console.log("[ONBOARDING] Redirecting with new role", {
+      // If adding a role, update completedRoles immediately and stay on page
+      if (isAddingRole && redirectRole) {
+        console.log("[ONBOARDING] Updating completedRoles with new role", {
           redirectRole,
-          url: `/dashboard?switchRole=${redirectRole}`,
+          previousRoles: completedRoles,
         });
-        router.push(`/dashboard?switchRole=${redirectRole}`);
+        // Add the new role to completedRoles so the SelectRoleStep disables it
+        setCompletedRoles((prev) => [...prev, redirectRole as string]);
+        // Reset form for next role
+        setCurrentStep(1);
+        setSelectedRole(null);
+        setProfileData(undefined);
+        setCompanyData(undefined);
+        setCompanyDetailsData(undefined);
+        setMentorData(undefined);
+        setMentorExpertiseData(undefined);
+        setProfileImage(null);
       } else {
         console.log("[ONBOARDING] Redirecting to dashboard");
         router.push("/dashboard");
@@ -599,13 +633,23 @@ const OnboardingPage = () => {
         redirectRole = "recruiter";
       }
 
-      // If adding a role, redirect with the new role selected
-      if (isAddingRole) {
-        console.log("[ONBOARDING] Redirecting with new role", {
+      // If adding a role, update completedRoles immediately and stay on page
+      if (isAddingRole && redirectRole) {
+        console.log("[ONBOARDING] Updating completedRoles with new role", {
           redirectRole,
-          url: `/dashboard?switchRole=${redirectRole}`,
+          previousRoles: completedRoles,
         });
-        router.push(`/dashboard?switchRole=${redirectRole}`);
+        // Add the new role to completedRoles so the SelectRoleStep disables it
+        setCompletedRoles((prev) => [...prev, redirectRole as string]);
+        // Reset form for next role
+        setCurrentStep(1);
+        setSelectedRole(null);
+        setProfileData(undefined);
+        setCompanyData(undefined);
+        setCompanyDetailsData(undefined);
+        setMentorData(undefined);
+        setMentorExpertiseData(undefined);
+        setProfileImage(null);
       } else {
         console.log("[ONBOARDING] Redirecting to dashboard");
         router.push("/dashboard");
@@ -711,6 +755,7 @@ const OnboardingPage = () => {
               onBack={handleSelectRoleBack}
               existingRoles={isAddingRole ? completedRoles : existingRoles}
               isAddingRole={isAddingRole}
+              isLoadingRoles={isAddingRole && isLoadingRoles}
             />
           </div>
         )}

@@ -7,6 +7,7 @@ All TypeScript/ESLint errors have been fixed. Only minor warnings remain (unused
 ## Errors Fixed
 
 ✅ **Fixed: `'performance' is not defined`**
+
 - Changed all `performance.now()` to `typeof window !== "undefined" ? window.performance.now() : 0`
 - This is the correct way to access performance API in Next.js client components
 - Applied to 6 files:
@@ -20,6 +21,7 @@ All TypeScript/ESLint errors have been fixed. Only minor warnings remain (unused
 ## Remaining Warnings (Non-critical)
 
 These are just unused variable imports and can be ignored:
+
 - `mentorExpertiseData` - unused in onboarding/page.tsx
 - `ensureValidTokenBeforeOperation` - unused in onboarding/page.tsx
 - `useState` - unused in useAuth.ts
