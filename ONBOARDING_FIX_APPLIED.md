@@ -9,17 +9,21 @@ Fixed the **race condition** in the onboarding flow where the frontend was makin
 ### 1. **app/(auth)/onboarding/page.tsx**
 
 #### Added import
+
 ```typescript
 import { useQueryClient } from "@tanstack/react-query";
 ```
 
 #### Added queryClient to component
+
 ```typescript
 const queryClient = useQueryClient();
 ```
 
 #### Fixed `handleMentorExpertiseNext` (lines ~133-224)
+
 **Before:**
+
 ```typescript
 await completeOnboardingMutation.mutateAsync(formData);
 // Response ignored!
@@ -30,6 +34,7 @@ router.push("/dashboard?switchRole=...");
 ```
 
 **After:**
+
 ```typescript
 const response = await completeOnboardingMutation.mutateAsync(formData);
 // Response CAPTURED!
@@ -57,14 +62,17 @@ router.push("/dashboard?switchRole=...");
 ```
 
 #### Fixed `handleCompanyDetailsNext` (lines ~255-495)
+
 Same pattern as above - capture response and use it instead of refetching.
 
 #### Fixed `handleFinalSubmit` (lines ~362-600)
+
 Added comprehensive logging to track submission flow.
 
 ### 2. **hooks/useAuth.ts**
 
 #### Added logging to `fetchUser`
+
 ```typescript
 console.log("[useAuth] User fetched from GET /users/me", {
   userId: userData?.id,
@@ -73,6 +81,7 @@ console.log("[useAuth] User fetched from GET /users/me", {
 ```
 
 #### Added logging to useEffect hooks
+
 ```typescript
 console.log("[useAuth] Triggering refetchUser on mount/dependency change");
 console.log("[useAuth] User state updated", {
@@ -85,6 +94,7 @@ console.log("[useAuth] User state updated", {
 ### 3. **components/layouts/ProfileSwitcher.tsx**
 
 #### Added logging when roles update
+
 ```typescript
 useEffect(() => {
   console.log("[ProfileSwitcher] Roles updated", {
@@ -100,6 +110,7 @@ useEffect(() => {
 ## What This Fixes
 
 ### Before (With Race Condition)
+
 ```
 Timeline:
 0ms:   POST /users/me/onboard ────────── Backend creates profile, returns updated user
@@ -115,6 +126,7 @@ Problem: Extra API call, race condition, flicker on dashboard
 ```
 
 ### After (Fixed)
+
 ```
 Timeline:
 0ms:   POST /users/me/onboard ────────── Backend creates profile, returns updated user
@@ -137,6 +149,7 @@ Problem: SOLVED ✅
 When you test the fix, you'll see these logs in the browser console:
 
 ### During Onboarding Submission
+
 ```
 [ONBOARDING] Starting mentor expertise submission {
   isAddingRole: true,
@@ -158,6 +171,7 @@ When you test the fix, you'll see these logs in the browser console:
 ```
 
 ### When useAuth Updates
+
 ```
 [useAuth] User fetched from GET /users/me {
   userId: "82a04c06-2ee0-4fca-b89f-89bcb78ed026",
@@ -171,6 +185,7 @@ When you test the fix, you'll see these logs in the browser console:
 ```
 
 ### When ProfileSwitcher Updates
+
 ```
 [ProfileSwitcher] Roles updated {
   userRoles: ["talent", "mentor"],
@@ -204,12 +219,14 @@ When you test the fix, you'll see these logs in the browser console:
 ## Browser Network Tab Verification
 
 ### Before (Wrong)
+
 ```
 1. POST /users/me/onboard ✅
 2. GET /users/me ❌ (unnecessary extra call)
 ```
 
 ### After (Fixed)
+
 ```
 1. POST /users/me/onboard ✅
 2. (No extra GET /users/me call)
@@ -230,12 +247,13 @@ Check Network tab during add-role flow - you should only see one POST request, n
 ## Fallback Behavior
 
 If for some reason the response doesn't include `roles`:
+
 ```typescript
 if (response?.roles) {
   queryClient.setQueryData(["user"], response);
 } else {
   console.warn("[ONBOARDING] Response missing roles, falling back to refetch");
-  refetchUser();  // Fall back to original behavior
+  refetchUser(); // Fall back to original behavior
 }
 ```
 

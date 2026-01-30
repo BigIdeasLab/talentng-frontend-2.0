@@ -3,6 +3,7 @@
 ## Overview
 
 The onboarding system is a **multi-step wizard** that allows users to:
+
 1. **Initial Onboarding**: Create their first role (Talent, Recruiter/Employer, or Mentor)
 2. **Add New Role**: Add additional roles after the first one is completed
 
@@ -26,6 +27,7 @@ const handleAddNewRole = () => {
 ```
 
 **What happens**:
+
 - User clicks "Add New Role" button in the dashboard ProfileSwitcher dropdown
 - Frontend navigates to `/onboarding?mode=add-role&roles=talent,recruiter`
 - Existing roles are passed as query parameters to avoid stale data issues
@@ -85,6 +87,7 @@ useEffect(() => {
 ```
 
 **What happens**:
+
 - Detects `mode=add-role` query parameter
 - Makes 3 parallel server calls to check profile creation status:
   - `GET /talent/me` → checks if `isProfileCreated: true`
@@ -118,6 +121,7 @@ const completedCount = roles.filter((r) => isRoleCompleted(r.id)).length;
 ```
 
 **What happens**:
+
 - Maps frontend role IDs to backend API role names (employer → recruiter)
 - Checks if each role is in the `existingRoles` array
 - If role is completed:
@@ -128,6 +132,7 @@ const completedCount = roles.filter((r) => isRoleCompleted(r.id)).length;
 - Shows progress badge: "X of 3" (e.g., "1 of 3" if 1 role is completed)
 
 **UI Result**:
+
 ```
 How do you want to use Talent.ng        1 of 3
 ┌─────────────┬─────────────┬─────────────┐
@@ -144,14 +149,17 @@ How do you want to use Talent.ng        1 of 3
 Once a role is selected, the user goes through role-specific steps:
 
 #### **For Talent Role** (3 steps):
+
 1. **Step 2**: `CreateProfileStep` - Basic profile (firstName, lastName, username, location, bio, profileImage)
 2. **Step 3**: `ShowcaseSkillsStep` - Add skills/expertise
 
 #### **For Employer/Recruiter Role** (3 steps):
+
 1. **Step 2**: `CompanyProfileStep` - Company basic info (companyName, industry, logo)
 2. **Step 3**: `CompanyDetailsStep` - Company details (companySize, companyStage, operatingModel)
 
 #### **For Mentor Role** (3 steps):
+
 1. **Step 2**: `MentorProfileStep` - Mentor basic profile (firstName, lastName, username, location, bio, logo)
 2. **Step 3**: `MentorExpertiseStep` - Expertise details (expertise, experience, mentorshipStyle, linkedIn)
 
@@ -170,17 +178,19 @@ GET /mentor/me
 ```
 
 **Response Format**:
+
 ```json
 {
   "id": "user-id",
-  "isProfileCreated": true,  // Key field - determines if role is completed
+  "isProfileCreated": true, // Key field - determines if role is completed
   "firstName": "John",
-  "lastName": "Doe",
+  "lastName": "Doe"
   // ... other fields
 }
 ```
 
 **What backend needs to return**:
+
 - `isProfileCreated: true` if the user has created a profile for that role
 - `isProfileCreated: false` or endpoint throws error if profile doesn't exist
 
@@ -214,12 +224,12 @@ Content-Type: multipart/form-data
 │  └─ {
 │     // For Talent:
 │     "skills": ["JavaScript", "React"],
-│     
+│
 │     // For Recruiter:
 │     "companySize": "10-50",
 │     "companyStage": "Series A",
 │     "operatingModel": "Remote",
-│     
+│
 │     // For Mentor:
 │     "expertise": ["JavaScript", "Leadership"],
 │     "experience": "10 years",
@@ -230,6 +240,7 @@ Content-Type: multipart/form-data
 ```
 
 **Important Notes**:
+
 - Role value is always sent as `"TALENT"`, `"RECRUITER"`, or `"MENTOR"` (uppercase)
 - `"employer"` frontend role is mapped to `"RECRUITER"` API role
 - Both new onboarding and add-role mode use the **same endpoint**
@@ -246,6 +257,7 @@ GET /users/me/username-available/{username}
 ```
 
 **Response Format**:
+
 ```json
 {
   "available": true | false
@@ -271,7 +283,7 @@ GET /users/me/username-available/{username}
    Response: { isProfileCreated: false } → available for selection
    ↓
 5. UI shows only Talent and Mentor as clickable options
-   
+
 6. User fills Talent profile data:
    - CreateProfileStep: firstName, lastName, username, location, bio, image
    - ShowcaseSkillsStep: skills array
@@ -304,14 +316,14 @@ GET /users/me/username-available/{username}
 
 ## Key Differences: New Onboarding vs Add-Role
 
-| Aspect | New Onboarding | Add-Role |
-|--------|---|---|
-| **URL** | `/onboarding` | `/onboarding?mode=add-role&roles=...` |
-| **Profile Checks** | Skipped (no user roles yet) | Fetches all 3 profile endpoints to get `completedRoles` |
-| **Available Roles** | All 3 roles shown | Only roles with `isProfileCreated: false` |
-| **Success Message** | "Your profile has been successfully created." | "Your new role has been successfully added." |
-| **Redirect** | `/dashboard` | `/dashboard?switchRole={newRole}` |
-| **API Endpoint** | Same: `POST /users/me/onboard` | Same: `POST /users/me/onboard` |
+| Aspect              | New Onboarding                                | Add-Role                                                |
+| ------------------- | --------------------------------------------- | ------------------------------------------------------- |
+| **URL**             | `/onboarding`                                 | `/onboarding?mode=add-role&roles=...`                   |
+| **Profile Checks**  | Skipped (no user roles yet)                   | Fetches all 3 profile endpoints to get `completedRoles` |
+| **Available Roles** | All 3 roles shown                             | Only roles with `isProfileCreated: false`               |
+| **Success Message** | "Your profile has been successfully created." | "Your new role has been successfully added."            |
+| **Redirect**        | `/dashboard`                                  | `/dashboard?switchRole={newRole}`                       |
+| **API Endpoint**    | Same: `POST /users/me/onboard`                | Same: `POST /users/me/onboard`                          |
 
 ---
 
@@ -320,14 +332,14 @@ GET /users/me/username-available/{username}
 **Key state variables in `OnboardingPage.tsx`**:
 
 ```typescript
-const [currentStep, setCurrentStep] = useState(1);           // 1, 2, 3
-const [selectedRole, setSelectedRole] = useState<Role>();    // "talent", "employer", "mentor"
+const [currentStep, setCurrentStep] = useState(1); // 1, 2, 3
+const [selectedRole, setSelectedRole] = useState<Role>(); // "talent", "employer", "mentor"
 const [profileData, setProfileData] = useState<ProfileData>(); // Profile fields
-const [companyData, setCompanyData] = useState();              // For employer role
-const [mentorData, setMentorData] = useState();                // For mentor role
-const [profileImage, setProfileImage] = useState<File>();     // Image upload
+const [companyData, setCompanyData] = useState(); // For employer role
+const [mentorData, setMentorData] = useState(); // For mentor role
+const [profileImage, setProfileImage] = useState<File>(); // Image upload
 const [completedRoles, setCompletedRoles] = useState<string[]>(); // From profile checks
-const isAddingRole = searchParams.get("mode") === "add-role";   // Add-role flag
+const isAddingRole = searchParams.get("mode") === "add-role"; // Add-role flag
 ```
 
 ---
@@ -420,6 +432,7 @@ GET /talent/me        GET /recruiter/me      GET /mentor/me
 ## Username Validation
 
 During profile creation, username validation:
+
 - Uses **debounce** to avoid excessive API calls
 - Validates locally: 3-50 characters, alphanumeric+underscore
 - Calls `GET /users/me/username-available/{username}` to check uniqueness
@@ -430,11 +443,13 @@ During profile creation, username validation:
 ## Error Handling
 
 Both new onboarding and add-role mode handle:
+
 - **Timeout errors**: Special message about request duration
 - **Transaction errors**: Handled the same as timeout
 - **Generic errors**: Display error message from backend
 - **Missing data errors**: Display "Profile data is missing"
 
 Error messages are role-aware:
+
 - New onboarding: "Onboarding Failed"
 - Add-role: "Failed to add role"

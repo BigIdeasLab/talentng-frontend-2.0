@@ -43,7 +43,9 @@ export const useAuth = () => {
   // Refetch user when tokens change (after login or after page reload)
   useEffect(() => {
     if (hasToken && !loading) {
-      console.log("[useAuth] Triggering refetchUser on mount/dependency change");
+      console.log(
+        "[useAuth] Triggering refetchUser on mount/dependency change",
+      );
       refetchUser();
     }
   }, [hasToken, refetchUser, loading]);

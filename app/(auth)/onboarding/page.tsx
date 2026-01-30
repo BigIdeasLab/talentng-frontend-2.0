@@ -199,7 +199,9 @@ const OnboardingPage = () => {
         });
         queryClient.setQueryData(["user"], response);
       } else {
-        console.warn("[ONBOARDING] Response missing roles, falling back to refetch");
+        console.warn(
+          "[ONBOARDING] Response missing roles, falling back to refetch",
+        );
         refetchUser();
       }
 
@@ -361,7 +363,7 @@ const OnboardingPage = () => {
 
   const handleFinalSubmit = async (data: any) => {
     setIsLoading(true);
-    
+
     console.log("[ONBOARDING] Starting final submission", {
       isAddingRole,
       selectedRole,
@@ -477,7 +479,9 @@ const OnboardingPage = () => {
         });
         queryClient.setQueryData(["user"], response);
       } else {
-        console.warn("[ONBOARDING] Response missing roles, falling back to refetch");
+        console.warn(
+          "[ONBOARDING] Response missing roles, falling back to refetch",
+        );
         refetchUser();
       }
 
