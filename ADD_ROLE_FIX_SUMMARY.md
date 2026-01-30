@@ -5,6 +5,7 @@
 When user completes adding a new role during "add-role" onboarding mode, they could click on roles they already have completed before the page finished loading (4-second window).
 
 ### Example Scenario
+
 1. User is on onboarding page in "add-role" mode
 2. User sees roles: Talent ✓ (completed), Employer (available), Mentor (available)
 3. User clicks "Employer" and completes form, submits
@@ -32,14 +33,15 @@ Instead of redirecting to dashboard after adding a role, we now:
 Updated 3 functions in `app/(auth)/onboarding/page.tsx`:
 
 #### 1. `handleMentorExpertiseNext` (Line ~266)
+
 ```typescript
 // If adding a role, update completedRoles immediately and stay on page
 if (isAddingRole && selectedRole) {
   const newRole = selectedRole === "employer" ? "recruiter" : selectedRole;
-  
+
   // Add the new role to completedRoles so SelectRoleStep disables it
   setCompletedRoles((prev) => [...prev, newRole as string]);
-  
+
   // Reset form for next role
   setCurrentStep(1);
   setSelectedRole(null);
@@ -49,9 +51,11 @@ if (isAddingRole && selectedRole) {
 ```
 
 #### 2. `handleCompanyDetailsNext` (Line ~434)
+
 Same logic as above, but with `redirectRole` instead of `newRole`
 
 #### 3. `handleFinalSubmit` (Line ~636)
+
 Same logic as above
 
 ## How It Works Now

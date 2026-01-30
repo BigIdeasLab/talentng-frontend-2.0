@@ -273,18 +273,18 @@ const OnboardingPage = () => {
         });
         // Add the new role to completedRoles so the SelectRoleStep disables it
         setCompletedRoles((prev) => [...prev, newRole as string]);
-       // Reset form for next role
-       setCurrentStep(1);
-       setSelectedRole(null);
-       setProfileData(undefined);
-       setCompanyData(undefined);
-       setCompanyDetailsData(undefined);
-       setMentorData(undefined);
-       setMentorExpertiseData(undefined);
-       setProfileImage(null);
+        // Reset form for next role
+        setCurrentStep(1);
+        setSelectedRole(null);
+        setProfileData(undefined);
+        setCompanyData(undefined);
+        setCompanyDetailsData(undefined);
+        setMentorData(undefined);
+        setMentorExpertiseData(undefined);
+        setProfileImage(null);
       } else {
-       console.log("[ONBOARDING] Redirecting to dashboard");
-       router.push("/dashboard");
+        console.log("[ONBOARDING] Redirecting to dashboard");
+        router.push("/dashboard");
       }
     } catch (error: any) {
       let errorMessage = "An unknown error occurred.";

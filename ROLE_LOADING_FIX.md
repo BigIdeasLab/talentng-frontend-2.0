@@ -18,6 +18,7 @@ Added a loading state that disables ALL role cards while fetching completed role
 ### 1. OnboardingPage (`app/(auth)/onboarding/page.tsx`)
 
 Added:
+
 - `isLoadingRoles` state to track if completed roles are being fetched
 - Timing logs to show duration of role fetching
 - Pass `isLoadingRoles` to SelectRoleStep component
@@ -29,21 +30,23 @@ useEffect(() => {
   if (isAddingRole) {
     const fetchCompletedRoles = async () => {
       setIsLoadingRoles(true);
-      const fetchStartTime = typeof window !== "undefined" ? window.performance.now() : 0;
-      
+      const fetchStartTime =
+        typeof window !== "undefined" ? window.performance.now() : 0;
+
       // Fetch talent, recruiter, mentor profiles...
-      
-      const fetchEndTime = typeof window !== "undefined" ? window.performance.now() : 0;
+
+      const fetchEndTime =
+        typeof window !== "undefined" ? window.performance.now() : 0;
       console.log("[ONBOARDING] Completed roles fetched", {
         duration: `${(fetchEndTime - fetchStartTime).toFixed(0)}ms`,
         completedRoles: completed,
         timestamp: fetchEndTime,
       });
-      
+
       setCompletedRoles(completed);
       setIsLoadingRoles(false);
     };
-    
+
     fetchCompletedRoles();
   }
 }, [isAddingRole]);
@@ -65,10 +68,10 @@ export const SelectRoleStep = ({
   isLoadingRoles?: boolean;  // NEW
 }) => {
   // ...
-  
+
   // Disable card if completed OR if loading roles
   const isDisabled = completed || isLoadingRoles;
-  
+
   return (
     <button
       disabled={isDisabled}
@@ -105,6 +108,7 @@ export const SelectRoleStep = ({
 ## User Experience
 
 ### Before Fix
+
 1. User clicks "Add a New Role"
 2. Onboarding page loads
 3. All role cards are **clickable** (no disabled state)
@@ -113,6 +117,7 @@ export const SelectRoleStep = ({
 6. But it's too late - user might have already clicked
 
 ### After Fix
+
 1. User clicks "Add a New Role"
 2. Onboarding page loads
 3. All role cards show **loading spinners** and are **disabled** ✅
@@ -146,13 +151,12 @@ export const SelectRoleStep = ({
 
 ## Summary
 
-| Aspect | Status |
-|--------|--------|
-| Roles disabled during fetch | ✅ |
-| Loading spinner visible | ✅ |
-| Cannot click during loading | ✅ |
-| User sees feedback message | ✅ |
-| Completed roles show badge | ✅ |
-| Timing logs added | ✅ |
-| No TypeScript errors | ✅ |
-
+| Aspect                      | Status |
+| --------------------------- | ------ |
+| Roles disabled during fetch | ✅     |
+| Loading spinner visible     | ✅     |
+| Cannot click during loading | ✅     |
+| User sees feedback message  | ✅     |
+| Completed roles show badge  | ✅     |
+| Timing logs added           | ✅     |
+| No TypeScript errors        | ✅     |

@@ -124,30 +124,30 @@ export const SelectRoleStep = ({
         </div>
 
         {/* Role Cards */}
-         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full max-w-[640px] flex-shrink-0">
-           {roles.map((role) => {
-             const completed = isRoleCompleted(role.id);
-             const isDisabled = completed || isLoadingRoles;
-             return (
-               <button
-                 key={role.id}
-                 onClick={() => !isDisabled && setSelectedRole(role.id as Role)}
-                 disabled={isDisabled}
-                 className={`flex flex-col overflow-hidden transition-all rounded-[10px] relative ${
-                   isDisabled
-                     ? "opacity-50 cursor-not-allowed"
-                     : selectedRole === role.id
-                       ? "ring-2 ring-[#5C30FF]"
-                       : "hover:shadow-md"
-                 }`}
-                 title={
-                   isLoadingRoles
-                     ? "Loading your profile information..."
-                     : completed
-                       ? `You're already onboarded as ${role.label}`
-                       : ""
-                 }
-               >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full max-w-[640px] flex-shrink-0">
+          {roles.map((role) => {
+            const completed = isRoleCompleted(role.id);
+            const isDisabled = completed || isLoadingRoles;
+            return (
+              <button
+                key={role.id}
+                onClick={() => !isDisabled && setSelectedRole(role.id as Role)}
+                disabled={isDisabled}
+                className={`flex flex-col overflow-hidden transition-all rounded-[10px] relative ${
+                  isDisabled
+                    ? "opacity-50 cursor-not-allowed"
+                    : selectedRole === role.id
+                      ? "ring-2 ring-[#5C30FF]"
+                      : "hover:shadow-md"
+                }`}
+                title={
+                  isLoadingRoles
+                    ? "Loading your profile information..."
+                    : completed
+                      ? `You're already onboarded as ${role.label}`
+                      : ""
+                }
+              >
                 {/* Image */}
                 <div className="relative w-full aspect-square bg-[#E3E3E3] overflow-hidden">
                   <img
