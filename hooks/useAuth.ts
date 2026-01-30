@@ -53,7 +53,9 @@ export const useAuth = () => {
   // Log whenever user data changes
   useEffect(() => {
     console.log("[useAuth] User state updated", {
+      timestamp: typeof window !== "undefined" ? window.performance.now() : 0,
       userId: user?.id,
+      rolesCount: user?.roles?.length,
       roles: user?.roles,
       loading,
     });

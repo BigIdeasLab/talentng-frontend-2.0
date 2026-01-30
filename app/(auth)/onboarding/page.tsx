@@ -176,13 +176,19 @@ const OnboardingPage = () => {
         formData.append("profileImage", profileImage);
       }
 
-      console.log("[ONBOARDING] Sending POST /users/me/onboard mutation");
+      const submissionStartTime = typeof window !== "undefined" ? window.performance.now() : 0;
+      console.log("[ONBOARDING] Sending POST /users/me/onboard mutation", {
+        timestamp: submissionStartTime,
+      });
       const response = await completeOnboardingMutation.mutateAsync(formData);
+      const responseTime = typeof window !== "undefined" ? window.performance.now() : 0;
 
       console.log("[ONBOARDING] Mutation response received", {
+        duration: `${(responseTime - submissionStartTime).toFixed(0)}ms`,
         hasRoles: !!response?.roles,
         roles: response?.roles,
         userId: response?.id,
+        timestamp: responseTime,
       });
 
       toast({
@@ -203,16 +209,30 @@ const OnboardingPage = () => {
         queryClient.setQueryData(["user"], response);
 
         // Also update localStorage for useProfile hook
+        const localStorageStartTime = typeof window !== "undefined" ? window.performance.now() : 0;
         console.log("[ONBOARDING] Updating localStorage with new roles", {
           roles: response.roles,
+          timestamp: localStorageStartTime,
         });
         localStorage.setItem("userRoles", response.roles.join(","));
+        const localStorageEndTime = typeof window !== "undefined" ? window.performance.now() : 0;
+        console.log("[ONBOARDING] localStorage updated", {
+          duration: `${(localStorageEndTime - localStorageStartTime).toFixed(0)}ms`,
+          timestamp: localStorageEndTime,
+        });
 
         // Small delay to ensure localStorage is written before redirect
+        const waitStartTime = typeof window !== "undefined" ? window.performance.now() : 0;
         console.log(
           "[ONBOARDING] Waiting before redirect to ensure localStorage sync...",
+          { timestamp: waitStartTime },
         );
         await new Promise((resolve) => setTimeout(resolve, 100));
+        const waitEndTime = typeof window !== "undefined" ? window.performance.now() : 0;
+        console.log("[ONBOARDING] Wait complete", {
+          duration: `${(waitEndTime - waitStartTime).toFixed(0)}ms`,
+          timestamp: waitEndTime,
+        });
       } else {
         console.warn(
           "[ONBOARDING] Response missing roles, falling back to refetch",
@@ -224,9 +244,11 @@ const OnboardingPage = () => {
       if (isAddingRole) {
         const newRole =
           selectedRole === "employer" ? "recruiter" : selectedRole;
+        const redirectTime = typeof window !== "undefined" ? window.performance.now() : 0;
         console.log("[ONBOARDING] Redirecting with new role", {
           newRole,
           url: `/dashboard?switchRole=${newRole}`,
+          timestamp: redirectTime,
         });
         router.push(`/dashboard?switchRole=${newRole}`);
       } else {
@@ -326,13 +348,19 @@ const OnboardingPage = () => {
         formData.append("profileImage", logo);
       }
 
-      console.log("[ONBOARDING] Sending POST /users/me/onboard mutation");
+      const submissionStartTime = typeof window !== "undefined" ? window.performance.now() : 0;
+      console.log("[ONBOARDING] Sending POST /users/me/onboard mutation", {
+        timestamp: submissionStartTime,
+      });
       const response = await completeOnboardingMutation.mutateAsync(formData);
+      const responseTime = typeof window !== "undefined" ? window.performance.now() : 0;
 
       console.log("[ONBOARDING] Mutation response received", {
+        duration: `${(responseTime - submissionStartTime).toFixed(0)}ms`,
         hasRoles: !!response?.roles,
         roles: response?.roles,
         userId: response?.id,
+        timestamp: responseTime,
       });
 
       toast({
@@ -510,13 +538,19 @@ const OnboardingPage = () => {
     }
 
     try {
-      console.log("[ONBOARDING] Sending POST /users/me/onboard mutation");
+      const submissionStartTime = typeof window !== "undefined" ? window.performance.now() : 0;
+      console.log("[ONBOARDING] Sending POST /users/me/onboard mutation", {
+        timestamp: submissionStartTime,
+      });
       const response = await completeOnboardingMutation.mutateAsync(formData);
+      const responseTime = typeof window !== "undefined" ? window.performance.now() : 0;
 
       console.log("[ONBOARDING] Mutation response received", {
+        duration: `${(responseTime - submissionStartTime).toFixed(0)}ms`,
         hasRoles: !!response?.roles,
         roles: response?.roles,
         userId: response?.id,
+        timestamp: responseTime,
       });
 
       toast({

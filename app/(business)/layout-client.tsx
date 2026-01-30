@@ -68,8 +68,19 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   // Fetch profile data client-side
   useProfileData();
 
+  // Log loading state changes
+  useEffect(() => {
+    console.log("[layout-client] isLoading changed", {
+      isLoading,
+      timestamp: typeof window !== "undefined" ? window.performance.now() : 0,
+    });
+  }, [isLoading]);
+
   // Show loading screen while profile data is being fetched
   if (isLoading) {
+    console.log("[layout-client] Showing LoadingScreen", {
+      timestamp: typeof window !== "undefined" ? window.performance.now() : 0,
+    });
     return <LoadingScreen />;
   }
 

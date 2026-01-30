@@ -178,7 +178,9 @@ export function ProfileSwitcher() {
   // Log when roles change
   useEffect(() => {
     console.log("[ProfileSwitcher] Roles updated", {
+      timestamp: typeof window !== "undefined" ? window.performance.now() : 0,
       userRoles,
+      userRolesCount: userRoles?.length,
       activeRole,
       profileCount: profiles?.length,
     });
