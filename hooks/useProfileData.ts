@@ -36,7 +36,8 @@ export function useProfileData() {
       return;
     }
 
-    const fetchStartTime = typeof window !== "undefined" ? window.performance.now() : 0;
+    const fetchStartTime =
+      typeof window !== "undefined" ? window.performance.now() : 0;
     console.log("[useProfileData] Starting profile fetch", {
       timestamp: fetchStartTime,
     });
@@ -128,7 +129,8 @@ export function useProfileData() {
     } catch (error) {
       console.error("Error fetching profile data:", error);
     } finally {
-      const fetchEndTime = typeof window !== "undefined" ? window.performance.now() : 0;
+      const fetchEndTime =
+        typeof window !== "undefined" ? window.performance.now() : 0;
       console.log("[useProfileData] Profile fetch complete", {
         duration: `${(fetchEndTime - fetchStartTime).toFixed(0)}ms`,
         timestamp: fetchEndTime,
