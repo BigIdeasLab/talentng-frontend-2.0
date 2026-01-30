@@ -193,6 +193,9 @@ const OnboardingPage = () => {
       });
 
       // USE RESPONSE to update user state immediately
+      // This updates TWO places so ProfileSwitcher and useAuth both see the new roles:
+      // 1. React Query cache (for useAuth hook)
+      // 2. localStorage (for useProfile/ProfileSwitcher)
       if (response?.roles) {
         console.log("[ONBOARDING] Updating React Query cache with response", {
           roles: response.roles,
@@ -204,6 +207,12 @@ const OnboardingPage = () => {
           roles: response.roles,
         });
         localStorage.setItem("userRoles", response.roles.join(","));
+
+        // Small delay to ensure localStorage is written before redirect
+        console.log(
+          "[ONBOARDING] Waiting before redirect to ensure localStorage sync...",
+        );
+        await new Promise((resolve) => setTimeout(resolve, 100));
       } else {
         console.warn(
           "[ONBOARDING] Response missing roles, falling back to refetch",
@@ -334,6 +343,9 @@ const OnboardingPage = () => {
       });
 
       // USE RESPONSE to update user state immediately
+      // This updates TWO places so ProfileSwitcher and useAuth both see the new roles:
+      // 1. React Query cache (for useAuth hook)
+      // 2. localStorage (for useProfile/ProfileSwitcher)
       if (response?.roles) {
         console.log("[ONBOARDING] Updating React Query cache with response", {
           roles: response.roles,
@@ -515,6 +527,9 @@ const OnboardingPage = () => {
       });
 
       // USE RESPONSE to update user state immediately
+      // This updates TWO places so ProfileSwitcher and useAuth both see the new roles:
+      // 1. React Query cache (for useAuth hook)
+      // 2. localStorage (for useProfile/ProfileSwitcher)
       if (response?.roles) {
         console.log("[ONBOARDING] Updating React Query cache with response", {
           roles: response.roles,
