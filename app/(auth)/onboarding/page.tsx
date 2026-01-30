@@ -2,6 +2,7 @@
 
 import React, { useState, Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { Role, ProfileData } from "@/lib/types/onboarding";
 import { SelectRoleStep } from "@/components/onboarding/SelectRoleStep";
@@ -37,6 +38,7 @@ const OnboardingPage = () => {
   const [completedRoles, setCompletedRoles] = useState<string[]>([]);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
   const { toast } = useToast();
   const { refetchUser, user } = useAuth();
   const completeOnboardingMutation = useCompleteOnboarding();
@@ -134,6 +136,11 @@ const OnboardingPage = () => {
     setMentorExpertiseData(data);
     setIsLoading(true);
     try {
+      console.log("[ONBOARDING] Starting mentor expertise submission", {
+        isAddingRole,
+        selectedRole,
+      });
+
       const formData = new FormData();
 
       const roleValue: "TALENT" | "RECRUITER" | "MENTOR" = "MENTOR";
@@ -169,7 +176,14 @@ const OnboardingPage = () => {
         formData.append("profileImage", profileImage);
       }
 
-      await completeOnboardingMutation.mutateAsync(formData);
+      console.log("[ONBOARDING] Sending POST /users/me/onboard mutation");
+      const response = await completeOnboardingMutation.mutateAsync(formData);
+
+      console.log("[ONBOARDING] Mutation response received", {
+        hasRoles: !!response?.roles,
+        roles: response?.roles,
+        userId: response?.id,
+      });
 
       toast({
         title: "Success",
@@ -178,15 +192,28 @@ const OnboardingPage = () => {
           : "Your profile has been successfully created.",
       });
 
-      // Refetch user data in background (don't await)
-      refetchUser();
+      // USE RESPONSE to update user state immediately
+      if (response?.roles) {
+        console.log("[ONBOARDING] Updating React Query cache with response", {
+          roles: response.roles,
+        });
+        queryClient.setQueryData(["user"], response);
+      } else {
+        console.warn("[ONBOARDING] Response missing roles, falling back to refetch");
+        refetchUser();
+      }
 
       // If adding a role, redirect with the new role selected
       if (isAddingRole) {
         const newRole =
           selectedRole === "employer" ? "recruiter" : selectedRole;
+        console.log("[ONBOARDING] Redirecting with new role", {
+          newRole,
+          url: `/dashboard?switchRole=${newRole}`,
+        });
         router.push(`/dashboard?switchRole=${newRole}`);
       } else {
+        console.log("[ONBOARDING] Redirecting to dashboard");
         router.push("/dashboard");
       }
     } catch (error: any) {
@@ -231,6 +258,11 @@ const OnboardingPage = () => {
     // Trigger final submission for employer
     setIsLoading(true);
     try {
+      console.log("[ONBOARDING] Starting company details submission", {
+        isAddingRole,
+        selectedRole,
+      });
+
       // Prepare FormData for multipart/form-data request
       const formData = new FormData();
 
@@ -329,6 +361,11 @@ const OnboardingPage = () => {
 
   const handleFinalSubmit = async (data: any) => {
     setIsLoading(true);
+    
+    console.log("[ONBOARDING] Starting final submission", {
+      isAddingRole,
+      selectedRole,
+    });
 
     // Prepare FormData for multipart/form-data request
     const formData = new FormData();
@@ -417,7 +454,14 @@ const OnboardingPage = () => {
     }
 
     try {
-      await completeOnboardingMutation.mutateAsync(formData);
+      console.log("[ONBOARDING] Sending POST /users/me/onboard mutation");
+      const response = await completeOnboardingMutation.mutateAsync(formData);
+
+      console.log("[ONBOARDING] Mutation response received", {
+        hasRoles: !!response?.roles,
+        roles: response?.roles,
+        userId: response?.id,
+      });
 
       toast({
         title: "Success",
@@ -426,8 +470,16 @@ const OnboardingPage = () => {
           : "Your profile has been successfully created.",
       });
 
-      // Refetch user data in background (don't await)
-      refetchUser();
+      // USE RESPONSE to update user state immediately
+      if (response?.roles) {
+        console.log("[ONBOARDING] Updating React Query cache with response", {
+          roles: response.roles,
+        });
+        queryClient.setQueryData(["user"], response);
+      } else {
+        console.warn("[ONBOARDING] Response missing roles, falling back to refetch");
+        refetchUser();
+      }
 
       // Get the role value for redirect
       let redirectRole = selectedRole;
@@ -437,8 +489,13 @@ const OnboardingPage = () => {
 
       // If adding a role, redirect with the new role selected
       if (isAddingRole) {
+        console.log("[ONBOARDING] Redirecting with new role", {
+          redirectRole,
+          url: `/dashboard?switchRole=${redirectRole}`,
+        });
         router.push(`/dashboard?switchRole=${redirectRole}`);
       } else {
+        console.log("[ONBOARDING] Redirecting to dashboard");
         router.push("/dashboard");
       }
     } catch (error: any) {

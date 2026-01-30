@@ -9,6 +9,10 @@ import { resetRefreshState } from "@/lib/token-refresh";
 const fetchUser = async (): Promise<User | null> => {
   try {
     const userData = await userProfileApi.getCurrentUser();
+    console.log("[useAuth] User fetched from GET /users/me", {
+      userId: userData?.id,
+      roles: userData?.roles,
+    });
     return userData;
   } catch (error) {
     console.error("Failed to fetch user data:", error);
@@ -39,9 +43,19 @@ export const useAuth = () => {
   // Refetch user when tokens change (after login or after page reload)
   useEffect(() => {
     if (hasToken && !loading) {
+      console.log("[useAuth] Triggering refetchUser on mount/dependency change");
       refetchUser();
     }
   }, [hasToken, refetchUser, loading]);
+
+  // Log whenever user data changes
+  useEffect(() => {
+    console.log("[useAuth] User state updated", {
+      userId: user?.id,
+      roles: user?.roles,
+      loading,
+    });
+  }, [user, loading]);
 
   const logout = async () => {
     try {
