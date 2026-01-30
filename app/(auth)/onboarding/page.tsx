@@ -198,6 +198,12 @@ const OnboardingPage = () => {
           roles: response.roles,
         });
         queryClient.setQueryData(["user"], response);
+
+        // Also update localStorage for useProfile hook
+        console.log("[ONBOARDING] Updating localStorage with new roles", {
+          roles: response.roles,
+        });
+        localStorage.setItem("userRoles", response.roles.join(","));
       } else {
         console.warn(
           "[ONBOARDING] Response missing roles, falling back to refetch",
@@ -333,6 +339,12 @@ const OnboardingPage = () => {
           roles: response.roles,
         });
         queryClient.setQueryData(["user"], response);
+
+        // Also update localStorage for useProfile hook
+        console.log("[ONBOARDING] Updating localStorage with new roles", {
+          roles: response.roles,
+        });
+        localStorage.setItem("userRoles", response.roles.join(","));
       } else {
         console.warn(
           "[ONBOARDING] Response missing roles, falling back to refetch",
@@ -508,6 +520,12 @@ const OnboardingPage = () => {
           roles: response.roles,
         });
         queryClient.setQueryData(["user"], response);
+
+        // Also update localStorage for useProfile hook
+        console.log("[ONBOARDING] Updating localStorage with new roles", {
+          roles: response.roles,
+        });
+        localStorage.setItem("userRoles", response.roles.join(","));
       } else {
         console.warn(
           "[ONBOARDING] Response missing roles, falling back to refetch",

@@ -5,22 +5,26 @@
 ### File 1: `app/(auth)/onboarding/page.tsx` ✅
 
 **✅ Import added (Line 5)**
+
 ```typescript
 import { useQueryClient } from "@tanstack/react-query";
 ```
 
 **✅ QueryClient initialized (Line 41)**
+
 ```typescript
 const queryClient = useQueryClient();
 ```
 
 **✅ handleMentorExpertiseNext fixed (Lines 135-220)**
+
 - ✅ Captures response: `const response = await completeOnboardingMutation.mutateAsync(formData);`
 - ✅ Uses response: `queryClient.setQueryData(["user"], response);`
 - ✅ Fallback included: Falls back to `refetchUser()` if response lacks roles
 - ✅ Logs added at key points
 
 **✅ handleCompanyDetailsNext fixed (Lines 255-362)**
+
 - ✅ Captures response: `const response = await completeOnboardingMutation.mutateAsync(formData);`
 - ✅ Uses response: `queryClient.setQueryData(["user"], response);`
 - ✅ Fallback included: Falls back to `refetchUser()` if response lacks roles
@@ -28,6 +32,7 @@ const queryClient = useQueryClient();
 - ✅ Correct redirectRole logic with switchRole param
 
 **✅ handleFinalSubmit fixed (Lines 364-504)**
+
 - ✅ Captures response: `const response = await completeOnboardingMutation.mutateAsync(formData);`
 - ✅ Uses response: `queryClient.setQueryData(["user"], response);`
 - ✅ Fallback included: Falls back to `refetchUser()` if response lacks roles
@@ -38,6 +43,7 @@ const queryClient = useQueryClient();
 ### File 2: `hooks/useAuth.ts` ✅
 
 **✅ Logging in fetchUser (Lines 12-15)**
+
 ```typescript
 console.log("[useAuth] User fetched from GET /users/me", {
   userId: userData?.id,
@@ -46,11 +52,13 @@ console.log("[useAuth] User fetched from GET /users/me", {
 ```
 
 **✅ Logging in refetchUser useEffect (Lines 46-48)**
+
 ```typescript
 console.log("[useAuth] Triggering refetchUser on mount/dependency change");
 ```
 
 **✅ New useEffect for user state changes (Lines 53-60)**
+
 ```typescript
 useEffect(() => {
   console.log("[useAuth] User state updated", {
@@ -66,6 +74,7 @@ useEffect(() => {
 ### File 3: `components/layouts/ProfileSwitcher.tsx` ✅
 
 **✅ Logging when roles update (Lines 178-185)**
+
 ```typescript
 useEffect(() => {
   console.log("[ProfileSwitcher] Roles updated", {
@@ -80,20 +89,20 @@ useEffect(() => {
 
 ## What Was Changed
 
-| Change | Location | Status |
-|--------|----------|--------|
-| Import useQueryClient | onboarding/page.tsx:5 | ✅ |
-| Initialize queryClient | onboarding/page.tsx:41 | ✅ |
-| handleMentorExpertiseNext - capture response | onboarding/page.tsx:180 | ✅ |
-| handleMentorExpertiseNext - use response | onboarding/page.tsx:200 | ✅ |
-| handleCompanyDetailsNext - capture response | onboarding/page.tsx:317 | ✅ |
-| handleCompanyDetailsNext - use response | onboarding/page.tsx:335 | ✅ |
-| handleFinalSubmit - capture response | onboarding/page.tsx:490 | ✅ |
-| handleFinalSubmit - use response | onboarding/page.tsx:510 | ✅ |
-| useAuth - fetchUser logging | useAuth.ts:12-15 | ✅ |
-| useAuth - refetch logging | useAuth.ts:46-48 | ✅ |
-| useAuth - state change logging | useAuth.ts:53-60 | ✅ |
-| ProfileSwitcher - roles logging | ProfileSwitcher.tsx:178-185 | ✅ |
+| Change                                       | Location                    | Status |
+| -------------------------------------------- | --------------------------- | ------ |
+| Import useQueryClient                        | onboarding/page.tsx:5       | ✅     |
+| Initialize queryClient                       | onboarding/page.tsx:41      | ✅     |
+| handleMentorExpertiseNext - capture response | onboarding/page.tsx:180     | ✅     |
+| handleMentorExpertiseNext - use response     | onboarding/page.tsx:200     | ✅     |
+| handleCompanyDetailsNext - capture response  | onboarding/page.tsx:317     | ✅     |
+| handleCompanyDetailsNext - use response      | onboarding/page.tsx:335     | ✅     |
+| handleFinalSubmit - capture response         | onboarding/page.tsx:490     | ✅     |
+| handleFinalSubmit - use response             | onboarding/page.tsx:510     | ✅     |
+| useAuth - fetchUser logging                  | useAuth.ts:12-15            | ✅     |
+| useAuth - refetch logging                    | useAuth.ts:46-48            | ✅     |
+| useAuth - state change logging               | useAuth.ts:53-60            | ✅     |
+| ProfileSwitcher - roles logging              | ProfileSwitcher.tsx:178-185 | ✅     |
 
 ---
 
@@ -113,13 +122,14 @@ const response = await completeOnboardingMutation.mutateAsync(formData);
 if (response?.roles) {
   queryClient.setQueryData(["user"], response);
 } else {
-  refetchUser();  // Fallback only if needed
+  refetchUser(); // Fallback only if needed
 }
 ```
 
 ### Pattern 2: Comprehensive Logging
 
 Every submission now logs:
+
 1. Start of submission
 2. Request being sent
 3. Response received
