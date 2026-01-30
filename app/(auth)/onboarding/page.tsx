@@ -22,663 +22,663 @@ import { getServerCurrentMentorProfile } from "@/lib/api/mentor/server";
 import { TokenStorage } from "./token-storage";
 
 const OnboardingPage = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
-  const [profileData, setProfileData] = useState<ProfileData | undefined>();
-  const [companyData, setCompanyData] = useState<any | undefined>();
-  const [companyDetailsData, setCompanyDetailsData] = useState<
-    any | undefined
-  >();
-  const [mentorData, setMentorData] = useState<any | undefined>();
-  const [mentorExpertiseData, setMentorExpertiseData] = useState<
-    any | undefined
-  >();
-  const [profileImage, setProfileImage] = useState<File | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [completedRoles, setCompletedRoles] = useState<string[]>([]);
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
-  const { refetchUser, user } = useAuth();
-  const completeOnboardingMutation = useCompleteOnboarding();
-  const { ensureValidTokenBeforeOperation } = useTokenRefresh();
+    const [currentStep, setCurrentStep] = useState(1);
+    const [selectedRole, setSelectedRole] = useState<Role | null>(null);
+    const [profileData, setProfileData] = useState<ProfileData | undefined>();
+    const [companyData, setCompanyData] = useState<any | undefined>();
+    const [companyDetailsData, setCompanyDetailsData] = useState<
+        any | undefined
+    >();
+    const [mentorData, setMentorData] = useState<any | undefined>();
+    const [mentorExpertiseData, setMentorExpertiseData] = useState<
+        any | undefined
+    >();
+    const [profileImage, setProfileImage] = useState<File | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [completedRoles, setCompletedRoles] = useState<string[]>([]);
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const queryClient = useQueryClient();
+    const { toast } = useToast();
+    const { refetchUser, user } = useAuth();
+    const completeOnboardingMutation = useCompleteOnboarding();
+    const { ensureValidTokenBeforeOperation } = useTokenRefresh();
 
-  // OAuth callback is handled by middleware
-  // Backend sets cookies directly, frontend receives redirect to onboarding
-  // No need to extract tokens from URL
+    // OAuth callback is handled by middleware
+    // Backend sets cookies directly, frontend receives redirect to onboarding
+    // No need to extract tokens from URL
 
-  // Check if we're in "add role" mode
-  const isAddingRole = searchParams.get("mode") === "add-role";
+    // Check if we're in "add role" mode
+    const isAddingRole = searchParams.get("mode") === "add-role";
 
-  // Fetch completed profile statuses when in add-role mode
-  useEffect(() => {
-    if (isAddingRole) {
-      const fetchCompletedRoles = async () => {
-        const completed: string[] = [];
+    // Fetch completed profile statuses when in add-role mode
+    useEffect(() => {
+        if (isAddingRole) {
+            const fetchCompletedRoles = async () => {
+                const completed: string[] = [];
 
+                try {
+                    const talentResponse = await getServerCurrentProfile();
+                    if (talentResponse?.isProfileCreated) {
+                        completed.push("talent");
+                    }
+                } catch {
+                    // Profile doesn't exist or error occurred
+                }
+
+                try {
+                    const recruiterResponse = await getServerCurrentRecruiterProfile();
+                    if (recruiterResponse?.isProfileCreated) {
+                        completed.push("recruiter");
+                    }
+                } catch {
+                    // Profile doesn't exist or error occurred
+                }
+
+                try {
+                    const mentorResponse = await getServerCurrentMentorProfile();
+                    if (mentorResponse?.isProfileCreated) {
+                        completed.push("mentor");
+                    }
+                } catch {
+                    // Profile doesn't exist or error occurred
+                }
+
+                setCompletedRoles(completed);
+            };
+
+            fetchCompletedRoles();
+        }
+    }, [isAddingRole]);
+
+    // Get existing roles from query params (passed from ProfileSwitcher) or user data
+    // These are just the roles the user has permission to use
+    const rolesFromParams = searchParams.get("roles");
+    const userRoles = rolesFromParams
+        ? rolesFromParams.split(",").map((role) => role.toLowerCase())
+        : (user?.roles || []).map((role) => role.toLowerCase());
+
+    // Only show completed roles (those with isProfileCreated: true)
+    // This should be updated based on profile data from useProfileData
+    // For now, just use userRoles as fallback
+    const existingRoles = userRoles;
+
+    const handleRoleSelect = (role: Role) => {
+        setSelectedRole(role);
+        setCurrentStep(2);
+    };
+
+    const handleProfileNext = (data: ProfileData, image?: File) => {
+        setProfileData(data);
+        if (image) {
+            setProfileImage(image);
+        }
+        setCurrentStep(3);
+    };
+
+    const handleCompanyProfileNext = (data: any, logo?: File) => {
+        setCompanyData(data);
+        if (logo) {
+            setProfileImage(logo);
+        }
+        setCurrentStep(3);
+    };
+
+    const handleMentorProfileNext = (data: any, logo?: File) => {
+        setMentorData(data);
+        if (logo) {
+            setProfileImage(logo);
+        }
+        setCurrentStep(3);
+    };
+
+    const handleMentorExpertiseNext = async (data: any) => {
+        setMentorExpertiseData(data);
+        setIsLoading(true);
         try {
-          const talentResponse = await getServerCurrentProfile();
-          if (talentResponse?.isProfileCreated) {
-            completed.push("talent");
-          }
-        } catch {
-          // Profile doesn't exist or error occurred
+            console.log("[ONBOARDING] Starting mentor expertise submission", {
+                isAddingRole,
+                selectedRole,
+            });
+
+            const formData = new FormData();
+
+            const roleValue: "TALENT" | "RECRUITER" | "MENTOR" = "MENTOR";
+            formData.append("role", roleValue);
+
+            if (!mentorData) {
+                throw new Error("Mentor profile data is missing");
+            }
+
+            // Profile contains: username, firstName, lastName, location, bio
+            const profileData = {
+                username: mentorData.username,
+                firstName: mentorData.firstName,
+                lastName: mentorData.lastName,
+                location: mentorData.location,
+                bio: mentorData.bio,
+            };
+
+            // Details contains: expertise, experience, mentorshipStyle, linkedIn
+            const detailsData = {
+                expertise: Array.isArray(data.expertise)
+                    ? data.expertise
+                    : [data.expertise],
+                experience: data.experience,
+                mentorshipStyle: data.mentorshipStyle,
+                linkedIn: data.linkedIn,
+            };
+
+            formData.append("profile", JSON.stringify(profileData));
+            formData.append("details", JSON.stringify(detailsData));
+
+            if (profileImage) {
+                formData.append("profileImage", profileImage);
+            }
+
+            console.log("[ONBOARDING] Sending POST /users/me/onboard mutation");
+            const response = await completeOnboardingMutation.mutateAsync(formData);
+
+            console.log("[ONBOARDING] Mutation response received", {
+                hasRoles: !!response?.roles,
+                roles: response?.roles,
+                userId: response?.id,
+            });
+
+            toast({
+                title: "Success",
+                description: isAddingRole
+                    ? "Your new role has been successfully added."
+                    : "Your profile has been successfully created.",
+            });
+
+            // USE RESPONSE to update user state immediately
+            if (response?.roles) {
+                console.log("[ONBOARDING] Updating React Query cache with response", {
+                    roles: response.roles,
+                });
+                queryClient.setQueryData(["user"], response);
+            } else {
+                console.warn(
+                    "[ONBOARDING] Response missing roles, falling back to refetch",
+                );
+                refetchUser();
+            }
+
+            // If adding a role, redirect with the new role selected
+            if (isAddingRole) {
+                const newRole =
+                    selectedRole === "employer" ? "recruiter" : selectedRole;
+                console.log("[ONBOARDING] Redirecting with new role", {
+                    newRole,
+                    url: `/dashboard?switchRole=${newRole}`,
+                });
+                router.push(`/dashboard?switchRole=${newRole}`);
+            } else {
+                console.log("[ONBOARDING] Redirecting to dashboard");
+                router.push("/dashboard");
+            }
+        } catch (error: any) {
+            let errorMessage = "An unknown error occurred.";
+
+            if (error?.message) {
+                errorMessage = error.message;
+            } else if (typeof error === "string") {
+                errorMessage = error;
+            }
+
+            const isTimeoutError =
+                errorMessage.toLowerCase().includes("timeout") ||
+                errorMessage.toLowerCase().includes("transaction");
+
+            if (isTimeoutError) {
+                toast({
+                    variant: "destructive",
+                    title: "Request Timeout",
+                    description:
+                        "The request took too long to process. Please try again or contact support if the problem persists.",
+                    duration: 10000,
+                });
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: isAddingRole ? "Failed to add role" : "Onboarding Failed",
+                    description: errorMessage,
+                    duration: 5000,
+                });
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleCompanyDetailsNext = async (data: any, logo?: File) => {
+        setCompanyDetailsData(data);
+        if (logo) {
+            setProfileImage(logo);
+        }
+        // Trigger final submission for employer
+        setIsLoading(true);
+        try {
+            console.log("[ONBOARDING] Starting company details submission", {
+                isAddingRole,
+                selectedRole,
+            });
+
+            // Prepare FormData for multipart/form-data request
+            const formData = new FormData();
+
+            // Add role - map "employer" to "RECRUITER" for API
+            let roleValue: "TALENT" | "RECRUITER" | "MENTOR";
+            if (selectedRole === "employer") {
+                roleValue = "RECRUITER";
+            } else {
+                roleValue = selectedRole?.toUpperCase() as "TALENT" | "MENTOR";
+            }
+            formData.append("role", roleValue);
+
+            // Separate profile and company details
+            if (!companyData) {
+                throw new Error("Company profile data is missing");
+            }
+
+            // Profile contains: username, location, bio
+            const profileData = {
+                username: companyData.username,
+                location: companyData.location,
+                bio: companyData.bio,
+            };
+
+            // Details contains: companyName, industry, companySize, companyStage, operatingModel, website
+            const detailsData: any = {
+                companyName: companyData.companyName,
+                industry: companyData.industry,
+                companySize: data.companySize,
+                companyStage: data.companyStage,
+                operatingModel: data.operatingModel,
+            };
+
+            // Add website if provided
+            if (data.website) {
+                detailsData.website = data.website;
+            }
+
+            formData.append("profile", JSON.stringify(profileData));
+            formData.append("details", JSON.stringify(detailsData));
+
+            // Add company logo if provided (optional)
+            if (logo) {
+                formData.append("profileImage", logo);
+            }
+
+            await completeOnboardingMutation.mutateAsync(formData);
+
+            await refetchUser();
+            toast({
+                title: "Success",
+                description: isAddingRole
+                    ? "Your new role has been successfully added."
+                    : "Your profile has been successfully created.",
+            });
+
+            // If adding a role, redirect with the new role selected
+            if (isAddingRole) {
+                router.push("/dashboard?switchRole=recruiter");
+            } else {
+                router.push("/dashboard");
+            }
+        } catch (error: any) {
+            let errorMessage = "An unknown error occurred.";
+
+            if (error?.message) {
+                errorMessage = error.message;
+            } else if (typeof error === "string") {
+                errorMessage = error;
+            }
+
+            const isTimeoutError =
+                errorMessage.toLowerCase().includes("timeout") ||
+                errorMessage.toLowerCase().includes("transaction");
+
+            if (isTimeoutError) {
+                toast({
+                    variant: "destructive",
+                    title: "Request Timeout",
+                    description:
+                        "The request took too long to process. Please try again or contact support if the problem persists.",
+                    duration: 10000,
+                });
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: isAddingRole ? "Failed to add role" : "Onboarding Failed",
+                    description: errorMessage,
+                    duration: 5000,
+                });
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleFinalSubmit = async (data: any) => {
+        setIsLoading(true);
+
+        console.log("[ONBOARDING] Starting final submission", {
+            isAddingRole,
+            selectedRole,
+        });
+
+        // Prepare FormData for multipart/form-data request
+        const formData = new FormData();
+
+        // Add role - map "employer" to "RECRUITER" for API
+        let roleValue: "TALENT" | "RECRUITER" | "MENTOR";
+        if (selectedRole === "employer") {
+            roleValue = "RECRUITER";
+        } else if (selectedRole) {
+            roleValue = selectedRole.toUpperCase() as "TALENT" | "MENTOR";
+        } else {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "Please select a role.",
+            });
+            setIsLoading(false);
+            return;
+        }
+        formData.append("role", roleValue);
+
+        // Add profile as JSON string
+        if (selectedRole === "employer") {
+            if (!companyData || !companyDetailsData) {
+                toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: "Company data is missing.",
+                });
+                setIsLoading(false);
+                return;
+            }
+            // Profile contains: username, location, bio
+            const profileDataForSubmit = {
+                username: companyData.username,
+                location: companyData.location,
+                bio: companyData.bio,
+            };
+            formData.append("profile", JSON.stringify(profileDataForSubmit));
+
+            // Details contains: companyName, industry, companySize, companyStage, operatingModel
+            const detailsDataForSubmit = {
+                companyName: companyData.companyName,
+                industry: companyData.industry,
+                companySize: companyDetailsData.companySize,
+                companyStage: companyDetailsData.companyStage,
+                operatingModel: companyDetailsData.operatingModel,
+            };
+            formData.append("details", JSON.stringify(detailsDataForSubmit));
+        } else {
+            if (!profileData) {
+                toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: "Profile data is missing.",
+                });
+                setIsLoading(false);
+                return;
+            }
+            formData.append("profile", JSON.stringify(profileData));
+            formData.append("details", JSON.stringify(data));
+        }
+
+        // Add profile image if provided (optional)
+        if (profileImage) {
+            formData.append("profileImage", profileImage);
+        }
+
+        // Log complete submission data
+        if (selectedRole === "employer") {
+            console.log("=== ONBOARDING SUBMISSION ===", {
+                role: roleValue,
+                profile: profileData,
+                details: {
+                    ...data,
+                    profileImage: profileImage ? profileImage.name : null,
+                },
+            });
+        } else {
+            console.log("=== ONBOARDING SUBMISSION ===", {
+                role: roleValue,
+                profile: profileData,
+                details: data,
+                profileImage: profileImage ? profileImage.name : null,
+            });
         }
 
         try {
-          const recruiterResponse = await getServerCurrentRecruiterProfile();
-          if (recruiterResponse?.isProfileCreated) {
-            completed.push("recruiter");
-          }
-        } catch {
-          // Profile doesn't exist or error occurred
+            console.log("[ONBOARDING] Sending POST /users/me/onboard mutation");
+            const response = await completeOnboardingMutation.mutateAsync(formData);
+
+            console.log("[ONBOARDING] Mutation response received", {
+                hasRoles: !!response?.roles,
+                roles: response?.roles,
+                userId: response?.id,
+            });
+
+            toast({
+                title: "Success",
+                description: isAddingRole
+                    ? "Your new role has been successfully added."
+                    : "Your profile has been successfully created.",
+            });
+
+            // USE RESPONSE to update user state immediately
+            if (response?.roles) {
+                console.log("[ONBOARDING] Updating React Query cache with response", {
+                    roles: response.roles,
+                });
+                queryClient.setQueryData(["user"], response);
+            } else {
+                console.warn(
+                    "[ONBOARDING] Response missing roles, falling back to refetch",
+                );
+                refetchUser();
+            }
+
+            // Get the role value for redirect
+            let redirectRole = selectedRole;
+            if (selectedRole === "employer") {
+                redirectRole = "recruiter";
+            }
+
+            // If adding a role, redirect with the new role selected
+            if (isAddingRole) {
+                console.log("[ONBOARDING] Redirecting with new role", {
+                    redirectRole,
+                    url: `/dashboard?switchRole=${redirectRole}`,
+                });
+                router.push(`/dashboard?switchRole=${redirectRole}`);
+            } else {
+                console.log("[ONBOARDING] Redirecting to dashboard");
+                router.push("/dashboard");
+            }
+        } catch (error: any) {
+            // Extract error message, handling both Error objects and API error responses
+            let errorMessage = "An unknown error occurred.";
+
+            if (error?.message) {
+                errorMessage = error.message;
+            } else if (typeof error === "string") {
+                errorMessage = error;
+            }
+
+            // Check if it's a timeout/transaction error and provide actionable feedback
+            const isTimeoutError =
+                errorMessage.toLowerCase().includes("timeout") ||
+                errorMessage.toLowerCase().includes("transaction");
+
+            if (isTimeoutError) {
+                toast({
+                    variant: "destructive",
+                    title: "Request Timeout",
+                    description:
+                        "The request took too long to process. Please try again or contact support if the problem persists.",
+                    duration: 10000,
+                });
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: isAddingRole ? "Failed to add role" : "Onboarding Failed",
+                    description: errorMessage,
+                    duration: 5000,
+                });
+            }
+        } finally {
+            setIsLoading(false);
         }
+    };
 
-        try {
-          const mentorResponse = await getServerCurrentMentorProfile();
-          if (mentorResponse?.isProfileCreated) {
-            completed.push("mentor");
-          }
-        } catch {
-          // Profile doesn't exist or error occurred
+    const handleBack = () => {
+        setCurrentStep((prev) => prev - 1);
+    };
+
+    const handleSelectRoleBack = () => {
+        if (isAddingRole) {
+            router.push("/dashboard");
+        } else {
+            router.push("/login");
         }
+    };
 
-        setCompletedRoles(completed);
-      };
+    const renderStepThree = () => {
+        switch (selectedRole) {
+            case "talent":
+                return (
+                    <ShowcaseSkillsStep
+                        onNext={handleFinalSubmit}
+                        onBack={handleBack}
+                        profileData={profileData}
+                        isLoading={isLoading}
+                        profileImage={profileImage || undefined}
+                    />
+                );
+            case "employer":
+                return (
+                    <CompanyDetailsStep
+                        onNext={handleCompanyDetailsNext}
+                        onBack={handleBack}
+                        isLoading={isLoading}
+                        logoImage={profileImage || undefined}
+                    />
+                );
+            case "mentor":
+                return (
+                    <ShowcaseExpertiseStep
+                        onNext={handleFinalSubmit}
+                        onBack={handleBack}
+                        isLoading={isLoading}
+                    />
+                );
+            default:
+                // Fallback or error state
+                return <div>Error: Invalid role selected.</div>;
+        }
+    };
 
-      fetchCompletedRoles();
-    }
-  }, [isAddingRole]);
-
-  // Get existing roles from query params (passed from ProfileSwitcher) or user data
-  // These are just the roles the user has permission to use
-  const rolesFromParams = searchParams.get("roles");
-  const userRoles = rolesFromParams
-    ? rolesFromParams.split(",").map((role) => role.toLowerCase())
-    : (user?.roles || []).map((role) => role.toLowerCase());
-
-  // Only show completed roles (those with isProfileCreated: true)
-  // This should be updated based on profile data from useProfileData
-  // For now, just use userRoles as fallback
-  const existingRoles = userRoles;
-
-  const handleRoleSelect = (role: Role) => {
-    setSelectedRole(role);
-    setCurrentStep(2);
-  };
-
-  const handleProfileNext = (data: ProfileData, image?: File) => {
-    setProfileData(data);
-    if (image) {
-      setProfileImage(image);
-    }
-    setCurrentStep(3);
-  };
-
-  const handleCompanyProfileNext = (data: any, logo?: File) => {
-    setCompanyData(data);
-    if (logo) {
-      setProfileImage(logo);
-    }
-    setCurrentStep(3);
-  };
-
-  const handleMentorProfileNext = (data: any, logo?: File) => {
-    setMentorData(data);
-    if (logo) {
-      setProfileImage(logo);
-    }
-    setCurrentStep(3);
-  };
-
-  const handleMentorExpertiseNext = async (data: any) => {
-    setMentorExpertiseData(data);
-    setIsLoading(true);
-    try {
-      console.log("[ONBOARDING] Starting mentor expertise submission", {
-        isAddingRole,
-        selectedRole,
-      });
-
-      const formData = new FormData();
-
-      const roleValue: "TALENT" | "RECRUITER" | "MENTOR" = "MENTOR";
-      formData.append("role", roleValue);
-
-      if (!mentorData) {
-        throw new Error("Mentor profile data is missing");
-      }
-
-      // Profile contains: username, firstName, lastName, location, bio
-      const profileData = {
-        username: mentorData.username,
-        firstName: mentorData.firstName,
-        lastName: mentorData.lastName,
-        location: mentorData.location,
-        bio: mentorData.bio,
-      };
-
-      // Details contains: expertise, experience, mentorshipStyle, linkedIn
-      const detailsData = {
-        expertise: Array.isArray(data.expertise)
-          ? data.expertise
-          : [data.expertise],
-        experience: data.experience,
-        mentorshipStyle: data.mentorshipStyle,
-        linkedIn: data.linkedIn,
-      };
-
-      formData.append("profile", JSON.stringify(profileData));
-      formData.append("details", JSON.stringify(detailsData));
-
-      if (profileImage) {
-        formData.append("profileImage", profileImage);
-      }
-
-      console.log("[ONBOARDING] Sending POST /users/me/onboard mutation");
-      const response = await completeOnboardingMutation.mutateAsync(formData);
-
-      console.log("[ONBOARDING] Mutation response received", {
-        hasRoles: !!response?.roles,
-        roles: response?.roles,
-        userId: response?.id,
-      });
-
-      toast({
-        title: "Success",
-        description: isAddingRole
-          ? "Your new role has been successfully added."
-          : "Your profile has been successfully created.",
-      });
-
-      // USE RESPONSE to update user state immediately
-      if (response?.roles) {
-        console.log("[ONBOARDING] Updating React Query cache with response", {
-          roles: response.roles,
-        });
-        queryClient.setQueryData(["user"], response);
-      } else {
-        console.warn(
-          "[ONBOARDING] Response missing roles, falling back to refetch",
-        );
-        refetchUser();
-      }
-
-      // If adding a role, redirect with the new role selected
-      if (isAddingRole) {
-        const newRole =
-          selectedRole === "employer" ? "recruiter" : selectedRole;
-        console.log("[ONBOARDING] Redirecting with new role", {
-          newRole,
-          url: `/dashboard?switchRole=${newRole}`,
-        });
-        router.push(`/dashboard?switchRole=${newRole}`);
-      } else {
-        console.log("[ONBOARDING] Redirecting to dashboard");
-        router.push("/dashboard");
-      }
-    } catch (error: any) {
-      let errorMessage = "An unknown error occurred.";
-
-      if (error?.message) {
-        errorMessage = error.message;
-      } else if (typeof error === "string") {
-        errorMessage = error;
-      }
-
-      const isTimeoutError =
-        errorMessage.toLowerCase().includes("timeout") ||
-        errorMessage.toLowerCase().includes("transaction");
-
-      if (isTimeoutError) {
-        toast({
-          variant: "destructive",
-          title: "Request Timeout",
-          description:
-            "The request took too long to process. Please try again or contact support if the problem persists.",
-          duration: 10000,
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          title: isAddingRole ? "Failed to add role" : "Onboarding Failed",
-          description: errorMessage,
-          duration: 5000,
-        });
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleCompanyDetailsNext = async (data: any, logo?: File) => {
-    setCompanyDetailsData(data);
-    if (logo) {
-      setProfileImage(logo);
-    }
-    // Trigger final submission for employer
-    setIsLoading(true);
-    try {
-      console.log("[ONBOARDING] Starting company details submission", {
-        isAddingRole,
-        selectedRole,
-      });
-
-      // Prepare FormData for multipart/form-data request
-      const formData = new FormData();
-
-      // Add role - map "employer" to "RECRUITER" for API
-      let roleValue: "TALENT" | "RECRUITER" | "MENTOR";
-      if (selectedRole === "employer") {
-        roleValue = "RECRUITER";
-      } else {
-        roleValue = selectedRole?.toUpperCase() as "TALENT" | "MENTOR";
-      }
-      formData.append("role", roleValue);
-
-      // Separate profile and company details
-      if (!companyData) {
-        throw new Error("Company profile data is missing");
-      }
-
-      // Profile contains: username, location, bio
-      const profileData = {
-        username: companyData.username,
-        location: companyData.location,
-        bio: companyData.bio,
-      };
-
-      // Details contains: companyName, industry, companySize, companyStage, operatingModel, website
-      const detailsData: any = {
-        companyName: companyData.companyName,
-        industry: companyData.industry,
-        companySize: data.companySize,
-        companyStage: data.companyStage,
-        operatingModel: data.operatingModel,
-      };
-
-      // Add website if provided
-      if (data.website) {
-        detailsData.website = data.website;
-      }
-
-      formData.append("profile", JSON.stringify(profileData));
-      formData.append("details", JSON.stringify(detailsData));
-
-      // Add company logo if provided (optional)
-      if (logo) {
-        formData.append("profileImage", logo);
-      }
-
-      await completeOnboardingMutation.mutateAsync(formData);
-
-      await refetchUser();
-      toast({
-        title: "Success",
-        description: isAddingRole
-          ? "Your new role has been successfully added."
-          : "Your profile has been successfully created.",
-      });
-
-      // If adding a role, redirect with the new role selected
-      if (isAddingRole) {
-        router.push("/dashboard?switchRole=recruiter");
-      } else {
-        router.push("/dashboard");
-      }
-    } catch (error: any) {
-      let errorMessage = "An unknown error occurred.";
-
-      if (error?.message) {
-        errorMessage = error.message;
-      } else if (typeof error === "string") {
-        errorMessage = error;
-      }
-
-      const isTimeoutError =
-        errorMessage.toLowerCase().includes("timeout") ||
-        errorMessage.toLowerCase().includes("transaction");
-
-      if (isTimeoutError) {
-        toast({
-          variant: "destructive",
-          title: "Request Timeout",
-          description:
-            "The request took too long to process. Please try again or contact support if the problem persists.",
-          duration: 10000,
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          title: isAddingRole ? "Failed to add role" : "Onboarding Failed",
-          description: errorMessage,
-          duration: 5000,
-        });
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleFinalSubmit = async (data: any) => {
-    setIsLoading(true);
-
-    console.log("[ONBOARDING] Starting final submission", {
-      isAddingRole,
-      selectedRole,
-    });
-
-    // Prepare FormData for multipart/form-data request
-    const formData = new FormData();
-
-    // Add role - map "employer" to "RECRUITER" for API
-    let roleValue: "TALENT" | "RECRUITER" | "MENTOR";
-    if (selectedRole === "employer") {
-      roleValue = "RECRUITER";
-    } else if (selectedRole) {
-      roleValue = selectedRole.toUpperCase() as "TALENT" | "MENTOR";
-    } else {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Please select a role.",
-      });
-      setIsLoading(false);
-      return;
-    }
-    formData.append("role", roleValue);
-
-    // Add profile as JSON string
-    if (selectedRole === "employer") {
-      if (!companyData || !companyDetailsData) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Company data is missing.",
-        });
-        setIsLoading(false);
-        return;
-      }
-      // Profile contains: username, location, bio
-      const profileDataForSubmit = {
-        username: companyData.username,
-        location: companyData.location,
-        bio: companyData.bio,
-      };
-      formData.append("profile", JSON.stringify(profileDataForSubmit));
-
-      // Details contains: companyName, industry, companySize, companyStage, operatingModel
-      const detailsDataForSubmit = {
-        companyName: companyData.companyName,
-        industry: companyData.industry,
-        companySize: companyDetailsData.companySize,
-        companyStage: companyDetailsData.companyStage,
-        operatingModel: companyDetailsData.operatingModel,
-      };
-      formData.append("details", JSON.stringify(detailsDataForSubmit));
-    } else {
-      if (!profileData) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Profile data is missing.",
-        });
-        setIsLoading(false);
-        return;
-      }
-      formData.append("profile", JSON.stringify(profileData));
-      formData.append("details", JSON.stringify(data));
-    }
-
-    // Add profile image if provided (optional)
-    if (profileImage) {
-      formData.append("profileImage", profileImage);
-    }
-
-    // Log complete submission data
-    if (selectedRole === "employer") {
-      console.log("=== ONBOARDING SUBMISSION ===", {
-        role: roleValue,
-        profile: profileData,
-        details: {
-          ...data,
-          profileImage: profileImage ? profileImage.name : null,
-        },
-      });
-    } else {
-      console.log("=== ONBOARDING SUBMISSION ===", {
-        role: roleValue,
-        profile: profileData,
-        details: data,
-        profileImage: profileImage ? profileImage.name : null,
-      });
-    }
-
-    try {
-      console.log("[ONBOARDING] Sending POST /users/me/onboard mutation");
-      const response = await completeOnboardingMutation.mutateAsync(formData);
-
-      console.log("[ONBOARDING] Mutation response received", {
-        hasRoles: !!response?.roles,
-        roles: response?.roles,
-        userId: response?.id,
-      });
-
-      toast({
-        title: "Success",
-        description: isAddingRole
-          ? "Your new role has been successfully added."
-          : "Your profile has been successfully created.",
-      });
-
-      // USE RESPONSE to update user state immediately
-      if (response?.roles) {
-        console.log("[ONBOARDING] Updating React Query cache with response", {
-          roles: response.roles,
-        });
-        queryClient.setQueryData(["user"], response);
-      } else {
-        console.warn(
-          "[ONBOARDING] Response missing roles, falling back to refetch",
-        );
-        refetchUser();
-      }
-
-      // Get the role value for redirect
-      let redirectRole = selectedRole;
-      if (selectedRole === "employer") {
-        redirectRole = "recruiter";
-      }
-
-      // If adding a role, redirect with the new role selected
-      if (isAddingRole) {
-        console.log("[ONBOARDING] Redirecting with new role", {
-          redirectRole,
-          url: `/dashboard?switchRole=${redirectRole}`,
-        });
-        router.push(`/dashboard?switchRole=${redirectRole}`);
-      } else {
-        console.log("[ONBOARDING] Redirecting to dashboard");
-        router.push("/dashboard");
-      }
-    } catch (error: any) {
-      // Extract error message, handling both Error objects and API error responses
-      let errorMessage = "An unknown error occurred.";
-
-      if (error?.message) {
-        errorMessage = error.message;
-      } else if (typeof error === "string") {
-        errorMessage = error;
-      }
-
-      // Check if it's a timeout/transaction error and provide actionable feedback
-      const isTimeoutError =
-        errorMessage.toLowerCase().includes("timeout") ||
-        errorMessage.toLowerCase().includes("transaction");
-
-      if (isTimeoutError) {
-        toast({
-          variant: "destructive",
-          title: "Request Timeout",
-          description:
-            "The request took too long to process. Please try again or contact support if the problem persists.",
-          duration: 10000,
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          title: isAddingRole ? "Failed to add role" : "Onboarding Failed",
-          description: errorMessage,
-          duration: 5000,
-        });
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleBack = () => {
-    setCurrentStep((prev) => prev - 1);
-  };
-
-  const handleSelectRoleBack = () => {
-    if (isAddingRole) {
-      router.push("/dashboard");
-    } else {
-      router.push("/login");
-    }
-  };
-
-  const renderStepThree = () => {
-    switch (selectedRole) {
-      case "talent":
-        return (
-          <ShowcaseSkillsStep
-            onNext={handleFinalSubmit}
-            onBack={handleBack}
-            profileData={profileData}
-            isLoading={isLoading}
-            profileImage={profileImage || undefined}
-          />
-        );
-      case "employer":
-        return (
-          <CompanyDetailsStep
-            onNext={handleCompanyDetailsNext}
-            onBack={handleBack}
-            isLoading={isLoading}
-            logoImage={profileImage || undefined}
-          />
-        );
-      case "mentor":
-        return (
-          <ShowcaseExpertiseStep
-            onNext={handleFinalSubmit}
-            onBack={handleBack}
-            isLoading={isLoading}
-          />
-        );
-      default:
-        // Fallback or error state
-        return <div>Error: Invalid role selected.</div>;
-    }
-  };
-
-  return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center px-3 py-8 md:px-4 lg:px-6 w-full bg-white overflow-auto">
-      {/* Background Image */}
-      <img
-        src="/backgroundgradient.png"
-        alt="Background"
-        className="absolute inset-0 w-full h-full object-cover"
-      />
-
-      {/* Content */}
-      <div className="bg-white rounded-[30px] shadow-lg overflow-hidden w-full max-w-5xl z-10 h-[600px] flex flex-col">
-        {currentStep === 1 && (
-          <div className="h-full flex flex-col overflow-hidden">
-            <SelectRoleStep
-              onNext={handleRoleSelect}
-              onBack={handleSelectRoleBack}
-              existingRoles={isAddingRole ? completedRoles : existingRoles}
-              isAddingRole={isAddingRole}
+    return (
+        <div className="relative min-h-screen flex flex-col items-center justify-center px-3 py-8 md:px-4 lg:px-6 w-full bg-white overflow-auto">
+            {/* Background Image */}
+            <img
+                src="/backgroundgradient.png"
+                alt="Background"
+                className="absolute inset-0 w-full h-full object-cover"
             />
-          </div>
-        )}
-        {currentStep === 2 && (
-          <div className="h-full flex flex-col overflow-hidden">
-            {selectedRole === "employer" ? (
-              <CompanyProfileStep
-                onNext={handleCompanyProfileNext}
-                onBack={handleBack}
-                initialData={companyData}
-                initialLogo={profileImage as File | undefined}
-                isAddingRole={isAddingRole}
-                currentUsername={user?.username}
-              />
-            ) : selectedRole === "mentor" ? (
-              <MentorProfileStep
-                onNext={handleMentorProfileNext}
-                onBack={handleBack}
-                initialData={mentorData}
-                initialLogo={profileImage as File | undefined}
-                isAddingRole={isAddingRole}
-                currentUsername={user?.username}
-              />
-            ) : (
-              <CreateProfileStep
-                onNext={handleProfileNext}
-                onBack={handleBack}
-                initialData={profileData}
-                initialImage={profileImage as File | undefined}
-                isAddingRole={isAddingRole}
-                currentUsername={user?.username}
-              />
-            )}
-          </div>
-        )}
-        {currentStep === 3 && (
-          <div className="h-full flex flex-col overflow-hidden">
-            {selectedRole === "employer" ? (
-              <CompanyDetailsStep
-                onNext={handleCompanyDetailsNext}
-                onBack={handleBack}
-                isLoading={isLoading}
-                logoImage={profileImage as File | undefined}
-                companyData={companyData}
-              />
-            ) : selectedRole === "mentor" ? (
-              <MentorExpertiseStep
-                onNext={handleMentorExpertiseNext}
-                onBack={handleBack}
-                isLoading={isLoading}
-                profileData={mentorData}
-                profileImage={profileImage as File | undefined}
-              />
-            ) : (
-              renderStepThree()
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
+
+            {/* Content */}
+            <div className="bg-white rounded-[30px] shadow-lg overflow-hidden w-full max-w-5xl z-10 h-[600px] flex flex-col">
+                {currentStep === 1 && (
+                    <div className="h-full flex flex-col overflow-hidden">
+                        <SelectRoleStep
+                            onNext={handleRoleSelect}
+                            onBack={handleSelectRoleBack}
+                            existingRoles={isAddingRole ? completedRoles : existingRoles}
+                            isAddingRole={isAddingRole}
+                        />
+                    </div>
+                )}
+                {currentStep === 2 && (
+                    <div className="h-full flex flex-col overflow-hidden">
+                        {selectedRole === "employer" ? (
+                            <CompanyProfileStep
+                                onNext={handleCompanyProfileNext}
+                                onBack={handleBack}
+                                initialData={companyData}
+                                initialLogo={profileImage as File | undefined}
+                                isAddingRole={isAddingRole}
+                                currentUsername={user?.username}
+                            />
+                        ) : selectedRole === "mentor" ? (
+                            <MentorProfileStep
+                                onNext={handleMentorProfileNext}
+                                onBack={handleBack}
+                                initialData={mentorData}
+                                initialLogo={profileImage as File | undefined}
+                                isAddingRole={isAddingRole}
+                                currentUsername={user?.username}
+                            />
+                        ) : (
+                            <CreateProfileStep
+                                onNext={handleProfileNext}
+                                onBack={handleBack}
+                                initialData={profileData}
+                                initialImage={profileImage as File | undefined}
+                                isAddingRole={isAddingRole}
+                                currentUsername={user?.username}
+                            />
+                        )}
+                    </div>
+                )}
+                {currentStep === 3 && (
+                    <div className="h-full flex flex-col overflow-hidden">
+                        {selectedRole === "employer" ? (
+                            <CompanyDetailsStep
+                                onNext={handleCompanyDetailsNext}
+                                onBack={handleBack}
+                                isLoading={isLoading}
+                                logoImage={profileImage as File | undefined}
+                                companyData={companyData}
+                            />
+                        ) : selectedRole === "mentor" ? (
+                            <MentorExpertiseStep
+                                onNext={handleMentorExpertiseNext}
+                                onBack={handleBack}
+                                isLoading={isLoading}
+                                profileData={mentorData}
+                                profileImage={profileImage as File | undefined}
+                            />
+                        ) : (
+                            renderStepThree()
+                        )}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
 };
 
 const OnboardingPageWithSuspense = () => (
-  <>
-    <TokenStorage />
-    <Suspense
-      fallback={
-        <div className="h-screen flex items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
-        </div>
-      }
-    >
-      <OnboardingPage />
-    </Suspense>
-  </>
+    <>
+        <TokenStorage />
+        <Suspense
+            fallback={
+                <div className="h-screen flex items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+                </div>
+            }
+        >
+            <OnboardingPage />
+        </Suspense>
+    </>
 );
 
 export default OnboardingPageWithSuspense;
