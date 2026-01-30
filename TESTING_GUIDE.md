@@ -3,6 +3,7 @@
 ## How to Test the Fix
 
 ### Setup
+
 1. Open browser DevTools (F12)
 2. Go to Console tab
 3. Keep Network tab open in another tab
@@ -10,6 +11,7 @@
 ### Test 1: Initial Onboarding (New User)
 
 **Steps:**
+
 1. Go to login page
 2. Sign up with new Google/email account
 3. You'll be redirected to onboarding
@@ -21,6 +23,7 @@
 **What to Watch:**
 
 **Console Output (should see):**
+
 ```
 [ONBOARDING] Starting final submission {
   isAddingRole: false,
@@ -49,10 +52,12 @@
 ```
 
 **Network Tab (should see):**
+
 - ✅ POST /users/me/onboard (response includes roles: ["talent"])
 - ❌ NO GET /users/me call
 
 **UI Result:**
+
 - Dashboard loads
 - ProfileSwitcher shows "Talent" role
 - No flicker or UI jumping
@@ -62,11 +67,13 @@
 ### Test 2: Add New Role (from Dashboard)
 
 **Setup:**
+
 1. Log in as existing user with Talent role
 2. Go to dashboard
 3. Click on profile menu (top right)
 
 **Steps:**
+
 1. Click "Add New Role"
 2. Should see 3 role cards
 3. Talent card should be disabled (greyed out, with checkmark)
@@ -77,6 +84,7 @@
 **What to Watch:**
 
 **Console Output (should see):**
+
 ```
 [ONBOARDING] Starting company details submission {
   isAddingRole: true,
@@ -108,14 +116,17 @@
 ```
 
 **Network Tab (should see):**
+
 - ✅ Multiple GET calls to check profile status (talent/me, recruiter/me, mentor/me)
 - ✅ POST /users/me/onboard (response includes roles: ["talent", "recruiter"])
 - ❌ NO extra GET /users/me call after onboarding
 
 **URL Bar:**
+
 - Should show: `dashboard?switchRole=recruiter`
 
 **UI Result:**
+
 - Redirects to dashboard
 - ProfileSwitcher shows "Recruiter" as active role
 - Dropdown shows both "Talent" and "Recruiter" options
@@ -130,6 +141,7 @@
 After `POST /users/me/onboard`, there should be **NO** `GET /users/me` request.
 
 **How to Verify:**
+
 1. Open Network tab in DevTools
 2. Filter: `XHR` or `Fetch`
 3. Complete onboarding form and submit
@@ -140,12 +152,13 @@ After `POST /users/me/onboard`, there should be **NO** `GET /users/me` request.
    ```
 
 If you see `GET /users/me`, it means the fallback triggered:
+
 ```typescript
 if (response?.roles) {
   queryClient.setQueryData(["user"], response);
 } else {
   console.warn("[ONBOARDING] Response missing roles, falling back to refetch");
-  refetchUser();  // This triggers GET /users/me
+  refetchUser(); // This triggers GET /users/me
 }
 ```
 
@@ -164,6 +177,7 @@ Check the console warning to see why.
 5. Look at timeline
 
 **Before Fix:**
+
 ```
 T0:   POST /users/me/onboard ──────────────────┐
       │                                          │
@@ -176,6 +190,7 @@ T250: └─ ProfileSwitcher updated ──┘           ┘
 ```
 
 **After Fix:**
+
 ```
 T0:   POST /users/me/onboard ──────────────────┐
       │                                          │
@@ -202,6 +217,7 @@ After fix should be **~50-70% faster** (no extra network roundtrip).
 ### If Still Seeing GET /users/me
 
 1. **Response might be missing `roles`** - Check response payload
+
    ```typescript
    // Look for this in response:
    "roles": ["talent", "recruiter"]
@@ -214,11 +230,13 @@ After fix should be **~50-70% faster** (no extra network roundtrip).
 ### If ProfileSwitcher Still Flickers
 
 1. **Verify cache update worked** - Should see:
+
    ```
    [ONBOARDING] Updating React Query cache with response
    ```
 
 2. **Check ProfileSwitcher useEffect:**
+
    ```
    [ProfileSwitcher] Roles updated {...}
    ```
@@ -251,7 +269,8 @@ After fix should be **~50-70% faster** (no extra network roundtrip).
 
 **Cause:** Backend response doesn't include `roles` array
 
-**Solution:** 
+**Solution:**
+
 1. Check backend logs - what is it returning?
 2. Verify `POST /users/me/onboard` response in Network tab
 3. Look for this structure:
@@ -269,6 +288,7 @@ After fix should be **~50-70% faster** (no extra network roundtrip).
 **Cause:** Cache update didn't work or response doesn't have roles
 
 **Solution:**
+
 1. Check console for warnings
 2. Verify response in Network tab has roles
 3. Force hard refresh: Ctrl+Shift+R
@@ -279,6 +299,7 @@ After fix should be **~50-70% faster** (no extra network roundtrip).
 **Cause:** Network request failed or timed out
 
 **Solution:**
+
 1. Check Network tab for error response
 2. Check backend logs for errors
 3. Look for browser error console messages
@@ -296,15 +317,16 @@ If the fix causes issues:
    - `components/layouts/ProfileSwitcher.tsx`
 
 2. Or manually:
+
    ```typescript
    // In onboarding/page.tsx handleMentorExpertiseNext:
-   
+
    // Remove:
    const response = await completeOnboardingMutation.mutateAsync(formData);
    if (response?.roles) {
      queryClient.setQueryData(["user"], response);
    }
-   
+
    // Add back:
    await completeOnboardingMutation.mutateAsync(formData);
    refetchUser();
@@ -324,7 +346,7 @@ Share this template with backend:
 We're caching the POST /users/me/onboard response directly.
 Please ensure the response includes:
 - id (string)
-- roles (string[]) 
+- roles (string[])
 - talentProfile (object or null)
 - recruiterProfile (object or null)
 - mentorProfile (object or null)

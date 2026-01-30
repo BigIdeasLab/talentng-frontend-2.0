@@ -8,18 +8,18 @@
 
 ### Line-by-Line Changes
 
-| File | Location | Change | Why |
-|------|----------|--------|-----|
-| onboarding/page.tsx | Line 4 | Added `import { useQueryClient }` | To access React Query cache |
-| onboarding/page.tsx | Line 40 | Added `const queryClient = useQueryClient()` | Get cache instance |
-| onboarding/page.tsx | Line 172 | Changed `await mutation` to `const response = await mutation` | Capture response |
+| File                | Location | Change                                                                       | Why                                    |
+| ------------------- | -------- | ---------------------------------------------------------------------------- | -------------------------------------- |
+| onboarding/page.tsx | Line 4   | Added `import { useQueryClient }`                                            | To access React Query cache            |
+| onboarding/page.tsx | Line 40  | Added `const queryClient = useQueryClient()`                                 | Get cache instance                     |
+| onboarding/page.tsx | Line 172 | Changed `await mutation` to `const response = await mutation`                | Capture response                       |
 | onboarding/page.tsx | Line 181 | Replaced `refetchUser()` with `queryClient.setQueryData(["user"], response)` | Use response instead of extra API call |
-| onboarding/page.tsx | Line 452 | Same as line 172 | For company details submission |
-| onboarding/page.tsx | Line 462 | Same as line 181 | For company details submission |
-| useAuth.ts | Line 12 | Added logging in `fetchUser` | Track when user data updates |
-| useAuth.ts | Line 44 | Added logging in `useEffect` | Track refetch triggers |
-| useAuth.ts | Line 51 | Added new `useEffect` | Track user state changes |
-| ProfileSwitcher.tsx | Line 177 | Added new `useEffect` | Track role updates |
+| onboarding/page.tsx | Line 452 | Same as line 172                                                             | For company details submission         |
+| onboarding/page.tsx | Line 462 | Same as line 181                                                             | For company details submission         |
+| useAuth.ts          | Line 12  | Added logging in `fetchUser`                                                 | Track when user data updates           |
+| useAuth.ts          | Line 44  | Added logging in `useEffect`                                                 | Track refetch triggers                 |
+| useAuth.ts          | Line 51  | Added new `useEffect`                                                        | Track user state changes               |
+| ProfileSwitcher.tsx | Line 177 | Added new `useEffect`                                                        | Track role updates                     |
 
 ## Expected Behavior After Fix
 
@@ -40,6 +40,7 @@ When you add a new role, you'll see:
 ### Network Tab
 
 Should show only **one** API call:
+
 - ✅ POST /users/me/onboard
 - ❌ NO GET /users/me (it's gone!)
 
@@ -69,12 +70,12 @@ Should show only **one** API call:
 
 ## Troubleshooting
 
-| Issue | Cause | Fix |
-|-------|-------|-----|
-| ProfileSwitcher still flickers | `queryClient.setQueryData` didn't work | Check if response has `roles` field |
-| Still seeing GET /users/me call | Fallback triggered | Check response structure, ensure it has `roles` |
-| "Updating React Query cache" log doesn't appear | Response missing roles | Backend might need to return roles array |
-| Redirect not happening | Error caught silently | Check error logs in catch block |
+| Issue                                           | Cause                                  | Fix                                             |
+| ----------------------------------------------- | -------------------------------------- | ----------------------------------------------- |
+| ProfileSwitcher still flickers                  | `queryClient.setQueryData` didn't work | Check if response has `roles` field             |
+| Still seeing GET /users/me call                 | Fallback triggered                     | Check response structure, ensure it has `roles` |
+| "Updating React Query cache" log doesn't appear | Response missing roles                 | Backend might need to return roles array        |
+| Redirect not happening                          | Error caught silently                  | Check error logs in catch block                 |
 
 ---
 
