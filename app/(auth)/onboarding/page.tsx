@@ -139,7 +139,6 @@ const OnboardingPage = () => {
     setMentorExpertiseData(data);
     setIsLoading(true);
     try {
-
       const formData = new FormData();
 
       const roleValue: "TALENT" | "RECRUITER" | "MENTOR" = "MENTOR";

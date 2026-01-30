@@ -175,8 +175,6 @@ export function ProfileSwitcher() {
     currentProfileUI,
   } = useProfile();
 
-
-
   // Restore active role from localStorage on mount
   useEffect(() => {
     if (typeof window !== "undefined" && activeRole) {
