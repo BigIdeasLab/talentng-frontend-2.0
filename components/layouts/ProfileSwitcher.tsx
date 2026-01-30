@@ -175,16 +175,7 @@ export function ProfileSwitcher() {
     currentProfileUI,
   } = useProfile();
 
-  // Log when roles change
-  useEffect(() => {
-    console.log("[ProfileSwitcher] Roles updated", {
-      timestamp: typeof window !== "undefined" ? window.performance.now() : 0,
-      userRoles,
-      userRolesCount: userRoles?.length,
-      activeRole,
-      profileCount: profiles?.length,
-    });
-  }, [userRoles, activeRole, profiles]);
+
 
   // Restore active role from localStorage on mount
   useEffect(() => {
