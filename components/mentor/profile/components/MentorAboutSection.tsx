@@ -43,12 +43,12 @@ export function MentorAboutSection({
       </button>
 
       {/* About Brown Title */}
-      <h2 className="text-[25px] font-semibold text-black font-inter-tight">
+      <h2 className="text-[20px] lg:text-[25px] font-semibold text-black font-inter-tight">
         About Brown
       </h2>
 
       {/* Bio Text */}
-      <div className="text-[15px] font-normal text-black font-inter-tight leading-[26px] w-full">
+      <div className="text-[14px] lg:text-[15px] font-normal text-black font-inter-tight leading-[24px] lg:leading-[26px] w-full whitespace-pre-line">
         {bio}
       </div>
     </div>
