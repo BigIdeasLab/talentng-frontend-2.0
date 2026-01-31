@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import type { MentorProfile as MentorProfileType } from "@/lib/api/mentor/types";
-import { Button } from "@/components/ui/button";
+import { MentorProfileSidebar } from "./components/MentorProfileSidebar";
+import { MentorProfileNav } from "./components/MentorProfileNav";
+import { MentorAboutSection } from "./components/MentorAboutSection";
+import { MentorBackgroundSection } from "./components/MentorBackgroundSection";
 
 interface MentorProfileProps {
   initialProfileData?: Partial<MentorProfileType>;
@@ -21,247 +24,127 @@ export function MentorProfile({
   initialServices = [],
   initialError = null,
 }: MentorProfileProps) {
+  const [activeTab, setActiveTab] = useState<
+    "overview" | "earning" | "session" | "reviews"
+  >("overview");
+
   const profileData = initialProfileData as MentorProfileType;
 
+  // Sample data - replace with actual data from profileData
+  const mentorData = {
+    name: profileData.fullName || "Brown David",
+    title:
+      profileData.headline || profileData.company
+        ? `${profileData.headline || ""}${profileData.headline && profileData.company ? " At " : ""}${profileData.company || ""}`
+        : "Data Scientist At Microsoft",
+    profileImage:
+      profileData.profileImageUrl ||
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+    pricePerSession: 90,
+    sessionsCompleted: 50,
+    mentoringTime: 510,
+  };
+
+  const socialLinks = {
+    telegram: profileData.links?.telegram,
+    twitter: profileData.links?.twitter,
+    instagram: profileData.links?.instagram,
+    linkedin: profileData.links?.linkedin,
+  };
+
+  const bio =
+    profileData.bio ||
+    "Hello! I'm a Data Scientist at Microsoft, specializing in machine learning and data visualization. With over 8 years of experience, I've contributed to projects ranging from cloud computing to AI-driven solutions. My expertise includes Python, R, SQL, and tools like TensorFlow and Power BI.\n\nI've led cross-functional teams, mentored junior data scientists, and worked with stakeholders to translate complex data into actionable insights. Whether you're interested in refining your analytical skills, understanding data trends, or need guidance on real-world data applications, I'm here to assist.\n\nPlease note: To provide focused and in-depth consultations, I offer 30–45 minute mentorship sessions at $90 USD. I'm excited to connect, share my knowledge, and help you advance your career in data science.";
+
+  const expertise = profileData.expertise || [
+    "Data Analysis",
+    "Engineering",
+  ];
+  const discipline = "Data Scientist";
+  const industries = profileData.industries || [
+    "AI",
+    "Fintech",
+    "Ecommerce",
+  ];
+  const languages = ["English", "French"];
+
+  const handleEditProfile = () => {
+    // Navigate to edit profile page or open modal
+    console.log("Edit profile clicked");
+  };
+
+  const handleEditBio = () => {
+    // Open bio edit modal or navigate to edit page
+    console.log("Edit bio clicked");
+  };
+
   return (
-    <div className="flex flex-col h-full bg-white md:flex-row">
-      {/* Profile Panel */}
-      <div className="hidden lg:flex h-screen overflow-hidden">
-        <div className="w-[360px] bg-gradient-to-b from-gray-50 to-white border-r border-gray-200 flex flex-col p-6 space-y-6">
-          {/* Profile Image */}
-          <div className="flex flex-col items-center space-y-4">
-            <div
-              className="w-24 h-24 rounded-full bg-cover bg-center border-4 border-white shadow-lg"
-              style={{
-                backgroundImage: `url(${profileData.profileImageUrl || "https://via.placeholder.com/96"})`,
-              }}
-            />
-            <div className="text-center">
-              <h2 className="text-xl font-bold text-gray-900">
-                {profileData.fullName || "Mentor"}
-              </h2>
-              <p className="text-sm text-gray-600">
-                {profileData.headline || "Mentor"}
-              </p>
-            </div>
-          </div>
+    <div className="flex flex-col lg:flex-row h-screen bg-white overflow-hidden">
+      {/* Sidebar */}
+      <MentorProfileSidebar
+        mentor={mentorData}
+        socialLinks={socialLinks}
+        onEditProfile={handleEditProfile}
+      />
 
-          {/* Mentor Info */}
-          <div className="space-y-4 border-t border-gray-200 pt-4">
-            <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase">
-                Company
-              </p>
-              <p className="text-sm text-gray-800">
-                {profileData.company || "—"}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase">
-                Location
-              </p>
-              <p className="text-sm text-gray-800">
-                {profileData.location || "—"}
-              </p>
-            </div>
-
-            {/* Expertise */}
-            {profileData.expertise && profileData.expertise.length > 0 && (
-              <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
-                  Expertise
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {profileData.expertise.slice(0, 3).map((exp, idx) => (
-                    <span
-                      key={idx}
-                      className="inline-block bg-blue-100 text-blue-700 text-xs font-medium px-3 py-1 rounded-full"
-                    >
-                      {exp}
-                    </span>
-                  ))}
-                  {profileData.expertise.length > 3 && (
-                    <span className="text-xs text-gray-600">
-                      +{profileData.expertise.length - 3} more
-                    </span>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Mentorship Topics */}
-            {profileData.mentorshipTopics &&
-              profileData.mentorshipTopics.length > 0 && (
-                <div>
-                  <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
-                    Mentorship Topics
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {profileData.mentorshipTopics
-                      .slice(0, 3)
-                      .map((topic, idx) => (
-                        <span
-                          key={idx}
-                          className="inline-block bg-green-100 text-green-700 text-xs font-medium px-3 py-1 rounded-full"
-                        >
-                          {topic}
-                        </span>
-                      ))}
-                    {profileData.mentorshipTopics.length > 3 && (
-                      <span className="text-xs text-gray-600">
-                        +{profileData.mentorshipTopics.length - 3} more
-                      </span>
-                    )}
-                  </div>
-                </div>
-              )}
-          </div>
-
-          {/* Bio */}
-          {profileData.bio && (
-            <div className="border-t border-gray-200 pt-4">
-              <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
-                About
-              </p>
-              <p className="text-sm text-gray-700 leading-relaxed">
-                {profileData.bio}
-              </p>
-            </div>
-          )}
-
-          {/* Links */}
-          {profileData.links && Object.keys(profileData.links).length > 0 && (
-            <div className="border-t border-gray-200 pt-4">
-              <p className="text-xs font-semibold text-gray-500 uppercase mb-2">
-                Links
-              </p>
-              <div className="space-y-2">
-                {Object.entries(profileData.links).map(([key, url]) => (
-                  <a
-                    key={key}
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block text-sm text-blue-600 hover:underline truncate"
-                    title={url}
-                  >
-                    {key.charAt(0).toUpperCase() + key.slice(1)}
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Edit Button */}
-          <div className="border-t border-gray-200 pt-4 mt-auto">
-            <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-              Edit Profile
-            </Button>
-          </div>
-        </div>
-      </div>
+      {/* Vertical Divider - Hidden on mobile */}
+      <div className="hidden lg:block w-px bg-[#E1E4EA] h-screen" />
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col bg-white h-screen md:h-screen overflow-hidden">
-        {/* Top Navigation */}
-        <div className="border-b border-gray-200 px-6 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">
-            {profileData.fullName || "Mentor Profile"}
-          </h1>
-        </div>
+      <main className="flex-1 flex flex-col bg-white overflow-hidden">
+        {/* Navigation Tabs */}
+        <MentorProfileNav activeTab={activeTab} onTabChange={setActiveTab} />
 
-        {/* Content Tabs */}
-        <div className="flex-1 overflow-auto p-6">
-          <div className="max-w-4xl space-y-8">
-            {/* About Section */}
-            {profileData.bio && (
-              <div>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                  About
+        {/* Content Area with scroll */}
+        <div className="flex-1 overflow-y-auto px-5 lg:px-[20px] py-[40px] lg:py-[67px]">
+          <div className="max-w-[667px] flex flex-col gap-10">
+            {activeTab === "overview" && (
+              <>
+                {/* About Section */}
+                <MentorAboutSection bio={bio} onEditBio={handleEditBio} />
+
+                {/* Background Section */}
+                <MentorBackgroundSection
+                  expertise={expertise}
+                  discipline={discipline}
+                  industries={industries}
+                  languages={languages}
+                />
+              </>
+            )}
+
+            {activeTab === "earning" && (
+              <div className="flex flex-col items-start gap-5">
+                <h2 className="text-[25px] font-semibold text-black font-inter-tight">
+                  Earning
                 </h2>
-                <p className="text-gray-700 leading-relaxed">
-                  {profileData.bio}
+                <p className="text-[15px] font-normal text-black font-inter-tight">
+                  Earning information will be displayed here.
                 </p>
               </div>
             )}
 
-            {/* Professional Background */}
-            {profileData.description && (
-              <div>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                  Professional Background
+            {activeTab === "session" && (
+              <div className="flex flex-col items-start gap-5">
+                <h2 className="text-[25px] font-semibold text-black font-inter-tight">
+                  Sessions
                 </h2>
-                <p className="text-gray-700 leading-relaxed">
-                  {profileData.description}
+                <p className="text-[15px] font-normal text-black font-inter-tight">
+                  Session history and upcoming sessions will be displayed here.
                 </p>
               </div>
             )}
 
-            {/* Expertise */}
-            {profileData.expertise && profileData.expertise.length > 0 && (
-              <div>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                  Areas of Expertise
+            {activeTab === "reviews" && (
+              <div className="flex flex-col items-start gap-5">
+                <h2 className="text-[25px] font-semibold text-black font-inter-tight">
+                  Reviews
                 </h2>
-                <div className="flex flex-wrap gap-3">
-                  {profileData.expertise.map((exp, idx) => (
-                    <span
-                      key={idx}
-                      className="inline-block bg-blue-100 text-blue-700 font-medium px-4 py-2 rounded-full"
-                    >
-                      {exp}
-                    </span>
-                  ))}
-                </div>
+                <p className="text-[15px] font-normal text-black font-inter-tight">
+                  Client reviews and ratings will be displayed here.
+                </p>
               </div>
             )}
-
-            {/* Mentorship Topics */}
-            {profileData.mentorshipTopics &&
-              profileData.mentorshipTopics.length > 0 && (
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                    Mentorship Topics
-                  </h2>
-                  <div className="flex flex-wrap gap-3">
-                    {profileData.mentorshipTopics.map((topic, idx) => (
-                      <span
-                        key={idx}
-                        className="inline-block bg-green-100 text-green-700 font-medium px-4 py-2 rounded-full"
-                      >
-                        {topic}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-            {/* Stats */}
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                Profile Stats
-              </h2>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="text-center bg-gray-50 p-4 rounded-lg">
-                  <p className="text-2xl font-bold text-gray-900">
-                    {profileData.views || 0}
-                  </p>
-                  <p className="text-sm text-gray-600 mt-1">Profile Views</p>
-                </div>
-                <div className="text-center bg-gray-50 p-4 rounded-lg">
-                  <p className="text-2xl font-bold text-gray-900">
-                    {profileData.isFeatured ? "Featured" : "Not Featured"}
-                  </p>
-                  <p className="text-sm text-gray-600 mt-1">Status</p>
-                </div>
-                <div className="text-center bg-gray-50 p-4 rounded-lg">
-                  <p className="text-2xl font-bold text-gray-900">
-                    {profileData.visibility || "Public"}
-                  </p>
-                  <p className="text-sm text-gray-600 mt-1">Visibility</p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </main>
