@@ -27,7 +27,7 @@ export function MentorProfileSidebar({
   onEditProfile,
 }: MentorProfileSidebarProps) {
   return (
-    <div className="w-full lg:w-[333px] bg-white border-r border-[#E1E4EA] flex flex-col px-5 py-[35px] gap-[25px] overflow-y-auto h-screen scrollbar-hide">
+    <div className="w-full lg:w-[333px] bg-white lg:border-r border-[#E1E4EA] flex flex-col px-5 py-[35px] gap-[25px] overflow-y-auto lg:h-screen scrollbar-hide">
       {/* User Profile */}
       <div className="flex flex-col items-center gap-7">
         {/* Profile Picture */}

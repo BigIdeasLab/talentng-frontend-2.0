@@ -79,25 +79,27 @@ export function MentorProfile({
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen bg-white overflow-hidden">
-      {/* Sidebar */}
-      <MentorProfileSidebar
-        mentor={mentorData}
-        socialLinks={socialLinks}
-        onEditProfile={handleEditProfile}
-      />
+    <div className="flex flex-col lg:flex-row min-h-screen bg-white overflow-hidden">
+      {/* Sidebar - Hidden on mobile by default, shown in separate mobile view */}
+      <div className="hidden lg:block">
+        <MentorProfileSidebar
+          mentor={mentorData}
+          socialLinks={socialLinks}
+          onEditProfile={handleEditProfile}
+        />
+      </div>
 
       {/* Vertical Divider - Hidden on mobile */}
-      <div className="hidden lg:block w-px bg-[#E1E4EA] h-screen" />
+      <div className="hidden lg:block w-px bg-[#E1E4EA] min-h-screen" />
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col bg-white overflow-hidden">
+      <main className="flex-1 flex flex-col bg-white overflow-hidden w-full">
         {/* Navigation Tabs */}
         <MentorProfileNav activeTab={activeTab} onTabChange={setActiveTab} />
 
         {/* Content Area with scroll */}
-        <div className="flex-1 overflow-y-auto px-5 lg:px-[20px] py-[40px] lg:py-[67px]">
-          <div className="max-w-[667px] flex flex-col gap-10">
+        <div className="flex-1 overflow-y-auto px-5 lg:px-[20px] py-6 lg:py-[67px]">
+          <div className="max-w-full lg:max-w-[667px] flex flex-col gap-8 lg:gap-10">
             {activeTab === "overview" && (
               <>
                 {/* About Section */}
