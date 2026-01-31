@@ -72,7 +72,7 @@ export function MentorBackgroundSection({
                   ))}
                 </div>
               </div>
-            )
+            ),
         )}
       </div>
     </div>

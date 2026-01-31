@@ -56,16 +56,9 @@ export function MentorProfile({
     profileData.bio ||
     "Hello! I'm a Data Scientist at Microsoft, specializing in machine learning and data visualization. With over 8 years of experience, I've contributed to projects ranging from cloud computing to AI-driven solutions. My expertise includes Python, R, SQL, and tools like TensorFlow and Power BI.\n\nI've led cross-functional teams, mentored junior data scientists, and worked with stakeholders to translate complex data into actionable insights. Whether you're interested in refining your analytical skills, understanding data trends, or need guidance on real-world data applications, I'm here to assist.\n\nPlease note: To provide focused and in-depth consultations, I offer 30–45 minute mentorship sessions at $90 USD. I'm excited to connect, share my knowledge, and help you advance your career in data science.";
 
-  const expertise = profileData.expertise || [
-    "Data Analysis",
-    "Engineering",
-  ];
+  const expertise = profileData.expertise || ["Data Analysis", "Engineering"];
   const discipline = "Data Scientist";
-  const industries = profileData.industries || [
-    "AI",
-    "Fintech",
-    "Ecommerce",
-  ];
+  const industries = profileData.industries || ["AI", "Fintech", "Ecommerce"];
   const languages = ["English", "French"];
 
   const handleEditProfile = () => {
