@@ -10,15 +10,15 @@ export function MentorAboutSection({
   onEditBio,
 }: MentorAboutSectionProps) {
   return (
-    <div className="flex flex-col items-start gap-5 w-full">
+    <div className="flex flex-col items-start gap-4 w-full">
       {/* Edit Your Bio Button */}
       <button
         onClick={onEditBio}
-        className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+        className="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity"
       >
         <svg
-          width="22"
-          height="22"
+          width="18"
+          height="18"
           viewBox="0 0 22 22"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -37,18 +37,18 @@ export function MentorAboutSection({
             strokeLinecap="round"
           />
         </svg>
-        <span className="text-[15px] font-normal text-[#5C30FF] font-inter-tight">
+        <span className="text-[13px] font-normal text-[#5C30FF] font-inter-tight">
           Edit Your Bio
         </span>
       </button>
 
       {/* About Brown Title */}
-      <h2 className="text-[20px] lg:text-[25px] font-semibold text-black font-inter-tight">
+      <h2 className="text-[17px] lg:text-[20px] font-semibold text-black font-inter-tight">
         About Brown
       </h2>
 
       {/* Bio Text */}
-      <div className="text-[14px] lg:text-[15px] font-normal text-black font-inter-tight leading-[24px] lg:leading-[26px] w-full whitespace-pre-line">
+      <div className="text-[12px] lg:text-[13px] font-normal text-black font-inter-tight leading-[20px] lg:leading-[22px] w-full whitespace-pre-line">
         {bio}
       </div>
     </div>

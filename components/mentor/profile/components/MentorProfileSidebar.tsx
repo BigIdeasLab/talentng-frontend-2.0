@@ -27,11 +27,11 @@ export function MentorProfileSidebar({
   onEditProfile,
 }: MentorProfileSidebarProps) {
   return (
-    <div className="w-full lg:w-[333px] bg-white lg:border-r border-[#E1E4EA] flex flex-col px-5 py-[35px] gap-[25px] overflow-y-auto lg:h-screen scrollbar-hide">
+    <div className="w-full lg:w-[280px] bg-white lg:border-r border-[#E1E4EA] flex flex-col px-4 py-7 gap-5 overflow-y-auto lg:h-screen scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
       {/* User Profile */}
-      <div className="flex flex-col items-center gap-7">
+      <div className="flex flex-col items-center gap-5">
         {/* Profile Picture */}
-        <div className="relative w-[110px] h-[110px]">
+        <div className="relative w-[90px] h-[90px] flex-shrink-0">
           <div
             className="w-full h-full rounded-full bg-cover bg-center"
             style={{
@@ -41,26 +41,26 @@ export function MentorProfileSidebar({
         </div>
 
         {/* Info Container */}
-        <div className="flex flex-col items-center gap-[15px] w-[240px]">
+        <div className="flex flex-col items-center gap-3 w-[200px]">
           {/* Name */}
-          <h2 className="text-[19px] font-medium text-black font-inter-tight text-center">
+          <h2 className="text-[16px] font-medium text-black font-inter-tight text-center">
             {mentor.name}
           </h2>
 
           {/* Title */}
-          <p className="text-[17px] font-light text-[rgba(0,0,0,0.30)] font-inter-tight text-center">
+          <p className="text-[14px] font-light text-[rgba(0,0,0,0.30)] font-inter-tight text-center">
             {mentor.title}
           </p>
         </div>
 
         {/* Details Container */}
-        <div className="flex flex-col items-start gap-[15px] w-full">
+        <div className="flex flex-col items-start gap-3 w-full">
           {/* Price per session */}
           <div className="flex justify-between items-center w-full">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <svg
-                width="22"
-                height="22"
+                width="18"
+                height="18"
                 viewBox="0 0 22 22"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +77,7 @@ export function MentorProfileSidebar({
                   strokeLinecap="round"
                 />
               </svg>
-              <span className="text-[15px] font-normal text-black font-inter-tight">
+              <span className="text-[13px] font-normal text-black font-inter-tight">
                 ${mentor.pricePerSession} / Session
               </span>
             </div>
@@ -85,10 +85,10 @@ export function MentorProfileSidebar({
 
           {/* Sessions completed */}
           <div className="flex justify-between items-center w-full">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <svg
-                width="22"
-                height="22"
+                width="18"
+                height="18"
                 viewBox="0 0 22 22"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -108,7 +108,7 @@ export function MentorProfileSidebar({
                   strokeLinejoin="round"
                 />
               </svg>
-              <span className="text-[15px] font-normal text-black font-inter-tight">
+              <span className="text-[13px] font-normal text-black font-inter-tight">
                 {mentor.sessionsCompleted} Session Completed
               </span>
             </div>
@@ -116,10 +116,10 @@ export function MentorProfileSidebar({
 
           {/* Mentoring time */}
           <div className="flex justify-between items-center w-full">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <svg
-                width="22"
-                height="22"
+                width="18"
+                height="18"
                 viewBox="0 0 22 22"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -144,7 +144,7 @@ export function MentorProfileSidebar({
                   strokeLinecap="round"
                 />
               </svg>
-              <span className="text-[15px] font-normal text-black font-inter-tight">
+              <span className="text-[13px] font-normal text-black font-inter-tight">
                 {mentor.mentoringTime} mins mentoring time
               </span>
             </div>
@@ -155,27 +155,27 @@ export function MentorProfileSidebar({
       {/* Edit Profile Button */}
       <Button
         onClick={onEditProfile}
-        className="w-full h-auto rounded-[50px] bg-[#181B25] hover:bg-[#2a2f3a] text-white px-[79px] py-[23px] font-normal text-[18px]"
+        className="w-full h-auto rounded-[40px] bg-[#181B25] hover:bg-[#2a2f3a] text-white px-16 py-4 font-normal text-[15px]"
       >
         Edit Profile
       </Button>
 
       {/* Social Links */}
-      <div className="flex flex-col items-start gap-[35px]">
-        <div className="flex flex-col items-start gap-5 w-full">
+      <div className="flex flex-col items-start gap-7">
+        <div className="flex flex-col items-start gap-4 w-full">
           {/* Header */}
-          <h3 className="text-[12px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
+          <h3 className="text-[11px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
             Social Links
           </h3>
 
           {/* Social Link Items */}
-          <div className="flex flex-col gap-[10px] w-full">
+          <div className="flex flex-col gap-2 w-full">
             {/* Telegram */}
             <div className="flex justify-between items-center w-full">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 <svg
-                  width="22"
-                  height="22"
+                  width="18"
+                  height="18"
                   viewBox="0 0 22 22"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -188,7 +188,7 @@ export function MentorProfileSidebar({
                     strokeLinejoin="round"
                   />
                 </svg>
-                <span className="text-[15px] font-normal text-black font-inter-tight">
+                <span className="text-[13px] font-normal text-black font-inter-tight">
                   Telegram
                 </span>
               </div>
@@ -199,8 +199,8 @@ export function MentorProfileSidebar({
                   rel="noopener noreferrer"
                 >
                   <svg
-                    width="22"
-                    height="22"
+                    width="18"
+                    height="18"
                     viewBox="0 0 22 22"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -226,10 +226,10 @@ export function MentorProfileSidebar({
 
             {/* X (Twitter) */}
             <div className="flex justify-between items-center w-full">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 <svg
-                  width="22"
-                  height="22"
+                  width="18"
+                  height="18"
                   viewBox="0 0 22 22"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -242,7 +242,7 @@ export function MentorProfileSidebar({
                     strokeLinejoin="round"
                   />
                 </svg>
-                <span className="text-[15px] font-normal text-black font-inter-tight">
+                <span className="text-[13px] font-normal text-black font-inter-tight">
                   X
                 </span>
               </div>
@@ -253,8 +253,8 @@ export function MentorProfileSidebar({
                   rel="noopener noreferrer"
                 >
                   <svg
-                    width="22"
-                    height="22"
+                    width="18"
+                    height="18"
                     viewBox="0 0 22 22"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -280,10 +280,10 @@ export function MentorProfileSidebar({
 
             {/* Instagram */}
             <div className="flex justify-between items-center w-full">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 <svg
-                  width="22"
-                  height="22"
+                  width="18"
+                  height="18"
                   viewBox="0 0 22 22"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -307,7 +307,7 @@ export function MentorProfileSidebar({
                     strokeLinejoin="round"
                   />
                 </svg>
-                <span className="text-[15px] font-normal text-black font-inter-tight">
+                <span className="text-[13px] font-normal text-black font-inter-tight">
                   Instagram
                 </span>
               </div>
@@ -318,8 +318,8 @@ export function MentorProfileSidebar({
                   rel="noopener noreferrer"
                 >
                   <svg
-                    width="22"
-                    height="22"
+                    width="18"
+                    height="18"
                     viewBox="0 0 22 22"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -345,10 +345,10 @@ export function MentorProfileSidebar({
 
             {/* LinkedIn */}
             <div className="flex justify-between items-center w-full">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 <svg
-                  width="22"
-                  height="22"
+                  width="18"
+                  height="18"
                   viewBox="0 0 22 22"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -370,7 +370,7 @@ export function MentorProfileSidebar({
                     strokeLinejoin="round"
                   />
                 </svg>
-                <span className="text-[15px] font-normal text-black font-inter-tight">
+                <span className="text-[13px] font-normal text-black font-inter-tight">
                   LinkendIn
                 </span>
               </div>
@@ -381,8 +381,8 @@ export function MentorProfileSidebar({
                   rel="noopener noreferrer"
                 >
                   <svg
-                    width="22"
-                    height="22"
+                    width="18"
+                    height="18"
                     viewBox="0 0 22 22"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"

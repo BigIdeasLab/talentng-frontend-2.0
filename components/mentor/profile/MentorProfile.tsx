@@ -18,11 +18,11 @@ interface MentorProfileProps {
 
 export function MentorProfile({
   initialProfileData = {},
-  initialUserId = null,
-  initialStats = null,
-  initialRecommendations = [],
-  initialServices = [],
-  initialError = null,
+  initialUserId: _initialUserId = null,
+  initialStats: _initialStats = null,
+  initialRecommendations: _initialRecommendations = [],
+  initialServices: _initialServices = [],
+  initialError: _initialError = null,
 }: MentorProfileProps) {
   const [activeTab, setActiveTab] = useState<
     "overview" | "earning" | "session" | "reviews"
@@ -58,7 +58,7 @@ export function MentorProfile({
 
   const expertise = profileData.expertise || ["Data Analysis", "Engineering"];
   const discipline = "Data Scientist";
-  const industries = profileData.industries || ["AI", "Fintech", "Ecommerce"];
+  const industries = (profileData as MentorProfileType & { industries?: string[] }).industries || ["AI", "Fintech", "Ecommerce"];
   const languages = ["English", "French"];
 
   const handleEditProfile = () => {
@@ -72,9 +72,9 @@ export function MentorProfile({
   };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-white overflow-hidden">
+    <div className="flex flex-col lg:flex-row h-screen bg-white overflow-hidden">
       {/* Sidebar - Hidden on mobile by default, shown in separate mobile view */}
-      <div className="hidden lg:block">
+      <div className="hidden lg:block flex-shrink-0">
         <MentorProfileSidebar
           mentor={mentorData}
           socialLinks={socialLinks}
@@ -83,7 +83,7 @@ export function MentorProfile({
       </div>
 
       {/* Vertical Divider - Hidden on mobile */}
-      <div className="hidden lg:block w-px bg-[#E1E4EA] min-h-screen" />
+      <div className="hidden lg:block w-px bg-[#E1E4EA] h-screen flex-shrink-0" />
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col bg-white overflow-hidden w-full">
@@ -91,8 +91,8 @@ export function MentorProfile({
         <MentorProfileNav activeTab={activeTab} onTabChange={setActiveTab} />
 
         {/* Content Area with scroll */}
-        <div className="flex-1 overflow-y-auto px-5 lg:px-[20px] py-6 lg:py-[67px]">
-          <div className="max-w-full lg:max-w-[667px] flex flex-col gap-8 lg:gap-10">
+        <div className="flex-1 overflow-y-auto px-4 lg:px-4 py-5 lg:py-12 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+          <div className="max-w-full lg:max-w-[560px] flex flex-col gap-6 lg:gap-7">
             {activeTab === "overview" && (
               <>
                 {/* About Section */}
@@ -109,33 +109,33 @@ export function MentorProfile({
             )}
 
             {activeTab === "earning" && (
-              <div className="flex flex-col items-start gap-5">
-                <h2 className="text-[25px] font-semibold text-black font-inter-tight">
+              <div className="flex flex-col items-start gap-4">
+                <h2 className="text-[20px] font-semibold text-black font-inter-tight">
                   Earning
                 </h2>
-                <p className="text-[15px] font-normal text-black font-inter-tight">
+                <p className="text-[13px] font-normal text-black font-inter-tight">
                   Earning information will be displayed here.
                 </p>
               </div>
             )}
 
             {activeTab === "session" && (
-              <div className="flex flex-col items-start gap-5">
-                <h2 className="text-[25px] font-semibold text-black font-inter-tight">
+              <div className="flex flex-col items-start gap-4">
+                <h2 className="text-[20px] font-semibold text-black font-inter-tight">
                   Sessions
                 </h2>
-                <p className="text-[15px] font-normal text-black font-inter-tight">
+                <p className="text-[13px] font-normal text-black font-inter-tight">
                   Session history and upcoming sessions will be displayed here.
                 </p>
               </div>
             )}
 
             {activeTab === "reviews" && (
-              <div className="flex flex-col items-start gap-5">
-                <h2 className="text-[25px] font-semibold text-black font-inter-tight">
+              <div className="flex flex-col items-start gap-4">
+                <h2 className="text-[20px] font-semibold text-black font-inter-tight">
                   Reviews
                 </h2>
-                <p className="text-[15px] font-normal text-black font-inter-tight">
+                <p className="text-[13px] font-normal text-black font-inter-tight">
                   Client reviews and ratings will be displayed here.
                 </p>
               </div>

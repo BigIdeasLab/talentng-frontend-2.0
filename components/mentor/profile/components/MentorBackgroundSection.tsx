@@ -38,34 +38,34 @@ export function MentorBackgroundSection({
   ];
 
   return (
-    <div className="flex flex-col items-start gap-5 w-full">
+    <div className="flex flex-col items-start gap-4 w-full">
       {/* Background Title */}
-      <h2 className="text-[20px] lg:text-[25px] font-semibold text-black font-inter-tight">
+      <h2 className="text-[17px] lg:text-[20px] font-semibold text-black font-inter-tight">
         Background
       </h2>
 
       {/* Background Fields */}
-      <div className="flex flex-col items-start gap-[10px] w-full">
+      <div className="flex flex-col items-start gap-2 w-full">
         {fields.map(
           (field, index) =>
             field.values.length > 0 && (
               <div
                 key={index}
-                className="flex flex-col lg:flex-row w-full px-3 py-[11px] gap-3 lg:justify-between lg:items-center rounded-[10px] border border-[#E1E4EA] bg-white overflow-hidden"
+                className="flex flex-col lg:flex-row w-full px-2.5 py-2 gap-2 lg:justify-between lg:items-center rounded-lg border border-[#E1E4EA] bg-white overflow-hidden"
               >
                 {/* Label */}
-                <span className="text-[15px] lg:text-[16px] font-normal text-black font-inter-tight leading-[26px] flex-shrink-0">
+                <span className="text-[13px] lg:text-[13px] font-normal text-black font-inter-tight leading-[22px] flex-shrink-0">
                   {field.label}
                 </span>
 
                 {/* Tags */}
-                <div className="flex justify-start lg:justify-end items-center gap-[6px] flex-wrap">
+                <div className="flex justify-start lg:justify-end items-center gap-1.5 flex-wrap">
                   {field.values.map((value, idx) => (
                     <div
                       key={idx}
-                      className="px-3 py-1 rounded-[5px] bg-[#F5F5F5]"
+                      className="px-2.5 py-0.5 rounded bg-[#F5F5F5]"
                     >
-                      <span className="text-[13px] lg:text-[14px] font-normal text-black font-inter-tight leading-[26px]">
+                      <span className="text-[11px] lg:text-[12px] font-normal text-black font-inter-tight leading-[22px]">
                         {value}
                       </span>
                     </div>
