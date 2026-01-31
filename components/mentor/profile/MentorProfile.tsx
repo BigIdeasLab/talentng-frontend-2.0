@@ -58,7 +58,9 @@ export function MentorProfile({
 
   const expertise = profileData.expertise || ["Data Analysis", "Engineering"];
   const discipline = "Data Scientist";
-  const industries = (profileData as MentorProfileType & { industries?: string[] }).industries || ["AI", "Fintech", "Ecommerce"];
+  const industries = (
+    profileData as MentorProfileType & { industries?: string[] }
+  ).industries || ["AI", "Fintech", "Ecommerce"];
   const languages = ["English", "French"];
 
   const handleEditProfile = () => {
