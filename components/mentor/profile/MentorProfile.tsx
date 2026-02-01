@@ -6,6 +6,9 @@ import { MentorProfileSidebar } from "./components/MentorProfileSidebar";
 import { MentorProfileNav } from "./components/MentorProfileNav";
 import { MentorAboutSection } from "./components/MentorAboutSection";
 import { MentorBackgroundSection } from "./components/MentorBackgroundSection";
+import { MentorEarningSection } from "./components/MentorEarningSection";
+import { MentorSessionSection } from "./components/MentorSessionSection";
+import { MentorReviewsSection } from "./components/MentorReviewsSection";
 
 interface MentorProfileProps {
   initialProfileData?: Partial<MentorProfileType>;
@@ -110,38 +113,11 @@ export function MentorProfile({
               </>
             )}
 
-            {activeTab === "earning" && (
-              <div className="flex flex-col items-start gap-4">
-                <h2 className="text-[20px] font-semibold text-black font-inter-tight">
-                  Earning
-                </h2>
-                <p className="text-[13px] font-normal text-black font-inter-tight">
-                  Earning information will be displayed here.
-                </p>
-              </div>
-            )}
+            {activeTab === "earning" && <MentorEarningSection />}
 
-            {activeTab === "session" && (
-              <div className="flex flex-col items-start gap-4">
-                <h2 className="text-[20px] font-semibold text-black font-inter-tight">
-                  Sessions
-                </h2>
-                <p className="text-[13px] font-normal text-black font-inter-tight">
-                  Session history and upcoming sessions will be displayed here.
-                </p>
-              </div>
-            )}
+            {activeTab === "session" && <MentorSessionSection />}
 
-            {activeTab === "reviews" && (
-              <div className="flex flex-col items-start gap-4">
-                <h2 className="text-[20px] font-semibold text-black font-inter-tight">
-                  Reviews
-                </h2>
-                <p className="text-[13px] font-normal text-black font-inter-tight">
-                  Client reviews and ratings will be displayed here.
-                </p>
-              </div>
-            )}
+            {activeTab === "reviews" && <MentorReviewsSection />}
           </div>
         </div>
       </main>
