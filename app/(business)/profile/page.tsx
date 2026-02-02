@@ -23,6 +23,11 @@ export default function ProfilePage() {
     defaultData: DEFAULT_PROFILE_DATA,
   });
 
+  console.log("[ProfilePage] activeRole:", activeRole);
+  console.log("[ProfilePage] isLoading:", isLoading);
+  console.log("[ProfilePage] error:", error);
+  console.log("[ProfilePage] profileData:", profileData);
+
   if (isLoading) {
     return <PageLoadingState message="Loading profile..." />;
   }

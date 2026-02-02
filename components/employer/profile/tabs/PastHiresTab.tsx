@@ -2,9 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { Search, SlidersHorizontal } from "lucide-react";
+import { useApplications } from "@/hooks/useApplications";
+import { Application } from "@/lib/api/applications";
 
 interface PastHire {
-  id: number;
+  id: string;
+  userId: string;
   name: string;
   avatar: string;
   primarySkill: string;
@@ -12,135 +15,75 @@ interface PastHire {
   dateHired: string;
 }
 
-const mockPastHires: PastHire[] = [
-  {
-    id: 1,
-    name: "Elias Johnson",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/4489b61f18d60d40a2b95b65f27d3dc37af77141",
-    primarySkill: "Product Designer",
-    location: "California, US",
-    dateHired: "Dec 25 2025",
-  },
-  {
-    id: 2,
-    name: "Sophie Lee",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/ac599d21a164f89cc53bcd2c3803d8c7e443bb16",
-    primarySkill: "UX Designer",
-    location: "New York, US",
-    dateHired: "Jan 15 2024",
-  },
-  {
-    id: 3,
-    name: "Michael Brown",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/212208d7b867ab37dca0e63ad5b3246d2fad53a6",
-    primarySkill: "UI Designer",
-    location: "Texas, US",
-    dateHired: "Feb 10 2023",
-  },
-  {
-    id: 4,
-    name: "Emily Davis",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/98e3bf6d1fcfd7f32c737ff00aaa0c0e6b9c1c25",
-    primarySkill: "Graphic Designer",
-    location: "Florida, US",
-    dateHired: "Mar 5 2024",
-  },
-  {
-    id: 5,
-    name: "Daniel Garcia",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/455fcd9600095c754eeaffb8827fd5e890ac94cf",
-    primarySkill: "Interaction Designer",
-    location: "Washington, US",
-    dateHired: "Apr 20 2023",
-  },
-  {
-    id: 6,
-    name: "Olivia Martinez",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/17e0f8649d5b2acbdf3b84f9659212f2c54c411f",
-    primarySkill: "Visual Designer",
-    location: "Oregon, US",
-    dateHired: "May 30 2024",
-  },
-  {
-    id: 7,
-    name: "James Wilson",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/e00a7d8c459efb178454a164267b6b5d418308a4",
-    primarySkill: "Product Manager",
-    location: "Illinois, US",
-    dateHired: "Jun 15 2023",
-  },
-  {
-    id: 8,
-    name: "Ava Anderson",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/1461b9e5fcd47d64b053df42baf38ee3fcbdae04",
-    primarySkill: "Web Designer",
-    location: "Nevada, US",
-    dateHired: "Jul 10 2024",
-  },
-  {
-    id: 9,
-    name: "Lucas Thomas",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/f25e66bac38da7360668fa7a0c3be5e28bf26714",
-    primarySkill: "Motion Designer",
-    location: "Colorado, US",
-    dateHired: "Aug 25 2023",
-  },
-  {
-    id: 10,
-    name: "Mia Jackson",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/52cd7411e700d6427cb4097ede0436c16b0e4b3a",
-    primarySkill: "Industrial Designer",
-    location: "Massachusetts, US",
-    dateHired: "Sep 30 2024",
-  },
-  {
-    id: 11,
-    name: "Ethan White",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/a227b791b8d836bd9c83846d5c563de1bf8e9070",
-    primarySkill: "Service Designer",
-    location: "Virginia, US",
-    dateHired: "Oct 20 2023",
-  },
-  {
-    id: 12,
-    name: "Isabella Harris",
-    avatar:
-      "https://api.builder.io/api/v1/image/assets/TEMP/77a2d0f5eaf5e0f9f0f0c283d2661d2eaacaca2e",
-    primarySkill: "Game Designer",
-    location: "Georgia, US",
-    dateHired: "Nov 14 2024",
-  },
-];
+const transformApplicationToHire = (app: Application): PastHire => {
+  const hiredDate = app.createdAt
+    ? new Date(app.createdAt).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : "Date not available";
+
+  return {
+    id: app.id,
+    userId: app.userId,
+    name: app.user?.talentProfile?.fullName || "Unknown",
+    avatar: app.user?.talentProfile?.profileImageUrl || "",
+    primarySkill: app.user?.talentProfile?.headline || "Not specified",
+    location: app.user?.talentProfile?.location || "Location not available",
+    dateHired: hiredDate,
+  };
+};
 
 export function PastHiresTab() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredHires, setFilteredHires] = useState(mockPastHires);
+  const [pastHires, setPastHires] = useState<PastHire[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { getAll } = useApplications();
 
   useEffect(() => {
-    if (searchQuery.trim() === "") {
-      setFilteredHires(mockPastHires);
-    } else {
-      const query = searchQuery.toLowerCase();
-      const filtered = mockPastHires.filter(
-        (hire) =>
-          hire.name.toLowerCase().includes(query) ||
-          hire.primarySkill.toLowerCase().includes(query) ||
-          hire.location.toLowerCase().includes(query),
-      );
-      setFilteredHires(filtered);
+    fetchHiredTalents();
+  }, []);
+
+  const fetchHiredTalents = async () => {
+    try {
+      setIsLoading(true);
+      const allApplications = await getAll();
+      const hired = allApplications.filter((app) => app.status === "hired");
+      const transformedHires = hired.map(transformApplicationToHire);
+      setPastHires(transformedHires);
+    } catch (error) {
+      console.error("Error fetching hired talents:", error);
+      setPastHires([]);
+    } finally {
+      setIsLoading(false);
     }
-  }, [searchQuery]);
+  };
+
+  const filteredHires =
+    searchQuery.trim() === ""
+      ? pastHires
+      : pastHires.filter(
+          (hire) =>
+            hire.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            hire.primarySkill
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase()) ||
+            hire.location.toLowerCase().includes(searchQuery.toLowerCase()),
+        );
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-4 p-3 md:p-4 lg:p-5 w-full">
+        <h1 className="text-base font-medium text-black font-inter-tight leading-5">
+          Past Hires
+        </h1>
+        <div className="flex items-center justify-center py-12">
+          <p className="text-gray-500">Loading past hires...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-4 p-3 md:p-4 lg:p-5 w-full">
@@ -211,11 +154,17 @@ export function PastHiresTab() {
                   {/* Profile - Full width on mobile, normal on desktop */}
                   <div className="flex items-center gap-2 min-w-0">
                     <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-100">
-                      <img
-                        src={hire.avatar}
-                        alt={hire.name}
-                        className="w-full h-full object-cover"
-                      />
+                      {hire.avatar ? (
+                        <img
+                          src={hire.avatar}
+                          alt={hire.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
+                          {hire.name.charAt(0)}
+                        </div>
+                      )}
                     </div>
                     <div className="flex flex-col gap-0.5 min-w-0">
                       <div className="text-[13px] font-normal text-black font-inter-tight truncate">
@@ -257,7 +206,9 @@ export function PastHiresTab() {
             ) : (
               <div className="flex flex-col items-center justify-center py-8 px-4">
                 <p className="text-[13px] text-[rgba(0,0,0,0.30)] font-inter-tight">
-                  No talents found matching your search
+                  {pastHires.length === 0
+                    ? "No hired talents yet"
+                    : "No talents found matching your search"}
                 </p>
               </div>
             )}

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import { Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useProfile } from "@/hooks/useProfile";
 import { ProfileSwitcher } from "../ProfileSwitcher";
 
@@ -127,73 +128,6 @@ const WorkIcon = () => (
   </svg>
 );
 
-const StudentCardIcon = () => (
-  <svg
-    width="20"
-    height="20"
-    viewBox="0 0 20 20"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M11.6666 2.91675C14.8093 2.91675 16.3807 2.91675 17.357 3.95408C18.3333 4.99141 18.3333 6.66096 18.3333 10.0001C18.3333 13.3392 18.3333 15.0087 17.357 16.0461C16.3807 17.0834 14.8093 17.0834 11.6666 17.0834H8.33329C5.19059 17.0834 3.61925 17.0834 2.64293 16.0461C1.66663 15.0087 1.66663 13.3392 1.66663 10.0001C1.66663 6.66096 1.66663 4.99141 2.64293 3.95408C3.61925 2.91675 5.19059 2.91675 8.33329 2.91675H11.6666Z"
-      stroke="#525866"
-      strokeWidth="1.25"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M4.16663 12.9165C5.50717 11.1353 8.62821 11.0382 9.99996 12.9165M8.54079 8.54157C8.54079 9.34699 7.88789 9.9999 7.08248 9.9999C6.27707 9.9999 5.62414 9.34699 5.62414 8.54157C5.62414 7.73617 6.27707 7.08325 7.08248 7.08325C7.88789 7.08325 8.54079 7.73617 8.54079 8.54157Z"
-      stroke="#525866"
-      strokeWidth="1.25"
-      strokeLinecap="round"
-    />
-    <path
-      d="M12.5 7.91675H15.8333"
-      stroke="#525866"
-      strokeWidth="1.25"
-      strokeLinecap="round"
-    />
-    <path
-      d="M12.5 11.25H14.1667"
-      stroke="#525866"
-      strokeWidth="1.25"
-      strokeLinecap="round"
-    />
-  </svg>
-);
-
-const MortarboardIcon = () => (
-  <svg
-    width="20"
-    height="20"
-    viewBox="0 0 20 20"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M1.66663 6.66667C1.66663 7.78482 8.41238 10.8333 9.98838 10.8333C11.5643 10.8333 18.3101 7.78482 18.3101 6.66667C18.3101 5.54852 11.5643 2.5 9.98838 2.5C8.41238 2.5 1.66663 5.54852 1.66663 6.66667Z"
-      stroke="#525866"
-      strokeWidth="1.25"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M4.99512 9.16675L5.19938 13.8583C5.20346 13.9522 5.21362 14.0463 5.24084 14.1363C5.32498 14.4145 5.48007 14.6672 5.71667 14.8371C7.56788 16.1655 12.4084 16.1655 14.2596 14.8371C14.4963 14.6672 14.6513 14.4145 14.7355 14.1363C14.7627 14.0463 14.7728 13.9522 14.777 13.8583L14.9812 9.16675"
-      stroke="#525866"
-      strokeWidth="1.25"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M17.0611 7.91675V13.7501M17.0611 13.7501C16.4011 14.9553 16.1093 15.6011 15.8129 16.6667C15.7485 17.0459 15.7996 17.237 16.0609 17.4067C16.1671 17.4756 16.2947 17.5001 16.4212 17.5001H17.6882C17.8229 17.5001 17.9588 17.472 18.0698 17.3955C18.3127 17.228 18.3752 17.0442 18.3093 16.6667C18.0495 15.6772 17.7185 15.0007 17.0611 13.7501Z"
-      stroke="#525866"
-      strokeWidth="1.25"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
 const SupportIcon = () => (
   <svg
     width="20"
@@ -251,86 +185,6 @@ const SettingsIcon = () => (
   </svg>
 );
 
-const BellIcon = () => (
-  <svg
-    width="20"
-    height="20"
-    viewBox="0 0 20 20"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M15.8333 11.5037C15.8333 11.2157 15.8333 11.0717 15.79 10.9433C15.664 10.5703 15.3319 10.4257 14.9991 10.2741C14.625 10.1037 14.438 10.0185 14.2527 10.0035C14.0423 9.98649 13.8315 10.0318 13.6517 10.1327C13.4133 10.2665 13.247 10.5207 13.0768 10.7275C12.2907 11.6823 11.8976 12.1598 11.7538 12.6863C11.6377 13.1112 11.6377 13.5555 11.7538 13.9803C11.9635 14.7482 12.6263 15.392 13.1169 15.9878C13.3678 16.2926 13.4933 16.445 13.6517 16.5339C13.8315 16.6348 14.0423 16.6802 14.2527 16.6632C14.438 16.6482 14.625 16.563 14.9991 16.3926C15.3319 16.241 15.664 16.0963 15.79 15.7233C15.8333 15.595 15.8333 15.451 15.8333 15.1629V11.5037Z"
-      stroke="#525866"
-      strokeWidth="1.25"
-    />
-    <path
-      d="M8.08337 17.5C6.93279 18.6111 5.06728 18.6111 3.91669 17.5"
-      stroke="#525866"
-      strokeWidth="1.25"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M10.1667 11.5037C10.1667 11.1411 10.1769 10.8151 10.4701 10.5601C10.5768 10.4674 10.7182 10.403 11.001 10.2741C11.375 10.1038 11.5621 10.0186 11.7474 10.0036C12.3035 9.95864 12.6026 10.3381 12.9233 10.7276C13.7094 11.6824 14.1025 12.1598 14.2463 12.6863C14.3624 13.1111 14.3624 13.5555 14.2463 13.9803C14.0365 14.7482 13.3738 15.3918 12.8832 15.9876C12.574 16.3632 12.2786 16.706 11.7474 16.663C11.5621 16.648 11.375 16.5628 11.001 16.3924C10.7182 16.2636 10.5768 16.1992 10.4701 16.1065C10.1769 15.8515 10.1667 15.5256 10.1667 15.1628V11.5037Z"
-      stroke="#525866"
-      strokeWidth="1.25"
-    />
-    <path
-      d="M18.3333 13.3334V10.0001C18.3333 5.39771 14.6024 1.66675 10 1.66675C5.39771 1.66675 1.66667 5.39771 1.66667 10.0001L1.66667 13.3334"
-      stroke="#525866"
-      strokeWidth="1.25"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const menuItems: MenuItem[] = [
-  {
-    id: "dashboard",
-    label: "Dashboard",
-    icon: <DashboardIcon />,
-    href: "/dashboard",
-  },
-  {
-    id: "discover-talent",
-    label: "Discover Talent",
-    icon: <TelescopeIcon />,
-    href: "/discover-talent",
-  },
-  {
-    id: "create-opportunities",
-    label: "Create Opportuities",
-    icon: <WorkIcon />,
-    href: "/opportunities",
-  },
-  {
-    id: "applicants",
-    label: "Applicants",
-    icon: <WorkIcon />,
-    href: "/applicants",
-  },
-  {
-    id: "notification",
-    label: "Notifications",
-    icon: <BellIcon />,
-    badge: 5,
-  },
-  {
-    id: "mentorship",
-    label: "Mentorship",
-    icon: <StudentCardIcon />,
-    href: "/mentorship",
-  },
-  {
-    id: "learning",
-    label: "Learning",
-    icon: <MortarboardIcon />,
-    href: "/learning",
-  },
-];
-
 const otherItems: Omit<MenuItem, "badge">[] = [
   { id: "support", label: "Support", icon: <SupportIcon /> },
   {
@@ -369,25 +223,13 @@ const getMenuItems = (notificationCount?: number): MenuItem[] => [
   {
     id: "notification",
     label: "Notifications",
-    icon: <BellIcon />,
+    icon: <Bell className="w-5 h-5" strokeWidth={1.25} stroke="#525866" />,
     badge: notificationCount,
-  },
-  {
-    id: "mentorship",
-    label: "Mentorship",
-    icon: <StudentCardIcon />,
-    href: "/mentorship",
-  },
-  {
-    id: "learning",
-    label: "Learning",
-    icon: <MortarboardIcon />,
-    href: "/learning",
   },
 ];
 
 export function RecruiterSidebar({
-  activeItem = "dashboard",
+  activeItem: _activeItem = "dashboard",
   onItemSelect,
   onNotificationClick,
   notificationCount = 0,
@@ -401,7 +243,7 @@ export function RecruiterSidebar({
     onNotificationClick?.();
   };
 
-  const profile = useMemo(() => {
+  const _profile = useMemo(() => {
     return currentProfileUI || currentProfile;
   }, [currentProfileUI, currentProfile]);
 
