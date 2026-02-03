@@ -96,24 +96,24 @@ export default function CreateSessionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="h-screen overflow-hidden bg-white">
       {/* Header */}
-      <header className="border-b border-gray-100 bg-white px-5 py-5">
+      <header className="flex-shrink-0 border-b border-gray-100 bg-white px-4 py-4">
         <div className="flex items-center justify-between">
-          <h1 className="font-inter-tight text-xl font-medium leading-5 text-black">
+          <h1 className="font-inter-tight text-base font-medium leading-5 text-black">
             Create A New Session
           </h1>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <Button
               variant="outline"
               onClick={handleCancel}
-              className="rounded-[30px] border border-[#F5F5F5] bg-[#F5F5F5] px-8 py-[18px] text-base font-normal text-black hover:bg-[#E5E5E5]"
+              className="rounded-[30px] border border-[#F5F5F5] bg-[#F5F5F5] px-6 py-3 text-sm font-normal text-black hover:bg-[#E5E5E5]"
             >
               Cancel
             </Button>
             <Button
               onClick={handleContinue}
-              className="rounded-[30px] bg-[#5C30FF] px-8 py-[18px] text-base font-normal text-white hover:bg-[#4A26CC]"
+              className="rounded-[30px] bg-[#5C30FF] px-6 py-3 text-sm font-normal text-white hover:bg-[#4A26CC]"
             >
               Continue
             </Button>
@@ -122,26 +122,26 @@ export default function CreateSessionPage() {
       </header>
 
       {/* Main Content */}
-      <div className="mx-auto flex max-w-[1440px] gap-8 px-6 py-8 lg:px-12">
+      <div className="mx-auto flex h-[calc(100vh-57px)] max-w-[1200px] gap-6 overflow-hidden px-5 py-6 lg:px-10">
         {/* Left Sidebar - Steps */}
-        <aside className="w-full max-w-[354px]">
-          <div className="flex flex-col gap-3">
+        <aside className="w-full max-w-[280px] flex-shrink-0">
+          <div className="flex flex-col gap-2">
             {steps.map((step) => (
               <button
                 key={step.number}
                 onClick={() => setCurrentStep(step.number)}
-                className={`flex items-center justify-between rounded-lg px-3 py-5 transition-colors ${
+                className={`flex items-center justify-between rounded-md px-2.5 py-4 transition-colors ${
                   step.active
                     ? "bg-[#F5F5F5] text-black"
                     : "bg-[#F5F5F5] text-[#525866]"
                 }`}
               >
-                <span className="font-inter-tight text-[15px] font-normal">
+                <span className="font-inter-tight text-[13px] font-normal">
                   {step.number}. {step.title}
                 </span>
                 <svg
-                  width="18"
-                  height="18"
+                  width="15"
+                  height="15"
                   viewBox="0 0 18 18"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -168,26 +168,26 @@ export default function CreateSessionPage() {
         </aside>
 
         {/* Main Form Area */}
-        <main className="flex-1">
-          <div className="rounded-lg bg-white px-4 pb-5 pt-2.5">
+        <main className="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300">
+          <div className="rounded-md bg-white px-3 pb-4 pt-2">
             {/* Step 1: Session Basics */}
             {currentStep === 1 && (
-              <div className="flex flex-col gap-9">
-                <h2 className="font-inter-tight text-xl font-medium leading-5 text-black">
+              <div className="flex flex-col gap-7">
+                <h2 className="font-inter-tight text-base font-medium leading-5 text-black">
                   Session Basics
                 </h2>
 
-                <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-4">
                   {/* Session Type */}
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-2">
                     <Label
                       htmlFor="session-type"
-                      className="font-inter-tight text-[15px] font-normal text-black"
+                      className="font-inter-tight text-[13px] font-normal text-black"
                     >
                       Session Type
                     </Label>
                     <Select value={sessionType} onValueChange={setSessionType}>
-                      <SelectTrigger id="session-type">
+                      <SelectTrigger id="session-type" className="h-11">
                         <SelectValue placeholder="Select" />
                       </SelectTrigger>
                       <SelectContent>
@@ -206,10 +206,10 @@ export default function CreateSessionPage() {
                   </div>
 
                   {/* Session Title */}
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-2">
                     <Label
                       htmlFor="session-title"
-                      className="font-inter-tight text-[15px] font-normal text-black"
+                      className="font-inter-tight text-[13px] font-normal text-black"
                     >
                       Session Title
                     </Label>
@@ -218,15 +218,15 @@ export default function CreateSessionPage() {
                       value={sessionTitle}
                       onChange={(e) => setSessionTitle(e.target.value)}
                       placeholder="e.g., Mobile Design Portfolio Review"
-                      className="h-14 rounded-lg border border-[#E1E4EA] px-4 py-6 font-inter-tight text-[15px] font-normal placeholder:text-[#99A0AE]"
+                      className="h-11 rounded-md border border-[#E1E4EA] px-3 py-4 font-inter-tight text-[13px] font-normal placeholder:text-[#99A0AE]"
                     />
                   </div>
 
                   {/* Short Description */}
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-2">
                     <Label
                       htmlFor="description"
-                      className="font-inter-tight text-[15px] font-normal text-black"
+                      className="font-inter-tight text-[13px] font-normal text-black"
                     >
                       Short Description
                     </Label>
@@ -235,7 +235,7 @@ export default function CreateSessionPage() {
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       placeholder="Briefly describe what this session covers"
-                      className="min-h-[200px] resize-none"
+                      className="min-h-[160px] resize-none text-[13px]"
                     />
                   </div>
                 </div>
@@ -244,7 +244,7 @@ export default function CreateSessionPage() {
                 <div className="flex justify-end">
                   <Button
                     onClick={handleNext}
-                    className="rounded-[30px] bg-[#181B25] px-10 py-[13px] font-inter-tight text-lg font-normal text-white hover:bg-[#0F1117]"
+                    className="rounded-[30px] bg-[#181B25] px-8 py-2.5 font-inter-tight text-sm font-normal text-white hover:bg-[#0F1117]"
                   >
                     Next
                   </Button>
@@ -254,96 +254,93 @@ export default function CreateSessionPage() {
 
             {/* Step 2: Time & Pricing */}
             {currentStep === 2 && (
-              <div className="flex flex-col gap-9">
-                <h2 className="font-inter-tight text-xl font-medium leading-5 text-black">
+              <div className="flex flex-col gap-7">
+                <h2 className="font-inter-tight text-base font-medium leading-5 text-black">
                   Time & Pricing
                 </h2>
 
-                <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-4">
                   {/* Duration */}
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-2">
                     <Label
                       htmlFor="duration"
-                      className="font-inter-tight text-[15px] font-normal text-black"
+                      className="font-inter-tight text-[13px] font-normal text-black"
                     >
                       Duration
                     </Label>
                     <Select value={duration} onValueChange={setDuration}>
-                      <SelectTrigger id="duration" className="h-14">
-                        <SelectValue />
+                      <SelectTrigger id="duration" className="h-11">
+                        <SelectValue placeholder="Select duration" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="15">15 Minutes</SelectItem>
-                        <SelectItem value="30">30 Minutes</SelectItem>
-                        <SelectItem value="45">45 Minutes</SelectItem>
-                        <SelectItem value="60">60 Minutes</SelectItem>
-                        <SelectItem value="90">90 Minutes</SelectItem>
+                        <SelectItem value="15">15 minutes</SelectItem>
+                        <SelectItem value="30">30 minutes</SelectItem>
+                        <SelectItem value="45">45 minutes</SelectItem>
+                        <SelectItem value="60">1 hour</SelectItem>
+                        <SelectItem value="90">1.5 hours</SelectItem>
+                        <SelectItem value="120">2 hours</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
-                  {/* Pricing and Amount in 2 columns */}
-                  <div className="grid grid-cols-2 gap-4">
-                    {/* Pricing */}
-                    <div className="flex flex-col gap-3">
-                      <Label
-                        htmlFor="pricing"
-                        className="font-inter-tight text-[15px] font-normal text-black"
+                  {/* Pricing Type */}
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-inter-tight text-[13px] font-normal text-black">
+                      Pricing Type
+                    </Label>
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => setPricingType("paid")}
+                        className={`flex-1 rounded-md border px-4 py-3 text-[13px] font-normal transition-colors ${
+                          pricingType === "paid"
+                            ? "border-[#5C30FF] bg-[#F5F3FF] text-[#5C30FF]"
+                            : "border-[#E1E4EA] bg-white text-black"
+                        }`}
                       >
-                        Pricing
-                      </Label>
-                      <Select
-                        value={pricingType}
-                        onValueChange={setPricingType}
+                        Paid
+                      </button>
+                      <button
+                        onClick={() => setPricingType("free")}
+                        className={`flex-1 rounded-md border px-4 py-3 text-[13px] font-normal transition-colors ${
+                          pricingType === "free"
+                            ? "border-[#5C30FF] bg-[#F5F3FF] text-[#5C30FF]"
+                            : "border-[#E1E4EA] bg-white text-black"
+                        }`}
                       >
-                        <SelectTrigger id="pricing" className="h-14">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="paid">Paid</SelectItem>
-                          <SelectItem value="free">Free</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    {/* Amount */}
-                    <div className="flex flex-col gap-3">
-                      <Label
-                        htmlFor="amount"
-                        className="font-inter-tight text-[15px] font-normal text-black"
-                      >
-                        Amount
-                      </Label>
-                      <Select
-                        value={amount}
-                        onValueChange={setAmount}
-                        disabled={pricingType === "free"}
-                      >
-                        <SelectTrigger id="amount" className="h-14">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="20">$20</SelectItem>
-                          <SelectItem value="40">$40</SelectItem>
-                          <SelectItem value="60">$60</SelectItem>
-                          <SelectItem value="80">$80</SelectItem>
-                          <SelectItem value="100">$100</SelectItem>
-                          <SelectItem value="150">$150</SelectItem>
-                          <SelectItem value="200">$200</SelectItem>
-                        </SelectContent>
-                      </Select>
+                        Free
+                      </button>
                     </div>
                   </div>
 
+                  {/* Amount */}
+                  {pricingType === "paid" && (
+                    <div className="flex flex-col gap-2">
+                      <Label
+                        htmlFor="amount"
+                        className="font-inter-tight text-[13px] font-normal text-black"
+                      >
+                        Amount (USD)
+                      </Label>
+                      <Input
+                        id="amount"
+                        type="number"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        placeholder="Enter amount"
+                        className="h-11 rounded-md border border-[#E1E4EA] px-3 py-4 font-inter-tight text-[13px] font-normal"
+                      />
+                    </div>
+                  )}
+
                   {/* Meeting Method */}
-                  <div className="flex flex-col gap-3">
-                    <Label className="font-inter-tight text-[15px] font-normal text-black">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-inter-tight text-[13px] font-normal text-black">
                       Meeting Method
                     </Label>
-                    <div className="flex h-14 items-center gap-2 rounded-lg border border-[#E1E4EA] px-4">
+                    <div className="flex items-center gap-2 rounded-md border border-[#E1E4EA] px-3 py-3">
                       <svg
-                        width="24"
-                        height="24"
+                        width="20"
+                        height="20"
                         viewBox="0 0 24 24"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
@@ -373,7 +370,7 @@ export default function CreateSessionPage() {
                           fill="#FFBA00"
                         />
                       </svg>
-                      <span className="font-inter-tight text-[15px] font-normal text-black">
+                      <span className="font-inter-tight text-[13px] font-normal text-black">
                         Google Meet
                       </span>
                     </div>
@@ -384,7 +381,7 @@ export default function CreateSessionPage() {
                 <div className="flex justify-end">
                   <Button
                     onClick={handleNext}
-                    className="rounded-[30px] bg-[#181B25] px-10 py-[13px] font-inter-tight text-lg font-normal text-white hover:bg-[#0F1117]"
+                    className="rounded-[30px] bg-[#181B25] px-8 py-2.5 font-inter-tight text-sm font-normal text-white hover:bg-[#0F1117]"
                   >
                     Next
                   </Button>
@@ -394,43 +391,43 @@ export default function CreateSessionPage() {
 
             {/* Step 3: Availability */}
             {currentStep === 3 && (
-              <div className="flex flex-col gap-9">
-                <h2 className="font-inter-tight text-xl font-medium leading-5 text-black">
+              <div className="flex flex-col gap-7">
+                <h2 className="font-inter-tight text-base font-medium leading-5 text-black">
                   Availability
                 </h2>
 
-                <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-4">
                   {/* Pick Available Dates */}
-                  <div className="flex flex-col gap-4">
-                    <Label className="font-inter-tight text-[15px] font-normal text-black">
+                  <div className="flex flex-col gap-3">
+                    <Label className="font-inter-tight text-[13px] font-normal text-black">
                       Pick Available Dates
                     </Label>
 
                     {/* Date Range Display */}
                     {formatDateRange() && (
-                      <div className="flex h-[57px] items-center justify-center rounded-lg bg-[#DED7F7] px-4">
-                        <span className="font-inter-tight text-[15px] font-normal text-[#5C30FF]">
+                      <div className="flex h-11 items-center justify-center rounded-md bg-[#DED7F7] px-3">
+                        <span className="font-inter-tight text-[13px] font-normal text-[#5C30FF]">
                           {formatDateRange()}
                         </span>
                       </div>
                     )}
 
                     {/* Calendar */}
-                    <div className="rounded-lg bg-[#F5F5F5] p-6">
-                      <div className="flex items-center justify-between mb-6">
-                        <h3 className="font-inter-tight text-xl font-medium text-black">
+                    <div className="rounded-md bg-[#F5F5F5] p-4">
+                      <div className="mb-4 flex items-center justify-between">
+                        <h3 className="font-inter-tight text-base font-medium text-black">
                           {format(currentMonth, "MMMM yyyy")}
                         </h3>
-                        <div className="flex gap-2">
+                        <div className="flex gap-1.5">
                           <button
                             onClick={() =>
                               setCurrentMonth(subMonths(currentMonth, 1))
                             }
-                            className="flex h-8 w-8 items-center justify-center rounded hover:bg-gray-200"
+                            className="flex h-6 w-6 items-center justify-center rounded hover:bg-gray-200"
                           >
                             <svg
-                              width="30"
-                              height="30"
+                              width="24"
+                              height="24"
                               viewBox="0 0 30 30"
                               fill="none"
                             >
@@ -444,11 +441,11 @@ export default function CreateSessionPage() {
                             onClick={() =>
                               setCurrentMonth(addMonths(currentMonth, 1))
                             }
-                            className="flex h-8 w-8 items-center justify-center rounded hover:bg-gray-200"
+                            className="flex h-6 w-6 items-center justify-center rounded hover:bg-gray-200"
                           >
                             <svg
-                              width="30"
-                              height="30"
+                              width="24"
+                              height="24"
                               viewBox="0 0 30 30"
                               fill="none"
                             >
@@ -468,17 +465,17 @@ export default function CreateSessionPage() {
                         onMonthChange={setCurrentMonth}
                         classNames={{
                           months: "flex flex-col",
-                          month: "space-y-4",
+                          month: "space-y-3",
                           caption: "hidden",
-                          caption_label: "text-sm font-medium",
+                          caption_label: "text-xs font-medium",
                           nav: "space-x-1 flex items-center",
                           table: "w-full border-collapse",
                           head_row: "flex w-full",
                           head_cell:
-                            "text-[#222730] rounded-md w-full font-inter text-sm font-normal flex-1 text-center",
-                          row: "flex w-full mt-2",
-                          cell: "flex-1 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
-                          day: "h-12 w-full p-0 font-inter text-sm font-normal hover:bg-gray-200 rounded-md transition-colors",
+                            "text-[#222730] rounded-md w-full font-inter text-xs font-normal flex-1 text-center",
+                          row: "flex w-full mt-1.5",
+                          cell: "flex-1 text-center text-xs p-0 relative focus-within:relative focus-within:z-20",
+                          day: "h-9 w-full p-0 font-inter text-xs font-normal hover:bg-gray-200 rounded-md transition-colors",
                           day_range_start:
                             "bg-[#C4B5FD] text-[#5C30FF] rounded-l-full hover:bg-[#C4B5FD]",
                           day_range_middle:
@@ -497,19 +494,19 @@ export default function CreateSessionPage() {
                   </div>
 
                   {/* Select Available Time */}
-                  <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-3">
                     <Label
                       htmlFor="time-slot"
-                      className="font-inter-tight text-[15px] font-normal text-black"
+                      className="font-inter-tight text-[13px] font-normal text-black"
                     >
                       Select Available Time
                     </Label>
-                    <div className="flex gap-2">
+                    <div className="flex gap-1.5">
                       <Select
                         value={selectedTimeSlot}
                         onValueChange={setSelectedTimeSlot}
                       >
-                        <SelectTrigger id="time-slot" className="h-14 flex-1">
+                        <SelectTrigger id="time-slot" className="h-11 flex-1">
                           <SelectValue placeholder="09:30 AM" />
                         </SelectTrigger>
                         <SelectContent>
@@ -535,7 +532,7 @@ export default function CreateSessionPage() {
                       <Button
                         onClick={handleAddTimeSlot}
                         disabled={!selectedTimeSlot}
-                        className="h-14 rounded-lg bg-[#181B25] px-6 text-white hover:bg-[#0F1117]"
+                        className="h-11 rounded-md bg-[#181B25] px-5 text-sm text-white hover:bg-[#0F1117]"
                       >
                         Add
                       </Button>
@@ -543,13 +540,13 @@ export default function CreateSessionPage() {
 
                     {/* Selected Time Slots */}
                     {timeSlots.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5">
+                      <div className="flex flex-wrap gap-1">
                         {timeSlots.map((slot) => (
                           <div
                             key={slot}
-                            className="flex items-center gap-2 rounded-[30px] bg-[#F5F5F5] px-3 py-3"
+                            className="flex items-center gap-1.5 rounded-[24px] bg-[#F5F5F5] px-2.5 py-2"
                           >
-                            <span className="font-inter-tight text-sm font-normal text-black">
+                            <span className="font-inter-tight text-xs font-normal text-black">
                               {slot}
                             </span>
                             <button
@@ -557,8 +554,8 @@ export default function CreateSessionPage() {
                               className="flex items-center justify-center"
                             >
                               <svg
-                                width="13"
-                                height="13"
+                                width="11"
+                                height="11"
                                 viewBox="0 0 13 13"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -583,7 +580,7 @@ export default function CreateSessionPage() {
                 <div className="flex justify-end">
                   <Button
                     onClick={handleContinue}
-                    className="rounded-[30px] bg-[#181B25] px-10 py-[13px] font-inter-tight text-lg font-normal text-white hover:bg-[#0F1117]"
+                    className="rounded-[30px] bg-[#181B25] px-8 py-2.5 font-inter-tight text-sm font-normal text-white hover:bg-[#0F1117]"
                   >
                     Next
                   </Button>
