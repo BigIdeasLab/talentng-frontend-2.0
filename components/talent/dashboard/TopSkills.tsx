@@ -1,12 +1,13 @@
 import { Zap, Heart } from "lucide-react";
+import type { TopSkill } from "@/lib/api/talent";
 
-interface SkillProps {
+interface SkillItemProps {
   name: string;
   percentage: number;
   endorsements: number;
 }
 
-function SkillItem({ name, percentage, endorsements }: SkillProps) {
+function SkillItem({ name, percentage, endorsements }: SkillItemProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-end justify-between gap-4">
@@ -24,21 +25,18 @@ function SkillItem({ name, percentage, endorsements }: SkillProps) {
       <div className="flex items-center gap-1.5">
         <Heart className="w-3 h-3 text-[#F77171] fill-[#F77171]" />
         <span className="text-[12px] text-[#606060] font-inter-tight">
-          {endorsements} endorsement
+          {endorsements} endorsement{endorsements !== 1 ? "s" : ""}
         </span>
       </div>
     </div>
   );
 }
 
-export function TopSkills() {
-  const skills = [
-    { name: "UI Design", percentage: 95, endorsements: 24 },
-    { name: "UI Design", percentage: 95, endorsements: 24 },
-    { name: "UI Design", percentage: 95, endorsements: 24 },
-    { name: "UI Design", percentage: 95, endorsements: 24 },
-  ];
+interface TopSkillsProps {
+  skills: TopSkill[];
+}
 
+export function TopSkills({ skills }: TopSkillsProps) {
   return (
     <div className="flex flex-col gap-8 p-6 rounded-xl border border-[#B2B2B2]/10 bg-white">
       <div className="flex justify-between items-center">
@@ -52,11 +50,22 @@ export function TopSkills() {
           Add Skills
         </button>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {skills.map((skill, index) => (
-          <SkillItem key={index} {...skill} />
-        ))}
-      </div>
+      {skills.length === 0 ? (
+        <p className="text-[14px] text-[#606060] font-inter-tight text-center py-8">
+          No skills added yet
+        </p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {skills.map((skill) => (
+            <SkillItem
+              key={skill.id}
+              name={skill.name}
+              percentage={skill.percentage}
+              endorsements={skill.endorsements}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

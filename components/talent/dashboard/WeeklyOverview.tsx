@@ -7,16 +7,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-
-const chartData = [
-  { day: "Mon", applications: 18, views: 45 },
-  { day: "Tue", applications: 20, views: 52 },
-  { day: "Wed", applications: 15, views: 38 },
-  { day: "Thu", applications: 24, views: 48 },
-  { day: "Fri", applications: 22, views: 62 },
-  { day: "Sat", applications: 10, views: 35 },
-  { day: "Sun", applications: 8, views: 28 },
-];
+import type { WeeklyOverviewData } from "@/lib/api/talent";
 
 const chartConfig = {
   applications: {
@@ -29,7 +20,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function WeeklyOverview() {
+interface WeeklyOverviewProps {
+  data: WeeklyOverviewData[];
+}
+
+export function WeeklyOverview({ data }: WeeklyOverviewProps) {
   return (
     <div className="flex flex-col gap-8 p-6 md:p-8 rounded-xl border border-[#E5E6ED] bg-white">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
@@ -59,7 +54,7 @@ export function WeeklyOverview() {
       <div className="w-full h-[240px]">
         <ChartContainer config={chartConfig} className="w-full h-full">
           <AreaChart
-            data={chartData}
+            data={data}
             margin={{
               top: 10,
               right: 10,

@@ -1,13 +1,15 @@
 import { Calendar, Clock } from "lucide-react";
+import { format } from "date-fns";
+import type { UpcomingInterview } from "@/lib/api/talent";
 
-interface InterviewProps {
+interface InterviewCardProps {
   company: string;
   position: string;
   date: string;
   time: string;
 }
 
-function InterviewCard({ company, position, date, time }: InterviewProps) {
+function InterviewCard({ company, position, date, time }: InterviewCardProps) {
   return (
     <div className="flex justify-between items-start p-6 rounded-xl border border-dashed border-[#5C30FF] bg-[#F8F5FE]">
       <div className="flex flex-col gap-3.5">
@@ -31,22 +33,11 @@ function InterviewCard({ company, position, date, time }: InterviewProps) {
   );
 }
 
-export function UpcomingInterviews() {
-  const interviews = [
-    {
-      company: "Chowdeck",
-      position: "UI/UX Designer",
-      date: "Jan 28, 2026",
-      time: "2:00 PM",
-    },
-    {
-      company: "Flutterwave",
-      position: "Product Designer",
-      date: "Jan 28, 2026",
-      time: "11:00 AM",
-    },
-  ];
+interface UpcomingInterviewsProps {
+  interviews: UpcomingInterview[];
+}
 
+export function UpcomingInterviews({ interviews }: UpcomingInterviewsProps) {
   return (
     <div className="flex flex-col gap-6 p-6 rounded-xl border border-[#E5E6ED] bg-white">
       <div className="flex items-center gap-2">
@@ -56,9 +47,24 @@ export function UpcomingInterviews() {
         </h2>
       </div>
       <div className="flex flex-col gap-4">
-        {interviews.map((interview, index) => (
-          <InterviewCard key={index} {...interview} />
-        ))}
+        {interviews.length === 0 ? (
+          <p className="text-[14px] text-[#606060] font-inter-tight text-center py-8">
+            No upcoming interviews
+          </p>
+        ) : (
+          interviews.map((interview) => {
+            const scheduledDate = new Date(interview.scheduledAt);
+            return (
+              <InterviewCard
+                key={interview.id}
+                company={interview.company}
+                position={interview.position}
+                date={format(scheduledDate, "MMM d, yyyy")}
+                time={format(scheduledDate, "h:mm a")}
+              />
+            );
+          })
+        )}
       </div>
     </div>
   );

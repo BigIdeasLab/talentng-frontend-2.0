@@ -1,11 +1,13 @@
 import { ArrowUpRight } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import type { RecentApplication, ApplicationStatus } from "@/lib/api/talent";
 
-interface ApplicationProps {
+interface ApplicationItemProps {
   title: string;
   company: string;
   timeAgo: string;
-  status: "Interview" | "In Review" | "Hired";
-  logo?: string;
+  status: ApplicationStatus;
+  companyLogo?: string | null;
 }
 
 function ApplicationItem({
@@ -13,18 +15,28 @@ function ApplicationItem({
   company,
   timeAgo,
   status,
-  logo,
-}: ApplicationProps) {
-  const statusColors = {
+  companyLogo,
+}: ApplicationItemProps) {
+  const statusColors: Record<ApplicationStatus, string> = {
     Interview: "bg-[#F0ECFF] text-[#5C30FF]",
     "In Review": "bg-[#EFF8FF] text-[#2463EB]",
     Hired: "bg-[#EEFDF0] text-[#008B47]",
+    Applied: "bg-[#F5F5F5] text-[#606060]",
+    Rejected: "bg-[#FEE2E2] text-[#DC2626]",
   };
 
   return (
     <div className="flex items-center justify-between gap-4 p-4 rounded-xl bg-[#FCFCFD]">
       <div className="flex items-center gap-4 flex-1">
-        <div className="w-12 h-12 rounded-xl bg-[#002224] flex-shrink-0" />
+        <div className="w-12 h-12 rounded-xl bg-[#002224] flex-shrink-0 overflow-hidden">
+          {companyLogo && (
+            <img
+              src={companyLogo}
+              alt={company}
+              className="w-full h-full object-cover"
+            />
+          )}
+        </div>
         <div className="flex flex-col gap-2 flex-1 min-w-0">
           <h3 className="text-[16px] font-inter-tight text-black truncate">
             {title}
@@ -48,28 +60,11 @@ function ApplicationItem({
   );
 }
 
-export function RecentApplications() {
-  const applications = [
-    {
-      title: "UI/UX Designer",
-      company: "Chowdeck",
-      timeAgo: "2 days ago",
-      status: "Interview" as const,
-    },
-    {
-      title: "Product Designer",
-      company: "Spotify",
-      timeAgo: "3 days ago",
-      status: "In Review" as const,
-    },
-    {
-      title: "Senior Designer",
-      company: "Paystack",
-      timeAgo: "1 week ago",
-      status: "Hired" as const,
-    },
-  ];
+interface RecentApplicationsProps {
+  applications: RecentApplication[];
+}
 
+export function RecentApplications({ applications }: RecentApplicationsProps) {
   return (
     <div className="flex flex-col gap-6 p-6 rounded-xl border border-[#E5E6ED] bg-white">
       <div className="flex justify-between items-center">
@@ -82,9 +77,24 @@ export function RecentApplications() {
         </button>
       </div>
       <div className="flex flex-col gap-4">
-        {applications.map((app, index) => (
-          <ApplicationItem key={index} {...app} />
-        ))}
+        {applications.length === 0 ? (
+          <p className="text-[14px] text-[#606060] font-inter-tight text-center py-8">
+            No applications yet
+          </p>
+        ) : (
+          applications.map((app) => (
+            <ApplicationItem
+              key={app.id}
+              title={app.title}
+              company={app.company}
+              timeAgo={formatDistanceToNow(new Date(app.appliedAt), {
+                addSuffix: true,
+              })}
+              status={app.status}
+              companyLogo={app.companyLogo}
+            />
+          ))
+        )}
       </div>
     </div>
   );

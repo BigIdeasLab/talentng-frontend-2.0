@@ -1,3 +1,5 @@
+import type { HiringPipelineData } from "@/lib/api/talent";
+
 interface PipelineStageProps {
   label: string;
   count: number;
@@ -34,13 +36,19 @@ function PipelineStage({
   );
 }
 
-export function HiringPipeline() {
-  const stages = [
-    { label: "Applied", count: 156, progress: 100, color: "#5C30FF" },
-    { label: "In Review", count: 45, progress: 29, color: "#E5E7EB" },
-    { label: "Interview", count: 48, progress: 31, color: "#E5E7EB" },
-    { label: "Hired", count: 28, progress: 18, color: "#E5E7EB" },
-  ];
+interface HiringPipelineProps {
+  data: HiringPipelineData;
+}
+
+export function HiringPipeline({ data }: HiringPipelineProps) {
+  const maxCount = Math.max(...data.stages.map((s) => s.count), 1);
+
+  const stages = data.stages.map((stage, index) => ({
+    label: stage.label,
+    count: stage.count,
+    progress: (stage.count / maxCount) * 100,
+    color: index === 0 ? "#5C30FF" : "#E5E7EB",
+  }));
 
   return (
     <div className="flex flex-col gap-6 p-6 rounded-xl border border-[#E5E6ED] bg-white">
@@ -67,7 +75,7 @@ export function HiringPipeline() {
             Conversion Rate
           </span>
           <span className="text-[18px] font-bold font-inter-tight text-[#5C30FF]">
-            15.4%
+            {data.conversionRate.toFixed(1)}%
           </span>
         </div>
       </div>

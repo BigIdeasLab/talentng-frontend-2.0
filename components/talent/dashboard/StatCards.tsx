@@ -1,4 +1,5 @@
 import { Eye, Briefcase, CheckCircle, Target } from "lucide-react";
+import type { TalentDashboardStats } from "@/lib/api/talent";
 
 interface StatCardProps {
   title: string;
@@ -80,23 +81,39 @@ function StatCard({
   );
 }
 
-export function StatCards() {
-  const stats = [
+function formatCurrency(amount: number): string {
+  if (amount >= 1000000) {
+    return `₦${(amount / 1000000).toFixed(1)}M`;
+  }
+  if (amount >= 1000) {
+    return `₦${(amount / 1000).toFixed(0)}K`;
+  }
+  return `₦${amount}`;
+}
+
+interface StatCardsProps {
+  stats: TalentDashboardStats;
+}
+
+export function StatCards({ stats }: StatCardsProps) {
+  const statItems = [
     {
       title: "Profile Views",
-      value: "139",
+      value: stats.profileViews.value.toString(),
       subtitle: "",
       icon: <Eye className="w-6 h-6" />,
-      trend: { value: "+23% this week", isPositive: true },
+      trend: stats.profileViews.trend,
       gradient: "bg-gradient-to-br from-[#2463EB]/8 to-white",
       iconBg: "bg-[#DBE9FE]",
       iconColor: "text-[#2463EB]",
-      trendColor: "text-[#1AA148]",
+      trendColor: stats.profileViews.trend.isPositive
+        ? "text-[#1AA148]"
+        : "text-[#E63C23]",
     },
     {
       title: "Applications",
-      value: "11",
-      subtitle: "5 in review",
+      value: stats.applications.value.toString(),
+      subtitle: `${stats.applications.inReview} in review`,
       icon: <Briefcase className="w-6 h-6" />,
       gradient: "bg-gradient-to-br from-[#7C3BED]/8 to-white",
       iconBg: "bg-[#F3ECFE]",
@@ -104,8 +121,8 @@ export function StatCards() {
     },
     {
       title: "Times Hired",
-      value: "4",
-      subtitle: "₦2.1M earned",
+      value: stats.timesHired.value.toString(),
+      subtitle: `${formatCurrency(stats.timesHired.totalEarned)} earned`,
       icon: <CheckCircle className="w-6 h-6" />,
       gradient: "bg-gradient-to-br from-[#008B47]/8 to-white",
       iconBg: "bg-[#D1FAE5]",
@@ -113,8 +130,8 @@ export function StatCards() {
     },
     {
       title: "Profile Score",
-      value: "4",
-      subtitle: "+5 to complete",
+      value: stats.profileScore.value.toString(),
+      subtitle: `+${stats.profileScore.pointsToComplete} to complete`,
       icon: <Target className="w-6 h-6" />,
       gradient: "bg-gradient-to-br from-[#FFEDD5] to-white",
       iconBg: "bg-[#FFEDD5]",
@@ -125,7 +142,7 @@ export function StatCards() {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {stats.map((stat, index) => (
+      {statItems.map((stat, index) => (
         <StatCard key={index} {...stat} />
       ))}
     </div>
