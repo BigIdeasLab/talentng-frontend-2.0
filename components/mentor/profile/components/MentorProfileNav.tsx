@@ -1,8 +1,8 @@
 "use client";
 
 interface MentorProfileNavProps {
-  activeTab: "overview" | "earning" | "session" | "reviews";
-  onTabChange: (tab: "overview" | "earning" | "session" | "reviews") => void;
+  activeTab: "overview" | "session" | "reviews";
+  onTabChange: (tab: "overview" | "session" | "reviews") => void;
 }
 
 export function MentorProfileNav({
@@ -11,7 +11,6 @@ export function MentorProfileNav({
 }: MentorProfileNavProps) {
   const tabs = [
     { id: "overview", label: "Overview" },
-    { id: "earning", label: "Earning" },
     { id: "session", label: "Session" },
     { id: "reviews", label: "Reviews" },
   ] as const;

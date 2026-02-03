@@ -74,7 +74,8 @@ export function WelcomeHeader({
         <p className="text-white text-[11px] font-inter-tight">
           You have{" "}
           <span className="font-bold">
-            {newOpportunities} new opportunit{newOpportunities === 1 ? "y" : "ies"}
+            {newOpportunities} new opportunit
+            {newOpportunities === 1 ? "y" : "ies"}
           </span>{" "}
           waiting for you. Your profile views increased by{" "}
           <span className="font-bold block sm:inline mt-1 sm:mt-0">

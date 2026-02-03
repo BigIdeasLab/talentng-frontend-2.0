@@ -6,7 +6,6 @@ import { MentorProfileSidebar } from "./components/MentorProfileSidebar";
 import { MentorProfileNav } from "./components/MentorProfileNav";
 import { MentorAboutSection } from "./components/MentorAboutSection";
 import { MentorBackgroundSection } from "./components/MentorBackgroundSection";
-import { MentorEarningSection } from "./components/MentorEarningSection";
 import { MentorSessionSection } from "./components/MentorSessionSection";
 import { MentorReviewsSection } from "./components/MentorReviewsSection";
 
@@ -28,7 +27,7 @@ export function MentorProfile({
   initialError: _initialError = null,
 }: MentorProfileProps) {
   const [activeTab, setActiveTab] = useState<
-    "overview" | "earning" | "session" | "reviews"
+    "overview" | "session" | "reviews"
   >("overview");
 
   const profileData = initialProfileData as MentorProfileType;
@@ -112,8 +111,6 @@ export function MentorProfile({
                 />
               </>
             )}
-
-            {activeTab === "earning" && <MentorEarningSection />}
 
             {activeTab === "session" && <MentorSessionSection />}
 

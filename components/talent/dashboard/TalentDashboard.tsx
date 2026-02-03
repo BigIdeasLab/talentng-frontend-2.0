@@ -21,7 +21,9 @@ export function TalentDashboard() {
   if (error || !data) {
     return (
       <div className="px-4 py-6 md:px-8 md:py-7">
-        <p className="text-red-500 text-[13px]">Failed to load dashboard data</p>
+        <p className="text-red-500 text-[13px]">
+          Failed to load dashboard data
+        </p>
       </div>
     );
   }
