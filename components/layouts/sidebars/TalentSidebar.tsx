@@ -5,9 +5,7 @@ import {
   Telescope,
   Briefcase,
   Bell,
-  FileText,
   Users,
-  GraduationCap,
   Headphones,
   Settings,
 } from "lucide-react";
@@ -58,9 +56,7 @@ const getMenuItems = (notificationCount?: number): MenuItem[] => [
     badge: notificationCount,
     href: "/notifications",
   },
-  { id: "projects", label: "Projects", icon: FileText, href: "/projects" },
   { id: "mentorship", label: "Mentorship", icon: Users, href: "/mentorship" },
-  { id: "learning", label: "Learning", icon: GraduationCap, href: "/learning" },
 ];
 
 const otherItems: Omit<MenuItem, "badge">[] = [

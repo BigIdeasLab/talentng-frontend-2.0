@@ -18,6 +18,10 @@ export interface UIProfileData {
     skills: string[];
     stack: { name: string; icon: string }[];
     availability: string;
+    industry?: string;
+    companySize?: string;
+    companyStage?: string;
+    operatingModel?: string;
   };
   experience: {
     id: string;
@@ -217,6 +221,10 @@ export function mapAPIToUI(
       };
     }),
     availability: data.availability || "",
+    industry: data.industry || "",
+    companySize: data.companySize || "",
+    companyStage: data.companyStage || "",
+    operatingModel: data.operatingModel || "",
   };
 
   return {

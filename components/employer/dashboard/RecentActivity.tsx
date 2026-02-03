@@ -1,35 +1,17 @@
-import { Users, Eye, CheckCircle, Calendar } from "lucide-react";
+import { Users, Calendar } from "lucide-react";
 
 interface ActivityItemProps {
-  name: string;
-  action: string;
-  position: string;
+  message: string;
   timeAgo: string;
-  type: "application" | "view" | "hired" | "interview";
+  type: "application" | "interview";
 }
 
-function ActivityItem({
-  name,
-  action,
-  position,
-  timeAgo,
-  type,
-}: ActivityItemProps) {
+function ActivityItem({ message, timeAgo, type }: ActivityItemProps) {
   const iconConfig = {
     application: {
       icon: Users,
       bgColor: "bg-[#F1F2FF]",
       iconColor: "text-[#5C30FF]",
-    },
-    view: {
-      icon: Eye,
-      bgColor: "bg-[#FFF4E6]",
-      iconColor: "text-[#F59E0C]",
-    },
-    hired: {
-      icon: CheckCircle,
-      bgColor: "bg-[#E8F6F0]",
-      iconColor: "text-[#15BA80]",
     },
     interview: {
       icon: Calendar,
@@ -42,20 +24,17 @@ function ActivityItem({
   const Icon = config.icon;
 
   return (
-    <div className="flex items-start gap-3.5 self-stretch pb-4 border-b border-gray-200 last:border-0 last:pb-0">
+    <div className="flex items-start gap-2.5 self-stretch pb-3 border-b border-gray-200 last:border-0 last:pb-0">
       <div
-        className={`flex w-7.5 h-7.5 p-1.5 justify-center items-center rounded-full ${config.bgColor} flex-shrink-0`}
+        className={`flex w-6 h-6 p-1 justify-center items-center rounded-full ${config.bgColor} flex-shrink-0`}
       >
-        <Icon className={`w-4 h-4 ${config.iconColor}`} strokeWidth={2} />
+        <Icon className={`w-3.5 h-3.5 ${config.iconColor}`} strokeWidth={2} />
       </div>
-      <div className="flex flex-col items-start gap-2.5 flex-1 min-w-0">
-        <p className="font-inter-tight text-sm font-normal text-[#5C30FF] self-stretch break-words">
-          <span className="font-bold text-[#181B25]">{name} </span>
-          <span className="text-[#525866]">{action}</span>
-          <span className="font-medium text-[#5C30FF]"> </span>
-          <span className="text-[#5C30FF]">{position}</span>
+      <div className="flex flex-col items-start gap-1.5 flex-1 min-w-0">
+        <p className="font-inter-tight text-xs font-normal text-[#525866] self-stretch break-words">
+          {message}
         </p>
-        <span className="font-inter-tight text-xs font-normal text-[#525866]">
+        <span className="font-inter-tight text-[11px] font-normal text-[#525866]">
           {timeAgo}
         </span>
       </div>
@@ -63,52 +42,44 @@ function ActivityItem({
   );
 }
 
-export function RecentActivity() {
-  const activities = [
-    {
-      name: "Oluwatobi Adeymi",
-      action: "accepted the",
-      position: "Mobile App postion",
-      timeAgo: "2 hours ago",
-      type: "application" as const,
-    },
-    {
-      name: "Oluwatobi Adeymi",
-      action: "accepted the",
-      position: "Mobile App postion",
-      timeAgo: "2 hours ago",
-      type: "view" as const,
-    },
-    {
-      name: "Yetunde Taylor",
-      action: "accepted was hired as",
-      position: "Interaction Designer",
-      timeAgo: "2 hours ago",
-      type: "hired" as const,
-    },
-    {
-      name: "Sophia Silas",
-      action: "scheduled interview for",
-      position: "Web Designer",
-      timeAgo: "2 hours ago",
-      type: "interview" as const,
-    },
-  ];
+interface RecentActivityData {
+  id: string;
+  type: "application" | "interview";
+  message: string;
+  timestamp: string;
+}
 
+interface RecentActivityProps {
+  data?: RecentActivityData[];
+}
+
+function formatTimeAgo(timestamp: string): string {
+  const now = new Date();
+  const date = new Date(timestamp);
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffMins < 1) return "Just now";
+  if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? "s" : ""} ago`;
+  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+  return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+}
+
+export function RecentActivity({ data }: RecentActivityProps) {
   return (
-    <div className="flex flex-col items-start gap-6 p-6 rounded-xl border border-gray-300 bg-white w-full">
-      <h2 className="font-inter-tight text-2xl font-bold text-black">
+    <div className="flex flex-col items-start gap-4 p-4 rounded-lg border border-gray-300 bg-white w-full">
+      <h2 className="font-inter-tight text-lg font-bold text-black flex-shrink-0">
         Recent Activity
       </h2>
 
-      <div className="flex flex-col items-start gap-4 self-stretch">
-        {activities.map((activity, index) => (
+      <div className="flex flex-col items-start gap-3 self-stretch">
+        {(data ?? []).map((activity) => (
           <ActivityItem
-            key={index}
-            name={activity.name}
-            action={activity.action}
-            position={activity.position}
-            timeAgo={activity.timeAgo}
+            key={activity.id}
+            message={activity.message}
+            timeAgo={formatTimeAgo(activity.timestamp)}
             type={activity.type}
           />
         ))}

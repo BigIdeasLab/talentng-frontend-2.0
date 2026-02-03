@@ -61,6 +61,13 @@ export default function ProfilePage() {
             responseTime: "—",
           }}
           completionPercentage={completionPercentage}
+          aboutData={{
+            bio: profileData?.personal?.bio,
+            industry: profileData?.professional?.industry,
+            companySize: profileData?.professional?.companySize,
+            companyStage: profileData?.professional?.companyStage,
+            operatingModel: profileData?.professional?.operatingModel,
+          }}
         />
       );
     }

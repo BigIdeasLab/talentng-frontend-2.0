@@ -154,7 +154,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Children Content */}
-      <div className="flex-1 overflow-hidden">{children}</div>
+      <div className="flex-1 overflow-y-auto scrollbar-styled">{children}</div>
 
       {/* Notifications Modal */}
       <NotificationsModal
