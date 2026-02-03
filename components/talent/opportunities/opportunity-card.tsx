@@ -24,8 +24,11 @@ export function OpportunityCard({
   const router = useRouter();
   const { activeRole } = useProfile();
   const [showApplicationModal, setShowApplicationModal] = useState(false);
-  const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as "talent" | "mentor";
-  const hasAppliedAsCurrentRole = opportunity.appliedAs?.includes(currentProfileType) ?? false;
+  const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as
+    | "talent"
+    | "mentor";
+  const hasAppliedAsCurrentRole =
+    opportunity.appliedAs?.includes(currentProfileType) ?? false;
   const [isApplied, setIsApplied] = useState(hasAppliedAsCurrentRole);
   const [isSaved, setIsSaved] = useState(opportunity.saved ?? false);
   const [isSavingLoading, setIsSavingLoading] = useState(false);
@@ -39,7 +42,8 @@ export function OpportunityCard({
 
   // Sync isApplied and isSaved when opportunity prop changes or role changes
   useEffect(() => {
-    const appliedAsCurrentRole = opportunity.appliedAs?.includes(currentProfileType) ?? false;
+    const appliedAsCurrentRole =
+      opportunity.appliedAs?.includes(currentProfileType) ?? false;
     setIsApplied(appliedAsCurrentRole);
     setIsSaved(opportunity.saved ?? false);
   }, [opportunity.id, opportunity.appliedAs, currentProfileType]);

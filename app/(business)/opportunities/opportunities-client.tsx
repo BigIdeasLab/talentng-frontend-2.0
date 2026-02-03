@@ -44,7 +44,9 @@ export function OpportunitiesClient({
 }: OpportunitiesClientProps) {
   const LIMIT = 20;
   const { activeRole } = useProfile();
-  const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as "talent" | "mentor";
+  const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as
+    | "talent"
+    | "mentor";
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -87,7 +89,9 @@ export function OpportunitiesClient({
         // Filter by "applied" status if that's the active filter (based on current profile type)
         const filtered =
           filter === "applied"
-            ? newOpportunities.filter((opp) => opp.appliedAs?.includes(currentProfileType))
+            ? newOpportunities.filter((opp) =>
+                opp.appliedAs?.includes(currentProfileType),
+              )
             : newOpportunities;
 
         setOpportunities(filtered);
@@ -134,16 +138,22 @@ export function OpportunitiesClient({
     }
   };
 
-  const handleApplicationSubmitted = useCallback((opportunityId: string) => {
-    // Optimistically update the appliedAs status locally for current profile type
-    setOpportunities((prev) =>
-      prev.map((opp) =>
-        opp.id === opportunityId
-          ? { ...opp, appliedAs: [...(opp.appliedAs || []), currentProfileType] }
-          : opp,
-      ),
-    );
-  }, [currentProfileType]);
+  const handleApplicationSubmitted = useCallback(
+    (opportunityId: string) => {
+      // Optimistically update the appliedAs status locally for current profile type
+      setOpportunities((prev) =>
+        prev.map((opp) =>
+          opp.id === opportunityId
+            ? {
+                ...opp,
+                appliedAs: [...(opp.appliedAs || []), currentProfileType],
+              }
+            : opp,
+        ),
+      );
+    },
+    [currentProfileType],
+  );
 
   const getFilterCount = (): number => {
     if (!appliedFilters) return 0;

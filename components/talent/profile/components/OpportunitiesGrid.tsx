@@ -104,7 +104,9 @@ export function OpportunitiesGrid({
   onApplicationSubmitted,
 }: OpportunitiesGridProps) {
   const { activeRole } = useProfile();
-  const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as "talent" | "mentor";
+  const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as
+    | "talent"
+    | "mentor";
   const [localSavedState, setLocalSavedState] = useState<{
     [key: string]: boolean;
   }>(
@@ -121,14 +123,20 @@ export function OpportunitiesGrid({
     useState<DisplayOpportunity | null>(null);
   const [showApplicationModal, setShowApplicationModal] = useState(false);
   const [appliedIds, setAppliedIds] = useState<Set<string>>(
-    new Set(opportunities.filter((opp) => opp.appliedAs?.includes(currentProfileType)).map((opp) => opp.id)),
+    new Set(
+      opportunities
+        .filter((opp) => opp.appliedAs?.includes(currentProfileType))
+        .map((opp) => opp.id),
+    ),
   );
   const { save: saveOpp, unsave: unsaveOpp } = useOpportunitiesManager();
 
   // Sync appliedIds when opportunities or role changes
   useEffect(() => {
     const newAppliedIds = new Set(
-      opportunities.filter((opp) => opp.appliedAs?.includes(currentProfileType)).map((opp) => opp.id),
+      opportunities
+        .filter((opp) => opp.appliedAs?.includes(currentProfileType))
+        .map((opp) => opp.id),
     );
     setAppliedIds(newAppliedIds);
   }, [opportunities, currentProfileType]);

@@ -390,7 +390,9 @@ function ProfessionalDetailsSection({
               <div className="relative">
                 <button
                   type="button"
-                  onClick={() => setExpertiseDropdownOpen(!expertiseDropdownOpen)}
+                  onClick={() =>
+                    setExpertiseDropdownOpen(!expertiseDropdownOpen)
+                  }
                   className="w-full px-[12px] py-[14px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black/50 font-inter-tight text-left focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                 >
                   + Add expertise
@@ -509,10 +511,26 @@ function SocialLinksSection({
   sectionRef: (el: HTMLDivElement | null) => void;
 }) {
   const socialFields = [
-    { id: "linkedin", label: "LinkedIn", placeholder: "https://linkedin.com/in/yourprofile" },
-    { id: "twitter", label: "Twitter", placeholder: "https://twitter.com/yourhandle" },
-    { id: "telegram", label: "Telegram", placeholder: "https://t.me/yourhandle" },
-    { id: "instagram", label: "Instagram", placeholder: "https://instagram.com/yourhandle" },
+    {
+      id: "linkedin",
+      label: "LinkedIn",
+      placeholder: "https://linkedin.com/in/yourprofile",
+    },
+    {
+      id: "twitter",
+      label: "Twitter",
+      placeholder: "https://twitter.com/yourhandle",
+    },
+    {
+      id: "telegram",
+      label: "Telegram",
+      placeholder: "https://t.me/yourhandle",
+    },
+    {
+      id: "instagram",
+      label: "Instagram",
+      placeholder: "https://instagram.com/yourhandle",
+    },
     { id: "website", label: "Website", placeholder: "https://yourwebsite.com" },
   ];
 
@@ -521,11 +539,7 @@ function SocialLinksSection({
       ref={sectionRef}
       className="border border-[#E1E4EA] rounded-[16px] bg-white"
     >
-      <SectionHeader
-        title="Social Links"
-        isOpen={isOpen}
-        onToggle={onToggle}
-      />
+      <SectionHeader title="Social Links" isOpen={isOpen} onToggle={onToggle} />
 
       <SmoothCollapse isOpen={isOpen}>
         <>
@@ -688,7 +702,9 @@ export function MentorEditProfile() {
       ...prev,
       professional: {
         ...prev.professional,
-        mentorshipTopics: prev.professional.mentorshipTopics.filter((_, i) => i !== index),
+        mentorshipTopics: prev.professional.mentorshipTopics.filter(
+          (_, i) => i !== index,
+        ),
       },
     }));
     setHasUnsavedChanges(true);
@@ -768,7 +784,9 @@ export function MentorEditProfile() {
   if (isFetching) {
     return (
       <div className="flex h-screen bg-white items-center justify-center">
-        <div className="text-[14px] text-gray-500 font-inter-tight">Loading...</div>
+        <div className="text-[14px] text-gray-500 font-inter-tight">
+          Loading...
+        </div>
       </div>
     );
   }
@@ -781,7 +799,10 @@ export function MentorEditProfile() {
       />
 
       <div className="flex-1 flex flex-col">
-        <EditProfileActionBar onSave={handleSaveProfile} isLoading={isLoading} />
+        <EditProfileActionBar
+          onSave={handleSaveProfile}
+          isLoading={isLoading}
+        />
 
         <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">

@@ -53,7 +53,9 @@ export function OpportunityDetails({
   const router = useRouter();
   const { user } = useAuth();
   const { activeRole } = useProfile();
-  const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as "talent" | "mentor";
+  const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as
+    | "talent"
+    | "mentor";
   const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);

@@ -56,7 +56,9 @@ export function ApplicationModal({
     setError(null);
 
     try {
-      const profileType = (activeRole === "mentor" ? "mentor" : "talent") as "talent" | "mentor";
+      const profileType = (activeRole === "mentor" ? "mentor" : "talent") as
+        | "talent"
+        | "mentor";
       await submit({
         opportunityId: opportunity.id,
         profileType,
