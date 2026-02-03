@@ -1,18 +1,24 @@
-import { Briefcase, Users, Eye } from "lucide-react";
+import { Briefcase, Users } from "lucide-react";
 
 interface OpportunityItemProps {
   title: string;
   applicants: number;
-  views: number;
-  status: "active";
+  status: "active" | "closed" | "draft";
 }
+
+const statusConfig = {
+  active: { bg: "bg-[#E8F6F0]", text: "text-[#049769]", label: "Active" },
+  closed: { bg: "bg-[#FFEBEC]", text: "text-[#EE4343]", label: "Closed" },
+  draft: { bg: "bg-[#F3F4F6]", text: "text-[#606060]", label: "Draft" },
+};
 
 function OpportunityItem({
   title,
   applicants,
-  views,
   status,
 }: OpportunityItemProps) {
+  const config = statusConfig[status];
+
   return (
     <div className="flex h-auto md:h-[50px] px-2.5 py-3 md:py-0 justify-between items-center self-stretch rounded-lg bg-[#FCFCFD]">
       <div className="flex items-center gap-3">
@@ -23,41 +29,39 @@ function OpportunityItem({
           <h3 className="font-inter-tight text-[13px] font-normal text-black">
             {title}
           </h3>
-          <div className="flex items-center gap-1.5">
-            <div className="flex items-center gap-1">
-              <Users
-                className="w-2.5 h-2.5 text-[#606060]"
-                strokeWidth={1.25}
-              />
-              <span className="font-inter-tight text-[11px] font-normal text-[#606060] whitespace-nowrap">
-                {applicants} applicants
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Eye className="w-2.5 h-2.5 text-[#606060]" strokeWidth={1.25} />
-              <span className="font-inter-tight text-[11px] font-normal text-[#606060] whitespace-nowrap">
-                {views} views
-              </span>
-            </div>
+          <div className="flex items-center gap-1">
+            <Users className="w-2.5 h-2.5 text-[#606060]" strokeWidth={1.25} />
+            <span className="font-inter-tight text-[11px] font-normal text-[#606060] whitespace-nowrap">
+              {applicants} applicants
+            </span>
           </div>
         </div>
       </div>
-      <div className="flex h-4.5 px-2 py-0 justify-center items-center gap-2 rounded-lg bg-[#E8F6F0] flex-shrink-0">
-        <span className="font-inter-tight text-[11px] font-medium text-[#049769] leading-4">
-          Active
+      <div
+        className={`flex h-4.5 px-2 py-0 justify-center items-center gap-2 rounded-lg ${config.bg} flex-shrink-0`}
+      >
+        <span
+          className={`font-inter-tight text-[11px] font-medium ${config.text} leading-4`}
+        >
+          {config.label}
         </span>
       </div>
     </div>
   );
 }
 
-export function TopOpportunities() {
-  const opportunities = [
-    { title: "Mobile  App Designer", applicants: 45, views: 320 },
-    { title: "UI/UX Intern", applicants: 32, views: 215 },
-    { title: "Mobile  App Designer", applicants: 18, views: 152 },
-  ];
+interface TopOpportunityData {
+  id: string;
+  title: string;
+  applicants: number;
+  status: "active" | "closed" | "draft";
+}
 
+interface TopOpportunitiesProps {
+  data?: TopOpportunityData[];
+}
+
+export function TopOpportunities({ data }: TopOpportunitiesProps) {
   return (
     <div className="flex flex-col items-start gap-4 p-4 rounded-lg border border-gray-300 bg-white w-full">
       <div className="flex justify-between items-center self-stretch flex-shrink-0">
@@ -75,13 +79,12 @@ export function TopOpportunities() {
       </div>
 
       <div className="flex flex-col items-start gap-2 self-stretch">
-        {opportunities.map((opportunity, index) => (
+        {(data ?? []).map((opportunity) => (
           <OpportunityItem
-            key={index}
+            key={opportunity.id}
             title={opportunity.title}
             applicants={opportunity.applicants}
-            views={opportunity.views}
-            status="active"
+            status={opportunity.status}
           />
         ))}
       </div>

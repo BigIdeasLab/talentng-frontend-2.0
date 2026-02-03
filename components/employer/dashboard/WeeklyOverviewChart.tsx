@@ -11,17 +11,22 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const data = [
-  { day: "Mon", views: 45, applications: 18 },
-  { day: "Tue", views: 52, applications: 20 },
-  { day: "Wed", views: 38, applications: 15 },
-  { day: "Thu", views: 62, applications: 23 },
-  { day: "Fri", views: 52, applications: 18 },
-  { day: "Sat", views: 35, applications: 12 },
-  { day: "Sun", views: 28, applications: 10 },
-];
+interface WeeklyOverviewData {
+  day: string;
+  applications: number;
+  interviews: number;
+}
 
-export function WeeklyOverviewChart() {
+interface WeeklyOverviewChartProps {
+  data?: WeeklyOverviewData[];
+}
+
+export function WeeklyOverviewChart({ data }: WeeklyOverviewChartProps) {
+  const chartData = data?.map((item) => ({
+    day: item.day,
+    applications: item.applications,
+    interviews: item.interviews,
+  })) ?? [];
   return (
     <div className="flex flex-col items-start gap-4 p-4 rounded-lg border border-gray-300 bg-white w-full">
       <div className="flex flex-col items-start gap-1 self-stretch flex-shrink-0">
@@ -36,7 +41,7 @@ export function WeeklyOverviewChart() {
       <div className="w-full h-[230px]">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
-            data={data}
+            data={chartData}
             margin={{ top: 5, right: 5, left: -20, bottom: 5 }}
           >
             <CartesianGrid
@@ -95,7 +100,7 @@ export function WeeklyOverviewChart() {
             />
             <Line
               type="monotone"
-              dataKey="views"
+              dataKey="interviews"
               stroke="#8B8B8B"
               strokeWidth={1.5}
               dot={{ fill: "#8B8B8B", r: 3 }}

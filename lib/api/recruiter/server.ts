@@ -9,6 +9,7 @@ import type {
   RecruiterProfile,
   RecruiterProfileResponse,
   UpdateRecruiterProfileInput,
+  RecruiterDashboardResponse,
 } from "./types";
 
 /**
@@ -51,4 +52,12 @@ export async function getServerListRecruiterProfiles(): Promise<
   RecruiterProfile[]
 > {
   return apiClient<RecruiterProfile[]>("/recruiter");
+}
+
+/**
+ * Get Recruiter Dashboard Data
+ * GET /recruiter/dashboard
+ */
+export async function getServerRecruiterDashboard(): Promise<RecruiterDashboardResponse> {
+  return apiClient<RecruiterDashboardResponse>("/recruiter/dashboard");
 }

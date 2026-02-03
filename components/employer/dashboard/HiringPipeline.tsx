@@ -6,7 +6,7 @@ interface PipelineStageProps {
 }
 
 function PipelineStage({ label, count, total, color }: PipelineStageProps) {
-  const percentage = (count / total) * 100;
+  const percentage = total > 0 ? (count / total) * 100 : 0;
 
   return (
     <div className="flex flex-col items-start gap-2 self-stretch">
@@ -31,8 +31,24 @@ function PipelineStage({ label, count, total, color }: PipelineStageProps) {
   );
 }
 
-export function HiringPipeline() {
-  const totalApplicants = 156;
+interface HiringPipelineData {
+  applied: number;
+  shortlisted: number;
+  invited: number;
+  rejected: number;
+  hired: number;
+}
+
+interface HiringPipelineProps {
+  data?: HiringPipelineData;
+}
+
+export function HiringPipeline({ data }: HiringPipelineProps) {
+  const totalApplicants = data?.applied ?? 0;
+  const conversionRate =
+    totalApplicants > 0
+      ? (((data?.hired ?? 0) / totalApplicants) * 100).toFixed(1)
+      : "0.0";
 
   return (
     <div className="flex flex-col items-start gap-4 p-4 rounded-lg border border-gray-300 bg-white w-full">
@@ -48,25 +64,25 @@ export function HiringPipeline() {
       <div className="flex flex-col items-start gap-3.5 self-stretch">
         <PipelineStage
           label="Applied"
-          count={156}
+          count={data?.applied ?? 0}
           total={totalApplicants}
           color="#5C30FF"
         />
         <PipelineStage
-          label="In Review"
-          count={45}
+          label="Shortlisted"
+          count={data?.shortlisted ?? 0}
           total={totalApplicants}
           color="#5C30FF"
         />
         <PipelineStage
-          label="Interview"
-          count={48}
+          label="Invited"
+          count={data?.invited ?? 0}
           total={totalApplicants}
           color="#5C30FF"
         />
         <PipelineStage
           label="Hired"
-          count={28}
+          count={data?.hired ?? 0}
           total={totalApplicants}
           color="#5C30FF"
         />
@@ -77,7 +93,7 @@ export function HiringPipeline() {
           Conversion Rate
         </span>
         <span className="font-inter-tight text-base font-semibold text-[#5C30FF]">
-          15.4%
+          {conversionRate}%
         </span>
       </div>
     </div>
