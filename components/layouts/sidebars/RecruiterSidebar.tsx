@@ -1,15 +1,18 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import { Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useProfile } from "@/hooks/useProfile";
 import { ProfileSwitcher } from "../ProfileSwitcher";
 
 interface SidebarProps {
   activeItem?: string;
   onItemSelect?: (item: string) => void;
+  onNotificationClick?: () => void;
+  notificationCount?: number;
 }
 
 interface MenuItem {
@@ -125,73 +128,6 @@ const WorkIcon = () => (
   </svg>
 );
 
-const StudentCardIcon = () => (
-  <svg
-    width="20"
-    height="20"
-    viewBox="0 0 20 20"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M11.6666 2.91675C14.8093 2.91675 16.3807 2.91675 17.357 3.95408C18.3333 4.99141 18.3333 6.66096 18.3333 10.0001C18.3333 13.3392 18.3333 15.0087 17.357 16.0461C16.3807 17.0834 14.8093 17.0834 11.6666 17.0834H8.33329C5.19059 17.0834 3.61925 17.0834 2.64293 16.0461C1.66663 15.0087 1.66663 13.3392 1.66663 10.0001C1.66663 6.66096 1.66663 4.99141 2.64293 3.95408C3.61925 2.91675 5.19059 2.91675 8.33329 2.91675H11.6666Z"
-      stroke="#525866"
-      strokeWidth="1.25"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M4.16663 12.9165C5.50717 11.1353 8.62821 11.0382 9.99996 12.9165M8.54079 8.54157C8.54079 9.34699 7.88789 9.9999 7.08248 9.9999C6.27707 9.9999 5.62414 9.34699 5.62414 8.54157C5.62414 7.73617 6.27707 7.08325 7.08248 7.08325C7.88789 7.08325 8.54079 7.73617 8.54079 8.54157Z"
-      stroke="#525866"
-      strokeWidth="1.25"
-      strokeLinecap="round"
-    />
-    <path
-      d="M12.5 7.91675H15.8333"
-      stroke="#525866"
-      strokeWidth="1.25"
-      strokeLinecap="round"
-    />
-    <path
-      d="M12.5 11.25H14.1667"
-      stroke="#525866"
-      strokeWidth="1.25"
-      strokeLinecap="round"
-    />
-  </svg>
-);
-
-const MortarboardIcon = () => (
-  <svg
-    width="20"
-    height="20"
-    viewBox="0 0 20 20"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M1.66663 6.66667C1.66663 7.78482 8.41238 10.8333 9.98838 10.8333C11.5643 10.8333 18.3101 7.78482 18.3101 6.66667C18.3101 5.54852 11.5643 2.5 9.98838 2.5C8.41238 2.5 1.66663 5.54852 1.66663 6.66667Z"
-      stroke="#525866"
-      strokeWidth="1.25"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M4.99512 9.16675L5.19938 13.8583C5.20346 13.9522 5.21362 14.0463 5.24084 14.1363C5.32498 14.4145 5.48007 14.6672 5.71667 14.8371C7.56788 16.1655 12.4084 16.1655 14.2596 14.8371C14.4963 14.6672 14.6513 14.4145 14.7355 14.1363C14.7627 14.0463 14.7728 13.9522 14.777 13.8583L14.9812 9.16675"
-      stroke="#525866"
-      strokeWidth="1.25"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M17.0611 7.91675V13.7501M17.0611 13.7501C16.4011 14.9553 16.1093 15.6011 15.8129 16.6667C15.7485 17.0459 15.7996 17.237 16.0609 17.4067C16.1671 17.4756 16.2947 17.5001 16.4212 17.5001H17.6882C17.8229 17.5001 17.9588 17.472 18.0698 17.3955C18.3127 17.228 18.3752 17.0442 18.3093 16.6667C18.0495 15.6772 17.7185 15.0007 17.0611 13.7501Z"
-      stroke="#525866"
-      strokeWidth="1.25"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
 const SupportIcon = () => (
   <svg
     width="20"
@@ -249,7 +185,17 @@ const SettingsIcon = () => (
   </svg>
 );
 
-const menuItems: MenuItem[] = [
+const otherItems: Omit<MenuItem, "badge">[] = [
+  { id: "support", label: "Support", icon: <SupportIcon /> },
+  {
+    id: "settings",
+    label: "Settings",
+    icon: <SettingsIcon />,
+    href: "/settings",
+  },
+];
+
+const getMenuItems = (notificationCount?: number): MenuItem[] => [
   {
     id: "dashboard",
     label: "Dashboard",
@@ -275,37 +221,29 @@ const menuItems: MenuItem[] = [
     href: "/applicants",
   },
   {
-    id: "mentorship",
-    label: "Mentorship",
-    icon: <StudentCardIcon />,
-    href: "/mentorship",
-  },
-  {
-    id: "learning",
-    label: "Learning",
-    icon: <MortarboardIcon />,
-    href: "/learning",
-  },
-];
-
-const otherItems: Omit<MenuItem, "badge">[] = [
-  { id: "support", label: "Support", icon: <SupportIcon /> },
-  {
-    id: "settings",
-    label: "Settings",
-    icon: <SettingsIcon />,
-    href: "/settings",
+    id: "notification",
+    label: "Notifications",
+    icon: <Bell className="w-5 h-5" strokeWidth={1.25} stroke="#525866" />,
+    badge: notificationCount,
   },
 ];
 
 export function RecruiterSidebar({
-  activeItem = "dashboard",
+  activeItem: _activeItem = "dashboard",
   onItemSelect,
+  onNotificationClick,
+  notificationCount = 0,
 }: SidebarProps) {
   const pathname = usePathname();
   const { currentProfile, currentProfileUI } = useProfile();
+  const menuItems = getMenuItems(notificationCount);
 
-  const profile = useMemo(() => {
+  const handleNotificationClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    onNotificationClick?.();
+  };
+
+  const _profile = useMemo(() => {
     return currentProfileUI || currentProfile;
   }, [currentProfileUI, currentProfile]);
 
@@ -335,12 +273,20 @@ export function RecruiterSidebar({
           <div className="flex flex-col gap-[6px]">
             {menuItems.map((item) => {
               const isActive = pathname === item.href;
-              const MenuComponent = item.href ? Link : "button";
+              const isNotification = item.id === "notification";
+              const MenuComponent = isNotification ? "button" : "a";
+
               return (
                 <MenuComponent
                   key={item.id}
-                  href={item.href || "#"}
-                  onClick={() => onItemSelect?.(item.id)}
+                  href={isNotification ? undefined : item.href}
+                  onClick={(e: any) => {
+                    if (isNotification) {
+                      handleNotificationClick(e);
+                    } else {
+                      onItemSelect?.(item.id);
+                    }
+                  }}
                   className={cn(
                     "w-full flex items-center gap-[8px] px-[12px] py-[6px] rounded-lg transition-colors relative flex-shrink-0",
                     isActive

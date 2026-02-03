@@ -69,7 +69,7 @@ export const transformOpportunityToCard = (
     status: (opp.status || "draft") as "active" | "closed" | "draft",
     applicationCap: opp.applicationCap,
     closingDate: opp.closingDate,
-    applied: opp.applied ?? false,
+    appliedAs: opp.appliedAs || [],
     saved: opp.saved ?? false,
   };
   return result;

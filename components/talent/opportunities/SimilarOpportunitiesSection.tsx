@@ -61,7 +61,7 @@ const convertToDisplayOpportunity = (opp: Opportunity): DisplayOpportunity => {
     skills: opp.tags || [],
     rate: rate,
     status: (opp.status as "active" | "closed" | "draft") || "draft",
-    applied: opp.applied || false,
+    appliedAs: opp.appliedAs || [],
     saved: opp.saved || false,
     priceMode: opp.priceMode,
     minBudget: opp.minBudget,

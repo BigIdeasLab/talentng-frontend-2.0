@@ -35,7 +35,7 @@ export interface OpportunityCard {
   status: OpportunityStatus;
   applicationCap?: number;
   closingDate?: string;
-  applied?: boolean;
+  appliedAs?: ("talent" | "mentor")[];
   saved?: boolean;
 }
 

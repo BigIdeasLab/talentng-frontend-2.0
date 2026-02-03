@@ -1,10 +1,10 @@
-import type { Notification } from "@/lib/types/notification";
-
-export interface GetNotificationsParams {
-  userId: string;
-  read?: boolean;
-  type?: string;
-}
-
-// Re-export the Notification type
-export type { Notification };
+// Re-export all notification types from the main types file
+export type {
+  Notification,
+  NotificationType,
+  NotificationChannel,
+  DeliveryStatus,
+  CreateNotificationPayload,
+  UpdateNotificationPayload,
+  GetNotificationsFilters,
+} from "@/lib/types/notification";

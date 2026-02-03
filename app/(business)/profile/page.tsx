@@ -23,6 +23,11 @@ export default function ProfilePage() {
     defaultData: DEFAULT_PROFILE_DATA,
   });
 
+  console.log("[ProfilePage] activeRole:", activeRole);
+  console.log("[ProfilePage] isLoading:", isLoading);
+  console.log("[ProfilePage] error:", error);
+  console.log("[ProfilePage] profileData:", profileData);
+
   if (isLoading) {
     return <PageLoadingState message="Loading profile..." />;
   }
@@ -56,6 +61,13 @@ export default function ProfilePage() {
             responseTime: "—",
           }}
           completionPercentage={completionPercentage}
+          aboutData={{
+            bio: profileData?.personal?.bio,
+            industry: profileData?.professional?.industry,
+            companySize: profileData?.professional?.companySize,
+            companyStage: profileData?.professional?.companyStage,
+            operatingModel: profileData?.professional?.operatingModel,
+          }}
         />
       );
     }

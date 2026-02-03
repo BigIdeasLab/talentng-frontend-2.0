@@ -14,6 +14,7 @@ import type {
 } from "@/components/talent/opportunities/types";
 import type { OpportunityData } from "./server-data";
 import { getOpportunitiesData } from "./server-data";
+import { useProfile } from "@/hooks";
 
 interface OpportunitiesClientProps {
   initialOpportunities: OpportunityData[];
@@ -42,6 +43,10 @@ export function OpportunitiesClient({
   initialPagination,
 }: OpportunitiesClientProps) {
   const LIMIT = 20;
+  const { activeRole } = useProfile();
+  const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as
+    | "talent"
+    | "mentor";
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -81,10 +86,12 @@ export function OpportunitiesClient({
           type: filter === "all" || filter === "applied" ? undefined : filter,
         });
 
-        // Filter by "applied" status if that's the active filter
+        // Filter by "applied" status if that's the active filter (based on current profile type)
         const filtered =
           filter === "applied"
-            ? newOpportunities.filter((opp) => opp.applied === true)
+            ? newOpportunities.filter((opp) =>
+                opp.appliedAs?.includes(currentProfileType),
+              )
             : newOpportunities;
 
         setOpportunities(filtered);
@@ -131,14 +138,22 @@ export function OpportunitiesClient({
     }
   };
 
-  const handleApplicationSubmitted = useCallback((opportunityId: string) => {
-    // Optimistically update the applied status locally
-    setOpportunities((prev) =>
-      prev.map((opp) =>
-        opp.id === opportunityId ? { ...opp, applied: true } : opp,
-      ),
-    );
-  }, []);
+  const handleApplicationSubmitted = useCallback(
+    (opportunityId: string) => {
+      // Optimistically update the appliedAs status locally for current profile type
+      setOpportunities((prev) =>
+        prev.map((opp) =>
+          opp.id === opportunityId
+            ? {
+                ...opp,
+                appliedAs: [...(opp.appliedAs || []), currentProfileType],
+              }
+            : opp,
+        ),
+      );
+    },
+    [currentProfileType],
+  );
 
   const getFilterCount = (): number => {
     if (!appliedFilters) return 0;

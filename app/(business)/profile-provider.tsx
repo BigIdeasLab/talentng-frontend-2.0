@@ -96,6 +96,13 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Persist activeRole to localStorage whenever it changes
+  useEffect(() => {
+    if (activeRole && typeof window !== "undefined") {
+      localStorage.setItem("lastActiveRole", activeRole);
+    }
+  }, [activeRole]);
+
   // Empty - client-side loading is handled in AppLayoutClient
 
   // Compute current profile based on active role

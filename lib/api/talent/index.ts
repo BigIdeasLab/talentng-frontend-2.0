@@ -22,6 +22,7 @@ import type {
   CreateRecommendationDto,
   UpdateRecommendationDto,
 } from "./types";
+import type { TalentDashboardResponse } from "./dashboard-types";
 
 /**
  * 1. Get Current User's Talent Profile
@@ -45,11 +46,20 @@ export async function updateProfile(
 }
 
 /**
- * 3. Get Dashboard Statistics
+ * 3. Get Dashboard Statistics (Legacy)
  * GET /talent/dashboard
  */
 export async function getDashboardStats(): Promise<DashboardStats> {
   return apiClient<DashboardStats>("/talent/dashboard");
+}
+
+/**
+ * 3b. Get Full Talent Dashboard Data
+ * GET /talent/dashboard
+ * Returns comprehensive dashboard data including stats, applications, interviews, etc.
+ */
+export async function getTalentDashboard(): Promise<TalentDashboardResponse> {
+  return apiClient<TalentDashboardResponse>("/talent/dashboard");
 }
 
 /**
@@ -439,3 +449,22 @@ export type {
   CreateRecommendationDto,
   UpdateRecommendationDto,
 };
+
+export type {
+  TalentDashboardResponse,
+  TalentDashboardUser,
+  TalentDashboardWelcome,
+  TalentDashboardStats,
+  TalentDashboardStatTrend,
+  WeeklyOverviewData,
+  HiringPipelineData,
+  HiringPipelineStageData,
+  RecentApplication,
+  UpcomingInterview,
+  TopSkill,
+  Achievement,
+  ApplicationStatus,
+  AchievementKey,
+  WeekDay,
+  HiringPipelineStage,
+} from "./dashboard-types";

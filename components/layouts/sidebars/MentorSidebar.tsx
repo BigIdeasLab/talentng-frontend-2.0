@@ -8,6 +8,8 @@ import { ProfileSwitcher } from "../ProfileSwitcher";
 interface SidebarProps {
   activeItem?: string;
   onItemSelect?: (item: string) => void;
+  onNotificationClick?: () => void;
+  notificationCount?: number;
 }
 
 interface MenuItem {
@@ -212,6 +214,56 @@ const SupportIcon = () => (
   </svg>
 );
 
+const ApplicationIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M3.33333 5C3.33333 3.89543 4.22876 3 5.33333 3H14.6667C15.7712 3 16.6667 3.89543 16.6667 5V15C16.6667 16.1046 15.7712 17 14.6667 17H5.33333C4.22876 17 3.33333 16.1046 3.33333 15V5Z"
+      stroke="#525866"
+      strokeWidth="1.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M3.33333 7.5H16.6667"
+      stroke="#525866"
+      strokeWidth="1.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const MentorshipIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M10 10C11.6569 10 13 8.65685 13 7C13 5.34315 11.6569 4 10 4C8.34315 4 7 5.34315 7 7C7 8.65685 8.34315 10 10 10Z"
+      stroke="#525866"
+      strokeWidth="1.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M3.5 17C3.5 14.5147 6.13401 12.5 10 12.5C13.866 12.5 16.5 14.5147 16.5 17"
+      stroke="#525866"
+      strokeWidth="1.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 const SettingsIcon = () => (
   <svg
     width="20"
@@ -255,10 +307,9 @@ const menuItems: MenuItem[] = [
   },
   {
     id: "notification",
-    label: "Notification",
+    label: "Notifications",
     icon: <NotificationIcon />,
     badge: 3,
-    href: "/notifications",
   },
   {
     id: "opportunities",
@@ -278,11 +329,67 @@ const otherItems: Omit<MenuItem, "badge">[] = [
   },
 ];
 
+const getMenuItems = (notificationCount?: number): MenuItem[] => {
+  const items = [
+    {
+      id: "dashboard",
+      label: "Dashboard",
+      icon: <DashboardIcon />,
+      href: "/dashboard",
+    },
+    {
+      id: "student-card",
+      label: "Student Cards",
+      icon: <StudentCardIcon />,
+      href: "/student-cards",
+    },
+    {
+      id: "application",
+      label: "Applications",
+      icon: <ApplicationIcon />,
+      href: "/applications",
+    },
+    {
+      id: "mentorship",
+      label: "Mentorship",
+      icon: <MentorshipIcon />,
+      href: "/mentorship",
+    },
+    {
+      id: "session-management",
+      label: "Session Management",
+      icon: <FileIcon />,
+      href: "/sessions",
+    },
+    {
+      id: "notification",
+      label: "Notifications",
+      icon: <NotificationIcon />,
+      badge: notificationCount,
+    },
+    {
+      id: "opportunities",
+      label: "Opportuities",
+      icon: <WorkIcon />,
+      href: "/opportunities",
+    },
+  ];
+  return items;
+};
+
 export function MentorSidebar({
   activeItem = "dashboard",
   onItemSelect,
+  onNotificationClick,
+  notificationCount = 0,
 }: SidebarProps) {
   const pathname = usePathname();
+  const menuItems = getMenuItems(notificationCount);
+
+  const handleNotificationClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    onNotificationClick?.();
+  };
 
   return (
     <aside className="hidden md:flex w-[250px] flex-col bg-white border-r border-[#E1E4EA] h-screen overflow-hidden">
@@ -311,12 +418,20 @@ export function MentorSidebar({
         <div className="flex flex-col gap-[6px]">
           {menuItems.map((item) => {
             const isActive = pathname === item.href;
-            const MenuComponent = item.href ? Link : "button";
+            const isNotification = item.id === "notification";
+            const MenuComponent = isNotification ? "button" : "a";
+
             return (
               <MenuComponent
                 key={item.id}
-                href={item.href || "#"}
-                onClick={() => onItemSelect?.(item.id)}
+                href={isNotification ? undefined : item.href}
+                onClick={(e: any) => {
+                  if (isNotification) {
+                    handleNotificationClick(e);
+                  } else {
+                    onItemSelect?.(item.id);
+                  }
+                }}
                 className={cn(
                   "w-full flex items-center gap-[8px] px-[12px] py-[6px] rounded-lg transition-colors relative flex-shrink-0",
                   isActive

@@ -1,0 +1,872 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import { SmoothCollapse } from "@/components/SmoothCollapse";
+import { SectionHeader } from "@/components/talent/profile/components/edit/SectionHeader";
+import { Button } from "@/components/ui/button";
+import { Modal } from "@/components/ui/modal";
+import { cn } from "@/lib/utils";
+import {
+  getCurrentMentorProfile,
+  updateMentorProfile,
+  updateMentorProfileImage,
+} from "@/lib/api/mentor";
+import type { UpdateMentorProfileInput } from "@/lib/api/mentor/types";
+
+interface MentorFormData {
+  personal: {
+    fullName: string;
+    headline: string;
+    bio: string;
+    profileImageUrl: string;
+    location: string;
+    company: string;
+  };
+  professional: {
+    expertise: string[];
+    mentorshipTopics: string[];
+    description: string;
+  };
+  social: {
+    linkedin: string;
+    twitter: string;
+    telegram: string;
+    instagram: string;
+    website: string;
+  };
+}
+
+const DEFAULT_MENTOR_DATA: MentorFormData = {
+  personal: {
+    fullName: "",
+    headline: "",
+    bio: "",
+    profileImageUrl: "",
+    location: "",
+    company: "",
+  },
+  professional: {
+    expertise: [],
+    mentorshipTopics: [],
+    description: "",
+  },
+  social: {
+    linkedin: "",
+    twitter: "",
+    telegram: "",
+    instagram: "",
+    website: "",
+  },
+};
+
+const availableExpertise = [
+  "Product Design",
+  "UI/UX Design",
+  "Frontend Development",
+  "Backend Development",
+  "Data Science",
+  "Machine Learning",
+  "Product Management",
+  "Engineering Leadership",
+  "Career Coaching",
+  "Startup Advisory",
+];
+
+const availableMentorshipTopics = [
+  "Career Guidance",
+  "Interview Prep",
+  "Resume Review",
+  "Portfolio Review",
+  "Technical Skills",
+  "Leadership Development",
+  "Startup Advice",
+  "Industry Transition",
+  "Work-Life Balance",
+  "Salary Negotiation",
+];
+
+const mentorSections = [
+  { id: "personal", label: "Personal Details" },
+  { id: "professional", label: "Professional Details" },
+  { id: "social", label: "Social Links" },
+];
+
+function EditProfileSidebar({
+  expandedSection,
+  onToggleSection,
+}: {
+  expandedSection: string;
+  onToggleSection: (section: string) => void;
+}) {
+  return (
+    <div className="w-[250px] flex flex-col items-start gap-[35px] px-5 pt-[20px] border-r border-[#E1E4EA]">
+      <h1 className="text-[20px] font-semibold text-black font-inter-tight">
+        Edit Profile
+      </h1>
+
+      <div className="flex flex-col items-start gap-[22px] w-full">
+        {mentorSections.map(({ id, label }) => (
+          <button
+            key={id}
+            onClick={() => onToggleSection(id)}
+            className={cn(
+              "text-[14px] font-normal font-inter-tight transition-colors",
+              expandedSection === id ? "text-[#5C30FF]" : "text-[#525866]",
+              id === "personal" && "font-medium",
+            )}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function EditProfileActionBar({
+  onSave,
+  isLoading,
+}: {
+  onSave: () => void;
+  isLoading: boolean;
+}) {
+  return (
+    <div className="h-[56px] border-b border-[#E1E4EA] flex items-center justify-end px-[80px] gap-2 bg-white">
+      <Link href="/mentor/profile">
+        <Button
+          variant="outline"
+          disabled={isLoading}
+          className="h-[40px] px-[24px] rounded-full border border-[#F5F5F5] bg-[#F5F5F5] text-black hover:bg-[#e5e5e5] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-normal"
+        >
+          Discard
+        </Button>
+      </Link>
+      <Button
+        onClick={onSave}
+        disabled={isLoading}
+        className="h-[40px] px-[24px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-normal"
+      >
+        {isLoading ? "Saving..." : "Save Changes"}
+      </Button>
+    </div>
+  );
+}
+
+function PersonalDetailsSection({
+  isOpen,
+  onToggle,
+  formData,
+  onInputChange,
+  sectionRef,
+  fileInputRef,
+  isUploading,
+  onFileChange,
+  onNext,
+}: {
+  isOpen: boolean;
+  onToggle: () => void;
+  formData: MentorFormData["personal"];
+  onInputChange: (field: string, value: string) => void;
+  sectionRef: (el: HTMLDivElement | null) => void;
+  fileInputRef: React.RefObject<HTMLInputElement>;
+  isUploading: boolean;
+  onFileChange: (event: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
+  onNext: () => void;
+}) {
+  const handleProfileImageClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  return (
+    <div
+      ref={sectionRef}
+      className="border border-[#E1E4EA] rounded-[16px] bg-white"
+    >
+      <SectionHeader
+        title="Personal Details"
+        isOpen={isOpen}
+        onToggle={onToggle}
+      />
+
+      <SmoothCollapse isOpen={isOpen}>
+        <>
+          <div className="h-[1px] bg-[#E1E4EA]" />
+          <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
+            {/* Profile Picture */}
+            <div className="relative w-[90px] h-[90px]">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={onFileChange}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={handleProfileImageClick}
+                disabled={isUploading}
+                className="absolute inset-0 w-full h-full rounded-full cursor-pointer hover:opacity-80 transition-opacity disabled:opacity-50"
+                title="Click to change profile picture"
+              >
+                <img
+                  src={formData.profileImageUrl || "/logo.png"}
+                  alt="Profile"
+                  className="w-full h-full object-cover rounded-full p-2"
+                />
+              </button>
+              <svg
+                width="110"
+                height="110"
+                viewBox="0 0 110 110"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="absolute inset-0 w-full h-full pointer-events-none"
+              >
+                <circle
+                  cx="55"
+                  cy="55"
+                  r="54"
+                  stroke="#E63C23"
+                  strokeWidth="2"
+                  strokeOpacity="0.2"
+                />
+                <path
+                  d="M55 1C62.0914 1 69.1133 2.39675 75.6649 5.1105C82.2165 7.82426 88.1694 11.8019 93.1838 16.8162C98.1981 21.8306 102.176 27.7835 104.889 34.3351C107.603 40.8867 109 47.9086 109 55"
+                  stroke="#E63C23"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
+
+            {/* Full Name */}
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-[13px] font-normal text-black font-inter-tight">
+                Full Name
+              </label>
+              <input
+                type="text"
+                value={formData.fullName}
+                onChange={(e) => onInputChange("fullName", e.target.value)}
+                placeholder="e.g., John Doe"
+                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+              />
+            </div>
+
+            {/* Headline */}
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-[13px] font-normal text-black font-inter-tight">
+                Headline
+              </label>
+              <input
+                type="text"
+                value={formData.headline}
+                onChange={(e) => onInputChange("headline", e.target.value)}
+                placeholder="e.g., Senior Product Designer at Google"
+                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+              />
+            </div>
+
+            {/* Company */}
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-[13px] font-normal text-black font-inter-tight">
+                Company
+              </label>
+              <input
+                type="text"
+                value={formData.company}
+                onChange={(e) => onInputChange("company", e.target.value)}
+                placeholder="e.g., Google"
+                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+              />
+            </div>
+
+            {/* Location */}
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-[13px] font-normal text-black font-inter-tight">
+                Location
+              </label>
+              <input
+                type="text"
+                value={formData.location}
+                onChange={(e) => onInputChange("location", e.target.value)}
+                placeholder="e.g., Lagos, Nigeria"
+                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+              />
+            </div>
+
+            {/* Bio */}
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-[13px] font-normal text-black font-inter-tight">
+                Bio
+              </label>
+              <textarea
+                value={formData.bio}
+                onChange={(e) => onInputChange("bio", e.target.value)}
+                placeholder="Tell mentees about yourself, your experience, and what you can help with..."
+                className="min-h-[120px] px-[12px] py-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent resize-none"
+              />
+            </div>
+
+            {/* Next Button */}
+            <div className="flex justify-end">
+              <button
+                onClick={onNext}
+                className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </>
+      </SmoothCollapse>
+    </div>
+  );
+}
+
+function ProfessionalDetailsSection({
+  isOpen,
+  onToggle,
+  formData,
+  onInputChange,
+  onAddExpertise,
+  onRemoveExpertise,
+  onAddTopic,
+  onRemoveTopic,
+  sectionRef,
+  onNext,
+}: {
+  isOpen: boolean;
+  onToggle: () => void;
+  formData: MentorFormData["professional"];
+  onInputChange: (field: string, value: string) => void;
+  onAddExpertise: (expertise: string) => void;
+  onRemoveExpertise: (index: number) => void;
+  onAddTopic: (topic: string) => void;
+  onRemoveTopic: (index: number) => void;
+  sectionRef: (el: HTMLDivElement | null) => void;
+  onNext: () => void;
+}) {
+  const [expertiseDropdownOpen, setExpertiseDropdownOpen] = useState(false);
+  const [topicsDropdownOpen, setTopicsDropdownOpen] = useState(false);
+
+  return (
+    <div
+      ref={sectionRef}
+      className="border border-[#E1E4EA] rounded-[16px] bg-white"
+    >
+      <SectionHeader
+        title="Professional Details"
+        isOpen={isOpen}
+        onToggle={onToggle}
+      />
+
+      <SmoothCollapse isOpen={isOpen}>
+        <>
+          <div className="h-[1px] bg-[#E1E4EA]" />
+          <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
+            {/* Expertise */}
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-[13px] font-normal text-black font-inter-tight">
+                Areas of Expertise
+              </label>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {formData.expertise.map((item, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#F0F7FF] border border-[#ADD8F7] rounded-full text-[12px] font-normal text-black font-inter-tight"
+                  >
+                    {item}
+                    <button
+                      onClick={() => onRemoveExpertise(index)}
+                      className="ml-1 text-gray-400 hover:text-gray-600"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setExpertiseDropdownOpen(!expertiseDropdownOpen)
+                  }
+                  className="w-full px-[12px] py-[14px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black/50 font-inter-tight text-left focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                >
+                  + Add expertise
+                </button>
+                {expertiseDropdownOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#E1E4EA] rounded-[8px] shadow-lg z-10 max-h-[200px] overflow-y-auto">
+                    {availableExpertise
+                      .filter((e) => !formData.expertise.includes(e))
+                      .map((expertise) => (
+                        <button
+                          key={expertise}
+                          onClick={() => {
+                            onAddExpertise(expertise);
+                            setExpertiseDropdownOpen(false);
+                          }}
+                          className="w-full px-4 py-2 text-left text-[13px] hover:bg-[#F0F7FF] font-inter-tight"
+                        >
+                          {expertise}
+                        </button>
+                      ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Mentorship Topics */}
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-[13px] font-normal text-black font-inter-tight">
+                Mentorship Topics
+              </label>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {formData.mentorshipTopics.map((item, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#F0F7FF] border border-[#ADD8F7] rounded-full text-[12px] font-normal text-black font-inter-tight"
+                  >
+                    {item}
+                    <button
+                      onClick={() => onRemoveTopic(index)}
+                      className="ml-1 text-gray-400 hover:text-gray-600"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setTopicsDropdownOpen(!topicsDropdownOpen)}
+                  className="w-full px-[12px] py-[14px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black/50 font-inter-tight text-left focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                >
+                  + Add topic
+                </button>
+                {topicsDropdownOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#E1E4EA] rounded-[8px] shadow-lg z-10 max-h-[200px] overflow-y-auto">
+                    {availableMentorshipTopics
+                      .filter((t) => !formData.mentorshipTopics.includes(t))
+                      .map((topic) => (
+                        <button
+                          key={topic}
+                          onClick={() => {
+                            onAddTopic(topic);
+                            setTopicsDropdownOpen(false);
+                          }}
+                          className="w-full px-4 py-2 text-left text-[13px] hover:bg-[#F0F7FF] font-inter-tight"
+                        >
+                          {topic}
+                        </button>
+                      ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-[13px] font-normal text-black font-inter-tight">
+                Description
+              </label>
+              <textarea
+                value={formData.description}
+                onChange={(e) => onInputChange("description", e.target.value)}
+                placeholder="Describe your mentorship approach and what mentees can expect..."
+                className="min-h-[100px] px-[12px] py-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent resize-none"
+              />
+            </div>
+
+            {/* Next Button */}
+            <div className="flex justify-end">
+              <button
+                onClick={onNext}
+                className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </>
+      </SmoothCollapse>
+    </div>
+  );
+}
+
+function SocialLinksSection({
+  isOpen,
+  onToggle,
+  formData,
+  onInputChange,
+  sectionRef,
+}: {
+  isOpen: boolean;
+  onToggle: () => void;
+  formData: MentorFormData["social"];
+  onInputChange: (platform: string, value: string) => void;
+  sectionRef: (el: HTMLDivElement | null) => void;
+}) {
+  const socialFields = [
+    {
+      id: "linkedin",
+      label: "LinkedIn",
+      placeholder: "https://linkedin.com/in/yourprofile",
+    },
+    {
+      id: "twitter",
+      label: "Twitter",
+      placeholder: "https://twitter.com/yourhandle",
+    },
+    {
+      id: "telegram",
+      label: "Telegram",
+      placeholder: "https://t.me/yourhandle",
+    },
+    {
+      id: "instagram",
+      label: "Instagram",
+      placeholder: "https://instagram.com/yourhandle",
+    },
+    { id: "website", label: "Website", placeholder: "https://yourwebsite.com" },
+  ];
+
+  return (
+    <div
+      ref={sectionRef}
+      className="border border-[#E1E4EA] rounded-[16px] bg-white"
+    >
+      <SectionHeader title="Social Links" isOpen={isOpen} onToggle={onToggle} />
+
+      <SmoothCollapse isOpen={isOpen}>
+        <>
+          <div className="h-[1px] bg-[#E1E4EA]" />
+          <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
+            {socialFields.map((field) => (
+              <div key={field.id} className="flex flex-col gap-[10px]">
+                <label className="text-[13px] font-normal text-black font-inter-tight">
+                  {field.label}
+                </label>
+                <input
+                  type="url"
+                  value={formData[field.id as keyof typeof formData]}
+                  onChange={(e) => onInputChange(field.id, e.target.value)}
+                  placeholder={field.placeholder}
+                  className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                />
+              </div>
+            ))}
+          </div>
+        </>
+      </SmoothCollapse>
+    </div>
+  );
+}
+
+export function MentorEditProfile() {
+  const [expandedSection, setExpandedSection] = useState<string>("personal");
+  const [formData, setFormData] = useState<MentorFormData>(DEFAULT_MENTOR_DATA);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    const fetchMentorProfile = async () => {
+      setIsFetching(true);
+      try {
+        const profile = await getCurrentMentorProfile();
+
+        setFormData({
+          personal: {
+            fullName: profile.fullName || "",
+            headline: profile.headline || "",
+            bio: profile.bio || "",
+            profileImageUrl: profile.profileImageUrl || "",
+            location: profile.location || "",
+            company: profile.company || "",
+          },
+          professional: {
+            expertise: profile.expertise || [],
+            mentorshipTopics: profile.mentorshipTopics || [],
+            description: profile.description || "",
+          },
+          social: {
+            linkedin: profile.links?.linkedin || "",
+            twitter: profile.links?.twitter || "",
+            telegram: profile.links?.telegram || "",
+            instagram: profile.links?.instagram || "",
+            website: profile.links?.website || "",
+          },
+        });
+        setHasUnsavedChanges(false);
+      } catch (error) {
+        console.error("Failed to fetch mentor profile:", error);
+      } finally {
+        setIsFetching(false);
+      }
+    };
+
+    fetchMentorProfile();
+  }, []);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = "";
+        return "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [hasUnsavedChanges]);
+
+  const toggleSection = (section: string) => {
+    setExpandedSection(expandedSection === section ? "" : section);
+
+    setTimeout(() => {
+      const element = sectionRefs.current[section];
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 0);
+  };
+
+  const handlePersonalInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      personal: {
+        ...prev.personal,
+        [field]: value,
+      },
+    }));
+    setHasUnsavedChanges(true);
+  };
+
+  const handleProfessionalInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      professional: {
+        ...prev.professional,
+        [field]: value,
+      },
+    }));
+    setHasUnsavedChanges(true);
+  };
+
+  const handleAddExpertise = (expertise: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      professional: {
+        ...prev.professional,
+        expertise: [...prev.professional.expertise, expertise],
+      },
+    }));
+    setHasUnsavedChanges(true);
+  };
+
+  const handleRemoveExpertise = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      professional: {
+        ...prev.professional,
+        expertise: prev.professional.expertise.filter((_, i) => i !== index),
+      },
+    }));
+    setHasUnsavedChanges(true);
+  };
+
+  const handleAddTopic = (topic: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      professional: {
+        ...prev.professional,
+        mentorshipTopics: [...prev.professional.mentorshipTopics, topic],
+      },
+    }));
+    setHasUnsavedChanges(true);
+  };
+
+  const handleRemoveTopic = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      professional: {
+        ...prev.professional,
+        mentorshipTopics: prev.professional.mentorshipTopics.filter(
+          (_, i) => i !== index,
+        ),
+      },
+    }));
+    setHasUnsavedChanges(true);
+  };
+
+  const handleSocialInputChange = (platform: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      social: {
+        ...prev.social,
+        [platform]: value,
+      },
+    }));
+    setHasUnsavedChanges(true);
+  };
+
+  const handleProfileImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const response = await updateMentorProfileImage(file);
+      if (response.profileImageUrl) {
+        handlePersonalInputChange("profileImageUrl", response.profileImageUrl);
+      }
+    } catch (error) {
+      console.error("Failed to upload profile image:", error);
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  const handleSaveProfile = async () => {
+    try {
+      setIsLoading(true);
+
+      const apiData: UpdateMentorProfileInput = {
+        fullName: formData.personal.fullName,
+        headline: formData.personal.headline,
+        bio: formData.personal.bio,
+        location: formData.personal.location,
+        company: formData.personal.company,
+        expertise: formData.professional.expertise,
+        mentorshipTopics: formData.professional.mentorshipTopics,
+        description: formData.professional.description,
+        links: {
+          linkedin: formData.social.linkedin,
+          twitter: formData.social.twitter,
+          telegram: formData.social.telegram,
+          instagram: formData.social.instagram,
+          website: formData.social.website,
+        },
+      };
+
+      await updateMentorProfile(apiData);
+
+      setModalMessage("Profile saved successfully!");
+      setIsSuccess(true);
+      setModalOpen(true);
+      setHasUnsavedChanges(false);
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      setModalMessage("Failed to save profile. Please try again.");
+      setIsSuccess(false);
+      setModalOpen(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isFetching) {
+    return (
+      <div className="flex h-screen bg-white items-center justify-center">
+        <div className="text-[14px] text-gray-500 font-inter-tight">
+          Loading...
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-screen bg-white">
+      <EditProfileSidebar
+        expandedSection={expandedSection}
+        onToggleSection={toggleSection}
+      />
+
+      <div className="flex-1 flex flex-col">
+        <EditProfileActionBar
+          onSave={handleSaveProfile}
+          isLoading={isLoading}
+        />
+
+        <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
+          <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
+            <PersonalDetailsSection
+              isOpen={expandedSection === "personal"}
+              onToggle={() => toggleSection("personal")}
+              formData={formData.personal}
+              onInputChange={handlePersonalInputChange}
+              fileInputRef={fileInputRef}
+              isUploading={isUploading}
+              onFileChange={handleProfileImageUpload}
+              sectionRef={(el) => {
+                if (el) sectionRefs.current["personal"] = el;
+              }}
+              onNext={() => toggleSection("professional")}
+            />
+
+            <ProfessionalDetailsSection
+              isOpen={expandedSection === "professional"}
+              onToggle={() => toggleSection("professional")}
+              formData={formData.professional}
+              onInputChange={handleProfessionalInputChange}
+              onAddExpertise={handleAddExpertise}
+              onRemoveExpertise={handleRemoveExpertise}
+              onAddTopic={handleAddTopic}
+              onRemoveTopic={handleRemoveTopic}
+              sectionRef={(el) => {
+                if (el) sectionRefs.current["professional"] = el;
+              }}
+              onNext={() => toggleSection("social")}
+            />
+
+            <SocialLinksSection
+              isOpen={expandedSection === "social"}
+              onToggle={() => toggleSection("social")}
+              formData={formData.social}
+              onInputChange={handleSocialInputChange}
+              sectionRef={(el) => {
+                if (el) sectionRefs.current["social"] = el;
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={isSuccess ? "Success" : "Error"}
+        description={modalMessage}
+        size="sm"
+        footer={
+          <button
+            onClick={() => setModalOpen(false)}
+            className={`px-4 py-2 rounded-lg font-medium text-white transition-colors ${
+              isSuccess
+                ? "bg-[#5C30FF] hover:bg-[#4a26cc]"
+                : "bg-red-500 hover:bg-red-600"
+            }`}
+          >
+            {isSuccess ? "Okay" : "Try Again"}
+          </button>
+        }
+      />
+    </div>
+  );
+}

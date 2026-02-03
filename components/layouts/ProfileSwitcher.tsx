@@ -216,8 +216,7 @@ export function ProfileSwitcher() {
   // Get display profile (use UI version if available, fallback to raw)
   const displayProfile = currentProfileUI || currentProfile;
 
-  const DEFAULT_AVATAR =
-    "https://api.builder.io/api/v1/image/assets/TEMP/9e59309e54ab614513d0fec9ab4424784f78258b?width=60";
+  const DEFAULT_AVATAR = "/default.png";
 
   // Get profile image URL safely
   const getProfileImageUrl = (role: string, profile: any): string => {

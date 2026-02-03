@@ -27,6 +27,13 @@ interface EmployerProfileProps {
     linkedin?: string;
   };
   completionPercentage?: number;
+  aboutData?: {
+    bio?: string | null;
+    industry?: string;
+    companySize?: string;
+    companyStage?: string;
+    operatingModel?: string;
+  };
 }
 
 export function EmployerProfile({
@@ -42,8 +49,9 @@ export function EmployerProfile({
   },
   socialLinks,
   completionPercentage = 0,
+  aboutData,
 }: EmployerProfileProps) {
-  const { user } = useAuth();
+  const { user: _user } = useAuth();
   const [activeTab, setActiveTab] = useState("opportunities");
 
   useEffect(() => {
@@ -88,7 +96,16 @@ export function EmployerProfile({
           {activeTab === "hires" && <PastHiresTab />}
 
           {/* About Tab */}
-          {activeTab === "about" && <AboutTab />}
+          {activeTab === "about" && (
+            <AboutTab
+              companyName={companyData.name}
+              bio={aboutData?.bio}
+              industry={aboutData?.industry}
+              companySize={aboutData?.companySize}
+              companyStage={aboutData?.companyStage}
+              operatingModel={aboutData?.operatingModel}
+            />
+          )}
         </div>
       </main>
     </div>

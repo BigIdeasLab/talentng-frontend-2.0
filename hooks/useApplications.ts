@@ -16,6 +16,7 @@ interface UseApplicationsReturn {
   getById: (id: string) => Promise<Application>;
   submit: (data: {
     opportunityId: string;
+    profileType: "talent" | "mentor";
     note?: string;
     galleryIds?: string[];
     files?: File[];
@@ -67,6 +68,7 @@ export function useApplications(): UseApplicationsReturn {
   const submit = useCallback(
     async (data: {
       opportunityId: string;
+      profileType: "talent" | "mentor";
       note?: string;
       galleryIds?: string[];
       files?: File[];

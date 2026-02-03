@@ -14,6 +14,7 @@ const statusDisplayMap: Record<
   string,
   { label: string; bg: string; text: string }
 > = {
+  invited: { label: "Invited", bg: "#E0E7FF", text: "#4F46E5" },
   applied: { label: "In Review", bg: "#DBE9FE", text: "#5C30FF" },
   shortlisted: { label: "Shortlisted", bg: "#FEF3C7", text: "#92400D" },
   rejected: { label: "Rejected", bg: "#FEE2E1", text: "#991B1B" },
@@ -411,18 +412,21 @@ export default function OpportunityApplicantsPage() {
 
                     {/* Actions */}
                     <div className="flex items-center justify-end gap-1 h-full flex-shrink-0">
-                      <button
-                        onClick={() =>
-                          router.push(`/applicants/${applicant.id}`)
-                        }
-                        className="flex items-center justify-center h-8 px-[8px] py-[12px] rounded-[50px] bg-[#181B25] hover:bg-[#2a2d3a] transition-colors flex-shrink-0"
-                      >
-                        <span className="font-inter-tight text-[12px] font-medium text-white text-center leading-normal">
-                          View Proposal
-                        </span>
-                      </button>
+                      {applicant.status !== "invited" && (
+                        <button
+                          onClick={() =>
+                            router.push(`/applicants/${applicant.id}`)
+                          }
+                          className="flex items-center justify-center h-8 px-[8px] py-[12px] rounded-[50px] bg-[#181B25] hover:bg-[#2a2d3a] transition-colors flex-shrink-0"
+                        >
+                          <span className="font-inter-tight text-[12px] font-medium text-white text-center leading-normal">
+                            View Proposal
+                          </span>
+                        </button>
+                      )}
                       {applicant.status !== "rejected" &&
-                        applicant.status !== "hired" && (
+                        applicant.status !== "hired" &&
+                        applicant.status !== "invited" && (
                           <button
                             style={{
                               backgroundColor: "#5C30FF",

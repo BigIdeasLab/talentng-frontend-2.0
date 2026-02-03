@@ -15,6 +15,8 @@ export interface Application {
   id: string;
   userId: string;
   opportunityId: string;
+  profileType: "talent" | "mentor";
+  profileId: string;
   status: "applied" | "shortlisted" | "rejected" | "hired";
   note?: string;
   galleryIds?: string[];
@@ -81,6 +83,7 @@ export async function getApplicationById(
 
 export async function submitApplication(data: {
   opportunityId: string;
+  profileType: "talent" | "mentor";
   note?: string;
   galleryIds?: string[];
   files?: File[];
@@ -90,6 +93,7 @@ export async function submitApplication(data: {
     if (data.files && data.files.length > 0) {
       const formData = new FormData();
       formData.append("opportunityId", data.opportunityId);
+      formData.append("profileType", data.profileType);
       if (data.note) {
         formData.append("note", data.note);
       }
@@ -113,6 +117,7 @@ export async function submitApplication(data: {
         method: "POST",
         body: {
           opportunityId: data.opportunityId,
+          profileType: data.profileType,
           note: data.note,
           galleryIds: data.galleryIds,
         },

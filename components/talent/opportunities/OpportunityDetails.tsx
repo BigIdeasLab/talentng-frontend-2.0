@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getToolInfo } from "@/lib/utils/tools";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { useAuth } from "@/hooks/useAuth";
+import { useProfile } from "@/hooks";
 import { ApplicationModal } from "@/components/talent/opportunities/application-modal";
 import { SimilarOpportunitiesSection } from "./SimilarOpportunitiesSection";
 import type { DisplayOpportunity } from "@/components/talent/opportunities/types";
@@ -41,16 +43,30 @@ const typeConfig: Record<
 
 interface OpportunityDetailsProps {
   opportunityId: string;
+  applicationId?: string;
 }
 
-export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
+export function OpportunityDetails({
+  opportunityId,
+  applicationId,
+}: OpportunityDetailsProps) {
   const router = useRouter();
+  const { user } = useAuth();
+  const { activeRole } = useProfile();
+  const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as
+    | "talent"
+    | "mentor";
   const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
   const [isApplied, setIsApplied] = useState(false);
   const [isSavingLoading, setIsSavingLoading] = useState(false);
   const [showApplicationModal, setShowApplicationModal] = useState(false);
+  const [isRespondingToInvitation, setIsRespondingToInvitation] =
+    useState(false);
+  const [invitationResponse, setInvitationResponse] = useState<
+    "accepted" | "declined" | null
+  >(null);
   const { save: saveOpp, unsave: unsaveOpp } = useOpportunitiesManager();
 
   useEffect(() => {
@@ -63,13 +79,23 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
       const { getOpportunityById } = await import("@/lib/api/opportunities");
       const data = await getOpportunityById(opportunityId);
       setOpportunity(data);
-      // Set applied status from opportunity data
-      if (data?.applied !== undefined) {
-        setIsApplied(data.applied);
+      // Set applied status from opportunity data based on current profile type
+      if (data?.appliedAs) {
+        setIsApplied(data.appliedAs.includes(currentProfileType));
       }
       // Set saved status from opportunity data
       if (data?.saved !== undefined) {
         setIsSaved(data.saved);
+      }
+      // Initialize invitation response state from API data
+      // Find the application in the applications array that matches the applicationId
+      if (applicationId && data?.applications) {
+        const currentApp = data.applications.find(
+          (app) => app.id === applicationId,
+        );
+        if (currentApp?.inviteResponse) {
+          setInvitationResponse(currentApp.inviteResponse);
+        }
       }
     } catch (error) {
       console.error("Error fetching opportunity:", error);
@@ -93,6 +119,45 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
       console.error("Failed to toggle save status:", error);
     } finally {
       setIsSavingLoading(false);
+    }
+  };
+
+  const handleRespondToInvitation = async (
+    response: "accepted" | "declined",
+  ) => {
+    if (!applicationId) return;
+
+    // Prevent double responses
+    if (invitationResponse !== null) {
+      alert("You already responded to this invitation.");
+      return;
+    }
+
+    setIsRespondingToInvitation(true);
+    try {
+      const module = await import("@/lib/api/applications/index");
+      await module.respondToInvitation(applicationId, response);
+      // Optimistic UI update - disable buttons immediately
+      setInvitationResponse(response);
+      setTimeout(() => {
+        router.push("/opportunities");
+      }, 1500);
+    } catch (error) {
+      console.error("Failed to respond to invitation:", error);
+
+      // Check if it's a "already responded" error
+      const errorMsg = error instanceof Error ? error.message : "";
+      if (errorMsg.includes("already responded")) {
+        // User already responded - refresh to get the actual state
+        await fetchOpportunityDetails();
+        alert("You already responded to this invitation.");
+      } else {
+        // Reset state on other errors to allow retry
+        setInvitationResponse(null);
+        alert("Failed to respond to invitation. Please try again.");
+      }
+    } finally {
+      setIsRespondingToInvitation(false);
     }
   };
 
@@ -591,69 +656,174 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                 )}
               </div>
 
-              {/* Save and Apply Buttons */}
-              <div className="flex justify-between items-center gap-2">
-                <button
-                  onClick={handleToggleSave}
-                  disabled={isSavingLoading}
-                  className={`flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] transition-colors ${
-                    isSaved
-                      ? "bg-[#5C30FF] hover:bg-[#4a26cc]"
-                      : "bg-[#181B25] hover:bg-[#2a2d3a]"
-                  } ${isSavingLoading ? "opacity-50 cursor-not-allowed" : ""}`}
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill={isSaved ? "white" : "none"}
-                    xmlns="http://www.w3.org/2000/svg"
+              {/* Save and Apply Buttons OR Accept/Decline for Invitations */}
+              {applicationId ? (
+                // Accept/Decline buttons for invitations
+                <div className="flex flex-col gap-3">
+                  {invitationResponse && (
+                    <div className="p-3 rounded-lg bg-blue-50 border border-blue-200">
+                      <p className="text-sm text-blue-700 font-medium">
+                        You already responded:{" "}
+                        <span className="capitalize">
+                          {invitationResponse === "accepted"
+                            ? "Accepted the offer"
+                            : "Declined the offer"}
+                        </span>
+                      </p>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center gap-2">
+                    <button
+                      onClick={() => handleRespondToInvitation("declined")}
+                      disabled={
+                        isRespondingToInvitation || invitationResponse !== null
+                      }
+                      className={`flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] border transition-colors ${
+                        invitationResponse === "declined"
+                          ? "bg-gray-200 border-gray-200 cursor-not-allowed"
+                          : "bg-white border-[#E1E4EA] hover:bg-gray-50 text-[#525866]"
+                      } ${isRespondingToInvitation ? "opacity-50 cursor-not-allowed" : ""}`}
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M18 6L6 18M6 6L18 18"
+                          stroke={
+                            invitationResponse === "declined"
+                              ? "#999"
+                              : "currentColor"
+                          }
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <span
+                        className={`font-inter-tight text-[14px] font-normal leading-normal ${
+                          invitationResponse === "declined"
+                            ? "text-gray-600"
+                            : "text-[#525866]"
+                        }`}
+                      >
+                        {invitationResponse === "declined"
+                          ? "Declined"
+                          : "Decline"}
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => handleRespondToInvitation("accepted")}
+                      disabled={
+                        isRespondingToInvitation || invitationResponse !== null
+                      }
+                      className={`flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] transition-colors ${
+                        invitationResponse === "accepted"
+                          ? "bg-green-100 border-green-100 cursor-not-allowed"
+                          : "bg-[#5C30FF] hover:bg-[#4a26cc]"
+                      } ${isRespondingToInvitation ? "opacity-50 cursor-not-allowed" : ""}`}
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M5 14L8.5 17.5L19 6.5"
+                          stroke={
+                            invitationResponse === "accepted"
+                              ? "#22c55e"
+                              : "white"
+                          }
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <span
+                        className={`font-inter-tight text-[14px] font-normal leading-normal ${
+                          invitationResponse === "accepted"
+                            ? "text-green-700"
+                            : "text-white"
+                        }`}
+                      >
+                        {invitationResponse === "accepted"
+                          ? "Accepted"
+                          : "Accept Offer"}
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                // Save and Apply buttons for regular opportunities
+                <div className="flex justify-between items-center gap-2">
+                  <button
+                    onClick={handleToggleSave}
+                    disabled={isSavingLoading}
+                    className={`flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] transition-colors ${
+                      isSaved
+                        ? "bg-[#5C30FF] hover:bg-[#4a26cc]"
+                        : "bg-[#181B25] hover:bg-[#2a2d3a]"
+                    } ${isSavingLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                   >
-                    <path
-                      d="M4 17.9808V9.70753C4 6.07416 4 4.25748 5.17157 3.12874C6.34315 2 8.22876 2 12 2C15.7712 2 17.6569 2 18.8284 3.12874C20 4.25748 20 6.07416 20 9.70753V17.9808C20 20.2867 20 21.4396 19.2272 21.8523C17.7305 22.6514 14.9232 19.9852 13.59 19.1824C12.8168 18.7168 12.4302 18.484 12 18.484C11.5698 18.484 11.1832 18.7168 10.41 19.1824C9.0768 19.9852 6.26947 22.6514 4.77285 21.8523C4 21.4396 4 20.2867 4 17.9808Z"
-                      stroke="white"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <span className="font-inter-tight text-[14px] font-normal text-white leading-normal">
-                    {isSaved ? "Saved" : "Save"}
-                  </span>
-                </button>
-                <button
-                  onClick={() => !isApplied && setShowApplicationModal(true)}
-                  disabled={isApplied}
-                  className={`flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] border transition-colors ${
-                    isApplied
-                      ? "bg-gray-200 border-gray-200 cursor-not-allowed"
-                      : "bg-[#5C30FF] border-[#5C30FF] hover:bg-[#4a26cc]"
-                  }`}
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M5 14L8.5 17.5L19 6.5"
-                      stroke={isApplied ? "#999" : "white"}
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <span
-                    className={`font-inter-tight text-[14px] font-normal leading-normal ${
-                      isApplied ? "text-gray-600" : "text-white"
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill={isSaved ? "white" : "none"}
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4 17.9808V9.70753C4 6.07416 4 4.25748 5.17157 3.12874C6.34315 2 8.22876 2 12 2C15.7712 2 17.6569 2 18.8284 3.12874C20 4.25748 20 6.07416 20 9.70753V17.9808C20 20.2867 20 21.4396 19.2272 21.8523C17.7305 22.6514 14.9232 19.9852 13.59 19.1824C12.8168 18.7168 12.4302 18.484 12 18.484C11.5698 18.484 11.1832 18.7168 10.41 19.1824C9.0768 19.9852 6.26947 22.6514 4.77285 21.8523C4 21.4396 4 20.2867 4 17.9808Z"
+                        stroke="white"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span className="font-inter-tight text-[14px] font-normal text-white leading-normal">
+                      {isSaved ? "Saved" : "Save"}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => !isApplied && setShowApplicationModal(true)}
+                    disabled={isApplied}
+                    className={`flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] border transition-colors ${
+                      isApplied
+                        ? "bg-gray-200 border-gray-200 cursor-not-allowed"
+                        : "bg-[#5C30FF] border-[#5C30FF] hover:bg-[#4a26cc]"
                     }`}
                   >
-                    {isApplied ? "Applied" : "Apply"}
-                  </span>
-                </button>
-              </div>
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M5 14L8.5 17.5L19 6.5"
+                        stroke={isApplied ? "#999" : "white"}
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span
+                      className={`font-inter-tight text-[14px] font-normal leading-normal ${
+                        isApplied ? "text-gray-600" : "text-white"
+                      }`}
+                    >
+                      {isApplied ? "Applied" : "Apply"}
+                    </span>
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Company Card */}

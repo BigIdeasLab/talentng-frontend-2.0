@@ -44,6 +44,7 @@ export function useSubmitApplication() {
   return useMutation({
     mutationFn: (data: {
       opportunityId: string;
+      profileType: "talent" | "mentor";
       note?: string;
       files?: File[];
     }) => submitApplication(data),
@@ -79,8 +80,12 @@ export function useApplications() {
     error: submitMutation.error || statusMutation.error || null,
     getAll: (opportunityId: string) => getApplications({ opportunityId }),
     getById: (id: string) => getApplicationById(id),
-    submit: (data: { opportunityId: string; note?: string; files?: File[] }) =>
-      submitMutation.mutateAsync(data),
+    submit: (data: {
+      opportunityId: string;
+      profileType: "talent" | "mentor";
+      note?: string;
+      files?: File[];
+    }) => submitMutation.mutateAsync(data),
     updateStatus: (applicationId: string, status: string) =>
       statusMutation.mutateAsync({ applicationId, status }),
   };

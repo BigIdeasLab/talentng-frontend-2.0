@@ -18,6 +18,10 @@ export interface UIProfileData {
     skills: string[];
     stack: { name: string; icon: string }[];
     availability: string;
+    industry?: string;
+    companySize?: string;
+    companyStage?: string;
+    operatingModel?: string;
   };
   experience: {
     id: string;
@@ -189,45 +193,53 @@ export function mapUIToAPI(uiData: UIProfileData): APIProfileData {
 export function mapAPIToUI(
   apiData: Partial<APIProfileData> | any,
 ): UIProfileData {
-  const [firstName, ...lastNameParts] = (apiData.fullName || "").split(" ");
+  // Handle wrapped response { profile: {...} } from API
+  const data = apiData?.profile ?? apiData;
+  const [firstName, ...lastNameParts] = (data.fullName || "").split(" ");
   const lastName = lastNameParts.join(" ");
 
-  const [city, state] = (apiData.location || "").split(", ");
+  const locationParts = (data.location || "").split(", ");
+  const city = locationParts[0] || "";
+  const state = locationParts[1] || locationParts[0] || "";
 
   const mappedProfessional = {
     role:
-      (Array.isArray(apiData.stack) && apiData.stack.length > 0
-        ? typeof apiData.stack[0] === "string"
-          ? apiData.stack[0]
-          : apiData.stack[0].name
+      (Array.isArray(data.stack) && data.stack.length > 0
+        ? typeof data.stack[0] === "string"
+          ? data.stack[0]
+          : data.stack[0].name
         : "") || "",
-    company: apiData.company || "",
-    category: apiData.category || "",
-    description: apiData.description || "",
-    skills: apiData.skills || [],
-    stack: (apiData.stack || []).map((item: any) => {
+    company: data.company || "",
+    category: data.category || "",
+    description: data.description || "",
+    skills: data.skills || [],
+    stack: (data.stack || []).map((item: any) => {
       const name = typeof item === "string" ? item : item.name;
       return {
         name,
         icon: getIconForTool(name),
       };
     }),
-    availability: apiData.availability || "",
+    availability: data.availability || "",
+    industry: data.industry || "",
+    companySize: data.companySize || "",
+    companyStage: data.companyStage || "",
+    operatingModel: data.operatingModel || "",
   };
 
   return {
     personal: {
       firstName: firstName || "",
       lastName: lastName || "",
-      headline: apiData.headline || "",
-      bio: apiData.bio || "",
-      phoneNumber: apiData.phoneNumber || "",
-      state: state || apiData.location || "",
+      headline: data.headline || "",
+      bio: data.bio || "",
+      phoneNumber: data.phoneNumber || "",
+      state: state || "",
       city: city || "",
-      profileImageUrl: apiData.profileImageUrl || "",
+      profileImageUrl: data.profileImageUrl || "",
     },
     professional: mappedProfessional,
-    experience: (apiData.workExperience || []).map((exp: any, idx: number) => ({
+    experience: (data.workExperience || []).map((exp: any, idx: number) => ({
       id: exp.id || `${idx}`,
       company: exp.company,
       position: exp.position || exp.role || "",
@@ -237,7 +249,7 @@ export function mapAPIToUI(
       isCurrently: !exp.endDate,
       location: exp.location || "",
     })),
-    education: (apiData.education || []).map((edu: any, idx: number) => ({
+    education: (data.education || []).map((edu: any, idx: number) => ({
       id: edu.id || `${idx}`,
       school: edu.school || edu.institution || "",
       degree: edu.degree,
@@ -247,15 +259,15 @@ export function mapAPIToUI(
       description: edu.description || "",
     })),
     portfolio: {
-      resumeUrl: apiData.resumeUrl || "",
-      portfolioItems: (apiData.portfolioItems || []).map(
+      resumeUrl: data.resumeUrl || "",
+      portfolioItems: (data.portfolioItems || []).map(
         (item: any, idx: number) => ({
           ...item,
           id: item.id || `portfolio-${idx}`,
         }),
       ),
     },
-    gallery: (apiData.gallery || []).map((item: any) => ({
+    gallery: (data.gallery || []).map((item: any) => ({
       id: item.id || "",
       key: item.key || "",
       url: item.url || "",
@@ -266,13 +278,13 @@ export function mapAPIToUI(
       createdAt: item.createdAt || "",
     })),
     social: {
-      dribbble: apiData.links?.dribbble || "",
-      telegram: apiData.links?.telegram || "",
-      twitter: apiData.links?.twitter || "",
-      instagram: apiData.links?.instagram || "",
-      linkedin: apiData.links?.linkedin || "",
-      github: apiData.links?.github || "",
-      portfolio: apiData.links?.portfolio || "",
+      dribbble: data.links?.dribbble || data.socialLinks?.dribbble || "",
+      telegram: data.links?.telegram || data.socialLinks?.telegram || "",
+      twitter: data.links?.twitter || data.socialLinks?.twitter || "",
+      instagram: data.links?.instagram || data.socialLinks?.instagram || "",
+      linkedin: data.links?.linkedin || data.socialLinks?.linkedin || "",
+      github: data.links?.github || data.socialLinks?.github || "",
+      portfolio: data.links?.portfolio || data.socialLinks?.portfolio || "",
     },
   };
 }

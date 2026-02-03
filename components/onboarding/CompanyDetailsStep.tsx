@@ -387,7 +387,7 @@ export const CompanyDetailsStep = ({
                         width="810"
                         height="1080"
                         className="border"
-                        xlinkHref={logoPreview || "/logo.png"}
+                        xlinkHref={logoPreview || "/default.png"}
                         preserveAspectRatio="xMidYMid slice"
                       />
                     </defs>

@@ -2,6 +2,7 @@
 
 import React, { useState, Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { Role, ProfileData } from "@/lib/types/onboarding";
 import { SelectRoleStep } from "@/components/onboarding/SelectRoleStep";
@@ -35,8 +36,10 @@ const OnboardingPage = () => {
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [completedRoles, setCompletedRoles] = useState<string[]>([]);
+  const [isLoadingRoles, setIsLoadingRoles] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
   const { toast } = useToast();
   const { refetchUser, user } = useAuth();
   const completeOnboardingMutation = useCompleteOnboarding();
@@ -53,6 +56,7 @@ const OnboardingPage = () => {
   useEffect(() => {
     if (isAddingRole) {
       const fetchCompletedRoles = async () => {
+        setIsLoadingRoles(true);
         const completed: string[] = [];
 
         try {
@@ -83,6 +87,7 @@ const OnboardingPage = () => {
         }
 
         setCompletedRoles(completed);
+        setIsLoadingRoles(false);
       };
 
       fetchCompletedRoles();
@@ -169,16 +174,8 @@ const OnboardingPage = () => {
         formData.append("profileImage", profileImage);
       }
 
-      // Log complete submission data
-      console.log("=== ONBOARDING SUBMISSION ===", {
-        role: roleValue,
-        profile: profileData,
-        details: detailsData,
-      });
+      const response = await completeOnboardingMutation.mutateAsync(formData);
 
-      await completeOnboardingMutation.mutateAsync(formData);
-
-      await refetchUser();
       toast({
         title: "Success",
         description: isAddingRole
@@ -186,9 +183,24 @@ const OnboardingPage = () => {
           : "Your profile has been successfully created.",
       });
 
+      // USE RESPONSE to update user state immediately
+      // This updates TWO places so ProfileSwitcher and useAuth both see the new roles:
+      // 1. React Query cache (for useAuth hook)
+      // 2. localStorage (for useProfile/ProfileSwitcher)
+      if (response?.roles) {
+        queryClient.setQueryData(["user"], response);
+        localStorage.setItem("userRoles", response.roles.join(","));
+        // Small delay to ensure localStorage is written before redirect
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      } else {
+        refetchUser();
+      }
+
       // If adding a role, redirect with the new role selected
       if (isAddingRole) {
-        router.push("/dashboard?switchRole=mentor");
+        const newRole =
+          selectedRole === "employer" ? "recruiter" : selectedRole;
+        router.push(`/dashboard?switchRole=${newRole}`);
       } else {
         router.push("/dashboard");
       }
@@ -280,9 +292,8 @@ const OnboardingPage = () => {
         formData.append("profileImage", logo);
       }
 
-      await completeOnboardingMutation.mutateAsync(formData);
+      const response = await completeOnboardingMutation.mutateAsync(formData);
 
-      await refetchUser();
       toast({
         title: "Success",
         description: isAddingRole
@@ -290,9 +301,26 @@ const OnboardingPage = () => {
           : "Your profile has been successfully created.",
       });
 
+      // USE RESPONSE to update user state immediately
+      // This updates TWO places so ProfileSwitcher and useAuth both see the new roles:
+      // 1. React Query cache (for useAuth hook)
+      // 2. localStorage (for useProfile/ProfileSwitcher)
+      if (response?.roles) {
+        queryClient.setQueryData(["user"], response);
+        localStorage.setItem("userRoles", response.roles.join(","));
+      } else {
+        refetchUser();
+      }
+
+      // Get the role value for redirect
+      let redirectRole = selectedRole;
+      if (selectedRole === "employer") {
+        redirectRole = "recruiter";
+      }
+
       // If adding a role, redirect with the new role selected
       if (isAddingRole) {
-        router.push("/dashboard?switchRole=recruiter");
+        router.push(`/dashboard?switchRole=${redirectRole}`);
       } else {
         router.push("/dashboard");
       }
@@ -400,43 +428,26 @@ const OnboardingPage = () => {
       formData.append("profileImage", profileImage);
     }
 
-    // Log complete submission data
-    if (selectedRole === "employer") {
-      console.log("=== ONBOARDING SUBMISSION ===", {
-        role: roleValue,
-        profile: profileData,
-        details: {
-          ...data,
-          profileImage: profileImage ? profileImage.name : null,
-        },
-      });
-    } else {
-      console.log("=== ONBOARDING SUBMISSION ===", {
-        role: roleValue,
-        profile: profileData,
-        details: data,
-        profileImage: profileImage ? profileImage.name : null,
-      });
-    }
-
     try {
-      // Ensure token is valid before submitting large profile data
-      const tokenValid =
-        await ensureValidTokenBeforeOperation("profile completion");
-      if (!tokenValid) {
-        setIsLoading(false);
-        return;
-      }
+      const response = await completeOnboardingMutation.mutateAsync(formData);
 
-      await completeOnboardingMutation.mutateAsync(formData);
-
-      await refetchUser();
       toast({
         title: "Success",
         description: isAddingRole
           ? "Your new role has been successfully added."
           : "Your profile has been successfully created.",
       });
+
+      // USE RESPONSE to update user state immediately
+      // This updates TWO places so ProfileSwitcher and useAuth both see the new roles:
+      // 1. React Query cache (for useAuth hook)
+      // 2. localStorage (for useProfile/ProfileSwitcher)
+      if (response?.roles) {
+        queryClient.setQueryData(["user"], response);
+        localStorage.setItem("userRoles", response.roles.join(","));
+      } else {
+        refetchUser();
+      }
 
       // Get the role value for redirect
       let redirectRole = selectedRole;
@@ -551,6 +562,7 @@ const OnboardingPage = () => {
               onBack={handleSelectRoleBack}
               existingRoles={isAddingRole ? completedRoles : existingRoles}
               isAddingRole={isAddingRole}
+              isLoadingRoles={isAddingRole && isLoadingRoles}
             />
           </div>
         )}
