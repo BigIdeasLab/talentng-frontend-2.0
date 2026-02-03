@@ -32,34 +32,34 @@ export function SessionCard({
   const remainingCount = Math.max(0, totalMentees - displayMentees.length);
 
   return (
-    <div className="flex flex-col gap-[15px] rounded-[10px] border border-[#E1E4EA] bg-white p-3 lg:px-3 lg:py-[15px]">
-      <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-3 rounded-lg border border-[#E1E4EA] bg-white p-2.5 lg:px-2.5 lg:py-3">
+      <div className="flex flex-col gap-4">
         {/* Title and Description Section */}
-        <div className="flex items-start gap-[18px]">
+        <div className="flex items-start gap-3.5">
           {/* Purple accent bar */}
-          <div className="h-auto min-h-[60px] w-[5px] flex-shrink-0 self-stretch rounded-[60px] bg-[#5C30FF]" />
+          <div className="h-auto min-h-[48px] w-1 flex-shrink-0 self-stretch rounded-[48px] bg-[#5C30FF]" />
 
           {/* Content */}
-          <div className="flex flex-1 flex-col gap-[18px]">
+          <div className="flex flex-1 flex-col gap-3.5">
             {/* Title */}
-            <h3 className="font-inter-tight text-[20px] font-semibold leading-normal text-black">
+            <h3 className="font-inter-tight text-[15px] font-semibold leading-normal text-black">
               {title}
             </h3>
 
             {/* Description */}
-            <p className="font-inter-tight text-[15px] font-normal leading-normal text-[#525866]">
+            <p className="font-inter-tight text-[13px] font-normal leading-normal text-[#525866]">
               {description}
             </p>
           </div>
         </div>
 
         {/* Session Details */}
-        <div className="flex flex-col gap-[15px]">
+        <div className="flex flex-col gap-3">
           {/* Date */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <svg
-              width="22"
-              height="22"
+              width="18"
+              height="18"
               viewBox="0 0 22 22"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -93,16 +93,16 @@ export function SessionCard({
                 strokeLinejoin="round"
               />
             </svg>
-            <span className="font-inter-tight text-[15px] font-normal leading-normal text-black">
+            <span className="font-inter-tight text-[13px] font-normal leading-normal text-black">
               Date: {date}
             </span>
           </div>
 
           {/* Duration */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <svg
-              width="22"
-              height="22"
+              width="18"
+              height="18"
               viewBox="0 0 22 22"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -127,16 +127,16 @@ export function SessionCard({
                 strokeLinecap="round"
               />
             </svg>
-            <span className="font-inter-tight text-[15px] font-normal leading-normal text-black">
+            <span className="font-inter-tight text-[13px] font-normal leading-normal text-black">
               Duration: {duration}
             </span>
           </div>
 
           {/* Location */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <svg
-              width="22"
-              height="22"
+              width="18"
+              height="18"
               viewBox="0 0 22 22"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -152,7 +152,7 @@ export function SessionCard({
                 strokeWidth="1.375"
               />
             </svg>
-            <span className="font-inter-tight text-[15px] font-normal leading-normal text-black">
+            <span className="font-inter-tight text-[13px] font-normal leading-normal text-black">
               Location: {location}
             </span>
           </div>
@@ -163,16 +163,16 @@ export function SessionCard({
       <div className="h-px w-full bg-[#E1E4EA]" />
 
       {/* Bottom Section - Mentees and Actions */}
-      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+      <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
         {/* Mentee Section */}
         {mentees.length > 0 ? (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             {/* Overlapping avatars */}
-            <div className="flex items-center -space-x-2">
+            <div className="flex items-center -space-x-1.5">
               {displayMentees.map((mentee) => (
                 <div
                   key={mentee.id}
-                  className="relative h-10 w-10 overflow-hidden rounded-full border-2 border-white"
+                  className="relative h-8 w-8 overflow-hidden rounded-full border-2 border-white"
                 >
                   <Image
                     src={mentee.avatar}
@@ -183,8 +183,8 @@ export function SessionCard({
                 </div>
               ))}
               {remainingCount > 0 && (
-                <div className="relative flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-[#F5F5F5]">
-                  <span className="font-inter-tight text-sm font-normal text-black">
+                <div className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-[#F5F5F5]">
+                  <span className="font-inter-tight text-xs font-normal text-black">
                     +{remainingCount}
                   </span>
                 </div>
@@ -192,21 +192,21 @@ export function SessionCard({
             </div>
           </div>
         ) : (
-          <div className="flex items-center gap-2.5">
-            <div className="h-10 w-10 overflow-hidden rounded-full">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 overflow-hidden rounded-full">
               <Image
                 src="https://api.builder.io/api/v1/image/assets/TEMP/77a2d0f5eaf5e0f9f0f0c283d2661d2eaacaca2e?width=80"
                 alt="Mentee"
-                width={40}
-                height={40}
+                width={32}
+                height={32}
                 className="object-cover"
               />
             </div>
-            <div className="flex flex-col gap-2.5">
-              <span className="font-inter-tight text-[15px] font-medium leading-normal text-black">
+            <div className="flex flex-col gap-2">
+              <span className="font-inter-tight text-[13px] font-medium leading-normal text-black">
                 Akanbi David
               </span>
-              <span className="font-inter-tight text-sm font-light leading-normal text-black/30">
+              <span className="font-inter-tight text-xs font-light leading-normal text-black/30">
                 Mentee
               </span>
             </div>
@@ -214,22 +214,22 @@ export function SessionCard({
         )}
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-1.5">
-          <Button className="flex items-center gap-2.5 rounded-[50px] bg-[#5C30FF] px-[15px] py-[15px] hover:bg-[#4A26CC]">
-            <Bell className="h-[22px] w-[22px]" strokeWidth={1.375} />
-            <span className="font-inter-tight text-sm font-normal leading-[26px] text-white">
+        <div className="flex items-center gap-1">
+          <Button className="flex items-center gap-2 rounded-[40px] bg-[#5C30FF] px-3 py-2.5 hover:bg-[#4A26CC]">
+            <Bell className="h-4 w-4" strokeWidth={1.375} />
+            <span className="font-inter-tight text-xs font-normal leading-5 text-white">
               Remind Me
             </span>
           </Button>
           <Button
             variant="outline"
-            className="flex items-center gap-2.5 rounded-[50px] border-0 bg-[#F5F5F5] px-[15px] py-[15px] hover:bg-[#E5E5E5]"
+            className="flex items-center gap-2 rounded-[40px] border-0 bg-[#F5F5F5] px-3 py-2.5 hover:bg-[#E5E5E5]"
           >
             <Clock
-              className="h-[22px] w-[22px] text-[#525866]"
+              className="h-4 w-4 text-[#525866]"
               strokeWidth={1.375}
             />
-            <span className="font-inter-tight text-sm font-normal leading-[26px] text-[#525866]">
+            <span className="font-inter-tight text-xs font-normal leading-5 text-[#525866]">
               Reschedule
             </span>
           </Button>

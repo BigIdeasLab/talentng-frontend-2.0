@@ -115,19 +115,19 @@ export default function MentorshipPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white px-4 py-6 sm:px-6 lg:px-10">
-      <div className="mx-auto max-w-[1149px]">
+    <div className="h-screen overflow-hidden bg-white">
+      <div className="flex h-full flex-col overflow-hidden px-4 py-6 md:px-8 md:py-7">
         {/* Header */}
-        <h1 className="mb-[45px] font-inter-tight text-[25px] font-medium leading-5 text-black">
+        <h1 className="mb-8 flex-shrink-0 font-inter-tight text-[20px] font-medium leading-5 text-black">
           Session Management
         </h1>
 
         {/* Search and Filters */}
-        <div className="mb-[20px] flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-2.5">
+        <div className="mb-4 flex flex-shrink-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
           {/* Search Container */}
-          <div className="flex flex-1 items-center gap-[7px] rounded-[10px] border border-[#E1E4EA] px-[15px] py-[9px]">
+          <div className="flex flex-1 items-center gap-1.5 rounded-lg border border-[#E1E4EA] px-3 py-2">
             <Search
-              className="h-[18px] w-[18px] text-[#B2B2B2]"
+              className="h-4 w-4 text-[#B2B2B2]"
               strokeWidth={1.125}
             />
             <input
@@ -135,40 +135,40 @@ export default function MentorshipPage() {
               placeholder="Search Topic, Mentee"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 font-inter-tight text-[15px] font-normal capitalize text-black/30 outline-none placeholder:text-black/30"
+              className="flex-1 font-inter-tight text-[13px] font-normal capitalize text-black/30 outline-none placeholder:text-black/30"
             />
           </div>
 
           {/* Filter and Sort Buttons */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
             {/* Filter Button */}
-            <button className="flex items-center gap-1.5 rounded-[10px] bg-[#F5F5F5] px-[18px] py-[9px]">
+            <button className="flex items-center gap-1 rounded-lg bg-[#F5F5F5] px-3.5 py-2">
               <SlidersHorizontal
-                className="h-[18px] w-[18px]"
+                className="h-4 w-4"
                 strokeWidth={1.125}
               />
-              <span className="font-inter-tight text-[15px] font-normal leading-normal text-black">
+              <span className="font-inter-tight text-[13px] font-normal leading-normal text-black">
                 Filter
               </span>
             </button>
 
             {/* Sort Dropdown */}
-            <button className="flex items-center gap-1.5 rounded-[10px] bg-[#F5F5F5] px-[18px] py-[9px]">
-              <span className="font-inter-tight text-[15px] font-normal leading-normal text-black">
+            <button className="flex items-center gap-1 rounded-lg bg-[#F5F5F5] px-3.5 py-2">
+              <span className="font-inter-tight text-[13px] font-normal leading-normal text-black">
                 Newest
               </span>
-              <ChevronDown className="h-4 w-4" strokeWidth={2} />
+              <ChevronDown className="h-3.5 w-3.5" strokeWidth={2} />
             </button>
           </div>
         </div>
 
         {/* Filter Tabs */}
-        <div className="mb-[41px] flex items-center gap-2.5 overflow-x-auto scrollbar-hidden">
+        <div className="mb-6 flex flex-shrink-0 items-center gap-2 overflow-x-auto scrollbar-hidden">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-shrink-0 px-[15px] py-[15px] font-inter-tight text-[15px] font-medium leading-normal transition-colors ${
+              className={`flex-shrink-0 px-3 py-3 font-inter-tight text-[13px] font-medium leading-normal transition-colors ${
                 activeTab === tab.id
                   ? "text-black"
                   : "text-black/30 hover:text-black/50"
@@ -180,7 +180,7 @@ export default function MentorshipPage() {
         </div>
 
         {/* Session Cards */}
-        <div className="flex flex-col gap-[25px]">
+        <div className="flex flex-1 flex-col gap-5 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300">
           {sessions.map((session) => (
             <SessionCard key={session.id} {...session} />
           ))}
