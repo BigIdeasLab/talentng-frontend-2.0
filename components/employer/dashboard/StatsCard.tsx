@@ -12,19 +12,19 @@ interface StatsCardProps {
 
 export function StatsCard({ icon, value, label, change }: StatsCardProps) {
   return (
-    <div className="flex flex-col justify-center items-start gap-3.5 p-6 rounded-xl border border-gray-300 bg-white shadow-sm w-full md:min-w-[268px]">
+    <div className="flex flex-col justify-center items-start gap-2.5 p-4 rounded-lg border border-gray-300 bg-white shadow-sm w-full md:min-w-[220px]">
       <div className="flex justify-between items-center self-stretch">
-        <div className="flex w-10 h-10 p-2.5 justify-center items-center rounded-xl bg-[#F2ECFD]">
+        <div className="flex w-8 h-8 p-2 justify-center items-center rounded-lg bg-[#F2ECFD]">
           {icon}
         </div>
         {change && (
           <div
-            className={`flex h-5.5 px-2.5 py-0 justify-center items-center gap-2.5 rounded-[20px] ${
+            className={`flex h-4.5 px-2 py-0 justify-center items-center gap-2 rounded-2xl ${
               change.type === "positive" ? "bg-[#EAF8F3]" : "bg-[#FFEBEC]"
             }`}
           >
             <span
-              className={`font-inter-tight text-xs font-medium ${
+              className={`font-inter-tight text-[11px] font-medium ${
                 change.type === "positive"
                   ? "text-[#1AA148]"
                   : "text-[#EE4343]"
@@ -35,11 +35,11 @@ export function StatsCard({ icon, value, label, change }: StatsCardProps) {
           </div>
         )}
       </div>
-      <div className="flex flex-col items-start gap-4 w-full">
-        <div className="font-inter-tight text-3xl font-bold text-black">
+      <div className="flex flex-col items-start gap-2.5 w-full">
+        <div className="font-inter-tight text-2xl font-bold text-black">
           {value}
         </div>
-        <div className="font-inter-tight text-xs font-medium text-[#606060]">
+        <div className="font-inter-tight text-[11px] font-medium text-[#606060]">
           {label}
         </div>
       </div>

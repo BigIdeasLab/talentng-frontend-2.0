@@ -42,20 +42,20 @@ function ActivityItem({
   const Icon = config.icon;
 
   return (
-    <div className="flex items-start gap-3.5 self-stretch pb-4 border-b border-gray-200 last:border-0 last:pb-0">
+    <div className="flex items-start gap-2.5 self-stretch pb-3 border-b border-gray-200 last:border-0 last:pb-0">
       <div
-        className={`flex w-7.5 h-7.5 p-1.5 justify-center items-center rounded-full ${config.bgColor} flex-shrink-0`}
+        className={`flex w-6 h-6 p-1 justify-center items-center rounded-full ${config.bgColor} flex-shrink-0`}
       >
-        <Icon className={`w-4 h-4 ${config.iconColor}`} strokeWidth={2} />
+        <Icon className={`w-3.5 h-3.5 ${config.iconColor}`} strokeWidth={2} />
       </div>
-      <div className="flex flex-col items-start gap-2.5 flex-1 min-w-0">
-        <p className="font-inter-tight text-sm font-normal text-[#5C30FF] self-stretch break-words">
+      <div className="flex flex-col items-start gap-1.5 flex-1 min-w-0">
+        <p className="font-inter-tight text-xs font-normal text-[#5C30FF] self-stretch break-words">
           <span className="font-bold text-[#181B25]">{name} </span>
           <span className="text-[#525866]">{action}</span>
           <span className="font-medium text-[#5C30FF]"> </span>
           <span className="text-[#5C30FF]">{position}</span>
         </p>
-        <span className="font-inter-tight text-xs font-normal text-[#525866]">
+        <span className="font-inter-tight text-[11px] font-normal text-[#525866]">
           {timeAgo}
         </span>
       </div>
@@ -96,12 +96,12 @@ export function RecentActivity() {
   ];
 
   return (
-    <div className="flex flex-col items-start gap-6 p-6 rounded-xl border border-gray-300 bg-white w-full">
-      <h2 className="font-inter-tight text-2xl font-bold text-black">
+    <div className="flex flex-col items-start gap-4 p-4 rounded-lg border border-gray-300 bg-white w-full">
+      <h2 className="font-inter-tight text-lg font-bold text-black flex-shrink-0">
         Recent Activity
       </h2>
 
-      <div className="flex flex-col items-start gap-4 self-stretch">
+      <div className="flex flex-col items-start gap-3 self-stretch">
         {activities.map((activity, index) => (
           <ActivityItem
             key={index}

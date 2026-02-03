@@ -424,18 +424,11 @@ export function CreateServiceModal({
                 <div className="flex items-start gap-2 mt-auto pt-4 flex-shrink-0">
                   <button
                     type="button"
-                    onClick={() => handleSubmit(true)}
+                    onClick={onClose}
                     disabled={isLoading}
                     className="flex-1 flex justify-center items-center gap-2 px-6 py-2.5 rounded-[60px] border border-[#F5F5F5] bg-[#F5F5F5] text-[16px] font-inter-tight text-[#525866] leading-normal transition-colors hover:bg-[#EBEBEB] disabled:opacity-50"
                   >
-                    {isLoading ? (
-                      <>
-                        <Loader className="w-4 h-4 animate-spin" />
-                        Saving...
-                      </>
-                    ) : (
-                      "Save As Draft"
-                    )}
+                    Cancel
                   </button>
                   <button
                     type="button"

@@ -10,49 +10,62 @@ import { QuickActions } from "./QuickActions";
 
 export function EmployerDashboard() {
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-[1440px] mx-auto px-6 py-8 md:px-12 md:py-10">
+    <div className="px-4 py-6 md:px-8 md:py-7">
         {/* Header Section */}
-        <div className="flex flex-col gap-6 mb-8">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div className="flex flex-col gap-2">
-              <h1 className="font-inter-tight text-2xl md:text-[25px] font-bold text-black leading-5">
+        <div className="flex flex-col gap-4 mb-6 flex-shrink-0">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+            <div className="flex flex-col gap-1.5">
+              <h1 className="font-inter-tight text-xl md:text-[21px] font-bold text-black leading-5">
                 Welcome back, Chowdeck!
               </h1>
-              <p className="font-inter-tight text-[15px] font-normal text-[rgba(0,0,0,0.30)]">
+              <p className="font-inter-tight text-[13px] font-normal text-[rgba(0,0,0,0.30)]">
                 Here&apos;s what&apos;s happening with your talent pipeline
               </p>
             </div>
-            <button className="flex h-[46px] px-6 justify-center items-center gap-1 rounded-[10px] border border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4A26CC] transition-colors group">
-              <span className="font-inter-tight text-sm font-normal text-white">
+            <button className="flex h-[38px] px-4 justify-center items-center gap-1 rounded-lg border border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4A26CC] transition-colors group flex-shrink-0">
+              <span className="font-inter-tight text-xs font-normal text-white">
                 Review Applicants
               </span>
-              <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-0.5 transition-transform" />
+              <ArrowRight className="w-3.5 h-3.5 text-white group-hover:translate-x-0.5 transition-transform" />
             </button>
           </div>
 
           {/* Stats Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <StatsCard
-              icon={<Users className="w-4.5 h-4.5 text-[#5C30FF]" strokeWidth={1.6} />}
+              icon={
+                <Users className="w-4 h-4 text-[#5C30FF]" strokeWidth={1.6} />
+              }
               value={156}
               label="Total Applicants"
               change={{ value: "+12%", type: "positive" }}
             />
             <StatsCard
-              icon={<Briefcase className="w-4.5 h-4.5 text-[#5C30FF]" strokeWidth={1.6} />}
+              icon={
+                <Briefcase
+                  className="w-4 h-4 text-[#5C30FF]"
+                  strokeWidth={1.6}
+                />
+              }
               value={8}
               label="Active Opportunities"
               change={{ value: "+3", type: "positive" }}
             />
             <StatsCard
-              icon={<TrendingUp className="w-4.5 h-4.5 text-[#5C30FF]" strokeWidth={2} />}
+              icon={
+                <TrendingUp
+                  className="w-4 h-4 text-[#5C30FF]"
+                  strokeWidth={2}
+                />
+              }
               value={24}
               label="Hired This Month"
               change={{ value: "+18%", type: "positive" }}
             />
             <StatsCard
-              icon={<Clock className="w-4.5 h-4.5 text-[#5C30FF]" strokeWidth={1.6} />}
+              icon={
+                <Clock className="w-4 h-4 text-[#5C30FF]" strokeWidth={1.6} />
+              }
               value={12}
               label="Pending Reviews"
               change={{ value: "-5", type: "negative" }}
@@ -61,15 +74,15 @@ export function EmployerDashboard() {
         </div>
 
         {/* Main Content Grid */}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
           {/* Charts Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <WeeklyOverviewChart />
             <HiringPipeline />
           </div>
 
           {/* Opportunities and Activity Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <TopOpportunities />
             <RecentActivity />
           </div>
@@ -77,7 +90,6 @@ export function EmployerDashboard() {
           {/* Quick Actions */}
           <QuickActions />
         </div>
-      </div>
     </div>
   );
 }
