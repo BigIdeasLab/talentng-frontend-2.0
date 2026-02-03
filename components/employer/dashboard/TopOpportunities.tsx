@@ -25,7 +25,10 @@ function OpportunityItem({
           </h3>
           <div className="flex items-center gap-1.5">
             <div className="flex items-center gap-1">
-              <Users className="w-2.5 h-2.5 text-[#606060]" strokeWidth={1.25} />
+              <Users
+                className="w-2.5 h-2.5 text-[#606060]"
+                strokeWidth={1.25}
+              />
               <span className="font-inter-tight text-[11px] font-normal text-[#606060] whitespace-nowrap">
                 {applicants} applicants
               </span>

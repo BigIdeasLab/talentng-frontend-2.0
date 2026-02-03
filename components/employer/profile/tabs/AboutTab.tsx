@@ -26,11 +26,13 @@ export function AboutTab({
         </h2>
         <div className="flex flex-col gap-3 text-[13px] font-normal text-black font-inter-tight leading-[22px]">
           {bio ? (
-            bio.split("\n").map((paragraph, index) => (
-              <p key={index}>{paragraph}</p>
-            ))
+            bio
+              .split("\n")
+              .map((paragraph, index) => <p key={index}>{paragraph}</p>)
           ) : (
-            <p className="text-black/50 italic">No company description added yet.</p>
+            <p className="text-black/50 italic">
+              No company description added yet.
+            </p>
           )}
         </div>
       </div>

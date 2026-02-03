@@ -39,7 +39,9 @@ export function QuickActions() {
 
       <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
         <ActionButton
-          icon={<Users className="w-3.5 h-3.5 text-[#525866]" strokeWidth={1.24} />}
+          icon={
+            <Users className="w-3.5 h-3.5 text-[#525866]" strokeWidth={1.24} />
+          }
           label="View Applicants"
           onClick={() => {
             /* Handle navigation */
@@ -47,7 +49,10 @@ export function QuickActions() {
         />
         <ActionButton
           icon={
-            <Briefcase className="w-3.5 h-3.5 text-[#525866]" strokeWidth={1.6} />
+            <Briefcase
+              className="w-3.5 h-3.5 text-[#525866]"
+              strokeWidth={1.6}
+            />
           }
           label="Post Opportunity"
           onClick={() => {
@@ -56,7 +61,10 @@ export function QuickActions() {
         />
         <ActionButton
           icon={
-            <CheckCircle className="w-3.5 h-3.5 text-[#606060]" strokeWidth={1.6} />
+            <CheckCircle
+              className="w-3.5 h-3.5 text-[#606060]"
+              strokeWidth={1.6}
+            />
           }
           label="Hired Talents"
           onClick={() => {

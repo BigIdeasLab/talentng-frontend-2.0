@@ -39,17 +39,29 @@ export function WeeklyOverviewChart() {
             data={data}
             margin={{ top: 5, right: 5, left: -20, bottom: 5 }}
           >
-            <CartesianGrid strokeDasharray="0" stroke="#F3F4F6" vertical={false} />
+            <CartesianGrid
+              strokeDasharray="0"
+              stroke="#F3F4F6"
+              vertical={false}
+            />
             <XAxis
               dataKey="day"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#606060", fontSize: 11, fontFamily: "Inter Tight" }}
+              tick={{
+                fill: "#606060",
+                fontSize: 11,
+                fontFamily: "Inter Tight",
+              }}
             />
             <YAxis
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#606060", fontSize: 11, fontFamily: "Inter Tight" }}
+              tick={{
+                fill: "#606060",
+                fontSize: 11,
+                fontFamily: "Inter Tight",
+              }}
               domain={[0, 80]}
               ticks={[0, 20, 40, 60, 80]}
             />
@@ -99,7 +111,13 @@ export function WeeklyOverviewChart() {
               fill="url(#colorApplications)"
             />
             <defs>
-              <linearGradient id="colorApplications" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient
+                id="colorApplications"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
                 <stop offset="5%" stopColor="#5C30FF" stopOpacity={0.1} />
                 <stop offset="95%" stopColor="#5C30FF" stopOpacity={0} />
               </linearGradient>

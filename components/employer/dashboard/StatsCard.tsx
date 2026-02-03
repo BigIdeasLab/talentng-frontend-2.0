@@ -25,9 +25,7 @@ export function StatsCard({ icon, value, label, change }: StatsCardProps) {
           >
             <span
               className={`font-inter-tight text-[11px] font-medium ${
-                change.type === "positive"
-                  ? "text-[#1AA148]"
-                  : "text-[#EE4343]"
+                change.type === "positive" ? "text-[#1AA148]" : "text-[#EE4343]"
               }`}
             >
               {change.value}
