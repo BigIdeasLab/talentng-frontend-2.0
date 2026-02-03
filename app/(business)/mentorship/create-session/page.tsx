@@ -20,20 +20,22 @@ import "react-day-picker/style.css";
 export default function CreateSessionPage() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
-  
+
   // Step 1 state
   const [sessionType, setSessionType] = useState("");
   const [sessionTitle, setSessionTitle] = useState("");
   const [description, setDescription] = useState("");
-  
+
   // Step 2 state
   const [duration, setDuration] = useState("30");
   const [pricingType, setPricingType] = useState("paid");
   const [amount, setAmount] = useState("80");
   const [meetingMethod, setMeetingMethod] = useState("google-meet");
-  
+
   // Step 3 state
-  const [selectedDateRange, setSelectedDateRange] = useState<DateRange | undefined>();
+  const [selectedDateRange, setSelectedDateRange] = useState<
+    DateRange | undefined
+  >();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
   const [timeSlots, setTimeSlots] = useState<string[]>([]);
@@ -290,7 +292,10 @@ export default function CreateSessionPage() {
                       >
                         Pricing
                       </Label>
-                      <Select value={pricingType} onValueChange={setPricingType}>
+                      <Select
+                        value={pricingType}
+                        onValueChange={setPricingType}
+                      >
                         <SelectTrigger id="pricing" className="h-14">
                           <SelectValue />
                         </SelectTrigger>
@@ -418,10 +423,17 @@ export default function CreateSessionPage() {
                         </h3>
                         <div className="flex gap-2">
                           <button
-                            onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
+                            onClick={() =>
+                              setCurrentMonth(subMonths(currentMonth, 1))
+                            }
                             className="flex h-8 w-8 items-center justify-center rounded hover:bg-gray-200"
                           >
-                            <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+                            <svg
+                              width="30"
+                              height="30"
+                              viewBox="0 0 30 30"
+                              fill="none"
+                            >
                               <path
                                 d="M10.625 16L17.75 23C18.25 23.5 19 23.5 19.5 23C20 22.5 20 21.75 19.5 21.25L13.375 15L19.5 8.75C20 8.25 20 7.5 19.5 7C19.25 6.75 19 6.625 18.625 6.625C18.25 6.625 18 6.75 17.75 7L10.625 14C10.125 14.625 10.125 15.375 10.625 16C10.625 15.875 10.625 15.875 10.625 16Z"
                                 fill="#121212"
@@ -429,10 +441,17 @@ export default function CreateSessionPage() {
                             </svg>
                           </button>
                           <button
-                            onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
+                            onClick={() =>
+                              setCurrentMonth(addMonths(currentMonth, 1))
+                            }
                             className="flex h-8 w-8 items-center justify-center rounded hover:bg-gray-200"
                           >
-                            <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+                            <svg
+                              width="30"
+                              height="30"
+                              viewBox="0 0 30 30"
+                              fill="none"
+                            >
                               <path
                                 d="M19.4249 14.1129L12.3499 7.05041C12.2337 6.93325 12.0955 6.84026 11.9431 6.7768C11.7908 6.71334 11.6274 6.68066 11.4624 6.68066C11.2974 6.68066 11.134 6.71334 10.9817 6.7768C10.8294 6.84026 10.6911 6.93325 10.5749 7.05041C10.3421 7.28461 10.2114 7.60143 10.2114 7.93166C10.2114 8.26189 10.3421 8.57871 10.5749 8.81291L16.7624 15.0629L10.5749 21.2504C10.3421 21.4846 10.2114 21.8014 10.2114 22.1317C10.2114 22.4619 10.3421 22.7787 10.5749 23.0129C10.6907 23.131 10.8287 23.225 10.9811 23.2894C11.1334 23.3537 11.297 23.3872 11.4624 23.3879C11.6278 23.3872 11.7914 23.3537 11.9437 23.2894C12.0961 23.225 12.2341 23.131 12.3499 23.0129L19.4249 15.9504C19.5518 15.8334 19.6531 15.6913 19.7223 15.5332C19.7916 15.375 19.8273 15.2043 19.8273 15.0317C19.8273 14.859 19.7916 14.6883 19.7223 14.5302C19.6531 14.372 19.5518 14.23 19.4249 14.1129Z"
                                 fill="#121212"
@@ -455,14 +474,19 @@ export default function CreateSessionPage() {
                           nav: "space-x-1 flex items-center",
                           table: "w-full border-collapse",
                           head_row: "flex w-full",
-                          head_cell: "text-[#222730] rounded-md w-full font-inter text-sm font-normal flex-1 text-center",
+                          head_cell:
+                            "text-[#222730] rounded-md w-full font-inter text-sm font-normal flex-1 text-center",
                           row: "flex w-full mt-2",
                           cell: "flex-1 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
                           day: "h-12 w-full p-0 font-inter text-sm font-normal hover:bg-gray-200 rounded-md transition-colors",
-                          day_range_start: "bg-[#C4B5FD] text-[#5C30FF] rounded-l-full hover:bg-[#C4B5FD]",
-                          day_range_middle: "bg-[#C4B5FD] text-[#5C30FF] rounded-none hover:bg-[#C4B5FD]",
-                          day_range_end: "bg-[#C4B5FD] text-[#5C30FF] rounded-r-full hover:bg-[#C4B5FD]",
-                          day_selected: "bg-[#C4B5FD] text-[#5C30FF] hover:bg-[#C4B5FD]",
+                          day_range_start:
+                            "bg-[#C4B5FD] text-[#5C30FF] rounded-l-full hover:bg-[#C4B5FD]",
+                          day_range_middle:
+                            "bg-[#C4B5FD] text-[#5C30FF] rounded-none hover:bg-[#C4B5FD]",
+                          day_range_end:
+                            "bg-[#C4B5FD] text-[#5C30FF] rounded-r-full hover:bg-[#C4B5FD]",
+                          day_selected:
+                            "bg-[#C4B5FD] text-[#5C30FF] hover:bg-[#C4B5FD]",
                           day_today: "bg-accent text-accent-foreground",
                           day_outside: "text-gray-400 opacity-50",
                           day_disabled: "text-gray-400 opacity-50",
@@ -481,7 +505,10 @@ export default function CreateSessionPage() {
                       Select Available Time
                     </Label>
                     <div className="flex gap-2">
-                      <Select value={selectedTimeSlot} onValueChange={setSelectedTimeSlot}>
+                      <Select
+                        value={selectedTimeSlot}
+                        onValueChange={setSelectedTimeSlot}
+                      >
                         <SelectTrigger id="time-slot" className="h-14 flex-1">
                           <SelectValue placeholder="09:30 AM" />
                         </SelectTrigger>
