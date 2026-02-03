@@ -225,7 +225,10 @@ export function SessionCard({
             variant="outline"
             className="flex items-center gap-2.5 rounded-[50px] border-0 bg-[#F5F5F5] px-[15px] py-[15px] hover:bg-[#E5E5E5]"
           >
-            <Clock className="h-[22px] w-[22px] text-[#525866]" strokeWidth={1.375} />
+            <Clock
+              className="h-[22px] w-[22px] text-[#525866]"
+              strokeWidth={1.375}
+            />
             <span className="font-inter-tight text-sm font-normal leading-[26px] text-[#525866]">
               Reschedule
             </span>
