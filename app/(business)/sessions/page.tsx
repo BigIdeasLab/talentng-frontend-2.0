@@ -126,10 +126,7 @@ export default function MentorshipPage() {
         <div className="mb-4 flex flex-shrink-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
           {/* Search Container */}
           <div className="flex flex-1 items-center gap-1.5 rounded-lg border border-[#E1E4EA] px-3 py-2">
-            <Search
-              className="h-4 w-4 text-[#B2B2B2]"
-              strokeWidth={1.125}
-            />
+            <Search className="h-4 w-4 text-[#B2B2B2]" strokeWidth={1.125} />
             <input
               type="text"
               placeholder="Search Topic, Mentee"
@@ -143,10 +140,7 @@ export default function MentorshipPage() {
           <div className="flex items-center gap-2">
             {/* Filter Button */}
             <button className="flex items-center gap-1 rounded-lg bg-[#F5F5F5] px-3.5 py-2">
-              <SlidersHorizontal
-                className="h-4 w-4"
-                strokeWidth={1.125}
-              />
+              <SlidersHorizontal className="h-4 w-4" strokeWidth={1.125} />
               <span className="font-inter-tight text-[13px] font-normal leading-normal text-black">
                 Filter
               </span>
