@@ -26,9 +26,9 @@ function ApplicationItem({
   };
 
   return (
-    <div className="flex items-center justify-between gap-4 p-4 rounded-xl bg-[#FCFCFD]">
-      <div className="flex items-center gap-4 flex-1">
-        <div className="w-12 h-12 rounded-xl bg-[#002224] flex-shrink-0 overflow-hidden">
+    <div className="flex items-center justify-between gap-3 p-3 rounded-lg bg-[#FCFCFD]">
+      <div className="flex items-center gap-3 flex-1">
+        <div className="w-10 h-10 rounded-lg bg-[#002224] flex-shrink-0 overflow-hidden">
           {companyLogo && (
             <img
               src={companyLogo}
@@ -37,21 +37,21 @@ function ApplicationItem({
             />
           )}
         </div>
-        <div className="flex flex-col gap-2 flex-1 min-w-0">
-          <h3 className="text-[16px] font-inter-tight text-black truncate">
+        <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+          <h3 className="text-[13px] font-inter-tight text-black truncate">
             {title}
           </h3>
-          <p className="text-[12px] text-[#606060] font-inter-tight">
+          <p className="text-[11px] text-[#606060] font-inter-tight">
             {company}
           </p>
         </div>
       </div>
-      <div className="flex items-center gap-3 flex-shrink-0">
-        <span className="text-[12px] text-[#606060] font-inter-tight hidden sm:block">
+      <div className="flex items-center gap-2 flex-shrink-0">
+        <span className="text-[11px] text-[#606060] font-inter-tight hidden sm:block">
           {timeAgo}
         </span>
         <span
-          className={`px-3 py-1.5 rounded-lg text-[12px] font-medium font-inter-tight ${statusColors[status]}`}
+          className={`px-2 py-1 rounded-md text-[11px] font-medium font-inter-tight ${statusColors[status]}`}
         >
           {status}
         </span>
@@ -66,19 +66,19 @@ interface RecentApplicationsProps {
 
 export function RecentApplications({ applications }: RecentApplicationsProps) {
   return (
-    <div className="flex flex-col gap-6 p-6 rounded-xl border border-[#E5E6ED] bg-white">
+    <div className="flex flex-col gap-4 p-4 rounded-lg border border-[#E5E6ED] bg-white">
       <div className="flex justify-between items-center">
-        <h2 className="text-[18px] font-bold font-inter-tight">
+        <h2 className="text-[15px] font-bold font-inter-tight">
           Recent Applications
         </h2>
-        <button className="flex items-center gap-1 text-[#5C30FF] text-[14px] font-medium font-inter-tight hover:opacity-80 transition-opacity">
+        <button className="flex items-center gap-1 text-[#5C30FF] text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity">
           View All
-          <ArrowUpRight className="w-4 h-4" />
+          <ArrowUpRight className="w-3.5 h-3.5" />
         </button>
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         {applications.length === 0 ? (
-          <p className="text-[14px] text-[#606060] font-inter-tight text-center py-8">
+          <p className="text-[12px] text-[#606060] font-inter-tight text-center py-6">
             No applications yet
           </p>
         ) : (

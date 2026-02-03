@@ -12,12 +12,12 @@ export function WelcomeHeader({
   profileViewsIncreasePercent,
 }: WelcomeHeaderProps) {
   return (
-    <div className="relative w-full rounded-[20px] bg-gradient-to-br from-[#8463FF]/90 to-[#8463FF] overflow-hidden p-5 md:p-8">
+    <div className="relative w-full rounded-2xl bg-gradient-to-br from-[#8463FF]/90 to-[#8463FF] overflow-hidden p-4 md:p-6 flex-shrink-0">
       {/* Decorative Stars */}
       <svg
         className="absolute right-[10%] top-[-5%] opacity-100"
-        width="70"
-        height="70"
+        width="56"
+        height="56"
         viewBox="0 0 70 70"
         fill="none"
       >
@@ -28,8 +28,8 @@ export function WelcomeHeader({
       </svg>
       <svg
         className="absolute right-[4%] bottom-[20%] opacity-45"
-        width="54"
-        height="54"
+        width="43"
+        height="43"
         viewBox="0 0 54 54"
         fill="none"
       >
@@ -40,8 +40,8 @@ export function WelcomeHeader({
       </svg>
       <svg
         className="absolute left-[35%] bottom-[10%] opacity-70"
-        width="54"
-        height="54"
+        width="43"
+        height="43"
         viewBox="0 0 54 54"
         fill="none"
       >
@@ -52,8 +52,8 @@ export function WelcomeHeader({
       </svg>
       <svg
         className="absolute left-[37%] top-[5%] opacity-45"
-        width="32"
-        height="32"
+        width="26"
+        height="26"
         viewBox="0 0 32 32"
         fill="none"
       >
@@ -65,17 +65,16 @@ export function WelcomeHeader({
 
       {/* Content */}
       <div className="relative z-10">
-        <p className="text-[#E1E4EA]/80 text-[13px] font-inter-tight mb-3">
+        <p className="text-[#E1E4EA]/80 text-[11px] font-inter-tight mb-2">
           {greeting}!
         </p>
-        <h1 className="text-white text-[24px] font-inter-tight font-bold mb-4">
+        <h1 className="text-white text-[18px] font-inter-tight font-bold mb-3">
           Welcome back, {name}
         </h1>
-        <p className="text-white text-[12px] font-inter-tight">
+        <p className="text-white text-[11px] font-inter-tight">
           You have{" "}
           <span className="font-bold">
-            {newOpportunities} new opportunit
-            {newOpportunities === 1 ? "y" : "ies"}
+            {newOpportunities} new opportunit{newOpportunities === 1 ? "y" : "ies"}
           </span>{" "}
           waiting for you. Your profile views increased by{" "}
           <span className="font-bold block sm:inline mt-1 sm:mt-0">

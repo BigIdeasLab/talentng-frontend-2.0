@@ -26,39 +26,39 @@ interface WeeklyOverviewProps {
 
 export function WeeklyOverview({ data }: WeeklyOverviewProps) {
   return (
-    <div className="flex flex-col gap-8 p-6 md:p-8 rounded-xl border border-[#E5E6ED] bg-white">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <div className="flex flex-col gap-3">
-          <h2 className="text-[18px] font-bold font-inter-tight">
+    <div className="flex flex-col gap-5 p-4 md:p-6 rounded-lg border border-[#E5E6ED] bg-white">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <div className="flex flex-col gap-2">
+          <h2 className="text-[15px] font-bold font-inter-tight">
             Weekly Overview
           </h2>
-          <p className="text-[14px] text-[#606060] font-inter-tight">
+          <p className="text-[12px] text-[#606060] font-inter-tight">
             Applications and profile views this week
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-[#5C30FF]"></div>
-            <span className="text-[14px] text-[#606060] font-inter-tight">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-[#5C30FF]"></div>
+            <span className="text-[12px] text-[#606060] font-inter-tight">
               Applications
             </span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-[#B5B9BE]"></div>
-            <span className="text-[14px] text-[#606060] font-inter-tight">
+          <div className="flex items-center gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-[#B5B9BE]"></div>
+            <span className="text-[12px] text-[#606060] font-inter-tight">
               Views
             </span>
           </div>
         </div>
       </div>
-      <div className="w-full h-[240px]">
+      <div className="w-full h-[180px]">
         <ChartContainer config={chartConfig} className="w-full h-full">
           <AreaChart
             data={data}
             margin={{
-              top: 10,
-              right: 10,
-              left: -20,
+              top: 8,
+              right: 8,
+              left: -24,
               bottom: 0,
             }}
           >
@@ -81,14 +81,14 @@ export function WeeklyOverview({ data }: WeeklyOverviewProps) {
               dataKey="day"
               tickLine={false}
               axisLine={false}
-              tickMargin={8}
-              tick={{ fill: "#606060", fontSize: 12 }}
+              tickMargin={6}
+              tick={{ fill: "#606060", fontSize: 11 }}
             />
             <YAxis
               tickLine={false}
               axisLine={false}
-              tickMargin={8}
-              tick={{ fill: "#606060", fontSize: 12 }}
+              tickMargin={6}
+              tick={{ fill: "#606060", fontSize: 11 }}
             />
             <ChartTooltip
               cursor={false}

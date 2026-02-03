@@ -1,12 +1,13 @@
 "use client";
 
-import { Users, Briefcase, TrendingUp, Clock, ArrowRight } from "lucide-react";
+import { Users, Briefcase, TrendingUp, Clock } from "lucide-react";
 import { StatsCard } from "./StatsCard";
 import { WeeklyOverviewChart } from "./WeeklyOverviewChart";
 import { HiringPipeline } from "./HiringPipeline";
 import { TopOpportunities } from "./TopOpportunities";
 import { RecentActivity } from "./RecentActivity";
 import { QuickActions } from "./QuickActions";
+import { WelcomeHeader } from "./WelcomeHeader";
 import { useRecruiterDashboard } from "@/hooks/useRecruiterDashboard";
 
 function Skeleton({ className }: { className?: string }) {
@@ -20,14 +21,10 @@ function Skeleton({ className }: { className?: string }) {
 function DashboardSkeleton() {
   return (
     <div className="px-4 py-6 md:px-8 md:py-7">
+      {/* Welcome Header Skeleton */}
+      <Skeleton className="h-[105px] w-full rounded-2xl mb-6" />
+
       <div className="flex flex-col gap-4 mb-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-          <div className="flex flex-col gap-1.5">
-            <Skeleton className="h-6 w-48" />
-            <Skeleton className="h-4 w-64" />
-          </div>
-          <Skeleton className="h-[38px] w-36" />
-        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {[...Array(4)].map((_, i) => (
             <Skeleton key={i} className="h-28 w-full" />
@@ -35,7 +32,7 @@ function DashboardSkeleton() {
         </div>
       </div>
       <div className="flex flex-col gap-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-[5fr_3fr] gap-4">
           <Skeleton className="h-72 w-full" />
           <Skeleton className="h-72 w-full" />
         </div>
@@ -80,25 +77,15 @@ export function EmployerDashboard() {
 
   return (
     <div className="px-4 py-6 md:px-8 md:py-7">
-      {/* Header Section */}
-      <div className="flex flex-col gap-4 mb-6 flex-shrink-0">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-          <div className="flex flex-col gap-1.5">
-            <h1 className="font-inter-tight text-xl md:text-[21px] font-bold text-black leading-5">
-              Welcome back, {data?.companyName ?? "Employer"}!
-            </h1>
-            <p className="font-inter-tight text-[13px] font-normal text-[rgba(0,0,0,0.30)]">
-              Here&apos;s what&apos;s happening with your talent pipeline
-            </p>
-          </div>
-          <button className="flex h-[38px] px-4 justify-center items-center gap-1 rounded-lg border border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4A26CC] transition-colors group flex-shrink-0">
-            <span className="font-inter-tight text-xs font-normal text-white">
-              Review Applicants
-            </span>
-            <ArrowRight className="w-3.5 h-3.5 text-white group-hover:translate-x-0.5 transition-transform" />
-          </button>
-        </div>
+      {/* Welcome Header */}
+      <WelcomeHeader
+        companyName={data?.companyName ?? "Employer"}
+        totalApplicants={data?.totalApplicants?.value ?? 0}
+        pendingReviews={data?.pendingReviews?.value ?? 0}
+      />
 
+      {/* Stats Section */}
+      <div className="flex flex-col gap-4 mt-5 mb-6 flex-shrink-0">
         {/* Stats Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <StatsCard
@@ -166,7 +153,7 @@ export function EmployerDashboard() {
       {/* Main Content Grid */}
       <div className="flex flex-col gap-4">
         {/* Charts Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-[5fr_3fr] gap-4">
           <WeeklyOverviewChart data={data?.weeklyOverview} />
           <HiringPipeline data={data?.hiringPipeline} />
         </div>

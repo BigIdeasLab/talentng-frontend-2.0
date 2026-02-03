@@ -11,21 +11,21 @@ interface InterviewCardProps {
 
 function InterviewCard({ company, position, date, time }: InterviewCardProps) {
   return (
-    <div className="flex justify-between items-start p-6 rounded-xl border border-dashed border-[#5C30FF] bg-[#F8F5FE]">
-      <div className="flex flex-col gap-3.5">
-        <h3 className="text-[16px] font-inter-tight text-black">{company}</h3>
-        <p className="text-[12px] text-[#606060] font-inter-tight">
+    <div className="flex justify-between items-start p-4 rounded-lg border border-dashed border-[#5C30FF] bg-[#F8F5FE]">
+      <div className="flex flex-col gap-2.5">
+        <h3 className="text-[13px] font-inter-tight text-black">{company}</h3>
+        <p className="text-[11px] text-[#606060] font-inter-tight">
           {position}
         </p>
-        <div className="flex items-center gap-1.5">
-          <Clock className="w-3 h-3 text-[#5C30FF]" />
-          <span className="text-[12px] font-medium font-inter-tight text-[#5C30FF]">
+        <div className="flex items-center gap-1">
+          <Clock className="w-2.5 h-2.5 text-[#5C30FF]" />
+          <span className="text-[11px] font-medium font-inter-tight text-[#5C30FF]">
             {date}
           </span>
         </div>
       </div>
-      <div className="flex items-center justify-center px-2.5 py-1.5 rounded-xl border border-[#E4E7EB] bg-white h-[22px]">
-        <span className="text-[12px] font-semibold font-inter-tight text-black">
+      <div className="flex items-center justify-center px-2 py-1 rounded-lg border border-[#E4E7EB] bg-white h-[18px]">
+        <span className="text-[11px] font-semibold font-inter-tight text-black">
           {time}
         </span>
       </div>
@@ -39,16 +39,16 @@ interface UpcomingInterviewsProps {
 
 export function UpcomingInterviews({ interviews }: UpcomingInterviewsProps) {
   return (
-    <div className="flex flex-col gap-6 p-6 rounded-xl border border-[#E5E6ED] bg-white">
-      <div className="flex items-center gap-2">
-        <Calendar className="w-5 h-5 text-[#5C30FF]" />
-        <h2 className="text-[18px] font-bold font-inter-tight">
+    <div className="flex flex-col gap-4 p-4 rounded-lg border border-[#E5E6ED] bg-white">
+      <div className="flex items-center gap-1.5">
+        <Calendar className="w-4 h-4 text-[#5C30FF]" />
+        <h2 className="text-[15px] font-bold font-inter-tight">
           Upcoming Interviews
         </h2>
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         {interviews.length === 0 ? (
-          <p className="text-[14px] text-[#606060] font-inter-tight text-center py-8">
+          <p className="text-[12px] text-[#606060] font-inter-tight text-center py-6">
             No upcoming interviews
           </p>
         ) : (
