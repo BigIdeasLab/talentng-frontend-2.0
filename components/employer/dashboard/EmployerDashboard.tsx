@@ -11,7 +11,9 @@ import { useRecruiterDashboard } from "@/hooks/useRecruiterDashboard";
 
 function Skeleton({ className }: { className?: string }) {
   return (
-    <div className={`bg-gray-200 animate-pulse rounded-lg ${className ?? ""}`} />
+    <div
+      className={`bg-gray-200 animate-pulse rounded-lg ${className ?? ""}`}
+    />
   );
 }
 
@@ -120,7 +122,10 @@ export function EmployerDashboard() {
             value={data?.activeOpportunities?.value ?? 0}
             label="Active Opportunities"
             change={{
-              value: formatChange(data?.activeOpportunities?.change ?? 0, false),
+              value: formatChange(
+                data?.activeOpportunities?.change ?? 0,
+                false,
+              ),
               type:
                 (data?.activeOpportunities?.change ?? 0) >= 0
                   ? "positive"

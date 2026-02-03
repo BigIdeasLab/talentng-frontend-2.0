@@ -12,11 +12,7 @@ const statusConfig = {
   draft: { bg: "bg-[#F3F4F6]", text: "text-[#606060]", label: "Draft" },
 };
 
-function OpportunityItem({
-  title,
-  applicants,
-  status,
-}: OpportunityItemProps) {
+function OpportunityItem({ title, applicants, status }: OpportunityItemProps) {
   const config = statusConfig[status];
 
   return (

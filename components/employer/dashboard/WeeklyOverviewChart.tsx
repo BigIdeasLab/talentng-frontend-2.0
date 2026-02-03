@@ -22,11 +22,12 @@ interface WeeklyOverviewChartProps {
 }
 
 export function WeeklyOverviewChart({ data }: WeeklyOverviewChartProps) {
-  const chartData = data?.map((item) => ({
-    day: item.day,
-    applications: item.applications,
-    interviews: item.interviews,
-  })) ?? [];
+  const chartData =
+    data?.map((item) => ({
+      day: item.day,
+      applications: item.applications,
+      interviews: item.interviews,
+    })) ?? [];
   return (
     <div className="flex flex-col items-start gap-4 p-4 rounded-lg border border-gray-300 bg-white w-full">
       <div className="flex flex-col items-start gap-1 self-stretch flex-shrink-0">
