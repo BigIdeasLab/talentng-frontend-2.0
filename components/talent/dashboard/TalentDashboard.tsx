@@ -1,20 +1,44 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
+import { WelcomeHeader } from "./WelcomeHeader";
+import { StatCards } from "./StatCards";
+import { WeeklyOverview } from "./WeeklyOverview";
+import { HiringPipeline } from "./HiringPipeline";
+import { RecentApplications } from "./RecentApplications";
+import { UpcomingInterviews } from "./UpcomingInterviews";
+import { TopSkills } from "./TopSkills";
+import { Achievements } from "./Achievements";
 
 export function TalentDashboard() {
+  // In production, this would come from user data
+  const userName = "Akanbi";
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center bg-white p-8 rounded-lg shadow">
-        <h1 className="text-4xl font-bold mb-4">Talent Dashboard</h1>
-        <p className="text-xl text-gray-600 mb-4"></p>
-        <Link
-          href="/profile"
-          className="text-blue-500 hover:text-blue-700 underline"
-        >
-          GO TO PROFILE
-        </Link>
+    <div className="w-full min-h-screen bg-white p-4 md:p-6 lg:p-8">
+      <div className="max-w-[1140px] mx-auto flex flex-col gap-7">
+        {/* Welcome Header */}
+        <WelcomeHeader name={userName} />
+
+        {/* Stat Cards */}
+        <StatCards />
+
+        {/* Weekly Overview and Hiring Pipeline */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-6">
+          <WeeklyOverview />
+          <HiringPipeline />
+        </div>
+
+        {/* Recent Applications and Upcoming Interviews */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <RecentApplications />
+          <UpcomingInterviews />
+        </div>
+
+        {/* Top Skills */}
+        <TopSkills />
+
+        {/* Achievements */}
+        <Achievements />
       </div>
     </div>
   );
