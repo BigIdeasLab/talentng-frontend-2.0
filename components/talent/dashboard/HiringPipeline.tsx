@@ -16,9 +16,7 @@ function PipelineStage({
   return (
     <div className={`flex flex-col gap-3 ${!isLast ? "pb-3" : ""}`}>
       <div className="flex justify-between items-center">
-        <span className="text-[14px] font-inter-tight text-black">
-          {label}
-        </span>
+        <span className="text-[14px] font-inter-tight text-black">{label}</span>
         <span className="text-[14px] font-inter-tight text-[#606060]">
           {count}
         </span>

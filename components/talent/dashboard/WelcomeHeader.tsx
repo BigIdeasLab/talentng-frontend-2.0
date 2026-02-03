@@ -60,12 +60,9 @@ export function WelcomeHeader({ name }: { name: string }) {
           Welcome back, {name}
         </h1>
         <p className="text-white text-[12px] font-inter-tight">
-          You have{" "}
-          <span className="font-bold">3 new opportunities</span> waiting for
-          you. Your profile views increased by{" "}
-          <span className="font-bold block sm:inline mt-1 sm:mt-0">
-            23%
-          </span>{" "}
+          You have <span className="font-bold">3 new opportunities</span>{" "}
+          waiting for you. Your profile views increased by{" "}
+          <span className="font-bold block sm:inline mt-1 sm:mt-0">23%</span>{" "}
           this week!
         </p>
       </div>
