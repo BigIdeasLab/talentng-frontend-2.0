@@ -65,7 +65,7 @@ export async function getOpportunitiesData(params?: {
         skills: opp.tags || [],
         rate: `₦${Math.round(parseFloat(opp.minBudget) || 0).toLocaleString()} - ₦${Math.round(parseFloat(opp.maxBudget) || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`,
         status: (opp.status || "draft") as "active" | "closed" | "draft",
-        applied: opp.applied || opp.userHasApplied || false,
+        appliedAs: opp.appliedAs || [],
         saved: opp.saved || opp.userHasSaved || false,
         priceMode: opp.priceMode,
         minBudget: opp.minBudget,

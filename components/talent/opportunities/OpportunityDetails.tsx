@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { getToolInfo } from "@/lib/utils/tools";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
 import { useAuth } from "@/hooks/useAuth";
+import { useProfile } from "@/hooks";
 import { ApplicationModal } from "@/components/talent/opportunities/application-modal";
 import { SimilarOpportunitiesSection } from "./SimilarOpportunitiesSection";
 import type { DisplayOpportunity } from "@/components/talent/opportunities/types";
@@ -51,6 +52,8 @@ export function OpportunityDetails({
 }: OpportunityDetailsProps) {
   const router = useRouter();
   const { user } = useAuth();
+  const { activeRole } = useProfile();
+  const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as "talent" | "mentor";
   const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
@@ -74,9 +77,9 @@ export function OpportunityDetails({
       const { getOpportunityById } = await import("@/lib/api/opportunities");
       const data = await getOpportunityById(opportunityId);
       setOpportunity(data);
-      // Set applied status from opportunity data
-      if (data?.applied !== undefined) {
-        setIsApplied(data.applied);
+      // Set applied status from opportunity data based on current profile type
+      if (data?.appliedAs) {
+        setIsApplied(data.appliedAs.includes(currentProfileType));
       }
       // Set saved status from opportunity data
       if (data?.saved !== undefined) {

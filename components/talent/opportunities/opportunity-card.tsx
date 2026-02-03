@@ -8,6 +8,7 @@ import { ApplicationModal } from "./application-modal";
 import type { DisplayOpportunity } from "./types";
 import { TYPE_CONFIG } from "@/types/opportunities";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { useProfile } from "@/hooks";
 
 interface OpportunityCardProps {
   opportunity: DisplayOpportunity;
@@ -21,8 +22,11 @@ export function OpportunityCard({
   onSaveToggle,
 }: OpportunityCardProps) {
   const router = useRouter();
+  const { activeRole } = useProfile();
   const [showApplicationModal, setShowApplicationModal] = useState(false);
-  const [isApplied, setIsApplied] = useState(opportunity.applied);
+  const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as "talent" | "mentor";
+  const hasAppliedAsCurrentRole = opportunity.appliedAs?.includes(currentProfileType) ?? false;
+  const [isApplied, setIsApplied] = useState(hasAppliedAsCurrentRole);
   const [isSaved, setIsSaved] = useState(opportunity.saved ?? false);
   const [isSavingLoading, setIsSavingLoading] = useState(false);
   const { save: saveOpp, unsave: unsaveOpp } = useOpportunitiesManager();
@@ -33,12 +37,12 @@ export function OpportunityCard({
     router.push(`/opportunities/${opportunity.id}`);
   };
 
-  // Sync isApplied and isSaved when opportunity prop changes
-  // Only sync when opportunity ID changes (new card), otherwise preserve local state
+  // Sync isApplied and isSaved when opportunity prop changes or role changes
   useEffect(() => {
-    setIsApplied(opportunity.applied ?? false);
+    const appliedAsCurrentRole = opportunity.appliedAs?.includes(currentProfileType) ?? false;
+    setIsApplied(appliedAsCurrentRole);
     setIsSaved(opportunity.saved ?? false);
-  }, [opportunity.id]);
+  }, [opportunity.id, opportunity.appliedAs, currentProfileType]);
 
   const handleToggleSave = async () => {
     setIsSavingLoading(true);

@@ -42,8 +42,8 @@ export function createRoleBasedPage(
   components: RoleComponentMap,
 ): () => ReactNode {
   return function RoleBasedPageComponent() {
-    const { userRoles } = useProfile();
-    const role = userRoles?.[0] || "talent";
+    const { activeRole, userRoles } = useProfile();
+    const role = activeRole || userRoles?.[0] || "talent";
 
     // Map common role names to component keys
     const componentKey =

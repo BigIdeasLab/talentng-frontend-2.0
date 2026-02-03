@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Bookmark, Check } from "lucide-react";
 import { EmptyState } from "./EmptyState";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { useProfile } from "@/hooks";
 import { ApplicationModal } from "@/components/talent/opportunities/application-modal";
 import type { DisplayOpportunity } from "@/components/talent/opportunities/types";
 
@@ -20,7 +21,7 @@ interface Opportunity {
   skills: string[];
   rate: string;
   isSaved?: boolean;
-  applied?: boolean;
+  appliedAs?: ("talent" | "mentor")[];
 }
 
 interface OpportunitiesGridProps {
@@ -102,6 +103,8 @@ export function OpportunitiesGrid({
   onSaveToggle,
   onApplicationSubmitted,
 }: OpportunitiesGridProps) {
+  const { activeRole } = useProfile();
+  const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as "talent" | "mentor";
   const [localSavedState, setLocalSavedState] = useState<{
     [key: string]: boolean;
   }>(
@@ -118,17 +121,17 @@ export function OpportunitiesGrid({
     useState<DisplayOpportunity | null>(null);
   const [showApplicationModal, setShowApplicationModal] = useState(false);
   const [appliedIds, setAppliedIds] = useState<Set<string>>(
-    new Set(opportunities.filter((opp) => opp.applied).map((opp) => opp.id)),
+    new Set(opportunities.filter((opp) => opp.appliedAs?.includes(currentProfileType)).map((opp) => opp.id)),
   );
   const { save: saveOpp, unsave: unsaveOpp } = useOpportunitiesManager();
 
-  // Sync appliedIds when opportunities change
+  // Sync appliedIds when opportunities or role changes
   useEffect(() => {
     const newAppliedIds = new Set(
-      opportunities.filter((opp) => opp.applied).map((opp) => opp.id),
+      opportunities.filter((opp) => opp.appliedAs?.includes(currentProfileType)).map((opp) => opp.id),
     );
     setAppliedIds(newAppliedIds);
-  }, [opportunities]);
+  }, [opportunities, currentProfileType]);
 
   const handleToggleSave = async (opportunity: Opportunity) => {
     setSavingIds((prev) => new Set(prev).add(opportunity.id));
@@ -170,7 +173,7 @@ export function OpportunitiesGrid({
       skills: opportunity.skills,
       rate: opportunity.rate,
       status: "active",
-      applied: appliedIds.has(opportunity.id),
+      appliedAs: opportunity.appliedAs,
     };
     setSelectedOpportunity(displayOpp);
     setShowApplicationModal(true);

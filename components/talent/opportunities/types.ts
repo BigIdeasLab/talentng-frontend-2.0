@@ -20,7 +20,7 @@ export interface DisplayOpportunity {
   rate: string;
   status: "active" | "closed" | "draft";
   applicationStatus?: ApplicationStatus;
-  applied?: boolean;
+  appliedAs?: ("talent" | "mentor")[];
   saved?: boolean;
   priceMode?: "range" | "fixed";
   minBudget?: string | number;

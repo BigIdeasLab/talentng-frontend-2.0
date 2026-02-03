@@ -60,7 +60,7 @@ export interface Opportunity {
   updatedAt: string;
   deletedAt: string | null;
   postedBy: PostedBy;
-  applied?: boolean;
+  appliedAs?: ("talent" | "mentor")[];
   saved?: boolean;
   similar?: Opportunity[];
   applications?: ApplicationForOpportunity[];

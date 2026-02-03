@@ -340,7 +340,7 @@ export function TalentProfile({
                   return `₦${Math.round(Number(opp.minBudget) || 0).toLocaleString()} - ₦${Math.round(Number(opp.maxBudget) || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`;
                 })(),
                 isSaved: true,
-                applied: opp.applied ?? false,
+                appliedAs: opp.appliedAs || [],
               }))}
               isLoading={opportunitiesLoading}
               onRemove={(opportunity) =>

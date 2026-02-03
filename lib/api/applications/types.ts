@@ -42,6 +42,8 @@ export interface Application {
   id: string;
   userId: string;
   opportunityId: string;
+  profileType: "talent" | "mentor";
+  profileId: string;
   status: "invited" | "applied" | "shortlisted" | "rejected" | "hired";
   note?: string;
   attachments: Array<any>;
@@ -55,6 +57,7 @@ export interface Application {
 
 export interface ApplicationSubmission {
   opportunityId: string;
+  profileType: "talent" | "mentor";
   note?: string;
   attachments?: File[];
 }
@@ -63,6 +66,8 @@ export interface ApplicationResponse {
   id: string;
   opportunityId: string;
   applicantId: string;
+  profileType: "talent" | "mentor";
+  profileId: string;
   status: "invited" | "applied" | "shortlisted" | "hired" | "rejected";
   note?: string;
   createdAt: string;

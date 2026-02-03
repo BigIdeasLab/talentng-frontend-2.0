@@ -4,7 +4,7 @@ import { useState } from "react";
 import { X, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useApplications } from "@/hooks/useApplications";
-import { useToast } from "@/hooks";
+import { useToast, useProfile } from "@/hooks";
 import type { DisplayOpportunity } from "./types";
 import { ProjectSelectionModal } from "./project-selection-modal";
 
@@ -29,6 +29,7 @@ export function ApplicationModal({
   onSubmit,
 }: ApplicationModalProps) {
   const { toast } = useToast();
+  const { activeRole } = useProfile();
   const { submit, isLoading: isSubmitting } = useApplications();
   const [proposal, setProposal] = useState("");
   const [selectedProjects, setSelectedProjects] = useState<Project[]>([]);
@@ -55,11 +56,13 @@ export function ApplicationModal({
     setError(null);
 
     try {
+      const profileType = (activeRole === "mentor" ? "mentor" : "talent") as "talent" | "mentor";
       await submit({
         opportunityId: opportunity.id,
+        profileType,
         note: proposal.trim() || undefined,
         galleryIds: selectedProjects.map((p) => p.id),
-        files: [], // We're not using files in this flow anymore
+        files: [],
       });
 
       toast({

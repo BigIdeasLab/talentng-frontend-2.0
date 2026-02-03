@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import type { MentorProfile as MentorProfileType } from "@/lib/api/mentor/types";
 import { MentorProfileSidebar } from "./components/MentorProfileSidebar";
 import { MentorProfileNav } from "./components/MentorProfileNav";
@@ -26,6 +27,7 @@ export function MentorProfile({
   initialServices: _initialServices = [],
   initialError: _initialError = null,
 }: MentorProfileProps) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<
     "overview" | "session" | "reviews"
   >("overview");
@@ -66,13 +68,11 @@ export function MentorProfile({
   const languages = ["English", "French"];
 
   const handleEditProfile = () => {
-    // Navigate to edit profile page or open modal
-    console.log("Edit profile clicked");
+    router.push("/profile/edit");
   };
 
   const handleEditBio = () => {
-    // Open bio edit modal or navigate to edit page
-    console.log("Edit bio clicked");
+    router.push("/profile/edit");
   };
 
   return (
