@@ -138,9 +138,34 @@ export default function MentorDetailPage() {
   }
 
   return (
-    <div className="h-screen bg-white flex overflow-hidden">
-      {/* Left Sidebar */}
-      <div className="w-[342px] flex-shrink-0 border-r border-[#E1E4EA] bg-white flex flex-col">
+    <div className="h-screen bg-white flex flex-col overflow-hidden">
+      {/* Back Button */}
+      <div className="flex-shrink-0 px-6 py-4 border-b border-[#E1E4EA]">
+        <Link
+          href="/mentorship"
+          className="flex items-center gap-2 text-[#A3A3A3] hover:text-black transition-colors w-fit"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M9.783 11.7826C9.71332 11.8525 9.63053 11.9079 9.53937 11.9458C9.4482 11.9837 9.35046 12.0031 9.25175 12.0031C9.15304 12.0031 9.0553 11.9837 8.96414 11.9458C8.87297 11.9079 8.79018 11.8525 8.7205 11.7826L5.7205 8.78255C5.65058 8.71287 5.5951 8.63008 5.55725 8.53891C5.5194 8.44775 5.49991 8.35001 5.49991 8.2513C5.49991 8.15259 5.5194 8.05485 5.55725 7.96369C5.5951 7.87252 5.65058 7.78973 5.7205 7.72005L8.7205 4.72005C8.8614 4.57915 9.0525 4.5 9.25175 4.5C9.45101 4.5 9.64211 4.57915 9.783 4.72005C9.9239 4.86095 10.0031 5.05204 10.0031 5.2513C10.0031 5.45056 9.9239 5.64165 9.783 5.78255L7.31488 8.25193L9.78488 10.7213C9.85449 10.7911 9.90966 10.8739 9.94724 10.965C9.98482 11.0561 10.0041 11.1538 10.0039 11.2523C10.0037 11.3509 9.98413 11.4484 9.94623 11.5394C9.90832 11.6304 9.85286 11.713 9.783 11.7826Z"
+              fill="currentColor"
+            />
+          </svg>
+          <span className="font-inter-tight text-[13px] font-normal">
+            Back to Mentorship
+          </span>
+        </Link>
+      </div>
+
+      <div className="flex-1 flex overflow-hidden">
+        {/* Left Sidebar */}
+        <div className="w-[342px] flex-shrink-0 border-r border-[#E1E4EA] bg-white flex flex-col">
         <div className="flex-1 overflow-y-auto scrollbar-hide p-5">
           <div className="flex flex-col gap-6">
             {/* Profile Section */}
@@ -448,6 +473,7 @@ export default function MentorDetailPage() {
             </div>
           )}
         </div>
+      </div>
       </div>
     </div>
   );
