@@ -12,7 +12,7 @@ export function CategoryFilter({
   onCategoryChange,
 }: CategoryFilterProps) {
   return (
-    <div className="flex items-center gap-[30px] overflow-x-auto scrollbar-hide pb-2">
+    <div className="flex items-center gap-5 overflow-x-auto scrollbar-hide pb-1.5">
       {categories.map((category) => {
         const isActive = activeCategory === category;
 
@@ -20,10 +20,10 @@ export function CategoryFilter({
           <button
             key={category}
             onClick={() => onCategoryChange(category)}
-            className="flex flex-col items-center gap-[13px] px-[5px] flex-shrink-0 group"
+            className="flex flex-col items-center gap-2.5 px-1 flex-shrink-0 group"
           >
             {/* Icon */}
-            <div className="w-[22px] h-[22px] flex items-center justify-center">
+            <div className="w-[18px] h-[18px] flex items-center justify-center">
               <ArtIcon
                 className={
                   isActive ? "text-[#181B25]" : "text-[#181B25] opacity-30"
@@ -33,7 +33,7 @@ export function CategoryFilter({
 
             {/* Label */}
             <span
-              className={`font-inter-tight text-sm font-normal leading-normal text-center whitespace-nowrap ${
+              className={`font-inter-tight text-[12px] font-normal leading-normal text-center whitespace-nowrap ${
                 isActive ? "text-[#181B25]" : "text-black/30"
               }`}
             >
@@ -51,8 +51,8 @@ function ArtIcon({ className }: { className?: string }) {
   return (
     <svg
       className={className}
-      width="22"
-      height="22"
+      width="18"
+      height="18"
       viewBox="0 0 22 22"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

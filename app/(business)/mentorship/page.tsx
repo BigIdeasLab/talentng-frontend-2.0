@@ -137,14 +137,14 @@ export default function MentorshipPage() {
   }, [searchQuery, activeCategory]);
 
   return (
-    <div className="flex flex-col gap-4 md:gap-[15px] p-4 md:p-6 bg-white min-h-screen">
+    <div className="flex h-screen flex-col gap-3 md:gap-3 p-3 md:p-4 bg-white overflow-hidden">
       {/* Navigation Tabs */}
-      <div className="flex items-center gap-[30px] overflow-x-auto scrollbar-hide">
+      <div className="flex flex-shrink-0 items-center gap-6 overflow-x-auto scrollbar-hide">
         {(["Find Mentors", "My Session", "Messages"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`flex items-center justify-center gap-2.5 py-[15px] font-inter-tight text-[15px] font-medium leading-normal whitespace-nowrap ${
+            className={`flex items-center justify-center gap-2 py-3 font-inter-tight text-[13px] font-medium leading-normal whitespace-nowrap ${
               activeTab === tab ? "text-black" : "text-black/30"
             }`}
           >
@@ -154,11 +154,11 @@ export default function MentorshipPage() {
       </div>
 
       {/* Search and Filter Row */}
-      <div className="flex flex-col md:flex-row gap-3 md:gap-4">
+      <div className="flex flex-shrink-0 flex-col md:flex-row gap-2.5 md:gap-3">
         {/* Search Bar */}
-        <div className="flex-1 flex items-center gap-3 px-4 py-3 rounded-[10px] bg-[#F5F5F5]">
+        <div className="flex-1 flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[#F5F5F5]">
           <Search
-            className="w-[18px] h-[18px] text-[#B2B2B2]"
+            className="w-4 h-4 text-[#B2B2B2]"
             strokeWidth={1.125}
           />
           <input
@@ -166,44 +166,50 @@ export default function MentorshipPage() {
             placeholder="Search by name, role, company"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 bg-transparent font-inter-tight text-[15px] font-normal leading-normal text-black placeholder:text-black/30 outline-none capitalize"
+            className="flex-1 bg-transparent font-inter-tight text-[13px] font-normal leading-normal text-black placeholder:text-black/30 outline-none capitalize"
           />
         </div>
 
         {/* Filter Button */}
-        <button className="flex items-center justify-center gap-1.5 px-[18px] py-[9px] rounded-[10px] bg-[#F5F5F5] font-inter-tight text-[15px] font-normal leading-normal text-black h-[46.489px]">
+        <button className="flex items-center justify-center gap-1 px-3.5 py-2 rounded-lg bg-[#F5F5F5] font-inter-tight text-[13px] font-normal leading-normal text-black h-[38px]">
           <SlidersHorizontal
-            className="w-[18px] h-[18px]"
+            className="w-4 h-4"
             strokeWidth={1.125}
           />
           Filter
         </button>
 
         {/* Sort Dropdown */}
-        <button className="flex items-center justify-center gap-1.5 px-[18px] py-[9px] rounded-[10px] bg-[#F5F5F5] font-inter-tight text-[15px] font-normal leading-normal text-black h-[46.489px]">
+        <button className="flex items-center justify-center gap-1 px-3.5 py-2 rounded-lg bg-[#F5F5F5] font-inter-tight text-[13px] font-normal leading-normal text-black h-[38px]">
           {sortBy}
-          <ChevronDown className="w-4 h-4" />
+          <ChevronDown className="w-3.5 h-3.5" />
         </button>
       </div>
 
       {/* Hero Banner */}
-      <MentorshipHeader />
+      <div className="flex-shrink-0">
+        <MentorshipHeader />
+      </div>
 
       {/* Find Your Mentor Section */}
-      <div className="flex flex-col gap-8">
-        <h2 className="font-inter-tight text-lg font-medium leading-normal text-black">
+      <div className="flex flex-col gap-5 overflow-hidden flex-1">
+        <h2 className="flex-shrink-0 font-inter-tight text-[15px] font-medium leading-normal text-black">
           Find Your Mentor
         </h2>
 
         {/* Category Filter */}
-        <CategoryFilter
-          categories={CATEGORIES}
-          activeCategory={activeCategory}
-          onCategoryChange={setActiveCategory}
-        />
+        <div className="flex-shrink-0">
+          <CategoryFilter
+            categories={CATEGORIES}
+            activeCategory={activeCategory}
+            onCategoryChange={setActiveCategory}
+          />
+        </div>
 
         {/* Mentor Grid */}
-        <MentorGrid mentors={filteredMentors} />
+        <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+          <MentorGrid mentors={filteredMentors} />
+        </div>
       </div>
     </div>
   );

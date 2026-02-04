@@ -22,9 +22,9 @@ export function MentorCard({
   sessionsCompleted,
 }: MentorCardProps) {
   return (
-    <div className="flex flex-col gap-3 p-[7.482px] rounded-[14.964px] bg-[#F5F5F5]">
+    <div className="flex flex-col gap-2.5 p-1.5 rounded-xl bg-[#F5F5F5]">
       {/* Thumbnail */}
-      <div className="relative w-full aspect-[261/190] rounded-[15px] bg-white overflow-hidden">
+      <div className="relative w-full aspect-[261/190] rounded-xl bg-white overflow-hidden">
         <Image
           src={imageUrl}
           alt={name}
@@ -35,32 +35,32 @@ export function MentorCard({
       </div>
 
       {/* Info Container */}
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-3.5">
         {/* Profile Info */}
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-3">
-            <h3 className="font-inter-tight text-base font-medium leading-normal text-black">
+        <div className="flex flex-col gap-2.5">
+          <div className="flex flex-col gap-2">
+            <h3 className="font-inter-tight text-[13px] font-medium leading-normal text-black">
               {name}
             </h3>
-            <p className="font-inter-tight text-sm font-normal leading-normal text-black/30">
+            <p className="font-inter-tight text-[12px] font-normal leading-normal text-black/30">
               {title}
             </p>
           </div>
 
           {/* Stats */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1.5">
             {/* Price */}
-            <div className="flex items-center gap-[7px]">
-              <DollarCircleIcon className="w-[18px] h-[18px] text-[#525866]" />
-              <span className="font-inter-tight text-sm font-normal leading-normal text-[#525866]">
+            <div className="flex items-center gap-1.5">
+              <DollarCircleIcon className="w-4 h-4 text-[#525866]" />
+              <span className="font-inter-tight text-[12px] font-normal leading-normal text-[#525866]">
                 ${pricePerSession} / Session
               </span>
             </div>
 
             {/* Sessions Completed */}
-            <div className="flex items-center gap-[7px]">
-              <CheckDoubleIcon className="w-[18px] h-[18px] text-[#525866]" />
-              <span className="font-inter-tight text-sm font-normal leading-normal text-[#525866]">
+            <div className="flex items-center gap-1.5">
+              <CheckDoubleIcon className="w-4 h-4 text-[#525866]" />
+              <span className="font-inter-tight text-[12px] font-normal leading-normal text-[#525866]">
                 {sessionsCompleted} Sessions Completed
               </span>
             </div>
@@ -68,11 +68,11 @@ export function MentorCard({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-start gap-[5px]">
+        <div className="flex items-start gap-1">
           {/* Book Session Button */}
           <Link
             href={`/sessions/create-session?mentorId=${id}`}
-            className="flex-1 flex items-center justify-center gap-1 h-[50px] px-5 py-[17px] rounded-full bg-[#181B25] text-white font-inter-tight text-sm font-medium hover:bg-[#252831] transition-colors"
+            className="flex-1 flex items-center justify-center gap-1 h-[40px] px-4 py-3 rounded-full bg-[#181B25] text-white font-inter-tight text-[12px] font-medium hover:bg-[#252831] transition-colors"
           >
             Book Session
           </Link>
@@ -80,10 +80,10 @@ export function MentorCard({
           {/* External Link Button */}
           <Link
             href={`/profile/${id}`}
-            className="flex items-center justify-center h-[50px] w-[50px] rounded-full border border-[#B2B2B2] bg-[#F5F5F5] hover:bg-[#E1E4EA] transition-colors"
+            className="flex items-center justify-center h-[40px] w-[40px] rounded-full border border-[#B2B2B2] bg-[#F5F5F5] hover:bg-[#E1E4EA] transition-colors"
           >
             <ArrowUpRight
-              className="w-[18px] h-[18px] text-black"
+              className="w-4 h-4 text-black"
               strokeWidth={1.125}
             />
           </Link>
@@ -98,8 +98,8 @@ function DollarCircleIcon({ className }: { className?: string }) {
   return (
     <svg
       className={className}
-      width="18"
-      height="18"
+      width="16"
+      height="16"
       viewBox="0 0 18 18"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -124,8 +124,8 @@ function CheckDoubleIcon({ className }: { className?: string }) {
   return (
     <svg
       className={className}
-      width="18"
-      height="18"
+      width="16"
+      height="16"
       viewBox="0 0 18 18"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 
 export function MentorshipHeader() {
   return (
-    <div className="relative w-full rounded-[20px] bg-[#8463FF] overflow-hidden">
+    <div className="relative w-full rounded-[16px] bg-[#8463FF] overflow-hidden">
       {/* Decorative stars background */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Large centered star */}
@@ -88,21 +88,21 @@ export function MentorshipHeader() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 px-5 py-5 md:px-8 md:py-6 flex flex-col gap-4 md:gap-[15px]">
+      <div className="relative z-10 px-4 py-4 md:px-6 md:py-5 flex flex-col gap-3 md:gap-3">
         {/* Tagline */}
-        <p className="text-white/80 font-inter-tight text-sm md:text-base font-normal leading-5">
+        <p className="text-white/80 font-inter-tight text-[12px] md:text-[13px] font-normal leading-4">
           Real mentors. Real guidance.
         </p>
 
         {/* Main Heading */}
-        <h1 className="text-white font-inter-tight text-2xl md:text-[38px] font-medium leading-tight md:leading-[37.769px] capitalize max-w-[513px]">
+        <h1 className="text-white font-inter-tight text-xl md:text-[30px] font-medium leading-tight md:leading-[30px] capitalize max-w-[430px]">
           Get Mentorship That Moves Your Career Forward.
         </h1>
 
         {/* CTA Button */}
-        <button className="inline-flex items-center gap-1 px-[15px] py-[13px] rounded-full bg-[#181B25] text-white font-inter-tight text-sm font-medium w-fit hover:bg-[#252831] transition-colors">
+        <button className="inline-flex items-center gap-1 px-3 py-2.5 rounded-full bg-[#181B25] text-white font-inter-tight text-[12px] font-medium w-fit hover:bg-[#252831] transition-colors">
           Get Started
-          <ArrowRight className="w-[18px] h-[18px]" strokeWidth={1.125} />
+          <ArrowRight className="w-4 h-4" strokeWidth={1.125} />
         </button>
       </div>
     </div>
