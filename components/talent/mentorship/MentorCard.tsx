@@ -38,14 +38,14 @@ export function MentorCard({
       <div className="flex flex-col gap-3.5">
         {/* Profile Info */}
         <div className="flex flex-col gap-2.5">
-          <div className="flex flex-col gap-2">
-            <h3 className="font-inter-tight text-[13px] font-medium leading-normal text-black">
+          <Link href={`/mentorship/${id}`} className="flex flex-col gap-2">
+            <h3 className="font-inter-tight text-[13px] font-medium leading-normal text-black group-hover:text-[#5C30FF] transition-colors">
               {name}
             </h3>
             <p className="font-inter-tight text-[12px] font-normal leading-normal text-black/30">
               {title}
             </p>
-          </div>
+          </Link>
 
           {/* Stats */}
           <div className="flex flex-col gap-1.5">
