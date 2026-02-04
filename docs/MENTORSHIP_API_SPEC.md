@@ -66,21 +66,22 @@ Stores the mentor's weekly recurring availability pattern.
 ```typescript
 interface MentorAvailability {
   mentorId: string;
-  sessionDuration: number;      // Minutes: 30 | 45 | 60 | 90 | 120
-  bufferTime: number;           // Minutes: 0 | 15 | 30 | 45
-  timezone: string;             // "WAT" | "GMT" | "EST" | etc.
-  defaultLocation: string;      // "Google Meet" | "Zoom" | custom URL
+  sessionDuration: number; // Minutes: 30 | 45 | 60 | 90 | 120
+  bufferTime: number; // Minutes: 0 | 15 | 30 | 45
+  timezone: string; // "WAT" | "GMT" | "EST" | etc.
+  defaultLocation: string; // "Google Meet" | "Zoom" | custom URL
   slots: AvailabilitySlot[];
 }
 
 interface AvailabilitySlot {
-  dayOfWeek: number;            // 0 = Monday, 6 = Sunday
-  startTime: string;            // "09:00" (24hr format)
-  endTime: string;              // "10:00" (24hr format)
+  dayOfWeek: number; // 0 = Monday, 6 = Sunday
+  startTime: string; // "09:00" (24hr format)
+  endTime: string; // "10:00" (24hr format)
 }
 ```
 
 **Notes:**
+
 - Slots are weekly recurring (not date-specific)
 - Backend generates actual available dates when mentee requests slots
 - Exclude already-booked slots when generating available dates
@@ -94,7 +95,7 @@ Created when a mentee books a session (pending mentor approval).
 ```typescript
 interface MentorshipRequest {
   id: string;
-  
+
   // Who is requesting
   menteeId: string;
   mentee: {
@@ -104,25 +105,25 @@ interface MentorshipRequest {
     title: string;
     company: string;
   };
-  
+
   // Who they're requesting
   mentorId: string;
-  
+
   // Session details
-  topic: string;                // Selected from mentor's expertise
-  message: string;              // Mentee's goals/what they want to discuss
-  scheduledDate: string;        // "Mon Feb 5, 2024" or ISO date
-  scheduledTime: string;        // "2:00 PM" or "14:00"
-  duration: string;             // "60 mins" (from mentor's settings)
-  location: string;             // "Google Meet" (from mentor's default)
-  
+  topic: string; // Selected from mentor's expertise
+  message: string; // Mentee's goals/what they want to discuss
+  scheduledDate: string; // "Mon Feb 5, 2024" or ISO date
+  scheduledTime: string; // "2:00 PM" or "14:00"
+  duration: string; // "60 mins" (from mentor's settings)
+  location: string; // "Google Meet" (from mentor's default)
+
   // Metadata
-  requestedAt: string;          // ISO datetime when request was submitted
+  requestedAt: string; // ISO datetime when request was submitted
   status: "pending" | "accepted" | "rejected";
-  
+
   // Optional
-  rejectedAt?: string;          // ISO datetime if rejected
-  rejectionReason?: string;     // Why mentor rejected
+  rejectedAt?: string; // ISO datetime if rejected
+  rejectionReason?: string; // Why mentor rejected
 }
 ```
 
@@ -135,10 +136,10 @@ Created when mentor accepts a MentorshipRequest.
 ```typescript
 interface Session {
   id: string;
-  
+
   // Original request reference
   requestId: string;
-  
+
   // Participants
   mentorId: string;
   mentor: {
@@ -147,7 +148,7 @@ interface Session {
     avatar?: string;
     title?: string;
   };
-  
+
   menteeId: string;
   mentee: {
     id: string;
@@ -156,22 +157,22 @@ interface Session {
     title?: string;
     company?: string;
   };
-  
+
   // Session details
   topic: string;
   message?: string;
-  date: string;                 // "Thu Dec 1, 2:00 PM"
-  duration: string;             // "60 mins"
-  location: string;             // "Google Meet"
-  meetingLink?: string;         // Actual meeting URL
-  
+  date: string; // "Thu Dec 1, 2:00 PM"
+  duration: string; // "60 mins"
+  location: string; // "Google Meet"
+  meetingLink?: string; // Actual meeting URL
+
   // Status
   status: "upcoming" | "completed" | "cancelled";
-  
+
   // Metadata
-  createdAt: string;            // When session was created (request accepted)
-  completedAt?: string;         // When marked complete
-  cancelledAt?: string;         // When cancelled
+  createdAt: string; // When session was created (request accepted)
+  completedAt?: string; // When marked complete
+  cancelledAt?: string; // When cancelled
   cancelledBy?: "mentor" | "mentee";
   cancelReason?: string;
 }
@@ -186,14 +187,14 @@ Additional fields needed on MentorProfile for mentorship.
 ```typescript
 interface MentorProfile {
   // ... existing fields ...
-  
+
   // Mentorship-specific
-  expertise: string[];          // ["Data Analysis", "Machine Learning", "Python"]
-  pricePerSession: number;      // In USD or local currency
-  sessionDuration: number;      // Default session length in minutes
-  defaultLocation: string;      // Default meeting platform
-  sessionsCompleted: number;    // Total completed sessions (for display)
-  
+  expertise: string[]; // ["Data Analysis", "Machine Learning", "Python"]
+  pricePerSession: number; // In USD or local currency
+  sessionDuration: number; // Default session length in minutes
+  defaultLocation: string; // Default meeting platform
+  sessionsCompleted: number; // Total completed sessions (for display)
+
   // Availability (can be separate or embedded)
   availability?: MentorAvailability;
 }
@@ -205,37 +206,37 @@ interface MentorProfile {
 
 ### Availability APIs (Mentor)
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/mentor/availability` | Get current mentor's availability settings |
-| `PUT` | `/api/mentor/availability` | Save/update availability settings |
-| `GET` | `/api/mentors/:mentorId/available-slots` | Get available slots for booking (Mentee uses this) |
+| Method | Endpoint                                 | Description                                        |
+| ------ | ---------------------------------------- | -------------------------------------------------- |
+| `GET`  | `/api/mentor/availability`               | Get current mentor's availability settings         |
+| `PUT`  | `/api/mentor/availability`               | Save/update availability settings                  |
+| `GET`  | `/api/mentors/:mentorId/available-slots` | Get available slots for booking (Mentee uses this) |
 
 ---
 
 ### Mentorship Request APIs
 
-| Method | Endpoint | Description | Actor |
-|--------|----------|-------------|-------|
-| `POST` | `/api/mentorship/request` | Create booking request | Mentee |
-| `GET` | `/api/mentor/requests` | Get all requests for mentor | Mentor |
-| `GET` | `/api/mentor/requests?status=pending` | Filter by status | Mentor |
-| `POST` | `/api/mentor/requests/:id/accept` | Accept request (creates Session) | Mentor |
-| `POST` | `/api/mentor/requests/:id/reject` | Reject request | Mentor |
+| Method | Endpoint                              | Description                      | Actor  |
+| ------ | ------------------------------------- | -------------------------------- | ------ |
+| `POST` | `/api/mentorship/request`             | Create booking request           | Mentee |
+| `GET`  | `/api/mentor/requests`                | Get all requests for mentor      | Mentor |
+| `GET`  | `/api/mentor/requests?status=pending` | Filter by status                 | Mentor |
+| `POST` | `/api/mentor/requests/:id/accept`     | Accept request (creates Session) | Mentor |
+| `POST` | `/api/mentor/requests/:id/reject`     | Reject request                   | Mentor |
 
 ---
 
 ### Session APIs
 
-| Method | Endpoint | Description | Actor |
-|--------|----------|-------------|-------|
-| `GET` | `/api/mentor/sessions` | Get mentor's sessions | Mentor |
-| `GET` | `/api/mentor/sessions?status=upcoming` | Filter by status | Mentor |
-| `GET` | `/api/mentee/sessions` | Get mentee's sessions | Mentee |
-| `GET` | `/api/mentee/sessions?status=pending` | Filter by status | Mentee |
-| `POST` | `/api/sessions/:id/complete` | Mark as complete | Mentor |
-| `POST` | `/api/sessions/:id/cancel` | Cancel session | Both |
-| `PUT` | `/api/sessions/:id/reschedule` | Change date/time | Mentor |
+| Method | Endpoint                               | Description           | Actor  |
+| ------ | -------------------------------------- | --------------------- | ------ |
+| `GET`  | `/api/mentor/sessions`                 | Get mentor's sessions | Mentor |
+| `GET`  | `/api/mentor/sessions?status=upcoming` | Filter by status      | Mentor |
+| `GET`  | `/api/mentee/sessions`                 | Get mentee's sessions | Mentee |
+| `GET`  | `/api/mentee/sessions?status=pending`  | Filter by status      | Mentee |
+| `POST` | `/api/sessions/:id/complete`           | Mark as complete      | Mentor |
+| `POST` | `/api/sessions/:id/cancel`             | Cancel session        | Both   |
+| `PUT`  | `/api/sessions/:id/reschedule`         | Change date/time      | Mentor |
 
 ---
 
@@ -317,6 +318,7 @@ interface MentorProfile {
 ```
 
 **Notes:**
+
 - `available: false` means slot is already booked
 - Only return dates within the requested range
 - Exclude past dates/times
@@ -361,6 +363,7 @@ interface MentorProfile {
 ```
 
 **Notes:**
+
 - Backend should validate the slot is still available
 - Backend adds `duration` from mentor's settings
 - Backend formats date/time for display
@@ -443,6 +446,7 @@ interface MentorProfile {
 ```
 
 **Notes:**
+
 - Creates a new Session record
 - Updates MentorshipRequest status to "accepted"
 - Send notification to mentee
@@ -502,6 +506,7 @@ interface MentorProfile {
 ```
 
 **Notes:**
+
 - Returns both pending requests AND confirmed sessions
 - Frontend uses status to differentiate display
 - "pending" = waiting for mentor to accept
@@ -567,6 +572,7 @@ interface MentorProfile {
 ### 1. Slot Availability Validation
 
 When mentee books a slot:
+
 1. Check the slot exists in mentor's weekly availability
 2. Check the specific date/time is not already booked
 3. Check the time hasn't passed
@@ -582,6 +588,7 @@ Example:
 ### 2. Auto-Session Creation
 
 When mentor accepts a request:
+
 1. Create Session record with all data from MentorshipRequest
 2. Update MentorshipRequest.status to "accepted"
 3. Mark the time slot as booked (prevent double-booking)
@@ -601,14 +608,14 @@ Session:
 
 ### 4. Notifications to Send
 
-| Event | Notify |
-|-------|--------|
-| New request submitted | Mentor |
-| Request accepted | Mentee |
-| Request rejected | Mentee |
-| Session cancelled | Both |
-| Session rescheduled | Mentee |
-| Session reminder (24h before) | Both |
+| Event                         | Notify |
+| ----------------------------- | ------ |
+| New request submitted         | Mentor |
+| Request accepted              | Mentee |
+| Request rejected              | Mentee |
+| Session cancelled             | Both   |
+| Session rescheduled           | Mentee |
+| Session reminder (24h before) | Both   |
 
 ---
 
@@ -642,14 +649,14 @@ Session:
 
 ## Frontend Pages Summary
 
-| Page | URL | Actor | Purpose |
-|------|-----|-------|---------|
-| Availability | `/availability` | Mentor | Set weekly time slots |
-| Applications | `/applications` | Mentor | Review/accept/reject requests |
-| Sessions | `/sessions` | Mentor | Manage confirmed sessions |
-| Mentorship | `/mentorship` | Mentee | Browse mentors |
-| Mentor Detail | `/mentorship/[id]` | Mentee | View & book mentor |
-| My Sessions | `/mentorship` (tab) | Mentee | View their sessions |
+| Page          | URL                 | Actor  | Purpose                       |
+| ------------- | ------------------- | ------ | ----------------------------- |
+| Availability  | `/availability`     | Mentor | Set weekly time slots         |
+| Applications  | `/applications`     | Mentor | Review/accept/reject requests |
+| Sessions      | `/sessions`         | Mentor | Manage confirmed sessions     |
+| Mentorship    | `/mentorship`       | Mentee | Browse mentors                |
+| Mentor Detail | `/mentorship/[id]`  | Mentee | View & book mentor            |
+| My Sessions   | `/mentorship` (tab) | Mentee | View their sessions           |
 
 ---
 

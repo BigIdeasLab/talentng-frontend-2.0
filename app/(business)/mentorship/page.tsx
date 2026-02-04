@@ -171,7 +171,8 @@ const MOCK_MENTEE_SESSIONS: MenteeSession[] = [
       title: "Data Scientist At Microsoft",
     },
     topic: "Machine Learning",
-    message: "Discussed career transition into data science and ML fundamentals.",
+    message:
+      "Discussed career transition into data science and ML fundamentals.",
     date: "Fri Feb 7, 3:00 PM",
     duration: "30 mins",
     location: "Google Meet",
@@ -204,12 +205,15 @@ export default function MentorshipPage() {
   const [sortBy, setSortBy] = useState("Newest");
 
   // Session states
-  const [sessions, setSessions] = useState<MenteeSession[]>(MOCK_MENTEE_SESSIONS);
+  const [sessions, setSessions] =
+    useState<MenteeSession[]>(MOCK_MENTEE_SESSIONS);
   const [sessionFilter, setSessionFilter] = useState<
     "all" | "pending" | "upcoming" | "completed" | "cancelled"
   >("all");
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
-  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
+    null,
+  );
 
   // Filter mentors based on search and category
   const filteredMentors = useMemo(() => {
@@ -248,7 +252,7 @@ export default function MentorshipPage() {
       filtered = filtered.filter(
         (session) =>
           session.mentor.name.toLowerCase().includes(query) ||
-          session.topic.toLowerCase().includes(query)
+          session.topic.toLowerCase().includes(query),
       );
     }
 
@@ -275,8 +279,8 @@ export default function MentorshipPage() {
         prev.map((session) =>
           session.id === selectedSessionId
             ? { ...session, status: "cancelled" as MenteeSessionStatus }
-            : session
-        )
+            : session,
+        ),
       );
     }
   };
@@ -289,9 +293,21 @@ export default function MentorshipPage() {
   const sessionTabs = [
     { id: "all" as const, label: "All", count: sessionCounts.all },
     { id: "pending" as const, label: "Pending", count: sessionCounts.pending },
-    { id: "upcoming" as const, label: "Upcoming", count: sessionCounts.upcoming },
-    { id: "completed" as const, label: "Completed", count: sessionCounts.completed },
-    { id: "cancelled" as const, label: "Cancelled", count: sessionCounts.cancelled },
+    {
+      id: "upcoming" as const,
+      label: "Upcoming",
+      count: sessionCounts.upcoming,
+    },
+    {
+      id: "completed" as const,
+      label: "Completed",
+      count: sessionCounts.completed,
+    },
+    {
+      id: "cancelled" as const,
+      label: "Cancelled",
+      count: sessionCounts.cancelled,
+    },
   ];
 
   return (

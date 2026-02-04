@@ -1098,8 +1098,8 @@ export default function MentorDetailPage() {
                   </h3>
                   <p className="font-inter-tight text-[12px] text-[#525866]">
                     {mentor.availability[selectedDate]?.date},{" "}
-                    {mentor.timeSlots[selectedTime]} •{" "}
-                    {mentor.sessionDuration} mins
+                    {mentor.timeSlots[selectedTime]} • {mentor.sessionDuration}{" "}
+                    mins
                   </p>
                 </div>
               </div>
@@ -1166,7 +1166,7 @@ export default function MentorDetailPage() {
               <button
                 onClick={async () => {
                   setIsSubmitting(true);
-                  
+
                   // Build the request payload matching what mentor expects
                   const bookingRequest = {
                     mentorId: mentor.id,
@@ -1177,20 +1177,20 @@ export default function MentorDetailPage() {
                     duration: `${mentor.sessionDuration} mins`,
                     location: mentor.defaultLocation,
                   };
-                  
+
                   // TODO: Replace with actual API call
                   // await sendMentorshipRequest(bookingRequest);
                   console.log("Booking Request:", bookingRequest);
-                  
+
                   // Simulate API delay
                   await new Promise((resolve) => setTimeout(resolve, 500));
-                  
+
                   setIsSubmitting(false);
                   setIsBookingModalOpen(false);
                   setSelectedTopic("");
                   setMessage("");
                   setShowSuccess(true);
-                  
+
                   // Hide success message after 3 seconds
                   setTimeout(() => setShowSuccess(false), 3000);
                 }}

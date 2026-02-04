@@ -9,7 +9,11 @@ interface Mentor {
   title?: string;
 }
 
-export type MenteeSessionStatus = "pending" | "upcoming" | "completed" | "cancelled";
+export type MenteeSessionStatus =
+  | "pending"
+  | "upcoming"
+  | "completed"
+  | "cancelled";
 
 interface MenteeSessionCardProps {
   id: string;
