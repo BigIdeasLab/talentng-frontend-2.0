@@ -264,6 +264,31 @@ const MentorshipIcon = () => (
   </svg>
 );
 
+const AvailabilityIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M10 5V10L13.3333 11.6667"
+      stroke="#525866"
+      strokeWidth="1.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M10 17.5C14.1421 17.5 17.5 14.1421 17.5 10C17.5 5.85786 14.1421 2.5 10 2.5C5.85786 2.5 2.5 5.85786 2.5 10C2.5 14.1421 5.85786 17.5 10 17.5Z"
+      stroke="#525866"
+      strokeWidth="1.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 const SettingsIcon = () => (
   <svg
     width="20"
@@ -337,12 +362,7 @@ const getMenuItems = (notificationCount?: number): MenuItem[] => {
       icon: <DashboardIcon />,
       href: "/dashboard",
     },
-    {
-      id: "student-card",
-      label: "Student Cards",
-      icon: <StudentCardIcon />,
-      href: "/student-cards",
-    },
+
     {
       id: "application",
       label: "Applications",
@@ -350,14 +370,14 @@ const getMenuItems = (notificationCount?: number): MenuItem[] => {
       href: "/applications",
     },
     {
-      id: "mentorship",
-      label: "Mentorship",
-      icon: <MentorshipIcon />,
-      href: "/mentorship",
+      id: "availability",
+      label: "Availability",
+      icon: <AvailabilityIcon />,
+      href: "/availability",
     },
     {
       id: "session-management",
-      label: "Session Management",
+      label: "Sessions",
       icon: <FileIcon />,
       href: "/sessions",
     },

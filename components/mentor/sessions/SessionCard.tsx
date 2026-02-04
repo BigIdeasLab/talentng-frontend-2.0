@@ -1,55 +1,97 @@
-import { Bell, Clock } from "lucide-react";
-import Image from "next/image";
+import { Clock, X, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Mentee {
   id: string;
   name: string;
-  avatar: string;
+  avatar?: string;
+  title?: string;
+  company?: string;
 }
+
+export type SessionStatus = "upcoming" | "completed" | "cancelled";
 
 interface SessionCardProps {
   id: string;
-  title: string;
-  description: string;
+  mentee: Mentee;
+  topic: string;
+  message?: string;
   date: string;
   duration: string;
   location: string;
-  mentees?: Mentee[];
-  totalMentees?: number;
+  status?: SessionStatus;
+  onReschedule?: (id: string) => void;
+  onCancel?: (id: string) => void;
+  onComplete?: (id: string) => void;
 }
 
 export function SessionCard({
-  title,
-  description,
+  id,
+  mentee,
+  topic,
+  message,
   date,
   duration,
   location,
-  mentees = [],
-  totalMentees = 0,
+  status = "upcoming",
+  onReschedule,
+  onCancel,
+  onComplete,
 }: SessionCardProps) {
-  const displayMentees = mentees.slice(0, 5);
-  const remainingCount = Math.max(0, totalMentees - displayMentees.length);
+  const statusConfig = {
+    upcoming: { label: "Upcoming", bg: "bg-[#EEF4FF]", text: "text-[#3B82F6]" },
+    completed: { label: "Completed", bg: "bg-[#ECFDF3]", text: "text-[#10B981]" },
+    cancelled: { label: "Cancelled", bg: "bg-[#FEF2F2]", text: "text-[#EF4444]" },
+  };
+
+  const menteeInitials = mentee.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("");
 
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-[#E1E4EA] bg-white p-2.5 lg:px-2.5 lg:py-3">
+    <div className="flex flex-col gap-3 rounded-xl border border-[#E1E4EA] bg-white p-4">
       <div className="flex flex-col gap-4">
-        {/* Title and Description Section */}
+        {/* Header - Mentee Info and Status */}
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-3">
+            {/* Avatar */}
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#F5F3FF]">
+              <span className="font-inter-tight text-[14px] font-semibold text-[#5C30FF]">
+                {menteeInitials}
+              </span>
+            </div>
+            {/* Mentee Info */}
+            <div>
+              <h3 className="font-inter-tight text-[15px] font-semibold text-black">
+                {mentee.name}
+              </h3>
+              {(mentee.title || mentee.company) && (
+                <p className="font-inter-tight text-[13px] text-[#525866]">
+                  {mentee.title}{mentee.title && mentee.company && " at "}{mentee.company}
+                </p>
+              )}
+            </div>
+          </div>
+          {/* Status Badge */}
+          <span
+            className={`flex-shrink-0 rounded-full px-2.5 py-1 font-inter-tight text-[11px] font-medium ${statusConfig[status].bg} ${statusConfig[status].text}`}
+          >
+            {statusConfig[status].label}
+          </span>
+        </div>
+
+        {/* Topic */}
         <div className="flex items-start gap-3.5">
-          {/* Purple accent bar */}
-          <div className="h-auto min-h-[48px] w-1 flex-shrink-0 self-stretch rounded-[48px] bg-[#5C30FF]" />
-
-          {/* Content */}
-          <div className="flex flex-1 flex-col gap-3.5">
-            {/* Title */}
-            <h3 className="font-inter-tight text-[15px] font-semibold leading-normal text-black">
-              {title}
-            </h3>
-
-            {/* Description */}
-            <p className="font-inter-tight text-[13px] font-normal leading-normal text-[#525866]">
-              {description}
-            </p>
+          <div className="h-auto min-h-[40px] w-1 flex-shrink-0 self-stretch rounded-[48px] bg-[#5C30FF]" />
+          <div className="flex flex-1 flex-col gap-2">
+            <span className="font-inter-tight text-[12px] font-medium text-[#99A0AE]">Topic</span>
+            <p className="font-inter-tight text-[14px] font-medium text-black">{topic}</p>
+            {message && (
+              <p className="font-inter-tight text-[13px] leading-relaxed text-[#525866]">
+                {message}
+              </p>
+            )}
           </div>
         </div>
 
@@ -162,74 +204,53 @@ export function SessionCard({
       {/* Divider */}
       <div className="h-px w-full bg-[#E1E4EA]" />
 
-      {/* Bottom Section - Mentees and Actions */}
-      <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
-        {/* Mentee Section */}
-        {mentees.length > 0 ? (
-          <div className="flex items-center gap-1.5">
-            {/* Overlapping avatars */}
-            <div className="flex items-center -space-x-1.5">
-              {displayMentees.map((mentee) => (
-                <div
-                  key={mentee.id}
-                  className="relative h-8 w-8 overflow-hidden rounded-full border-2 border-white"
-                >
-                  <Image
-                    src={mentee.avatar}
-                    alt={mentee.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-              {remainingCount > 0 && (
-                <div className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-[#F5F5F5]">
-                  <span className="font-inter-tight text-xs font-normal text-black">
-                    +{remainingCount}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 overflow-hidden rounded-full">
-              <Image
-                src="https://api.builder.io/api/v1/image/assets/TEMP/77a2d0f5eaf5e0f9f0f0c283d2661d2eaacaca2e?width=80"
-                alt="Mentee"
-                width={32}
-                height={32}
-                className="object-cover"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <span className="font-inter-tight text-[13px] font-medium leading-normal text-black">
-                Akanbi David
-              </span>
-              <span className="font-inter-tight text-xs font-light leading-normal text-black/30">
-                Mentee
-              </span>
-            </div>
-          </div>
-        )}
-
+      {/* Bottom Section - Actions */}
+      <div className="flex items-center justify-end">
         {/* Action Buttons */}
         <div className="flex items-center gap-1">
-          <Button className="flex items-center gap-2 rounded-[40px] bg-[#5C30FF] px-3 py-2.5 hover:bg-[#4A26CC]">
-            <Bell className="h-4 w-4" strokeWidth={1.375} />
-            <span className="font-inter-tight text-xs font-normal leading-5 text-white">
-              Remind Me
+          {status === "upcoming" && (
+            <>
+              <Button
+                onClick={() => onComplete?.(id)}
+                className="flex items-center gap-2 rounded-[30px] bg-[#5C30FF] px-4 py-2 hover:bg-[#4A26CC]"
+              >
+                <CheckCircle className="h-4 w-4" strokeWidth={1.375} />
+                <span className="font-inter-tight text-[13px] font-normal text-white">
+                  Complete
+                </span>
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => onReschedule?.(id)}
+                className="flex items-center gap-2 rounded-[30px] border-[#E1E4EA] bg-white px-4 py-2 hover:bg-[#F5F5F5]"
+              >
+                <Clock className="h-4 w-4 text-[#525866]" strokeWidth={1.375} />
+                <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
+                  Reschedule
+                </span>
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => onCancel?.(id)}
+                className="flex items-center gap-2 rounded-[30px] border-[#E1E4EA] bg-white px-4 py-2 hover:border-[#EF4444] hover:bg-[#FEF2F2] hover:text-[#EF4444]"
+              >
+                <X className="h-4 w-4" strokeWidth={1.375} />
+                <span className="font-inter-tight text-[13px] font-normal">
+                  Cancel
+                </span>
+              </Button>
+            </>
+          )}
+          {status === "completed" && (
+            <span className="font-inter-tight text-[12px] text-[#10B981]">
+              Session completed
             </span>
-          </Button>
-          <Button
-            variant="outline"
-            className="flex items-center gap-2 rounded-[40px] border-0 bg-[#F5F5F5] px-3 py-2.5 hover:bg-[#E5E5E5]"
-          >
-            <Clock className="h-4 w-4 text-[#525866]" strokeWidth={1.375} />
-            <span className="font-inter-tight text-xs font-normal leading-5 text-[#525866]">
-              Reschedule
+          )}
+          {status === "cancelled" && (
+            <span className="font-inter-tight text-[12px] text-[#EF4444]">
+              Session cancelled
             </span>
-          </Button>
+          )}
         </div>
       </div>
     </div>
