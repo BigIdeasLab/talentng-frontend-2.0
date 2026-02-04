@@ -533,10 +533,127 @@ export default function MentorDetailPage() {
             )}
 
             {activeTab === "Reviews" && (
-              <div className="max-w-[700px]">
-                <p className="text-gray-500 text-center py-8">
-                  No reviews available yet
-                </p>
+              <div className="max-w-[1000px] flex flex-col gap-12">
+                {/* Metrics Section */}
+                <div className="flex flex-col gap-6">
+                  <h2 className="font-inter-tight text-[20px] font-bold text-black">
+                    Metrics
+                  </h2>
+
+                  <div className="grid grid-cols-2 gap-x-16 gap-y-6">
+                    {/* Communication */}
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-inter-tight text-[15px] font-normal text-[#A3A3A3]">
+                          Communication
+                        </span>
+                        <span className="font-inter-tight text-[15px] font-normal text-[#A3A3A3]">
+                          {mentor.metrics.communication}%
+                        </span>
+                      </div>
+                      <div className="w-full h-[6px] bg-[#E1E4EA] rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[#00A859] rounded-full"
+                          style={{ width: `${mentor.metrics.communication}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Motivational */}
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-inter-tight text-[15px] font-normal text-[#A3A3A3]">
+                          Motivational
+                        </span>
+                        <span className="font-inter-tight text-[15px] font-normal text-[#A3A3A3]">
+                          {mentor.metrics.motivational}%
+                        </span>
+                      </div>
+                      <div className="w-full h-[6px] bg-[#E1E4EA] rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[#00A859] rounded-full"
+                          style={{ width: `${mentor.metrics.motivational}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Problem Solving */}
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-inter-tight text-[15px] font-normal text-[#A3A3A3]">
+                          Problem Solving
+                        </span>
+                        <span className="font-inter-tight text-[15px] font-normal text-[#A3A3A3]">
+                          {mentor.metrics.problemSolving}%
+                        </span>
+                      </div>
+                      <div className="w-full h-[6px] bg-[#E1E4EA] rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[#00A859] rounded-full"
+                          style={{ width: `${mentor.metrics.problemSolving}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Subject Knowledge */}
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-inter-tight text-[15px] font-normal text-[#A3A3A3]">
+                          Subject Knowledge
+                        </span>
+                        <span className="font-inter-tight text-[15px] font-normal text-[#A3A3A3]">
+                          {mentor.metrics.subjectKnowledge}%
+                        </span>
+                      </div>
+                      <div className="w-full h-[6px] bg-[#E1E4EA] rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[#00A859] rounded-full"
+                          style={{
+                            width: `${mentor.metrics.subjectKnowledge}%`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Reviews Section */}
+                <div className="flex flex-col gap-6">
+                  <h2 className="font-inter-tight text-[20px] font-bold text-black">
+                    Reviews
+                  </h2>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {mentor.reviews.map((review) => (
+                      <div
+                        key={review.id}
+                        className="flex flex-col gap-4 p-5 rounded-2xl border border-[#E1E4EA] bg-white hover:shadow-sm transition-shadow"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gradient-to-b from-purple-400 to-purple-600">
+                            <Image
+                              src={review.imageUrl}
+                              alt={review.name}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                          <div className="flex flex-col">
+                            <h3 className="font-inter-tight text-[15px] font-semibold text-black">
+                              {review.name}
+                            </h3>
+                            <p className="font-inter-tight text-[13px] font-normal text-[#A3A3A3]">
+                              {review.role}
+                            </p>
+                          </div>
+                        </div>
+                        <p className="font-inter-tight text-[14px] font-normal text-[#525866] leading-[22px]">
+                          {review.review}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             )}
 
