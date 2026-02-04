@@ -22,17 +22,17 @@ export function MentorCard({
   sessionsCompleted,
 }: MentorCardProps) {
   return (
-    <div className="flex flex-col gap-2.5 p-1.5 rounded-xl bg-[#F5F5F5]">
+    <div className="flex flex-col gap-2.5 p-1.5 rounded-xl bg-[#F5F5F5] group cursor-pointer">
       {/* Thumbnail */}
-      <div className="relative w-full aspect-[261/190] rounded-xl bg-white overflow-hidden">
+      <Link href={`/mentorship/${id}`} className="relative w-full aspect-[261/190] rounded-xl bg-white overflow-hidden">
         <Image
           src={imageUrl}
           alt={name}
           fill
-          className="object-cover"
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
         />
-      </div>
+      </Link>
 
       {/* Info Container */}
       <div className="flex flex-col gap-3.5">
