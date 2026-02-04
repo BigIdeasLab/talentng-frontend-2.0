@@ -79,7 +79,7 @@ export function MentorCard({
 
           {/* External Link Button */}
           <Link
-            href={`/profile/${id}`}
+            href={`/mentorship/${id}`}
             className="flex items-center justify-center h-[40px] w-[40px] rounded-full border border-[#B2B2B2] bg-[#F5F5F5] hover:bg-[#E1E4EA] transition-colors"
           >
             <ArrowUpRight className="w-4 h-4 text-black" strokeWidth={1.125} />
