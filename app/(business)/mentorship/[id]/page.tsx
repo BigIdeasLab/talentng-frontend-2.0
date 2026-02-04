@@ -658,10 +658,182 @@ export default function MentorDetailPage() {
             )}
 
             {activeTab === "Session" && (
-              <div className="max-w-[700px]">
-                <p className="text-gray-500 text-center py-8">
-                  No sessions scheduled yet
-                </p>
+              <div className="max-w-[800px] flex flex-col gap-8">
+                {mentor.sessions.map((session) => (
+                  <div key={session.id} className="flex flex-col gap-5">
+                    {/* Session Type Header */}
+                    <h2 className="font-inter-tight text-[20px] font-bold text-black">
+                      {session.type === "private"
+                        ? "Private Session"
+                        : "Public Session"}
+                    </h2>
+
+                    {/* Session Card */}
+                    <div className="flex flex-col gap-5 p-5 rounded-2xl border border-[#E1E4EA] bg-white">
+                      {/* Session Title and Description */}
+                      <div className="flex flex-col gap-3 pb-5 border-b border-[#E1E4EA]">
+                        <div className="flex items-start gap-3">
+                          <div className="w-1 h-6 bg-[#5C30FF] rounded-full flex-shrink-0 mt-1" />
+                          <div className="flex-1">
+                            <h3 className="font-inter-tight text-[17px] font-semibold text-black mb-2">
+                              {session.title}
+                            </h3>
+                            <p className="font-inter-tight text-[13px] font-normal text-[#525866] leading-[20px]">
+                              {session.description}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Session Details */}
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center gap-2.5">
+                          <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 18 18"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="flex-shrink-0"
+                          >
+                            <path
+                              d="M14 2.5H4C3.17157 2.5 2.5 3.17157 2.5 4V14C2.5 14.8284 3.17157 15.5 4 15.5H14C14.8284 15.5 15.5 14.8284 15.5 14V4C15.5 3.17157 14.8284 2.5 14 2.5Z"
+                              stroke="black"
+                              strokeWidth="1.2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M12 1V4"
+                              stroke="black"
+                              strokeWidth="1.2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M6 1V4"
+                              stroke="black"
+                              strokeWidth="1.2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M2.5 7H15.5"
+                              stroke="black"
+                              strokeWidth="1.2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                          <span className="font-inter-tight text-[14px] font-normal text-black">
+                            Date: {session.date}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2.5">
+                          <Clock
+                            className="w-[18px] h-[18px] text-black flex-shrink-0"
+                            strokeWidth={1.2}
+                          />
+                          <span className="font-inter-tight text-[14px] font-normal text-black">
+                            Duration: {session.duration}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2.5">
+                          <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 18 18"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="flex-shrink-0"
+                          >
+                            <path
+                              d="M9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5Z"
+                              stroke="black"
+                              strokeWidth="1.2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M9 4.5V9L12 10.5"
+                              stroke="black"
+                              strokeWidth="1.2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                          <span className="font-inter-tight text-[14px] font-normal text-black">
+                            Location: {session.location}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Mentor Info and Actions */}
+                      <div className="flex items-center justify-between pt-5 border-t border-[#E1E4EA]">
+                        <div className="flex items-center gap-3">
+                          <div className="relative w-10 h-10 rounded-full overflow-hidden bg-gradient-to-b from-purple-400 to-purple-600">
+                            <Image
+                              src={mentor.imageUrl}
+                              alt={mentor.name}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                          <div className="flex flex-col">
+                            <h4 className="font-inter-tight text-[14px] font-semibold text-black">
+                              {mentor.name}
+                            </h4>
+                            <p className="font-inter-tight text-[12px] font-normal text-[#A3A3A3]">
+                              Mentor
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <button className="flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full bg-[#5C30FF] text-white font-inter-tight text-[13px] font-medium hover:bg-[#4a26cc] transition-colors">
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 16 16"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M14.6667 10.3333V13.3333C14.6667 13.687 14.5262 14.0261 14.2761 14.2761C14.0261 14.5262 13.687 14.6667 13.3333 14.6667H2.66667C2.31304 14.6667 1.97391 14.5262 1.72386 14.2761C1.47381 14.0261 1.33333 13.687 1.33333 13.3333V10.3333M11.3333 5L8 1.66667M8 1.66667L4.66667 5M8 1.66667V10.3333"
+                                stroke="white"
+                                strokeWidth="1.2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                            Remind Me
+                          </button>
+
+                          <button className="flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full border border-[#E1E4EA] bg-white text-black font-inter-tight text-[13px] font-medium hover:bg-[#F5F5F5] transition-colors">
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 16 16"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M14 9.99999V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V9.99999M4.66667 6.66666L8 9.99999M8 9.99999L11.3333 6.66666M8 9.99999V2"
+                                stroke="black"
+                                strokeWidth="1.2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                            Join Session
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>
