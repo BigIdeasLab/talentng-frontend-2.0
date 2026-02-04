@@ -90,12 +90,16 @@ const MOCK_REQUESTS: MentorshipRequest[] = [
 
 export default function ApplicationsPage() {
   const [requests, setRequests] = useState<MentorshipRequest[]>(MOCK_REQUESTS);
-  const [filter, setFilter] = useState<"all" | "pending" | "accepted" | "rejected">("all");
+  const [filter, setFilter] = useState<
+    "all" | "pending" | "accepted" | "rejected"
+  >("all");
 
   // Modal states
   const [acceptModalOpen, setAcceptModalOpen] = useState(false);
   const [declineModalOpen, setDeclineModalOpen] = useState(false);
-  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
+  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(
+    null,
+  );
 
   const filteredRequests = requests.filter((req) => {
     if (filter === "all") return true;
@@ -118,8 +122,10 @@ export default function ApplicationsPage() {
     if (selectedRequestId) {
       setRequests((prev) =>
         prev.map((req) =>
-          req.id === selectedRequestId ? { ...req, status: "accepted" as const } : req
-        )
+          req.id === selectedRequestId
+            ? { ...req, status: "accepted" as const }
+            : req,
+        ),
       );
     }
   };
@@ -128,13 +134,13 @@ export default function ApplicationsPage() {
     if (selectedRequestId) {
       setRequests((prev) =>
         prev.map((req) =>
-          req.id === selectedRequestId ? { ...req, status: "rejected" as const } : req
-        )
+          req.id === selectedRequestId
+            ? { ...req, status: "rejected" as const }
+            : req,
+        ),
       );
     }
   };
-
-
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
@@ -167,7 +173,10 @@ export default function ApplicationsPage() {
           <span className="font-inter-tight text-[13px] font-medium text-[#525866]">
             Filter:
           </span>
-          <Select value={filter} onValueChange={(v: typeof filter) => setFilter(v)}>
+          <Select
+            value={filter}
+            onValueChange={(v: typeof filter) => setFilter(v)}
+          >
             <SelectTrigger className="h-9 w-[150px] border-[#E1E4EA] bg-white">
               <SelectValue />
             </SelectTrigger>
@@ -226,7 +235,8 @@ export default function ApplicationsPage() {
                           : "bg-[#FEF2F2] text-[#EF4444]"
                     }`}
                   >
-                    {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                    {request.status.charAt(0).toUpperCase() +
+                      request.status.slice(1)}
                   </div>
                 </div>
 

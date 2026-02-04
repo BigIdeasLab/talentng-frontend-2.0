@@ -128,7 +128,10 @@ export default function AvailabilityPage() {
               <label className="font-inter-tight text-[13px] font-semibold text-black">
                 Session Duration
               </label>
-              <Select value={sessionDuration} onValueChange={setSessionDuration}>
+              <Select
+                value={sessionDuration}
+                onValueChange={setSessionDuration}
+              >
                 <SelectTrigger className="h-10 w-[180px] border-[#E1E4EA]">
                   <SelectValue />
                 </SelectTrigger>
@@ -204,9 +207,7 @@ export default function AvailabilityPage() {
               {TIME_SLOTS.map((time, timeIndex) => (
                 <Fragment key={`row-${timeIndex}`}>
                   {/* Time Label */}
-                  <div
-                    className="flex items-center justify-end border-t border-[#E1E4EA] bg-[#F9F9F9] px-3 py-3 font-inter-tight text-[12px] font-medium text-[#525866]"
-                  >
+                  <div className="flex items-center justify-end border-t border-[#E1E4EA] bg-[#F9F9F9] px-3 py-3 font-inter-tight text-[12px] font-medium text-[#525866]">
                     {time}
                   </div>
 

@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import { Search, SlidersHorizontal, ChevronDown } from "lucide-react";
-import { SessionCard, SessionStatus } from "@/components/mentor/sessions/SessionCard";
+import {
+  SessionCard,
+  SessionStatus,
+} from "@/components/mentor/sessions/SessionCard";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { RescheduleModal } from "@/components/ui/reschedule-modal";
 
@@ -94,21 +97,26 @@ const INITIAL_SESSIONS: Session[] = [
 
 export default function SessionsPage() {
   const [sessions, setSessions] = useState<Session[]>(INITIAL_SESSIONS);
-  const [activeTab, setActiveTab] = useState<"upcoming" | "completed" | "cancelled" | "all">("all");
+  const [activeTab, setActiveTab] = useState<
+    "upcoming" | "completed" | "cancelled" | "all"
+  >("all");
   const [searchQuery, setSearchQuery] = useState("");
 
   // Modal states
   const [completeModalOpen, setCompleteModalOpen] = useState(false);
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false);
-  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
+    null,
+  );
 
   const filteredSessions = sessions.filter((session) => {
     const matchesTab = activeTab === "all" || session.status === activeTab;
     const matchesSearch =
       session.mentee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       session.topic.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (session.message?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
+      (session.message?.toLowerCase().includes(searchQuery.toLowerCase()) ??
+        false);
     return matchesTab && matchesSearch;
   });
 
@@ -140,8 +148,8 @@ export default function SessionsPage() {
         prev.map((session) =>
           session.id === selectedSessionId
             ? { ...session, status: "completed" as SessionStatus }
-            : session
-        )
+            : session,
+        ),
       );
     }
   };
@@ -152,8 +160,8 @@ export default function SessionsPage() {
         prev.map((session) =>
           session.id === selectedSessionId
             ? { ...session, status: "cancelled" as SessionStatus }
-            : session
-        )
+            : session,
+        ),
       );
     }
   };
@@ -169,8 +177,8 @@ export default function SessionsPage() {
         prev.map((session) =>
           session.id === selectedSessionId
             ? { ...session, date: `${formattedDate}, ${time}` }
-            : session
-        )
+            : session,
+        ),
       );
     }
   };

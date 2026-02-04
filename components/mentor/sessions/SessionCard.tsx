@@ -40,8 +40,16 @@ export function SessionCard({
 }: SessionCardProps) {
   const statusConfig = {
     upcoming: { label: "Upcoming", bg: "bg-[#EEF4FF]", text: "text-[#3B82F6]" },
-    completed: { label: "Completed", bg: "bg-[#ECFDF3]", text: "text-[#10B981]" },
-    cancelled: { label: "Cancelled", bg: "bg-[#FEF2F2]", text: "text-[#EF4444]" },
+    completed: {
+      label: "Completed",
+      bg: "bg-[#ECFDF3]",
+      text: "text-[#10B981]",
+    },
+    cancelled: {
+      label: "Cancelled",
+      bg: "bg-[#FEF2F2]",
+      text: "text-[#EF4444]",
+    },
   };
 
   const menteeInitials = mentee.name
@@ -68,7 +76,9 @@ export function SessionCard({
               </h3>
               {(mentee.title || mentee.company) && (
                 <p className="font-inter-tight text-[13px] text-[#525866]">
-                  {mentee.title}{mentee.title && mentee.company && " at "}{mentee.company}
+                  {mentee.title}
+                  {mentee.title && mentee.company && " at "}
+                  {mentee.company}
                 </p>
               )}
             </div>
@@ -85,8 +95,12 @@ export function SessionCard({
         <div className="flex items-start gap-3.5">
           <div className="h-auto min-h-[40px] w-1 flex-shrink-0 self-stretch rounded-[48px] bg-[#5C30FF]" />
           <div className="flex flex-1 flex-col gap-2">
-            <span className="font-inter-tight text-[12px] font-medium text-[#99A0AE]">Topic</span>
-            <p className="font-inter-tight text-[14px] font-medium text-black">{topic}</p>
+            <span className="font-inter-tight text-[12px] font-medium text-[#99A0AE]">
+              Topic
+            </span>
+            <p className="font-inter-tight text-[14px] font-medium text-black">
+              {topic}
+            </p>
             {message && (
               <p className="font-inter-tight text-[13px] leading-relaxed text-[#525866]">
                 {message}

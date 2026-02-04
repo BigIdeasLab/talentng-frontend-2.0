@@ -19,14 +19,14 @@
 
 The mentorship feature follows a 5-stage flow:
 
-| Stage | Actor | Action | Page |
-|-------|-------|--------|------|
-| 1. Setup | Mentor | Sets availability slots, duration, buffer time | `/availability` |
-| 2. Discovery | Mentee | Searches/filters mentors | (Mentee side) |
+| Stage         | Actor           | Action                                                     | Page            |
+| ------------- | --------------- | ---------------------------------------------------------- | --------------- |
+| 1. Setup      | Mentor          | Sets availability slots, duration, buffer time             | `/availability` |
+| 2. Discovery  | Mentee          | Searches/filters mentors                                   | (Mentee side)   |
 | 3. Connection | Mentee → Mentor | Mentee picks slot & sends request → Mentor accepts/rejects | `/applications` |
-| 4. Booking | Mentor | Views, reschedules, cancels sessions | `/sessions` |
-| 5. Session | Mentor | Marks session complete | `/sessions` |
-| 6. Review | Mentee | Leaves review (updates mentor stats) | (Mentee side) |
+| 4. Booking    | Mentor          | Views, reschedules, cancels sessions                       | `/sessions`     |
+| 5. Session    | Mentor          | Marks session complete                                     | `/sessions`     |
+| 6. Review     | Mentee          | Leaves review (updates mentor stats)                       | (Mentee side)   |
 
 ---
 
@@ -37,6 +37,7 @@ The mentorship feature follows a 5-stage flow:
 **Purpose**: Mentor sets their weekly availability for mentorship sessions.
 
 **Features**:
+
 - Weekly calendar grid (Mon-Sun)
 - Click to toggle time slots (9 AM - 5 PM, 1-hour blocks)
 - Session duration setting (30, 60, 90, 120 mins)
@@ -45,23 +46,25 @@ The mentorship feature follows a 5-stage flow:
 - Quick actions: "Clear All", "Weekdays 9-5", "Mornings Only"
 
 **Data Saved**:
+
 ```typescript
 interface AvailabilitySettings {
   mentorId: string;
-  sessionDuration: number;      // in minutes: 30 | 60 | 90 | 120
-  bufferTime: number;           // in minutes: 0 | 15 | 30 | 45
-  timezone: string;             // e.g., "WAT", "GMT", "EST"
+  sessionDuration: number; // in minutes: 30 | 60 | 90 | 120
+  bufferTime: number; // in minutes: 0 | 15 | 30 | 45
+  timezone: string; // e.g., "WAT", "GMT", "EST"
   slots: AvailabilitySlot[];
 }
 
 interface AvailabilitySlot {
-  dayOfWeek: number;            // 0 = Monday, 6 = Sunday
-  startTime: string;            // "09:00" (24hr format)
-  endTime: string;              // "10:00" (24hr format)
+  dayOfWeek: number; // 0 = Monday, 6 = Sunday
+  startTime: string; // "09:00" (24hr format)
+  endTime: string; // "10:00" (24hr format)
 }
 ```
 
 **Example Payload (Save Availability)**:
+
 ```json
 {
   "mentorId": "mentor-123",
@@ -85,6 +88,7 @@ interface AvailabilitySlot {
 **Purpose**: Mentor views and responds to incoming mentorship requests.
 
 **Features**:
+
 - List of mentorship requests with mentee info
 - Filter by status: All, Pending, Accepted, Rejected
 - Accept button → Opens confirmation modal → Creates session
@@ -92,6 +96,7 @@ interface AvailabilitySlot {
 - Pending count indicator
 
 **Request Card Displays**:
+
 - Mentee avatar (initials), name, title, company
 - Topic of interest
 - Message from mentee
@@ -107,6 +112,7 @@ interface AvailabilitySlot {
 **Purpose**: Mentor manages confirmed/completed/cancelled sessions.
 
 **Features**:
+
 - Tabs: All, Upcoming, Completed, Cancelled (with counts)
 - Search by mentee name or topic
 - Session cards with full details
@@ -116,6 +122,7 @@ interface AvailabilitySlot {
   - **Cancel** → Confirmation modal → Marks as cancelled
 
 **Session Card Displays**:
+
 - Mentee avatar, name, title, company
 - Topic
 - Message/notes
@@ -133,7 +140,7 @@ interface AvailabilitySlot {
 ```typescript
 interface MentorshipRequest {
   id: string;
-  
+
   // Mentee Information
   mentee: {
     id: string;
@@ -142,17 +149,17 @@ interface MentorshipRequest {
     title: string;
     company: string;
   };
-  
+
   // Session Details (from slot mentee selected)
-  topic: string;              // Primary topic for mentorship
-  message: string;            // Mentee's message/goals
-  scheduledDate: string;      // "Mon Feb 5, 2024" - the slot date
-  scheduledTime: string;      // "2:00 PM" - the slot time
-  duration: string;           // "60 mins" - from mentor's settings
-  location: string;           // "Google Meet", "Zoom", etc.
-  
+  topic: string; // Primary topic for mentorship
+  message: string; // Mentee's message/goals
+  scheduledDate: string; // "Mon Feb 5, 2024" - the slot date
+  scheduledTime: string; // "2:00 PM" - the slot time
+  duration: string; // "60 mins" - from mentor's settings
+  location: string; // "Google Meet", "Zoom", etc.
+
   // Meta
-  requestedAt: string;        // ISO date when request was submitted
+  requestedAt: string; // ISO date when request was submitted
   status: "pending" | "accepted" | "rejected";
 }
 ```
@@ -162,7 +169,7 @@ interface MentorshipRequest {
 ```typescript
 interface Session {
   id: string;
-  
+
   // Mentee Information
   mentee: {
     id: string;
@@ -171,21 +178,21 @@ interface Session {
     title?: string;
     company?: string;
   };
-  
+
   // Session Details
   topic: string;
   message?: string;
-  date: string;               // "Thu Dec 1, 2:00 PM"
-  duration: string;           // "60 mins"
-  location: string;           // "Google Meet"
-  
+  date: string; // "Thu Dec 1, 2:00 PM"
+  duration: string; // "60 mins"
+  location: string; // "Google Meet"
+
   // Status
   status: "upcoming" | "completed" | "cancelled";
-  
+
   // Optional fields
-  completedAt?: string;       // ISO date when marked complete
-  cancelledAt?: string;       // ISO date when cancelled
-  cancelReason?: string;      // Reason for cancellation
+  completedAt?: string; // ISO date when marked complete
+  cancelledAt?: string; // ISO date when cancelled
+  cancelReason?: string; // Reason for cancellation
 }
 ```
 
@@ -193,15 +200,15 @@ interface Session {
 
 ```typescript
 interface AvailabilitySlot {
-  dayOfWeek: number;          // 0-6 (Mon-Sun)
-  startTime: string;          // "09:00"
-  endTime: string;            // "10:00"
+  dayOfWeek: number; // 0-6 (Mon-Sun)
+  startTime: string; // "09:00"
+  endTime: string; // "10:00"
 }
 
 interface AvailabilitySettings {
   mentorId: string;
-  sessionDuration: number;    // minutes
-  bufferTime: number;         // minutes
+  sessionDuration: number; // minutes
+  bufferTime: number; // minutes
   timezone: string;
   slots: AvailabilitySlot[];
 }
@@ -213,30 +220,30 @@ interface AvailabilitySettings {
 
 ### Availability
 
-| Method | Endpoint | Description | Request Body | Response |
-|--------|----------|-------------|--------------|----------|
-| `GET` | `/api/mentor/availability` | Get mentor's availability settings | - | `AvailabilitySettings` |
-| `PUT` | `/api/mentor/availability` | Save/update availability | `AvailabilitySettings` | `AvailabilitySettings` |
-| `GET` | `/api/mentor/:id/slots?date=YYYY-MM-DD` | Get available slots for a date (for mentees) | - | `TimeSlot[]` |
+| Method | Endpoint                                | Description                                  | Request Body           | Response               |
+| ------ | --------------------------------------- | -------------------------------------------- | ---------------------- | ---------------------- |
+| `GET`  | `/api/mentor/availability`              | Get mentor's availability settings           | -                      | `AvailabilitySettings` |
+| `PUT`  | `/api/mentor/availability`              | Save/update availability                     | `AvailabilitySettings` | `AvailabilitySettings` |
+| `GET`  | `/api/mentor/:id/slots?date=YYYY-MM-DD` | Get available slots for a date (for mentees) | -                      | `TimeSlot[]`           |
 
 ### Mentorship Requests
 
-| Method | Endpoint | Description | Request Body | Response |
-|--------|----------|-------------|--------------|----------|
-| `GET` | `/api/mentor/requests` | Get all mentorship requests | - | `MentorshipRequest[]` |
-| `GET` | `/api/mentor/requests?status=pending` | Filter by status | - | `MentorshipRequest[]` |
-| `POST` | `/api/mentor/requests/:id/accept` | Accept a request (creates session) | - | `Session` |
-| `POST` | `/api/mentor/requests/:id/reject` | Reject a request | `{ reason?: string }` | `MentorshipRequest` |
+| Method | Endpoint                              | Description                        | Request Body          | Response              |
+| ------ | ------------------------------------- | ---------------------------------- | --------------------- | --------------------- |
+| `GET`  | `/api/mentor/requests`                | Get all mentorship requests        | -                     | `MentorshipRequest[]` |
+| `GET`  | `/api/mentor/requests?status=pending` | Filter by status                   | -                     | `MentorshipRequest[]` |
+| `POST` | `/api/mentor/requests/:id/accept`     | Accept a request (creates session) | -                     | `Session`             |
+| `POST` | `/api/mentor/requests/:id/reject`     | Reject a request                   | `{ reason?: string }` | `MentorshipRequest`   |
 
 ### Sessions
 
-| Method | Endpoint | Description | Request Body | Response |
-|--------|----------|-------------|--------------|----------|
-| `GET` | `/api/mentor/sessions` | Get all sessions | - | `Session[]` |
-| `GET` | `/api/mentor/sessions?status=upcoming` | Filter by status | - | `Session[]` |
-| `POST` | `/api/mentor/sessions/:id/complete` | Mark session complete | - | `Session` |
-| `POST` | `/api/mentor/sessions/:id/cancel` | Cancel session | `{ reason?: string }` | `Session` |
-| `PUT` | `/api/mentor/sessions/:id/reschedule` | Reschedule session | `{ date: string, time: string }` | `Session` |
+| Method | Endpoint                               | Description           | Request Body                     | Response    |
+| ------ | -------------------------------------- | --------------------- | -------------------------------- | ----------- |
+| `GET`  | `/api/mentor/sessions`                 | Get all sessions      | -                                | `Session[]` |
+| `GET`  | `/api/mentor/sessions?status=upcoming` | Filter by status      | -                                | `Session[]` |
+| `POST` | `/api/mentor/sessions/:id/complete`    | Mark session complete | -                                | `Session`   |
+| `POST` | `/api/mentor/sessions/:id/cancel`      | Cancel session        | `{ reason?: string }`            | `Session`   |
+| `PUT`  | `/api/mentor/sessions/:id/reschedule`  | Reschedule session    | `{ date: string, time: string }` | `Session`   |
 
 ---
 
@@ -437,14 +444,14 @@ MentorshipRequest (when accepted)
 
 ## UI Components Created
 
-| Component | Path | Purpose |
-|-----------|------|---------|
-| Availability Page | `app/(business)/availability/page.tsx` | Weekly availability calendar |
-| Applications Page | `app/(business)/applications/page.tsx` | Mentorship request management |
-| Sessions Page | `app/(business)/sessions/page.tsx` | Session management |
-| SessionCard | `components/mentor/sessions/SessionCard.tsx` | Session display card |
-| ConfirmationModal | `components/ui/confirmation-modal.tsx` | Reusable confirm dialog |
-| RescheduleModal | `components/ui/reschedule-modal.tsx` | Date/time picker for rescheduling |
+| Component         | Path                                         | Purpose                           |
+| ----------------- | -------------------------------------------- | --------------------------------- |
+| Availability Page | `app/(business)/availability/page.tsx`       | Weekly availability calendar      |
+| Applications Page | `app/(business)/applications/page.tsx`       | Mentorship request management     |
+| Sessions Page     | `app/(business)/sessions/page.tsx`           | Session management                |
+| SessionCard       | `components/mentor/sessions/SessionCard.tsx` | Session display card              |
+| ConfirmationModal | `components/ui/confirmation-modal.tsx`       | Reusable confirm dialog           |
+| RescheduleModal   | `components/ui/reschedule-modal.tsx`         | Date/time picker for rescheduling |
 
 ---
 
@@ -452,19 +459,19 @@ MentorshipRequest (when accepted)
 
 ### MentorshipRequest Status
 
-| Status | Description | Next Actions |
-|--------|-------------|--------------|
-| `pending` | Awaiting mentor response | Accept, Decline |
-| `accepted` | Mentor accepted → Session created | - |
-| `rejected` | Mentor declined request | - |
+| Status     | Description                       | Next Actions    |
+| ---------- | --------------------------------- | --------------- |
+| `pending`  | Awaiting mentor response          | Accept, Decline |
+| `accepted` | Mentor accepted → Session created | -               |
+| `rejected` | Mentor declined request           | -               |
 
 ### Session Status
 
-| Status | Description | Next Actions |
-|--------|-------------|--------------|
-| `upcoming` | Scheduled, not yet held | Complete, Cancel, Reschedule |
-| `completed` | Session was held | - |
-| `cancelled` | Session was cancelled | - |
+| Status      | Description             | Next Actions                 |
+| ----------- | ----------------------- | ---------------------------- |
+| `upcoming`  | Scheduled, not yet held | Complete, Cancel, Reschedule |
+| `completed` | Session was held        | -                            |
+| `cancelled` | Session was cancelled   | -                            |
 
 ---
 
@@ -509,8 +516,9 @@ MentorshipRequest (when accepted)
 **A: Option B - MentorshipRequest → auto-creates Booking when accepted**
 
 Our flow:
+
 ```
-Mentee picks specific slot → Sends MentorshipRequest (with slot info) → 
+Mentee picks specific slot → Sends MentorshipRequest (with slot info) →
 Mentor accepts → Session/Booking auto-created with "upcoming" status
 ```
 
@@ -525,16 +533,19 @@ We don't need a separate "connection" step. The request IS the booking request, 
 **A: Weekly recurring**
 
 Frontend sends:
+
 ```json
 { "dayOfWeek": 0, "startTime": "09:00", "endTime": "10:00" }
 ```
 
 Backend should:
+
 1. Store as weekly pattern
 2. Generate available date-specific slots when mentee views (e.g., next 2 weeks)
 3. Exclude already-booked slots from generated list
 
 Example: If mentor sets Monday 9-10 AM, backend generates:
+
 - Mon Feb 3, 9:00 AM
 - Mon Feb 10, 9:00 AM
 - Mon Feb 17, 9:00 AM
@@ -549,10 +560,11 @@ Example: If mentor sets Monday 9-10 AM, backend generates:
 **A: Option A - Global mentor settings (on MentorProfile)**
 
 These apply to ALL of the mentor's sessions:
+
 ```json
 {
-  "sessionDuration": 60,    // All sessions are 60 mins
-  "bufferTime": 15,         // 15 min gap between sessions
+  "sessionDuration": 60, // All sessions are 60 mins
+  "bufferTime": 15, // 15 min gap between sessions
   "timezone": "WAT"
 }
 ```
@@ -572,9 +584,10 @@ Not per-slot or per-booking. Keeps it simple.
 - If mentee doesn't specify, use mentor's default
 
 Request shows:
+
 ```json
 {
-  "location": "Google Meet"  // Mentee's preference or mentor's default
+  "location": "Google Meet" // Mentee's preference or mentor's default
 }
 ```
 
@@ -589,6 +602,7 @@ No auto-generation needed for MVP.
 **A: Option A - Pending until mentor confirms**
 
 Flow:
+
 ```
 Mentee books slot → status: "pending" (appears in /applications)
 Mentor accepts   → status: "confirmed" / "upcoming" (moves to /sessions)
@@ -611,14 +625,14 @@ Use whatever paths make sense for your architecture. We'll update our API calls 
 
 ## Summary of Answers
 
-| Question | Answer |
-|----------|--------|
-| Flow type | B - Request → auto-creates Booking on accept |
-| Availability | Weekly recurring (backend generates dates) |
-| Duration/Buffer | Global mentor settings |
-| Location | Mentor default + mentee can override |
-| Status flow | Pending until mentor confirms |
-| API paths | Frontend will adapt |
+| Question        | Answer                                       |
+| --------------- | -------------------------------------------- |
+| Flow type       | B - Request → auto-creates Booking on accept |
+| Availability    | Weekly recurring (backend generates dates)   |
+| Duration/Buffer | Global mentor settings                       |
+| Location        | Mentor default + mentee can override         |
+| Status flow     | Pending until mentor confirms                |
+| API paths       | Frontend will adapt                          |
 
 ---
 
@@ -627,6 +641,7 @@ Use whatever paths make sense for your architecture. We'll update our API calls 
 Based on answers above:
 
 ### Availability
+
 ```
 GET    /api/mentor/availability          → Get mentor's weekly pattern
 PUT    /api/mentor/availability          → Save weekly pattern + settings
@@ -636,6 +651,7 @@ GET    /api/mentors/:id/available-slots  → Get available date slots (for mente
 ```
 
 ### Requests/Bookings
+
 ```
 POST   /api/mentorship/request           → Mentee creates request (with slot)
 GET    /api/mentor/requests              → Mentor gets their requests
@@ -644,6 +660,7 @@ POST   /api/mentor/requests/:id/reject   → Reject request
 ```
 
 ### Sessions (Confirmed Bookings)
+
 ```
 GET    /api/mentor/sessions              → Get confirmed sessions
 POST   /api/mentor/sessions/:id/complete → Mark as complete
@@ -653,6 +670,6 @@ PUT    /api/mentor/sessions/:id/reschedule → Change date/time
 
 ---
 
-*Document created: February 2024*
-*Updated with Backend Q&A: February 2024*
-*Frontend Team - TalentNG*
+_Document created: February 2024_
+_Updated with Backend Q&A: February 2024_
+_Frontend Team - TalentNG_
