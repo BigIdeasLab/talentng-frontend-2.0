@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { Clock, Send } from "lucide-react";
+import { Clock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -17,6 +17,8 @@ const MOCK_MENTOR_DETAILS = {
     pricePerSession: 150,
     sessionsCompleted: 200,
     mentoringTime: 320,
+    sessionDuration: 60,
+    defaultLocation: "Google Meet",
     about:
       "Hello! I'm a Data Scientist at Microsoft, specializing in machine learning and data visualization. With over 8 years of experience, I've contributed to projects ranging from cloud computing to AI-driven solutions. My expertise includes Python, R, SQL, and tools like TensorFlow and Power BI.\n\nI've led cross-functional teams, mentored junior data scientists, and worked with stakeholders to translate complex data into actionable insights. Whether you're interested in refining your analytical skills, understanding data trends, or need guidance on real-world data applications, I'm here to assist.\n\nPlease note: To provide focused and in-depth consultations, I offer 30–45 minute mentorship sessions at $90 USD. I'm excited to connect, share my knowledge, and help you advance your career in data science.",
     expertise: ["Data Analysis", "Engineering"],
@@ -51,43 +53,55 @@ const MOCK_MENTOR_DETAILS = {
         id: "1",
         name: "John Smith",
         role: "Mentee",
-        imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
-        review: "David's innovative approach to user experience design resulted in a 30% increase in user engagement. His creative solutions have been essential in meeting project deadlines.",
+        imageUrl:
+          "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
+        review:
+          "David's innovative approach to user experience design resulted in a 30% increase in user engagement. His creative solutions have been essential in meeting project deadlines.",
       },
       {
         id: "2",
         name: "Lisa Chen",
         role: "Mentee",
-        imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
-        review: "David's research on market trends provided the team with a competitive edge. Her analytical skills and attention to detail have significantly enhanced our strategy development.",
+        imageUrl:
+          "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
+        review:
+          "David's research on market trends provided the team with a competitive edge. Her analytical skills and attention to detail have significantly enhanced our strategy development.",
       },
       {
         id: "3",
         name: "Michael Johnson",
         role: "Mentee",
-        imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
-        review: "David's expertise in coding has streamlined our development process, reducing bug occurrences. His technical contributions have greatly improved product stability.",
+        imageUrl:
+          "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
+        review:
+          "David's expertise in coding has streamlined our development process, reducing bug occurrences. His technical contributions have greatly improved product stability.",
       },
       {
         id: "4",
         name: "Emma Williams",
         role: "Mentee",
-        imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
-        review: "David's leadership in project management played a crucial role in aligning team objectives. Her organizational abilities have fostered a collaborative team environment.",
+        imageUrl:
+          "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
+        review:
+          "David's leadership in project management played a crucial role in aligning team objectives. Her organizational abilities have fostered a collaborative team environment.",
       },
       {
         id: "5",
         name: "David Brown",
         role: "Mentee",
-        imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
-        review: "David's initiatives in sustainable design have not only reduced costs but also aligned our products with eco-friendly practices, enhancing our brand image.",
+        imageUrl:
+          "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
+        review:
+          "David's initiatives in sustainable design have not only reduced costs but also aligned our products with eco-friendly practices, enhancing our brand image.",
       },
       {
         id: "6",
         name: "Sophia Martinez",
         role: "Mentee",
-        imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
-        review: "David's insights into social media marketing strategies have boosted our online presence dramatically. Her creative campaigns attract a broader audience.",
+        imageUrl:
+          "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
+        review:
+          "David's insights into social media marketing strategies have boosted our online presence dramatically. Her creative campaigns attract a broader audience.",
       },
     ],
     sessions: [
@@ -95,7 +109,8 @@ const MOCK_MENTOR_DETAILS = {
         id: "1",
         type: "private",
         title: "Career Guidance",
-        description: "A Data Scientist at Microsoft, specializing in machine learning and data visualization. With over 8 years of experience.",
+        description:
+          "A Data Scientist at Microsoft, specializing in machine learning and data visualization. With over 8 years of experience.",
         date: "Thu, 11:00 AM",
         duration: "45 mins",
         location: "Google Meet",
@@ -104,7 +119,8 @@ const MOCK_MENTOR_DETAILS = {
         id: "2",
         type: "public",
         title: "Becoming The Top Of Your Game",
-        description: "A Data Scientist at Microsoft, specializing in machine learning and data visualization. With over 8 years of experience.",
+        description:
+          "A Data Scientist at Microsoft, specializing in machine learning and data visualization. With over 8 years of experience.",
         date: "Thu, 11:00 AM",
         duration: "50 mins",
         location: "Google Meet",
@@ -120,6 +136,8 @@ const MOCK_MENTOR_DETAILS = {
     pricePerSession: 120,
     sessionsCompleted: 100,
     mentoringTime: 450,
+    sessionDuration: 45,
+    defaultLocation: "Zoom",
     about:
       "Hi! I'm a Frontend Developer at Amazon with a passion for creating beautiful, responsive web applications. I specialize in React, TypeScript, and modern CSS frameworks. With 6 years of experience, I've worked on large-scale e-commerce platforms and user-facing applications.\n\nI love mentoring aspiring developers and helping them level up their skills in frontend development, UI/UX design, and web performance optimization.",
     expertise: ["Frontend Development", "UI/UX"],
@@ -154,43 +172,55 @@ const MOCK_MENTOR_DETAILS = {
         id: "1",
         name: "John Smith",
         role: "Mentee",
-        imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
-        review: "Sarah's innovative approach to user experience design resulted in a 30% increase in user engagement. Her creative solutions have been essential in meeting project deadlines.",
+        imageUrl:
+          "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
+        review:
+          "Sarah's innovative approach to user experience design resulted in a 30% increase in user engagement. Her creative solutions have been essential in meeting project deadlines.",
       },
       {
         id: "2",
         name: "Lisa Chen",
         role: "Mentee",
-        imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
-        review: "Sarah's research on market trends provided the team with a competitive edge. Her analytical skills and attention to detail have significantly enhanced our strategy development.",
+        imageUrl:
+          "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
+        review:
+          "Sarah's research on market trends provided the team with a competitive edge. Her analytical skills and attention to detail have significantly enhanced our strategy development.",
       },
       {
         id: "3",
         name: "Michael Johnson",
         role: "Mentee",
-        imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
-        review: "Sarah's expertise in coding has streamlined our development process, reducing bug occurrences. Her technical contributions have greatly improved product stability.",
+        imageUrl:
+          "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
+        review:
+          "Sarah's expertise in coding has streamlined our development process, reducing bug occurrences. Her technical contributions have greatly improved product stability.",
       },
       {
         id: "4",
         name: "Emma Williams",
         role: "Mentee",
-        imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
-        review: "Sarah's leadership in project management played a crucial role in aligning team objectives. Her organizational abilities have fostered a collaborative team environment.",
+        imageUrl:
+          "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
+        review:
+          "Sarah's leadership in project management played a crucial role in aligning team objectives. Her organizational abilities have fostered a collaborative team environment.",
       },
       {
         id: "5",
         name: "David Brown",
         role: "Mentee",
-        imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
-        review: "Sarah's initiatives in sustainable design have not only reduced costs but also aligned our products with eco-friendly practices, enhancing our brand image.",
+        imageUrl:
+          "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
+        review:
+          "Sarah's initiatives in sustainable design have not only reduced costs but also aligned our products with eco-friendly practices, enhancing our brand image.",
       },
       {
         id: "6",
         name: "Sophia Martinez",
         role: "Mentee",
-        imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
-        review: "Sarah's insights into social media marketing strategies have boosted our online presence dramatically. Her creative campaigns attract a broader audience.",
+        imageUrl:
+          "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
+        review:
+          "Sarah's insights into social media marketing strategies have boosted our online presence dramatically. Her creative campaigns attract a broader audience.",
       },
     ],
     sessions: [
@@ -198,7 +228,8 @@ const MOCK_MENTOR_DETAILS = {
         id: "1",
         type: "private",
         title: "Frontend Development Mastery",
-        description: "A Frontend Developer at Amazon with a passion for creating beautiful, responsive web applications. Learn React, TypeScript, and modern CSS.",
+        description:
+          "A Frontend Developer at Amazon with a passion for creating beautiful, responsive web applications. Learn React, TypeScript, and modern CSS.",
         date: "Fri, 10:00 AM",
         duration: "60 mins",
         location: "Google Meet",
@@ -207,7 +238,8 @@ const MOCK_MENTOR_DETAILS = {
         id: "2",
         type: "public",
         title: "Building Scalable Web Apps",
-        description: "Discover best practices for building large-scale e-commerce platforms and user-facing applications that perform at scale.",
+        description:
+          "Discover best practices for building large-scale e-commerce platforms and user-facing applications that perform at scale.",
         date: "Fri, 2:00 PM",
         duration: "45 mins",
         location: "Zoom",
@@ -223,6 +255,8 @@ const MOCK_MENTOR_DETAILS = {
     pricePerSession: 90,
     sessionsCompleted: 50,
     mentoringTime: 510,
+    sessionDuration: 30,
+    defaultLocation: "Google Meet",
     about:
       "Hello! I'm a Data Scientist at Microsoft, specializing in machine learning and data visualization. With over 8 years of experience, I've contributed to projects ranging from cloud computing to AI-driven solutions. My expertise includes Python, R, SQL, and tools like TensorFlow and Power BI.\n\nI've led cross-functional teams, mentored junior data scientists, and worked with stakeholders to translate complex data into actionable insights. Whether you're interested in refining your analytical skills, understanding data trends, or need guidance on real-world data applications, I'm here to assist.\n\nPlease note: To provide focused and in-depth consultations, I offer 30–45 minute mentorship sessions at $90 USD. I'm excited to connect, share my knowledge, and help you advance your career in data science.",
     expertise: ["Data Analysis", "Engineering"],
@@ -257,43 +291,55 @@ const MOCK_MENTOR_DETAILS = {
         id: "1",
         name: "John Smith",
         role: "Mentee",
-        imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
-        review: "David's innovative approach to user experience design resulted in a 30% increase in user engagement. His creative solutions have been essential in meeting project deadlines.",
+        imageUrl:
+          "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
+        review:
+          "David's innovative approach to user experience design resulted in a 30% increase in user engagement. His creative solutions have been essential in meeting project deadlines.",
       },
       {
         id: "2",
         name: "Lisa Chen",
         role: "Mentee",
-        imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
-        review: "David's research on market trends provided the team with a competitive edge. Her analytical skills and attention to detail have significantly enhanced our strategy development.",
+        imageUrl:
+          "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
+        review:
+          "David's research on market trends provided the team with a competitive edge. Her analytical skills and attention to detail have significantly enhanced our strategy development.",
       },
       {
         id: "3",
         name: "Michael Johnson",
         role: "Mentee",
-        imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
-        review: "David's expertise in coding has streamlined our development process, reducing bug occurrences. His technical contributions have greatly improved product stability.",
+        imageUrl:
+          "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
+        review:
+          "David's expertise in coding has streamlined our development process, reducing bug occurrences. His technical contributions have greatly improved product stability.",
       },
       {
         id: "4",
         name: "Emma Williams",
         role: "Mentee",
-        imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
-        review: "David's leadership in project management played a crucial role in aligning team objectives. Her organizational abilities have fostered a collaborative team environment.",
+        imageUrl:
+          "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
+        review:
+          "David's leadership in project management played a crucial role in aligning team objectives. Her organizational abilities have fostered a collaborative team environment.",
       },
       {
         id: "5",
         name: "David Brown",
         role: "Mentee",
-        imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
-        review: "David's initiatives in sustainable design have not only reduced costs but also aligned our products with eco-friendly practices, enhancing our brand image.",
+        imageUrl:
+          "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
+        review:
+          "David's initiatives in sustainable design have not only reduced costs but also aligned our products with eco-friendly practices, enhancing our brand image.",
       },
       {
         id: "6",
         name: "Sophia Martinez",
         role: "Mentee",
-        imageUrl: "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
-        review: "David's insights into social media marketing strategies have boosted our online presence dramatically. Her creative campaigns attract a broader audience.",
+        imageUrl:
+          "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
+        review:
+          "David's insights into social media marketing strategies have boosted our online presence dramatically. Her creative campaigns attract a broader audience.",
       },
     ],
     sessions: [
@@ -301,7 +347,8 @@ const MOCK_MENTOR_DETAILS = {
         id: "1",
         type: "private",
         title: "Career Guidance",
-        description: "A Data Scientist at Microsoft, specializing in machine learning and data visualization. With over 8 years of experience.",
+        description:
+          "A Data Scientist at Microsoft, specializing in machine learning and data visualization. With over 8 years of experience.",
         date: "Thu, 11:00 AM",
         duration: "45 mins",
         location: "Google Meet",
@@ -310,7 +357,8 @@ const MOCK_MENTOR_DETAILS = {
         id: "2",
         type: "public",
         title: "Becoming The Top Of Your Game",
-        description: "A Data Scientist at Microsoft, specializing in machine learning and data visualization. With over 8 years of experience.",
+        description:
+          "A Data Scientist at Microsoft, specializing in machine learning and data visualization. With over 8 years of experience.",
         date: "Thu, 11:00 AM",
         duration: "50 mins",
         location: "Google Meet",
@@ -327,6 +375,11 @@ export default function MentorDetailPage() {
   const [activeTab, setActiveTab] = useState<TabType>("Overview");
   const [selectedDate, setSelectedDate] = useState(0);
   const [selectedTime, setSelectedTime] = useState(0);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [selectedTopic, setSelectedTopic] = useState("");
+  const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const mentor =
     MOCK_MENTOR_DETAILS[mentorId as keyof typeof MOCK_MENTOR_DETAILS];
@@ -335,10 +388,10 @@ export default function MentorDetailPage() {
     return (
       <div className="h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <p className="text-gray-500 mb-4">Mentor not found</p>
+          <p className="text-gray-500 mb-3 text-[13px]">Mentor not found</p>
           <Link
             href="/mentorship"
-            className="px-4 py-2 bg-[#181B25] text-white rounded-lg hover:bg-[#252831]"
+            className="px-3 py-1.5 bg-[#181B25] text-white rounded-md hover:bg-[#252831] text-[11px]"
           >
             Back to Mentorship
           </Link>
@@ -350,14 +403,14 @@ export default function MentorDetailPage() {
   return (
     <div className="h-screen bg-white flex flex-col overflow-hidden">
       {/* Back Button */}
-      <div className="flex-shrink-0 px-6 py-4 border-b border-[#E1E4EA]">
+      <div className="flex-shrink-0 px-5 py-3 border-b border-[#E1E4EA]">
         <Link
           href="/mentorship"
-          className="flex items-center gap-2 text-[#A3A3A3] hover:text-black transition-colors w-fit"
+          className="flex items-center gap-1.5 text-[#A3A3A3] hover:text-black transition-colors w-fit"
         >
           <svg
-            width="16"
-            height="16"
+            width="14"
+            height="14"
             viewBox="0 0 16 16"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -367,7 +420,7 @@ export default function MentorDetailPage() {
               fill="currentColor"
             />
           </svg>
-          <span className="font-inter-tight text-[13px] font-normal">
+          <span className="font-inter-tight text-[11px] font-normal">
             Back to Mentorship
           </span>
         </Link>
@@ -375,7 +428,7 @@ export default function MentorDetailPage() {
 
       <div className="flex-1 flex overflow-hidden">
         {/* Left Sidebar */}
-        <div className="w-[342px] flex-shrink-0 border-r border-[#E1E4EA] bg-white flex flex-col">
+        <div className="w-[350px] flex-shrink-0 border-r border-[#E1E4EA] bg-white flex flex-col">
           <div className="flex-1 overflow-y-auto scrollbar-hide p-5">
             <div className="flex flex-col gap-6">
               {/* Profile Section */}
@@ -407,24 +460,33 @@ export default function MentorDetailPage() {
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <CheckDoubleIcon className="w-4 h-4 text-[#525866]" />
-                  <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
-                    {mentor.sessionsCompleted} Session Completed
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5">
                   <Clock
                     className="w-4 h-4 text-[#525866]"
                     strokeWidth={1.125}
                   />
                   <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
-                    {mentor.mentoringTime} mins mentoring time
+                    {mentor.sessionDuration} mins / session
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <LocationIcon className="w-4 h-4 text-[#525866]" />
+                  <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
+                    {mentor.defaultLocation}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <CheckDoubleIcon className="w-4 h-4 text-[#525866]" />
+                  <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
+                    {mentor.sessionsCompleted} Sessions Completed
                   </span>
                 </div>
               </div>
 
               {/* Book Session Button */}
-              <button className="w-full h-[48px] rounded-full bg-[#181B25] text-white font-inter-tight text-[13px] font-medium hover:bg-[#252831] transition-colors">
+              <button
+                onClick={() => setIsBookingModalOpen(true)}
+                className="w-full h-[48px] rounded-full bg-[#181B25] text-white font-inter-tight text-[13px] font-medium hover:bg-[#252831] transition-colors"
+              >
                 Book Session
               </button>
 
@@ -568,13 +630,13 @@ export default function MentorDetailPage() {
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Tabs */}
-          <div className="flex-shrink-0 border-b border-[#E1E4EA] bg-white px-8 pt-6">
-            <div className="flex items-center gap-8">
+          <div className="flex-shrink-0 border-b border-[#E1E4EA] bg-white px-6 pt-4">
+            <div className="flex items-center gap-6">
               {(["Overview", "Reviews", "Session"] as TabType[]).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`pb-4 font-inter-tight text-[15px] font-medium border-b-2 transition-colors ${
+                  className={`pb-3 font-inter-tight text-[13px] font-medium border-b-2 transition-colors ${
                     activeTab === tab
                       ? "border-black text-black"
                       : "border-transparent text-[#A3A3A3] hover:text-black"
@@ -587,35 +649,35 @@ export default function MentorDetailPage() {
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto scrollbar-hide px-8 py-6">
+          <div className="flex-1 overflow-y-auto scrollbar-hide px-6 py-5">
             {activeTab === "Overview" && (
-              <div className="max-w-[700px] flex flex-col gap-8">
+              <div className="max-w-[580px] flex flex-col gap-6">
                 {/* About Brown Section */}
-                <div className="flex flex-col gap-4">
-                  <h2 className="font-inter-tight text-[20px] font-bold text-black">
+                <div className="flex flex-col gap-3">
+                  <h2 className="font-inter-tight text-[15px] font-bold text-black">
                     About {mentor.name.split(" ")[0]}
                   </h2>
-                  <p className="font-inter-tight text-[15px] font-normal text-black leading-[24px] whitespace-pre-line">
+                  <p className="font-inter-tight text-[13px] font-normal text-black leading-[20px] whitespace-pre-line">
                     {mentor.about}
                   </p>
                 </div>
 
                 {/* Background Section */}
-                <div className="flex flex-col gap-5">
-                  <h2 className="font-inter-tight text-[20px] font-bold text-black">
+                <div className="flex flex-col gap-4">
+                  <h2 className="font-inter-tight text-[15px] font-bold text-black">
                     Background
                   </h2>
 
                   {/* Expertise */}
-                  <div className="flex flex-col gap-3">
-                    <h3 className="font-inter-tight text-[15px] font-normal text-black">
+                  <div className="flex flex-col gap-2.5">
+                    <h3 className="font-inter-tight text-[13px] font-normal text-black">
                       Expertise
                     </h3>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       {mentor.expertise.map((skill, index) => (
                         <span
                           key={index}
-                          className="px-4 py-2 rounded-full bg-[#F5F5F5] font-inter-tight text-[13px] font-normal text-black"
+                          className="px-3 py-1.5 rounded-full bg-[#F5F5F5] font-inter-tight text-[11px] font-normal text-black"
                         >
                           {skill}
                         </span>
@@ -624,27 +686,27 @@ export default function MentorDetailPage() {
                   </div>
 
                   {/* Discipline */}
-                  <div className="flex flex-col gap-3">
-                    <h3 className="font-inter-tight text-[15px] font-normal text-black">
+                  <div className="flex flex-col gap-2.5">
+                    <h3 className="font-inter-tight text-[13px] font-normal text-black">
                       Discipline
                     </h3>
                     <div className="flex items-center">
-                      <span className="px-4 py-2 rounded-full bg-[#F5F5F5] font-inter-tight text-[13px] font-normal text-black">
+                      <span className="px-3 py-1.5 rounded-full bg-[#F5F5F5] font-inter-tight text-[11px] font-normal text-black">
                         {mentor.discipline}
                       </span>
                     </div>
                   </div>
 
                   {/* Industries */}
-                  <div className="flex flex-col gap-3">
-                    <h3 className="font-inter-tight text-[15px] font-normal text-black">
+                  <div className="flex flex-col gap-2.5">
+                    <h3 className="font-inter-tight text-[13px] font-normal text-black">
                       Industries
                     </h3>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       {mentor.industries.map((industry, index) => (
                         <span
                           key={index}
-                          className="px-4 py-2 rounded-full bg-[#F5F5F5] font-inter-tight text-[13px] font-normal text-black"
+                          className="px-3 py-1.5 rounded-full bg-[#F5F5F5] font-inter-tight text-[11px] font-normal text-black"
                         >
                           {industry}
                         </span>
@@ -653,15 +715,15 @@ export default function MentorDetailPage() {
                   </div>
 
                   {/* Language */}
-                  <div className="flex flex-col gap-3">
-                    <h3 className="font-inter-tight text-[15px] font-normal text-black">
+                  <div className="flex flex-col gap-2.5">
+                    <h3 className="font-inter-tight text-[13px] font-normal text-black">
                       Language
                     </h3>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       {mentor.languages.map((language, index) => (
                         <span
                           key={index}
-                          className="px-4 py-2 rounded-full bg-[#F5F5F5] font-inter-tight text-[13px] font-normal text-black"
+                          className="px-3 py-1.5 rounded-full bg-[#F5F5F5] font-inter-tight text-[11px] font-normal text-black"
                         >
                           {language}
                         </span>
@@ -673,25 +735,25 @@ export default function MentorDetailPage() {
             )}
 
             {activeTab === "Reviews" && (
-              <div className="max-w-[1000px] flex flex-col gap-12">
+              <div className="max-w-[850px] flex flex-col gap-8">
                 {/* Metrics Section */}
-                <div className="flex flex-col gap-6">
-                  <h2 className="font-inter-tight text-[20px] font-bold text-black">
+                <div className="flex flex-col gap-4">
+                  <h2 className="font-inter-tight text-[15px] font-bold text-black">
                     Metrics
                   </h2>
 
-                  <div className="grid grid-cols-2 gap-x-16 gap-y-6">
+                  <div className="grid grid-cols-2 gap-x-12 gap-y-4">
                     {/* Communication */}
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-1.5">
                       <div className="flex items-center justify-between">
-                        <span className="font-inter-tight text-[15px] font-normal text-[#A3A3A3]">
+                        <span className="font-inter-tight text-[13px] font-normal text-[#A3A3A3]">
                           Communication
                         </span>
-                        <span className="font-inter-tight text-[15px] font-normal text-[#A3A3A3]">
+                        <span className="font-inter-tight text-[13px] font-normal text-[#A3A3A3]">
                           {mentor.metrics.communication}%
                         </span>
                       </div>
-                      <div className="w-full h-[6px] bg-[#E1E4EA] rounded-full overflow-hidden">
+                      <div className="w-full h-[5px] bg-[#E1E4EA] rounded-full overflow-hidden">
                         <div
                           className="h-full bg-[#00A859] rounded-full"
                           style={{ width: `${mentor.metrics.communication}%` }}
@@ -700,16 +762,16 @@ export default function MentorDetailPage() {
                     </div>
 
                     {/* Motivational */}
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-1.5">
                       <div className="flex items-center justify-between">
-                        <span className="font-inter-tight text-[15px] font-normal text-[#A3A3A3]">
+                        <span className="font-inter-tight text-[13px] font-normal text-[#A3A3A3]">
                           Motivational
                         </span>
-                        <span className="font-inter-tight text-[15px] font-normal text-[#A3A3A3]">
+                        <span className="font-inter-tight text-[13px] font-normal text-[#A3A3A3]">
                           {mentor.metrics.motivational}%
                         </span>
                       </div>
-                      <div className="w-full h-[6px] bg-[#E1E4EA] rounded-full overflow-hidden">
+                      <div className="w-full h-[5px] bg-[#E1E4EA] rounded-full overflow-hidden">
                         <div
                           className="h-full bg-[#00A859] rounded-full"
                           style={{ width: `${mentor.metrics.motivational}%` }}
@@ -718,16 +780,16 @@ export default function MentorDetailPage() {
                     </div>
 
                     {/* Problem Solving */}
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-1.5">
                       <div className="flex items-center justify-between">
-                        <span className="font-inter-tight text-[15px] font-normal text-[#A3A3A3]">
+                        <span className="font-inter-tight text-[13px] font-normal text-[#A3A3A3]">
                           Problem Solving
                         </span>
-                        <span className="font-inter-tight text-[15px] font-normal text-[#A3A3A3]">
+                        <span className="font-inter-tight text-[13px] font-normal text-[#A3A3A3]">
                           {mentor.metrics.problemSolving}%
                         </span>
                       </div>
-                      <div className="w-full h-[6px] bg-[#E1E4EA] rounded-full overflow-hidden">
+                      <div className="w-full h-[5px] bg-[#E1E4EA] rounded-full overflow-hidden">
                         <div
                           className="h-full bg-[#00A859] rounded-full"
                           style={{ width: `${mentor.metrics.problemSolving}%` }}
@@ -736,16 +798,16 @@ export default function MentorDetailPage() {
                     </div>
 
                     {/* Subject Knowledge */}
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-1.5">
                       <div className="flex items-center justify-between">
-                        <span className="font-inter-tight text-[15px] font-normal text-[#A3A3A3]">
+                        <span className="font-inter-tight text-[13px] font-normal text-[#A3A3A3]">
                           Subject Knowledge
                         </span>
-                        <span className="font-inter-tight text-[15px] font-normal text-[#A3A3A3]">
+                        <span className="font-inter-tight text-[13px] font-normal text-[#A3A3A3]">
                           {mentor.metrics.subjectKnowledge}%
                         </span>
                       </div>
-                      <div className="w-full h-[6px] bg-[#E1E4EA] rounded-full overflow-hidden">
+                      <div className="w-full h-[5px] bg-[#E1E4EA] rounded-full overflow-hidden">
                         <div
                           className="h-full bg-[#00A859] rounded-full"
                           style={{
@@ -758,19 +820,19 @@ export default function MentorDetailPage() {
                 </div>
 
                 {/* Reviews Section */}
-                <div className="flex flex-col gap-6">
-                  <h2 className="font-inter-tight text-[20px] font-bold text-black">
+                <div className="flex flex-col gap-4">
+                  <h2 className="font-inter-tight text-[15px] font-bold text-black">
                     Reviews
                   </h2>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {mentor.reviews.map((review) => (
                       <div
                         key={review.id}
-                        className="flex flex-col gap-4 p-5 rounded-2xl border border-[#E1E4EA] bg-white hover:shadow-sm transition-shadow"
+                        className="flex flex-col gap-3 p-4 rounded-xl border border-[#E1E4EA] bg-white hover:shadow-sm transition-shadow"
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gradient-to-b from-purple-400 to-purple-600">
+                        <div className="flex items-center gap-2.5">
+                          <div className="relative w-10 h-10 rounded-full overflow-hidden bg-gradient-to-b from-purple-400 to-purple-600">
                             <Image
                               src={review.imageUrl}
                               alt={review.name}
@@ -779,15 +841,15 @@ export default function MentorDetailPage() {
                             />
                           </div>
                           <div className="flex flex-col">
-                            <h3 className="font-inter-tight text-[15px] font-semibold text-black">
+                            <h3 className="font-inter-tight text-[13px] font-semibold text-black">
                               {review.name}
                             </h3>
-                            <p className="font-inter-tight text-[13px] font-normal text-[#A3A3A3]">
+                            <p className="font-inter-tight text-[11px] font-normal text-[#A3A3A3]">
                               {review.role}
                             </p>
                           </div>
                         </div>
-                        <p className="font-inter-tight text-[14px] font-normal text-[#525866] leading-[22px]">
+                        <p className="font-inter-tight text-[12px] font-normal text-[#525866] leading-[18px]">
                           {review.review}
                         </p>
                       </div>
@@ -798,27 +860,27 @@ export default function MentorDetailPage() {
             )}
 
             {activeTab === "Session" && (
-              <div className="max-w-[800px] flex flex-col gap-8">
+              <div className="max-w-[680px] flex flex-col gap-6">
                 {mentor.sessions.map((session) => (
-                  <div key={session.id} className="flex flex-col gap-5">
+                  <div key={session.id} className="flex flex-col gap-4">
                     {/* Session Type Header */}
-                    <h2 className="font-inter-tight text-[20px] font-bold text-black">
+                    <h2 className="font-inter-tight text-[15px] font-bold text-black">
                       {session.type === "private"
                         ? "Private Session"
                         : "Public Session"}
                     </h2>
 
                     {/* Session Card */}
-                    <div className="flex flex-col gap-5 p-5 rounded-2xl border border-[#E1E4EA] bg-white">
+                    <div className="flex flex-col gap-4 p-4 rounded-xl border border-[#E1E4EA] bg-white">
                       {/* Session Title and Description */}
-                      <div className="flex flex-col gap-3 pb-5 border-b border-[#E1E4EA]">
-                        <div className="flex items-start gap-3">
-                          <div className="w-1 h-6 bg-[#5C30FF] rounded-full flex-shrink-0 mt-1" />
+                      <div className="flex flex-col gap-2.5 pb-4 border-b border-[#E1E4EA]">
+                        <div className="flex items-start gap-2.5">
+                          <div className="w-1 h-5 bg-[#5C30FF] rounded-full flex-shrink-0 mt-0.5" />
                           <div className="flex-1">
-                            <h3 className="font-inter-tight text-[17px] font-semibold text-black mb-2">
+                            <h3 className="font-inter-tight text-[14px] font-semibold text-black mb-1.5">
                               {session.title}
                             </h3>
-                            <p className="font-inter-tight text-[13px] font-normal text-[#525866] leading-[20px]">
+                            <p className="font-inter-tight text-[11px] font-normal text-[#525866] leading-[17px]">
                               {session.description}
                             </p>
                           </div>
@@ -826,11 +888,11 @@ export default function MentorDetailPage() {
                       </div>
 
                       {/* Session Details */}
-                      <div className="flex flex-col gap-3">
-                        <div className="flex items-center gap-2.5">
+                      <div className="flex flex-col gap-2.5">
+                        <div className="flex items-center gap-2">
                           <svg
-                            width="18"
-                            height="18"
+                            width="15"
+                            height="15"
                             viewBox="0 0 18 18"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -865,25 +927,25 @@ export default function MentorDetailPage() {
                               strokeLinejoin="round"
                             />
                           </svg>
-                          <span className="font-inter-tight text-[14px] font-normal text-black">
+                          <span className="font-inter-tight text-[12px] font-normal text-black">
                             Date: {session.date}
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-2.5">
+                        <div className="flex items-center gap-2">
                           <Clock
-                            className="w-[18px] h-[18px] text-black flex-shrink-0"
+                            className="w-[15px] h-[15px] text-black flex-shrink-0"
                             strokeWidth={1.2}
                           />
-                          <span className="font-inter-tight text-[14px] font-normal text-black">
+                          <span className="font-inter-tight text-[12px] font-normal text-black">
                             Duration: {session.duration}
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-2.5">
+                        <div className="flex items-center gap-2">
                           <svg
-                            width="18"
-                            height="18"
+                            width="15"
+                            height="15"
                             viewBox="0 0 18 18"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -904,16 +966,16 @@ export default function MentorDetailPage() {
                               strokeLinejoin="round"
                             />
                           </svg>
-                          <span className="font-inter-tight text-[14px] font-normal text-black">
+                          <span className="font-inter-tight text-[12px] font-normal text-black">
                             Location: {session.location}
                           </span>
                         </div>
                       </div>
 
                       {/* Mentor Info and Actions */}
-                      <div className="flex items-center justify-between pt-5 border-t border-[#E1E4EA]">
-                        <div className="flex items-center gap-3">
-                          <div className="relative w-10 h-10 rounded-full overflow-hidden bg-gradient-to-b from-purple-400 to-purple-600">
+                      <div className="flex items-center justify-between pt-4 border-t border-[#E1E4EA]">
+                        <div className="flex items-center gap-2.5">
+                          <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gradient-to-b from-purple-400 to-purple-600">
                             <Image
                               src={mentor.imageUrl}
                               alt={mentor.name}
@@ -922,20 +984,20 @@ export default function MentorDetailPage() {
                             />
                           </div>
                           <div className="flex flex-col">
-                            <h4 className="font-inter-tight text-[14px] font-semibold text-black">
+                            <h4 className="font-inter-tight text-[12px] font-semibold text-black">
                               {mentor.name}
                             </h4>
-                            <p className="font-inter-tight text-[12px] font-normal text-[#A3A3A3]">
+                            <p className="font-inter-tight text-[11px] font-normal text-[#A3A3A3]">
                               Mentor
                             </p>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                          <button className="flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full bg-[#5C30FF] text-white font-inter-tight text-[13px] font-medium hover:bg-[#4a26cc] transition-colors">
+                        <div className="flex items-center gap-1.5">
+                          <button className="flex items-center justify-center gap-1 px-4 py-2 rounded-full bg-[#5C30FF] text-white font-inter-tight text-[11px] font-medium hover:bg-[#4a26cc] transition-colors">
                             <svg
-                              width="16"
-                              height="16"
+                              width="14"
+                              height="14"
                               viewBox="0 0 16 16"
                               fill="none"
                               xmlns="http://www.w3.org/2000/svg"
@@ -951,10 +1013,10 @@ export default function MentorDetailPage() {
                             Remind Me
                           </button>
 
-                          <button className="flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full border border-[#E1E4EA] bg-white text-black font-inter-tight text-[13px] font-medium hover:bg-[#F5F5F5] transition-colors">
+                          <button className="flex items-center justify-center gap-1 px-4 py-2 rounded-full border border-[#E1E4EA] bg-white text-black font-inter-tight text-[11px] font-medium hover:bg-[#F5F5F5] transition-colors">
                             <svg
-                              width="16"
-                              height="16"
+                              width="14"
+                              height="14"
                               viewBox="0 0 16 16"
                               fill="none"
                               xmlns="http://www.w3.org/2000/svg"
@@ -979,6 +1041,192 @@ export default function MentorDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Book Session Modal */}
+      {isBookingModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setIsBookingModalOpen(false)}
+          />
+
+          {/* Modal */}
+          <div className="relative bg-white rounded-2xl w-full max-w-[480px] mx-4 shadow-xl">
+            {/* Header */}
+            <div className="flex items-center justify-between p-5 border-b border-[#E1E4EA]">
+              <h2 className="font-inter-tight text-[17px] font-semibold text-black">
+                Book a Session
+              </h2>
+              <button
+                onClick={() => setIsBookingModalOpen(false)}
+                className="p-1 hover:bg-[#F5F5F5] rounded-lg transition-colors"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M15 5L5 15M5 5L15 15"
+                    stroke="#525866"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-5 flex flex-col gap-5">
+              {/* Selected Slot Summary */}
+              <div className="flex items-center gap-4 p-4 bg-[#F8F8F8] rounded-xl">
+                <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gradient-to-b from-purple-400 to-purple-600 flex-shrink-0">
+                  <Image
+                    src={mentor.imageUrl}
+                    alt={mentor.name}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-inter-tight text-[14px] font-semibold text-black">
+                    {mentor.name}
+                  </h3>
+                  <p className="font-inter-tight text-[12px] text-[#525866]">
+                    {mentor.availability[selectedDate]?.date},{" "}
+                    {mentor.timeSlots[selectedTime]} •{" "}
+                    {mentor.sessionDuration} mins
+                  </p>
+                </div>
+              </div>
+
+              {/* Session Details */}
+              <div className="flex items-center gap-4 text-[13px] text-[#525866]">
+                <div className="flex items-center gap-1.5">
+                  <Clock className="w-4 h-4" strokeWidth={1.5} />
+                  <span>{mentor.sessionDuration} mins</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <LocationIcon className="w-4 h-4" />
+                  <span>{mentor.defaultLocation}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <DollarCircleIcon className="w-4 h-4" />
+                  <span>${mentor.pricePerSession}</span>
+                </div>
+              </div>
+
+              {/* Topic Selection */}
+              <div className="flex flex-col gap-2">
+                <label className="font-inter-tight text-[13px] font-medium text-black">
+                  Topic
+                </label>
+                <select
+                  value={selectedTopic}
+                  onChange={(e) => setSelectedTopic(e.target.value)}
+                  className="w-full h-[44px] px-4 rounded-lg border border-[#E1E4EA] bg-white font-inter-tight text-[13px] text-black focus:outline-none focus:border-[#5C30FF] transition-colors"
+                >
+                  <option value="">Select a topic...</option>
+                  {mentor.expertise.map((topic, index) => (
+                    <option key={index} value={topic}>
+                      {topic}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Message */}
+              <div className="flex flex-col gap-2">
+                <label className="font-inter-tight text-[13px] font-medium text-black">
+                  Message
+                </label>
+                <textarea
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Tell the mentor about your goals and what you'd like to discuss..."
+                  rows={4}
+                  className="w-full px-4 py-3 rounded-lg border border-[#E1E4EA] bg-white font-inter-tight text-[13px] text-black placeholder:text-[#A3A3A3] focus:outline-none focus:border-[#5C30FF] transition-colors resize-none"
+                />
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center gap-3 p-5 border-t border-[#E1E4EA]">
+              <button
+                onClick={() => setIsBookingModalOpen(false)}
+                disabled={isSubmitting}
+                className="flex-1 h-[44px] rounded-full border border-[#E1E4EA] bg-white text-black font-inter-tight text-[13px] font-medium hover:bg-[#F5F5F5] transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  setIsSubmitting(true);
+                  
+                  // Build the request payload matching what mentor expects
+                  const bookingRequest = {
+                    mentorId: mentor.id,
+                    topic: selectedTopic,
+                    message: message,
+                    scheduledDate: mentor.availability[selectedDate]?.date,
+                    scheduledTime: mentor.timeSlots[selectedTime],
+                    duration: `${mentor.sessionDuration} mins`,
+                    location: mentor.defaultLocation,
+                  };
+                  
+                  // TODO: Replace with actual API call
+                  // await sendMentorshipRequest(bookingRequest);
+                  console.log("Booking Request:", bookingRequest);
+                  
+                  // Simulate API delay
+                  await new Promise((resolve) => setTimeout(resolve, 500));
+                  
+                  setIsSubmitting(false);
+                  setIsBookingModalOpen(false);
+                  setSelectedTopic("");
+                  setMessage("");
+                  setShowSuccess(true);
+                  
+                  // Hide success message after 3 seconds
+                  setTimeout(() => setShowSuccess(false), 3000);
+                }}
+                disabled={!selectedTopic || !message || isSubmitting}
+                className="flex-1 h-[44px] rounded-full bg-[#5C30FF] text-white font-inter-tight text-[13px] font-medium hover:bg-[#4a26cc] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? "Sending..." : "Send Request"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Success Toast */}
+      {showSuccess && (
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-4 bg-[#00A859] text-white rounded-xl shadow-lg animate-in slide-in-from-bottom-5">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M16.6667 5L7.50001 14.1667L3.33334 10"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span className="font-inter-tight text-[14px] font-medium">
+            Request sent successfully!
+          </span>
+        </div>
+      )}
     </div>
   );
 }
@@ -1146,6 +1394,34 @@ function ExternalLinkIcon({ className }: { className?: string }) {
     >
       <path
         d="M12 8.66667V12.6667C12 13.0203 11.8595 13.3594 11.6095 13.6095C11.3594 13.8595 11.0203 14 10.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V5.33333C2 4.97971 2.14048 4.64057 2.39052 4.39052C2.64057 4.14048 2.97971 4 3.33333 4H7.33333M10 2H14M14 2V6M14 2L6.66667 9.33333"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function LocationIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M14 6.66667C14 11.3333 8 15.3333 8 15.3333C8 15.3333 2 11.3333 2 6.66667C2 5.07537 2.63214 3.54925 3.75736 2.42403C4.88258 1.29881 6.4087 0.666672 8 0.666672C9.5913 0.666672 11.1174 1.29881 12.2426 2.42403C13.3679 3.54925 14 5.07537 14 6.66667Z"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8 8.66667C9.10457 8.66667 10 7.77124 10 6.66667C10 5.5621 9.10457 4.66667 8 4.66667C6.89543 4.66667 6 5.5621 6 6.66667C6 7.77124 6.89543 8.66667 8 8.66667Z"
         stroke="currentColor"
         strokeWidth="1.2"
         strokeLinecap="round"
