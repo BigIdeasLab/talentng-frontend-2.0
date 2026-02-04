@@ -166,314 +166,319 @@ export default function MentorDetailPage() {
       <div className="flex-1 flex overflow-hidden">
         {/* Left Sidebar */}
         <div className="w-[342px] flex-shrink-0 border-r border-[#E1E4EA] bg-white flex flex-col">
-        <div className="flex-1 overflow-y-auto scrollbar-hide p-5">
-          <div className="flex flex-col gap-6">
-            {/* Profile Section */}
-            <div className="flex flex-col items-center gap-3">
-              <div className="relative w-[113px] h-[113px] rounded-full overflow-hidden bg-gradient-to-b from-purple-400 to-purple-600">
-                <Image
-                  src={mentor.imageUrl}
-                  alt={mentor.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="flex flex-col items-center gap-2.5">
-                <h1 className="font-inter-tight text-[17px] font-semibold text-black text-center">
-                  {mentor.name}
-                </h1>
-                <p className="font-inter-tight text-[13px] font-normal text-[#A3A3A3] text-center">
-                  {mentor.title}
-                </p>
-              </div>
-            </div>
-
-            {/* Stats */}
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-1.5">
-                <DollarCircleIcon className="w-4 h-4 text-[#525866]" />
-                <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
-                  ${mentor.pricePerSession} / Session
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <CheckDoubleIcon className="w-4 h-4 text-[#525866]" />
-                <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
-                  {mentor.sessionsCompleted} Session Completed
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Clock className="w-4 h-4 text-[#525866]" strokeWidth={1.125} />
-                <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
-                  {mentor.mentoringTime} mins mentoring time
-                </span>
-              </div>
-            </div>
-
-            {/* Book Session Button */}
-            <button className="w-full h-[48px] rounded-full bg-[#181B25] text-white font-inter-tight text-[13px] font-medium hover:bg-[#252831] transition-colors">
-              Book Session
-            </button>
-
-            {/* Availability Section */}
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-between">
-                <h3 className="font-inter-tight text-[13px] font-medium text-black">
-                  Availability
-                </h3>
-                <button className="font-inter-tight text-[12px] font-normal text-[#5C30FF] hover:underline">
-                  View All
-                </button>
+          <div className="flex-1 overflow-y-auto scrollbar-hide p-5">
+            <div className="flex flex-col gap-6">
+              {/* Profile Section */}
+              <div className="flex flex-col items-center gap-3">
+                <div className="relative w-[113px] h-[113px] rounded-full overflow-hidden bg-gradient-to-b from-purple-400 to-purple-600">
+                  <Image
+                    src={mentor.imageUrl}
+                    alt={mentor.name}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="flex flex-col items-center gap-2.5">
+                  <h1 className="font-inter-tight text-[17px] font-semibold text-black text-center">
+                    {mentor.name}
+                  </h1>
+                  <p className="font-inter-tight text-[13px] font-normal text-[#A3A3A3] text-center">
+                    {mentor.title}
+                  </p>
+                </div>
               </div>
 
-              {/* Calendar Grid */}
-              <div className="grid grid-cols-4 gap-2">
-                {mentor.availability.map((slot, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedDate(index)}
-                    className={`flex flex-col items-center justify-center gap-1 h-[52px] rounded-lg border transition-colors ${
-                      selectedDate === index
-                        ? "bg-[#5C30FF] border-[#5C30FF]"
-                        : "bg-white border-[#E1E4EA] hover:border-[#5C30FF]"
-                    }`}
-                  >
-                    <span
-                      className={`font-inter-tight text-[10px] font-normal ${
-                        selectedDate === index ? "text-white/70" : "text-[#A3A3A3]"
-                      }`}
-                    >
-                      {slot.day}
-                    </span>
-                    <span
-                      className={`font-inter-tight text-[13px] font-medium ${
-                        selectedDate === index ? "text-white" : "text-black"
-                      }`}
-                    >
-                      {slot.date.split(" ")[1]}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Select Time Section */}
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-between">
-                <h3 className="font-inter-tight text-[13px] font-medium text-black">
-                  Select Time
-                </h3>
-                <button className="font-inter-tight text-[12px] font-normal text-[#5C30FF] hover:underline">
-                  View All
-                </button>
+              {/* Stats */}
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-1.5">
+                  <DollarCircleIcon className="w-4 h-4 text-[#525866]" />
+                  <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
+                    ${mentor.pricePerSession} / Session
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <CheckDoubleIcon className="w-4 h-4 text-[#525866]" />
+                  <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
+                    {mentor.sessionsCompleted} Session Completed
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Clock
+                    className="w-4 h-4 text-[#525866]"
+                    strokeWidth={1.125}
+                  />
+                  <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
+                    {mentor.mentoringTime} mins mentoring time
+                  </span>
+                </div>
               </div>
 
-              {/* Time Slots */}
-              <div className="flex items-center gap-2">
-                {mentor.timeSlots.map((time, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedTime(index)}
-                    className={`flex items-center justify-center px-4 py-2 rounded-lg border font-inter-tight text-[13px] font-normal transition-colors ${
-                      selectedTime === index
-                        ? "bg-[#5C30FF] border-[#5C30FF] text-white"
-                        : "bg-white border-[#E1E4EA] text-black hover:border-[#5C30FF]"
-                    }`}
-                  >
-                    {time}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Social Links Section */}
-            <div className="flex flex-col gap-4">
-              <h3 className="font-inter-tight text-[13px] font-medium text-black">
-                Social Links
-              </h3>
-
-              <div className="flex flex-col gap-2">
-                <Link
-                  href={mentor.socialLinks.telegram}
-                  className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-[#F5F5F5] transition-colors group"
-                >
-                  <div className="flex items-center gap-3">
-                    <TelegramIcon className="w-4 h-4" />
-                    <span className="font-inter-tight text-[13px] font-normal text-black">
-                      Telegram
-                    </span>
-                  </div>
-                  <ExternalLinkIcon className="w-4 h-4 text-[#B2B2B2] group-hover:text-black transition-colors" />
-                </Link>
-
-                <Link
-                  href={mentor.socialLinks.x}
-                  className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-[#F5F5F5] transition-colors group"
-                >
-                  <div className="flex items-center gap-3">
-                    <XIcon className="w-4 h-4" />
-                    <span className="font-inter-tight text-[13px] font-normal text-black">
-                      X
-                    </span>
-                  </div>
-                  <ExternalLinkIcon className="w-4 h-4 text-[#B2B2B2] group-hover:text-black transition-colors" />
-                </Link>
-
-                <Link
-                  href={mentor.socialLinks.instagram}
-                  className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-[#F5F5F5] transition-colors group"
-                >
-                  <div className="flex items-center gap-3">
-                    <InstagramIcon className="w-4 h-4" />
-                    <span className="font-inter-tight text-[13px] font-normal text-black">
-                      Instagram
-                    </span>
-                  </div>
-                  <ExternalLinkIcon className="w-4 h-4 text-[#B2B2B2] group-hover:text-black transition-colors" />
-                </Link>
-
-                <Link
-                  href={mentor.socialLinks.linkedin}
-                  className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-[#F5F5F5] transition-colors group"
-                >
-                  <div className="flex items-center gap-3">
-                    <LinkedInIcon className="w-4 h-4" />
-                    <span className="font-inter-tight text-[13px] font-normal text-black">
-                      LinkedIn
-                    </span>
-                  </div>
-                  <ExternalLinkIcon className="w-4 h-4 text-[#B2B2B2] group-hover:text-black transition-colors" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Tabs */}
-        <div className="flex-shrink-0 border-b border-[#E1E4EA] bg-white px-8 pt-6">
-          <div className="flex items-center gap-8">
-            {(["Overview", "Reviews", "Session"] as TabType[]).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`pb-4 font-inter-tight text-[15px] font-medium border-b-2 transition-colors ${
-                  activeTab === tab
-                    ? "border-black text-black"
-                    : "border-transparent text-[#A3A3A3] hover:text-black"
-                }`}
-              >
-                {tab}
+              {/* Book Session Button */}
+              <button className="w-full h-[48px] rounded-full bg-[#181B25] text-white font-inter-tight text-[13px] font-medium hover:bg-[#252831] transition-colors">
+                Book Session
               </button>
-            ))}
+
+              {/* Availability Section */}
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-inter-tight text-[13px] font-medium text-black">
+                    Availability
+                  </h3>
+                  <button className="font-inter-tight text-[12px] font-normal text-[#5C30FF] hover:underline">
+                    View All
+                  </button>
+                </div>
+
+                {/* Calendar Grid */}
+                <div className="grid grid-cols-4 gap-2">
+                  {mentor.availability.map((slot, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedDate(index)}
+                      className={`flex flex-col items-center justify-center gap-1 h-[52px] rounded-lg border transition-colors ${
+                        selectedDate === index
+                          ? "bg-[#5C30FF] border-[#5C30FF]"
+                          : "bg-white border-[#E1E4EA] hover:border-[#5C30FF]"
+                      }`}
+                    >
+                      <span
+                        className={`font-inter-tight text-[10px] font-normal ${
+                          selectedDate === index
+                            ? "text-white/70"
+                            : "text-[#A3A3A3]"
+                        }`}
+                      >
+                        {slot.day}
+                      </span>
+                      <span
+                        className={`font-inter-tight text-[13px] font-medium ${
+                          selectedDate === index ? "text-white" : "text-black"
+                        }`}
+                      >
+                        {slot.date.split(" ")[1]}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Select Time Section */}
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-inter-tight text-[13px] font-medium text-black">
+                    Select Time
+                  </h3>
+                  <button className="font-inter-tight text-[12px] font-normal text-[#5C30FF] hover:underline">
+                    View All
+                  </button>
+                </div>
+
+                {/* Time Slots */}
+                <div className="flex items-center gap-2">
+                  {mentor.timeSlots.map((time, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedTime(index)}
+                      className={`flex items-center justify-center px-4 py-2 rounded-lg border font-inter-tight text-[13px] font-normal transition-colors ${
+                        selectedTime === index
+                          ? "bg-[#5C30FF] border-[#5C30FF] text-white"
+                          : "bg-white border-[#E1E4EA] text-black hover:border-[#5C30FF]"
+                      }`}
+                    >
+                      {time}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Social Links Section */}
+              <div className="flex flex-col gap-4">
+                <h3 className="font-inter-tight text-[13px] font-medium text-black">
+                  Social Links
+                </h3>
+
+                <div className="flex flex-col gap-2">
+                  <Link
+                    href={mentor.socialLinks.telegram}
+                    className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-[#F5F5F5] transition-colors group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <TelegramIcon className="w-4 h-4" />
+                      <span className="font-inter-tight text-[13px] font-normal text-black">
+                        Telegram
+                      </span>
+                    </div>
+                    <ExternalLinkIcon className="w-4 h-4 text-[#B2B2B2] group-hover:text-black transition-colors" />
+                  </Link>
+
+                  <Link
+                    href={mentor.socialLinks.x}
+                    className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-[#F5F5F5] transition-colors group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <XIcon className="w-4 h-4" />
+                      <span className="font-inter-tight text-[13px] font-normal text-black">
+                        X
+                      </span>
+                    </div>
+                    <ExternalLinkIcon className="w-4 h-4 text-[#B2B2B2] group-hover:text-black transition-colors" />
+                  </Link>
+
+                  <Link
+                    href={mentor.socialLinks.instagram}
+                    className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-[#F5F5F5] transition-colors group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <InstagramIcon className="w-4 h-4" />
+                      <span className="font-inter-tight text-[13px] font-normal text-black">
+                        Instagram
+                      </span>
+                    </div>
+                    <ExternalLinkIcon className="w-4 h-4 text-[#B2B2B2] group-hover:text-black transition-colors" />
+                  </Link>
+
+                  <Link
+                    href={mentor.socialLinks.linkedin}
+                    className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-[#F5F5F5] transition-colors group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <LinkedInIcon className="w-4 h-4" />
+                      <span className="font-inter-tight text-[13px] font-normal text-black">
+                        LinkedIn
+                      </span>
+                    </div>
+                    <ExternalLinkIcon className="w-4 h-4 text-[#B2B2B2] group-hover:text-black transition-colors" />
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto scrollbar-hide px-8 py-6">
-          {activeTab === "Overview" && (
-            <div className="max-w-[700px] flex flex-col gap-8">
-              {/* About Brown Section */}
-              <div className="flex flex-col gap-4">
-                <h2 className="font-inter-tight text-[20px] font-bold text-black">
-                  About {mentor.name.split(" ")[0]}
-                </h2>
-                <p className="font-inter-tight text-[15px] font-normal text-black leading-[24px] whitespace-pre-line">
-                  {mentor.about}
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Tabs */}
+          <div className="flex-shrink-0 border-b border-[#E1E4EA] bg-white px-8 pt-6">
+            <div className="flex items-center gap-8">
+              {(["Overview", "Reviews", "Session"] as TabType[]).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`pb-4 font-inter-tight text-[15px] font-medium border-b-2 transition-colors ${
+                    activeTab === tab
+                      ? "border-black text-black"
+                      : "border-transparent text-[#A3A3A3] hover:text-black"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 overflow-y-auto scrollbar-hide px-8 py-6">
+            {activeTab === "Overview" && (
+              <div className="max-w-[700px] flex flex-col gap-8">
+                {/* About Brown Section */}
+                <div className="flex flex-col gap-4">
+                  <h2 className="font-inter-tight text-[20px] font-bold text-black">
+                    About {mentor.name.split(" ")[0]}
+                  </h2>
+                  <p className="font-inter-tight text-[15px] font-normal text-black leading-[24px] whitespace-pre-line">
+                    {mentor.about}
+                  </p>
+                </div>
+
+                {/* Background Section */}
+                <div className="flex flex-col gap-5">
+                  <h2 className="font-inter-tight text-[20px] font-bold text-black">
+                    Background
+                  </h2>
+
+                  {/* Expertise */}
+                  <div className="flex flex-col gap-3">
+                    <h3 className="font-inter-tight text-[15px] font-normal text-black">
+                      Expertise
+                    </h3>
+                    <div className="flex items-center gap-2">
+                      {mentor.expertise.map((skill, index) => (
+                        <span
+                          key={index}
+                          className="px-4 py-2 rounded-full bg-[#F5F5F5] font-inter-tight text-[13px] font-normal text-black"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Discipline */}
+                  <div className="flex flex-col gap-3">
+                    <h3 className="font-inter-tight text-[15px] font-normal text-black">
+                      Discipline
+                    </h3>
+                    <div className="flex items-center">
+                      <span className="px-4 py-2 rounded-full bg-[#F5F5F5] font-inter-tight text-[13px] font-normal text-black">
+                        {mentor.discipline}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Industries */}
+                  <div className="flex flex-col gap-3">
+                    <h3 className="font-inter-tight text-[15px] font-normal text-black">
+                      Industries
+                    </h3>
+                    <div className="flex items-center gap-2">
+                      {mentor.industries.map((industry, index) => (
+                        <span
+                          key={index}
+                          className="px-4 py-2 rounded-full bg-[#F5F5F5] font-inter-tight text-[13px] font-normal text-black"
+                        >
+                          {industry}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Language */}
+                  <div className="flex flex-col gap-3">
+                    <h3 className="font-inter-tight text-[15px] font-normal text-black">
+                      Language
+                    </h3>
+                    <div className="flex items-center gap-2">
+                      {mentor.languages.map((language, index) => (
+                        <span
+                          key={index}
+                          className="px-4 py-2 rounded-full bg-[#F5F5F5] font-inter-tight text-[13px] font-normal text-black"
+                        >
+                          {language}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "Reviews" && (
+              <div className="max-w-[700px]">
+                <p className="text-gray-500 text-center py-8">
+                  No reviews available yet
                 </p>
               </div>
+            )}
 
-              {/* Background Section */}
-              <div className="flex flex-col gap-5">
-                <h2 className="font-inter-tight text-[20px] font-bold text-black">
-                  Background
-                </h2>
-
-                {/* Expertise */}
-                <div className="flex flex-col gap-3">
-                  <h3 className="font-inter-tight text-[15px] font-normal text-black">
-                    Expertise
-                  </h3>
-                  <div className="flex items-center gap-2">
-                    {mentor.expertise.map((skill, index) => (
-                      <span
-                        key={index}
-                        className="px-4 py-2 rounded-full bg-[#F5F5F5] font-inter-tight text-[13px] font-normal text-black"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Discipline */}
-                <div className="flex flex-col gap-3">
-                  <h3 className="font-inter-tight text-[15px] font-normal text-black">
-                    Discipline
-                  </h3>
-                  <div className="flex items-center">
-                    <span className="px-4 py-2 rounded-full bg-[#F5F5F5] font-inter-tight text-[13px] font-normal text-black">
-                      {mentor.discipline}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Industries */}
-                <div className="flex flex-col gap-3">
-                  <h3 className="font-inter-tight text-[15px] font-normal text-black">
-                    Industries
-                  </h3>
-                  <div className="flex items-center gap-2">
-                    {mentor.industries.map((industry, index) => (
-                      <span
-                        key={index}
-                        className="px-4 py-2 rounded-full bg-[#F5F5F5] font-inter-tight text-[13px] font-normal text-black"
-                      >
-                        {industry}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Language */}
-                <div className="flex flex-col gap-3">
-                  <h3 className="font-inter-tight text-[15px] font-normal text-black">
-                    Language
-                  </h3>
-                  <div className="flex items-center gap-2">
-                    {mentor.languages.map((language, index) => (
-                      <span
-                        key={index}
-                        className="px-4 py-2 rounded-full bg-[#F5F5F5] font-inter-tight text-[13px] font-normal text-black"
-                      >
-                        {language}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+            {activeTab === "Session" && (
+              <div className="max-w-[700px]">
+                <p className="text-gray-500 text-center py-8">
+                  No sessions scheduled yet
+                </p>
               </div>
-            </div>
-          )}
-
-          {activeTab === "Reviews" && (
-            <div className="max-w-[700px]">
-              <p className="text-gray-500 text-center py-8">
-                No reviews available yet
-              </p>
-            </div>
-          )}
-
-          {activeTab === "Session" && (
-            <div className="max-w-[700px]">
-              <p className="text-gray-500 text-center py-8">
-                No sessions scheduled yet
-              </p>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
       </div>
     </div>
   );

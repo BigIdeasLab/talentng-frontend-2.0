@@ -24,7 +24,10 @@ export function MentorCard({
   return (
     <div className="flex flex-col gap-2.5 p-1.5 rounded-xl bg-[#F5F5F5] group cursor-pointer">
       {/* Thumbnail */}
-      <Link href={`/mentorship/${id}`} className="relative w-full aspect-[261/190] rounded-xl bg-white overflow-hidden">
+      <Link
+        href={`/mentorship/${id}`}
+        className="relative w-full aspect-[261/190] rounded-xl bg-white overflow-hidden"
+      >
         <Image
           src={imageUrl}
           alt={name}
