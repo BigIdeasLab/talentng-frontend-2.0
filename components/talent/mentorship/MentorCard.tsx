@@ -22,30 +22,33 @@ export function MentorCard({
   sessionsCompleted,
 }: MentorCardProps) {
   return (
-    <div className="flex flex-col gap-2.5 p-1.5 rounded-xl bg-[#F5F5F5]">
+    <div className="flex flex-col gap-2.5 p-1.5 rounded-xl bg-[#F5F5F5] group cursor-pointer">
       {/* Thumbnail */}
-      <div className="relative w-full aspect-[261/190] rounded-xl bg-white overflow-hidden">
+      <Link
+        href={`/mentorship/${id}`}
+        className="relative w-full aspect-[261/190] rounded-xl bg-white overflow-hidden"
+      >
         <Image
           src={imageUrl}
           alt={name}
           fill
-          className="object-cover"
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
         />
-      </div>
+      </Link>
 
       {/* Info Container */}
       <div className="flex flex-col gap-3.5">
         {/* Profile Info */}
         <div className="flex flex-col gap-2.5">
-          <div className="flex flex-col gap-2">
-            <h3 className="font-inter-tight text-[13px] font-medium leading-normal text-black">
+          <Link href={`/mentorship/${id}`} className="flex flex-col gap-2">
+            <h3 className="font-inter-tight text-[13px] font-medium leading-normal text-black group-hover:text-[#5C30FF] transition-colors">
               {name}
             </h3>
             <p className="font-inter-tight text-[12px] font-normal leading-normal text-black/30">
               {title}
             </p>
-          </div>
+          </Link>
 
           {/* Stats */}
           <div className="flex flex-col gap-1.5">
@@ -79,7 +82,7 @@ export function MentorCard({
 
           {/* External Link Button */}
           <Link
-            href={`/profile/${id}`}
+            href={`/mentorship/${id}`}
             className="flex items-center justify-center h-[40px] w-[40px] rounded-full border border-[#B2B2B2] bg-[#F5F5F5] hover:bg-[#E1E4EA] transition-colors"
           >
             <ArrowUpRight className="w-4 h-4 text-black" strokeWidth={1.125} />
