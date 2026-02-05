@@ -132,7 +132,7 @@ export default function AvailabilityPage() {
   const handleSave = async () => {
     console.log("handleSave called");
     console.log("selectedSlots:", Array.from(selectedSlots));
-    
+
     try {
       setIsSaving(true);
 
@@ -144,7 +144,8 @@ export default function AvailabilityPage() {
         const timeIndex = parseInt(timeStr, 10);
         const startTime = TIME_SLOT_VALUES[timeIndex];
         const duration = parseInt(sessionDuration, 10);
-        const endHour = parseInt(startTime.split(":")[0], 10) + Math.floor(duration / 60);
+        const endHour =
+          parseInt(startTime.split(":")[0], 10) + Math.floor(duration / 60);
         const endTime = `${endHour.toString().padStart(2, "0")}:00`;
 
         slotsArray.push({
@@ -161,7 +162,7 @@ export default function AvailabilityPage() {
         defaultMeetingLink: defaultMeetingLink || undefined,
         slots: slotsArray,
       };
-      
+
       console.log("Sending payload:", payload);
 
       await setMyAvailability(payload);
@@ -176,7 +177,10 @@ export default function AvailabilityPage() {
       console.error("Save error:", error);
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to save availability",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to save availability",
         variant: "destructive",
       });
     } finally {

@@ -49,14 +49,18 @@ export async function listMentors(): Promise<PublicMentor[]> {
  * GET /mentors/search?q={query}
  */
 export async function searchMentors(query: string): Promise<PublicMentor[]> {
-  return apiClient<PublicMentor[]>(`/mentors/search?q=${encodeURIComponent(query)}`);
+  return apiClient<PublicMentor[]>(
+    `/mentors/search?q=${encodeURIComponent(query)}`,
+  );
 }
 
 /**
  * Get a specific mentor's public profile
  * GET /mentors/:id
  */
-export async function getMentorProfile(mentorId: string): Promise<PublicMentorDetail> {
+export async function getMentorProfile(
+  mentorId: string,
+): Promise<PublicMentorDetail> {
   return apiClient<PublicMentorDetail>(`/mentors/${mentorId}`);
 }
 
@@ -142,7 +146,9 @@ export async function setMyAvailability(
  * Delete specific availability slot
  * DELETE /mentor/availability/:id
  */
-export async function deleteAvailabilitySlot(slotId: string): Promise<{ message: string }> {
+export async function deleteAvailabilitySlot(
+  slotId: string,
+): Promise<{ message: string }> {
   return apiClient<{ message: string }>(`/mentor/availability/${slotId}`, {
     method: "DELETE",
   });
@@ -160,9 +166,10 @@ export async function getMentorDashboard(): Promise<MentorDashboardStats> {
  * Get reviews received as mentor
  * GET /mentor/reviews
  */
-export async function getMyMentorReviews(
-  params?: { page?: number; limit?: number },
-): Promise<PaginatedResponse<SessionReview>> {
+export async function getMyMentorReviews(params?: {
+  page?: number;
+  limit?: number;
+}): Promise<PaginatedResponse<SessionReview>> {
   const queryParams = new URLSearchParams();
   if (params?.page) queryParams.append("page", params.page.toString());
   if (params?.limit) queryParams.append("limit", params.limit.toString());
@@ -178,7 +185,9 @@ export async function getMyMentorReviews(
  * Create a mentorship request
  * POST /requests
  */
-export async function createRequest(data: CreateRequestInput): Promise<MentorshipRequest> {
+export async function createRequest(
+  data: CreateRequestInput,
+): Promise<MentorshipRequest> {
   return apiClient<MentorshipRequest>("/requests", {
     method: "POST",
     body: data,
@@ -215,7 +224,9 @@ export async function getPendingRequestsCount(): Promise<PendingCountResponse> {
  * Get a specific request
  * GET /requests/:id
  */
-export async function getRequest(requestId: string): Promise<MentorshipRequest> {
+export async function getRequest(
+  requestId: string,
+): Promise<MentorshipRequest> {
   return apiClient<MentorshipRequest>(`/requests/${requestId}`);
 }
 
@@ -223,7 +234,9 @@ export async function getRequest(requestId: string): Promise<MentorshipRequest> 
  * Accept a request (mentor only)
  * POST /requests/:id/accept
  */
-export async function acceptRequest(requestId: string): Promise<AcceptRequestResponse> {
+export async function acceptRequest(
+  requestId: string,
+): Promise<AcceptRequestResponse> {
   return apiClient<AcceptRequestResponse>(`/requests/${requestId}/accept`, {
     method: "POST",
   });
@@ -247,7 +260,9 @@ export async function rejectRequest(
  * Cancel a request (mentee only)
  * PATCH /requests/:id/cancel
  */
-export async function cancelRequest(requestId: string): Promise<MentorshipRequest> {
+export async function cancelRequest(
+  requestId: string,
+): Promise<MentorshipRequest> {
   return apiClient<MentorshipRequest>(`/requests/${requestId}/cancel`, {
     method: "PATCH",
   });
@@ -277,7 +292,9 @@ export async function getSessions(
  * Get a specific session
  * GET /sessions/:id
  */
-export async function getSession(sessionId: string): Promise<MentorshipSession> {
+export async function getSession(
+  sessionId: string,
+): Promise<MentorshipSession> {
   return apiClient<MentorshipSession>(`/sessions/${sessionId}`);
 }
 
@@ -285,7 +302,9 @@ export async function getSession(sessionId: string): Promise<MentorshipSession> 
  * Confirm a session (mentor only)
  * POST /sessions/:id/confirm
  */
-export async function confirmSession(sessionId: string): Promise<MentorshipSession> {
+export async function confirmSession(
+  sessionId: string,
+): Promise<MentorshipSession> {
   return apiClient<MentorshipSession>(`/sessions/${sessionId}/confirm`, {
     method: "POST",
   });
@@ -295,7 +314,9 @@ export async function confirmSession(sessionId: string): Promise<MentorshipSessi
  * Complete a session (mentor only)
  * POST /sessions/:id/complete
  */
-export async function completeSession(sessionId: string): Promise<MentorshipSession> {
+export async function completeSession(
+  sessionId: string,
+): Promise<MentorshipSession> {
   return apiClient<MentorshipSession>(`/sessions/${sessionId}/complete`, {
     method: "POST",
   });

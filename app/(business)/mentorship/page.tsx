@@ -61,23 +61,31 @@ interface MentorDisplay {
 
 function formatSessionDate(scheduledAt: string): string {
   const date = new Date(scheduledAt);
-  return date.toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  }) + ", " + date.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  });
+  return (
+    date.toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    }) +
+    ", " +
+    date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    })
+  );
 }
 
-function mapSessionStatus(status: MentorshipSession["status"]): MenteeSessionStatus {
+function mapSessionStatus(
+  status: MentorshipSession["status"],
+): MenteeSessionStatus {
   if (status === "confirmed") return "upcoming";
   return status;
 }
 
-function mapApiSessionToMenteeSession(session: MentorshipSession): MenteeSession {
+function mapApiSessionToMenteeSession(
+  session: MentorshipSession,
+): MenteeSession {
   return {
     id: session.id,
     mentor: {
