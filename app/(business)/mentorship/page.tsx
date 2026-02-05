@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Search, SlidersHorizontal, ChevronDown } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
+import { Search, SlidersHorizontal, ChevronDown, Loader2 } from "lucide-react";
 import { MentorshipHeader } from "@/components/talent/mentorship/MentorshipHeader";
 import { CategoryFilter } from "@/components/talent/mentorship/CategoryFilter";
 import { MentorGrid } from "@/components/talent/mentorship/MentorGrid";
@@ -10,90 +10,14 @@ import {
   MenteeSessionStatus,
 } from "@/components/talent/mentorship/MenteeSessionCard";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
-
-// Mock mentor data - Replace with API call
-const MOCK_MENTORS = [
-  {
-    id: "1",
-    name: "Johnson Mark",
-    title: "UI/UX Designer At Google",
-    imageUrl:
-      "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
-    pricePerSession: 150,
-    sessionsCompleted: 200,
-    expertise: ["Design"],
-  },
-  {
-    id: "2",
-    name: "Lee Sarah",
-    title: "Frontend Developer At Amazon",
-    imageUrl:
-      "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
-    pricePerSession: 120,
-    sessionsCompleted: 100,
-    expertise: ["Design"],
-  },
-  {
-    id: "3",
-    name: "Brown David",
-    title: "Data Scientist At Microsoft",
-    imageUrl:
-      "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
-    pricePerSession: 250,
-    sessionsCompleted: 75,
-    expertise: ["Strategy"],
-  },
-  {
-    id: "4",
-    name: "Garcia Maria",
-    title: "Project Coordinator At IBM",
-    imageUrl:
-      "https://api.builder.io/api/v1/image/assets/TEMP/a7ab43958db79848941fce6ac204b45d4aabcaff?width=524",
-    pricePerSession: 90,
-    sessionsCompleted: 50,
-    expertise: ["Collaboration"],
-  },
-  {
-    id: "5",
-    name: "Martinez Luis",
-    title: "Software Engineer At Apple",
-    imageUrl:
-      "https://api.builder.io/api/v1/image/assets/TEMP/35370d00629a84bfe6c3677d1211a2ad94974c9f?width=524",
-    pricePerSession: 180,
-    sessionsCompleted: 120,
-    expertise: ["Innovation"],
-  },
-  {
-    id: "6",
-    name: "Wilson Emily",
-    title: "Marketing Specialist At Tesla",
-    imageUrl:
-      "https://api.builder.io/api/v1/image/assets/TEMP/d277db8837d52582f20327cc8cfc02e73417469b?width=524",
-    pricePerSession: 110,
-    sessionsCompleted: 160,
-    expertise: ["Research"],
-  },
-  {
-    id: "7",
-    name: "Anderson James",
-    title: "Content Strategist At LinkedIn",
-    imageUrl:
-      "https://api.builder.io/api/v1/image/assets/TEMP/0e0d85210d8a4edbb76c58ea4e5d6c0a30ae4e03?width=524",
-    pricePerSession: 130,
-    sessionsCompleted: 80,
-    expertise: ["Strategy"],
-  },
-  {
-    id: "8",
-    name: "Thomas Rachel",
-    title: "SEO Expert At Adobe",
-    imageUrl:
-      "https://api.builder.io/api/v1/image/assets/TEMP/c2719cc6b2a3af2ab644d78691c53e8251134c5a?width=524",
-    pricePerSession: 140,
-    sessionsCompleted: 90,
-    expertise: ["Accessibility"],
-  },
-];
+import {
+  listMentors,
+  getSessions,
+  cancelSession,
+  type PublicMentor,
+  type MentorshipSession,
+} from "@/lib/api/mentorship";
+import { toast } from "sonner";
 
 const CATEGORIES = [
   "Design",
@@ -109,7 +33,6 @@ const CATEGORIES = [
   "Wireframing",
 ];
 
-// Mock mentee sessions data
 interface MenteeSession {
   id: string;
   mentor: {
@@ -126,75 +49,63 @@ interface MenteeSession {
   status: MenteeSessionStatus;
 }
 
-const MOCK_MENTEE_SESSIONS: MenteeSession[] = [
-  {
-    id: "1",
+interface MentorDisplay {
+  id: string;
+  name: string;
+  title: string;
+  imageUrl: string;
+  pricePerSession: number;
+  sessionsCompleted: number;
+  expertise: string[];
+}
+
+function formatSessionDate(scheduledAt: string): string {
+  const date = new Date(scheduledAt);
+  return date.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  }) + ", " + date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+}
+
+function mapSessionStatus(status: MentorshipSession["status"]): MenteeSessionStatus {
+  if (status === "confirmed") return "upcoming";
+  return status;
+}
+
+function mapApiSessionToMenteeSession(session: MentorshipSession): MenteeSession {
+  return {
+    id: session.id,
     mentor: {
-      id: "1",
-      name: "Johnson Mark",
-      avatar:
-        "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
-      title: "UI/UX Designer At Google",
+      id: session.mentor.id,
+      name: session.mentor.name,
+      avatar: session.mentor.avatar || undefined,
+      title: session.mentor.title || undefined,
     },
-    topic: "Data Analysis",
-    message:
-      "I want to learn more about data visualization and how to present insights effectively to stakeholders.",
-    date: "Mon Feb 10, 2:00 PM",
-    duration: "60 mins",
-    location: "Google Meet",
-    status: "pending",
-  },
-  {
-    id: "2",
-    mentor: {
-      id: "2",
-      name: "Lee Sarah",
-      avatar:
-        "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
-      title: "Frontend Developer At Amazon",
-    },
-    topic: "Frontend Development",
-    message:
-      "Looking to improve my React skills and learn about performance optimization.",
-    date: "Wed Feb 12, 10:00 AM",
-    duration: "45 mins",
-    location: "Zoom",
-    status: "upcoming",
-  },
-  {
-    id: "3",
-    mentor: {
-      id: "3",
-      name: "Brown David",
-      avatar:
-        "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
-      title: "Data Scientist At Microsoft",
-    },
-    topic: "Machine Learning",
-    message:
-      "Discussed career transition into data science and ML fundamentals.",
-    date: "Fri Feb 7, 3:00 PM",
-    duration: "30 mins",
-    location: "Google Meet",
-    status: "completed",
-  },
-  {
-    id: "4",
-    mentor: {
-      id: "1",
-      name: "Johnson Mark",
-      avatar:
-        "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
-      title: "UI/UX Designer At Google",
-    },
-    topic: "Engineering",
-    message: "Session was cancelled due to scheduling conflict.",
-    date: "Mon Feb 3, 11:00 AM",
-    duration: "60 mins",
-    location: "Google Meet",
-    status: "cancelled",
-  },
-];
+    topic: session.topic,
+    message: session.notes || undefined,
+    date: formatSessionDate(session.scheduledAt),
+    duration: `${session.duration} mins`,
+    location: session.meetingLink || "TBD",
+    status: mapSessionStatus(session.status),
+  };
+}
+
+function mapApiMentorToDisplay(mentor: PublicMentor): MentorDisplay {
+  return {
+    id: mentor.id,
+    name: mentor.name,
+    title: mentor.title || "",
+    imageUrl: mentor.avatar || "/placeholder-avatar.png",
+    pricePerSession: 0,
+    sessionsCompleted: mentor.totalSessions,
+    expertise: mentor.expertise,
+  };
+}
 
 export default function MentorshipPage() {
   const [activeTab, setActiveTab] = useState<
@@ -204,9 +115,10 @@ export default function MentorshipPage() {
   const [activeCategory, setActiveCategory] = useState("Design");
   const [sortBy, setSortBy] = useState("Newest");
 
-  // Session states
-  const [sessions, setSessions] =
-    useState<MenteeSession[]>(MOCK_MENTEE_SESSIONS);
+  const [mentors, setMentors] = useState<MentorDisplay[]>([]);
+  const [mentorsLoading, setMentorsLoading] = useState(true);
+  const [sessions, setSessions] = useState<MenteeSession[]>([]);
+  const [sessionsLoading, setSessionsLoading] = useState(true);
   const [sessionFilter, setSessionFilter] = useState<
     "all" | "pending" | "upcoming" | "completed" | "cancelled"
   >("all");
@@ -214,19 +126,47 @@ export default function MentorshipPage() {
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
     null,
   );
+  const [cancellingSession, setCancellingSession] = useState(false);
 
-  // Filter mentors based on search and category
+  useEffect(() => {
+    async function fetchMentors() {
+      try {
+        setMentorsLoading(true);
+        const data = await listMentors();
+        setMentors(data.map(mapApiMentorToDisplay));
+      } catch (error) {
+        toast.error("Failed to load mentors");
+      } finally {
+        setMentorsLoading(false);
+      }
+    }
+    fetchMentors();
+  }, []);
+
+  useEffect(() => {
+    async function fetchSessions() {
+      try {
+        setSessionsLoading(true);
+        const response = await getSessions({ role: "mentee" });
+        setSessions(response.data.map(mapApiSessionToMenteeSession));
+      } catch (error) {
+        toast.error("Failed to load sessions");
+      } finally {
+        setSessionsLoading(false);
+      }
+    }
+    fetchSessions();
+  }, []);
+
   const filteredMentors = useMemo(() => {
-    let filtered = MOCK_MENTORS;
+    let filtered = mentors;
 
-    // Filter by category
     if (activeCategory) {
       filtered = filtered.filter((mentor) =>
         mentor.expertise.includes(activeCategory),
       );
     }
 
-    // Filter by search query
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -237,9 +177,8 @@ export default function MentorshipPage() {
     }
 
     return filtered;
-  }, [searchQuery, activeCategory]);
+  }, [mentors, searchQuery, activeCategory]);
 
-  // Filter sessions
   const filteredSessions = useMemo(() => {
     let filtered = sessions;
 
@@ -259,7 +198,6 @@ export default function MentorshipPage() {
     return filtered;
   }, [sessions, sessionFilter, searchQuery, activeTab]);
 
-  // Session counts
   const sessionCounts = {
     all: sessions.length,
     pending: sessions.filter((s) => s.status === "pending").length,
@@ -273,8 +211,12 @@ export default function MentorshipPage() {
     setCancelModalOpen(true);
   };
 
-  const confirmCancelSession = () => {
-    if (selectedSessionId) {
+  const confirmCancelSession = async () => {
+    if (!selectedSessionId) return;
+
+    try {
+      setCancellingSession(true);
+      await cancelSession(selectedSessionId);
       setSessions((prev) =>
         prev.map((session) =>
           session.id === selectedSessionId
@@ -282,12 +224,21 @@ export default function MentorshipPage() {
             : session,
         ),
       );
+      toast.success("Session cancelled successfully");
+    } catch (error) {
+      toast.error("Failed to cancel session");
+    } finally {
+      setCancellingSession(false);
+      setCancelModalOpen(false);
+      setSelectedSessionId(null);
     }
   };
 
   const handleJoinSession = (id: string) => {
-    // TODO: Implement join session logic (open meeting link)
-    console.log("Joining session:", id);
+    const session = sessions.find((s) => s.id === id);
+    if (session?.location && session.location !== "TBD") {
+      window.open(session.location, "_blank");
+    }
   };
 
   const sessionTabs = [
@@ -379,7 +330,13 @@ export default function MentorshipPage() {
 
             {/* Mentor Grid */}
             <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
-              <MentorGrid mentors={filteredMentors} />
+              {mentorsLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <Loader2 className="h-8 w-8 animate-spin text-[#5C30FF]" />
+                </div>
+              ) : (
+                <MentorGrid mentors={filteredMentors} />
+              )}
             </div>
           </div>
         </>
@@ -416,7 +373,11 @@ export default function MentorshipPage() {
 
           {/* Session Cards */}
           <div className="flex flex-1 flex-col gap-4 overflow-y-auto">
-            {filteredSessions.length === 0 ? (
+            {sessionsLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-[#5C30FF]" />
+              </div>
+            ) : filteredSessions.length === 0 ? (
               <div className="rounded-xl border border-[#E1E4EA] bg-[#FAFAFA] px-6 py-12 text-center">
                 <p className="font-inter-tight text-[14px] text-[#525866]">
                   No sessions found

@@ -3,6 +3,8 @@
  * Useful for onboarding and other sensitive operations
  */
 
+"use client";
+
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "./useToast";

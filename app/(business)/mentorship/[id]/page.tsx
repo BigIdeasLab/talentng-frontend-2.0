@@ -1,371 +1,28 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Clock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { format, addDays } from "date-fns";
+import {
+  getMentorProfile,
+  getMentorReviews,
+  getMentorBookingSlots,
+  createRequest,
+} from "@/lib/api/mentorship";
+import type {
+  PublicMentorDetail,
+  SessionReview,
+} from "@/lib/api/mentorship/types";
 
-// Mock mentor data - Replace with API call
-const MOCK_MENTOR_DETAILS = {
-  "1": {
-    id: "1",
-    name: "Johnson Mark",
-    title: "UI/UX Designer At Google",
-    imageUrl:
-      "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
-    pricePerSession: 150,
-    sessionsCompleted: 200,
-    mentoringTime: 320,
-    sessionDuration: 60,
-    defaultLocation: "Google Meet",
-    about:
-      "Hello! I'm a Data Scientist at Microsoft, specializing in machine learning and data visualization. With over 8 years of experience, I've contributed to projects ranging from cloud computing to AI-driven solutions. My expertise includes Python, R, SQL, and tools like TensorFlow and Power BI.\n\nI've led cross-functional teams, mentored junior data scientists, and worked with stakeholders to translate complex data into actionable insights. Whether you're interested in refining your analytical skills, understanding data trends, or need guidance on real-world data applications, I'm here to assist.\n\nPlease note: To provide focused and in-depth consultations, I offer 30–45 minute mentorship sessions at $90 USD. I'm excited to connect, share my knowledge, and help you advance your career in data science.",
-    expertise: ["Data Analysis", "Engineering"],
-    discipline: "Data Scientist",
-    industries: ["AI", "Fintech", "Ecommerce"],
-    languages: ["English", "French"],
-    availability: [
-      { date: "Nov 28", day: "Thur", selected: true },
-      { date: "Nov 29", day: "Fri", selected: false },
-      { date: "Nov 30", day: "Sat", selected: false },
-      { date: "Dec 01", day: "Sun", selected: false },
-      { date: "Dec 02", day: "Mon", selected: false },
-      { date: "Dec 04", day: "Wed", selected: false },
-      { date: "Dec 03", day: "Tue", selected: false },
-      { date: "Dec 05", day: "Thu", selected: false },
-    ],
-    timeSlots: ["9:00 Am", "9:30 Am", "9:45 Am"],
-    socialLinks: {
-      telegram: "#",
-      x: "#",
-      instagram: "#",
-      linkedin: "#",
-    },
-    metrics: {
-      communication: 30,
-      problemSolving: 75,
-      motivational: 50,
-      subjectKnowledge: 60,
-    },
-    reviews: [
-      {
-        id: "1",
-        name: "John Smith",
-        role: "Mentee",
-        imageUrl:
-          "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
-        review:
-          "David's innovative approach to user experience design resulted in a 30% increase in user engagement. His creative solutions have been essential in meeting project deadlines.",
-      },
-      {
-        id: "2",
-        name: "Lisa Chen",
-        role: "Mentee",
-        imageUrl:
-          "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
-        review:
-          "David's research on market trends provided the team with a competitive edge. Her analytical skills and attention to detail have significantly enhanced our strategy development.",
-      },
-      {
-        id: "3",
-        name: "Michael Johnson",
-        role: "Mentee",
-        imageUrl:
-          "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
-        review:
-          "David's expertise in coding has streamlined our development process, reducing bug occurrences. His technical contributions have greatly improved product stability.",
-      },
-      {
-        id: "4",
-        name: "Emma Williams",
-        role: "Mentee",
-        imageUrl:
-          "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
-        review:
-          "David's leadership in project management played a crucial role in aligning team objectives. Her organizational abilities have fostered a collaborative team environment.",
-      },
-      {
-        id: "5",
-        name: "David Brown",
-        role: "Mentee",
-        imageUrl:
-          "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
-        review:
-          "David's initiatives in sustainable design have not only reduced costs but also aligned our products with eco-friendly practices, enhancing our brand image.",
-      },
-      {
-        id: "6",
-        name: "Sophia Martinez",
-        role: "Mentee",
-        imageUrl:
-          "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
-        review:
-          "David's insights into social media marketing strategies have boosted our online presence dramatically. Her creative campaigns attract a broader audience.",
-      },
-    ],
-    sessions: [
-      {
-        id: "1",
-        type: "private",
-        title: "Career Guidance",
-        description:
-          "A Data Scientist at Microsoft, specializing in machine learning and data visualization. With over 8 years of experience.",
-        date: "Thu, 11:00 AM",
-        duration: "45 mins",
-        location: "Google Meet",
-      },
-      {
-        id: "2",
-        type: "public",
-        title: "Becoming The Top Of Your Game",
-        description:
-          "A Data Scientist at Microsoft, specializing in machine learning and data visualization. With over 8 years of experience.",
-        date: "Thu, 11:00 AM",
-        duration: "50 mins",
-        location: "Google Meet",
-      },
-    ],
-  },
-  "2": {
-    id: "2",
-    name: "Lee Sarah",
-    title: "Frontend Developer At Amazon",
-    imageUrl:
-      "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
-    pricePerSession: 120,
-    sessionsCompleted: 100,
-    mentoringTime: 450,
-    sessionDuration: 45,
-    defaultLocation: "Zoom",
-    about:
-      "Hi! I'm a Frontend Developer at Amazon with a passion for creating beautiful, responsive web applications. I specialize in React, TypeScript, and modern CSS frameworks. With 6 years of experience, I've worked on large-scale e-commerce platforms and user-facing applications.\n\nI love mentoring aspiring developers and helping them level up their skills in frontend development, UI/UX design, and web performance optimization.",
-    expertise: ["Frontend Development", "UI/UX"],
-    discipline: "Frontend Developer",
-    industries: ["E-commerce", "Tech", "Retail"],
-    languages: ["English", "Korean"],
-    availability: [
-      { date: "Nov 28", day: "Thur", selected: false },
-      { date: "Nov 29", day: "Fri", selected: true },
-      { date: "Nov 30", day: "Sat", selected: false },
-      { date: "Dec 01", day: "Sun", selected: false },
-      { date: "Dec 02", day: "Mon", selected: false },
-      { date: "Dec 04", day: "Wed", selected: false },
-      { date: "Dec 03", day: "Tue", selected: false },
-      { date: "Dec 05", day: "Thu", selected: false },
-    ],
-    timeSlots: ["10:00 Am", "10:30 Am", "11:00 Am"],
-    socialLinks: {
-      telegram: "#",
-      x: "#",
-      instagram: "#",
-      linkedin: "#",
-    },
-    metrics: {
-      communication: 40,
-      problemSolving: 85,
-      motivational: 60,
-      subjectKnowledge: 70,
-    },
-    reviews: [
-      {
-        id: "1",
-        name: "John Smith",
-        role: "Mentee",
-        imageUrl:
-          "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
-        review:
-          "Sarah's innovative approach to user experience design resulted in a 30% increase in user engagement. Her creative solutions have been essential in meeting project deadlines.",
-      },
-      {
-        id: "2",
-        name: "Lisa Chen",
-        role: "Mentee",
-        imageUrl:
-          "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
-        review:
-          "Sarah's research on market trends provided the team with a competitive edge. Her analytical skills and attention to detail have significantly enhanced our strategy development.",
-      },
-      {
-        id: "3",
-        name: "Michael Johnson",
-        role: "Mentee",
-        imageUrl:
-          "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
-        review:
-          "Sarah's expertise in coding has streamlined our development process, reducing bug occurrences. Her technical contributions have greatly improved product stability.",
-      },
-      {
-        id: "4",
-        name: "Emma Williams",
-        role: "Mentee",
-        imageUrl:
-          "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
-        review:
-          "Sarah's leadership in project management played a crucial role in aligning team objectives. Her organizational abilities have fostered a collaborative team environment.",
-      },
-      {
-        id: "5",
-        name: "David Brown",
-        role: "Mentee",
-        imageUrl:
-          "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
-        review:
-          "Sarah's initiatives in sustainable design have not only reduced costs but also aligned our products with eco-friendly practices, enhancing our brand image.",
-      },
-      {
-        id: "6",
-        name: "Sophia Martinez",
-        role: "Mentee",
-        imageUrl:
-          "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
-        review:
-          "Sarah's insights into social media marketing strategies have boosted our online presence dramatically. Her creative campaigns attract a broader audience.",
-      },
-    ],
-    sessions: [
-      {
-        id: "1",
-        type: "private",
-        title: "Frontend Development Mastery",
-        description:
-          "A Frontend Developer at Amazon with a passion for creating beautiful, responsive web applications. Learn React, TypeScript, and modern CSS.",
-        date: "Fri, 10:00 AM",
-        duration: "60 mins",
-        location: "Google Meet",
-      },
-      {
-        id: "2",
-        type: "public",
-        title: "Building Scalable Web Apps",
-        description:
-          "Discover best practices for building large-scale e-commerce platforms and user-facing applications that perform at scale.",
-        date: "Fri, 2:00 PM",
-        duration: "45 mins",
-        location: "Zoom",
-      },
-    ],
-  },
-  "3": {
-    id: "3",
-    name: "Brown David",
-    title: "Data Scientist At Microsoft",
-    imageUrl:
-      "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
-    pricePerSession: 90,
-    sessionsCompleted: 50,
-    mentoringTime: 510,
-    sessionDuration: 30,
-    defaultLocation: "Google Meet",
-    about:
-      "Hello! I'm a Data Scientist at Microsoft, specializing in machine learning and data visualization. With over 8 years of experience, I've contributed to projects ranging from cloud computing to AI-driven solutions. My expertise includes Python, R, SQL, and tools like TensorFlow and Power BI.\n\nI've led cross-functional teams, mentored junior data scientists, and worked with stakeholders to translate complex data into actionable insights. Whether you're interested in refining your analytical skills, understanding data trends, or need guidance on real-world data applications, I'm here to assist.\n\nPlease note: To provide focused and in-depth consultations, I offer 30–45 minute mentorship sessions at $90 USD. I'm excited to connect, share my knowledge, and help you advance your career in data science.",
-    expertise: ["Data Analysis", "Engineering"],
-    discipline: "Data Scientist",
-    industries: ["AI", "Fintech", "Ecommerce"],
-    languages: ["English", "French"],
-    availability: [
-      { date: "Nov 28", day: "Thur", selected: true },
-      { date: "Nov 29", day: "Fri", selected: false },
-      { date: "Nov 30", day: "Sat", selected: false },
-      { date: "Dec 01", day: "Sun", selected: false },
-      { date: "Dec 02", day: "Mon", selected: false },
-      { date: "Dec 04", day: "Wed", selected: false },
-      { date: "Dec 03", day: "Tue", selected: false },
-      { date: "Dec 05", day: "Thu", selected: false },
-    ],
-    timeSlots: ["9:00 Am", "9:30 Am", "9:45 Am"],
-    socialLinks: {
-      telegram: "#",
-      x: "#",
-      instagram: "#",
-      linkedin: "#",
-    },
-    metrics: {
-      communication: 30,
-      problemSolving: 75,
-      motivational: 50,
-      subjectKnowledge: 60,
-    },
-    reviews: [
-      {
-        id: "1",
-        name: "John Smith",
-        role: "Mentee",
-        imageUrl:
-          "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
-        review:
-          "David's innovative approach to user experience design resulted in a 30% increase in user engagement. His creative solutions have been essential in meeting project deadlines.",
-      },
-      {
-        id: "2",
-        name: "Lisa Chen",
-        role: "Mentee",
-        imageUrl:
-          "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
-        review:
-          "David's research on market trends provided the team with a competitive edge. Her analytical skills and attention to detail have significantly enhanced our strategy development.",
-      },
-      {
-        id: "3",
-        name: "Michael Johnson",
-        role: "Mentee",
-        imageUrl:
-          "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
-        review:
-          "David's expertise in coding has streamlined our development process, reducing bug occurrences. His technical contributions have greatly improved product stability.",
-      },
-      {
-        id: "4",
-        name: "Emma Williams",
-        role: "Mentee",
-        imageUrl:
-          "https://api.builder.io/api/v1/image/assets/TEMP/ce48d9d62f90e73233f228176eca980a1f1d6319?width=524",
-        review:
-          "David's leadership in project management played a crucial role in aligning team objectives. Her organizational abilities have fostered a collaborative team environment.",
-      },
-      {
-        id: "5",
-        name: "David Brown",
-        role: "Mentee",
-        imageUrl:
-          "https://api.builder.io/api/v1/image/assets/TEMP/6a0463719f677585422c40bf7dae63b8ffcd7043?width=524",
-        review:
-          "David's initiatives in sustainable design have not only reduced costs but also aligned our products with eco-friendly practices, enhancing our brand image.",
-      },
-      {
-        id: "6",
-        name: "Sophia Martinez",
-        role: "Mentee",
-        imageUrl:
-          "https://api.builder.io/api/v1/image/assets/TEMP/15e640f5aa424a17f0dfc70f71e49782a71b9b72?width=524",
-        review:
-          "David's insights into social media marketing strategies have boosted our online presence dramatically. Her creative campaigns attract a broader audience.",
-      },
-    ],
-    sessions: [
-      {
-        id: "1",
-        type: "private",
-        title: "Career Guidance",
-        description:
-          "A Data Scientist at Microsoft, specializing in machine learning and data visualization. With over 8 years of experience.",
-        date: "Thu, 11:00 AM",
-        duration: "45 mins",
-        location: "Google Meet",
-      },
-      {
-        id: "2",
-        type: "public",
-        title: "Becoming The Top Of Your Game",
-        description:
-          "A Data Scientist at Microsoft, specializing in machine learning and data visualization. With over 8 years of experience.",
-        date: "Thu, 11:00 AM",
-        duration: "50 mins",
-        location: "Google Meet",
-      },
-    ],
-  },
-};
+interface AvailabilitySlot {
+  date: string;
+  day: string;
+  fullDate: string;
+  slots: { startTime: string; endTime: string }[];
+}
 
 type TabType = "Overview" | "Reviews" | "Session";
 
@@ -381,10 +38,91 @@ export default function MentorDetailPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const mentor =
-    MOCK_MENTOR_DETAILS[mentorId as keyof typeof MOCK_MENTOR_DETAILS];
+  const [mentor, setMentor] = useState<PublicMentorDetail | null>(null);
+  const [reviews, setReviews] = useState<SessionReview[]>([]);
+  const [availability, setAvailability] = useState<AvailabilitySlot[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!mentor) {
+  useEffect(() => {
+    async function fetchMentorData() {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const startDate = format(new Date(), "yyyy-MM-dd");
+        const endDate = format(addDays(new Date(), 14), "yyyy-MM-dd");
+
+        const [profileData, reviewsData, availabilityData] = await Promise.all([
+          getMentorProfile(mentorId),
+          getMentorReviews(mentorId, { limit: 10 }),
+          getMentorBookingSlots(mentorId, { startDate, endDate }),
+        ]);
+
+        setMentor(profileData);
+        setReviews(reviewsData.data);
+
+        const transformedAvailability = availabilityData.availableSlots.map(
+          (slot) => ({
+            date: format(new Date(slot.date), "MMM dd"),
+            day: format(new Date(slot.date), "EEE"),
+            fullDate: slot.date,
+            slots: slot.slots,
+          }),
+        );
+        setAvailability(transformedAvailability);
+      } catch (err) {
+        if (err instanceof Error && err.message.includes("404")) {
+          setError("not_found");
+        } else {
+          setError("failed");
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchMentorData();
+  }, [mentorId]);
+
+  if (isLoading) {
+    return (
+      <div className="h-screen bg-white flex flex-col overflow-hidden">
+        <div className="flex-shrink-0 px-5 py-3 border-b border-[#E1E4EA]">
+          <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+        </div>
+        <div className="flex-1 flex overflow-hidden">
+          <div className="w-[350px] flex-shrink-0 border-r border-[#E1E4EA] bg-white p-5">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-[113px] h-[113px] rounded-full bg-gray-200 animate-pulse" />
+              <div className="h-5 w-40 bg-gray-200 rounded animate-pulse" />
+              <div className="h-4 w-48 bg-gray-200 rounded animate-pulse" />
+            </div>
+            <div className="mt-6 space-y-3">
+              {[1, 2, 3, 4].map((i) => (
+                <div
+                  key={i}
+                  className="h-4 w-full bg-gray-200 rounded animate-pulse"
+                />
+              ))}
+            </div>
+          </div>
+          <div className="flex-1 p-6">
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="h-4 w-full bg-gray-200 rounded animate-pulse"
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error === "not_found" || !mentor) {
     return (
       <div className="h-screen flex items-center justify-center bg-white">
         <div className="text-center">
@@ -399,6 +137,27 @@ export default function MentorDetailPage() {
       </div>
     );
   }
+
+  if (error === "failed") {
+    return (
+      <div className="h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <p className="text-gray-500 mb-3 text-[13px]">
+            Failed to load mentor details
+          </p>
+          <Link
+            href="/mentorship"
+            className="px-3 py-1.5 bg-[#181B25] text-white rounded-md hover:bg-[#252831] text-[11px]"
+          >
+            Back to Mentorship
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const timeSlots =
+    availability[selectedDate]?.slots.map((s) => s.startTime) || [];
 
   return (
     <div className="h-screen bg-white flex flex-col overflow-hidden">
@@ -434,12 +193,18 @@ export default function MentorDetailPage() {
               {/* Profile Section */}
               <div className="flex flex-col items-center gap-3">
                 <div className="relative w-[113px] h-[113px] rounded-full overflow-hidden bg-gradient-to-b from-purple-400 to-purple-600">
-                  <Image
-                    src={mentor.imageUrl}
-                    alt={mentor.name}
-                    fill
-                    className="object-cover"
-                  />
+                  {mentor.avatar ? (
+                    <Image
+                      src={mentor.avatar}
+                      alt={mentor.name}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-white text-3xl font-semibold">
+                      {mentor.name.charAt(0)}
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col items-center gap-2.5">
                   <h1 className="font-inter-tight text-[17px] font-semibold text-black text-center">
@@ -447,18 +212,13 @@ export default function MentorDetailPage() {
                   </h1>
                   <p className="font-inter-tight text-[13px] font-normal text-[#A3A3A3] text-center">
                     {mentor.title}
+                    {mentor.company && ` at ${mentor.company}`}
                   </p>
                 </div>
               </div>
 
               {/* Stats */}
               <div className="flex flex-col gap-3">
-                <div className="flex items-center gap-1.5">
-                  <DollarCircleIcon className="w-4 h-4 text-[#525866]" />
-                  <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
-                    ${mentor.pricePerSession} / Session
-                  </span>
-                </div>
                 <div className="flex items-center gap-1.5">
                   <Clock
                     className="w-4 h-4 text-[#525866]"
@@ -468,18 +228,32 @@ export default function MentorDetailPage() {
                     {mentor.sessionDuration} mins / session
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <LocationIcon className="w-4 h-4 text-[#525866]" />
-                  <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
-                    {mentor.defaultLocation}
-                  </span>
-                </div>
+                {mentor.defaultMeetingLink && (
+                  <div className="flex items-center gap-1.5">
+                    <LocationIcon className="w-4 h-4 text-[#525866]" />
+                    <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
+                      {mentor.defaultMeetingLink.includes("meet.google")
+                        ? "Google Meet"
+                        : mentor.defaultMeetingLink.includes("zoom")
+                          ? "Zoom"
+                          : "Online Meeting"}
+                    </span>
+                  </div>
+                )}
                 <div className="flex items-center gap-1.5">
                   <CheckDoubleIcon className="w-4 h-4 text-[#525866]" />
                   <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
-                    {mentor.sessionsCompleted} Sessions Completed
+                    {mentor.totalSessions} Sessions Completed
                   </span>
                 </div>
+                {mentor.totalReviews > 0 && (
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
+                      ⭐ {mentor.rating.toFixed(1)} ({mentor.totalReviews}{" "}
+                      reviews)
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Book Session Button */}
@@ -491,138 +265,93 @@ export default function MentorDetailPage() {
               </button>
 
               {/* Availability Section */}
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center justify-between">
+              {availability.length > 0 ? (
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-inter-tight text-[13px] font-medium text-black">
+                      Availability
+                    </h3>
+                    <button className="font-inter-tight text-[12px] font-normal text-[#5C30FF] hover:underline">
+                      View All
+                    </button>
+                  </div>
+
+                  {/* Calendar Grid */}
+                  <div className="grid grid-cols-4 gap-2">
+                    {availability.slice(0, 8).map((slot, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          setSelectedDate(index);
+                          setSelectedTime(0);
+                        }}
+                        className={`flex flex-col items-center justify-center gap-1 h-[52px] rounded-lg border transition-colors ${
+                          selectedDate === index
+                            ? "bg-[#5C30FF] border-[#5C30FF]"
+                            : "bg-white border-[#E1E4EA] hover:border-[#5C30FF]"
+                        }`}
+                      >
+                        <span
+                          className={`font-inter-tight text-[10px] font-normal ${
+                            selectedDate === index
+                              ? "text-white/70"
+                              : "text-[#A3A3A3]"
+                          }`}
+                        >
+                          {slot.day}
+                        </span>
+                        <span
+                          className={`font-inter-tight text-[13px] font-medium ${
+                            selectedDate === index ? "text-white" : "text-black"
+                          }`}
+                        >
+                          {slot.date.split(" ")[1]}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-4">
                   <h3 className="font-inter-tight text-[13px] font-medium text-black">
                     Availability
                   </h3>
-                  <button className="font-inter-tight text-[12px] font-normal text-[#5C30FF] hover:underline">
-                    View All
-                  </button>
+                  <p className="font-inter-tight text-[13px] text-[#A3A3A3]">
+                    No available slots at this time
+                  </p>
                 </div>
-
-                {/* Calendar Grid */}
-                <div className="grid grid-cols-4 gap-2">
-                  {mentor.availability.map((slot, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setSelectedDate(index)}
-                      className={`flex flex-col items-center justify-center gap-1 h-[52px] rounded-lg border transition-colors ${
-                        selectedDate === index
-                          ? "bg-[#5C30FF] border-[#5C30FF]"
-                          : "bg-white border-[#E1E4EA] hover:border-[#5C30FF]"
-                      }`}
-                    >
-                      <span
-                        className={`font-inter-tight text-[10px] font-normal ${
-                          selectedDate === index
-                            ? "text-white/70"
-                            : "text-[#A3A3A3]"
-                        }`}
-                      >
-                        {slot.day}
-                      </span>
-                      <span
-                        className={`font-inter-tight text-[13px] font-medium ${
-                          selectedDate === index ? "text-white" : "text-black"
-                        }`}
-                      >
-                        {slot.date.split(" ")[1]}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
+              )}
 
               {/* Select Time Section */}
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-inter-tight text-[13px] font-medium text-black">
-                    Select Time
-                  </h3>
-                  <button className="font-inter-tight text-[12px] font-normal text-[#5C30FF] hover:underline">
-                    View All
-                  </button>
-                </div>
-
-                {/* Time Slots */}
-                <div className="flex items-center gap-2">
-                  {mentor.timeSlots.map((time, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setSelectedTime(index)}
-                      className={`flex items-center justify-center px-4 py-2 rounded-lg border font-inter-tight text-[13px] font-normal transition-colors ${
-                        selectedTime === index
-                          ? "bg-[#5C30FF] border-[#5C30FF] text-white"
-                          : "bg-white border-[#E1E4EA] text-black hover:border-[#5C30FF]"
-                      }`}
-                    >
-                      {time}
+              {timeSlots.length > 0 && (
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-inter-tight text-[13px] font-medium text-black">
+                      Select Time
+                    </h3>
+                    <button className="font-inter-tight text-[12px] font-normal text-[#5C30FF] hover:underline">
+                      View All
                     </button>
-                  ))}
+                  </div>
+
+                  {/* Time Slots */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    {timeSlots.map((time, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setSelectedTime(index)}
+                        className={`flex items-center justify-center px-4 py-2 rounded-lg border font-inter-tight text-[13px] font-normal transition-colors ${
+                          selectedTime === index
+                            ? "bg-[#5C30FF] border-[#5C30FF] text-white"
+                            : "bg-white border-[#E1E4EA] text-black hover:border-[#5C30FF]"
+                        }`}
+                      >
+                        {time}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-
-              {/* Social Links Section */}
-              <div className="flex flex-col gap-4">
-                <h3 className="font-inter-tight text-[13px] font-medium text-black">
-                  Social Links
-                </h3>
-
-                <div className="flex flex-col gap-2">
-                  <Link
-                    href={mentor.socialLinks.telegram}
-                    className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-[#F5F5F5] transition-colors group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <TelegramIcon className="w-4 h-4" />
-                      <span className="font-inter-tight text-[13px] font-normal text-black">
-                        Telegram
-                      </span>
-                    </div>
-                    <ExternalLinkIcon className="w-4 h-4 text-[#B2B2B2] group-hover:text-black transition-colors" />
-                  </Link>
-
-                  <Link
-                    href={mentor.socialLinks.x}
-                    className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-[#F5F5F5] transition-colors group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <XIcon className="w-4 h-4" />
-                      <span className="font-inter-tight text-[13px] font-normal text-black">
-                        X
-                      </span>
-                    </div>
-                    <ExternalLinkIcon className="w-4 h-4 text-[#B2B2B2] group-hover:text-black transition-colors" />
-                  </Link>
-
-                  <Link
-                    href={mentor.socialLinks.instagram}
-                    className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-[#F5F5F5] transition-colors group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <InstagramIcon className="w-4 h-4" />
-                      <span className="font-inter-tight text-[13px] font-normal text-black">
-                        Instagram
-                      </span>
-                    </div>
-                    <ExternalLinkIcon className="w-4 h-4 text-[#B2B2B2] group-hover:text-black transition-colors" />
-                  </Link>
-
-                  <Link
-                    href={mentor.socialLinks.linkedin}
-                    className="flex items-center justify-between px-4 py-3 rounded-lg hover:bg-[#F5F5F5] transition-colors group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <LinkedInIcon className="w-4 h-4" />
-                      <span className="font-inter-tight text-[13px] font-normal text-black">
-                        LinkedIn
-                      </span>
-                    </div>
-                    <ExternalLinkIcon className="w-4 h-4 text-[#B2B2B2] group-hover:text-black transition-colors" />
-                  </Link>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -652,15 +381,17 @@ export default function MentorDetailPage() {
           <div className="flex-1 overflow-y-auto scrollbar-hide px-6 py-5">
             {activeTab === "Overview" && (
               <div className="max-w-[580px] flex flex-col gap-6">
-                {/* About Brown Section */}
-                <div className="flex flex-col gap-3">
-                  <h2 className="font-inter-tight text-[15px] font-bold text-black">
-                    About {mentor.name.split(" ")[0]}
-                  </h2>
-                  <p className="font-inter-tight text-[13px] font-normal text-black leading-[20px] whitespace-pre-line">
-                    {mentor.about}
-                  </p>
-                </div>
+                {/* About Section */}
+                {mentor.bio && (
+                  <div className="flex flex-col gap-3">
+                    <h2 className="font-inter-tight text-[15px] font-bold text-black">
+                      About {mentor.name.split(" ")[0]}
+                    </h2>
+                    <p className="font-inter-tight text-[13px] font-normal text-black leading-[20px] whitespace-pre-line">
+                      {mentor.bio}
+                    </p>
+                  </div>
+                )}
 
                 {/* Background Section */}
                 <div className="flex flex-col gap-4">
@@ -669,155 +400,110 @@ export default function MentorDetailPage() {
                   </h2>
 
                   {/* Expertise */}
-                  <div className="flex flex-col gap-2.5">
-                    <h3 className="font-inter-tight text-[13px] font-normal text-black">
-                      Expertise
-                    </h3>
-                    <div className="flex items-center gap-1.5">
-                      {mentor.expertise.map((skill, index) => (
-                        <span
-                          key={index}
-                          className="px-3 py-1.5 rounded-full bg-[#F5F5F5] font-inter-tight text-[11px] font-normal text-black"
-                        >
-                          {skill}
-                        </span>
-                      ))}
+                  {mentor.expertise.length > 0 && (
+                    <div className="flex flex-col gap-2.5">
+                      <h3 className="font-inter-tight text-[13px] font-normal text-black">
+                        Expertise
+                      </h3>
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        {mentor.expertise.map((skill, index) => (
+                          <span
+                            key={index}
+                            className="px-3 py-1.5 rounded-full bg-[#F5F5F5] font-inter-tight text-[11px] font-normal text-black"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
-                  {/* Discipline */}
-                  <div className="flex flex-col gap-2.5">
-                    <h3 className="font-inter-tight text-[13px] font-normal text-black">
-                      Discipline
-                    </h3>
-                    <div className="flex items-center">
-                      <span className="px-3 py-1.5 rounded-full bg-[#F5F5F5] font-inter-tight text-[11px] font-normal text-black">
-                        {mentor.discipline}
-                      </span>
+                  {/* Title/Role */}
+                  {mentor.title && (
+                    <div className="flex flex-col gap-2.5">
+                      <h3 className="font-inter-tight text-[13px] font-normal text-black">
+                        Role
+                      </h3>
+                      <div className="flex items-center">
+                        <span className="px-3 py-1.5 rounded-full bg-[#F5F5F5] font-inter-tight text-[11px] font-normal text-black">
+                          {mentor.title}
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Industries */}
-                  <div className="flex flex-col gap-2.5">
-                    <h3 className="font-inter-tight text-[13px] font-normal text-black">
-                      Industries
-                    </h3>
-                    <div className="flex items-center gap-1.5">
-                      {mentor.industries.map((industry, index) => (
-                        <span
-                          key={index}
-                          className="px-3 py-1.5 rounded-full bg-[#F5F5F5] font-inter-tight text-[11px] font-normal text-black"
-                        >
-                          {industry}
-                        </span>
-                      ))}
+                  {mentor.industries.length > 0 && (
+                    <div className="flex flex-col gap-2.5">
+                      <h3 className="font-inter-tight text-[13px] font-normal text-black">
+                        Industries
+                      </h3>
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        {mentor.industries.map((industry, index) => (
+                          <span
+                            key={index}
+                            className="px-3 py-1.5 rounded-full bg-[#F5F5F5] font-inter-tight text-[11px] font-normal text-black"
+                          >
+                            {industry}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
-                  {/* Language */}
-                  <div className="flex flex-col gap-2.5">
-                    <h3 className="font-inter-tight text-[13px] font-normal text-black">
-                      Language
-                    </h3>
-                    <div className="flex items-center gap-1.5">
-                      {mentor.languages.map((language, index) => (
-                        <span
-                          key={index}
-                          className="px-3 py-1.5 rounded-full bg-[#F5F5F5] font-inter-tight text-[11px] font-normal text-black"
-                        >
-                          {language}
+                  {/* Timezone */}
+                  {mentor.timezone && (
+                    <div className="flex flex-col gap-2.5">
+                      <h3 className="font-inter-tight text-[13px] font-normal text-black">
+                        Timezone
+                      </h3>
+                      <div className="flex items-center">
+                        <span className="px-3 py-1.5 rounded-full bg-[#F5F5F5] font-inter-tight text-[11px] font-normal text-black">
+                          {mentor.timezone}
                         </span>
-                      ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             )}
 
             {activeTab === "Reviews" && (
               <div className="max-w-[850px] flex flex-col gap-8">
-                {/* Metrics Section */}
-                <div className="flex flex-col gap-4">
-                  <h2 className="font-inter-tight text-[15px] font-bold text-black">
-                    Metrics
-                  </h2>
-
-                  <div className="grid grid-cols-2 gap-x-12 gap-y-4">
-                    {/* Communication */}
-                    <div className="flex flex-col gap-1.5">
-                      <div className="flex items-center justify-between">
-                        <span className="font-inter-tight text-[13px] font-normal text-[#A3A3A3]">
-                          Communication
+                {/* Rating Summary */}
+                {mentor.totalReviews > 0 && (
+                  <div className="flex flex-col gap-4">
+                    <h2 className="font-inter-tight text-[15px] font-bold text-black">
+                      Rating Overview
+                    </h2>
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2">
+                        <span className="font-inter-tight text-[32px] font-bold text-black">
+                          {mentor.rating.toFixed(1)}
                         </span>
-                        <span className="font-inter-tight text-[13px] font-normal text-[#A3A3A3]">
-                          {mentor.metrics.communication}%
-                        </span>
-                      </div>
-                      <div className="w-full h-[5px] bg-[#E1E4EA] rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-[#00A859] rounded-full"
-                          style={{ width: `${mentor.metrics.communication}%` }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Motivational */}
-                    <div className="flex flex-col gap-1.5">
-                      <div className="flex items-center justify-between">
-                        <span className="font-inter-tight text-[13px] font-normal text-[#A3A3A3]">
-                          Motivational
-                        </span>
-                        <span className="font-inter-tight text-[13px] font-normal text-[#A3A3A3]">
-                          {mentor.metrics.motivational}%
-                        </span>
-                      </div>
-                      <div className="w-full h-[5px] bg-[#E1E4EA] rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-[#00A859] rounded-full"
-                          style={{ width: `${mentor.metrics.motivational}%` }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Problem Solving */}
-                    <div className="flex flex-col gap-1.5">
-                      <div className="flex items-center justify-between">
-                        <span className="font-inter-tight text-[13px] font-normal text-[#A3A3A3]">
-                          Problem Solving
-                        </span>
-                        <span className="font-inter-tight text-[13px] font-normal text-[#A3A3A3]">
-                          {mentor.metrics.problemSolving}%
-                        </span>
-                      </div>
-                      <div className="w-full h-[5px] bg-[#E1E4EA] rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-[#00A859] rounded-full"
-                          style={{ width: `${mentor.metrics.problemSolving}%` }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Subject Knowledge */}
-                    <div className="flex flex-col gap-1.5">
-                      <div className="flex items-center justify-between">
-                        <span className="font-inter-tight text-[13px] font-normal text-[#A3A3A3]">
-                          Subject Knowledge
-                        </span>
-                        <span className="font-inter-tight text-[13px] font-normal text-[#A3A3A3]">
-                          {mentor.metrics.subjectKnowledge}%
-                        </span>
-                      </div>
-                      <div className="w-full h-[5px] bg-[#E1E4EA] rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-[#00A859] rounded-full"
-                          style={{
-                            width: `${mentor.metrics.subjectKnowledge}%`,
-                          }}
-                        />
+                        <div className="flex flex-col">
+                          <div className="flex items-center gap-0.5">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <span
+                                key={star}
+                                className={
+                                  star <= Math.round(mentor.rating)
+                                    ? "text-yellow-400"
+                                    : "text-gray-300"
+                                }
+                              >
+                                ★
+                              </span>
+                            ))}
+                          </div>
+                          <span className="font-inter-tight text-[12px] text-[#A3A3A3]">
+                            {mentor.totalReviews} reviews
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
 
                 {/* Reviews Section */}
                 <div className="flex flex-col gap-4">
@@ -825,217 +511,115 @@ export default function MentorDetailPage() {
                     Reviews
                   </h2>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {mentor.reviews.map((review) => (
-                      <div
-                        key={review.id}
-                        className="flex flex-col gap-3 p-4 rounded-xl border border-[#E1E4EA] bg-white hover:shadow-sm transition-shadow"
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <div className="relative w-10 h-10 rounded-full overflow-hidden bg-gradient-to-b from-purple-400 to-purple-600">
-                            <Image
-                              src={review.imageUrl}
-                              alt={review.name}
-                              fill
-                              className="object-cover"
-                            />
+                  {reviews.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {reviews.map((review) => (
+                        <div
+                          key={review.id}
+                          className="flex flex-col gap-3 p-4 rounded-xl border border-[#E1E4EA] bg-white hover:shadow-sm transition-shadow"
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <div className="relative w-10 h-10 rounded-full overflow-hidden bg-gradient-to-b from-purple-400 to-purple-600">
+                              {review.mentee.avatar ? (
+                                <Image
+                                  src={review.mentee.avatar}
+                                  alt={review.mentee.name}
+                                  fill
+                                  className="object-cover"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-white text-sm font-semibold">
+                                  {review.mentee.name.charAt(0)}
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex flex-col">
+                              <h3 className="font-inter-tight text-[13px] font-semibold text-black">
+                                {review.mentee.name}
+                              </h3>
+                              <div className="flex items-center gap-1">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                  <span
+                                    key={star}
+                                    className={`text-[10px] ${
+                                      star <= review.rating
+                                        ? "text-yellow-400"
+                                        : "text-gray-300"
+                                    }`}
+                                  >
+                                    ★
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
                           </div>
-                          <div className="flex flex-col">
-                            <h3 className="font-inter-tight text-[13px] font-semibold text-black">
-                              {review.name}
-                            </h3>
-                            <p className="font-inter-tight text-[11px] font-normal text-[#A3A3A3]">
-                              {review.role}
+                          {review.comment && (
+                            <p className="font-inter-tight text-[12px] font-normal text-[#525866] leading-[18px]">
+                              {review.comment}
                             </p>
-                          </div>
+                          )}
                         </div>
-                        <p className="font-inter-tight text-[12px] font-normal text-[#525866] leading-[18px]">
-                          {review.review}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="font-inter-tight text-[13px] text-[#A3A3A3]">
+                      No reviews yet
+                    </p>
+                  )}
                 </div>
               </div>
             )}
 
             {activeTab === "Session" && (
               <div className="max-w-[680px] flex flex-col gap-6">
-                {mentor.sessions.map((session) => (
-                  <div key={session.id} className="flex flex-col gap-4">
-                    {/* Session Type Header */}
-                    <h2 className="font-inter-tight text-[15px] font-bold text-black">
-                      {session.type === "private"
-                        ? "Private Session"
-                        : "Public Session"}
-                    </h2>
+                <div className="flex flex-col gap-4">
+                  <h2 className="font-inter-tight text-[15px] font-bold text-black">
+                    Session Details
+                  </h2>
 
-                    {/* Session Card */}
-                    <div className="flex flex-col gap-4 p-4 rounded-xl border border-[#E1E4EA] bg-white">
-                      {/* Session Title and Description */}
-                      <div className="flex flex-col gap-2.5 pb-4 border-b border-[#E1E4EA]">
-                        <div className="flex items-start gap-2.5">
-                          <div className="w-1 h-5 bg-[#5C30FF] rounded-full flex-shrink-0 mt-0.5" />
-                          <div className="flex-1">
-                            <h3 className="font-inter-tight text-[14px] font-semibold text-black mb-1.5">
-                              {session.title}
-                            </h3>
-                            <p className="font-inter-tight text-[11px] font-normal text-[#525866] leading-[17px]">
-                              {session.description}
-                            </p>
-                          </div>
-                        </div>
+                  <div className="flex flex-col gap-4 p-4 rounded-xl border border-[#E1E4EA] bg-white">
+                    <div className="flex flex-col gap-2.5">
+                      <div className="flex items-center gap-2">
+                        <Clock
+                          className="w-[15px] h-[15px] text-black flex-shrink-0"
+                          strokeWidth={1.2}
+                        />
+                        <span className="font-inter-tight text-[12px] font-normal text-black">
+                          Duration: {mentor.sessionDuration} mins
+                        </span>
                       </div>
 
-                      {/* Session Details */}
-                      <div className="flex flex-col gap-2.5">
+                      {mentor.defaultMeetingLink && (
                         <div className="flex items-center gap-2">
-                          <svg
-                            width="15"
-                            height="15"
-                            viewBox="0 0 18 18"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="flex-shrink-0"
-                          >
-                            <path
-                              d="M14 2.5H4C3.17157 2.5 2.5 3.17157 2.5 4V14C2.5 14.8284 3.17157 15.5 4 15.5H14C14.8284 15.5 15.5 14.8284 15.5 14V4C15.5 3.17157 14.8284 2.5 14 2.5Z"
-                              stroke="black"
-                              strokeWidth="1.2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M12 1V4"
-                              stroke="black"
-                              strokeWidth="1.2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M6 1V4"
-                              stroke="black"
-                              strokeWidth="1.2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M2.5 7H15.5"
-                              stroke="black"
-                              strokeWidth="1.2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
+                          <LocationIcon className="w-[15px] h-[15px] text-black flex-shrink-0" />
                           <span className="font-inter-tight text-[12px] font-normal text-black">
-                            Date: {session.date}
+                            Location:{" "}
+                            {mentor.defaultMeetingLink.includes("meet.google")
+                              ? "Google Meet"
+                              : mentor.defaultMeetingLink.includes("zoom")
+                                ? "Zoom"
+                                : "Online Meeting"}
                           </span>
                         </div>
+                      )}
 
-                        <div className="flex items-center gap-2">
-                          <Clock
-                            className="w-[15px] h-[15px] text-black flex-shrink-0"
-                            strokeWidth={1.2}
-                          />
-                          <span className="font-inter-tight text-[12px] font-normal text-black">
-                            Duration: {session.duration}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <svg
-                            width="15"
-                            height="15"
-                            viewBox="0 0 18 18"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="flex-shrink-0"
-                          >
-                            <path
-                              d="M9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5Z"
-                              stroke="black"
-                              strokeWidth="1.2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M9 4.5V9L12 10.5"
-                              stroke="black"
-                              strokeWidth="1.2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                          <span className="font-inter-tight text-[12px] font-normal text-black">
-                            Location: {session.location}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Mentor Info and Actions */}
-                      <div className="flex items-center justify-between pt-4 border-t border-[#E1E4EA]">
-                        <div className="flex items-center gap-2.5">
-                          <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gradient-to-b from-purple-400 to-purple-600">
-                            <Image
-                              src={mentor.imageUrl}
-                              alt={mentor.name}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                          <div className="flex flex-col">
-                            <h4 className="font-inter-tight text-[12px] font-semibold text-black">
-                              {mentor.name}
-                            </h4>
-                            <p className="font-inter-tight text-[11px] font-normal text-[#A3A3A3]">
-                              Mentor
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-1.5">
-                          <button className="flex items-center justify-center gap-1 px-4 py-2 rounded-full bg-[#5C30FF] text-white font-inter-tight text-[11px] font-medium hover:bg-[#4a26cc] transition-colors">
-                            <svg
-                              width="14"
-                              height="14"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M14.6667 10.3333V13.3333C14.6667 13.687 14.5262 14.0261 14.2761 14.2761C14.0261 14.5262 13.687 14.6667 13.3333 14.6667H2.66667C2.31304 14.6667 1.97391 14.5262 1.72386 14.2761C1.47381 14.0261 1.33333 13.687 1.33333 13.3333V10.3333M11.3333 5L8 1.66667M8 1.66667L4.66667 5M8 1.66667V10.3333"
-                                stroke="white"
-                                strokeWidth="1.2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                            Remind Me
-                          </button>
-
-                          <button className="flex items-center justify-center gap-1 px-4 py-2 rounded-full border border-[#E1E4EA] bg-white text-black font-inter-tight text-[11px] font-medium hover:bg-[#F5F5F5] transition-colors">
-                            <svg
-                              width="14"
-                              height="14"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M14 9.99999V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V9.99999M4.66667 6.66666L8 9.99999M8 9.99999L11.3333 6.66666M8 9.99999V2"
-                                stroke="black"
-                                strokeWidth="1.2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                            Join Session
-                          </button>
-                        </div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-inter-tight text-[12px] font-normal text-black">
+                          Timezone: {mentor.timezone}
+                        </span>
                       </div>
                     </div>
+
+                    <div className="pt-4 border-t border-[#E1E4EA]">
+                      <button
+                        onClick={() => setIsBookingModalOpen(true)}
+                        className="w-full h-[44px] rounded-full bg-[#5C30FF] text-white font-inter-tight text-[13px] font-medium hover:bg-[#4a26cc] transition-colors"
+                      >
+                        Book a Session
+                      </button>
+                    </div>
                   </div>
-                ))}
+                </div>
               </div>
             )}
           </div>
@@ -1085,21 +669,27 @@ export default function MentorDetailPage() {
               {/* Selected Slot Summary */}
               <div className="flex items-center gap-4 p-4 bg-[#F8F8F8] rounded-xl">
                 <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gradient-to-b from-purple-400 to-purple-600 flex-shrink-0">
-                  <Image
-                    src={mentor.imageUrl}
-                    alt={mentor.name}
-                    fill
-                    className="object-cover"
-                  />
+                  {mentor.avatar ? (
+                    <Image
+                      src={mentor.avatar}
+                      alt={mentor.name}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-white text-lg font-semibold">
+                      {mentor.name.charAt(0)}
+                    </div>
+                  )}
                 </div>
                 <div className="flex-1">
                   <h3 className="font-inter-tight text-[14px] font-semibold text-black">
                     {mentor.name}
                   </h3>
                   <p className="font-inter-tight text-[12px] text-[#525866]">
-                    {mentor.availability[selectedDate]?.date},{" "}
-                    {mentor.timeSlots[selectedTime]} • {mentor.sessionDuration}{" "}
-                    mins
+                    {availability[selectedDate]?.date},{" "}
+                    {timeSlots[selectedTime] || "Select time"} •{" "}
+                    {mentor.sessionDuration} mins
                   </p>
                 </div>
               </div>
@@ -1110,14 +700,18 @@ export default function MentorDetailPage() {
                   <Clock className="w-4 h-4" strokeWidth={1.5} />
                   <span>{mentor.sessionDuration} mins</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <LocationIcon className="w-4 h-4" />
-                  <span>{mentor.defaultLocation}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <DollarCircleIcon className="w-4 h-4" />
-                  <span>${mentor.pricePerSession}</span>
-                </div>
+                {mentor.defaultMeetingLink && (
+                  <div className="flex items-center gap-1.5">
+                    <LocationIcon className="w-4 h-4" />
+                    <span>
+                      {mentor.defaultMeetingLink.includes("meet.google")
+                        ? "Google Meet"
+                        : mentor.defaultMeetingLink.includes("zoom")
+                          ? "Zoom"
+                          : "Online Meeting"}
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Topic Selection */}
@@ -1167,34 +761,43 @@ export default function MentorDetailPage() {
                 onClick={async () => {
                   setIsSubmitting(true);
 
-                  // Build the request payload matching what mentor expects
-                  const bookingRequest = {
-                    mentorId: mentor.id,
-                    topic: selectedTopic,
-                    message: message,
-                    scheduledDate: mentor.availability[selectedDate]?.date,
-                    scheduledTime: mentor.timeSlots[selectedTime],
-                    duration: `${mentor.sessionDuration} mins`,
-                    location: mentor.defaultLocation,
-                  };
+                  try {
+                    const selectedSlot = availability[selectedDate];
+                    const selectedTimeValue = timeSlots[selectedTime];
 
-                  // TODO: Replace with actual API call
-                  // await sendMentorshipRequest(bookingRequest);
-                  console.log("Booking Request:", bookingRequest);
+                    if (!selectedSlot || !selectedTimeValue) {
+                      throw new Error("Please select a date and time");
+                    }
 
-                  // Simulate API delay
-                  await new Promise((resolve) => setTimeout(resolve, 500));
+                    const scheduledAt = new Date(
+                      `${selectedSlot.fullDate}T${selectedTimeValue}`,
+                    ).toISOString();
 
-                  setIsSubmitting(false);
-                  setIsBookingModalOpen(false);
-                  setSelectedTopic("");
-                  setMessage("");
-                  setShowSuccess(true);
+                    await createRequest({
+                      mentorId: mentor.id,
+                      topic: selectedTopic,
+                      message: message,
+                      scheduledAt,
+                    });
 
-                  // Hide success message after 3 seconds
-                  setTimeout(() => setShowSuccess(false), 3000);
+                    setIsBookingModalOpen(false);
+                    setSelectedTopic("");
+                    setMessage("");
+                    setShowSuccess(true);
+                    setTimeout(() => setShowSuccess(false), 3000);
+                  } catch (err) {
+                    console.error("Failed to create request:", err);
+                  } finally {
+                    setIsSubmitting(false);
+                  }
                 }}
-                disabled={!selectedTopic || !message || isSubmitting}
+                disabled={
+                  !selectedTopic ||
+                  !message ||
+                  isSubmitting ||
+                  availability.length === 0 ||
+                  timeSlots.length === 0
+                }
                 className="flex-1 h-[44px] rounded-full bg-[#5C30FF] text-white font-inter-tight text-[13px] font-medium hover:bg-[#4a26cc] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? "Sending..." : "Send Request"}
@@ -1232,7 +835,7 @@ export default function MentorDetailPage() {
 }
 
 // Icon Components
-function DollarCircleIcon({ className }: { className?: string }) {
+function _DollarCircleIcon({ className }: { className?: string }) {
   return (
     <svg
       className={className}
@@ -1285,7 +888,7 @@ function CheckDoubleIcon({ className }: { className?: string }) {
   );
 }
 
-function TelegramIcon({ className }: { className?: string }) {
+function _TelegramIcon({ className }: { className?: string }) {
   return (
     <svg
       className={className}
@@ -1306,7 +909,7 @@ function TelegramIcon({ className }: { className?: string }) {
   );
 }
 
-function XIcon({ className }: { className?: string }) {
+function _XIcon({ className }: { className?: string }) {
   return (
     <svg
       className={className}
@@ -1327,7 +930,7 @@ function XIcon({ className }: { className?: string }) {
   );
 }
 
-function InstagramIcon({ className }: { className?: string }) {
+function _InstagramIcon({ className }: { className?: string }) {
   return (
     <svg
       className={className}
@@ -1352,7 +955,7 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
-function LinkedInIcon({ className }: { className?: string }) {
+function _LinkedInIcon({ className }: { className?: string }) {
   return (
     <svg
       className={className}
@@ -1382,7 +985,7 @@ function LinkedInIcon({ className }: { className?: string }) {
   );
 }
 
-function ExternalLinkIcon({ className }: { className?: string }) {
+function _ExternalLinkIcon({ className }: { className?: string }) {
   return (
     <svg
       className={className}

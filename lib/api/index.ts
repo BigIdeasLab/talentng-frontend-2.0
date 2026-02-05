@@ -218,6 +218,7 @@ export default apiClient;
 export * from "./opportunities";
 export * from "./applications";
 export * from "./mentors";
+export * from "./mentorship";
 export * from "./notifications";
 export * from "./learning-resources";
 export * from "./users";

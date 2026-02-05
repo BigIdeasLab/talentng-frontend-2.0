@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -9,8 +10,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Check, X, Clock, Calendar, MessageSquare, MapPin } from "lucide-react";
+import {
+  Check,
+  X,
+  Clock,
+  Calendar,
+  MessageSquare,
+  MapPin,
+  Loader2,
+} from "lucide-react";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
+import { useToast } from "@/hooks";
+import {
+  getRequests,
+  getPendingRequestsCount,
+  acceptRequest,
+  rejectRequest,
+} from "@/lib/api/mentorship";
+import type { MentorshipRequest as ApiMentorshipRequest } from "@/lib/api/mentorship";
 
 interface MentorshipRequest {
   id: string;
@@ -28,68 +45,37 @@ interface MentorshipRequest {
   duration: string;
   location: string;
   requestedAt: string;
-  status: "pending" | "accepted" | "rejected";
+  status: "pending" | "accepted" | "rejected" | "cancelled";
 }
 
-const MOCK_REQUESTS: MentorshipRequest[] = [
-  {
-    id: "1",
+function mapApiRequest(request: ApiMentorshipRequest): MentorshipRequest {
+  const scheduledDate = new Date(request.scheduledAt);
+  return {
+    id: request.id,
     mentee: {
-      id: "m1",
-      name: "Adaeze Okonkwo",
-      title: "Junior Developer",
-      company: "TechStart Lagos",
+      id: request.mentee.id,
+      name: request.mentee.name,
+      avatar: request.mentee.avatar || undefined,
+      title: "",
+      company: "",
     },
-    topic: "Backend Development",
-    message:
-      "Hi! I'm looking for guidance on transitioning from frontend to fullstack development. I've been working with React for 2 years and want to learn Node.js and system design.",
-    scheduledDate: "Mon Feb 5, 2024",
-    scheduledTime: "2:00 PM",
+    topic: request.topic,
+    message: request.message || "",
+    scheduledDate: format(scheduledDate, "EEE MMM d, yyyy"),
+    scheduledTime: format(scheduledDate, "h:mm a"),
     duration: "60 mins",
     location: "Google Meet",
-    requestedAt: "2024-02-03",
-    status: "pending",
-  },
-  {
-    id: "2",
-    mentee: {
-      id: "m2",
-      name: "Chukwudi Eze",
-      title: "Product Designer",
-      company: "Fintech Hub",
-    },
-    topic: "Design Systems",
-    message:
-      "I want to improve my design-to-development handoff skills and learn more about design systems. Would love your mentorship!",
-    scheduledDate: "Wed Feb 7, 2024",
-    scheduledTime: "10:00 AM",
-    duration: "60 mins",
-    location: "Zoom",
-    requestedAt: "2024-02-02",
-    status: "pending",
-  },
-  {
-    id: "3",
-    mentee: {
-      id: "m3",
-      name: "Ngozi Abubakar",
-      title: "CS Student",
-      company: "University of Lagos",
-    },
-    topic: "Interview Prep",
-    message:
-      "I'm a final year student preparing for tech interviews. I need help with DSA and mock interviews.",
-    scheduledDate: "Fri Feb 9, 2024",
-    scheduledTime: "3:00 PM",
-    duration: "60 mins",
-    location: "Google Meet",
-    requestedAt: "2024-02-01",
-    status: "pending",
-  },
-];
+    requestedAt: request.createdAt,
+    status: request.status,
+  };
+}
 
 export default function ApplicationsPage() {
-  const [requests, setRequests] = useState<MentorshipRequest[]>(MOCK_REQUESTS);
+  const { toast } = useToast();
+  const [requests, setRequests] = useState<MentorshipRequest[]>([]);
+  const [pendingCount, setPendingCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isActionLoading, setIsActionLoading] = useState(false);
   const [filter, setFilter] = useState<
     "all" | "pending" | "accepted" | "rejected"
   >("all");
@@ -101,12 +87,34 @@ export default function ApplicationsPage() {
     null,
   );
 
+  const fetchRequests = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const [requestsResponse, countResponse] = await Promise.all([
+        getRequests({ role: "received" }),
+        getPendingRequestsCount(),
+      ]);
+      setRequests(requestsResponse.data.map(mapApiRequest));
+      setPendingCount(countResponse.count);
+    } catch {
+      toast({
+        title: "Error",
+        description: "Failed to load mentorship requests",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [toast]);
+
+  useEffect(() => {
+    fetchRequests();
+  }, [fetchRequests]);
+
   const filteredRequests = requests.filter((req) => {
     if (filter === "all") return true;
     return req.status === filter;
   });
-
-  const pendingCount = requests.filter((r) => r.status === "pending").length;
 
   const handleAccept = (id: string) => {
     setSelectedRequestId(id);
@@ -118,27 +126,45 @@ export default function ApplicationsPage() {
     setDeclineModalOpen(true);
   };
 
-  const confirmAccept = () => {
-    if (selectedRequestId) {
-      setRequests((prev) =>
-        prev.map((req) =>
-          req.id === selectedRequestId
-            ? { ...req, status: "accepted" as const }
-            : req,
-        ),
-      );
+  const confirmAccept = async () => {
+    if (!selectedRequestId) return;
+    try {
+      setIsActionLoading(true);
+      await acceptRequest(selectedRequestId);
+      toast({
+        title: "Request accepted",
+        description: "The mentorship session has been created",
+      });
+      await fetchRequests();
+    } catch {
+      toast({
+        title: "Error",
+        description: "Failed to accept request",
+        variant: "destructive",
+      });
+    } finally {
+      setIsActionLoading(false);
     }
   };
 
-  const confirmDecline = () => {
-    if (selectedRequestId) {
-      setRequests((prev) =>
-        prev.map((req) =>
-          req.id === selectedRequestId
-            ? { ...req, status: "rejected" as const }
-            : req,
-        ),
-      );
+  const confirmDecline = async () => {
+    if (!selectedRequestId) return;
+    try {
+      setIsActionLoading(true);
+      await rejectRequest(selectedRequestId);
+      toast({
+        title: "Request declined",
+        description: "The request has been declined",
+      });
+      await fetchRequests();
+    } catch {
+      toast({
+        title: "Error",
+        description: "Failed to decline request",
+        variant: "destructive",
+      });
+    } finally {
+      setIsActionLoading(false);
     }
   };
 
@@ -191,7 +217,14 @@ export default function ApplicationsPage() {
 
         {/* Request Cards */}
         <div className="flex flex-col gap-4">
-          {filteredRequests.length === 0 ? (
+          {isLoading ? (
+            <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
+              <Loader2 className="mx-auto h-6 w-6 animate-spin text-[#5C30FF]" />
+              <p className="mt-2 font-inter-tight text-[14px] text-[#525866]">
+                Loading requests...
+              </p>
+            </div>
+          ) : filteredRequests.length === 0 ? (
             <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
               <p className="font-inter-tight text-[14px] text-[#525866]">
                 No requests found
@@ -323,6 +356,7 @@ export default function ApplicationsPage() {
         description="Are you sure you want to accept this mentorship request? A session will be created."
         confirmText="Yes, Accept"
         type="success"
+        isLoading={isActionLoading}
       />
 
       {/* Decline Confirmation Modal */}
@@ -334,6 +368,7 @@ export default function ApplicationsPage() {
         description="Are you sure you want to decline this mentorship request?"
         confirmText="Yes, Decline"
         type="danger"
+        isLoading={isActionLoading}
       />
     </div>
   );

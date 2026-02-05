@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -9,7 +9,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { format, addDays, startOfWeek } from "date-fns";
+import { useToast } from "@/hooks/useToast";
+import {
+  getMyAvailability,
+  setMyAvailability,
+  type AvailabilitySlot,
+} from "@/lib/api/mentorship";
 
 const TIME_SLOTS = [
   "9:00 AM",
@@ -23,20 +30,67 @@ const TIME_SLOTS = [
   "5:00 PM",
 ];
 
+const TIME_SLOT_VALUES = [
+  "09:00",
+  "10:00",
+  "11:00",
+  "12:00",
+  "13:00",
+  "14:00",
+  "15:00",
+  "16:00",
+  "17:00",
+];
+
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 export default function AvailabilityPage() {
+  const { toast } = useToast();
   const [selectedSlots, setSelectedSlots] = useState<Set<string>>(new Set());
   const [sessionDuration, setSessionDuration] = useState("60");
   const [bufferTime, setBufferTime] = useState("15");
   const [timezone, setTimezone] = useState("WAT");
+  const [defaultMeetingLink, setDefaultMeetingLink] = useState("");
   const [weekDates, setWeekDates] = useState<Date[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const fetchAvailability = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await getMyAvailability();
+
+      if (response.sessionDuration) {
+        setSessionDuration(response.sessionDuration.toString());
+      }
+      if (response.timezone) {
+        setTimezone(response.timezone);
+      }
+
+      // Convert available slots to selected slots set
+      const slots = new Set<string>();
+      response.availableSlots?.forEach((daySlot) => {
+        daySlot.slots.forEach((slot) => {
+          const timeIndex = TIME_SLOT_VALUES.indexOf(slot.startTime);
+          if (timeIndex !== -1) {
+            slots.add(`${daySlot.dayOfWeek}-${timeIndex}`);
+          }
+        });
+      });
+      setSelectedSlots(slots);
+    } catch {
+      // No existing availability, that's OK
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     const start = startOfWeek(new Date(), { weekStartsOn: 1 });
     const dates = Array.from({ length: 7 }, (_, i) => addDays(start, i));
     setWeekDates(dates);
-  }, []);
+    fetchAvailability();
+  }, [fetchAvailability]);
 
   const toggleSlot = (day: number, time: number) => {
     const key = `${day}-${time}`;
@@ -75,14 +129,68 @@ export default function AvailabilityPage() {
     setSelectedSlots(slots);
   };
 
-  const handleSave = () => {
-    console.log("Saving availability:", {
-      slots: Array.from(selectedSlots),
-      sessionDuration,
-      bufferTime,
-      timezone,
-    });
+  const handleSave = async () => {
+    console.log("handleSave called");
+    console.log("selectedSlots:", Array.from(selectedSlots));
+    
+    try {
+      setIsSaving(true);
+
+      // Convert selected slots to API format
+      const slotsArray: AvailabilitySlot[] = [];
+      selectedSlots.forEach((key) => {
+        const [dayStr, timeStr] = key.split("-");
+        const dayOfWeek = parseInt(dayStr, 10);
+        const timeIndex = parseInt(timeStr, 10);
+        const startTime = TIME_SLOT_VALUES[timeIndex];
+        const duration = parseInt(sessionDuration, 10);
+        const endHour = parseInt(startTime.split(":")[0], 10) + Math.floor(duration / 60);
+        const endTime = `${endHour.toString().padStart(2, "0")}:00`;
+
+        slotsArray.push({
+          dayOfWeek,
+          startTime,
+          endTime,
+        });
+      });
+
+      const payload = {
+        sessionDuration: parseInt(sessionDuration, 10),
+        bufferTime: parseInt(bufferTime, 10),
+        timezone,
+        defaultMeetingLink: defaultMeetingLink || undefined,
+        slots: slotsArray,
+      };
+      
+      console.log("Sending payload:", payload);
+
+      await setMyAvailability(payload);
+
+      console.log("API call successful");
+
+      toast({
+        title: "Availability saved",
+        description: "Your availability has been updated successfully.",
+      });
+    } catch (error) {
+      console.error("Save error:", error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to save availability",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#FAFAFA]">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#5C30FF] border-t-transparent" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
@@ -177,6 +285,19 @@ export default function AvailabilityPage() {
                 </SelectContent>
               </Select>
             </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="font-inter-tight text-[13px] font-semibold text-black">
+                Default Meeting Link
+              </label>
+              <Input
+                type="url"
+                placeholder="https://meet.google.com/..."
+                value={defaultMeetingLink}
+                onChange={(e) => setDefaultMeetingLink(e.target.value)}
+                className="h-10 w-[280px] border-[#E1E4EA]"
+              />
+            </div>
           </div>
 
           {/* Calendar Grid */}
@@ -255,9 +376,10 @@ export default function AvailabilityPage() {
               </Button>
               <Button
                 onClick={handleSave}
-                className="rounded-[30px] bg-[#5C30FF] px-5 py-2.5 font-inter-tight text-[13px] font-normal text-white hover:bg-[#4A26CC]"
+                disabled={isSaving}
+                className="rounded-[30px] bg-[#5C30FF] px-5 py-2.5 font-inter-tight text-[13px] font-normal text-white hover:bg-[#4A26CC] disabled:opacity-50"
               >
-                Save Availability
+                {isSaving ? "Saving..." : "Save Availability"}
               </Button>
             </div>
           </div>
