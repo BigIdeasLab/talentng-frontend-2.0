@@ -17,7 +17,16 @@ import {
   setMyAvailability,
   type AvailabilitySlot,
 } from "@/lib/api/mentorship";
-import { Check, Clock, Zap, Grid3X3, List, Plus, Trash2, Copy } from "lucide-react";
+import {
+  Check,
+  Clock,
+  Zap,
+  Grid3X3,
+  List,
+  Plus,
+  Trash2,
+  Copy,
+} from "lucide-react";
 
 // ============ Types ============
 
@@ -81,7 +90,10 @@ const TIME_SLOTS = [
   { value: "21:00", label: "9 PM" },
 ];
 
-const TIME_OPTIONS = TIME_SLOTS.map((s) => ({ value: s.value, label: s.label.includes(":") ? s.label : s.label }));
+const TIME_OPTIONS = TIME_SLOTS.map((s) => ({
+  value: s.value,
+  label: s.label.includes(":") ? s.label : s.label,
+}));
 
 // ============ Helpers ============
 
@@ -96,8 +108,12 @@ const getTimeLabelFull = (value: string) => {
   const slot = TIME_SLOTS.find((t) => t.value === value);
   if (!slot) return value;
   if (slot.label.includes(":")) {
-    const hourSlot = TIME_SLOTS.find((t) => t.value === value.replace(":30", ":00"));
-    return hourSlot ? `${hourSlot.label.replace(" AM", "").replace(" PM", "")}:30 ${hourSlot.label.includes("AM") ? "AM" : "PM"}` : slot.label;
+    const hourSlot = TIME_SLOTS.find(
+      (t) => t.value === value.replace(":30", ":00"),
+    );
+    return hourSlot
+      ? `${hourSlot.label.replace(" AM", "").replace(" PM", "")}:30 ${hourSlot.label.includes("AM") ? "AM" : "PM"}`
+      : slot.label;
   }
   return slot.label;
 };
@@ -180,7 +196,7 @@ const scheduleToSlots = (schedule: WeekSchedule): Set<string> => {
 
 export default function AvailabilityPage() {
   const { toast } = useToast();
-  
+
   // Shared state
   const [selectedSlots, setSelectedSlots] = useState<Set<string>>(new Set());
   const [savedSlots, setSavedSlots] = useState<Set<string>>(new Set()); // Track what's saved in backend
@@ -217,20 +233,26 @@ export default function AvailabilityPage() {
 
       const slots = new Set<string>();
       console.log("fetchAvailability: slots from API:", response.slots);
-      
+
       // API returns `slots` array directly, not nested in `availableSlots`
-      response.slots?.forEach((slot: { dayOfWeek: number; startTime: string; endTime: string }) => {
-        console.log("fetchAvailability: Processing slot:", slot);
-        const startIdx = TIME_SLOTS.findIndex((t) => t.value === slot.startTime);
-        const endIdx = TIME_SLOTS.findIndex((t) => t.value === slot.endTime);
-        console.log(`fetchAvailability: slot ${slot.startTime}-${slot.endTime}, startIdx=${startIdx}, endIdx=${endIdx}`);
-        if (startIdx !== -1 && endIdx !== -1) {
-          for (let i = startIdx; i < endIdx; i++) {
-            slots.add(`${slot.dayOfWeek}-${i}`);
+      response.slots?.forEach(
+        (slot: { dayOfWeek: number; startTime: string; endTime: string }) => {
+          console.log("fetchAvailability: Processing slot:", slot);
+          const startIdx = TIME_SLOTS.findIndex(
+            (t) => t.value === slot.startTime,
+          );
+          const endIdx = TIME_SLOTS.findIndex((t) => t.value === slot.endTime);
+          console.log(
+            `fetchAvailability: slot ${slot.startTime}-${slot.endTime}, startIdx=${startIdx}, endIdx=${endIdx}`,
+          );
+          if (startIdx !== -1 && endIdx !== -1) {
+            for (let i = startIdx; i < endIdx; i++) {
+              slots.add(`${slot.dayOfWeek}-${i}`);
+            }
           }
-        }
-      });
-      
+        },
+      );
+
       console.log("fetchAvailability: Parsed slots:", Array.from(slots));
       setSelectedSlots(slots);
       setSavedSlots(new Set(slots)); // Track what's saved
@@ -298,9 +320,10 @@ export default function AvailabilityPage() {
     const newEnabled = !day.enabled;
     schedule[dayIndex] = {
       enabled: newEnabled,
-      timeRanges: newEnabled && day.timeRanges.length === 0
-        ? [{ id: generateId(), startTime: "09:00", endTime: "17:00" }]
-        : day.timeRanges,
+      timeRanges:
+        newEnabled && day.timeRanges.length === 0
+          ? [{ id: generateId(), startTime: "09:00", endTime: "17:00" }]
+          : day.timeRanges,
     };
     updateFromSchedule(schedule);
   };
@@ -338,11 +361,11 @@ export default function AvailabilityPage() {
     dayIndex: number,
     rangeId: string,
     field: "startTime" | "endTime",
-    value: string
+    value: string,
   ) => {
     const schedule = getSchedule();
     schedule[dayIndex].timeRanges = schedule[dayIndex].timeRanges.map((r) =>
-      r.id === rangeId ? { ...r, [field]: value } : r
+      r.id === rangeId ? { ...r, [field]: value } : r,
     );
     updateFromSchedule(schedule);
   };
@@ -356,12 +379,18 @@ export default function AvailabilityPage() {
       if (day.index !== dayIndex) {
         schedule[day.index] = {
           enabled: true,
-          timeRanges: sourceDay.timeRanges.map((r) => ({ ...r, id: generateId() })),
+          timeRanges: sourceDay.timeRanges.map((r) => ({
+            ...r,
+            id: generateId(),
+          })),
         };
       }
     });
     updateFromSchedule(schedule);
-    toast({ title: "Copied", description: `${DAYS[dayIndex].name}'s schedule copied to all days` });
+    toast({
+      title: "Copied",
+      description: `${DAYS[dayIndex].name}'s schedule copied to all days`,
+    });
   };
 
   // ============ Shared Handlers ============
@@ -444,11 +473,17 @@ export default function AvailabilityPage() {
       setSavedSlots(new Set(selectedSlots)); // Update saved slots after successful save
       setIsSaved(true);
       setHasChanges(false);
-      toast({ title: "Availability saved", description: "Your weekly schedule has been updated." });
+      toast({
+        title: "Availability saved",
+        description: "Your weekly schedule has been updated.",
+      });
     } catch (error) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to save availability",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to save availability",
         variant: "destructive",
       });
     } finally {
@@ -549,7 +584,9 @@ export default function AvailabilityPage() {
           <div className="flex gap-3">
             <div className="flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 shadow-sm">
               <Clock className="h-4 w-4 text-[#5C30FF]" />
-              <span className="text-sm font-medium text-black">{getTotalHours()}</span>
+              <span className="text-sm font-medium text-black">
+                {getTotalHours()}
+              </span>
               <span className="text-xs text-[#525866]">/ week</span>
             </div>
             <div className="flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 shadow-sm">
@@ -594,8 +631,16 @@ export default function AvailabilityPage() {
           {/* Settings Bar */}
           <div className="flex flex-wrap gap-4 border-b border-[#E1E4EA] bg-[#FAFAFA] px-5 py-4">
             <div className="flex items-center gap-2">
-              <label className="text-xs font-medium text-[#525866]">Duration</label>
-              <Select value={sessionDuration} onValueChange={(v) => { setSessionDuration(v); setHasChanges(true); }}>
+              <label className="text-xs font-medium text-[#525866]">
+                Duration
+              </label>
+              <Select
+                value={sessionDuration}
+                onValueChange={(v) => {
+                  setSessionDuration(v);
+                  setHasChanges(true);
+                }}
+              >
                 <SelectTrigger className="h-8 w-24 border-[#E1E4EA] bg-white text-xs">
                   <SelectValue />
                 </SelectTrigger>
@@ -609,8 +654,16 @@ export default function AvailabilityPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <label className="text-xs font-medium text-[#525866]">Buffer</label>
-              <Select value={bufferTime} onValueChange={(v) => { setBufferTime(v); setHasChanges(true); }}>
+              <label className="text-xs font-medium text-[#525866]">
+                Buffer
+              </label>
+              <Select
+                value={bufferTime}
+                onValueChange={(v) => {
+                  setBufferTime(v);
+                  setHasChanges(true);
+                }}
+              >
                 <SelectTrigger className="h-8 w-20 border-[#E1E4EA] bg-white text-xs">
                   <SelectValue />
                 </SelectTrigger>
@@ -623,8 +676,16 @@ export default function AvailabilityPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <label className="text-xs font-medium text-[#525866]">Timezone</label>
-              <Select value={timezone} onValueChange={(v) => { setTimezone(v); setHasChanges(true); }}>
+              <label className="text-xs font-medium text-[#525866]">
+                Timezone
+              </label>
+              <Select
+                value={timezone}
+                onValueChange={(v) => {
+                  setTimezone(v);
+                  setHasChanges(true);
+                }}
+              >
                 <SelectTrigger className="h-8 w-28 border-[#E1E4EA] bg-white text-xs">
                   <SelectValue />
                 </SelectTrigger>
@@ -638,12 +699,17 @@ export default function AvailabilityPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <label className="text-xs font-medium text-[#525866]">Meeting Link</label>
+              <label className="text-xs font-medium text-[#525866]">
+                Meeting Link
+              </label>
               <Input
                 type="url"
                 placeholder="https://meet.google.com/..."
                 value={defaultMeetingLink}
-                onChange={(e) => { setDefaultMeetingLink(e.target.value); setHasChanges(true); }}
+                onChange={(e) => {
+                  setDefaultMeetingLink(e.target.value);
+                  setHasChanges(true);
+                }}
                 className="h-8 w-48 border-[#E1E4EA] text-xs"
               />
             </div>
@@ -662,17 +728,21 @@ export default function AvailabilityPage() {
                 <div className="sticky left-0 z-10 bg-white" />
                 {DAYS.map((day) => {
                   const dayHasSlots = Array.from(selectedSlots).some((key) =>
-                    key.startsWith(`${day.index}-`)
+                    key.startsWith(`${day.index}-`),
                   );
                   return (
                     <div
                       key={day.index}
                       className="border-b border-l border-[#E1E4EA] bg-[#FAFAFA] px-2 py-3 text-center first:border-l-0"
                     >
-                      <div className={`text-sm font-semibold ${dayHasSlots ? "text-[#5C30FF]" : "text-black"}`}>
+                      <div
+                        className={`text-sm font-semibold ${dayHasSlots ? "text-[#5C30FF]" : "text-black"}`}
+                      >
                         {day.short}
                       </div>
-                      <div className="mt-0.5 text-[10px] text-[#99A0AE]">{day.name}</div>
+                      <div className="mt-0.5 text-[10px] text-[#99A0AE]">
+                        {day.name}
+                      </div>
                     </div>
                   );
                 })}
@@ -696,10 +766,18 @@ export default function AvailabilityPage() {
                       const isSelected = selectedSlots.has(key);
                       const wasSaved = savedSlots.has(key);
                       const isTopOfHour = slot.value.endsWith(":00");
-                      const prevSelected = selectedSlots.has(`${day.index}-${timeIndex - 1}`);
-                      const nextSelected = selectedSlots.has(`${day.index}-${timeIndex + 1}`);
-                      const prevSaved = savedSlots.has(`${day.index}-${timeIndex - 1}`);
-                      const nextSaved = savedSlots.has(`${day.index}-${timeIndex + 1}`);
+                      const prevSelected = selectedSlots.has(
+                        `${day.index}-${timeIndex - 1}`,
+                      );
+                      const nextSelected = selectedSlots.has(
+                        `${day.index}-${timeIndex + 1}`,
+                      );
+                      const prevSaved = savedSlots.has(
+                        `${day.index}-${timeIndex - 1}`,
+                      );
+                      const nextSaved = savedSlots.has(
+                        `${day.index}-${timeIndex + 1}`,
+                      );
 
                       // Determine slot state
                       const isSavedSlot = isSelected && wasSaved; // Green - saved in backend
@@ -730,25 +808,37 @@ export default function AvailabilityPage() {
                       const slotColor = isSavedSlot
                         ? "bg-emerald-500" // Green for saved
                         : isNewSlot
-                        ? "bg-[#5C30FF]" // Purple for new
-                        : "";
+                          ? "bg-[#5C30FF]" // Purple for new
+                          : "";
 
                       return (
                         <div
                           key={`cell-${day.index}-${timeIndex}`}
                           className={`relative cursor-pointer border-l transition-colors ${
-                            isTopOfHour ? "border-t border-[#E1E4EA]" : "border-t border-[#F0F0F0]"
+                            isTopOfHour
+                              ? "border-t border-[#E1E4EA]"
+                              : "border-t border-[#F0F0F0]"
                           } first:border-l-0 ${
-                            isSelected ? "" : isRemovedSlot ? "bg-red-50" : "hover:bg-[#F5F3FF]"
+                            isSelected
+                              ? ""
+                              : isRemovedSlot
+                                ? "bg-red-50"
+                                : "hover:bg-[#F5F3FF]"
                           }`}
                           style={{ height: "24px" }}
-                          onMouseDown={() => handleMouseDown(day.index, timeIndex)}
-                          onMouseEnter={() => handleMouseEnter(day.index, timeIndex)}
+                          onMouseDown={() =>
+                            handleMouseDown(day.index, timeIndex)
+                          }
+                          onMouseEnter={() =>
+                            handleMouseEnter(day.index, timeIndex)
+                          }
                           onMouseUp={handleMouseUp}
                         >
                           {/* Saved or New slot */}
                           {isSelected && (
-                            <div className={`absolute inset-x-1 inset-y-0 ${slotColor} ${borderRadius}`} />
+                            <div
+                              className={`absolute inset-x-1 inset-y-0 ${slotColor} ${borderRadius}`}
+                            />
                           )}
                           {/* Removed slot indicator */}
                           {isRemovedSlot && (
@@ -782,7 +872,9 @@ export default function AvailabilityPage() {
                           checked={daySchedule.enabled}
                           onCheckedChange={() => toggleDay(day.index)}
                         />
-                        <span className={`text-sm font-medium ${daySchedule.enabled ? "text-black" : "text-[#99A0AE]"}`}>
+                        <span
+                          className={`text-sm font-medium ${daySchedule.enabled ? "text-black" : "text-[#99A0AE]"}`}
+                        >
                           {day.short}
                         </span>
                       </div>
@@ -792,10 +884,20 @@ export default function AvailabilityPage() {
                         {daySchedule.enabled ? (
                           <div className="space-y-2">
                             {daySchedule.timeRanges.map((range, idx) => (
-                              <div key={range.id} className="flex items-center gap-2">
+                              <div
+                                key={range.id}
+                                className="flex items-center gap-2"
+                              >
                                 <Select
                                   value={range.startTime}
-                                  onValueChange={(v) => updateTimeRange(day.index, range.id, "startTime", v)}
+                                  onValueChange={(v) =>
+                                    updateTimeRange(
+                                      day.index,
+                                      range.id,
+                                      "startTime",
+                                      v,
+                                    )
+                                  }
                                 >
                                   <SelectTrigger className="h-9 w-[120px] border-[#E1E4EA] text-sm">
                                     <SelectValue />
@@ -813,13 +915,22 @@ export default function AvailabilityPage() {
 
                                 <Select
                                   value={range.endTime}
-                                  onValueChange={(v) => updateTimeRange(day.index, range.id, "endTime", v)}
+                                  onValueChange={(v) =>
+                                    updateTimeRange(
+                                      day.index,
+                                      range.id,
+                                      "endTime",
+                                      v,
+                                    )
+                                  }
                                 >
                                   <SelectTrigger className="h-9 w-[120px] border-[#E1E4EA] text-sm">
                                     <SelectValue />
                                   </SelectTrigger>
                                   <SelectContent>
-                                    {TIME_OPTIONS.filter((t) => t.value > range.startTime).map((t) => (
+                                    {TIME_OPTIONS.filter(
+                                      (t) => t.value > range.startTime,
+                                    ).map((t) => (
                                       <SelectItem key={t.value} value={t.value}>
                                         {getTimeLabelFull(t.value)}
                                       </SelectItem>
@@ -828,21 +939,24 @@ export default function AvailabilityPage() {
                                 </Select>
 
                                 <button
-                                  onClick={() => removeTimeRange(day.index, range.id)}
+                                  onClick={() =>
+                                    removeTimeRange(day.index, range.id)
+                                  }
                                   className="rounded p-1.5 text-[#99A0AE] hover:bg-red-50 hover:text-red-500"
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </button>
 
-                                {idx === 0 && daySchedule.timeRanges.length === 1 && (
-                                  <button
-                                    onClick={() => copyToAll(day.index)}
-                                    className="ml-2 flex items-center gap-1 rounded px-2 py-1 text-xs text-[#5C30FF] hover:bg-[#F5F3FF]"
-                                  >
-                                    <Copy className="h-3 w-3" />
-                                    Copy to all
-                                  </button>
-                                )}
+                                {idx === 0 &&
+                                  daySchedule.timeRanges.length === 1 && (
+                                    <button
+                                      onClick={() => copyToAll(day.index)}
+                                      className="ml-2 flex items-center gap-1 rounded px-2 py-1 text-xs text-[#5C30FF] hover:bg-[#F5F3FF]"
+                                    >
+                                      <Copy className="h-3 w-3" />
+                                      Copy to all
+                                    </button>
+                                  )}
                               </div>
                             ))}
 
@@ -855,20 +969,24 @@ export default function AvailabilityPage() {
                             </button>
                           </div>
                         ) : (
-                          <p className="pt-1.5 text-sm text-[#99A0AE]">Unavailable</p>
+                          <p className="pt-1.5 text-sm text-[#99A0AE]">
+                            Unavailable
+                          </p>
                         )}
                       </div>
 
                       {/* Summary */}
-                      {daySchedule.enabled && daySchedule.timeRanges.length > 0 && (
-                        <div className="hidden pt-1.5 text-right text-xs text-[#525866] lg:block">
-                          {daySchedule.timeRanges.map((r) => (
-                            <div key={r.id}>
-                              {getTimeLabelFull(r.startTime)} - {getTimeLabelFull(r.endTime)}
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                      {daySchedule.enabled &&
+                        daySchedule.timeRanges.length > 0 && (
+                          <div className="hidden pt-1.5 text-right text-xs text-[#525866] lg:block">
+                            {daySchedule.timeRanges.map((r) => (
+                              <div key={r.id}>
+                                {getTimeLabelFull(r.startTime)} -{" "}
+                                {getTimeLabelFull(r.endTime)}
+                              </div>
+                            ))}
+                          </div>
+                        )}
                     </div>
                   </div>
                 );
@@ -879,8 +997,10 @@ export default function AvailabilityPage() {
           {/* Footer */}
           <div className="flex items-center justify-between border-t border-[#E1E4EA] bg-[#FAFAFA] px-5 py-4">
             <div className="text-sm text-[#525866]">
-              <span className="font-semibold text-[#5C30FF]">{selectedSlots.size}</span> slots
-              selected ({getTotalHours()} per week)
+              <span className="font-semibold text-[#5C30FF]">
+                {selectedSlots.size}
+              </span>{" "}
+              slots selected ({getTotalHours()} per week)
             </div>
             <Button
               onClick={handleSave}

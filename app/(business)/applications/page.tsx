@@ -99,7 +99,7 @@ export default function ApplicationsPage() {
       // Handle both { data: [...] } and direct array responses
       const requestsArray = Array.isArray(requestsResponse)
         ? requestsResponse
-        : requestsResponse?.data ?? [];
+        : (requestsResponse?.data ?? []);
       setRequests(requestsArray.map(mapApiRequest));
       setPendingCount(countResponse?.count ?? 0);
     } catch (error) {

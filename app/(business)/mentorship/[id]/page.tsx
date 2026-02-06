@@ -64,7 +64,8 @@ export default function MentorDetailPage() {
         const mappedMentor: PublicMentorDetail = {
           ...profileData,
           name: (raw.fullName as string) || (raw.name as string) || "",
-          avatar: (raw.profileImageUrl as string) || (raw.avatar as string) || null,
+          avatar:
+            (raw.profileImageUrl as string) || (raw.avatar as string) || null,
           title: (raw.headline as string) || (raw.title as string) || null,
           bio: (raw.bio as string) || (raw.description as string) || null,
           rating: (raw.avgRating as number) || 0,
@@ -83,11 +84,15 @@ export default function MentorDetailPage() {
         console.log("Mapped mentor:", mappedMentor);
         setMentor(mappedMentor);
 
-        const reviewsArray = Array.isArray(reviewsData) ? reviewsData : reviewsData?.data ?? [];
+        const reviewsArray = Array.isArray(reviewsData)
+          ? reviewsData
+          : (reviewsData?.data ?? []);
         setReviews(reviewsArray);
 
         const rawAvail = availabilityData as unknown as Record<string, unknown>;
-        const availSlots = (rawAvail?.availableSlots ?? rawAvail?.slots ?? []) as Record<string, unknown>[];
+        const availSlots = (rawAvail?.availableSlots ??
+          rawAvail?.slots ??
+          []) as Record<string, unknown>[];
         const transformedAvailability = Array.isArray(availSlots)
           ? availSlots
               .filter((slot) => slot.date)
@@ -95,7 +100,9 @@ export default function MentorDetailPage() {
                 date: format(new Date(slot.date as string), "MMM dd"),
                 day: format(new Date(slot.date as string), "EEE"),
                 fullDate: slot.date as string,
-                slots: (slot.slots as { startTime: string; endTime: string }[]) || [],
+                slots:
+                  (slot.slots as { startTime: string; endTime: string }[]) ||
+                  [],
               }))
           : [];
         setAvailability(transformedAvailability);

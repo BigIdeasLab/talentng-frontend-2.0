@@ -108,7 +108,10 @@ function mapApiMentorToDisplay(mentor: Record<string, unknown>): MentorDisplay {
     id: (mentor.id as string) || "",
     name: (mentor.fullName as string) || (mentor.name as string) || "",
     title: (mentor.headline as string) || (mentor.title as string) || "",
-    imageUrl: (mentor.profileImageUrl as string) || (mentor.avatar as string) || "/placeholder-avatar.png",
+    imageUrl:
+      (mentor.profileImageUrl as string) ||
+      (mentor.avatar as string) ||
+      "/placeholder-avatar.png",
     pricePerSession: (mentor.sessionRate as number) || 0,
     sessionsCompleted: (mentor.totalSessions as number) || 0,
     expertise: (mentor.expertise as string[]) || [],
@@ -143,7 +146,10 @@ export default function MentorshipPage() {
         const data = await listMentors();
         console.log("listMentors response:", data);
         const raw = data as unknown;
-        const mentorsArray = (Array.isArray(raw) ? raw : []) as Record<string, unknown>[];
+        const mentorsArray = (Array.isArray(raw) ? raw : []) as Record<
+          string,
+          unknown
+        >[];
         setMentors(mentorsArray.map(mapApiMentorToDisplay));
       } catch (error) {
         console.error("Failed to load mentors:", error);
@@ -160,7 +166,9 @@ export default function MentorshipPage() {
         setSessionsLoading(true);
         const response = await getSessions({ role: "mentee" });
         console.log("getSessions response:", response);
-        const sessionsArray = Array.isArray(response) ? response : response?.data ?? [];
+        const sessionsArray = Array.isArray(response)
+          ? response
+          : (response?.data ?? []);
         setSessions(sessionsArray.map(mapApiSessionToMenteeSession));
       } catch (error) {
         console.error("Failed to load sessions:", error);

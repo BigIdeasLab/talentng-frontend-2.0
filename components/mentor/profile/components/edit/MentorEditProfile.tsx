@@ -12,7 +12,10 @@ import {
   updateMentorProfile,
   updateMentorProfileImage,
 } from "@/lib/api/mentor";
-import type { UpdateMentorProfileInput, MentorProfile } from "@/lib/api/mentor/types";
+import type {
+  UpdateMentorProfileInput,
+  MentorProfile,
+} from "@/lib/api/mentor/types";
 
 interface MentorFormData {
   personal: {
@@ -601,7 +604,9 @@ export function MentorEditProfile() {
         const response = await getCurrentMentorProfile();
         console.log("MentorEditProfile: fetched profile:", response);
         // API returns { profile: {...}, isProfileCreated: true } or direct profile
-        const profile = (response as unknown as { profile?: MentorProfile }).profile ?? response;
+        const profile =
+          (response as unknown as { profile?: MentorProfile }).profile ??
+          response;
 
         const nameParts = (profile.fullName || "").split(" ");
         const firstName = nameParts[0] || "";
@@ -771,7 +776,8 @@ export function MentorEditProfile() {
       setIsLoading(true);
 
       const apiData: UpdateMentorProfileInput = {
-        fullName: `${formData.personal.firstName} ${formData.personal.lastName}`.trim(),
+        fullName:
+          `${formData.personal.firstName} ${formData.personal.lastName}`.trim(),
         headline: formData.personal.headline,
         bio: formData.personal.bio,
         location: formData.personal.location,
