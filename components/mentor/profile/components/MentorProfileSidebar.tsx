@@ -2,42 +2,110 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 
 interface MentorProfileSidebarProps {
   mentor: {
     name: string;
     title: string;
     profileImage?: string;
-    pricePerSession: number;
     sessionsCompleted: number;
     mentoringTime: number;
   };
+  stack?: string[];
   socialLinks?: {
     telegram?: string;
     twitter?: string;
     instagram?: string;
     linkedin?: string;
   };
+  profileCompleteness?: number | null;
+  avgRating?: number | null;
+  views?: number;
+  visibility?: "public" | "private";
+  onToggleVisibility?: () => void;
   onEditProfile?: () => void;
 }
 
 export function MentorProfileSidebar({
   mentor,
+  stack = [],
   socialLinks,
+  profileCompleteness = null,
+  avgRating = null,
+  views = 0,
+  visibility = "public",
+  onToggleVisibility,
   onEditProfile,
 }: MentorProfileSidebarProps) {
+  const displayedStack = stack.slice(0, 5);
+  const stackRemaining = Math.max(0, stack.length - 5);
+
+  const completeness = profileCompleteness ?? 0;
+  const ringSize = 104;
+  const strokeWidth = 3;
+  const radius = (ringSize - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (completeness / 100) * circumference;
+  const ringColor =
+    completeness >= 100
+      ? "#22C55E"
+      : completeness >= 70
+        ? "#F59E0B"
+        : completeness >= 40
+          ? "#F97316"
+          : "#EF4444";
+
   return (
-    <div className="w-full lg:w-[280px] bg-white lg:border-r border-[#E1E4EA] flex flex-col px-4 py-7 gap-5 overflow-y-auto lg:h-screen scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+    <div className="w-full lg:w-[350px] bg-white lg:border-r border-[#E1E4EA] flex flex-col px-4 py-7 gap-5 overflow-y-auto lg:h-screen scrollbar-hidden">
       {/* User Profile */}
       <div className="flex flex-col items-center gap-5">
-        {/* Profile Picture */}
-        <div className="relative w-[90px] h-[90px] flex-shrink-0">
+        {/* Profile Picture with Completeness Ring */}
+        <div className="relative flex-shrink-0" style={{ width: ringSize, height: ringSize }}>
+          <svg
+            width={ringSize}
+            height={ringSize}
+            className="absolute inset-0 -rotate-90"
+          >
+            <circle
+              cx={ringSize / 2}
+              cy={ringSize / 2}
+              r={radius}
+              fill="none"
+              stroke="#E1E4EA"
+              strokeWidth={strokeWidth}
+            />
+            <circle
+              cx={ringSize / 2}
+              cy={ringSize / 2}
+              r={radius}
+              fill="none"
+              stroke={ringColor}
+              strokeWidth={strokeWidth}
+              strokeLinecap="round"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              className="transition-all duration-500"
+            />
+          </svg>
           <div
-            className="w-full h-full rounded-full bg-cover bg-center"
+            className="absolute rounded-full bg-cover bg-center"
             style={{
-              backgroundImage: `url(${mentor.profileImage || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop"})`,
+              top: (ringSize - 90) / 2,
+              left: (ringSize - 90) / 2,
+              width: 90,
+              height: 90,
+              backgroundImage: `url(${mentor.profileImage || "/default.png"})`,
             }}
           />
+          {profileCompleteness !== null && (
+            <div
+              className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[10px] font-medium text-white font-inter-tight"
+              style={{ backgroundColor: ringColor }}
+            >
+              {completeness}%
+            </div>
+          )}
         </div>
 
         {/* Info Container */}
@@ -55,30 +123,14 @@ export function MentorProfileSidebar({
 
         {/* Details Container */}
         <div className="flex flex-col items-start gap-3 w-full">
-          {/* Price per session */}
+          {/* Average Rating */}
           <div className="flex justify-between items-center w-full">
             <div className="flex items-center gap-1.5">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 22 22"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M20.1667 11.0002C20.1667 16.0627 16.0626 20.1668 11 20.1668C5.9374 20.1668 1.83334 16.0627 1.83334 11.0002C1.83334 5.93755 5.9374 1.8335 11 1.8335C16.0626 1.8335 20.1667 5.93755 20.1667 11.0002Z"
-                  stroke="#525866"
-                  strokeWidth="1.375"
-                />
-                <path
-                  d="M13.4844 9.22283C13.3935 8.52373 12.5908 7.39419 11.1474 7.39417C9.47027 7.39414 8.76459 8.323 8.62139 8.78743C8.398 9.40864 8.44268 10.6858 10.4085 10.8251C12.8658 10.9992 13.8502 11.2893 13.725 12.7932C13.5997 14.297 12.2299 14.6219 11.1474 14.587C10.0648 14.5522 8.29368 14.055 8.22495 12.7174M10.9756 6.41504V7.3975M10.9756 14.578V15.5817"
-                  stroke="#525866"
-                  strokeWidth="1.375"
-                  strokeLinecap="round"
-                />
+              <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11 1.83L13.09 8.26H19.92L14.42 12.24L16.51 18.67L11 14.69L5.49 18.67L7.58 12.24L2.08 8.26H8.91L11 1.83Z" fill="#FFD700" stroke="#FFD700" strokeWidth="1" strokeLinejoin="round"/>
               </svg>
               <span className="text-[13px] font-normal text-black font-inter-tight">
-                ${mentor.pricePerSession} / Session
+                {avgRating !== null && avgRating !== undefined ? avgRating.toFixed(1) : "N/A"} Rating
               </span>
             </div>
           </div>
@@ -149,6 +201,19 @@ export function MentorProfileSidebar({
               </span>
             </div>
           </div>
+
+          {/* Profile Views */}
+          <div className="flex justify-between items-center w-full">
+            <div className="flex items-center gap-1.5">
+              <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1.83 11C1.83 11 4.58 4.58 11 4.58C17.42 4.58 20.17 11 20.17 11C20.17 11 17.42 17.42 11 17.42C4.58 17.42 1.83 11 1.83 11Z" stroke="#525866" strokeWidth="1.375" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="11" cy="11" r="2.75" stroke="#525866" strokeWidth="1.375"/>
+              </svg>
+              <span className="text-[13px] font-normal text-black font-inter-tight">
+                {views} Profile Views
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -159,6 +224,51 @@ export function MentorProfileSidebar({
       >
         Edit Profile
       </Button>
+
+      {/* Visibility Toggle */}
+      <div className="flex justify-between items-center w-full">
+        <div className="flex flex-col">
+          <span className="text-[13px] font-normal text-black font-inter-tight">
+            Profile Visibility
+          </span>
+          <span className="text-[11px] text-[rgba(0,0,0,0.30)] font-inter-tight">
+            {visibility === "public" ? "Visible to everyone" : "Hidden from search"}
+          </span>
+        </div>
+        <Switch
+          checked={visibility === "public"}
+          onCheckedChange={() => onToggleVisibility?.()}
+        />
+      </div>
+
+      {/* Stack Section */}
+      {displayedStack.length > 0 && (
+        <div className="flex flex-col items-start gap-[12px]">
+          <h3 className="text-[12px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
+            Stack
+          </h3>
+          <div className="flex flex-wrap gap-[6px] w-full">
+            {displayedStack.map((tool, idx) => (
+              <div
+                key={idx}
+                className="px-[10px] py-[7px] rounded-full bg-[#F5F5F5] flex items-center gap-[5px]"
+              >
+                <div className="w-[16px] h-[16px] rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex-shrink-0" />
+                <span className="text-[11px] font-normal text-black font-inter-tight">
+                  {tool}
+                </span>
+              </div>
+            ))}
+            {stackRemaining > 0 && (
+              <div className="px-[10px] py-[7px] rounded-full bg-[#F5F5F5]">
+                <span className="text-[11px] font-normal text-black font-inter-tight">
+                  +{stackRemaining}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Social Links */}
       <div className="flex flex-col items-start gap-7">

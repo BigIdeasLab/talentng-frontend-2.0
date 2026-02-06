@@ -45,6 +45,7 @@ const OnboardingPage = () => {
   const completeOnboardingMutation = useCompleteOnboarding();
   const { ensureValidTokenBeforeOperation } = useTokenRefresh();
 
+
   // OAuth callback is handled by middleware
   // Backend sets cookies directly, frontend receives redirect to onboarding
   // No need to extract tokens from URL
@@ -157,14 +158,14 @@ const OnboardingPage = () => {
         bio: mentorData.bio,
       };
 
-      // Details contains: expertise, experience, mentorshipStyle, linkedIn
       const detailsData = {
+        industries: data.industries,
+        headline: data.headline,
         expertise: Array.isArray(data.expertise)
           ? data.expertise
           : [data.expertise],
-        experience: data.experience,
-        mentorshipStyle: data.mentorshipStyle,
-        linkedIn: data.linkedIn,
+        stack: data.stack,
+        languages: data.languages,
       };
 
       formData.append("profile", JSON.stringify(profileData));
@@ -287,7 +288,6 @@ const OnboardingPage = () => {
       formData.append("profile", JSON.stringify(profileData));
       formData.append("details", JSON.stringify(detailsData));
 
-      // Add company logo if provided (optional)
       if (logo) {
         formData.append("profileImage", logo);
       }
@@ -423,7 +423,6 @@ const OnboardingPage = () => {
       formData.append("details", JSON.stringify(data));
     }
 
-    // Add profile image if provided (optional)
     if (profileImage) {
       formData.append("profileImage", profileImage);
     }

@@ -21,16 +21,16 @@ interface MentorFormData {
   personal: {
     firstName: string;
     lastName: string;
-    headline: string;
     bio: string;
     profileImageUrl: string;
     location: string;
-    company: string;
   };
   professional: {
+    headline: string;
     expertise: string[];
-    mentorshipTopics: string[];
-    description: string;
+    industries: string[];
+    languages: string[];
+    stack: string[];
   };
   social: {
     linkedin: string;
@@ -45,16 +45,16 @@ const DEFAULT_MENTOR_DATA: MentorFormData = {
   personal: {
     firstName: "",
     lastName: "",
-    headline: "",
     bio: "",
     profileImageUrl: "",
     location: "",
-    company: "",
   },
   professional: {
+    headline: "",
     expertise: [],
-    mentorshipTopics: [],
-    description: "",
+    industries: [],
+    languages: [],
+    stack: [],
   },
   social: {
     linkedin: "",
@@ -64,6 +64,36 @@ const DEFAULT_MENTOR_DATA: MentorFormData = {
     website: "",
   },
 };
+
+const availableIndustries = [
+  "Technology",
+  "Finance",
+  "Healthcare",
+  "Education",
+  "Marketing",
+  "Design",
+  "Business",
+  "Sales",
+  "Operations",
+  "Product Management",
+  "Data Science",
+  "Engineering",
+  "Other",
+];
+
+const availableLanguages = [
+  "English",
+  "Spanish",
+  "French",
+  "German",
+  "Chinese",
+  "Japanese",
+  "Portuguese",
+  "Russian",
+  "Yoruba",
+  "Igbo",
+  "Hausa",
+];
 
 const availableExpertise = [
   "Product Design",
@@ -78,17 +108,21 @@ const availableExpertise = [
   "Startup Advisory",
 ];
 
-const availableMentorshipTopics = [
-  "Career Guidance",
-  "Interview Prep",
-  "Resume Review",
-  "Portfolio Review",
-  "Technical Skills",
-  "Leadership Development",
-  "Startup Advice",
-  "Industry Transition",
-  "Work-Life Balance",
-  "Salary Negotiation",
+const availableStack = [
+  "JavaScript",
+  "Python",
+  "React",
+  "Node.js",
+  "Figma",
+  "AWS",
+  "Docker",
+  "Kubernetes",
+  "Git",
+  "SQL",
+  "MongoDB",
+  "PostgreSQL",
+  "TypeScript",
+  "Next.js",
 ];
 
 const mentorSections = [
@@ -272,34 +306,6 @@ function PersonalDetailsSection({
               </div>
             </div>
 
-            {/* Headline */}
-            <div className="flex flex-col gap-[10px]">
-              <label className="text-[13px] font-normal text-black font-inter-tight">
-                Headline
-              </label>
-              <input
-                type="text"
-                value={formData.headline}
-                onChange={(e) => onInputChange("headline", e.target.value)}
-                placeholder="e.g., Senior Product Designer at Google"
-                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
-              />
-            </div>
-
-            {/* Company */}
-            <div className="flex flex-col gap-[10px]">
-              <label className="text-[13px] font-normal text-black font-inter-tight">
-                Company
-              </label>
-              <input
-                type="text"
-                value={formData.company}
-                onChange={(e) => onInputChange("company", e.target.value)}
-                placeholder="e.g., Google"
-                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
-              />
-            </div>
-
             {/* Location */}
             <div className="flex flex-col gap-[10px]">
               <label className="text-[13px] font-normal text-black font-inter-tight">
@@ -350,8 +356,12 @@ function ProfessionalDetailsSection({
   onInputChange,
   onAddExpertise,
   onRemoveExpertise,
-  onAddTopic,
-  onRemoveTopic,
+  onAddIndustry,
+  onRemoveIndustry,
+  onAddLanguage,
+  onRemoveLanguage,
+  onAddStack,
+  onRemoveStack,
   sectionRef,
   onNext,
 }: {
@@ -361,13 +371,19 @@ function ProfessionalDetailsSection({
   onInputChange: (field: string, value: string) => void;
   onAddExpertise: (expertise: string) => void;
   onRemoveExpertise: (index: number) => void;
-  onAddTopic: (topic: string) => void;
-  onRemoveTopic: (index: number) => void;
+  onAddIndustry: (industry: string) => void;
+  onRemoveIndustry: (index: number) => void;
+  onAddLanguage: (language: string) => void;
+  onRemoveLanguage: (index: number) => void;
+  onAddStack: (item: string) => void;
+  onRemoveStack: (index: number) => void;
   sectionRef: (el: HTMLDivElement | null) => void;
   onNext: () => void;
 }) {
   const [expertiseDropdownOpen, setExpertiseDropdownOpen] = useState(false);
-  const [topicsDropdownOpen, setTopicsDropdownOpen] = useState(false);
+  const [industriesDropdownOpen, setIndustriesDropdownOpen] = useState(false);
+  const [languagesDropdownOpen, setLanguagesDropdownOpen] = useState(false);
+  const [stackDropdownOpen, setStackDropdownOpen] = useState(false);
 
   return (
     <div
@@ -384,6 +400,20 @@ function ProfessionalDetailsSection({
         <>
           <div className="h-[1px] bg-[#E1E4EA]" />
           <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
+            {/* Headline */}
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-[13px] font-normal text-black font-inter-tight">
+                Headline
+              </label>
+              <input
+                type="text"
+                value={formData.headline}
+                onChange={(e) => onInputChange("headline", e.target.value)}
+                placeholder="e.g., Senior Product Designer at Google"
+                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+              />
+            </div>
+
             {/* Expertise */}
             <div className="flex flex-col gap-[10px]">
               <label className="text-[13px] font-normal text-black font-inter-tight">
@@ -436,20 +466,20 @@ function ProfessionalDetailsSection({
               </div>
             </div>
 
-            {/* Mentorship Topics */}
+            {/* Industries */}
             <div className="flex flex-col gap-[10px]">
               <label className="text-[13px] font-normal text-black font-inter-tight">
-                Mentorship Topics
+                Industries
               </label>
               <div className="flex flex-wrap gap-2 mb-2">
-                {formData.mentorshipTopics.map((item, index) => (
+                {formData.industries.map((item, index) => (
                   <span
                     key={index}
                     className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#F0F7FF] border border-[#ADD8F7] rounded-full text-[12px] font-normal text-black font-inter-tight"
                   >
                     {item}
                     <button
-                      onClick={() => onRemoveTopic(index)}
+                      onClick={() => onRemoveIndustry(index)}
                       className="ml-1 text-gray-400 hover:text-gray-600"
                     >
                       ×
@@ -460,25 +490,27 @@ function ProfessionalDetailsSection({
               <div className="relative">
                 <button
                   type="button"
-                  onClick={() => setTopicsDropdownOpen(!topicsDropdownOpen)}
+                  onClick={() =>
+                    setIndustriesDropdownOpen(!industriesDropdownOpen)
+                  }
                   className="w-full px-[12px] py-[14px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black/50 font-inter-tight text-left focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                 >
-                  + Add topic
+                  + Add industry
                 </button>
-                {topicsDropdownOpen && (
+                {industriesDropdownOpen && (
                   <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#E1E4EA] rounded-[8px] shadow-lg z-10 max-h-[200px] overflow-y-auto">
-                    {availableMentorshipTopics
-                      .filter((t) => !formData.mentorshipTopics.includes(t))
-                      .map((topic) => (
+                    {availableIndustries
+                      .filter((i) => !formData.industries.includes(i))
+                      .map((industry) => (
                         <button
-                          key={topic}
+                          key={industry}
                           onClick={() => {
-                            onAddTopic(topic);
-                            setTopicsDropdownOpen(false);
+                            onAddIndustry(industry);
+                            setIndustriesDropdownOpen(false);
                           }}
                           className="w-full px-4 py-2 text-left text-[13px] hover:bg-[#F0F7FF] font-inter-tight"
                         >
-                          {topic}
+                          {industry}
                         </button>
                       ))}
                   </div>
@@ -486,17 +518,106 @@ function ProfessionalDetailsSection({
               </div>
             </div>
 
-            {/* Description */}
+            {/* Languages */}
             <div className="flex flex-col gap-[10px]">
               <label className="text-[13px] font-normal text-black font-inter-tight">
-                Description
+                Languages
               </label>
-              <textarea
-                value={formData.description}
-                onChange={(e) => onInputChange("description", e.target.value)}
-                placeholder="Describe your mentorship approach and what mentees can expect..."
-                className="min-h-[100px] px-[12px] py-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent resize-none"
-              />
+              <div className="flex flex-wrap gap-2 mb-2">
+                {formData.languages.map((item, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#F0F7FF] border border-[#ADD8F7] rounded-full text-[12px] font-normal text-black font-inter-tight"
+                  >
+                    {item}
+                    <button
+                      onClick={() => onRemoveLanguage(index)}
+                      className="ml-1 text-gray-400 hover:text-gray-600"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setLanguagesDropdownOpen(!languagesDropdownOpen)
+                  }
+                  className="w-full px-[12px] py-[14px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black/50 font-inter-tight text-left focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                >
+                  + Add language
+                </button>
+                {languagesDropdownOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#E1E4EA] rounded-[8px] shadow-lg z-10 max-h-[200px] overflow-y-auto">
+                    {availableLanguages
+                      .filter((l) => !formData.languages.includes(l))
+                      .map((language) => (
+                        <button
+                          key={language}
+                          onClick={() => {
+                            onAddLanguage(language);
+                            setLanguagesDropdownOpen(false);
+                          }}
+                          className="w-full px-4 py-2 text-left text-[13px] hover:bg-[#F0F7FF] font-inter-tight"
+                        >
+                          {language}
+                        </button>
+                      ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Technology Stack */}
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-[13px] font-normal text-black font-inter-tight">
+                Technology Stack
+              </label>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {formData.stack.map((item, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#F0F7FF] border border-[#ADD8F7] rounded-full text-[12px] font-normal text-black font-inter-tight"
+                  >
+                    {item}
+                    <button
+                      onClick={() => onRemoveStack(index)}
+                      className="ml-1 text-gray-400 hover:text-gray-600"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setStackDropdownOpen(!stackDropdownOpen)}
+                  className="w-full px-[12px] py-[14px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black/50 font-inter-tight text-left focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                >
+                  + Add technology
+                </button>
+                {stackDropdownOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#E1E4EA] rounded-[8px] shadow-lg z-10 max-h-[200px] overflow-y-auto">
+                    {availableStack
+                      .filter((s) => !formData.stack.includes(s))
+                      .map((tech) => (
+                        <button
+                          key={tech}
+                          onClick={() => {
+                            onAddStack(tech);
+                            setStackDropdownOpen(false);
+                          }}
+                          className="w-full px-4 py-2 text-left text-[13px] hover:bg-[#F0F7FF] font-inter-tight"
+                        >
+                          {tech}
+                        </button>
+                      ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Next Button */}
@@ -616,16 +737,16 @@ export function MentorEditProfile() {
           personal: {
             firstName,
             lastName,
-            headline: profile.headline || "",
             bio: profile.bio || "",
             profileImageUrl: profile.profileImageUrl || "",
             location: profile.location || "",
-            company: profile.company || "",
           },
           professional: {
+            headline: profile.headline || "",
             expertise: profile.expertise || [],
-            mentorshipTopics: profile.mentorshipTopics || [],
-            description: profile.description || "",
+            industries: profile.industries || [],
+            languages: profile.languages || [],
+            stack: profile.stack || [],
           },
           social: {
             linkedin: profile.links?.linkedIn || profile.links?.linkedin || "",
@@ -714,25 +835,67 @@ export function MentorEditProfile() {
     setHasUnsavedChanges(true);
   };
 
-  const handleAddTopic = (topic: string) => {
+  const handleAddIndustry = (industry: string) => {
     setFormData((prev) => ({
       ...prev,
       professional: {
         ...prev.professional,
-        mentorshipTopics: [...prev.professional.mentorshipTopics, topic],
+        industries: [...prev.professional.industries, industry],
       },
     }));
     setHasUnsavedChanges(true);
   };
 
-  const handleRemoveTopic = (index: number) => {
+  const handleRemoveIndustry = (index: number) => {
     setFormData((prev) => ({
       ...prev,
       professional: {
         ...prev.professional,
-        mentorshipTopics: prev.professional.mentorshipTopics.filter(
-          (_, i) => i !== index,
-        ),
+        industries: prev.professional.industries.filter((_, i) => i !== index),
+      },
+    }));
+    setHasUnsavedChanges(true);
+  };
+
+  const handleAddLanguage = (language: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      professional: {
+        ...prev.professional,
+        languages: [...prev.professional.languages, language],
+      },
+    }));
+    setHasUnsavedChanges(true);
+  };
+
+  const handleRemoveLanguage = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      professional: {
+        ...prev.professional,
+        languages: prev.professional.languages.filter((_, i) => i !== index),
+      },
+    }));
+    setHasUnsavedChanges(true);
+  };
+
+  const handleAddStack = (item: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      professional: {
+        ...prev.professional,
+        stack: [...prev.professional.stack, item],
+      },
+    }));
+    setHasUnsavedChanges(true);
+  };
+
+  const handleRemoveStack = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      professional: {
+        ...prev.professional,
+        stack: prev.professional.stack.filter((_, i) => i !== index),
       },
     }));
     setHasUnsavedChanges(true);
@@ -778,13 +941,10 @@ export function MentorEditProfile() {
       const apiData: UpdateMentorProfileInput = {
         fullName:
           `${formData.personal.firstName} ${formData.personal.lastName}`.trim(),
-        headline: formData.personal.headline,
+        headline: formData.professional.headline,
         bio: formData.personal.bio,
         location: formData.personal.location,
-        company: formData.personal.company,
         expertise: formData.professional.expertise,
-        mentorshipTopics: formData.professional.mentorshipTopics,
-        description: formData.professional.description,
         links: {
           linkedin: formData.social.linkedin,
           twitter: formData.social.twitter,
@@ -856,8 +1016,12 @@ export function MentorEditProfile() {
               onInputChange={handleProfessionalInputChange}
               onAddExpertise={handleAddExpertise}
               onRemoveExpertise={handleRemoveExpertise}
-              onAddTopic={handleAddTopic}
-              onRemoveTopic={handleRemoveTopic}
+              onAddIndustry={handleAddIndustry}
+              onRemoveIndustry={handleRemoveIndustry}
+              onAddLanguage={handleAddLanguage}
+              onRemoveLanguage={handleRemoveLanguage}
+              onAddStack={handleAddStack}
+              onRemoveStack={handleRemoveStack}
               sectionRef={(el) => {
                 if (el) sectionRefs.current["professional"] = el;
               }}

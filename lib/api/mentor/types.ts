@@ -11,6 +11,9 @@ export interface MentorProfile {
   fullName: string | null;
   headline: string | null;
   expertise: string[];
+  industries: string[];
+  stack: string[];
+  languages: string[];
   mentorshipTopics: string[];
   bio: string | null;
   company: string | null;
@@ -23,8 +26,20 @@ export interface MentorProfile {
   isFeatured: boolean;
   featuredUntil: string | null;
   views: number;
+  avgRating: number | null;
+  totalSessions: number;
+  totalMentees: number;
+  totalEarnings: string;
+  sessionRate: number | null;
+  sessionDuration: number;
+  sessionCurrency: string;
+  bufferTime: number;
+  defaultMeetingLink: string | null;
+  timezone: string;
+  experience: any[];
   createdAt: string;
   updatedAt: string;
+  deletedAt: string | null;
 }
 
 export interface UpdateMentorProfileInput {
@@ -38,6 +53,7 @@ export interface UpdateMentorProfileInput {
   location?: string;
   profileImageUrl?: string;
   links?: Record<string, string>;
+  visibility?: Visibility;
 }
 
 export interface MentorAvailabilitySlot {

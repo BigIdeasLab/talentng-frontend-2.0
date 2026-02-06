@@ -59,13 +59,10 @@ export function usePageData<T>(
 
       try {
         const result = await config.fetchFn(role);
-        console.log("[usePageData] Raw API response:", result);
 
-        // Apply transformation if provided
         const transformedData = config.transform
           ? config.transform(result, role)
           : result;
-        console.log("[usePageData] Transformed data:", transformedData);
 
         setData(transformedData);
       } catch (err) {

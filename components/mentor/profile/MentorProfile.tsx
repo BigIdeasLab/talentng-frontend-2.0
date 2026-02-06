@@ -3,15 +3,18 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { MentorProfile as MentorProfileType } from "@/lib/api/mentor/types";
+import { updateMentorProfile } from "@/lib/api/mentor";
 import { MentorProfileSidebar } from "./components/MentorProfileSidebar";
 import { MentorProfileNav } from "./components/MentorProfileNav";
 import { MentorAboutSection } from "./components/MentorAboutSection";
 import { MentorBackgroundSection } from "./components/MentorBackgroundSection";
+
 import { MentorSessionSection } from "./components/MentorSessionSection";
 import { MentorReviewsSection } from "./components/MentorReviewsSection";
 
 interface MentorProfileProps {
   initialProfileData?: Partial<MentorProfileType>;
+  profileCompleteness?: number | null;
   initialUserId?: string | null;
   initialStats?: any;
   initialRecommendations?: any[];
@@ -21,6 +24,7 @@ interface MentorProfileProps {
 
 export function MentorProfile({
   initialProfileData = {},
+  profileCompleteness = null,
   initialUserId: _initialUserId = null,
   initialStats: _initialStats = null,
   initialRecommendations: _initialRecommendations = [],
@@ -32,40 +36,41 @@ export function MentorProfile({
     "overview" | "session" | "reviews"
   >("overview");
 
-  const profileData = initialProfileData as MentorProfileType;
+  const [profileData, setProfileData] = useState(
+    initialProfileData as MentorProfileType,
+  );
 
-  // Sample data - replace with actual data from profileData
+  const handleToggleVisibility = async () => {
+    const newVisibility =
+      profileData.visibility === "public" ? "private" : "public";
+    try {
+      await updateMentorProfile({ visibility: newVisibility });
+      setProfileData((prev) => ({ ...prev, visibility: newVisibility }));
+    } catch {
+      // silently fail
+    }
+  };
+
   const mentorData = {
-    name: profileData.fullName || "Brown David",
-    title:
-      profileData.headline || profileData.company
-        ? `${profileData.headline || ""}${profileData.headline && profileData.company ? " At " : ""}${profileData.company || ""}`
-        : "Data Scientist At Microsoft",
-    profileImage:
-      profileData.profileImageUrl ||
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-    pricePerSession: 90,
-    sessionsCompleted: 50,
-    mentoringTime: 510,
+    name: profileData.fullName || "",
+    title: profileData.headline || "",
+    profileImage: profileData.profileImageUrl || "/default.png",
+    sessionsCompleted: profileData.totalSessions ?? 0,
+    mentoringTime: (profileData.totalSessions ?? 0) * (profileData.sessionDuration ?? 60),
   };
 
   const socialLinks = {
     telegram: profileData.links?.telegram,
     twitter: profileData.links?.twitter,
     instagram: profileData.links?.instagram,
-    linkedin: profileData.links?.linkedin,
+    linkedin: profileData.links?.linkedIn,
   };
 
-  const bio =
-    profileData.bio ||
-    "Hello! I'm a Data Scientist at Microsoft, specializing in machine learning and data visualization. With over 8 years of experience, I've contributed to projects ranging from cloud computing to AI-driven solutions. My expertise includes Python, R, SQL, and tools like TensorFlow and Power BI.\n\nI've led cross-functional teams, mentored junior data scientists, and worked with stakeholders to translate complex data into actionable insights. Whether you're interested in refining your analytical skills, understanding data trends, or need guidance on real-world data applications, I'm here to assist.\n\nPlease note: To provide focused and in-depth consultations, I offer 30–45 minute mentorship sessions at $90 USD. I'm excited to connect, share my knowledge, and help you advance your career in data science.";
+  const bio = profileData.bio || "";
 
-  const expertise = profileData.expertise || ["Data Analysis", "Engineering"];
-  const discipline = "Data Scientist";
-  const industries = (
-    profileData as MentorProfileType & { industries?: string[] }
-  ).industries || ["AI", "Fintech", "Ecommerce"];
-  const languages = ["English", "French"];
+  const expertise = profileData.expertise || [];
+  const industries = profileData.industries || [];
+  const languages = profileData.languages || [];
 
   const handleEditProfile = () => {
     router.push("/profile/edit");
@@ -81,6 +86,12 @@ export function MentorProfile({
       <div className="hidden lg:block flex-shrink-0">
         <MentorProfileSidebar
           mentor={mentorData}
+          profileCompleteness={profileCompleteness}
+          avgRating={profileData.avgRating}
+          views={profileData.views ?? 0}
+          visibility={profileData.visibility ?? "public"}
+          onToggleVisibility={handleToggleVisibility}
+          stack={profileData.stack || []}
           socialLinks={socialLinks}
           onEditProfile={handleEditProfile}
         />
@@ -104,11 +115,13 @@ export function MentorProfile({
 
                 {/* Background Section */}
                 <MentorBackgroundSection
+                  headline={profileData.headline || ""}
+                  location={profileData.location || ""}
                   expertise={expertise}
-                  discipline={discipline}
                   industries={industries}
                   languages={languages}
                 />
+
               </>
             )}
 

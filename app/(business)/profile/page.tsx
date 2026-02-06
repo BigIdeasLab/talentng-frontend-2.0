@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { usePageData, PageLoadingState } from "@/lib/page-utils";
 import { useProfile } from "@/hooks/useProfile";
 import { mapAPIToUI } from "@/lib/profileMapper";
@@ -13,35 +14,40 @@ export default function ProfilePage() {
   const { activeRole } = useProfile();
   const role = activeRole || "talent";
 
+  const transform = useCallback(
+    (result: any) => ({
+      raw: result?.profile ?? result,
+      mapped: mapAPIToUI(result),
+      profileCompleteness: result?.profileCompleteness ?? null,
+    }),
+    [],
+  );
+
   const {
     data: profileData,
     isLoading,
     error,
   } = usePageData({
     fetchFn: fetchProfileByRole,
-    transform: mapAPIToUI,
-    defaultData: DEFAULT_PROFILE_DATA,
+    transform,
+    defaultData: { raw: {}, mapped: DEFAULT_PROFILE_DATA },
   });
-
-  console.log("[ProfilePage] activeRole:", activeRole);
-  console.log("[ProfilePage] isLoading:", isLoading);
-  console.log("[ProfilePage] error:", error);
-  console.log("[ProfilePage] profileData:", profileData);
 
   if (isLoading) {
     return <PageLoadingState message="Loading profile..." />;
   }
 
-  const displayProfile = profileData || DEFAULT_PROFILE_DATA;
+  const displayProfile = profileData?.mapped || DEFAULT_PROFILE_DATA;
+  const rawProfile = profileData?.raw || {};
 
   switch (role) {
     case "recruiter": {
       const completionFields = [
-        profileData?.professional?.company,
-        profileData?.personal?.state,
-        profileData?.professional?.description,
-        profileData?.personal?.profileImageUrl,
-        profileData?.professional?.category,
+        displayProfile?.professional?.company,
+        displayProfile?.personal?.state,
+        displayProfile?.professional?.description,
+        displayProfile?.personal?.profileImageUrl,
+        displayProfile?.professional?.category,
       ].filter(Boolean);
       const completionPercentage = Math.round(
         (completionFields.length / 5) * 100,
@@ -50,10 +56,10 @@ export default function ProfilePage() {
       return (
         <EmployerProfile
           companyData={{
-            name: profileData?.professional?.company || "Company Name",
-            logo: profileData?.personal?.profileImageUrl,
-            location: profileData?.personal?.state || "—",
-            tagline: profileData?.professional?.description || "Employer",
+            name: displayProfile?.professional?.company || "Company Name",
+            logo: displayProfile?.personal?.profileImageUrl,
+            location: displayProfile?.personal?.state || "—",
+            tagline: displayProfile?.professional?.description || "Employer",
           }}
           stats={{
             jobsPosted: 0,
@@ -62,11 +68,11 @@ export default function ProfilePage() {
           }}
           completionPercentage={completionPercentage}
           aboutData={{
-            bio: profileData?.personal?.bio,
-            industry: profileData?.professional?.industry,
-            companySize: profileData?.professional?.companySize,
-            companyStage: profileData?.professional?.companyStage,
-            operatingModel: profileData?.professional?.operatingModel,
+            bio: displayProfile?.personal?.bio,
+            industry: displayProfile?.professional?.industry,
+            companySize: displayProfile?.professional?.companySize,
+            companyStage: displayProfile?.professional?.companyStage,
+            operatingModel: displayProfile?.professional?.operatingModel,
           }}
         />
       );
@@ -74,7 +80,8 @@ export default function ProfilePage() {
     case "mentor": {
       return (
         <MentorProfile
-          initialProfileData={displayProfile}
+          initialProfileData={rawProfile}
+          profileCompleteness={profileData?.profileCompleteness ?? null}
           initialUserId=""
           initialStats={null}
           initialRecommendations={[]}
