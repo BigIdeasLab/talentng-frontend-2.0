@@ -143,10 +143,14 @@ export interface SetAvailabilityInput {
 }
 
 export interface MentorAvailabilityResponse {
-  mentorId: string;
+  mentorId?: string;
   sessionDuration: number;
+  bufferTime?: number;
   timezone: string;
-  availableSlots: {
+  defaultMeetingLink?: string | null;
+  slots: AvailabilitySlot[];
+  // Legacy format for public mentor availability (booking view)
+  availableSlots?: {
     date: string;
     dayOfWeek: number;
     slots: {

@@ -12,11 +12,12 @@ import {
   updateMentorProfile,
   updateMentorProfileImage,
 } from "@/lib/api/mentor";
-import type { UpdateMentorProfileInput } from "@/lib/api/mentor/types";
+import type { UpdateMentorProfileInput, MentorProfile } from "@/lib/api/mentor/types";
 
 interface MentorFormData {
   personal: {
-    fullName: string;
+    firstName: string;
+    lastName: string;
     headline: string;
     bio: string;
     profileImageUrl: string;
@@ -39,7 +40,8 @@ interface MentorFormData {
 
 const DEFAULT_MENTOR_DATA: MentorFormData = {
   personal: {
-    fullName: "",
+    firstName: "",
+    lastName: "",
     headline: "",
     bio: "",
     profileImageUrl: "",
@@ -240,18 +242,31 @@ function PersonalDetailsSection({
               </svg>
             </div>
 
-            {/* Full Name */}
-            <div className="flex flex-col gap-[10px]">
-              <label className="text-[13px] font-normal text-black font-inter-tight">
-                Full Name
-              </label>
-              <input
-                type="text"
-                value={formData.fullName}
-                onChange={(e) => onInputChange("fullName", e.target.value)}
-                placeholder="e.g., John Doe"
-                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
-              />
+            {/* Name Fields */}
+            <div className="flex gap-[10px]">
+              <div className="flex-1 flex flex-col gap-[10px]">
+                <label className="text-[13px] font-normal text-black font-inter-tight">
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  value={formData.firstName}
+                  onChange={(e) => onInputChange("firstName", e.target.value)}
+                  className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                />
+              </div>
+
+              <div className="flex-1 flex flex-col gap-[10px]">
+                <label className="text-[13px] font-normal text-black font-inter-tight">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  value={formData.lastName}
+                  onChange={(e) => onInputChange("lastName", e.target.value)}
+                  className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                />
+              </div>
             </div>
 
             {/* Headline */}
@@ -583,11 +598,19 @@ export function MentorEditProfile() {
     const fetchMentorProfile = async () => {
       setIsFetching(true);
       try {
-        const profile = await getCurrentMentorProfile();
+        const response = await getCurrentMentorProfile();
+        console.log("MentorEditProfile: fetched profile:", response);
+        // API returns { profile: {...}, isProfileCreated: true } or direct profile
+        const profile = (response as unknown as { profile?: MentorProfile }).profile ?? response;
+
+        const nameParts = (profile.fullName || "").split(" ");
+        const firstName = nameParts[0] || "";
+        const lastName = nameParts.slice(1).join(" ") || "";
 
         setFormData({
           personal: {
-            fullName: profile.fullName || "",
+            firstName,
+            lastName,
             headline: profile.headline || "",
             bio: profile.bio || "",
             profileImageUrl: profile.profileImageUrl || "",
@@ -600,7 +623,7 @@ export function MentorEditProfile() {
             description: profile.description || "",
           },
           social: {
-            linkedin: profile.links?.linkedin || "",
+            linkedin: profile.links?.linkedIn || profile.links?.linkedin || "",
             twitter: profile.links?.twitter || "",
             telegram: profile.links?.telegram || "",
             instagram: profile.links?.instagram || "",
@@ -748,7 +771,7 @@ export function MentorEditProfile() {
       setIsLoading(true);
 
       const apiData: UpdateMentorProfileInput = {
-        fullName: formData.personal.fullName,
+        fullName: `${formData.personal.firstName} ${formData.personal.lastName}`.trim(),
         headline: formData.personal.headline,
         bio: formData.personal.bio,
         location: formData.personal.location,

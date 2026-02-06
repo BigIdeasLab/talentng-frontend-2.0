@@ -59,17 +59,45 @@ export default function MentorDetailPage() {
           getMentorBookingSlots(mentorId, { startDate, endDate }),
         ]);
 
-        setMentor(profileData);
-        setReviews(reviewsData.data);
+        // Map API fields to our type
+        const raw = profileData as unknown as Record<string, unknown>;
+        const mappedMentor: PublicMentorDetail = {
+          ...profileData,
+          name: (raw.fullName as string) || (raw.name as string) || "",
+          avatar: (raw.profileImageUrl as string) || (raw.avatar as string) || null,
+          title: (raw.headline as string) || (raw.title as string) || null,
+          bio: (raw.bio as string) || (raw.description as string) || null,
+          rating: (raw.avgRating as number) || 0,
+          totalReviews: (raw.totalReviews as number) || 0,
+          totalSessions: (raw.totalSessions as number) || 0,
+          expertise: (raw.expertise as string[]) || [],
+          industries: (raw.industries as string[]) || [],
+          company: (raw.company as string) || null,
+          sessionDuration: (raw.sessionDuration as number) || 60,
+          bufferTime: (raw.bufferTime as number) || 15,
+          timezone: (raw.timezone as string) || "WAT",
+          defaultMeetingLink: (raw.defaultMeetingLink as string) || null,
+          id: (raw.id as string) || "",
+          userId: (raw.userId as string) || "",
+        };
+        console.log("Mapped mentor:", mappedMentor);
+        setMentor(mappedMentor);
 
-        const transformedAvailability = availabilityData.availableSlots.map(
-          (slot) => ({
-            date: format(new Date(slot.date), "MMM dd"),
-            day: format(new Date(slot.date), "EEE"),
-            fullDate: slot.date,
-            slots: slot.slots,
-          }),
-        );
+        const reviewsArray = Array.isArray(reviewsData) ? reviewsData : reviewsData?.data ?? [];
+        setReviews(reviewsArray);
+
+        const rawAvail = availabilityData as unknown as Record<string, unknown>;
+        const availSlots = (rawAvail?.availableSlots ?? rawAvail?.slots ?? []) as Record<string, unknown>[];
+        const transformedAvailability = Array.isArray(availSlots)
+          ? availSlots
+              .filter((slot) => slot.date)
+              .map((slot) => ({
+                date: format(new Date(slot.date as string), "MMM dd"),
+                day: format(new Date(slot.date as string), "EEE"),
+                fullDate: slot.date as string,
+                slots: (slot.slots as { startTime: string; endTime: string }[]) || [],
+              }))
+          : [];
         setAvailability(transformedAvailability);
       } catch (err) {
         if (err instanceof Error && err.message.includes("404")) {

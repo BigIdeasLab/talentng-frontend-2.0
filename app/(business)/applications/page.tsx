@@ -94,18 +94,22 @@ export default function ApplicationsPage() {
         getRequests({ role: "received" }),
         getPendingRequestsCount(),
       ]);
-      setRequests(requestsResponse.data.map(mapApiRequest));
-      setPendingCount(countResponse.count);
-    } catch {
-      toast({
-        title: "Error",
-        description: "Failed to load mentorship requests",
-        variant: "destructive",
-      });
+      console.log("requestsResponse:", requestsResponse);
+      console.log("countResponse:", countResponse);
+      // Handle both { data: [...] } and direct array responses
+      const requestsArray = Array.isArray(requestsResponse)
+        ? requestsResponse
+        : requestsResponse?.data ?? [];
+      setRequests(requestsArray.map(mapApiRequest));
+      setPendingCount(countResponse?.count ?? 0);
+    } catch (error) {
+      console.error("Failed to load mentorship requests:", error);
+      setRequests([]);
+      setPendingCount(0);
     } finally {
       setIsLoading(false);
     }
-  }, [toast]);
+  }, []);
 
   useEffect(() => {
     fetchRequests();

@@ -103,15 +103,15 @@ function mapApiSessionToMenteeSession(
   };
 }
 
-function mapApiMentorToDisplay(mentor: PublicMentor): MentorDisplay {
+function mapApiMentorToDisplay(mentor: Record<string, unknown>): MentorDisplay {
   return {
-    id: mentor.id,
-    name: mentor.name,
-    title: mentor.title || "",
-    imageUrl: mentor.avatar || "/placeholder-avatar.png",
-    pricePerSession: 0,
-    sessionsCompleted: mentor.totalSessions,
-    expertise: mentor.expertise,
+    id: (mentor.id as string) || "",
+    name: (mentor.fullName as string) || (mentor.name as string) || "",
+    title: (mentor.headline as string) || (mentor.title as string) || "",
+    imageUrl: (mentor.profileImageUrl as string) || (mentor.avatar as string) || "/placeholder-avatar.png",
+    pricePerSession: (mentor.sessionRate as number) || 0,
+    sessionsCompleted: (mentor.totalSessions as number) || 0,
+    expertise: (mentor.expertise as string[]) || [],
   };
 }
 
@@ -120,7 +120,7 @@ export default function MentorshipPage() {
     "Find Mentors" | "My Session" | "Messages"
   >("Find Mentors");
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("Design");
+  const [activeCategory, setActiveCategory] = useState("");
   const [sortBy, setSortBy] = useState("Newest");
 
   const [mentors, setMentors] = useState<MentorDisplay[]>([]);
@@ -141,9 +141,12 @@ export default function MentorshipPage() {
       try {
         setMentorsLoading(true);
         const data = await listMentors();
-        setMentors(data.map(mapApiMentorToDisplay));
+        console.log("listMentors response:", data);
+        const raw = data as unknown;
+        const mentorsArray = (Array.isArray(raw) ? raw : []) as Record<string, unknown>[];
+        setMentors(mentorsArray.map(mapApiMentorToDisplay));
       } catch (error) {
-        toast.error("Failed to load mentors");
+        console.error("Failed to load mentors:", error);
       } finally {
         setMentorsLoading(false);
       }
@@ -156,9 +159,11 @@ export default function MentorshipPage() {
       try {
         setSessionsLoading(true);
         const response = await getSessions({ role: "mentee" });
-        setSessions(response.data.map(mapApiSessionToMenteeSession));
+        console.log("getSessions response:", response);
+        const sessionsArray = Array.isArray(response) ? response : response?.data ?? [];
+        setSessions(sessionsArray.map(mapApiSessionToMenteeSession));
       } catch (error) {
-        toast.error("Failed to load sessions");
+        console.error("Failed to load sessions:", error);
       } finally {
         setSessionsLoading(false);
       }
