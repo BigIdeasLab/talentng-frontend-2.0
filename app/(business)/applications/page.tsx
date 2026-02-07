@@ -61,9 +61,7 @@ function mapApiRequest(request: ApiMentorshipRequest): MentorshipRequest {
         request.mentee.username ||
         "Unknown",
       avatar:
-        request.mentee.profileImageUrl ||
-        request.mentee.avatar ||
-        undefined,
+        request.mentee.profileImageUrl || request.mentee.avatar || undefined,
       title: request.mentee.headline || "",
       company: "",
     },

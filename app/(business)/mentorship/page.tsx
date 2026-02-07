@@ -96,7 +96,9 @@ function mapApiSessionToMenteeSession(
     },
     topic: session.topic,
     message: session.notes || undefined,
-    date: formatSessionDate(session.scheduledAt || session.startTime || session.createdAt),
+    date: formatSessionDate(
+      session.scheduledAt || session.startTime || session.createdAt,
+    ),
     duration: `${session.duration} mins`,
     location: session.meetingLink || "TBD",
     status: mapSessionStatus(session.status),

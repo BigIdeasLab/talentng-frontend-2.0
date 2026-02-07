@@ -46,8 +46,7 @@ function mapStatusToCard(
 }
 
 function mapSession(session: any): SessionView {
-  const rawDate =
-    session.startTime || session.scheduledAt || session.createdAt;
+  const rawDate = session.startTime || session.scheduledAt || session.createdAt;
   const scheduledDate = new Date(rawDate);
 
   const mentee = session.mentee || {};
@@ -55,10 +54,8 @@ function mapSession(session: any): SessionView {
 
   const menteeName =
     mentee.fullName || mentee.name || mentee.username || "Unknown";
-  const menteeAvatar =
-    mentee.profileImageUrl || mentee.avatar || undefined;
-  const menteeHeadline =
-    mentee.headline || mentor.headline || undefined;
+  const menteeAvatar = mentee.profileImageUrl || mentee.avatar || undefined;
+  const menteeHeadline = mentee.headline || mentor.headline || undefined;
 
   const duration =
     session.duration ||
@@ -82,7 +79,11 @@ function mapSession(session: any): SessionView {
     message: session.note || session.message || session.notes || undefined,
     date: format(scheduledDate, "EEE MMM d, h:mm a"),
     duration: `${duration} mins`,
-    location: session.location || session.meetingLink || mentor.defaultMeetingLink || "Google Meet",
+    location:
+      session.location ||
+      session.meetingLink ||
+      mentor.defaultMeetingLink ||
+      "Google Meet",
     status: mapStatusToCard(session.status),
   };
 }
@@ -151,11 +152,9 @@ export default function SessionsPage() {
       meta.pending + meta.upcoming ||
       sessions.filter((s) => s.status === "upcoming").length,
     completed:
-      meta.completed ||
-      sessions.filter((s) => s.status === "completed").length,
+      meta.completed || sessions.filter((s) => s.status === "completed").length,
     cancelled:
-      meta.cancelled ||
-      sessions.filter((s) => s.status === "cancelled").length,
+      meta.cancelled || sessions.filter((s) => s.status === "cancelled").length,
   };
 
   const handleReschedule = (id: string) => {
@@ -272,10 +271,7 @@ export default function SessionsPage() {
             </div>
             <div className="flex items-center gap-2">
               <button className="flex items-center gap-1 rounded-lg border border-[#E1E4EA] bg-white px-3.5 py-2">
-                <SlidersHorizontal
-                  className="h-4 w-4"
-                  strokeWidth={1.125}
-                />
+                <SlidersHorizontal className="h-4 w-4" strokeWidth={1.125} />
                 <span className="font-inter-tight text-[13px] font-normal leading-normal text-black">
                   Filter
                 </span>
