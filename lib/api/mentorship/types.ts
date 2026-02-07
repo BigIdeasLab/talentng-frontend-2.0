@@ -34,7 +34,8 @@ export interface CreateRequestInput {
   mentorId: string;
   topic: string;
   message?: string;
-  scheduledAt: string;
+  scheduledDate: string;
+  scheduledTime: string;
 }
 
 export interface RequestsQueryParams {

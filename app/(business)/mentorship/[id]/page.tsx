@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Clock } from "lucide-react";
 import Image from "next/image";
@@ -28,11 +28,16 @@ type TabType = "Overview" | "Reviews" | "Session";
 
 export default function MentorDetailPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const mentorId = params.id as string;
   const [activeTab, setActiveTab] = useState<TabType>("Overview");
-  const [selectedDate, setSelectedDate] = useState(0);
-  const [selectedTime, setSelectedTime] = useState(0);
+  const [selectedDate, setSelectedDate] = useState<number | null>(null);
+  const [selectedTime, setSelectedTime] = useState<number | null>(null);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [bookingStep, setBookingStep] = useState<"availability" | "details">(
+    "availability",
+  );
+  const [hasSelectedSlot, setHasSelectedSlot] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -138,6 +143,13 @@ export default function MentorDetailPage() {
     fetchMentorData();
   }, [mentorId]);
 
+  useEffect(() => {
+    if (searchParams.get("book") === "true" && !isLoading && mentor) {
+      setBookingStep("availability");
+      setIsBookingModalOpen(true);
+    }
+  }, [searchParams, isLoading, mentor]);
+
   if (isLoading) {
     return (
       <div className="h-screen bg-white flex flex-col overflow-hidden">
@@ -210,6 +222,7 @@ export default function MentorDetailPage() {
   }
 
   const timeSlots = (() => {
+    if (selectedDate === null) return [];
     const slots = availability[selectedDate]?.slots || [];
     const duration = mentor?.sessionDuration || 60;
     const times: string[] = [];
@@ -341,6 +354,35 @@ export default function MentorDetailPage() {
                     </div>
                   </div>
 
+                  {/* Session Duration */}
+                  <div className="flex justify-between items-center w-full">
+                    <div className="flex items-center gap-1.5">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 22 22"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M11 7.33301V10.9997L13.2917 13.2913"
+                          stroke="#525866"
+                          strokeWidth="1.375"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M20.1667 11.0002C20.1667 16.0627 16.0626 20.1668 11 20.1668C5.9374 20.1668 1.83334 16.0627 1.83334 11.0002C1.83334 5.93755 5.9374 1.8335 11 1.8335C16.0626 1.8335 20.1667 5.93755 20.1667 11.0002Z"
+                          stroke="#525866"
+                          strokeWidth="1.375"
+                        />
+                      </svg>
+                      <span className="text-[13px] font-normal text-black font-inter-tight">
+                        {mentor.sessionDuration} min / session
+                      </span>
+                    </div>
+                  </div>
+
                   {/* Mentoring time */}
                   <div className="flex justify-between items-center w-full">
                     <div className="flex items-center gap-1.5">
@@ -372,8 +414,10 @@ export default function MentorDetailPage() {
                         />
                       </svg>
                       <span className="text-[13px] font-normal text-black font-inter-tight">
-                        {mentor.totalSessions * mentor.sessionDuration} mins
-                        mentoring time
+                        {Math.round(
+                          (mentor.totalSessions * mentor.sessionDuration) / 60,
+                        )}
+                        h mentoring time
                       </span>
                     </div>
                   </div>
@@ -382,7 +426,10 @@ export default function MentorDetailPage() {
 
               {/* Book Session Button */}
               <button
-                onClick={() => setIsBookingModalOpen(true)}
+                onClick={() => {
+                  setBookingStep(hasSelectedSlot ? "details" : "availability");
+                  setIsBookingModalOpen(true);
+                }}
                 className="w-full h-auto rounded-[40px] bg-[#181B25] hover:bg-[#2a2f3a] text-white px-16 py-4 font-normal text-[15px] font-inter-tight transition-colors"
               >
                 Book Session
@@ -407,7 +454,7 @@ export default function MentorDetailPage() {
                         key={index}
                         onClick={() => {
                           setSelectedDate(index);
-                          setSelectedTime(0);
+                          setSelectedTime(null);
                         }}
                         className={`flex flex-col items-center justify-center gap-1 h-[52px] rounded-lg border transition-colors ${
                           selectedDate === index
@@ -436,7 +483,7 @@ export default function MentorDetailPage() {
                   </div>
 
                   {/* Time Slots for Selected Date */}
-                  {timeSlots.length > 0 && (
+                  {selectedDate !== null && timeSlots.length > 0 && (
                     <div className="flex flex-col gap-2 mt-1">
                       <span className="font-inter-tight text-[11px] font-normal text-[#A3A3A3]">
                         Available times for {availability[selectedDate]?.date}
@@ -445,7 +492,10 @@ export default function MentorDetailPage() {
                         {timeSlots.map((time, index) => (
                           <button
                             key={index}
-                            onClick={() => setSelectedTime(index)}
+                            onClick={() => {
+                              setSelectedTime(index);
+                              setHasSelectedSlot(true);
+                            }}
                             className={`flex items-center justify-center px-4 py-2 rounded-lg border font-inter-tight text-[13px] font-normal transition-colors ${
                               selectedTime === index
                                 ? "bg-[#5C30FF] border-[#5C30FF] text-white"
@@ -822,7 +872,12 @@ export default function MentorDetailPage() {
 
                     <div className="pt-4 border-t border-[#E1E4EA]">
                       <button
-                        onClick={() => setIsBookingModalOpen(true)}
+                        onClick={() => {
+                          setBookingStep(
+                            hasSelectedSlot ? "details" : "availability",
+                          );
+                          setIsBookingModalOpen(true);
+                        }}
                         className="w-full h-[44px] rounded-full bg-[#5C30FF] text-white font-inter-tight text-[13px] font-medium hover:bg-[#4a26cc] transition-colors"
                       >
                         Book a Session
@@ -846,12 +901,41 @@ export default function MentorDetailPage() {
           />
 
           {/* Modal */}
-          <div className="relative bg-white rounded-2xl w-full max-w-[480px] mx-4 shadow-xl">
+          <div
+            className="relative bg-white rounded-2xl w-full max-w-[480px] mx-4 shadow-xl flex flex-col"
+            style={{ height: 480 }}
+          >
             {/* Header */}
             <div className="flex items-center justify-between p-5 border-b border-[#E1E4EA]">
-              <h2 className="font-inter-tight text-[17px] font-semibold text-black">
-                Book a Session
-              </h2>
+              <div className="flex items-center gap-2">
+                {bookingStep === "details" && (
+                  <button
+                    onClick={() => setBookingStep("availability")}
+                    className="p-1 hover:bg-[#F5F5F5] rounded-lg transition-colors"
+                  >
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12.5 15L7.5 10L12.5 5"
+                        stroke="#525866"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                )}
+                <h2 className="font-inter-tight text-[17px] font-semibold text-black">
+                  {bookingStep === "availability"
+                    ? "Select Date & Time"
+                    : "Book a Session"}
+                </h2>
+              </div>
               <button
                 onClick={() => setIsBookingModalOpen(false)}
                 className="p-1 hover:bg-[#F5F5F5] rounded-lg transition-colors"
@@ -874,145 +958,226 @@ export default function MentorDetailPage() {
               </button>
             </div>
 
-            {/* Content */}
-            <div className="p-5 flex flex-col gap-5">
-              {/* Selected Slot Summary */}
-              <div className="flex items-center gap-4 p-4 bg-[#F8F8F8] rounded-xl">
-                <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gradient-to-b from-purple-400 to-purple-600 flex-shrink-0">
-                  {mentor.avatar ? (
-                    <Image
-                      src={mentor.avatar}
-                      alt={mentor.name}
-                      fill
-                      className="object-cover"
+            {/* Step 1: Availability Selection */}
+            {bookingStep === "availability" && (
+              <div className="flex flex-col flex-1 overflow-hidden">
+                <div className="p-5 flex flex-col gap-5 flex-1 overflow-y-auto scrollbar-styled">
+                  {/* Mentor Summary */}
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-10 h-10 rounded-full bg-cover bg-center flex-shrink-0"
+                      style={{
+                        backgroundImage: `url(${mentor.avatar || "/default.png"})`,
+                      }}
                     />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-white text-lg font-semibold">
-                      {mentor.name.charAt(0)}
+                    <div>
+                      <h3 className="font-inter-tight text-[14px] font-semibold text-black">
+                        {mentor.name}
+                      </h3>
+                      <p className="font-inter-tight text-[12px] text-[#525866]">
+                        {mentor.sessionDuration} min session
+                      </p>
                     </div>
+                  </div>
+
+                  {availability.length > 0 ? (
+                    <>
+                      {/* Date Grid */}
+                      <div className="flex flex-col gap-2">
+                        <label className="font-inter-tight text-[13px] font-medium text-black">
+                          Select a date
+                        </label>
+                        <div className="grid grid-cols-4 gap-2">
+                          {availability.slice(0, 8).map((slot, index) => (
+                            <button
+                              key={index}
+                              onClick={() => {
+                                setSelectedDate(index);
+                                setSelectedTime(null);
+                              }}
+                              className={`flex flex-col items-center justify-center gap-1 h-[52px] rounded-lg border transition-colors ${
+                                selectedDate === index
+                                  ? "bg-[#5C30FF] border-[#5C30FF]"
+                                  : "bg-white border-[#E1E4EA] hover:border-[#5C30FF]"
+                              }`}
+                            >
+                              <span
+                                className={`font-inter-tight text-[10px] font-normal ${selectedDate === index ? "text-white/70" : "text-[#A3A3A3]"}`}
+                              >
+                                {slot.day}
+                              </span>
+                              <span
+                                className={`font-inter-tight text-[13px] font-medium ${selectedDate === index ? "text-white" : "text-black"}`}
+                              >
+                                {slot.date.split(" ")[1]}
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Time Slots */}
+                      {timeSlots.length > 0 && (
+                        <div className="flex flex-col gap-2">
+                          <label className="font-inter-tight text-[13px] font-medium text-black">
+                            Select a time
+                          </label>
+                          <div className="flex flex-wrap gap-2">
+                            {timeSlots.map((time, index) => (
+                              <button
+                                key={index}
+                                onClick={() => {
+                                  setSelectedTime(index);
+                                  setHasSelectedSlot(true);
+                                }}
+                                className={`px-4 py-2 rounded-lg border font-inter-tight text-[13px] font-normal transition-colors ${
+                                  selectedTime === index
+                                    ? "bg-[#5C30FF] border-[#5C30FF] text-white"
+                                    : "bg-white border-[#E1E4EA] text-black hover:border-[#5C30FF]"
+                                }`}
+                              >
+                                {time}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <p className="font-inter-tight text-[13px] text-[#A3A3A3] text-center py-6">
+                      No available slots at this time
+                    </p>
                   )}
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-inter-tight text-[14px] font-semibold text-black">
-                    {mentor.name}
-                  </h3>
-                  <p className="font-inter-tight text-[12px] text-[#525866]">
-                    {availability[selectedDate]?.date},{" "}
-                    {timeSlots[selectedTime] || "Select time"} •{" "}
-                    {mentor.sessionDuration} mins
-                  </p>
+
+                {/* Footer */}
+                <div className="flex items-center gap-3 p-5 border-t border-[#E1E4EA]">
+                  <button
+                    onClick={() => setIsBookingModalOpen(false)}
+                    className="flex-1 h-[44px] rounded-full border border-[#E1E4EA] bg-white text-black font-inter-tight text-[13px] font-medium hover:bg-[#F5F5F5] transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      setHasSelectedSlot(true);
+                      setBookingStep("details");
+                    }}
+                    disabled={selectedDate === null || selectedTime === null}
+                    className="flex-1 h-[44px] rounded-full bg-[#5C30FF] text-white font-inter-tight text-[13px] font-medium hover:bg-[#4a26cc] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Continue
+                  </button>
                 </div>
               </div>
+            )}
 
-              {/* Session Details */}
-              <div className="flex items-center gap-4 text-[13px] text-[#525866]">
-                <div className="flex items-center gap-1.5">
-                  <Clock className="w-4 h-4" strokeWidth={1.5} />
-                  <span>{mentor.sessionDuration} mins</span>
-                </div>
-                {mentor.defaultMeetingLink && (
-                  <div className="flex items-center gap-1.5">
-                    <LocationIcon className="w-4 h-4" />
-                    <span>
-                      {mentor.defaultMeetingLink.includes("meet.google")
-                        ? "Google Meet"
-                        : mentor.defaultMeetingLink.includes("zoom")
-                          ? "Zoom"
-                          : "Online Meeting"}
-                    </span>
+            {/* Step 2: Booking Details */}
+            {bookingStep === "details" && (
+              <div className="flex flex-col flex-1 overflow-hidden">
+                <div className="p-5 flex flex-col gap-5 flex-1 overflow-y-auto scrollbar-styled">
+                  {/* Selected Slot Summary */}
+                  <div className="flex items-center gap-4 p-4 bg-[#F8F8F8] rounded-xl">
+                    <div
+                      className="w-12 h-12 rounded-full bg-cover bg-center flex-shrink-0"
+                      style={{
+                        backgroundImage: `url(${mentor.avatar || "/default.png"})`,
+                      }}
+                    />
+                    <div className="flex-1">
+                      <h3 className="font-inter-tight text-[14px] font-semibold text-black">
+                        {mentor.name}
+                      </h3>
+                      <p className="font-inter-tight text-[12px] text-[#525866]">
+                        {selectedDate !== null
+                          ? availability[selectedDate]?.date
+                          : ""}
+                        , {selectedTime !== null ? timeSlots[selectedTime] : ""}{" "}
+                        • {mentor.sessionDuration} mins
+                      </p>
+                    </div>
                   </div>
-                )}
+
+                  {/* Topic Selection */}
+                  <div className="flex flex-col gap-2">
+                    <label className="font-inter-tight text-[13px] font-medium text-black">
+                      Topic
+                    </label>
+                    <select
+                      value={selectedTopic}
+                      onChange={(e) => setSelectedTopic(e.target.value)}
+                      className="w-full h-[44px] px-4 rounded-lg border border-[#E1E4EA] bg-white font-inter-tight text-[13px] text-black focus:outline-none focus:border-[#5C30FF] transition-colors"
+                    >
+                      <option value="">Select a topic...</option>
+                      {mentor.expertise.map((topic, index) => (
+                        <option key={index} value={topic}>
+                          {topic}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Message */}
+                  <div className="flex flex-col gap-2">
+                    <label className="font-inter-tight text-[13px] font-medium text-black">
+                      Message
+                    </label>
+                    <textarea
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder="Tell the mentor about your goals and what you'd like to discuss..."
+                      rows={4}
+                      className="w-full px-4 py-3 rounded-lg border border-[#E1E4EA] bg-white font-inter-tight text-[13px] text-black placeholder:text-[#A3A3A3] focus:outline-none focus:border-[#5C30FF] transition-colors resize-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="flex items-center gap-3 p-5 border-t border-[#E1E4EA]">
+                  <button
+                    onClick={() => setIsBookingModalOpen(false)}
+                    disabled={isSubmitting}
+                    className="flex-1 h-[44px] rounded-full border border-[#E1E4EA] bg-white text-black font-inter-tight text-[13px] font-medium hover:bg-[#F5F5F5] transition-colors disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={async () => {
+                      setIsSubmitting(true);
+                      try {
+                        if (selectedDate === null || selectedTime === null)
+                          throw new Error("Please select a date and time");
+                        const selectedSlot = availability[selectedDate];
+                        const selectedTimeValue = timeSlots[selectedTime];
+                        if (!selectedSlot || !selectedTimeValue) {
+                          throw new Error("Please select a date and time");
+                        }
+                        await createRequest({
+                          mentorId: mentor.id,
+                          topic: selectedTopic,
+                          message: message,
+                          scheduledDate: selectedSlot.fullDate,
+                          scheduledTime: selectedTimeValue,
+                        });
+                        setIsBookingModalOpen(false);
+                        setSelectedTopic("");
+                        setMessage("");
+                        setShowSuccess(true);
+                        setTimeout(() => setShowSuccess(false), 3000);
+                      } catch (err) {
+                        console.error("Failed to create request:", err);
+                      } finally {
+                        setIsSubmitting(false);
+                      }
+                    }}
+                    disabled={!selectedTopic || !message || isSubmitting}
+                    className="flex-1 h-[44px] rounded-full bg-[#5C30FF] text-white font-inter-tight text-[13px] font-medium hover:bg-[#4a26cc] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? "Sending..." : "Send Request"}
+                  </button>
+                </div>
               </div>
-
-              {/* Topic Selection */}
-              <div className="flex flex-col gap-2">
-                <label className="font-inter-tight text-[13px] font-medium text-black">
-                  Topic
-                </label>
-                <select
-                  value={selectedTopic}
-                  onChange={(e) => setSelectedTopic(e.target.value)}
-                  className="w-full h-[44px] px-4 rounded-lg border border-[#E1E4EA] bg-white font-inter-tight text-[13px] text-black focus:outline-none focus:border-[#5C30FF] transition-colors"
-                >
-                  <option value="">Select a topic...</option>
-                  {mentor.expertise.map((topic, index) => (
-                    <option key={index} value={topic}>
-                      {topic}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Message */}
-              <div className="flex flex-col gap-2">
-                <label className="font-inter-tight text-[13px] font-medium text-black">
-                  Message
-                </label>
-                <textarea
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Tell the mentor about your goals and what you'd like to discuss..."
-                  rows={4}
-                  className="w-full px-4 py-3 rounded-lg border border-[#E1E4EA] bg-white font-inter-tight text-[13px] text-black placeholder:text-[#A3A3A3] focus:outline-none focus:border-[#5C30FF] transition-colors resize-none"
-                />
-              </div>
-            </div>
-
-            {/* Footer */}
-            <div className="flex items-center gap-3 p-5 border-t border-[#E1E4EA]">
-              <button
-                onClick={() => setIsBookingModalOpen(false)}
-                disabled={isSubmitting}
-                className="flex-1 h-[44px] rounded-full border border-[#E1E4EA] bg-white text-black font-inter-tight text-[13px] font-medium hover:bg-[#F5F5F5] transition-colors disabled:opacity-50"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={async () => {
-                  setIsSubmitting(true);
-
-                  try {
-                    const selectedSlot = availability[selectedDate];
-                    const selectedTimeValue = timeSlots[selectedTime];
-
-                    if (!selectedSlot || !selectedTimeValue) {
-                      throw new Error("Please select a date and time");
-                    }
-
-                    const scheduledAt = new Date(
-                      `${selectedSlot.fullDate}T${selectedTimeValue}`,
-                    ).toISOString();
-
-                    await createRequest({
-                      mentorId: mentor.id,
-                      topic: selectedTopic,
-                      message: message,
-                      scheduledAt,
-                    });
-
-                    setIsBookingModalOpen(false);
-                    setSelectedTopic("");
-                    setMessage("");
-                    setShowSuccess(true);
-                    setTimeout(() => setShowSuccess(false), 3000);
-                  } catch (err) {
-                    console.error("Failed to create request:", err);
-                  } finally {
-                    setIsSubmitting(false);
-                  }
-                }}
-                disabled={
-                  !selectedTopic ||
-                  !message ||
-                  isSubmitting ||
-                  availability.length === 0 ||
-                  timeSlots.length === 0
-                }
-                className="flex-1 h-[44px] rounded-full bg-[#5C30FF] text-white font-inter-tight text-[13px] font-medium hover:bg-[#4a26cc] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? "Sending..." : "Send Request"}
-              </button>
-            </div>
+            )}
           </div>
         </div>
       )}

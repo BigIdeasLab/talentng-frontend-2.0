@@ -10,39 +10,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/useToast";
 import {
   getMyAvailability,
   setMyAvailability,
   type AvailabilitySlot,
 } from "@/lib/api/mentorship";
-import {
-  Check,
-  Clock,
-  Zap,
-  Grid3X3,
-  List,
-  Plus,
-  Trash2,
-  Copy,
-} from "lucide-react";
-
-// ============ Types ============
-
-interface TimeRange {
-  id: string;
-  startTime: string;
-  endTime: string;
-}
-
-interface DaySchedule {
-  enabled: boolean;
-  timeRanges: TimeRange[];
-}
-
-type WeekSchedule = Record<number, DaySchedule>;
-type ViewMode = "grid" | "list";
+import { Check, Clock, Zap } from "lucide-react";
 
 // ============ Constants ============
 
@@ -90,106 +64,11 @@ const TIME_SLOTS = [
   { value: "21:00", label: "9 PM" },
 ];
 
-const TIME_OPTIONS = TIME_SLOTS.map((s) => ({
-  value: s.value,
-  label: s.label.includes(":") ? s.label : s.label,
-}));
-
 // ============ Helpers ============
-
-const generateId = () => Math.random().toString(36).substring(2, 9);
 
 const getTimeLabel = (slot: { value: string; label: string }) => {
   if (slot.value.endsWith(":00")) return slot.label;
   return "";
-};
-
-const getTimeLabelFull = (value: string) => {
-  const slot = TIME_SLOTS.find((t) => t.value === value);
-  if (!slot) return value;
-  if (slot.label.includes(":")) {
-    const hourSlot = TIME_SLOTS.find(
-      (t) => t.value === value.replace(":30", ":00"),
-    );
-    return hourSlot
-      ? `${hourSlot.label.replace(" AM", "").replace(" PM", "")}:30 ${hourSlot.label.includes("AM") ? "AM" : "PM"}`
-      : slot.label;
-  }
-  return slot.label;
-};
-
-const getDefaultSchedule = (): WeekSchedule => ({
-  0: { enabled: false, timeRanges: [] },
-  1: { enabled: false, timeRanges: [] },
-  2: { enabled: false, timeRanges: [] },
-  3: { enabled: false, timeRanges: [] },
-  4: { enabled: false, timeRanges: [] },
-  5: { enabled: false, timeRanges: [] },
-  6: { enabled: false, timeRanges: [] },
-});
-
-// Convert selected slots (grid) to schedule (list)
-const slotsToSchedule = (selectedSlots: Set<string>): WeekSchedule => {
-  const schedule = getDefaultSchedule();
-
-  for (let day = 0; day < 7; day++) {
-    const daySlots = Array.from(selectedSlots)
-      .filter((key) => key.startsWith(`${day}-`))
-      .map((key) => parseInt(key.split("-")[1], 10))
-      .sort((a, b) => a - b);
-
-    if (daySlots.length === 0) continue;
-
-    schedule[day].enabled = true;
-
-    // Merge consecutive slots into ranges
-    let rangeStart = daySlots[0];
-    let rangeEnd = daySlots[0];
-
-    for (let i = 1; i <= daySlots.length; i++) {
-      const current = daySlots[i];
-      const isConsecutive = current === rangeEnd + 1;
-
-      if (!isConsecutive || i === daySlots.length) {
-        schedule[day].timeRanges.push({
-          id: generateId(),
-          startTime: TIME_SLOTS[rangeStart].value,
-          endTime: TIME_SLOTS[rangeEnd + 1]?.value || "21:30",
-        });
-
-        if (i < daySlots.length) {
-          rangeStart = current;
-          rangeEnd = current;
-        }
-      } else {
-        rangeEnd = current;
-      }
-    }
-  }
-
-  return schedule;
-};
-
-// Convert schedule (list) to selected slots (grid)
-const scheduleToSlots = (schedule: WeekSchedule): Set<string> => {
-  const slots = new Set<string>();
-
-  Object.entries(schedule).forEach(([dayStr, day]) => {
-    if (!day.enabled) return;
-    const dayIndex = parseInt(dayStr, 10);
-
-    day.timeRanges.forEach((range) => {
-      const startIdx = TIME_SLOTS.findIndex((t) => t.value === range.startTime);
-      const endIdx = TIME_SLOTS.findIndex((t) => t.value === range.endTime);
-      if (startIdx !== -1 && endIdx !== -1) {
-        for (let i = startIdx; i < endIdx; i++) {
-          slots.add(`${dayIndex}-${i}`);
-        }
-      }
-    });
-  });
-
-  return slots;
 };
 
 // ============ Component ============
@@ -208,7 +87,6 @@ export default function AvailabilityPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
-  const [viewMode, setViewMode] = useState<ViewMode>("grid");
 
   // Grid-specific state
   const [isDragging, setIsDragging] = useState(false);
@@ -218,11 +96,9 @@ export default function AvailabilityPage() {
   // ============ Data Fetching ============
 
   const fetchAvailability = useCallback(async () => {
-    console.log("fetchAvailability: Starting fetch...");
     try {
       setIsLoading(true);
       const response = await getMyAvailability();
-      console.log("fetchAvailability: API response:", response);
 
       if (response.sessionDuration) {
         setSessionDuration(response.sessionDuration.toString());
@@ -232,19 +108,13 @@ export default function AvailabilityPage() {
       }
 
       const slots = new Set<string>();
-      console.log("fetchAvailability: slots from API:", response.slots);
 
-      // API returns `slots` array directly, not nested in `availableSlots`
       response.slots?.forEach(
         (slot: { dayOfWeek: number; startTime: string; endTime: string }) => {
-          console.log("fetchAvailability: Processing slot:", slot);
           const startIdx = TIME_SLOTS.findIndex(
             (t) => t.value === slot.startTime,
           );
           const endIdx = TIME_SLOTS.findIndex((t) => t.value === slot.endTime);
-          console.log(
-            `fetchAvailability: slot ${slot.startTime}-${slot.endTime}, startIdx=${startIdx}, endIdx=${endIdx}`,
-          );
           if (startIdx !== -1 && endIdx !== -1) {
             for (let i = startIdx; i < endIdx; i++) {
               slots.add(`${slot.dayOfWeek}-${i}`);
@@ -253,12 +123,10 @@ export default function AvailabilityPage() {
         },
       );
 
-      console.log("fetchAvailability: Parsed slots:", Array.from(slots));
       setSelectedSlots(slots);
-      setSavedSlots(new Set(slots)); // Track what's saved
+      setSavedSlots(new Set(slots));
       setIsSaved(true);
-    } catch (error) {
-      console.error("fetchAvailability: Error:", error);
+    } catch {
       // No existing availability
     } finally {
       setIsLoading(false);
@@ -281,20 +149,36 @@ export default function AvailabilityPage() {
     return true;
   };
 
-  const toggleBlock = (
-    dayIndex: number,
-    startIndex: number,
-    select: boolean,
-  ) => {
-    if (select && !canSelectBlock(dayIndex, startIndex)) return;
+  const getBlockStartFor = (dayIndex: number, timeIndex: number) => {
+    let runStart = timeIndex;
+    while (runStart > 0 && selectedSlots.has(`${dayIndex}-${runStart - 1}`)) {
+      runStart--;
+    }
+    const offset = (timeIndex - runStart) % cellsPerSlot;
+    return timeIndex - offset;
+  };
+
+  const selectBlock = (dayIndex: number, startIndex: number) => {
+    if (!canSelectBlock(dayIndex, startIndex)) return;
     setSelectedSlots((prev) => {
       const next = new Set(prev);
       for (let i = 0; i < cellsPerSlot; i++) {
         const idx = startIndex + i;
         if (idx >= TIME_SLOTS.length) break;
-        const key = `${dayIndex}-${idx}`;
-        if (select) next.add(key);
-        else next.delete(key);
+        next.add(`${dayIndex}-${idx}`);
+      }
+      return next;
+    });
+    setIsSaved(false);
+    setHasChanges(true);
+  };
+
+  const deselectBlock = (dayIndex: number, timeIndex: number) => {
+    const blockStart = getBlockStartFor(dayIndex, timeIndex);
+    setSelectedSlots((prev) => {
+      const next = new Set(prev);
+      for (let i = 0; i < cellsPerSlot; i++) {
+        next.delete(`${dayIndex}-${blockStart + i}`);
       }
       return next;
     });
@@ -309,16 +193,31 @@ export default function AvailabilityPage() {
     if (!isSelected && !canSelectBlock(dayIndex, timeIndex)) return;
     setDragMode(isSelected ? "deselect" : "select");
     setIsDragging(true);
-    lastDragBlock.current = `${dayIndex}-${timeIndex}`;
-    toggleBlock(dayIndex, timeIndex, !isSelected);
+    if (isSelected) {
+      const blockStart = getBlockStartFor(dayIndex, timeIndex);
+      lastDragBlock.current = `${dayIndex}-${blockStart}`;
+      deselectBlock(dayIndex, timeIndex);
+    } else {
+      lastDragBlock.current = `${dayIndex}-${timeIndex}`;
+      selectBlock(dayIndex, timeIndex);
+    }
   };
 
   const handleMouseEnter = (dayIndex: number, timeIndex: number) => {
     if (!isDragging) return;
-    const blockKey = `${dayIndex}-${timeIndex}`;
-    if (blockKey === lastDragBlock.current) return;
-    lastDragBlock.current = blockKey;
-    toggleBlock(dayIndex, timeIndex, dragMode === "select");
+    const isSelected = selectedSlots.has(`${dayIndex}-${timeIndex}`);
+    if (dragMode === "deselect" && isSelected) {
+      const blockStart = getBlockStartFor(dayIndex, timeIndex);
+      const blockKey = `${dayIndex}-${blockStart}`;
+      if (blockKey === lastDragBlock.current) return;
+      lastDragBlock.current = blockKey;
+      deselectBlock(dayIndex, timeIndex);
+    } else if (dragMode === "select" && !isSelected) {
+      const blockKey = `${dayIndex}-${timeIndex}`;
+      if (blockKey === lastDragBlock.current) return;
+      lastDragBlock.current = blockKey;
+      selectBlock(dayIndex, timeIndex);
+    }
   };
 
   const handleMouseUp = () => {
@@ -334,95 +233,6 @@ export default function AvailabilityPage() {
     window.addEventListener("mouseup", handleGlobalMouseUp);
     return () => window.removeEventListener("mouseup", handleGlobalMouseUp);
   }, []);
-
-  // ============ List Handlers ============
-
-  const getSchedule = () => slotsToSchedule(selectedSlots);
-
-  const updateFromSchedule = (schedule: WeekSchedule) => {
-    setSelectedSlots(scheduleToSlots(schedule));
-    setIsSaved(false);
-    setHasChanges(true);
-  };
-
-  const toggleDay = (dayIndex: number) => {
-    const schedule = getSchedule();
-    const day = schedule[dayIndex];
-    const newEnabled = !day.enabled;
-    schedule[dayIndex] = {
-      enabled: newEnabled,
-      timeRanges:
-        newEnabled && day.timeRanges.length === 0
-          ? [{ id: generateId(), startTime: "09:00", endTime: "17:00" }]
-          : day.timeRanges,
-    };
-    updateFromSchedule(schedule);
-  };
-
-  const addTimeRange = (dayIndex: number) => {
-    const schedule = getSchedule();
-    const day = schedule[dayIndex];
-    const lastRange = day.timeRanges[day.timeRanges.length - 1];
-    const newStart = lastRange ? lastRange.endTime : "09:00";
-    const startIndex = TIME_SLOTS.findIndex((t) => t.value === newStart);
-    const endIndex = Math.min(startIndex + 4, TIME_SLOTS.length - 1);
-    const newEnd = TIME_SLOTS[endIndex]?.value || "17:00";
-
-    schedule[dayIndex].timeRanges.push({
-      id: generateId(),
-      startTime: newStart,
-      endTime: newEnd,
-    });
-    updateFromSchedule(schedule);
-  };
-
-  const removeTimeRange = (dayIndex: number, rangeId: string) => {
-    const schedule = getSchedule();
-    const day = schedule[dayIndex];
-    const newRanges = day.timeRanges.filter((r) => r.id !== rangeId);
-    schedule[dayIndex] = {
-      ...day,
-      enabled: newRanges.length > 0,
-      timeRanges: newRanges,
-    };
-    updateFromSchedule(schedule);
-  };
-
-  const updateTimeRange = (
-    dayIndex: number,
-    rangeId: string,
-    field: "startTime" | "endTime",
-    value: string,
-  ) => {
-    const schedule = getSchedule();
-    schedule[dayIndex].timeRanges = schedule[dayIndex].timeRanges.map((r) =>
-      r.id === rangeId ? { ...r, [field]: value } : r,
-    );
-    updateFromSchedule(schedule);
-  };
-
-  const copyToAll = (dayIndex: number) => {
-    const schedule = getSchedule();
-    const sourceDay = schedule[dayIndex];
-    if (!sourceDay.enabled || sourceDay.timeRanges.length === 0) return;
-
-    DAYS.forEach((day) => {
-      if (day.index !== dayIndex) {
-        schedule[day.index] = {
-          enabled: true,
-          timeRanges: sourceDay.timeRanges.map((r) => ({
-            ...r,
-            id: generateId(),
-          })),
-        };
-      }
-    });
-    updateFromSchedule(schedule);
-    toast({
-      title: "Copied",
-      description: `${DAYS[dayIndex].name}'s schedule copied to all days`,
-    });
-  };
 
   // ============ Shared Handlers ============
 
@@ -479,19 +289,38 @@ export default function AvailabilityPage() {
       setIsSaving(true);
 
       const slotsArray: AvailabilitySlot[] = [];
-      const schedule = getSchedule();
 
-      Object.entries(schedule).forEach(([dayStr, day]) => {
-        if (day.enabled) {
-          day.timeRanges.forEach((range) => {
+      for (let day = 0; day < 7; day++) {
+        const daySlots = Array.from(selectedSlots)
+          .filter((key) => key.startsWith(`${day}-`))
+          .map((key) => parseInt(key.split("-")[1], 10))
+          .sort((a, b) => a - b);
+
+        if (daySlots.length === 0) continue;
+
+        let rangeStart = daySlots[0];
+        let rangeEnd = daySlots[0];
+
+        for (let i = 1; i <= daySlots.length; i++) {
+          const current = daySlots[i];
+          const isConsecutive = current === rangeEnd + 1;
+
+          if (!isConsecutive || i === daySlots.length) {
             slotsArray.push({
-              dayOfWeek: parseInt(dayStr, 10),
-              startTime: range.startTime,
-              endTime: range.endTime,
+              dayOfWeek: day,
+              startTime: TIME_SLOTS[rangeStart].value,
+              endTime: TIME_SLOTS[rangeEnd + 1]?.value || "21:30",
             });
-          });
+
+            if (i < daySlots.length) {
+              rangeStart = current;
+              rangeEnd = current;
+            }
+          } else {
+            rangeEnd = current;
+          }
         }
-      });
+      }
 
       await setMyAvailability({
         sessionDuration: parseInt(sessionDuration, 10),
@@ -501,7 +330,7 @@ export default function AvailabilityPage() {
         slots: slotsArray,
       });
 
-      setSavedSlots(new Set(selectedSlots)); // Update saved slots after successful save
+      setSavedSlots(new Set(selectedSlots));
       setIsSaved(true);
       setHasChanges(false);
       toast({
@@ -550,8 +379,6 @@ export default function AvailabilityPage() {
     );
   }
 
-  const schedule = getSchedule();
-
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
       {/* Header */}
@@ -562,38 +389,10 @@ export default function AvailabilityPage() {
               Availability
             </h1>
             <p className="mt-1 font-inter-tight text-[13px] text-[#525866]">
-              {viewMode === "grid"
-                ? "Click and drag to set your recurring weekly availability"
-                : "Toggle days and set time ranges for your availability"}
+              Click and drag to set your recurring weekly availability
             </p>
           </div>
           <div className="flex items-center gap-3">
-            {/* View Toggle */}
-            <div className="flex rounded-lg border border-[#E1E4EA] bg-white p-1">
-              <button
-                onClick={() => setViewMode("grid")}
-                className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                  viewMode === "grid"
-                    ? "bg-[#5C30FF] text-white"
-                    : "text-[#525866] hover:bg-[#F5F3FF]"
-                }`}
-              >
-                <Grid3X3 className="h-3.5 w-3.5" />
-                Grid
-              </button>
-              <button
-                onClick={() => setViewMode("list")}
-                className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                  viewMode === "list"
-                    ? "bg-[#5C30FF] text-white"
-                    : "text-[#525866] hover:bg-[#F5F3FF]"
-                }`}
-              >
-                <List className="h-3.5 w-3.5" />
-                List
-              </button>
-            </div>
-
             {isSaved && !hasChanges && (
               <div className="flex items-center gap-2 rounded-full bg-green-50 px-3 py-1.5 text-green-700">
                 <Check className="h-4 w-4" />
@@ -668,6 +467,13 @@ export default function AvailabilityPage() {
               <Select
                 value={sessionDuration}
                 onValueChange={(v) => {
+                  if (selectedSlots.size > 0) {
+                    const confirmed = window.confirm(
+                      "Changing the session duration will clear all your current availability slots. Are you sure?",
+                    );
+                    if (!confirmed) return;
+                    setSelectedSlots(new Set());
+                  }
                   setSessionDuration(v);
                   setHasChanges(true);
                 }}
@@ -746,8 +552,7 @@ export default function AvailabilityPage() {
           </div>
 
           {/* Grid View */}
-          {viewMode === "grid" && (
-            <div className="overflow-x-auto p-4">
+          <div className="overflow-x-auto p-4">
               <div
                 ref={gridRef}
                 className="grid select-none"
@@ -814,8 +619,21 @@ export default function AvailabilityPage() {
                       const isNewSlot = isSelected && !wasSaved; // Purple - newly added
                       const isRemovedSlot = !isSelected && wasSaved; // Red - will be removed
 
+                      // Determine if this cell is the top of a duration block
+                      let isBlockTop = false;
+                      if (isSelected) {
+                        let runStart = timeIndex;
+                        while (
+                          runStart > 0 &&
+                          selectedSlots.has(`${day.index}-${runStart - 1}`)
+                        ) {
+                          runStart--;
+                        }
+                        isBlockTop =
+                          (timeIndex - runStart) % cellsPerSlot === 0;
+                      }
+
                       // Determine border radius based on neighbors (for selected slots)
-                      const isBlockTop = isSelected && !prevSelected;
                       let borderRadius = "";
                       if (isSelected) {
                         const isTop = !prevSelected;
@@ -893,146 +711,6 @@ export default function AvailabilityPage() {
                 ))}
               </div>
             </div>
-          )}
-
-          {/* List View */}
-          {viewMode === "list" && (
-            <div className="divide-y divide-[#E1E4EA]">
-              {DAYS.map((day) => {
-                const daySchedule = schedule[day.index];
-                return (
-                  <div
-                    key={day.index}
-                    className={`px-5 py-4 transition-colors ${daySchedule.enabled ? "bg-white" : "bg-[#FAFAFA]"}`}
-                  >
-                    <div className="flex items-start gap-4">
-                      {/* Day Toggle */}
-                      <div className="flex w-28 items-center gap-3 pt-1.5">
-                        <Switch
-                          checked={daySchedule.enabled}
-                          onCheckedChange={() => toggleDay(day.index)}
-                        />
-                        <span
-                          className={`text-sm font-medium ${daySchedule.enabled ? "text-black" : "text-[#99A0AE]"}`}
-                        >
-                          {day.short}
-                        </span>
-                      </div>
-
-                      {/* Time Ranges */}
-                      <div className="flex-1">
-                        {daySchedule.enabled ? (
-                          <div className="space-y-2">
-                            {daySchedule.timeRanges.map((range, idx) => (
-                              <div
-                                key={range.id}
-                                className="flex items-center gap-2"
-                              >
-                                <Select
-                                  value={range.startTime}
-                                  onValueChange={(v) =>
-                                    updateTimeRange(
-                                      day.index,
-                                      range.id,
-                                      "startTime",
-                                      v,
-                                    )
-                                  }
-                                >
-                                  <SelectTrigger className="h-9 w-[120px] border-[#E1E4EA] text-sm">
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {TIME_OPTIONS.map((t) => (
-                                      <SelectItem key={t.value} value={t.value}>
-                                        {getTimeLabelFull(t.value)}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-
-                                <span className="text-[#99A0AE]">–</span>
-
-                                <Select
-                                  value={range.endTime}
-                                  onValueChange={(v) =>
-                                    updateTimeRange(
-                                      day.index,
-                                      range.id,
-                                      "endTime",
-                                      v,
-                                    )
-                                  }
-                                >
-                                  <SelectTrigger className="h-9 w-[120px] border-[#E1E4EA] text-sm">
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {TIME_OPTIONS.filter(
-                                      (t) => t.value > range.startTime,
-                                    ).map((t) => (
-                                      <SelectItem key={t.value} value={t.value}>
-                                        {getTimeLabelFull(t.value)}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-
-                                <button
-                                  onClick={() =>
-                                    removeTimeRange(day.index, range.id)
-                                  }
-                                  className="rounded p-1.5 text-[#99A0AE] hover:bg-red-50 hover:text-red-500"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </button>
-
-                                {idx === 0 &&
-                                  daySchedule.timeRanges.length === 1 && (
-                                    <button
-                                      onClick={() => copyToAll(day.index)}
-                                      className="ml-2 flex items-center gap-1 rounded px-2 py-1 text-xs text-[#5C30FF] hover:bg-[#F5F3FF]"
-                                    >
-                                      <Copy className="h-3 w-3" />
-                                      Copy to all
-                                    </button>
-                                  )}
-                              </div>
-                            ))}
-
-                            <button
-                              onClick={() => addTimeRange(day.index)}
-                              className="flex items-center gap-1 rounded px-2 py-1 text-xs text-[#5C30FF] hover:bg-[#F5F3FF]"
-                            >
-                              <Plus className="h-3 w-3" />
-                              Add time slot
-                            </button>
-                          </div>
-                        ) : (
-                          <p className="pt-1.5 text-sm text-[#99A0AE]">
-                            Unavailable
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Summary */}
-                      {daySchedule.enabled &&
-                        daySchedule.timeRanges.length > 0 && (
-                          <div className="hidden pt-1.5 text-right text-xs text-[#525866] lg:block">
-                            {daySchedule.timeRanges.map((r) => (
-                              <div key={r.id}>
-                                {getTimeLabelFull(r.startTime)} -{" "}
-                                {getTimeLabelFull(r.endTime)}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
 
           {/* Footer */}
           <div className="flex items-center justify-between border-t border-[#E1E4EA] bg-[#FAFAFA] px-5 py-4">
@@ -1061,8 +739,7 @@ export default function AvailabilityPage() {
 
         {/* Legend & Help Text */}
         <div className="mt-4 flex flex-col items-center gap-2">
-          {viewMode === "grid" && (
-            <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4">
               <div className="flex items-center gap-1.5">
                 <div className="h-3 w-3 rounded bg-emerald-500" />
                 <span className="text-xs text-[#525866]">Saved</span>
@@ -1076,11 +753,8 @@ export default function AvailabilityPage() {
                 <span className="text-xs text-[#525866]">Will be removed</span>
               </div>
             </div>
-          )}
           <p className="text-xs text-[#99A0AE]">
-            {viewMode === "grid"
-              ? "Click and drag to select time slots. Your availability repeats every week."
-              : "Toggle days on/off and set specific time ranges. Your availability repeats every week."}
+            Click and drag to select time slots. Your availability repeats every week.
           </p>
         </div>
       </div>

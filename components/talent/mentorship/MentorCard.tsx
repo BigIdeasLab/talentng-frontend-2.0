@@ -74,7 +74,7 @@ export function MentorCard({
         <div className="flex items-start gap-1">
           {/* Book Session Button */}
           <Link
-            href={`/sessions/create-session?mentorId=${id}`}
+            href={`/mentorship/${id}?book=true`}
             className="flex-1 flex items-center justify-center gap-1 h-[40px] px-4 py-3 rounded-full bg-[#181B25] text-white font-inter-tight text-[12px] font-medium hover:bg-[#252831] transition-colors"
           >
             Book Session
