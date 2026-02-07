@@ -49,22 +49,30 @@ interface MentorshipRequest {
 }
 
 function mapApiRequest(request: ApiMentorshipRequest): MentorshipRequest {
-  const scheduledDate = new Date(request.scheduledAt);
+  const datePart = request.scheduledDate.split("T")[0];
+  const scheduledDate = new Date(`${datePart}T${request.scheduledTime}:00`);
   return {
     id: request.id,
     mentee: {
       id: request.mentee.id,
-      name: request.mentee.name,
-      avatar: request.mentee.avatar || undefined,
-      title: "",
+      name:
+        request.mentee.fullName ||
+        request.mentee.name ||
+        request.mentee.username ||
+        "Unknown",
+      avatar:
+        request.mentee.profileImageUrl ||
+        request.mentee.avatar ||
+        undefined,
+      title: request.mentee.headline || "",
       company: "",
     },
     topic: request.topic,
     message: request.message || "",
     scheduledDate: format(scheduledDate, "EEE MMM d, yyyy"),
     scheduledTime: format(scheduledDate, "h:mm a"),
-    duration: "60 mins",
-    location: "Google Meet",
+    duration: `${request.duration} mins`,
+    location: request.location || "Google Meet",
     requestedAt: request.createdAt,
     status: request.status,
   };
@@ -244,14 +252,22 @@ export default function ApplicationsPage() {
                 <div className="flex items-start justify-between border-b border-[#E1E4EA] px-6 py-4">
                   <div className="flex items-center gap-4">
                     {/* Avatar */}
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#F5F3FF]">
-                      <span className="font-inter-tight text-[16px] font-semibold text-[#5C30FF]">
-                        {request.mentee.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </span>
-                    </div>
+                    {request.mentee.avatar ? (
+                      <img
+                        src={request.mentee.avatar}
+                        alt={request.mentee.name}
+                        className="h-12 w-12 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#F5F3FF]">
+                        <span className="font-inter-tight text-[16px] font-semibold text-[#5C30FF]">
+                          {request.mentee.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
+                        </span>
+                      </div>
+                    )}
                     {/* Info */}
                     <div>
                       <h3 className="font-inter-tight text-[15px] font-semibold text-black">

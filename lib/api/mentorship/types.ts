@@ -13,18 +13,30 @@ export interface MentorshipRequest {
   menteeId: string;
   topic: string;
   message: string | null;
-  scheduledAt: string;
+  scheduledDate: string;
+  scheduledTime: string;
+  duration: number;
+  location: string | null;
   status: RequestStatus;
+  rejectReason: string | null;
+  rejectedAt: string | null;
   mentor: {
     id: string;
-    name: string;
-    avatar: string | null;
-    title: string | null;
+    name?: string;
+    fullName?: string;
+    avatar?: string | null;
+    profileImageUrl?: string | null;
+    title?: string | null;
+    headline?: string | null;
   };
   mentee: {
     id: string;
-    name: string;
-    avatar: string | null;
+    name?: string;
+    fullName?: string;
+    username?: string;
+    avatar?: string | null;
+    profileImageUrl?: string | null;
+    headline?: string | null;
   };
   createdAt: string;
   updatedAt: string;
@@ -36,6 +48,18 @@ export interface CreateRequestInput {
   message?: string;
   scheduledDate: string;
   scheduledTime: string;
+}
+
+export interface BookedSlot {
+  requestId: string;
+  scheduledDate: string;
+  scheduledTime: string;
+  status: string;
+}
+
+export interface MyRequestsResponse {
+  mentorId: string;
+  bookedSlots: BookedSlot[];
 }
 
 export interface RequestsQueryParams {
@@ -64,39 +88,65 @@ export type SessionStatus = "pending" | "confirmed" | "completed" | "cancelled";
 
 export interface MentorshipSession {
   id: string;
-  requestId: string;
+  requestId?: string;
   mentorId: string;
   menteeId: string;
   topic: string;
-  scheduledAt: string;
+  scheduledAt?: string;
+  startTime?: string;
+  endTime?: string;
   duration: number;
   meetingLink: string | null;
+  location?: string | null;
   status: SessionStatus;
   notes: string | null;
+  message?: string | null;
   mentor: {
     id: string;
-    name: string;
-    avatar: string | null;
-    title: string | null;
+    name?: string;
+    fullName?: string;
+    avatar?: string | null;
+    profileImageUrl?: string | null;
+    title?: string | null;
+    headline?: string | null;
   };
   mentee: {
     id: string;
-    name: string;
-    avatar: string | null;
+    name?: string;
+    fullName?: string;
+    avatar?: string | null;
+    profileImageUrl?: string | null;
+    headline?: string | null;
   };
   review?: SessionReview | null;
   createdAt: string;
   updatedAt: string;
-  completedAt: string | null;
-  cancelledAt: string | null;
-  rescheduledAt: string | null;
+  completedAt?: string | null;
+  cancelledAt?: string | null;
+  rescheduledAt?: string | null;
 }
 
 export interface SessionsQueryParams {
   role?: "mentor" | "mentee";
   status?: SessionStatus;
+  upcoming?: boolean;
+  past?: boolean;
   page?: number;
   limit?: number;
+}
+
+export interface SessionsMetaResponse {
+  total: number;
+  pending: number;
+  upcoming: number;
+  completed: number;
+  cancelled: number;
+}
+
+export interface SessionsListResponse {
+  success: boolean;
+  data: MentorshipSession[];
+  meta: SessionsMetaResponse;
 }
 
 export interface RescheduleSessionInput {

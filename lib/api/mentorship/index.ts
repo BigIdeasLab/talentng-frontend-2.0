@@ -13,9 +13,12 @@ import type {
   PendingCountResponse,
   AcceptRequestResponse,
   RejectRequestInput,
+  MyRequestsResponse,
   // Session types
   MentorshipSession,
   SessionsQueryParams,
+  SessionsListResponse,
+  SessionsMetaResponse,
   RescheduleSessionInput,
   CancelSessionInput,
   // Review types
@@ -257,6 +260,16 @@ export async function rejectRequest(
 }
 
 /**
+ * Get mentee's active requests for a specific mentor
+ * GET /requests/my-requests/:mentorId
+ */
+export async function getMyRequestsForMentor(
+  mentorId: string,
+): Promise<MyRequestsResponse> {
+  return apiClient<MyRequestsResponse>(`/requests/my-requests/${mentorId}`);
+}
+
+/**
  * Cancel a request (mentee only)
  * PATCH /requests/:id/cancel
  */
@@ -276,16 +289,18 @@ export async function cancelRequest(
  */
 export async function getSessions(
   params?: SessionsQueryParams,
-): Promise<PaginatedResponse<MentorshipSession>> {
+): Promise<SessionsListResponse> {
   const queryParams = new URLSearchParams();
   if (params?.role) queryParams.append("role", params.role);
   if (params?.status) queryParams.append("status", params.status);
+  if (params?.upcoming) queryParams.append("upcoming", "true");
+  if (params?.past) queryParams.append("past", "true");
   if (params?.page) queryParams.append("page", params.page.toString());
   if (params?.limit) queryParams.append("limit", params.limit.toString());
 
   const queryString = queryParams.toString();
   const endpoint = `/sessions${queryString ? `?${queryString}` : ""}`;
-  return apiClient<PaginatedResponse<MentorshipSession>>(endpoint);
+  return apiClient<SessionsListResponse>(endpoint);
 }
 
 /**
@@ -374,9 +389,13 @@ export type {
   AcceptRequestResponse,
   RejectRequestInput,
   RequestStatus,
+  MyRequestsResponse,
+  BookedSlot,
   // Session types
   MentorshipSession,
   SessionsQueryParams,
+  SessionsListResponse,
+  SessionsMetaResponse,
   RescheduleSessionInput,
   CancelSessionInput,
   SessionStatus,

@@ -1,114 +1,139 @@
 "use client";
 
-import { useState } from "react";
-import { Search, SlidersHorizontal, ChevronDown } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { format } from "date-fns";
+import { Search, SlidersHorizontal, ChevronDown, Loader2 } from "lucide-react";
 import {
   SessionCard,
-  SessionStatus,
+  type SessionStatus as CardSessionStatus,
 } from "@/components/mentor/sessions/SessionCard";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { RescheduleModal } from "@/components/ui/reschedule-modal";
+import { useToast } from "@/hooks";
+import {
+  getSessions,
+  completeSession,
+  cancelSession,
+  rescheduleSession,
+} from "@/lib/api/mentorship";
+import type {
+  MentorshipSession,
+  SessionsMetaResponse,
+} from "@/lib/api/mentorship";
 
-interface Mentee {
+interface SessionView {
   id: string;
-  name: string;
-  avatar?: string;
-  title?: string;
-  company?: string;
-}
-
-interface Session {
-  id: string;
-  mentee: Mentee;
+  mentee: {
+    id: string;
+    name: string;
+    avatar?: string;
+    title?: string;
+    company?: string;
+  };
   topic: string;
   message?: string;
   date: string;
   duration: string;
   location: string;
-  status: SessionStatus;
+  status: CardSessionStatus;
 }
 
-const INITIAL_SESSIONS: Session[] = [
-  {
-    id: "1",
+function mapStatusToCard(
+  status: MentorshipSession["status"],
+): CardSessionStatus {
+  if (status === "pending" || status === "confirmed") return "upcoming";
+  return status as CardSessionStatus;
+}
+
+function mapSession(session: any): SessionView {
+  const rawDate =
+    session.startTime || session.scheduledAt || session.createdAt;
+  const scheduledDate = new Date(rawDate);
+
+  const mentee = session.mentee || {};
+  const mentor = session.mentor || {};
+
+  const menteeName =
+    mentee.fullName || mentee.name || mentee.username || "Unknown";
+  const menteeAvatar =
+    mentee.profileImageUrl || mentee.avatar || undefined;
+  const menteeHeadline =
+    mentee.headline || mentor.headline || undefined;
+
+  const duration =
+    session.duration ||
+    (session.startTime && session.endTime
+      ? Math.round(
+          (new Date(session.endTime).getTime() -
+            new Date(session.startTime).getTime()) /
+            60000,
+        )
+      : mentor.sessionDuration || 0);
+
+  return {
+    id: session.id,
     mentee: {
-      id: "m1",
-      name: "Adaeze Okonkwo",
-      title: "Junior Developer",
-      company: "TechStart Lagos",
+      id: mentee.id || session.menteeId,
+      name: menteeName,
+      avatar: menteeAvatar,
+      title: menteeHeadline,
     },
-    topic: "Backend Development",
-    message:
-      "I'm looking for guidance on transitioning from frontend to fullstack development. I've been working with React for 2 years and want to learn Node.js.",
-    date: "Thu Dec 1, 2:00 PM",
-    duration: "60 mins",
-    location: "Google Meet",
-    status: "upcoming",
-  },
-  {
-    id: "2",
-    mentee: {
-      id: "m2",
-      name: "Chukwudi Eze",
-      title: "Product Designer",
-      company: "Fintech Hub",
-    },
-    topic: "Design Systems",
-    message:
-      "I want to improve my design-to-development handoff skills and learn more about design systems.",
-    date: "Fri Dec 3, 3:30 PM",
-    duration: "60 mins",
-    location: "Zoom",
-    status: "upcoming",
-  },
-  {
-    id: "3",
-    mentee: {
-      id: "m3",
-      name: "Ngozi Abubakar",
-      title: "CS Student",
-      company: "University of Lagos",
-    },
-    topic: "Interview Prep",
-    message:
-      "I'm a final year student preparing for tech interviews. I need help with DSA and mock interviews.",
-    date: "Mon Nov 28, 4:45 PM",
-    duration: "60 mins",
-    location: "Google Meet",
-    status: "completed",
-  },
-  {
-    id: "4",
-    mentee: {
-      id: "m4",
-      name: "Emeka Nwosu",
-      title: "Data Analyst",
-      company: "Paystack",
-    },
-    topic: "Career Growth",
-    message:
-      "Looking for advice on transitioning from data analytics to data science.",
-    date: "Wed Nov 23, 10:00 AM",
-    duration: "60 mins",
-    location: "Google Meet",
-    status: "cancelled",
-  },
-];
+    topic: session.topic,
+    message: session.note || session.message || session.notes || undefined,
+    date: format(scheduledDate, "EEE MMM d, h:mm a"),
+    duration: `${duration} mins`,
+    location: session.location || session.meetingLink || mentor.defaultMeetingLink || "Google Meet",
+    status: mapStatusToCard(session.status),
+  };
+}
 
 export default function SessionsPage() {
-  const [sessions, setSessions] = useState<Session[]>(INITIAL_SESSIONS);
+  const { toast } = useToast();
+  const [sessions, setSessions] = useState<SessionView[]>([]);
+  const [meta, setMeta] = useState<SessionsMetaResponse>({
+    total: 0,
+    pending: 0,
+    upcoming: 0,
+    completed: 0,
+    cancelled: 0,
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [isActionLoading, setIsActionLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<
     "upcoming" | "completed" | "cancelled" | "all"
   >("all");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Modal states
   const [completeModalOpen, setCompleteModalOpen] = useState(false);
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
     null,
   );
+
+  const fetchSessions = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await getSessions({ role: "mentor" });
+      console.log("Sessions API response:", response);
+      const sessionsArray = Array.isArray(response)
+        ? response
+        : (response?.data ?? []);
+      setSessions(sessionsArray.map(mapSession));
+      if (response?.meta) {
+        setMeta(response.meta);
+      }
+    } catch (error) {
+      console.error("Failed to load sessions:", error);
+      setSessions([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchSessions();
+  }, [fetchSessions]);
 
   const filteredSessions = sessions.filter((session) => {
     const matchesTab = activeTab === "all" || session.status === activeTab;
@@ -121,10 +146,16 @@ export default function SessionsPage() {
   });
 
   const counts = {
-    all: sessions.length,
-    upcoming: sessions.filter((s) => s.status === "upcoming").length,
-    completed: sessions.filter((s) => s.status === "completed").length,
-    cancelled: sessions.filter((s) => s.status === "cancelled").length,
+    all: meta.total || sessions.length,
+    upcoming:
+      meta.pending + meta.upcoming ||
+      sessions.filter((s) => s.status === "upcoming").length,
+    completed:
+      meta.completed ||
+      sessions.filter((s) => s.status === "completed").length,
+    cancelled:
+      meta.cancelled ||
+      sessions.filter((s) => s.status === "cancelled").length,
   };
 
   const handleReschedule = (id: string) => {
@@ -142,44 +173,67 @@ export default function SessionsPage() {
     setCompleteModalOpen(true);
   };
 
-  const confirmComplete = () => {
-    if (selectedSessionId) {
-      setSessions((prev) =>
-        prev.map((session) =>
-          session.id === selectedSessionId
-            ? { ...session, status: "completed" as SessionStatus }
-            : session,
-        ),
-      );
-    }
-  };
-
-  const confirmCancel = () => {
-    if (selectedSessionId) {
-      setSessions((prev) =>
-        prev.map((session) =>
-          session.id === selectedSessionId
-            ? { ...session, status: "cancelled" as SessionStatus }
-            : session,
-        ),
-      );
-    }
-  };
-
-  const confirmReschedule = (date: string, time: string) => {
-    if (selectedSessionId) {
-      const formattedDate = new Date(date).toLocaleDateString("en-US", {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
+  const confirmComplete = async () => {
+    if (!selectedSessionId) return;
+    try {
+      setIsActionLoading(true);
+      await completeSession(selectedSessionId);
+      toast({
+        title: "Session completed",
+        description: "The session has been marked as completed",
       });
-      setSessions((prev) =>
-        prev.map((session) =>
-          session.id === selectedSessionId
-            ? { ...session, date: `${formattedDate}, ${time}` }
-            : session,
-        ),
-      );
+      await fetchSessions();
+    } catch {
+      toast({
+        title: "Error",
+        description: "Failed to complete session",
+        variant: "destructive",
+      });
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
+  const confirmCancel = async () => {
+    if (!selectedSessionId) return;
+    try {
+      setIsActionLoading(true);
+      await cancelSession(selectedSessionId);
+      toast({
+        title: "Session cancelled",
+        description: "The session has been cancelled",
+      });
+      await fetchSessions();
+    } catch {
+      toast({
+        title: "Error",
+        description: "Failed to cancel session",
+        variant: "destructive",
+      });
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
+  const confirmReschedule = async (date: string, time: string) => {
+    if (!selectedSessionId) return;
+    try {
+      setIsActionLoading(true);
+      const scheduledAt = new Date(`${date}T${time}`).toISOString();
+      await rescheduleSession(selectedSessionId, { scheduledAt });
+      toast({
+        title: "Session rescheduled",
+        description: "The session has been rescheduled",
+      });
+      await fetchSessions();
+    } catch {
+      toast({
+        title: "Error",
+        description: "Failed to reschedule session",
+        variant: "destructive",
+      });
+    } finally {
+      setIsActionLoading(false);
     }
   };
 
@@ -206,7 +260,6 @@ export default function SessionsPage() {
         <div className="flex flex-1 flex-col overflow-hidden px-6 py-6">
           {/* Search and Filters */}
           <div className="mb-4 flex flex-shrink-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
-            {/* Search Container */}
             <div className="flex flex-1 items-center gap-1.5 rounded-lg border border-[#E1E4EA] bg-white px-3 py-2">
               <Search className="h-4 w-4 text-[#B2B2B2]" strokeWidth={1.125} />
               <input
@@ -217,16 +270,16 @@ export default function SessionsPage() {
                 className="flex-1 bg-transparent font-inter-tight text-[13px] font-normal text-black outline-none placeholder:text-black/30"
               />
             </div>
-
-            {/* Filter and Sort Buttons */}
             <div className="flex items-center gap-2">
               <button className="flex items-center gap-1 rounded-lg border border-[#E1E4EA] bg-white px-3.5 py-2">
-                <SlidersHorizontal className="h-4 w-4" strokeWidth={1.125} />
+                <SlidersHorizontal
+                  className="h-4 w-4"
+                  strokeWidth={1.125}
+                />
                 <span className="font-inter-tight text-[13px] font-normal leading-normal text-black">
                   Filter
                 </span>
               </button>
-
               <button className="flex items-center gap-1 rounded-lg border border-[#E1E4EA] bg-white px-3.5 py-2">
                 <span className="font-inter-tight text-[13px] font-normal leading-normal text-black">
                   Newest
@@ -264,7 +317,14 @@ export default function SessionsPage() {
 
           {/* Session Cards */}
           <div className="flex flex-1 flex-col gap-4 overflow-y-auto">
-            {filteredSessions.length === 0 ? (
+            {isLoading ? (
+              <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
+                <Loader2 className="mx-auto h-6 w-6 animate-spin text-[#5C30FF]" />
+                <p className="mt-2 font-inter-tight text-[14px] text-[#525866]">
+                  Loading sessions...
+                </p>
+              </div>
+            ) : filteredSessions.length === 0 ? (
               <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
                 <p className="font-inter-tight text-[14px] text-[#525866]">
                   No sessions found
@@ -285,7 +345,6 @@ export default function SessionsPage() {
         </div>
       </div>
 
-      {/* Complete Confirmation Modal */}
       <ConfirmationModal
         isOpen={completeModalOpen}
         onClose={() => setCompleteModalOpen(false)}
@@ -294,9 +353,9 @@ export default function SessionsPage() {
         description="Are you sure you want to mark this session as completed?"
         confirmText="Yes, Complete"
         type="success"
+        isLoading={isActionLoading}
       />
 
-      {/* Cancel Confirmation Modal */}
       <ConfirmationModal
         isOpen={cancelModalOpen}
         onClose={() => setCancelModalOpen(false)}
@@ -305,9 +364,9 @@ export default function SessionsPage() {
         description="Are you sure you want to cancel this session? This action cannot be undone."
         confirmText="Yes, Cancel"
         type="danger"
+        isLoading={isActionLoading}
       />
 
-      {/* Reschedule Modal */}
       <RescheduleModal
         isOpen={rescheduleModalOpen}
         onClose={() => setRescheduleModalOpen(false)}

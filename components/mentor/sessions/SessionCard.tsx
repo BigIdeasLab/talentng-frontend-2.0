@@ -64,11 +64,19 @@ export function SessionCard({
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             {/* Avatar */}
-            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#F5F3FF]">
-              <span className="font-inter-tight text-[14px] font-semibold text-[#5C30FF]">
-                {menteeInitials}
-              </span>
-            </div>
+            {mentee.avatar ? (
+              <img
+                src={mentee.avatar}
+                alt={mentee.name}
+                className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
+              />
+            ) : (
+              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#F5F3FF]">
+                <span className="font-inter-tight text-[14px] font-semibold text-[#5C30FF]">
+                  {menteeInitials}
+                </span>
+              </div>
+            )}
             {/* Mentee Info */}
             <div>
               <h3 className="font-inter-tight text-[15px] font-semibold text-black">

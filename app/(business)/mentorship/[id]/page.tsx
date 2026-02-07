@@ -11,7 +11,9 @@ import {
   getMentorReviews,
   getMentorBookingSlots,
   createRequest,
+  getMyRequestsForMentor,
 } from "@/lib/api/mentorship";
+import type { BookedSlot } from "@/lib/api/mentorship/types";
 import type {
   PublicMentorDetail,
   SessionReview,
@@ -46,6 +48,7 @@ export default function MentorDetailPage() {
   const [mentor, setMentor] = useState<PublicMentorDetail | null>(null);
   const [reviews, setReviews] = useState<SessionReview[]>([]);
   const [availability, setAvailability] = useState<AvailabilitySlot[]>([]);
+  const [bookedSlots, setBookedSlots] = useState<BookedSlot[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -58,11 +61,16 @@ export default function MentorDetailPage() {
         const startDate = format(new Date(), "yyyy-MM-dd");
         const endDate = format(addDays(new Date(), 14), "yyyy-MM-dd");
 
-        const [profileData, reviewsData, availabilityData] = await Promise.all([
-          getMentorProfile(mentorId),
-          getMentorReviews(mentorId, { limit: 10 }),
-          getMentorBookingSlots(mentorId, { startDate, endDate }),
-        ]);
+        const [profileData, reviewsData, availabilityData, myRequestsData] =
+          await Promise.all([
+            getMentorProfile(mentorId),
+            getMentorReviews(mentorId, { limit: 10 }),
+            getMentorBookingSlots(mentorId, { startDate, endDate }),
+            getMyRequestsForMentor(mentorId).catch(() => ({
+              mentorId,
+              bookedSlots: [],
+            })),
+          ]);
 
         // Map API fields to our type
         const raw = profileData as unknown as Record<string, unknown>;
@@ -129,6 +137,7 @@ export default function MentorDetailPage() {
         console.log("[Availability] flatSlots:", flatSlots);
         console.log("[Availability] transformed:", transformedAvailability);
         setAvailability(transformedAvailability);
+        setBookedSlots(myRequestsData.bookedSlots || []);
       } catch (err) {
         if (err instanceof Error && err.message.includes("404")) {
           setError("not_found");
@@ -220,6 +229,14 @@ export default function MentorDetailPage() {
       </div>
     );
   }
+
+  const isSlotBooked = (fullDate: string, time: string): boolean => {
+    const datePart = fullDate.split("T")[0];
+    return bookedSlots.some((slot) => {
+      const slotDate = slot.scheduledDate.split("T")[0];
+      return slotDate === datePart && slot.scheduledTime === time;
+    });
+  };
 
   const timeSlots = (() => {
     if (selectedDate === null) return [];
@@ -489,22 +506,33 @@ export default function MentorDetailPage() {
                         Available times for {availability[selectedDate]?.date}
                       </span>
                       <div className="flex flex-wrap items-center gap-2">
-                        {timeSlots.map((time, index) => (
-                          <button
-                            key={index}
-                            onClick={() => {
-                              setSelectedTime(index);
-                              setHasSelectedSlot(true);
-                            }}
-                            className={`flex items-center justify-center px-4 py-2 rounded-lg border font-inter-tight text-[13px] font-normal transition-colors ${
-                              selectedTime === index
-                                ? "bg-[#5C30FF] border-[#5C30FF] text-white"
-                                : "bg-white border-[#E1E4EA] text-black hover:border-[#5C30FF]"
-                            }`}
-                          >
-                            {time}
-                          </button>
-                        ))}
+                        {timeSlots.map((time, index) => {
+                          const booked = isSlotBooked(
+                            availability[selectedDate!]?.fullDate,
+                            time,
+                          );
+                          return (
+                            <button
+                              key={index}
+                              disabled={booked}
+                              onClick={() => {
+                                if (!booked) {
+                                  setSelectedTime(index);
+                                  setHasSelectedSlot(true);
+                                }
+                              }}
+                              className={`flex items-center justify-center px-4 py-2 rounded-lg border font-inter-tight text-[13px] font-normal transition-colors ${
+                                booked
+                                  ? "bg-[#F5F5F5] border-[#E1E4EA] text-[#A3A3A3] cursor-not-allowed line-through"
+                                  : selectedTime === index
+                                    ? "bg-[#5C30FF] border-[#5C30FF] text-white"
+                                    : "bg-white border-[#E1E4EA] text-black hover:border-[#5C30FF]"
+                              }`}
+                            >
+                              {time}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
@@ -1023,22 +1051,33 @@ export default function MentorDetailPage() {
                             Select a time
                           </label>
                           <div className="flex flex-wrap gap-2">
-                            {timeSlots.map((time, index) => (
-                              <button
-                                key={index}
-                                onClick={() => {
-                                  setSelectedTime(index);
-                                  setHasSelectedSlot(true);
-                                }}
-                                className={`px-4 py-2 rounded-lg border font-inter-tight text-[13px] font-normal transition-colors ${
-                                  selectedTime === index
-                                    ? "bg-[#5C30FF] border-[#5C30FF] text-white"
-                                    : "bg-white border-[#E1E4EA] text-black hover:border-[#5C30FF]"
-                                }`}
-                              >
-                                {time}
-                              </button>
-                            ))}
+                            {timeSlots.map((time, index) => {
+                              const booked = isSlotBooked(
+                                availability[selectedDate!]?.fullDate,
+                                time,
+                              );
+                              return (
+                                <button
+                                  key={index}
+                                  disabled={booked}
+                                  onClick={() => {
+                                    if (!booked) {
+                                      setSelectedTime(index);
+                                      setHasSelectedSlot(true);
+                                    }
+                                  }}
+                                  className={`px-4 py-2 rounded-lg border font-inter-tight text-[13px] font-normal transition-colors ${
+                                    booked
+                                      ? "bg-[#F5F5F5] border-[#E1E4EA] text-[#A3A3A3] cursor-not-allowed line-through"
+                                      : selectedTime === index
+                                        ? "bg-[#5C30FF] border-[#5C30FF] text-white"
+                                        : "bg-white border-[#E1E4EA] text-black hover:border-[#5C30FF]"
+                                  }`}
+                                >
+                                  {time}
+                                </button>
+                              );
+                            })}
                           </div>
                         </div>
                       )}
@@ -1164,6 +1203,11 @@ export default function MentorDetailPage() {
                         setMessage("");
                         setShowSuccess(true);
                         setTimeout(() => setShowSuccess(false), 3000);
+                        getMyRequestsForMentor(mentorId)
+                          .then((data) =>
+                            setBookedSlots(data.bookedSlots || []),
+                          )
+                          .catch(() => {});
                       } catch (err) {
                         console.error("Failed to create request:", err);
                       } finally {
