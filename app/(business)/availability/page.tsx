@@ -553,164 +553,163 @@ export default function AvailabilityPage() {
 
           {/* Grid View */}
           <div className="overflow-x-auto p-4">
-              <div
-                ref={gridRef}
-                className="grid select-none"
-                style={{ gridTemplateColumns: "60px repeat(7, 1fr)" }}
-                onMouseLeave={() => setIsDragging(false)}
-              >
-                {/* Header Row */}
-                <div className="sticky left-0 z-10 bg-white" />
-                {DAYS.map((day) => {
-                  const dayHasSlots = Array.from(selectedSlots).some((key) =>
-                    key.startsWith(`${day.index}-`),
-                  );
-                  return (
+            <div
+              ref={gridRef}
+              className="grid select-none"
+              style={{ gridTemplateColumns: "60px repeat(7, 1fr)" }}
+              onMouseLeave={() => setIsDragging(false)}
+            >
+              {/* Header Row */}
+              <div className="sticky left-0 z-10 bg-white" />
+              {DAYS.map((day) => {
+                const dayHasSlots = Array.from(selectedSlots).some((key) =>
+                  key.startsWith(`${day.index}-`),
+                );
+                return (
+                  <div
+                    key={day.index}
+                    className="border-b border-l border-[#E1E4EA] bg-[#FAFAFA] px-2 py-3 text-center first:border-l-0"
+                  >
                     <div
-                      key={day.index}
-                      className="border-b border-l border-[#E1E4EA] bg-[#FAFAFA] px-2 py-3 text-center first:border-l-0"
+                      className={`text-sm font-semibold ${dayHasSlots ? "text-[#5C30FF]" : "text-black"}`}
                     >
-                      <div
-                        className={`text-sm font-semibold ${dayHasSlots ? "text-[#5C30FF]" : "text-black"}`}
-                      >
-                        {day.short}
-                      </div>
-                      <div className="mt-0.5 text-[10px] text-[#99A0AE]">
-                        {day.name}
-                      </div>
+                      {day.short}
                     </div>
-                  );
-                })}
-
-                {/* Time Rows */}
-                {TIME_SLOTS.map((slot, timeIndex) => (
-                  <div key={`row-${timeIndex}`} className="contents">
-                    {/* Time Label */}
-                    <div
-                      className="sticky left-0 z-10 flex items-center justify-end bg-white pr-3"
-                      style={{ height: "24px" }}
-                    >
-                      <span className="text-[11px] font-medium text-[#525866]">
-                        {getTimeLabel(slot)}
-                      </span>
+                    <div className="mt-0.5 text-[10px] text-[#99A0AE]">
+                      {day.name}
                     </div>
-
-                    {/* Day Cells */}
-                    {DAYS.map((day) => {
-                      const key = `${day.index}-${timeIndex}`;
-                      const isSelected = selectedSlots.has(key);
-                      const wasSaved = savedSlots.has(key);
-                      const isTopOfHour = slot.value.endsWith(":00");
-                      const prevSelected = selectedSlots.has(
-                        `${day.index}-${timeIndex - 1}`,
-                      );
-                      const nextSelected = selectedSlots.has(
-                        `${day.index}-${timeIndex + 1}`,
-                      );
-                      const prevSaved = savedSlots.has(
-                        `${day.index}-${timeIndex - 1}`,
-                      );
-                      const nextSaved = savedSlots.has(
-                        `${day.index}-${timeIndex + 1}`,
-                      );
-
-                      // Determine slot state
-                      const isSavedSlot = isSelected && wasSaved; // Green - saved in backend
-                      const isNewSlot = isSelected && !wasSaved; // Purple - newly added
-                      const isRemovedSlot = !isSelected && wasSaved; // Red - will be removed
-
-                      // Determine if this cell is the top of a duration block
-                      let isBlockTop = false;
-                      if (isSelected) {
-                        let runStart = timeIndex;
-                        while (
-                          runStart > 0 &&
-                          selectedSlots.has(`${day.index}-${runStart - 1}`)
-                        ) {
-                          runStart--;
-                        }
-                        isBlockTop =
-                          (timeIndex - runStart) % cellsPerSlot === 0;
-                      }
-
-                      // Determine border radius based on neighbors (for selected slots)
-                      let borderRadius = "";
-                      if (isSelected) {
-                        const isTop = !prevSelected;
-                        const isBottom = !nextSelected;
-                        if (isTop && isBottom) borderRadius = "rounded";
-                        else if (isTop) borderRadius = "rounded-t";
-                        else if (isBottom) borderRadius = "rounded-b";
-                      }
-
-                      // Border radius for removed slots indicator
-                      let removedRadius = "";
-                      if (isRemovedSlot) {
-                        const isTop = !prevSaved || prevSelected;
-                        const isBottom = !nextSaved || nextSelected;
-                        if (isTop && isBottom) removedRadius = "rounded";
-                        else if (isTop) removedRadius = "rounded-t";
-                        else if (isBottom) removedRadius = "rounded-b";
-                      }
-
-                      // Slot color
-                      const slotColor = isSavedSlot
-                        ? "bg-emerald-500" // Green for saved
-                        : isNewSlot
-                          ? "bg-[#5C30FF]" // Purple for new
-                          : "";
-
-                      return (
-                        <div
-                          key={`cell-${day.index}-${timeIndex}`}
-                          className={`relative cursor-pointer border-l transition-colors ${
-                            isTopOfHour
-                              ? "border-t border-[#E1E4EA]"
-                              : "border-t border-[#F0F0F0]"
-                          } first:border-l-0 ${
-                            isSelected
-                              ? ""
-                              : isRemovedSlot
-                                ? "bg-red-50"
-                                : "hover:bg-[#F5F3FF]"
-                          }`}
-                          style={{ height: "24px" }}
-                          onMouseDown={() =>
-                            handleMouseDown(day.index, timeIndex)
-                          }
-                          onMouseEnter={() =>
-                            handleMouseEnter(day.index, timeIndex)
-                          }
-                          onMouseUp={handleMouseUp}
-                        >
-                          {/* Saved or New slot */}
-                          {isSelected && (
-                            <div
-                              className={`absolute inset-x-1 inset-y-0 ${slotColor} ${borderRadius}`}
-                            >
-                              {isBlockTop && (
-                                <span
-                                  className="absolute left-0 right-0 top-0 flex items-center justify-center text-[9px] font-medium text-white/90 pointer-events-none select-none z-10"
-                                  style={{ height: `${cellsPerSlot * 24}px` }}
-                                >
-                                  {sessionDuration}m
-                                </span>
-                              )}
-                            </div>
-                          )}
-                          {/* Removed slot indicator */}
-                          {isRemovedSlot && (
-                            <div
-                              className={`absolute inset-x-1 inset-y-0 border-2 border-dashed border-red-400 bg-red-100/50 ${removedRadius}`}
-                            />
-                          )}
-                        </div>
-                      );
-                    })}
                   </div>
-                ))}
-              </div>
+                );
+              })}
+
+              {/* Time Rows */}
+              {TIME_SLOTS.map((slot, timeIndex) => (
+                <div key={`row-${timeIndex}`} className="contents">
+                  {/* Time Label */}
+                  <div
+                    className="sticky left-0 z-10 flex items-center justify-end bg-white pr-3"
+                    style={{ height: "24px" }}
+                  >
+                    <span className="text-[11px] font-medium text-[#525866]">
+                      {getTimeLabel(slot)}
+                    </span>
+                  </div>
+
+                  {/* Day Cells */}
+                  {DAYS.map((day) => {
+                    const key = `${day.index}-${timeIndex}`;
+                    const isSelected = selectedSlots.has(key);
+                    const wasSaved = savedSlots.has(key);
+                    const isTopOfHour = slot.value.endsWith(":00");
+                    const prevSelected = selectedSlots.has(
+                      `${day.index}-${timeIndex - 1}`,
+                    );
+                    const nextSelected = selectedSlots.has(
+                      `${day.index}-${timeIndex + 1}`,
+                    );
+                    const prevSaved = savedSlots.has(
+                      `${day.index}-${timeIndex - 1}`,
+                    );
+                    const nextSaved = savedSlots.has(
+                      `${day.index}-${timeIndex + 1}`,
+                    );
+
+                    // Determine slot state
+                    const isSavedSlot = isSelected && wasSaved; // Green - saved in backend
+                    const isNewSlot = isSelected && !wasSaved; // Purple - newly added
+                    const isRemovedSlot = !isSelected && wasSaved; // Red - will be removed
+
+                    // Determine if this cell is the top of a duration block
+                    let isBlockTop = false;
+                    if (isSelected) {
+                      let runStart = timeIndex;
+                      while (
+                        runStart > 0 &&
+                        selectedSlots.has(`${day.index}-${runStart - 1}`)
+                      ) {
+                        runStart--;
+                      }
+                      isBlockTop = (timeIndex - runStart) % cellsPerSlot === 0;
+                    }
+
+                    // Determine border radius based on neighbors (for selected slots)
+                    let borderRadius = "";
+                    if (isSelected) {
+                      const isTop = !prevSelected;
+                      const isBottom = !nextSelected;
+                      if (isTop && isBottom) borderRadius = "rounded";
+                      else if (isTop) borderRadius = "rounded-t";
+                      else if (isBottom) borderRadius = "rounded-b";
+                    }
+
+                    // Border radius for removed slots indicator
+                    let removedRadius = "";
+                    if (isRemovedSlot) {
+                      const isTop = !prevSaved || prevSelected;
+                      const isBottom = !nextSaved || nextSelected;
+                      if (isTop && isBottom) removedRadius = "rounded";
+                      else if (isTop) removedRadius = "rounded-t";
+                      else if (isBottom) removedRadius = "rounded-b";
+                    }
+
+                    // Slot color
+                    const slotColor = isSavedSlot
+                      ? "bg-emerald-500" // Green for saved
+                      : isNewSlot
+                        ? "bg-[#5C30FF]" // Purple for new
+                        : "";
+
+                    return (
+                      <div
+                        key={`cell-${day.index}-${timeIndex}`}
+                        className={`relative cursor-pointer border-l transition-colors ${
+                          isTopOfHour
+                            ? "border-t border-[#E1E4EA]"
+                            : "border-t border-[#F0F0F0]"
+                        } first:border-l-0 ${
+                          isSelected
+                            ? ""
+                            : isRemovedSlot
+                              ? "bg-red-50"
+                              : "hover:bg-[#F5F3FF]"
+                        }`}
+                        style={{ height: "24px" }}
+                        onMouseDown={() =>
+                          handleMouseDown(day.index, timeIndex)
+                        }
+                        onMouseEnter={() =>
+                          handleMouseEnter(day.index, timeIndex)
+                        }
+                        onMouseUp={handleMouseUp}
+                      >
+                        {/* Saved or New slot */}
+                        {isSelected && (
+                          <div
+                            className={`absolute inset-x-1 inset-y-0 ${slotColor} ${borderRadius}`}
+                          >
+                            {isBlockTop && (
+                              <span
+                                className="absolute left-0 right-0 top-0 flex items-center justify-center text-[9px] font-medium text-white/90 pointer-events-none select-none z-10"
+                                style={{ height: `${cellsPerSlot * 24}px` }}
+                              >
+                                {sessionDuration}m
+                              </span>
+                            )}
+                          </div>
+                        )}
+                        {/* Removed slot indicator */}
+                        {isRemovedSlot && (
+                          <div
+                            className={`absolute inset-x-1 inset-y-0 border-2 border-dashed border-red-400 bg-red-100/50 ${removedRadius}`}
+                          />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
             </div>
+          </div>
 
           {/* Footer */}
           <div className="flex items-center justify-between border-t border-[#E1E4EA] bg-[#FAFAFA] px-5 py-4">
@@ -740,21 +739,22 @@ export default function AvailabilityPage() {
         {/* Legend & Help Text */}
         <div className="mt-4 flex flex-col items-center gap-2">
           <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1.5">
-                <div className="h-3 w-3 rounded bg-emerald-500" />
-                <span className="text-xs text-[#525866]">Saved</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="h-3 w-3 rounded bg-[#5C30FF]" />
-                <span className="text-xs text-[#525866]">New</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="h-3 w-3 rounded border-2 border-dashed border-red-400 bg-red-100" />
-                <span className="text-xs text-[#525866]">Will be removed</span>
-              </div>
+            <div className="flex items-center gap-1.5">
+              <div className="h-3 w-3 rounded bg-emerald-500" />
+              <span className="text-xs text-[#525866]">Saved</span>
             </div>
+            <div className="flex items-center gap-1.5">
+              <div className="h-3 w-3 rounded bg-[#5C30FF]" />
+              <span className="text-xs text-[#525866]">New</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="h-3 w-3 rounded border-2 border-dashed border-red-400 bg-red-100" />
+              <span className="text-xs text-[#525866]">Will be removed</span>
+            </div>
+          </div>
           <p className="text-xs text-[#99A0AE]">
-            Click and drag to select time slots. Your availability repeats every week.
+            Click and drag to select time slots. Your availability repeats every
+            week.
           </p>
         </div>
       </div>
