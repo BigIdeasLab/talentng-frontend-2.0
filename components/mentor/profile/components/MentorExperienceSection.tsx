@@ -15,7 +15,9 @@ interface MentorExperienceSectionProps {
   experience: ExperienceItem[];
 }
 
-export function MentorExperienceSection({ experience }: MentorExperienceSectionProps) {
+export function MentorExperienceSection({
+  experience,
+}: MentorExperienceSectionProps) {
   if (!experience || experience.length === 0) {
     return (
       <div className="flex flex-col gap-[12px]">
@@ -36,10 +38,7 @@ export function MentorExperienceSection({ experience }: MentorExperienceSectionP
       </h2>
       <div className="space-y-[16px]">
         {experience.map((exp, idx) => (
-          <div
-            key={exp.id || `exp-${idx}`}
-            className="flex flex-col gap-[6px]"
-          >
+          <div key={exp.id || `exp-${idx}`} className="flex flex-col gap-[6px]">
             <p className="text-[14px] font-medium text-black font-inter-tight">
               {exp.role || exp.title || "Untitled Role"}
             </p>
@@ -50,7 +49,8 @@ export function MentorExperienceSection({ experience }: MentorExperienceSectionP
             )}
             {(exp.duration || exp.startDate) && (
               <p className="text-[12px] text-gray-500 font-inter-tight">
-                {exp.duration || `${exp.startDate}${exp.endDate ? ` - ${exp.endDate}` : " - Present"}`}
+                {exp.duration ||
+                  `${exp.startDate}${exp.endDate ? ` - ${exp.endDate}` : " - Present"}`}
               </p>
             )}
             {exp.description && (

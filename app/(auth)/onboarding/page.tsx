@@ -45,7 +45,6 @@ const OnboardingPage = () => {
   const completeOnboardingMutation = useCompleteOnboarding();
   const { ensureValidTokenBeforeOperation } = useTokenRefresh();
 
-
   // OAuth callback is handled by middleware
   // Backend sets cookies directly, frontend receives redirect to onboarding
   // No need to extract tokens from URL

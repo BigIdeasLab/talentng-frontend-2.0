@@ -61,7 +61,10 @@ export function MentorProfileSidebar({
       {/* User Profile */}
       <div className="flex flex-col items-center gap-5">
         {/* Profile Picture with Completeness Ring */}
-        <div className="relative flex-shrink-0" style={{ width: ringSize, height: ringSize }}>
+        <div
+          className="relative flex-shrink-0"
+          style={{ width: ringSize, height: ringSize }}
+        >
           <svg
             width={ringSize}
             height={ringSize}
@@ -126,11 +129,26 @@ export function MentorProfileSidebar({
           {/* Average Rating */}
           <div className="flex justify-between items-center w-full">
             <div className="flex items-center gap-1.5">
-              <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M11 1.83L13.09 8.26H19.92L14.42 12.24L16.51 18.67L11 14.69L5.49 18.67L7.58 12.24L2.08 8.26H8.91L11 1.83Z" fill="#FFD700" stroke="#FFD700" strokeWidth="1" strokeLinejoin="round"/>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 22 22"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11 1.83L13.09 8.26H19.92L14.42 12.24L16.51 18.67L11 14.69L5.49 18.67L7.58 12.24L2.08 8.26H8.91L11 1.83Z"
+                  fill="#FFD700"
+                  stroke="#FFD700"
+                  strokeWidth="1"
+                  strokeLinejoin="round"
+                />
               </svg>
               <span className="text-[13px] font-normal text-black font-inter-tight">
-                {avgRating !== null && avgRating !== undefined ? avgRating.toFixed(1) : "N/A"} Rating
+                {avgRating !== null && avgRating !== undefined
+                  ? avgRating.toFixed(1)
+                  : "N/A"}{" "}
+                Rating
               </span>
             </div>
           </div>
@@ -205,9 +223,27 @@ export function MentorProfileSidebar({
           {/* Profile Views */}
           <div className="flex justify-between items-center w-full">
             <div className="flex items-center gap-1.5">
-              <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1.83 11C1.83 11 4.58 4.58 11 4.58C17.42 4.58 20.17 11 20.17 11C20.17 11 17.42 17.42 11 17.42C4.58 17.42 1.83 11 1.83 11Z" stroke="#525866" strokeWidth="1.375" strokeLinecap="round" strokeLinejoin="round"/>
-                <circle cx="11" cy="11" r="2.75" stroke="#525866" strokeWidth="1.375"/>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 22 22"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1.83 11C1.83 11 4.58 4.58 11 4.58C17.42 4.58 20.17 11 20.17 11C20.17 11 17.42 17.42 11 17.42C4.58 17.42 1.83 11 1.83 11Z"
+                  stroke="#525866"
+                  strokeWidth="1.375"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <circle
+                  cx="11"
+                  cy="11"
+                  r="2.75"
+                  stroke="#525866"
+                  strokeWidth="1.375"
+                />
               </svg>
               <span className="text-[13px] font-normal text-black font-inter-tight">
                 {views} Profile Views
@@ -232,7 +268,9 @@ export function MentorProfileSidebar({
             Profile Visibility
           </span>
           <span className="text-[11px] text-[rgba(0,0,0,0.30)] font-inter-tight">
-            {visibility === "public" ? "Visible to everyone" : "Hidden from search"}
+            {visibility === "public"
+              ? "Visible to everyone"
+              : "Hidden from search"}
           </span>
         </div>
         <Switch

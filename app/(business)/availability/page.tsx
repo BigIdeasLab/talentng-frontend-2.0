@@ -271,38 +271,65 @@ export default function AvailabilityPage() {
 
   // ============ Grid Handlers ============
 
-  const handleMouseDown = (dayIndex: number, timeIndex: number) => {
-    const key = `${dayIndex}-${timeIndex}`;
-    const isSelected = selectedSlots.has(key);
-    setDragMode(isSelected ? "deselect" : "select");
-    setIsDragging(true);
-    toggleSlot(dayIndex, timeIndex, !isSelected);
+  const cellsPerSlot = Math.max(1, parseInt(sessionDuration, 10) / 30);
+
+  const canSelectBlock = (dayIndex: number, startIndex: number) => {
+    if (startIndex + cellsPerSlot > TIME_SLOTS.length) return false;
+    for (let i = 0; i < cellsPerSlot; i++) {
+      if (selectedSlots.has(`${dayIndex}-${startIndex + i}`)) return false;
+    }
+    return true;
   };
 
-  const handleMouseEnter = (dayIndex: number, timeIndex: number) => {
-    if (!isDragging) return;
-    toggleSlot(dayIndex, timeIndex, dragMode === "select");
-  };
-
-  const handleMouseUp = () => setIsDragging(false);
-
-  useEffect(() => {
-    const handleGlobalMouseUp = () => setIsDragging(false);
-    window.addEventListener("mouseup", handleGlobalMouseUp);
-    return () => window.removeEventListener("mouseup", handleGlobalMouseUp);
-  }, []);
-
-  const toggleSlot = (dayIndex: number, timeIndex: number, select: boolean) => {
-    const key = `${dayIndex}-${timeIndex}`;
+  const toggleBlock = (dayIndex: number, startIndex: number, select: boolean) => {
+    if (select && !canSelectBlock(dayIndex, startIndex)) return;
     setSelectedSlots((prev) => {
       const next = new Set(prev);
-      if (select) next.add(key);
-      else next.delete(key);
+      for (let i = 0; i < cellsPerSlot; i++) {
+        const idx = startIndex + i;
+        if (idx >= TIME_SLOTS.length) break;
+        const key = `${dayIndex}-${idx}`;
+        if (select) next.add(key);
+        else next.delete(key);
+      }
       return next;
     });
     setIsSaved(false);
     setHasChanges(true);
   };
+
+  const lastDragBlock = useRef<string | null>(null);
+
+  const handleMouseDown = (dayIndex: number, timeIndex: number) => {
+    const isSelected = selectedSlots.has(`${dayIndex}-${timeIndex}`);
+    if (!isSelected && !canSelectBlock(dayIndex, timeIndex)) return;
+    setDragMode(isSelected ? "deselect" : "select");
+    setIsDragging(true);
+    lastDragBlock.current = `${dayIndex}-${timeIndex}`;
+    toggleBlock(dayIndex, timeIndex, !isSelected);
+  };
+
+  const handleMouseEnter = (dayIndex: number, timeIndex: number) => {
+    if (!isDragging) return;
+    const blockKey = `${dayIndex}-${timeIndex}`;
+    if (blockKey === lastDragBlock.current) return;
+    lastDragBlock.current = blockKey;
+    toggleBlock(dayIndex, timeIndex, dragMode === "select");
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    lastDragBlock.current = null;
+  };
+
+  useEffect(() => {
+    const handleGlobalMouseUp = () => {
+      setIsDragging(false);
+      lastDragBlock.current = null;
+    };
+    window.addEventListener("mouseup", handleGlobalMouseUp);
+    return () => window.removeEventListener("mouseup", handleGlobalMouseUp);
+  }, []);
 
   // ============ List Handlers ============
 
@@ -646,7 +673,6 @@ export default function AvailabilityPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="30">30 min</SelectItem>
-                  <SelectItem value="45">45 min</SelectItem>
                   <SelectItem value="60">60 min</SelectItem>
                   <SelectItem value="90">90 min</SelectItem>
                 </SelectContent>
@@ -785,6 +811,7 @@ export default function AvailabilityPage() {
                       const isRemovedSlot = !isSelected && wasSaved; // Red - will be removed
 
                       // Determine border radius based on neighbors (for selected slots)
+                      const isBlockTop = isSelected && !prevSelected;
                       let borderRadius = "";
                       if (isSelected) {
                         const isTop = !prevSelected;
@@ -838,7 +865,16 @@ export default function AvailabilityPage() {
                           {isSelected && (
                             <div
                               className={`absolute inset-x-1 inset-y-0 ${slotColor} ${borderRadius}`}
-                            />
+                            >
+                              {isBlockTop && (
+                                <span
+                                  className="absolute left-0 right-0 top-0 flex items-center justify-center text-[9px] font-medium text-white/90 pointer-events-none select-none z-10"
+                                  style={{ height: `${cellsPerSlot * 24}px` }}
+                                >
+                                  {sessionDuration}m
+                                </span>
+                              )}
+                            </div>
                           )}
                           {/* Removed slot indicator */}
                           {isRemovedSlot && (

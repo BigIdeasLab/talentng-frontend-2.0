@@ -56,7 +56,8 @@ export function MentorProfile({
     title: profileData.headline || "",
     profileImage: profileData.profileImageUrl || "/default.png",
     sessionsCompleted: profileData.totalSessions ?? 0,
-    mentoringTime: (profileData.totalSessions ?? 0) * (profileData.sessionDuration ?? 60),
+    mentoringTime:
+      (profileData.totalSessions ?? 0) * (profileData.sessionDuration ?? 60),
   };
 
   const socialLinks = {
@@ -121,7 +122,6 @@ export function MentorProfile({
                   industries={industries}
                   languages={languages}
                 />
-
               </>
             )}
 

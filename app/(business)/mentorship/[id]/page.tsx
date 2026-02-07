@@ -68,11 +68,15 @@ export default function MentorDetailPage() {
             (raw.profileImageUrl as string) || (raw.avatar as string) || null,
           title: (raw.headline as string) || (raw.title as string) || null,
           bio: (raw.bio as string) || (raw.description as string) || null,
+          location: (raw.location as string) || null,
+          languages: (raw.languages as string[]) || [],
           rating: (raw.avgRating as number) || 0,
           totalReviews: (raw.totalReviews as number) || 0,
           totalSessions: (raw.totalSessions as number) || 0,
           expertise: (raw.expertise as string[]) || [],
           industries: (raw.industries as string[]) || [],
+          stack: (raw.stack as string[]) || [],
+          links: (raw.links as Record<string, string>) || null,
           company: (raw.company as string) || null,
           sessionDuration: (raw.sessionDuration as number) || 60,
           bufferTime: (raw.bufferTime as number) || 15,
@@ -90,21 +94,30 @@ export default function MentorDetailPage() {
         setReviews(reviewsArray);
 
         const rawAvail = availabilityData as unknown as Record<string, unknown>;
-        const availSlots = (rawAvail?.availableSlots ??
-          rawAvail?.slots ??
-          []) as Record<string, unknown>[];
-        const transformedAvailability = Array.isArray(availSlots)
-          ? availSlots
-              .filter((slot) => slot.date)
-              .map((slot) => ({
-                date: format(new Date(slot.date as string), "MMM dd"),
-                day: format(new Date(slot.date as string), "EEE"),
-                fullDate: slot.date as string,
-                slots:
-                  (slot.slots as { startTime: string; endTime: string }[]) ||
-                  [],
-              }))
-          : [];
+        const flatSlots = ((rawAvail?.slots ?? rawAvail?.availableSlots ?? []) as {
+          date: string;
+          startTime: string;
+          endTime: string;
+        }[]).filter((s) => s.date);
+
+        const grouped = new Map<string, { startTime: string; endTime: string }[]>();
+        for (const slot of flatSlots) {
+          const existing = grouped.get(slot.date) || [];
+          existing.push({ startTime: slot.startTime, endTime: slot.endTime });
+          grouped.set(slot.date, existing);
+        }
+
+        const transformedAvailability: AvailabilitySlot[] = Array.from(grouped.entries()).map(
+          ([dateStr, slots]) => ({
+            date: format(new Date(dateStr + "T00:00:00"), "MMM dd"),
+            day: format(new Date(dateStr + "T00:00:00"), "EEE"),
+            fullDate: dateStr,
+            slots,
+          }),
+        );
+        console.log("[Availability] raw:", rawAvail);
+        console.log("[Availability] flatSlots:", flatSlots);
+        console.log("[Availability] transformed:", transformedAvailability);
         setAvailability(transformedAvailability);
       } catch (err) {
         if (err instanceof Error && err.message.includes("404")) {
@@ -191,8 +204,24 @@ export default function MentorDetailPage() {
     );
   }
 
-  const timeSlots =
-    availability[selectedDate]?.slots.map((s) => s.startTime) || [];
+  const timeSlots = (() => {
+    const slots = availability[selectedDate]?.slots || [];
+    const duration = mentor?.sessionDuration || 60;
+    const times: string[] = [];
+    for (const slot of slots) {
+      const [startH, startM] = slot.startTime.split(":").map(Number);
+      const [endH, endM] = slot.endTime.split(":").map(Number);
+      let current = startH * 60 + startM;
+      const end = endH * 60 + endM;
+      while (current + duration <= end) {
+        const h = Math.floor(current / 60);
+        const m = current % 60;
+        times.push(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`);
+        current += duration;
+      }
+    }
+    return times;
+  })();
 
   return (
     <div className="h-screen bg-white flex flex-col overflow-hidden">
@@ -223,78 +252,77 @@ export default function MentorDetailPage() {
       <div className="flex-1 flex overflow-hidden">
         {/* Left Sidebar */}
         <div className="w-[350px] flex-shrink-0 border-r border-[#E1E4EA] bg-white flex flex-col">
-          <div className="flex-1 overflow-y-auto scrollbar-hide p-5">
-            <div className="flex flex-col gap-6">
+          <div className="flex-1 overflow-y-auto scrollbar-hidden px-4 py-7">
+            <div className="flex flex-col gap-5">
               {/* Profile Section */}
-              <div className="flex flex-col items-center gap-3">
-                <div className="relative w-[113px] h-[113px] rounded-full overflow-hidden bg-gradient-to-b from-purple-400 to-purple-600">
-                  {mentor.avatar ? (
-                    <Image
-                      src={mentor.avatar}
-                      alt={mentor.name}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-white text-3xl font-semibold">
-                      {mentor.name.charAt(0)}
-                    </div>
-                  )}
+              <div className="flex flex-col items-center gap-5">
+                {/* Profile Picture */}
+                <div className="relative w-[90px] h-[90px] flex-shrink-0">
+                  <div
+                    className="w-full h-full rounded-full bg-cover bg-center"
+                    style={{
+                      backgroundImage: `url(${mentor.avatar || "/default.png"})`,
+                    }}
+                  />
                 </div>
-                <div className="flex flex-col items-center gap-2.5">
-                  <h1 className="font-inter-tight text-[17px] font-semibold text-black text-center">
+
+                {/* Info Container */}
+                <div className="flex flex-col items-center gap-3 w-[200px]">
+                  <h2 className="text-[16px] font-medium text-black font-inter-tight text-center">
                     {mentor.name}
-                  </h1>
-                  <p className="font-inter-tight text-[13px] font-normal text-[#A3A3A3] text-center">
+                  </h2>
+                  <p className="text-[14px] font-light text-[rgba(0,0,0,0.30)] font-inter-tight text-center">
                     {mentor.title}
-                    {mentor.company && ` at ${mentor.company}`}
                   </p>
                 </div>
-              </div>
 
-              {/* Stats */}
-              <div className="flex flex-col gap-3">
-                <div className="flex items-center gap-1.5">
-                  <Clock
-                    className="w-4 h-4 text-[#525866]"
-                    strokeWidth={1.125}
-                  />
-                  <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
-                    {mentor.sessionDuration} mins / session
-                  </span>
-                </div>
-                {mentor.defaultMeetingLink && (
-                  <div className="flex items-center gap-1.5">
-                    <LocationIcon className="w-4 h-4 text-[#525866]" />
-                    <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
-                      {mentor.defaultMeetingLink.includes("meet.google")
-                        ? "Google Meet"
-                        : mentor.defaultMeetingLink.includes("zoom")
-                          ? "Zoom"
-                          : "Online Meeting"}
-                    </span>
+                {/* Details Container */}
+                <div className="flex flex-col items-start gap-3 w-full">
+                  {/* Average Rating */}
+                  <div className="flex justify-between items-center w-full">
+                    <div className="flex items-center gap-1.5">
+                      <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 1.83L13.09 8.26H19.92L14.42 12.24L16.51 18.67L11 14.69L5.49 18.67L7.58 12.24L2.08 8.26H8.91L11 1.83Z" fill="#FFD700" stroke="#FFD700" strokeWidth="1" strokeLinejoin="round"/>
+                      </svg>
+                      <span className="text-[13px] font-normal text-black font-inter-tight">
+                        {mentor.rating > 0 ? mentor.rating.toFixed(1) : "N/A"} Rating
+                      </span>
+                    </div>
                   </div>
-                )}
-                <div className="flex items-center gap-1.5">
-                  <CheckDoubleIcon className="w-4 h-4 text-[#525866]" />
-                  <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
-                    {mentor.totalSessions} Sessions Completed
-                  </span>
-                </div>
-                {mentor.totalReviews > 0 && (
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
-                      ⭐ {mentor.rating.toFixed(1)} ({mentor.totalReviews}{" "}
-                      reviews)
-                    </span>
+
+                  {/* Sessions completed */}
+                  <div className="flex justify-between items-center w-full">
+                    <div className="flex items-center gap-1.5">
+                      <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.29166 12.6807L5.49999 16.0418L6.43867 15.0584M15.125 5.9585L9.56724 11.7809" stroke="#525866" strokeWidth="1.375" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M6.875 12.6807L10.0833 16.0418L19.7083 5.9585" stroke="#525866" strokeWidth="1.375" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      <span className="text-[13px] font-normal text-black font-inter-tight">
+                        {mentor.totalSessions} Session Completed
+                      </span>
+                    </div>
                   </div>
-                )}
+
+                  {/* Mentoring time */}
+                  <div className="flex justify-between items-center w-full">
+                    <div className="flex items-center gap-1.5">
+                      <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.67767 2.75C7.48159 2.82327 7.28875 2.90319 7.09942 2.98949M18.9911 14.9427C19.0848 14.7399 19.1712 14.533 19.2499 14.3225M16.9571 17.751C17.1145 17.604 17.2667 17.4516 17.4132 17.2938M13.9964 19.5913C14.1743 19.5242 14.3495 19.4517 14.5218 19.3738M11.1429 20.1611C10.9313 20.1684 10.7181 20.1684 10.5064 20.1611M7.13828 19.3787C7.30401 19.4532 7.47242 19.523 7.6433 19.5876M4.28308 17.3441C4.40838 17.4769 4.53767 17.6059 4.67078 17.7309M2.41322 14.3591C2.48186 14.5404 2.55619 14.7188 2.63599 14.8943M1.8378 11.4632C1.83185 11.2724 1.83187 11.0805 1.8378 10.8895M2.40657 8.00904C2.474 7.82985 2.547 7.65337 2.62533 7.47982M4.26793 5.02263C4.40053 4.88138 4.53764 4.74442 4.67903 4.61197" stroke="#525866" strokeWidth="1.375" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M12.375 11C12.375 11.7594 11.7594 12.375 11 12.375C10.2406 12.375 9.625 11.7594 9.625 11C9.625 10.2406 10.2406 9.625 11 9.625M12.375 11C12.375 10.2406 11.7594 9.625 11 9.625M12.375 11H14.6667M11 9.625V5.5" stroke="#525866" strokeWidth="1.375" strokeLinecap="round"/>
+                        <path d="M20.1667 11.0002C20.1667 5.93755 16.0626 1.8335 11 1.8335" stroke="#525866" strokeWidth="1.375" strokeLinecap="round"/>
+                      </svg>
+                      <span className="text-[13px] font-normal text-black font-inter-tight">
+                        {mentor.totalSessions * mentor.sessionDuration} mins mentoring time
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Book Session Button */}
               <button
                 onClick={() => setIsBookingModalOpen(true)}
-                className="w-full h-[48px] rounded-full bg-[#181B25] text-white font-inter-tight text-[13px] font-medium hover:bg-[#252831] transition-colors"
+                className="w-full h-auto rounded-[40px] bg-[#181B25] hover:bg-[#2a2f3a] text-white px-16 py-4 font-normal text-[15px] font-inter-tight transition-colors"
               >
                 Book Session
               </button>
@@ -345,6 +373,30 @@ export default function MentorDetailPage() {
                       </button>
                     ))}
                   </div>
+
+                  {/* Time Slots for Selected Date */}
+                  {timeSlots.length > 0 && (
+                    <div className="flex flex-col gap-2 mt-1">
+                      <span className="font-inter-tight text-[11px] font-normal text-[#A3A3A3]">
+                        Available times for {availability[selectedDate]?.date}
+                      </span>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {timeSlots.map((time, index) => (
+                          <button
+                            key={index}
+                            onClick={() => setSelectedTime(index)}
+                            className={`flex items-center justify-center px-4 py-2 rounded-lg border font-inter-tight text-[13px] font-normal transition-colors ${
+                              selectedTime === index
+                                ? "bg-[#5C30FF] border-[#5C30FF] text-white"
+                                : "bg-white border-[#E1E4EA] text-black hover:border-[#5C30FF]"
+                            }`}
+                          >
+                            {time}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="flex flex-col gap-4">
@@ -357,33 +409,70 @@ export default function MentorDetailPage() {
                 </div>
               )}
 
-              {/* Select Time Section */}
-              {timeSlots.length > 0 && (
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-inter-tight text-[13px] font-medium text-black">
-                      Select Time
-                    </h3>
-                    <button className="font-inter-tight text-[12px] font-normal text-[#5C30FF] hover:underline">
-                      View All
-                    </button>
-                  </div>
-
-                  {/* Time Slots */}
-                  <div className="flex flex-wrap items-center gap-2">
-                    {timeSlots.map((time, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setSelectedTime(index)}
-                        className={`flex items-center justify-center px-4 py-2 rounded-lg border font-inter-tight text-[13px] font-normal transition-colors ${
-                          selectedTime === index
-                            ? "bg-[#5C30FF] border-[#5C30FF] text-white"
-                            : "bg-white border-[#E1E4EA] text-black hover:border-[#5C30FF]"
-                        }`}
+              {/* Stack Section */}
+              {mentor.stack && mentor.stack.length > 0 && (
+                <div className="flex flex-col items-start gap-[12px]">
+                  <h3 className="text-[12px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
+                    Stack
+                  </h3>
+                  <div className="flex flex-wrap gap-[6px] w-full">
+                    {mentor.stack.slice(0, 5).map((tool, idx) => (
+                      <div
+                        key={idx}
+                        className="px-[10px] py-[7px] rounded-full bg-[#F5F5F5] flex items-center gap-[5px]"
                       >
-                        {time}
-                      </button>
+                        <div className="w-[16px] h-[16px] rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex-shrink-0" />
+                        <span className="text-[11px] font-normal text-black font-inter-tight">
+                          {tool}
+                        </span>
+                      </div>
                     ))}
+                    {mentor.stack.length > 5 && (
+                      <div className="px-[10px] py-[7px] rounded-full bg-[#F5F5F5]">
+                        <span className="text-[11px] font-normal text-black font-inter-tight">
+                          +{mentor.stack.length - 5}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Social Links */}
+              {mentor.links && Object.values(mentor.links).some(Boolean) && (
+                <div className="flex flex-col items-start gap-4 w-full">
+                  <h3 className="text-[11px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
+                    Social Links
+                  </h3>
+                  <div className="flex flex-col gap-2 w-full">
+                    {[
+                      { key: "telegram", label: "Telegram", icon: "M10.9866 14.1243L13.9579 17.5025C15.0587 18.754 15.6092 19.3798 16.1853 19.2274C16.7614 19.0751 16.9591 18.2516 17.3542 16.6043L19.546 7.46707C20.1546 4.93012 20.4588 3.66166 19.7824 3.036C19.1061 2.41035 17.9337 2.87581 15.5889 3.80675L4.71054 8.12578C2.8352 8.87034 1.89752 9.24266 1.83799 9.8824C1.8319 9.94785 1.8318 10.0138 1.83769 10.0792C1.89526 10.7192 2.83179 11.0947 4.70485 11.8454C5.55353 12.1856 5.97787 12.3557 6.28211 12.6815C6.31632 12.7181 6.34921 12.7561 6.38073 12.7952C6.66104 13.1435 6.78068 13.6007 7.01992 14.5149L7.46766 16.2259C7.70047 17.1155 7.81688 17.5604 8.12175 17.6211C8.42663 17.6817 8.69207 17.3128 9.22296 16.5751L10.9866 14.1243ZM10.9866 14.1243L10.6953 13.8207C10.3638 13.4751 10.198 13.3024 10.198 13.0877C10.198 12.873 10.3638 12.7002 10.6953 12.3546L13.9706 8.94125" },
+                      { key: "twitter", label: "X", icon: "M2.75 19.25L9.66937 12.3306M9.66937 12.3306L2.75 2.75H7.33333L12.3306 9.66937M9.66937 12.3306L14.6667 19.25H19.25L12.3306 9.66937M19.25 2.75L12.3306 9.66937" },
+                      { key: "instagram", label: "Instagram", icon: "M2.29166 10.9998C2.29166 6.89469 2.29166 4.84212 3.56696 3.56681C4.84227 2.2915 6.89484 2.2915 11 2.2915C15.1051 2.2915 17.1577 2.2915 18.4331 3.56681C19.7083 4.84212 19.7083 6.89469 19.7083 10.9998C19.7083 15.1049 19.7083 17.1575 18.4331 18.4329C17.1577 19.7082 15.1051 19.7082 11 19.7082C6.89484 19.7082 4.84227 19.7082 3.56696 18.4329C2.29166 17.1575 2.29166 15.1049 2.29166 10.9998Z" },
+                      { key: "linkedIn", label: "LinkedIn", icon: "M4.12501 8.7085H3.66668C2.80243 8.7085 2.37032 8.7085 2.10183 8.97698C1.83334 9.24548 1.83334 9.6776 1.83334 10.5418V18.3335C1.83334 19.1977 1.83334 19.6298 2.10183 19.8983C2.37032 20.1668 2.80243 20.1668 3.66668 20.1668H4.12501C4.98925 20.1668 5.42137 20.1668 5.68986 19.8983C5.95834 19.6298 5.95834 19.1977 5.95834 18.3335V10.5418C5.95834 9.6776 5.95834 9.24548 5.68986 8.97698C5.42137 8.7085 4.98925 8.7085 4.12501 8.7085Z" },
+                    ].map((social) => {
+                      const url = mentor.links?.[social.key] || mentor.links?.[social.key.toLowerCase()];
+                      return (
+                        <div key={social.key} className="flex justify-between items-center w-full">
+                          <div className="flex items-center gap-1.5">
+                            <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d={social.icon} stroke="#525866" strokeWidth="1.375" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                            <span className="text-[13px] font-normal text-black font-inter-tight">
+                              {social.label}
+                            </span>
+                          </div>
+                          {url && (
+                            <Link href={url} target="_blank" rel="noopener noreferrer">
+                              <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10.1739 2.75C6.82897 2.75602 5.0774 2.83816 3.95801 3.95773C2.75 5.16593 2.75 7.11051 2.75 10.9996C2.75 14.8888 2.75 16.8334 3.95801 18.0415C5.16601 19.2498 7.11028 19.2498 10.9989 19.2498C14.8873 19.2498 16.8316 19.2498 18.0396 18.0415C19.1589 16.922 19.2411 15.1701 19.2471 11.8247" stroke="#525866" strokeWidth="1.375" strokeLinecap="round" strokeLinejoin="round"/>
+                                <path d="M18.8431 3.20458L10.1281 11.9702M18.8431 3.20458C18.3903 2.75119 15.3399 2.79345 14.695 2.80262M18.8431 3.20458C19.296 3.65798 19.2537 6.71231 19.2445 7.35802" stroke="#525866" strokeWidth="1.375" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                            </Link>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -415,90 +504,54 @@ export default function MentorDetailPage() {
           {/* Content */}
           <div className="flex-1 overflow-y-auto scrollbar-hide px-6 py-5">
             {activeTab === "Overview" && (
-              <div className="max-w-[580px] flex flex-col gap-6">
+              <div className="max-w-[560px] flex flex-col gap-6 lg:gap-7">
                 {/* About Section */}
-                {mentor.bio && (
-                  <div className="flex flex-col gap-3">
-                    <h2 className="font-inter-tight text-[15px] font-bold text-black">
-                      About {mentor.name.split(" ")[0]}
-                    </h2>
-                    <p className="font-inter-tight text-[13px] font-normal text-black leading-[20px] whitespace-pre-line">
-                      {mentor.bio}
-                    </p>
+                <div className="flex flex-col items-start gap-4 w-full">
+                  <h2 className="text-[17px] lg:text-[20px] font-semibold text-black font-inter-tight">
+                    About {mentor.name.split(" ")[0]}
+                  </h2>
+                  <div className="text-[12px] lg:text-[13px] font-normal text-black font-inter-tight leading-[20px] lg:leading-[22px] w-full whitespace-pre-line">
+                    {mentor.bio || "No bio added yet."}
                   </div>
-                )}
+                </div>
 
                 {/* Background Section */}
-                <div className="flex flex-col gap-4">
-                  <h2 className="font-inter-tight text-[15px] font-bold text-black">
+                <div className="flex flex-col items-start gap-4 w-full">
+                  <h2 className="text-[17px] lg:text-[20px] font-semibold text-black font-inter-tight">
                     Background
                   </h2>
-
-                  {/* Expertise */}
-                  {mentor.expertise.length > 0 && (
-                    <div className="flex flex-col gap-2.5">
-                      <h3 className="font-inter-tight text-[13px] font-normal text-black">
-                        Expertise
-                      </h3>
-                      <div className="flex flex-wrap items-center gap-1.5">
-                        {mentor.expertise.map((skill, index) => (
-                          <span
-                            key={index}
-                            className="px-3 py-1.5 rounded-full bg-[#F5F5F5] font-inter-tight text-[11px] font-normal text-black"
-                          >
-                            {skill}
+                  <div className="flex flex-col items-start gap-2 w-full">
+                    {[
+                      { label: "Headline", values: mentor.title ? [mentor.title] : [] },
+                      { label: "Location", values: mentor.location ? [mentor.location] : [] },
+                      { label: "Expertise", values: mentor.expertise || [] },
+                      { label: "Industries", values: mentor.industries || [] },
+                      { label: "Languages", values: mentor.languages || [] },
+                    ]
+                      .filter((field) => field.values.length > 0)
+                      .map((field, index) => (
+                        <div
+                          key={index}
+                          className="flex flex-col lg:flex-row w-full px-2.5 py-2 gap-2 lg:justify-between lg:items-center rounded-lg border border-[#E1E4EA] bg-white overflow-hidden"
+                        >
+                          <span className="text-[13px] font-normal text-black font-inter-tight leading-[22px] flex-shrink-0">
+                            {field.label}
                           </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Title/Role */}
-                  {mentor.title && (
-                    <div className="flex flex-col gap-2.5">
-                      <h3 className="font-inter-tight text-[13px] font-normal text-black">
-                        Role
-                      </h3>
-                      <div className="flex items-center">
-                        <span className="px-3 py-1.5 rounded-full bg-[#F5F5F5] font-inter-tight text-[11px] font-normal text-black">
-                          {mentor.title}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Industries */}
-                  {mentor.industries.length > 0 && (
-                    <div className="flex flex-col gap-2.5">
-                      <h3 className="font-inter-tight text-[13px] font-normal text-black">
-                        Industries
-                      </h3>
-                      <div className="flex flex-wrap items-center gap-1.5">
-                        {mentor.industries.map((industry, index) => (
-                          <span
-                            key={index}
-                            className="px-3 py-1.5 rounded-full bg-[#F5F5F5] font-inter-tight text-[11px] font-normal text-black"
-                          >
-                            {industry}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Timezone */}
-                  {mentor.timezone && (
-                    <div className="flex flex-col gap-2.5">
-                      <h3 className="font-inter-tight text-[13px] font-normal text-black">
-                        Timezone
-                      </h3>
-                      <div className="flex items-center">
-                        <span className="px-3 py-1.5 rounded-full bg-[#F5F5F5] font-inter-tight text-[11px] font-normal text-black">
-                          {mentor.timezone}
-                        </span>
-                      </div>
-                    </div>
-                  )}
+                          <div className="flex justify-start lg:justify-end items-center gap-1.5 flex-wrap">
+                            {field.values.map((value, idx) => (
+                              <div
+                                key={idx}
+                                className="px-2.5 py-0.5 rounded bg-[#F5F5F5]"
+                              >
+                                <span className="text-[11px] lg:text-[12px] font-normal text-black font-inter-tight leading-[22px]">
+                                  {value}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                  </div>
                 </div>
               </div>
             )}
@@ -895,7 +948,7 @@ function _DollarCircleIcon({ className }: { className?: string }) {
   );
 }
 
-function CheckDoubleIcon({ className }: { className?: string }) {
+function _CheckDoubleIcon({ className }: { className?: string }) {
   return (
     <svg
       className={className}

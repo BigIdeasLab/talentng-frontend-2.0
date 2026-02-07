@@ -198,8 +198,12 @@ export interface PublicMentor {
   title: string | null;
   company: string | null;
   bio: string | null;
+  location: string | null;
   expertise: string[];
   industries: string[];
+  languages: string[];
+  stack: string[];
+  links: Record<string, string> | null;
   sessionDuration: number;
   rating: number;
   totalReviews: number;
