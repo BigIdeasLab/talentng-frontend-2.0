@@ -94,27 +94,32 @@ export default function MentorDetailPage() {
         setReviews(reviewsArray);
 
         const rawAvail = availabilityData as unknown as Record<string, unknown>;
-        const flatSlots = ((rawAvail?.slots ?? rawAvail?.availableSlots ?? []) as {
-          date: string;
-          startTime: string;
-          endTime: string;
-        }[]).filter((s) => s.date);
+        const flatSlots = (
+          (rawAvail?.slots ?? rawAvail?.availableSlots ?? []) as {
+            date: string;
+            startTime: string;
+            endTime: string;
+          }[]
+        ).filter((s) => s.date);
 
-        const grouped = new Map<string, { startTime: string; endTime: string }[]>();
+        const grouped = new Map<
+          string,
+          { startTime: string; endTime: string }[]
+        >();
         for (const slot of flatSlots) {
           const existing = grouped.get(slot.date) || [];
           existing.push({ startTime: slot.startTime, endTime: slot.endTime });
           grouped.set(slot.date, existing);
         }
 
-        const transformedAvailability: AvailabilitySlot[] = Array.from(grouped.entries()).map(
-          ([dateStr, slots]) => ({
-            date: format(new Date(dateStr + "T00:00:00"), "MMM dd"),
-            day: format(new Date(dateStr + "T00:00:00"), "EEE"),
-            fullDate: dateStr,
-            slots,
-          }),
-        );
+        const transformedAvailability: AvailabilitySlot[] = Array.from(
+          grouped.entries(),
+        ).map(([dateStr, slots]) => ({
+          date: format(new Date(dateStr + "T00:00:00"), "MMM dd"),
+          day: format(new Date(dateStr + "T00:00:00"), "EEE"),
+          fullDate: dateStr,
+          slots,
+        }));
         console.log("[Availability] raw:", rawAvail);
         console.log("[Availability] flatSlots:", flatSlots);
         console.log("[Availability] transformed:", transformedAvailability);
@@ -216,7 +221,9 @@ export default function MentorDetailPage() {
       while (current + duration <= end) {
         const h = Math.floor(current / 60);
         const m = current % 60;
-        times.push(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`);
+        times.push(
+          `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`,
+        );
         current += duration;
       }
     }
@@ -281,11 +288,24 @@ export default function MentorDetailPage() {
                   {/* Average Rating */}
                   <div className="flex justify-between items-center w-full">
                     <div className="flex items-center gap-1.5">
-                      <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M11 1.83L13.09 8.26H19.92L14.42 12.24L16.51 18.67L11 14.69L5.49 18.67L7.58 12.24L2.08 8.26H8.91L11 1.83Z" fill="#FFD700" stroke="#FFD700" strokeWidth="1" strokeLinejoin="round"/>
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 22 22"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M11 1.83L13.09 8.26H19.92L14.42 12.24L16.51 18.67L11 14.69L5.49 18.67L7.58 12.24L2.08 8.26H8.91L11 1.83Z"
+                          fill="#FFD700"
+                          stroke="#FFD700"
+                          strokeWidth="1"
+                          strokeLinejoin="round"
+                        />
                       </svg>
                       <span className="text-[13px] font-normal text-black font-inter-tight">
-                        {mentor.rating > 0 ? mentor.rating.toFixed(1) : "N/A"} Rating
+                        {mentor.rating > 0 ? mentor.rating.toFixed(1) : "N/A"}{" "}
+                        Rating
                       </span>
                     </div>
                   </div>
@@ -293,9 +313,27 @@ export default function MentorDetailPage() {
                   {/* Sessions completed */}
                   <div className="flex justify-between items-center w-full">
                     <div className="flex items-center gap-1.5">
-                      <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M2.29166 12.6807L5.49999 16.0418L6.43867 15.0584M15.125 5.9585L9.56724 11.7809" stroke="#525866" strokeWidth="1.375" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M6.875 12.6807L10.0833 16.0418L19.7083 5.9585" stroke="#525866" strokeWidth="1.375" strokeLinecap="round" strokeLinejoin="round"/>
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 22 22"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M2.29166 12.6807L5.49999 16.0418L6.43867 15.0584M15.125 5.9585L9.56724 11.7809"
+                          stroke="#525866"
+                          strokeWidth="1.375"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M6.875 12.6807L10.0833 16.0418L19.7083 5.9585"
+                          stroke="#525866"
+                          strokeWidth="1.375"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
                       </svg>
                       <span className="text-[13px] font-normal text-black font-inter-tight">
                         {mentor.totalSessions} Session Completed
@@ -306,13 +344,36 @@ export default function MentorDetailPage() {
                   {/* Mentoring time */}
                   <div className="flex justify-between items-center w-full">
                     <div className="flex items-center gap-1.5">
-                      <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M7.67767 2.75C7.48159 2.82327 7.28875 2.90319 7.09942 2.98949M18.9911 14.9427C19.0848 14.7399 19.1712 14.533 19.2499 14.3225M16.9571 17.751C17.1145 17.604 17.2667 17.4516 17.4132 17.2938M13.9964 19.5913C14.1743 19.5242 14.3495 19.4517 14.5218 19.3738M11.1429 20.1611C10.9313 20.1684 10.7181 20.1684 10.5064 20.1611M7.13828 19.3787C7.30401 19.4532 7.47242 19.523 7.6433 19.5876M4.28308 17.3441C4.40838 17.4769 4.53767 17.6059 4.67078 17.7309M2.41322 14.3591C2.48186 14.5404 2.55619 14.7188 2.63599 14.8943M1.8378 11.4632C1.83185 11.2724 1.83187 11.0805 1.8378 10.8895M2.40657 8.00904C2.474 7.82985 2.547 7.65337 2.62533 7.47982M4.26793 5.02263C4.40053 4.88138 4.53764 4.74442 4.67903 4.61197" stroke="#525866" strokeWidth="1.375" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M12.375 11C12.375 11.7594 11.7594 12.375 11 12.375C10.2406 12.375 9.625 11.7594 9.625 11C9.625 10.2406 10.2406 9.625 11 9.625M12.375 11C12.375 10.2406 11.7594 9.625 11 9.625M12.375 11H14.6667M11 9.625V5.5" stroke="#525866" strokeWidth="1.375" strokeLinecap="round"/>
-                        <path d="M20.1667 11.0002C20.1667 5.93755 16.0626 1.8335 11 1.8335" stroke="#525866" strokeWidth="1.375" strokeLinecap="round"/>
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 22 22"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M7.67767 2.75C7.48159 2.82327 7.28875 2.90319 7.09942 2.98949M18.9911 14.9427C19.0848 14.7399 19.1712 14.533 19.2499 14.3225M16.9571 17.751C17.1145 17.604 17.2667 17.4516 17.4132 17.2938M13.9964 19.5913C14.1743 19.5242 14.3495 19.4517 14.5218 19.3738M11.1429 20.1611C10.9313 20.1684 10.7181 20.1684 10.5064 20.1611M7.13828 19.3787C7.30401 19.4532 7.47242 19.523 7.6433 19.5876M4.28308 17.3441C4.40838 17.4769 4.53767 17.6059 4.67078 17.7309M2.41322 14.3591C2.48186 14.5404 2.55619 14.7188 2.63599 14.8943M1.8378 11.4632C1.83185 11.2724 1.83187 11.0805 1.8378 10.8895M2.40657 8.00904C2.474 7.82985 2.547 7.65337 2.62533 7.47982M4.26793 5.02263C4.40053 4.88138 4.53764 4.74442 4.67903 4.61197"
+                          stroke="#525866"
+                          strokeWidth="1.375"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M12.375 11C12.375 11.7594 11.7594 12.375 11 12.375C10.2406 12.375 9.625 11.7594 9.625 11C9.625 10.2406 10.2406 9.625 11 9.625M12.375 11C12.375 10.2406 11.7594 9.625 11 9.625M12.375 11H14.6667M11 9.625V5.5"
+                          stroke="#525866"
+                          strokeWidth="1.375"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="M20.1667 11.0002C20.1667 5.93755 16.0626 1.8335 11 1.8335"
+                          stroke="#525866"
+                          strokeWidth="1.375"
+                          strokeLinecap="round"
+                        />
                       </svg>
                       <span className="text-[13px] font-normal text-black font-inter-tight">
-                        {mentor.totalSessions * mentor.sessionDuration} mins mentoring time
+                        {mentor.totalSessions * mentor.sessionDuration} mins
+                        mentoring time
                       </span>
                     </div>
                   </div>
@@ -446,27 +507,82 @@ export default function MentorDetailPage() {
                   </h3>
                   <div className="flex flex-col gap-2 w-full">
                     {[
-                      { key: "telegram", label: "Telegram", icon: "M10.9866 14.1243L13.9579 17.5025C15.0587 18.754 15.6092 19.3798 16.1853 19.2274C16.7614 19.0751 16.9591 18.2516 17.3542 16.6043L19.546 7.46707C20.1546 4.93012 20.4588 3.66166 19.7824 3.036C19.1061 2.41035 17.9337 2.87581 15.5889 3.80675L4.71054 8.12578C2.8352 8.87034 1.89752 9.24266 1.83799 9.8824C1.8319 9.94785 1.8318 10.0138 1.83769 10.0792C1.89526 10.7192 2.83179 11.0947 4.70485 11.8454C5.55353 12.1856 5.97787 12.3557 6.28211 12.6815C6.31632 12.7181 6.34921 12.7561 6.38073 12.7952C6.66104 13.1435 6.78068 13.6007 7.01992 14.5149L7.46766 16.2259C7.70047 17.1155 7.81688 17.5604 8.12175 17.6211C8.42663 17.6817 8.69207 17.3128 9.22296 16.5751L10.9866 14.1243ZM10.9866 14.1243L10.6953 13.8207C10.3638 13.4751 10.198 13.3024 10.198 13.0877C10.198 12.873 10.3638 12.7002 10.6953 12.3546L13.9706 8.94125" },
-                      { key: "twitter", label: "X", icon: "M2.75 19.25L9.66937 12.3306M9.66937 12.3306L2.75 2.75H7.33333L12.3306 9.66937M9.66937 12.3306L14.6667 19.25H19.25L12.3306 9.66937M19.25 2.75L12.3306 9.66937" },
-                      { key: "instagram", label: "Instagram", icon: "M2.29166 10.9998C2.29166 6.89469 2.29166 4.84212 3.56696 3.56681C4.84227 2.2915 6.89484 2.2915 11 2.2915C15.1051 2.2915 17.1577 2.2915 18.4331 3.56681C19.7083 4.84212 19.7083 6.89469 19.7083 10.9998C19.7083 15.1049 19.7083 17.1575 18.4331 18.4329C17.1577 19.7082 15.1051 19.7082 11 19.7082C6.89484 19.7082 4.84227 19.7082 3.56696 18.4329C2.29166 17.1575 2.29166 15.1049 2.29166 10.9998Z" },
-                      { key: "linkedIn", label: "LinkedIn", icon: "M4.12501 8.7085H3.66668C2.80243 8.7085 2.37032 8.7085 2.10183 8.97698C1.83334 9.24548 1.83334 9.6776 1.83334 10.5418V18.3335C1.83334 19.1977 1.83334 19.6298 2.10183 19.8983C2.37032 20.1668 2.80243 20.1668 3.66668 20.1668H4.12501C4.98925 20.1668 5.42137 20.1668 5.68986 19.8983C5.95834 19.6298 5.95834 19.1977 5.95834 18.3335V10.5418C5.95834 9.6776 5.95834 9.24548 5.68986 8.97698C5.42137 8.7085 4.98925 8.7085 4.12501 8.7085Z" },
+                      {
+                        key: "telegram",
+                        label: "Telegram",
+                        icon: "M10.9866 14.1243L13.9579 17.5025C15.0587 18.754 15.6092 19.3798 16.1853 19.2274C16.7614 19.0751 16.9591 18.2516 17.3542 16.6043L19.546 7.46707C20.1546 4.93012 20.4588 3.66166 19.7824 3.036C19.1061 2.41035 17.9337 2.87581 15.5889 3.80675L4.71054 8.12578C2.8352 8.87034 1.89752 9.24266 1.83799 9.8824C1.8319 9.94785 1.8318 10.0138 1.83769 10.0792C1.89526 10.7192 2.83179 11.0947 4.70485 11.8454C5.55353 12.1856 5.97787 12.3557 6.28211 12.6815C6.31632 12.7181 6.34921 12.7561 6.38073 12.7952C6.66104 13.1435 6.78068 13.6007 7.01992 14.5149L7.46766 16.2259C7.70047 17.1155 7.81688 17.5604 8.12175 17.6211C8.42663 17.6817 8.69207 17.3128 9.22296 16.5751L10.9866 14.1243ZM10.9866 14.1243L10.6953 13.8207C10.3638 13.4751 10.198 13.3024 10.198 13.0877C10.198 12.873 10.3638 12.7002 10.6953 12.3546L13.9706 8.94125",
+                      },
+                      {
+                        key: "twitter",
+                        label: "X",
+                        icon: "M2.75 19.25L9.66937 12.3306M9.66937 12.3306L2.75 2.75H7.33333L12.3306 9.66937M9.66937 12.3306L14.6667 19.25H19.25L12.3306 9.66937M19.25 2.75L12.3306 9.66937",
+                      },
+                      {
+                        key: "instagram",
+                        label: "Instagram",
+                        icon: "M2.29166 10.9998C2.29166 6.89469 2.29166 4.84212 3.56696 3.56681C4.84227 2.2915 6.89484 2.2915 11 2.2915C15.1051 2.2915 17.1577 2.2915 18.4331 3.56681C19.7083 4.84212 19.7083 6.89469 19.7083 10.9998C19.7083 15.1049 19.7083 17.1575 18.4331 18.4329C17.1577 19.7082 15.1051 19.7082 11 19.7082C6.89484 19.7082 4.84227 19.7082 3.56696 18.4329C2.29166 17.1575 2.29166 15.1049 2.29166 10.9998Z",
+                      },
+                      {
+                        key: "linkedIn",
+                        label: "LinkedIn",
+                        icon: "M4.12501 8.7085H3.66668C2.80243 8.7085 2.37032 8.7085 2.10183 8.97698C1.83334 9.24548 1.83334 9.6776 1.83334 10.5418V18.3335C1.83334 19.1977 1.83334 19.6298 2.10183 19.8983C2.37032 20.1668 2.80243 20.1668 3.66668 20.1668H4.12501C4.98925 20.1668 5.42137 20.1668 5.68986 19.8983C5.95834 19.6298 5.95834 19.1977 5.95834 18.3335V10.5418C5.95834 9.6776 5.95834 9.24548 5.68986 8.97698C5.42137 8.7085 4.98925 8.7085 4.12501 8.7085Z",
+                      },
                     ].map((social) => {
-                      const url = mentor.links?.[social.key] || mentor.links?.[social.key.toLowerCase()];
+                      const url =
+                        mentor.links?.[social.key] ||
+                        mentor.links?.[social.key.toLowerCase()];
                       return (
-                        <div key={social.key} className="flex justify-between items-center w-full">
+                        <div
+                          key={social.key}
+                          className="flex justify-between items-center w-full"
+                        >
                           <div className="flex items-center gap-1.5">
-                            <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d={social.icon} stroke="#525866" strokeWidth="1.375" strokeLinecap="round" strokeLinejoin="round"/>
+                            <svg
+                              width="18"
+                              height="18"
+                              viewBox="0 0 22 22"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d={social.icon}
+                                stroke="#525866"
+                                strokeWidth="1.375"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
                             </svg>
                             <span className="text-[13px] font-normal text-black font-inter-tight">
                               {social.label}
                             </span>
                           </div>
                           {url && (
-                            <Link href={url} target="_blank" rel="noopener noreferrer">
-                              <svg width="18" height="18" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M10.1739 2.75C6.82897 2.75602 5.0774 2.83816 3.95801 3.95773C2.75 5.16593 2.75 7.11051 2.75 10.9996C2.75 14.8888 2.75 16.8334 3.95801 18.0415C5.16601 19.2498 7.11028 19.2498 10.9989 19.2498C14.8873 19.2498 16.8316 19.2498 18.0396 18.0415C19.1589 16.922 19.2411 15.1701 19.2471 11.8247" stroke="#525866" strokeWidth="1.375" strokeLinecap="round" strokeLinejoin="round"/>
-                                <path d="M18.8431 3.20458L10.1281 11.9702M18.8431 3.20458C18.3903 2.75119 15.3399 2.79345 14.695 2.80262M18.8431 3.20458C19.296 3.65798 19.2537 6.71231 19.2445 7.35802" stroke="#525866" strokeWidth="1.375" strokeLinecap="round" strokeLinejoin="round"/>
+                            <Link
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 22 22"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M10.1739 2.75C6.82897 2.75602 5.0774 2.83816 3.95801 3.95773C2.75 5.16593 2.75 7.11051 2.75 10.9996C2.75 14.8888 2.75 16.8334 3.95801 18.0415C5.16601 19.2498 7.11028 19.2498 10.9989 19.2498C14.8873 19.2498 16.8316 19.2498 18.0396 18.0415C19.1589 16.922 19.2411 15.1701 19.2471 11.8247"
+                                  stroke="#525866"
+                                  strokeWidth="1.375"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                                <path
+                                  d="M18.8431 3.20458L10.1281 11.9702M18.8431 3.20458C18.3903 2.75119 15.3399 2.79345 14.695 2.80262M18.8431 3.20458C19.296 3.65798 19.2537 6.71231 19.2445 7.35802"
+                                  stroke="#525866"
+                                  strokeWidth="1.375"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
                               </svg>
                             </Link>
                           )}
@@ -522,8 +638,14 @@ export default function MentorDetailPage() {
                   </h2>
                   <div className="flex flex-col items-start gap-2 w-full">
                     {[
-                      { label: "Headline", values: mentor.title ? [mentor.title] : [] },
-                      { label: "Location", values: mentor.location ? [mentor.location] : [] },
+                      {
+                        label: "Headline",
+                        values: mentor.title ? [mentor.title] : [],
+                      },
+                      {
+                        label: "Location",
+                        values: mentor.location ? [mentor.location] : [],
+                      },
                       { label: "Expertise", values: mentor.expertise || [] },
                       { label: "Industries", values: mentor.industries || [] },
                       { label: "Languages", values: mentor.languages || [] },

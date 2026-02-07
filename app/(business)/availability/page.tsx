@@ -281,7 +281,11 @@ export default function AvailabilityPage() {
     return true;
   };
 
-  const toggleBlock = (dayIndex: number, startIndex: number, select: boolean) => {
+  const toggleBlock = (
+    dayIndex: number,
+    startIndex: number,
+    select: boolean,
+  ) => {
     if (select && !canSelectBlock(dayIndex, startIndex)) return;
     setSelectedSlots((prev) => {
       const next = new Set(prev);
