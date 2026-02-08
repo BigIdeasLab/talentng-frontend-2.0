@@ -79,8 +79,10 @@ function formatSessionDate(scheduledAt: string): string {
 function mapSessionStatus(
   status: MentorshipSession["status"],
 ): MenteeSessionStatus {
-  if (status === "confirmed") return "upcoming";
-  return status;
+  if (status === "confirmed" || status === "rescheduled") return "upcoming";
+  if (status === "completed") return "completed";
+  if (status === "cancelled") return "cancelled";
+  return "pending";
 }
 
 function mapApiSessionToMenteeSession(

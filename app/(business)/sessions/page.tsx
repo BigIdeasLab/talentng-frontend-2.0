@@ -23,6 +23,7 @@ import type {
 
 interface SessionView {
   id: string;
+  mentorId: string;
   mentee: {
     id: string;
     name: string;
@@ -41,8 +42,11 @@ interface SessionView {
 function mapStatusToCard(
   status: MentorshipSession["status"],
 ): CardSessionStatus {
-  if (status === "pending" || status === "confirmed") return "upcoming";
-  return status as CardSessionStatus;
+  if (status === "pending" || status === "confirmed" || status === "rescheduled")
+    return "upcoming";
+  if (status === "completed") return "completed";
+  if (status === "cancelled") return "cancelled";
+  return "upcoming";
 }
 
 function mapSession(session: any): SessionView {
@@ -69,6 +73,7 @@ function mapSession(session: any): SessionView {
 
   return {
     id: session.id,
+    mentorId: mentor.id || session.mentorId,
     mentee: {
       id: mentee.id || session.menteeId,
       name: menteeName,
@@ -111,6 +116,7 @@ export default function SessionsPage() {
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
     null,
   );
+  const [selectedMentorId, setSelectedMentorId] = useState<string>("");
 
   const fetchSessions = useCallback(async () => {
     try {
@@ -158,7 +164,9 @@ export default function SessionsPage() {
   };
 
   const handleReschedule = (id: string) => {
+    const session = sessions.find((s) => s.id === id);
     setSelectedSessionId(id);
+    setSelectedMentorId(session?.mentorId || "");
     setRescheduleModalOpen(true);
   };
 
@@ -214,12 +222,13 @@ export default function SessionsPage() {
     }
   };
 
-  const confirmReschedule = async (date: string, time: string) => {
+  const confirmReschedule = async (date: string, startTime: string, endTime: string) => {
     if (!selectedSessionId) return;
     try {
       setIsActionLoading(true);
-      const scheduledAt = new Date(`${date}T${time}`).toISOString();
-      await rescheduleSession(selectedSessionId, { scheduledAt });
+      const newStartTime = new Date(`${date}T${startTime}`).toISOString();
+      const newEndTime = new Date(`${date}T${endTime}`).toISOString();
+      await rescheduleSession(selectedSessionId, { newStartTime, newEndTime });
       toast({
         title: "Session rescheduled",
         description: "The session has been rescheduled",
@@ -367,6 +376,7 @@ export default function SessionsPage() {
         isOpen={rescheduleModalOpen}
         onClose={() => setRescheduleModalOpen(false)}
         onConfirm={confirmReschedule}
+        mentorId={selectedMentorId}
       />
     </div>
   );

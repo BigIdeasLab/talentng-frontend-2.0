@@ -84,7 +84,7 @@ export interface RejectRequestInput {
 
 // ============ Session Types ============
 
-export type SessionStatus = "pending" | "confirmed" | "completed" | "cancelled";
+export type SessionStatus = "pending" | "confirmed" | "rescheduled" | "completed" | "cancelled";
 
 export interface MentorshipSession {
   id: string;
@@ -150,7 +150,8 @@ export interface SessionsListResponse {
 }
 
 export interface RescheduleSessionInput {
-  scheduledAt: string;
+  newStartTime: string;
+  newEndTime: string;
 }
 
 export interface CancelSessionInput {
