@@ -14,6 +14,8 @@ import {
   listMentors,
   getSessions,
   cancelSession,
+  confirmSessionCompletion,
+  disputeSession,
   type PublicMentor,
   type MentorshipSession,
 } from "@/lib/api/mentorship";
@@ -80,6 +82,9 @@ function mapSessionStatus(
   status: MentorshipSession["status"],
 ): MenteeSessionStatus {
   if (status === "confirmed" || status === "rescheduled") return "upcoming";
+  if (status === "in_progress") return "in_progress";
+  if (status === "pending_completion") return "pending_completion";
+  if (status === "disputed") return "disputed";
   if (status === "completed") return "completed";
   if (status === "cancelled") return "cancelled";
   return "pending";
@@ -266,6 +271,38 @@ export default function MentorshipPage() {
     }
   };
 
+  const handleConfirmCompletion = async (id: string) => {
+    try {
+      await confirmSessionCompletion(id);
+      setSessions((prev) =>
+        prev.map((session) =>
+          session.id === id
+            ? { ...session, status: "completed" as MenteeSessionStatus }
+            : session,
+        ),
+      );
+      toast.success("Session completion confirmed");
+    } catch {
+      toast.error("Failed to confirm completion");
+    }
+  };
+
+  const handleDisputeSession = async (id: string) => {
+    try {
+      await disputeSession(id);
+      setSessions((prev) =>
+        prev.map((session) =>
+          session.id === id
+            ? { ...session, status: "disputed" as MenteeSessionStatus }
+            : session,
+        ),
+      );
+      toast.success("Session disputed");
+    } catch {
+      toast.error("Failed to dispute session");
+    }
+  };
+
   const sessionTabs = [
     { id: "all" as const, label: "All", count: sessionCounts.all },
     { id: "pending" as const, label: "Pending", count: sessionCounts.pending },
@@ -415,6 +452,8 @@ export default function MentorshipPage() {
                   {...session}
                   onCancel={handleCancelSession}
                   onJoin={handleJoinSession}
+                  onConfirmCompletion={handleConfirmCompletion}
+                  onDispute={handleDisputeSession}
                 />
               ))
             )}

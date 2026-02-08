@@ -88,6 +88,9 @@ export type SessionStatus =
   | "pending"
   | "confirmed"
   | "rescheduled"
+  | "in_progress"
+  | "pending_completion"
+  | "disputed"
   | "completed"
   | "cancelled";
 

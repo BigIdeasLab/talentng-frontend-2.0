@@ -366,6 +366,32 @@ export async function rescheduleSession(
 }
 
 /**
+ * Confirm session completion (mentee only)
+ * POST /sessions/:id/confirm-completion
+ */
+export async function confirmSessionCompletion(
+  sessionId: string,
+): Promise<MentorshipSession> {
+  return apiClient<MentorshipSession>(`/sessions/${sessionId}/confirm-completion`, {
+    method: "POST",
+  });
+}
+
+/**
+ * Dispute a session (mentee only)
+ * POST /sessions/:id/dispute
+ */
+export async function disputeSession(
+  sessionId: string,
+  data?: { reason?: string },
+): Promise<MentorshipSession> {
+  return apiClient<MentorshipSession>(`/sessions/${sessionId}/dispute`, {
+    method: "POST",
+    body: data,
+  });
+}
+
+/**
  * Leave a review for a session (mentee only)
  * POST /sessions/:id/review
  */

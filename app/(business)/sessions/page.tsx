@@ -36,6 +36,7 @@ interface SessionView {
   date: string;
   duration: string;
   location: string;
+  endTime?: string;
   status: CardSessionStatus;
 }
 
@@ -48,6 +49,9 @@ function mapStatusToCard(
     status === "rescheduled"
   )
     return "upcoming";
+  if (status === "in_progress") return "in_progress";
+  if (status === "pending_completion") return "pending_completion";
+  if (status === "disputed") return "disputed";
   if (status === "completed") return "completed";
   if (status === "cancelled") return "cancelled";
   return "upcoming";
@@ -93,6 +97,7 @@ function mapSession(session: any): SessionView {
       session.meetingLink ||
       mentor.defaultMeetingLink ||
       "Google Meet",
+    endTime: session.endTime || undefined,
     status: mapStatusToCard(session.status),
   };
 }

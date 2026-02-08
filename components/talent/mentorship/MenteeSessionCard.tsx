@@ -12,6 +12,9 @@ interface Mentor {
 export type MenteeSessionStatus =
   | "pending"
   | "upcoming"
+  | "in_progress"
+  | "pending_completion"
+  | "disputed"
   | "completed"
   | "cancelled";
 
@@ -26,6 +29,8 @@ interface MenteeSessionCardProps {
   status?: MenteeSessionStatus;
   onCancel?: (id: string) => void;
   onJoin?: (id: string) => void;
+  onConfirmCompletion?: (id: string) => void;
+  onDispute?: (id: string) => void;
 }
 
 export function MenteeSessionCard({
@@ -39,10 +44,15 @@ export function MenteeSessionCard({
   status = "pending",
   onCancel,
   onJoin,
+  onConfirmCompletion,
+  onDispute,
 }: MenteeSessionCardProps) {
   const statusConfig = {
     pending: { label: "Pending", bg: "bg-[#FEF3C7]", text: "text-[#D97706]" },
     upcoming: { label: "Upcoming", bg: "bg-[#EEF4FF]", text: "text-[#3B82F6]" },
+    in_progress: { label: "In Progress", bg: "bg-[#FEF3C7]", text: "text-[#D97706]" },
+    pending_completion: { label: "Review Required", bg: "bg-[#FFF7ED]", text: "text-[#EA580C]" },
+    disputed: { label: "Disputed", bg: "bg-[#FEF2F2]", text: "text-[#DC2626]" },
     completed: {
       label: "Completed",
       bg: "bg-[#ECFDF3]",
@@ -170,6 +180,55 @@ export function MenteeSessionCard({
                 </span>
               </Button>
             </>
+          )}
+          {status === "in_progress" && (
+            <>
+              <Button
+                onClick={() => onJoin?.(id)}
+                className="flex items-center gap-2 rounded-[30px] bg-[#5C30FF] px-4 py-2 hover:bg-[#4A26CC]"
+              >
+                <span className="font-inter-tight text-[13px] font-normal text-white">
+                  Join Session
+                </span>
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => onCancel?.(id)}
+                className="flex items-center gap-2 rounded-[30px] border-[#E1E4EA] bg-white px-4 py-2 hover:border-[#EF4444] hover:bg-[#FEF2F2] hover:text-[#EF4444]"
+              >
+                <X className="h-4 w-4" strokeWidth={1.375} />
+                <span className="font-inter-tight text-[13px] font-normal">
+                  Cancel
+                </span>
+              </Button>
+            </>
+          )}
+          {status === "pending_completion" && (
+            <>
+              <Button
+                onClick={() => onConfirmCompletion?.(id)}
+                className="flex items-center gap-2 rounded-[30px] bg-[#10B981] px-4 py-2 hover:bg-[#059669]"
+              >
+                <span className="font-inter-tight text-[13px] font-normal text-white">
+                  Confirm Completion
+                </span>
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => onDispute?.(id)}
+                className="flex items-center gap-2 rounded-[30px] border-[#E1E4EA] bg-white px-4 py-2 hover:border-[#EF4444] hover:bg-[#FEF2F2] hover:text-[#EF4444]"
+              >
+                <X className="h-4 w-4" strokeWidth={1.375} />
+                <span className="font-inter-tight text-[13px] font-normal">
+                  Dispute
+                </span>
+              </Button>
+            </>
+          )}
+          {status === "disputed" && (
+            <span className="font-inter-tight text-[12px] text-[#DC2626]">
+              Session under review
+            </span>
           )}
           {status === "completed" && (
             <span className="font-inter-tight text-[12px] text-[#10B981]">

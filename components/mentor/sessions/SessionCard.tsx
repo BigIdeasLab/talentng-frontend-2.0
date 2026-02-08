@@ -9,7 +9,7 @@ interface Mentee {
   company?: string;
 }
 
-export type SessionStatus = "upcoming" | "completed" | "cancelled";
+export type SessionStatus = "upcoming" | "in_progress" | "pending_completion" | "disputed" | "completed" | "cancelled";
 
 interface SessionCardProps {
   id: string;
@@ -19,10 +19,13 @@ interface SessionCardProps {
   date: string;
   duration: string;
   location: string;
+  endTime?: string;
   status?: SessionStatus;
   onReschedule?: (id: string) => void;
   onCancel?: (id: string) => void;
   onComplete?: (id: string) => void;
+  onConfirmCompletion?: (id: string) => void;
+  onDispute?: (id: string) => void;
 }
 
 export function SessionCard({
@@ -33,13 +36,20 @@ export function SessionCard({
   date,
   duration,
   location,
+  endTime,
   status = "upcoming",
   onReschedule,
   onCancel,
   onComplete,
+  onConfirmCompletion,
+  onDispute,
 }: SessionCardProps) {
+  const isSessionEnded = endTime ? new Date() > new Date(endTime) : false;
   const statusConfig = {
     upcoming: { label: "Upcoming", bg: "bg-[#EEF4FF]", text: "text-[#3B82F6]" },
+    in_progress: { label: "In Progress", bg: "bg-[#FEF3C7]", text: "text-[#D97706]" },
+    pending_completion: { label: "Pending Completion", bg: "bg-[#FFF7ED]", text: "text-[#EA580C]" },
+    disputed: { label: "Disputed", bg: "bg-[#FEF2F2]", text: "text-[#DC2626]" },
     completed: {
       label: "Completed",
       bg: "bg-[#ECFDF3]",
@@ -233,14 +243,44 @@ export function SessionCard({
           {status === "upcoming" && (
             <>
               <Button
-                onClick={() => onComplete?.(id)}
-                className="flex items-center gap-2 rounded-[30px] bg-[#5C30FF] px-4 py-2 hover:bg-[#4A26CC]"
+                variant="outline"
+                onClick={() => onReschedule?.(id)}
+                className="flex items-center gap-2 rounded-[30px] border-[#E1E4EA] bg-white px-4 py-2 hover:bg-[#F5F5F5]"
               >
-                <CheckCircle className="h-4 w-4" strokeWidth={1.375} />
-                <span className="font-inter-tight text-[13px] font-normal text-white">
-                  Complete
+                <Clock className="h-4 w-4 text-[#525866]" strokeWidth={1.375} />
+                <span className="font-inter-tight text-[13px] font-normal text-[#525866]">
+                  Reschedule
                 </span>
               </Button>
+              <Button
+                variant="outline"
+                onClick={() => onCancel?.(id)}
+                className="flex items-center gap-2 rounded-[30px] border-[#E1E4EA] bg-white px-4 py-2 hover:border-[#EF4444] hover:bg-[#FEF2F2] hover:text-[#EF4444]"
+              >
+                <X className="h-4 w-4" strokeWidth={1.375} />
+                <span className="font-inter-tight text-[13px] font-normal">
+                  Cancel
+                </span>
+              </Button>
+            </>
+          )}
+          {status === "in_progress" && (
+            <>
+              {isSessionEnded ? (
+                <Button
+                  onClick={() => onComplete?.(id)}
+                  className="flex items-center gap-2 rounded-[30px] bg-[#5C30FF] px-4 py-2 hover:bg-[#4A26CC]"
+                >
+                  <CheckCircle className="h-4 w-4" strokeWidth={1.375} />
+                  <span className="font-inter-tight text-[13px] font-normal text-white">
+                    Complete
+                  </span>
+                </Button>
+              ) : (
+                <span className="font-inter-tight text-[12px] text-[#D97706]">
+                  Session in progress
+                </span>
+              )}
               <Button
                 variant="outline"
                 onClick={() => onReschedule?.(id)}
@@ -262,6 +302,16 @@ export function SessionCard({
                 </span>
               </Button>
             </>
+          )}
+          {status === "pending_completion" && (
+            <span className="font-inter-tight text-[12px] text-[#EA580C]">
+              Waiting for mentee confirmation
+            </span>
+          )}
+          {status === "disputed" && (
+            <span className="font-inter-tight text-[12px] text-[#DC2626]">
+              Session disputed by mentee
+            </span>
           )}
           {status === "completed" && (
             <span className="font-inter-tight text-[12px] text-[#10B981]">
