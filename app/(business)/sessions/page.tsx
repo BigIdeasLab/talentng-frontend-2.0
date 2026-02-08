@@ -42,7 +42,11 @@ interface SessionView {
 function mapStatusToCard(
   status: MentorshipSession["status"],
 ): CardSessionStatus {
-  if (status === "pending" || status === "confirmed" || status === "rescheduled")
+  if (
+    status === "pending" ||
+    status === "confirmed" ||
+    status === "rescheduled"
+  )
     return "upcoming";
   if (status === "completed") return "completed";
   if (status === "cancelled") return "cancelled";
@@ -222,7 +226,11 @@ export default function SessionsPage() {
     }
   };
 
-  const confirmReschedule = async (date: string, startTime: string, endTime: string) => {
+  const confirmReschedule = async (
+    date: string,
+    startTime: string,
+    endTime: string,
+  ) => {
     if (!selectedSessionId) return;
     try {
       setIsActionLoading(true);

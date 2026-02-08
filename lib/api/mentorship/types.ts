@@ -84,7 +84,12 @@ export interface RejectRequestInput {
 
 // ============ Session Types ============
 
-export type SessionStatus = "pending" | "confirmed" | "rescheduled" | "completed" | "cancelled";
+export type SessionStatus =
+  | "pending"
+  | "confirmed"
+  | "rescheduled"
+  | "completed"
+  | "cancelled";
 
 export interface MentorshipSession {
   id: string;

@@ -42,7 +42,10 @@ export function RescheduleModal({
       try {
         const startDate = format(new Date(), "yyyy-MM-dd");
         const endDate = format(addDays(new Date(), 14), "yyyy-MM-dd");
-        const data = await getMentorBookingSlots(mentorId, { startDate, endDate });
+        const data = await getMentorBookingSlots(mentorId, {
+          startDate,
+          endDate,
+        });
 
         const raw = data as unknown as Record<string, unknown>;
         const flatSlots = (
@@ -65,21 +68,24 @@ export function RescheduleModal({
           return true;
         });
 
-        const grouped = new Map<string, { startTime: string; endTime: string }[]>();
+        const grouped = new Map<
+          string,
+          { startTime: string; endTime: string }[]
+        >();
         for (const slot of futureSlots) {
           const existing = grouped.get(slot.date) || [];
           existing.push({ startTime: slot.startTime, endTime: slot.endTime });
           grouped.set(slot.date, existing);
         }
 
-        const transformed: AvailabilityDay[] = Array.from(grouped.entries()).map(
-          ([dateStr, slots]) => ({
-            date: format(new Date(dateStr + "T00:00:00"), "MMM dd"),
-            day: format(new Date(dateStr + "T00:00:00"), "EEE"),
-            fullDate: dateStr,
-            slots,
-          }),
-        );
+        const transformed: AvailabilityDay[] = Array.from(
+          grouped.entries(),
+        ).map(([dateStr, slots]) => ({
+          date: format(new Date(dateStr + "T00:00:00"), "MMM dd"),
+          day: format(new Date(dateStr + "T00:00:00"), "EEE"),
+          fullDate: dateStr,
+          slots,
+        }));
         setAvailability(transformed);
       } catch {
         setAvailability([]);
@@ -104,7 +110,11 @@ export function RescheduleModal({
       : [];
 
   const handleConfirm = () => {
-    if (selectedDate !== null && selectedTime !== null && availability[selectedDate]) {
+    if (
+      selectedDate !== null &&
+      selectedTime !== null &&
+      availability[selectedDate]
+    ) {
       const fullDate = availability[selectedDate].fullDate;
       const slot = availability[selectedDate].slots[selectedTime];
       onConfirm(fullDate, slot.startTime, slot.endTime);
@@ -160,7 +170,9 @@ export function RescheduleModal({
                   >
                     <span
                       className={`font-inter-tight text-[10px] font-normal ${
-                        selectedDate === index ? "text-white/70" : "text-[#A3A3A3]"
+                        selectedDate === index
+                          ? "text-white/70"
+                          : "text-[#A3A3A3]"
                       }`}
                     >
                       {slot.day}
@@ -213,7 +225,9 @@ export function RescheduleModal({
           </Button>
           <Button
             onClick={handleConfirm}
-            disabled={isLoading || selectedDate === null || selectedTime === null}
+            disabled={
+              isLoading || selectedDate === null || selectedTime === null
+            }
             className="flex-1 rounded-[30px] bg-[#5C30FF] px-4 py-2.5 font-inter-tight text-[13px] font-normal text-white hover:bg-[#4A26CC] disabled:opacity-50"
           >
             {isLoading ? "Saving..." : "Confirm"}
