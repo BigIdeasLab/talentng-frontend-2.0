@@ -9,7 +9,13 @@ interface Mentee {
   company?: string;
 }
 
-export type SessionStatus = "upcoming" | "in_progress" | "pending_completion" | "disputed" | "completed" | "cancelled";
+export type SessionStatus =
+  | "upcoming"
+  | "in_progress"
+  | "pending_completion"
+  | "disputed"
+  | "completed"
+  | "cancelled";
 
 interface SessionCardProps {
   id: string;
@@ -47,8 +53,16 @@ export function SessionCard({
   const isSessionEnded = endTime ? new Date() > new Date(endTime) : false;
   const statusConfig = {
     upcoming: { label: "Upcoming", bg: "bg-[#EEF4FF]", text: "text-[#3B82F6]" },
-    in_progress: { label: "In Progress", bg: "bg-[#FEF3C7]", text: "text-[#D97706]" },
-    pending_completion: { label: "Pending Completion", bg: "bg-[#FFF7ED]", text: "text-[#EA580C]" },
+    in_progress: {
+      label: "In Progress",
+      bg: "bg-[#FEF3C7]",
+      text: "text-[#D97706]",
+    },
+    pending_completion: {
+      label: "Pending Completion",
+      bg: "bg-[#FFF7ED]",
+      text: "text-[#EA580C]",
+    },
     disputed: { label: "Disputed", bg: "bg-[#FEF2F2]", text: "text-[#DC2626]" },
     completed: {
       label: "Completed",

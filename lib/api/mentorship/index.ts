@@ -372,9 +372,12 @@ export async function rescheduleSession(
 export async function confirmSessionCompletion(
   sessionId: string,
 ): Promise<MentorshipSession> {
-  return apiClient<MentorshipSession>(`/sessions/${sessionId}/confirm-completion`, {
-    method: "POST",
-  });
+  return apiClient<MentorshipSession>(
+    `/sessions/${sessionId}/confirm-completion`,
+    {
+      method: "POST",
+    },
+  );
 }
 
 /**

@@ -50,8 +50,16 @@ export function MenteeSessionCard({
   const statusConfig = {
     pending: { label: "Pending", bg: "bg-[#FEF3C7]", text: "text-[#D97706]" },
     upcoming: { label: "Upcoming", bg: "bg-[#EEF4FF]", text: "text-[#3B82F6]" },
-    in_progress: { label: "In Progress", bg: "bg-[#FEF3C7]", text: "text-[#D97706]" },
-    pending_completion: { label: "Review Required", bg: "bg-[#FFF7ED]", text: "text-[#EA580C]" },
+    in_progress: {
+      label: "In Progress",
+      bg: "bg-[#FEF3C7]",
+      text: "text-[#D97706]",
+    },
+    pending_completion: {
+      label: "Review Required",
+      bg: "bg-[#FFF7ED]",
+      text: "text-[#EA580C]",
+    },
     disputed: { label: "Disputed", bg: "bg-[#FEF2F2]", text: "text-[#DC2626]" },
     completed: {
       label: "Completed",
