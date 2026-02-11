@@ -1,81 +1,117 @@
-export function WeeklyOverview() {
+"use client";
+
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import type { MentorWeeklyOverviewData } from "@/lib/api/mentorship";
+
+const chartConfig = {
+  sessions: {
+    label: "Sessions",
+    color: "#5C30FF",
+  },
+  views: {
+    label: "Views",
+    color: "#606060",
+  },
+} satisfies ChartConfig;
+
+interface WeeklyOverviewProps {
+  data: MentorWeeklyOverviewData[];
+}
+
+export function WeeklyOverview({ data }: WeeklyOverviewProps) {
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-[#E5E6ED] bg-white p-8">
-      <div className="flex flex-col gap-[30px]">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-3">
-            <h2 className="font-inter-tight text-lg font-bold leading-normal text-black">
-              Weekly Overview
-            </h2>
-            <p className="font-inter-tight text-sm font-normal leading-normal text-[#606060]">
-              Applications and profile views this week
-            </p>
+    <div className="flex flex-col gap-5 p-4 md:p-6 rounded-lg border border-[#E5E6ED] bg-white">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <div className="flex flex-col gap-2">
+          <h2 className="text-[15px] font-bold font-inter-tight">
+            Weekly Overview
+          </h2>
+          <p className="text-[12px] text-[#606060] font-inter-tight">
+            Sessions and profile views this week
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-[#5C30FF]"></div>
+            <span className="text-[12px] text-[#606060] font-inter-tight">
+              Sessions
+            </span>
           </div>
-          <div className="flex items-center gap-5">
-            <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full bg-[#5C30FF]" />
-              <span className="font-inter-tight text-sm font-normal leading-normal text-[#606060]">
-                Applications
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full bg-[#D4D5DA]" />
-              <span className="font-inter-tight text-sm font-normal leading-normal text-[#606060]">
-                Views
-              </span>
-            </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-[#B5B9BE]"></div>
+            <span className="text-[12px] text-[#606060] font-inter-tight">
+              Views
+            </span>
           </div>
         </div>
-
-        {/* Chart placeholder - In a real implementation, you'd use a charting library */}
-        <div className="relative h-60 w-full">
-          {/* Simple chart visualization */}
-          <div className="flex h-full items-end justify-between gap-4 border-b border-l border-[#E5E7EB] px-4 pb-4">
-            {/* Week days with bars */}
-            {[
-              { day: "Mon", views: 50, apps: 12 },
-              { day: "Tue", views: 55, apps: 18 },
-              { day: "Wed", views: 38, apps: 15 },
-              { day: "Thu", views: 45, apps: 20 },
-              { day: "Fri", views: 25, apps: 22 },
-              { day: "Sat", views: 20, apps: 18 },
-              { day: "Sun", views: 18, apps: 15 },
-            ].map((item, i) => (
-              <div key={i} className="flex flex-1 flex-col items-center gap-2">
-                <div className="relative h-40 w-full">
-                  {/* Views bar */}
-                  <div
-                    className="absolute bottom-0 w-full rounded-t bg-[#D4D5DA]"
-                    style={{ height: `${(item.views / 80) * 100}%` }}
-                  />
-                  {/* Applications bar */}
-                  <div
-                    className="absolute bottom-0 w-full rounded-t bg-[#5C30FF]"
-                    style={{ height: `${(item.apps / 80) * 100}%` }}
-                  />
-                </div>
-                <span className="text-xs text-[#606060]">{item.day}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Hover tooltip for Wednesday */}
-          <div className="absolute left-[35%] top-16 rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 shadow-lg">
-            <p className="font-inter-tight text-xs font-medium text-black">
-              Wed
-            </p>
-            <div className="mt-1 flex flex-col gap-1">
-              <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-[#D4D5DA]" />
-                <span className="text-xs text-[#606060]">Views: 38</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-[#5C30FF]" />
-                <span className="text-xs text-[#606060]">Applications: 15</span>
-              </div>
-            </div>
-          </div>
-        </div>
+      </div>
+      <div className="w-full h-[180px]">
+        <ChartContainer config={chartConfig} className="w-full h-full">
+          <AreaChart
+            data={data}
+            margin={{
+              top: 8,
+              right: 8,
+              left: -24,
+              bottom: 0,
+            }}
+          >
+            <defs>
+              <linearGradient id="mentorFillSessions" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#5C30FF" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#5C30FF" stopOpacity={0.05} />
+              </linearGradient>
+              <linearGradient id="mentorFillViews" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#606060" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#606060" stopOpacity={0.05} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid
+              strokeDasharray="0"
+              vertical={false}
+              stroke="#E5E7EB"
+            />
+            <XAxis
+              dataKey="day"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={6}
+              tick={{ fill: "#606060", fontSize: 11 }}
+            />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={6}
+              tick={{ fill: "#606060", fontSize: 11 }}
+            />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent indicator="line" />}
+            />
+            <Area
+              dataKey="views"
+              type="monotone"
+              fill="url(#mentorFillViews)"
+              fillOpacity={1}
+              stroke="#606060"
+              strokeWidth={2}
+            />
+            <Area
+              dataKey="sessions"
+              type="monotone"
+              fill="url(#mentorFillSessions)"
+              fillOpacity={1}
+              stroke="#5C30FF"
+              strokeWidth={2}
+            />
+          </AreaChart>
+        </ChartContainer>
       </div>
     </div>
   );

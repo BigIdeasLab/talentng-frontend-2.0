@@ -1,50 +1,83 @@
-export function HiringPipeline() {
-  const stages = [
-    { label: "Applied", count: 156, color: "bg-[#5C30FF]", percentage: 100 },
-    { label: "In Review", count: 45, color: "bg-[#5C30FF]", percentage: 29 },
-    { label: "Interview", count: 48, color: "bg-[#5C30FF]", percentage: 31 },
-    { label: "Hired", count: 28, color: "bg-[#5C30FF]", percentage: 18 },
-  ];
+import type { MentorHiringPipelineData } from "@/lib/api/mentorship";
+
+interface PipelineStageProps {
+  label: string;
+  count: number;
+  progress: number;
+  color: string;
+  isLast?: boolean;
+}
+
+function PipelineStage({
+  label,
+  count,
+  progress,
+  color,
+  isLast,
+}: PipelineStageProps) {
+  return (
+    <div className={`flex flex-col gap-2 ${!isLast ? "pb-2" : ""}`}>
+      <div className="flex justify-between items-center">
+        <span className="text-[12px] font-inter-tight text-black">{label}</span>
+        <span className="text-[12px] font-inter-tight text-[#606060]">
+          {count}
+        </span>
+      </div>
+      <div className="relative w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+        <div
+          className="absolute left-0 top-0 h-full rounded-full transition-all duration-300"
+          style={{
+            width: `${progress}%`,
+            backgroundColor: color,
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+interface HiringPipelineProps {
+  data: MentorHiringPipelineData;
+}
+
+export function HiringPipeline({ data }: HiringPipelineProps) {
+  const maxCount = Math.max(...data.stages.map((s) => s.count), 1);
+
+  const stages = data.stages.map((stage, index) => ({
+    label: stage.label,
+    count: stage.count,
+    progress: (stage.count / maxCount) * 100,
+    color: index === 0 ? "#5C30FF" : "#E5E7EB",
+  }));
 
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-[#E5E6ED] bg-white p-8">
-      <div className="flex flex-col gap-5">
-        <h2 className="font-inter-tight text-lg font-bold leading-normal text-black">
+    <div className="flex flex-col gap-4 p-4 rounded-lg border border-[#E5E6ED] bg-white">
+      <div className="flex flex-col gap-2">
+        <h2 className="text-[15px] font-bold font-inter-tight">
           Hiring Pipeline
         </h2>
-        <p className="font-inter-tight text-sm font-normal leading-normal text-[#606060]">
+        <p className="text-[12px] text-[#606060] font-inter-tight">
           Applicant journey stages
         </p>
       </div>
-
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2">
         {stages.map((stage, index) => (
-          <div key={index} className="flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <span className="font-inter-tight text-sm font-normal leading-normal text-black">
-                {stage.label}
-              </span>
-              <span className="font-inter-tight text-sm font-normal leading-normal text-[#606060]">
-                {stage.count}
-              </span>
-            </div>
-            <div className="h-2 w-full overflow-hidden rounded-full bg-[#F4F4F6]">
-              <div
-                className={`h-full rounded-full ${stage.color}`}
-                style={{ width: `${stage.percentage}%` }}
-              />
-            </div>
-          </div>
+          <PipelineStage
+            key={stage.label}
+            {...stage}
+            isLast={index === stages.length - 1}
+          />
         ))}
       </div>
-
-      <div className="mt-4 flex items-center justify-between border-t border-[#E5E7EB] pt-4">
-        <span className="font-inter-tight text-sm font-normal leading-normal text-black">
-          Conversion Rate
-        </span>
-        <span className="font-inter-tight text-sm font-semibold leading-5 text-[#5C30FF]">
-          15.4%
-        </span>
+      <div className="pt-2 border-t border-gray-200">
+        <div className="flex justify-between items-center">
+          <span className="text-[12px] font-inter-tight text-black">
+            Conversion Rate
+          </span>
+          <span className="text-[15px] font-bold font-inter-tight text-[#5C30FF]">
+            {data.conversionRate.toFixed(1)}%
+          </span>
+        </div>
       </div>
     </div>
   );

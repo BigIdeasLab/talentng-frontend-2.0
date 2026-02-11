@@ -36,6 +36,7 @@ import type {
   PublicMentor,
   PublicMentorDetail,
 } from "./types";
+import type { MentorDashboardResponse } from "./dashboard-types";
 
 // ============ Discovery (Public) - /mentors ============
 
@@ -163,6 +164,15 @@ export async function deleteAvailabilitySlot(
  */
 export async function getMentorDashboard(): Promise<MentorDashboardStats> {
   return apiClient<MentorDashboardStats>("/mentor/dashboard");
+}
+
+/**
+ * Get full mentor dashboard data
+ * GET /mentor/dashboard
+ * Returns comprehensive dashboard data including stats, sessions, reviews, etc.
+ */
+export async function getMentorDashboardFull(): Promise<MentorDashboardResponse> {
+  return apiClient<MentorDashboardResponse>("/mentor/dashboard");
 }
 
 /**
@@ -444,3 +454,20 @@ export type {
   PublicMentor,
   PublicMentorDetail,
 } from "./types";
+
+// Export dashboard types
+export type {
+  MentorDashboardResponse,
+  MentorDashboardUser,
+  MentorDashboardWelcome,
+  MentorDashboardStats as MentorDashboardFullStats,
+  MentorDashboardStatTrend,
+  MentorWeeklyOverviewData,
+  MentorHiringPipelineData,
+  MentorHiringPipelineStageData,
+  MentorUpcomingSession,
+  MentorMenteeProgress,
+  MentorRecentReview,
+  MentorAchievement,
+  MentorAchievementKey,
+} from "./dashboard-types";

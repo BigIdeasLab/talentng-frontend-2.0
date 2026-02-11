@@ -1,8 +1,9 @@
 import { MessageSquare, ArrowUpRight, Star, CheckCircle } from "lucide-react";
+import type { MentorRecentReview } from "@/lib/api/mentorship";
 
 interface ReviewCardProps {
   rating: number;
-  review: string;
+  comment: string;
   reviewerInitial: string;
   reviewerName: string;
   verified: boolean;
@@ -10,42 +11,42 @@ interface ReviewCardProps {
 
 function ReviewCard({
   rating,
-  review,
+  comment,
   reviewerInitial,
   reviewerName,
   verified,
 }: ReviewCardProps) {
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-[#E4E7EB] bg-[#FFFDF5] p-4">
-      <div className="flex flex-col gap-2.5">
+    <div className="flex flex-col gap-3 rounded-lg border border-[#E4E7EB] bg-[#FFFDF5] p-3">
+      <div className="flex flex-col gap-2">
         <div className="flex items-center gap-0">
           {[...Array(5)].map((_, i) => (
             <Star
               key={i}
-              className={`h-[18px] w-[18px] ${
+              className={`w-3.5 h-3.5 ${
                 i < rating ? "fill-[#FBBE24]" : "fill-gray-300"
               }`}
               strokeWidth={0}
             />
           ))}
         </div>
-        <p className="font-inter-tight text-sm font-normal leading-normal text-[#6A7280]">
-          {review}
+        <p className="text-[12px] font-inter-tight leading-normal text-[#6A7280]">
+          {comment}
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#E39B00]">
-          <span className="font-inter-tight text-sm font-medium leading-normal text-white">
+        <div className="w-5 h-5 rounded-full bg-[#E39B00] flex items-center justify-center">
+          <span className="text-[10px] font-medium font-inter-tight text-white">
             {reviewerInitial}
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="font-inter-tight text-sm font-normal leading-normal text-black">
+        <div className="flex items-center gap-1.5">
+          <span className="text-[12px] font-inter-tight text-black">
             {reviewerName}
           </span>
           {verified && (
             <CheckCircle
-              className="h-4 w-4 fill-[#008B47] stroke-[#008B47]"
+              className="w-3.5 h-3.5 fill-[#008B47] stroke-[#008B47]"
               strokeWidth={1.6}
             />
           )}
@@ -55,53 +56,43 @@ function ReviewCard({
   );
 }
 
-export function RecentReviews() {
-  const reviews: ReviewCardProps[] = [
-    {
-      rating: 5,
-      review: "Incredibly insightful session. Helped me land my dream job!",
-      reviewerInitial: "B",
-      reviewerName: "Blessing I.",
-      verified: true,
-    },
-    {
-      rating: 5,
-      review: "Incredibly insightful session. Helped me land my dream job!",
-      reviewerInitial: "B",
-      reviewerName: "Blessing I.",
-      verified: true,
-    },
-    {
-      rating: 5,
-      review: "Incredibly insightful session. Helped me land my dream job!",
-      reviewerInitial: "B",
-      reviewerName: "Blessing I.",
-      verified: true,
-    },
-  ];
+interface RecentReviewsProps {
+  reviews: MentorRecentReview[];
+}
 
+export function RecentReviews({ reviews }: RecentReviewsProps) {
   return (
-    <div className="flex flex-col gap-6 rounded-xl border border-[#E4E7EB] bg-white p-8 shadow-[0_4px_4px_0_rgba(178,178,178,0.1)]">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <MessageSquare className="h-5 w-5 stroke-[#E9B305]" strokeWidth={2} />
-          <h2 className="font-inter-tight text-lg font-semibold leading-normal text-black">
+    <div className="flex flex-col gap-4 p-4 rounded-lg border border-[#E5E6ED] bg-white">
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-1.5">
+          <MessageSquare className="w-4 h-4 text-[#E9B305]" />
+          <h2 className="text-[15px] font-semibold font-inter-tight">
             Recent Reviews
           </h2>
         </div>
-        <button className="flex items-center gap-2">
-          <span className="font-inter-tight text-sm font-normal leading-normal text-black">
-            View All
-          </span>
-          <ArrowUpRight className="h-[18px] w-[18px] stroke-black" strokeWidth={1.6} />
+        <button className="flex items-center gap-1 text-[#5C30FF] text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity">
+          View All
+          <ArrowUpRight className="w-3.5 h-3.5" />
         </button>
       </div>
-
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        {reviews.map((review, index) => (
-          <ReviewCard key={index} {...review} />
-        ))}
-      </div>
+      {reviews.length === 0 ? (
+        <p className="text-[12px] text-[#606060] font-inter-tight text-center py-6">
+          No reviews yet
+        </p>
+      ) : (
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+          {reviews.map((review) => (
+            <ReviewCard
+              key={review.id}
+              rating={review.rating}
+              comment={review.comment}
+              reviewerInitial={review.reviewerInitial}
+              reviewerName={review.reviewerName}
+              verified={review.verified}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
