@@ -74,7 +74,16 @@ function StatCard({
 }
 
 function formatCurrency(amount: number, currency: string): string {
-  const symbol = currency === "NGN" ? "₦" : currency === "USD" ? "$" : currency === "EUR" ? "€" : currency === "GBP" ? "£" : currency;
+  const symbol =
+    currency === "NGN"
+      ? "₦"
+      : currency === "USD"
+        ? "$"
+        : currency === "EUR"
+          ? "€"
+          : currency === "GBP"
+            ? "£"
+            : currency;
   if (amount >= 1000000) {
     return `${symbol}${(amount / 1000000).toFixed(1)}M`;
   }
@@ -98,7 +107,9 @@ export function MentorStatCards({ stats }: MentorStatCardsProps) {
       gradient: "bg-gradient-to-br from-[#11B981]/8 to-white",
       iconBg: "bg-[#D1FAE5]",
       iconColor: "text-[#069668]",
-      trendColor: stats.totalMentees.trend.isPositive ? "text-[#1AA148]" : "text-[#E63C23]",
+      trendColor: stats.totalMentees.trend.isPositive
+        ? "text-[#1AA148]"
+        : "text-[#E63C23]",
     },
     {
       title: "Sessions Done",
@@ -108,17 +119,24 @@ export function MentorStatCards({ stats }: MentorStatCardsProps) {
       gradient: "bg-gradient-to-br from-[#8B5CF6]/8 to-white",
       iconBg: "bg-[#F3ECFE]",
       iconColor: "text-[#8B5CF6]",
-      trendColor: stats.sessionsDone.trend.isPositive ? "text-[#8B5CF6]" : "text-[#E63C23]",
+      trendColor: stats.sessionsDone.trend.isPositive
+        ? "text-[#8B5CF6]"
+        : "text-[#E63C23]",
     },
     {
       title: "Total Earnings",
-      value: formatCurrency(stats.totalEarnings.value, stats.totalEarnings.currency),
+      value: formatCurrency(
+        stats.totalEarnings.value,
+        stats.totalEarnings.currency,
+      ),
       trend: stats.totalEarnings.trend,
       icon: <Video className="w-5 h-5" />,
       gradient: "bg-gradient-to-br from-[#F59E0B]/8 to-white",
       iconBg: "bg-[#FFEDD5]",
       iconColor: "text-[#DB7B13]",
-      trendColor: stats.totalEarnings.trend.isPositive ? "text-[#D97707]" : "text-[#E63C23]",
+      trendColor: stats.totalEarnings.trend.isPositive
+        ? "text-[#D97707]"
+        : "text-[#E63C23]",
     },
     {
       title: "Avg Rating",
@@ -143,7 +161,9 @@ export function MentorStatCards({ stats }: MentorStatCardsProps) {
       gradient: "bg-gradient-to-br from-[#3B81F6]/8 to-white",
       iconBg: "bg-[#DBE9FE]",
       iconColor: "text-[#2463EB]",
-      trendColor: stats.averageRating.trend.isPositive ? "text-[#2463EB]" : "text-[#E63C23]",
+      trendColor: stats.averageRating.trend.isPositive
+        ? "text-[#2463EB]"
+        : "text-[#E63C23]",
     },
   ];
 

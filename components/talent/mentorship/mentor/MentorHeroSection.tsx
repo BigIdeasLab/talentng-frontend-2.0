@@ -86,7 +86,10 @@ export function MentorHeroSection({
             </span>
           </button>
           <button className="flex h-[30px] items-center justify-center gap-1.5 rounded-lg bg-[#EAE5FF] px-3">
-            <Calendar className="h-3.5 w-3.5 text-[#5C30FF]" strokeWidth={1.6} />
+            <Calendar
+              className="h-3.5 w-3.5 text-[#5C30FF]"
+              strokeWidth={1.6}
+            />
             <span className="text-[11px] font-inter-tight text-[#5C30FF]">
               View Schedule
             </span>

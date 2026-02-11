@@ -289,7 +289,9 @@ interface AchievementsSectionProps {
   achievements: MentorAchievement[];
 }
 
-export function AchievementsSection({ achievements }: AchievementsSectionProps) {
+export function AchievementsSection({
+  achievements,
+}: AchievementsSectionProps) {
   return (
     <div className="flex flex-col gap-5 p-4 rounded-lg border border-[#FFFDF5] bg-[#FFFDF5] flex-shrink-0">
       <div className="flex items-center gap-1.5">
@@ -311,15 +313,9 @@ export function AchievementsSection({ achievements }: AchievementsSectionProps) 
                 key={achievement.id}
                 title={achievement.title}
                 description={achievement.description}
-                icon={
-                  achievement.isLocked ? config.iconLocked : config.icon
-                }
-                bgColor={
-                  achievement.isLocked ? "bg-[#FCFCFB]" : config.bgColor
-                }
-                iconBg={
-                  achievement.isLocked ? "bg-transparent" : config.iconBg
-                }
+                icon={achievement.isLocked ? config.iconLocked : config.icon}
+                bgColor={achievement.isLocked ? "bg-[#FCFCFB]" : config.bgColor}
+                iconBg={achievement.isLocked ? "bg-transparent" : config.iconBg}
                 isLocked={achievement.isLocked}
               />
             );
