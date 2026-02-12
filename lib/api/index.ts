@@ -183,6 +183,9 @@ const apiClient = async <T>(
         errorData.error ||
         "An error occurred during the API request.";
 
+      // Strip generic backend prefix
+      errorMessage = errorMessage.replace(/^An unexpected error occurred:\s*/i, "");
+
       // Handle specific error types with user-friendly messages
       if (
         errorMessage.includes("Transaction already closed") ||

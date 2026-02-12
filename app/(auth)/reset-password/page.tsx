@@ -26,7 +26,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { FormErrorMessage } from "@/components/forms/FormErrorMessage";
+
 
 const resetPasswordSchema = z.object({
   resetCode: z
@@ -104,12 +104,8 @@ const ResetPassword = () => {
         setError("Invalid code");
       } else if (error.message && error.message.includes("expired")) {
         setError("Code expired");
-      } else {
-        setError("Invalid Code");
       }
-      const message =
-        error.message || "Failed to reset password. Please try again.";
-      toast.error(message);
+      toast.error(error.message || "Failed to reset password. Please try again.");
     },
   });
 
@@ -184,9 +180,6 @@ const ResetPassword = () => {
                       onSubmit={form.handleSubmit(handleSubmit)}
                       className="flex flex-col gap-2"
                     >
-                      {/* API Error Message */}
-                      <FormErrorMessage error={error || undefined} />
-
                       {/* Reset Code Field */}
                       <FormField
                         control={form.control}

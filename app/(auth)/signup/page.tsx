@@ -21,7 +21,6 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { FormErrorMessage } from "@/components/forms/FormErrorMessage";
 
 const signUpSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -43,7 +42,6 @@ const Signup = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
-  const [apiError, setApiError] = useState<string | null>(null);
 
   const passwordChecks = {
     length: password.length >= 8,
@@ -66,7 +64,6 @@ const Signup = () => {
   const mutation = useMutation({
     mutationFn: (data: SignUpFormValues) => register(data.email, data.password),
     onSuccess: (data: any, variables) => {
-      setApiError(null);
       toast.success("Check your email for verification code!");
       router.push(
         `/confirm-email?email=${encodeURIComponent(variables.email)}`,
@@ -74,7 +71,7 @@ const Signup = () => {
     },
     onError: (error: any) => {
       const message = error.message || "An error occurred. Please try again.";
-      setApiError(message);
+      toast.error(message);
     },
   });
 
@@ -128,9 +125,6 @@ const Signup = () => {
                       onSubmit={form.handleSubmit(onSubmit)}
                       className="flex flex-col gap-2"
                     >
-                      {/* API Error Message */}
-                      <FormErrorMessage error={apiError} />
-
                       {/* Email Field */}
                       <div className="flex flex-col gap-2">
                         <label className="text-xs md:text-sm font-medium text-black">

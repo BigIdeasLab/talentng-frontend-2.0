@@ -103,9 +103,8 @@ const ConfirmEmailPage = () => {
       } else if (error.message && error.message.includes("expired")) {
         setError("Code expired");
       } else {
-        setError("Wrong Code");
+        toast.error(error.message || "An error occurred. Please try again.");
       }
-      toast.error(error.message || "An error occurred. Please try again.");
     },
   });
 

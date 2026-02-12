@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -20,7 +20,6 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { FormErrorMessage } from "@/components/forms/FormErrorMessage";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
@@ -30,8 +29,6 @@ type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 
 const ForgotPassword = () => {
   const router = useRouter();
-  const [apiError, setApiError] = useState<string | null>(null);
-
   const form = useForm<ForgotPasswordFormValues>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
@@ -42,7 +39,6 @@ const ForgotPassword = () => {
   const mutation = useMutation({
     mutationFn: (data: ForgotPasswordFormValues) => forgotPassword(data.email),
     onSuccess: (_, variables) => {
-      setApiError(null);
       toast.success("Check your email for a 6-digit reset code!");
       router.push(
         `/reset-password?email=${encodeURIComponent(variables.email)}`,
@@ -51,7 +47,7 @@ const ForgotPassword = () => {
     onError: (error: any) => {
       const message =
         error.message || "Failed to send reset link. Please try again.";
-      setApiError(message);
+      toast.error(message);
     },
   });
 
@@ -102,9 +98,6 @@ const ForgotPassword = () => {
                       onSubmit={form.handleSubmit(handleSubmit)}
                       className="flex flex-col gap-3 w-full"
                     >
-                      {/* API Error Message */}
-                      <FormErrorMessage error={apiError} />
-
                       {/* Email Field */}
                       <div className="flex flex-col gap-2">
                         <label className="text-xs md:text-sm font-medium text-black">

@@ -21,7 +21,6 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { FormErrorMessage } from "@/components/forms/FormErrorMessage";
 
 import type { AuthResponse } from "@/lib/api/auth-service";
 
@@ -35,7 +34,6 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 const Login = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [apiError, setApiError] = useState<string | null>(null);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -59,7 +57,6 @@ const Login = () => {
         });
       }
 
-      setApiError(null);
       toast.success("Login successful!");
 
       if (response.needsOnboarding) {
@@ -72,7 +69,7 @@ const Login = () => {
     },
     onError: (error: any) => {
       const message = error.message || "Login failed. Please try again.";
-      setApiError(message);
+      toast.error(message);
     },
   });
 
@@ -126,9 +123,6 @@ const Login = () => {
                       onSubmit={form.handleSubmit(onSubmit)}
                       className="flex flex-col gap-2"
                     >
-                      {/* API Error Message */}
-                      <FormErrorMessage error={apiError} />
-
                       {/* Email Field */}
                       <div className="flex flex-col gap-2">
                         <label className="text-xs md:text-sm font-medium text-black">
