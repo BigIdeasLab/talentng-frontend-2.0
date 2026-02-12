@@ -106,7 +106,10 @@ export function useProfileData() {
 
       // Only set active role if not already set by the server cookie
       if (availableRoles.length > 0) {
-        if (!activeRoleRef.current || !availableRoles.includes(activeRoleRef.current)) {
+        if (
+          !activeRoleRef.current ||
+          !availableRoles.includes(activeRoleRef.current)
+        ) {
           setActiveRole(availableRoles[0]);
         }
       } else {

@@ -122,7 +122,12 @@ interface ProfileProviderProps {
   initialProfileAvatar: string;
 }
 
-export function ProfileProvider({ children, initialRole, initialProfileName, initialProfileAvatar }: ProfileProviderProps) {
+export function ProfileProvider({
+  children,
+  initialRole,
+  initialProfileName,
+  initialProfileAvatar,
+}: ProfileProviderProps) {
   const [activeRole, setActiveRole] = useState<string>(initialRole);
   const [profiles, setProfiles] = useState<
     Record<string, TalentProfile | RecruiterProfile | MentorProfile | null>

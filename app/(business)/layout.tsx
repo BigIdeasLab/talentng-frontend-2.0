@@ -13,7 +13,11 @@ export default async function AppLayout({
   const initialProfileAvatar = cookieStore.get("profileAvatar")?.value ?? "";
 
   return (
-    <ProfileProvider initialRole={initialRole} initialProfileName={initialProfileName} initialProfileAvatar={initialProfileAvatar}>
+    <ProfileProvider
+      initialRole={initialRole}
+      initialProfileName={initialProfileName}
+      initialProfileAvatar={initialProfileAvatar}
+    >
       <AppLayoutClient>{children}</AppLayoutClient>
     </ProfileProvider>
   );
