@@ -5,6 +5,7 @@
  */
 
 import apiClient from "@/lib/api";
+import { storeTokens } from "@/lib/auth";
 import { getOrCreateDeviceId, getDeviceName } from "@/lib/device";
 import type { User } from "@/lib/types/auth";
 
@@ -26,8 +27,13 @@ export interface AuthResponse {
  * Backend now sends tokens via HTTP-only cookies, so no localStorage storage needed
  */
 const handleAuthResponse = (response: AuthResponse): void => {
-  // Cookies are handled by backend and sent with every request
-  // No need to store tokens in localStorage
+  if (response.accessToken && response.refreshToken) {
+    storeTokens({
+      accessToken: response.accessToken,
+      refreshToken: response.refreshToken,
+      userId: response.userId || "",
+    });
+  }
 };
 
 export const register = async (

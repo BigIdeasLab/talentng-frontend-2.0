@@ -13,6 +13,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { verifyEmailSend, verifyEmailConfirm } from "@/lib/api/auth-service";
+import { storeTokens } from "@/lib/auth";
 import { COLORS } from "@/lib/constants";
 
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
@@ -75,9 +76,14 @@ const ConfirmEmailPage = () => {
       setError("");
       toast.success("Email verified successfully!");
 
-      // Tokens are already stored by verifyEmailConfirm via auth-service
+      if (data.accessToken && data.refreshToken) {
+        storeTokens({
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+          userId: data.userId || "",
+        });
+      }
 
-      // Navigate based on onboarding status
       if (data.needsOnboarding) {
         console.log("🔄 Redirecting to onboarding");
         router.push("/onboarding");

@@ -9,6 +9,7 @@ import * as z from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { login } from "@/lib/api/auth-service";
+import { storeTokens } from "@/lib/auth";
 import { COLORS } from "@/lib/constants";
 
 import { Button } from "@/components/ui/button";
@@ -50,9 +51,13 @@ const Login = () => {
       console.log("✅ Login successful");
       console.log("needsOnboarding:", response.needsOnboarding);
 
-      // Tokens are already stored in localStorage by auth-service.login()
-      // via handleAuthResponse(). This ensures they're available before redirect.
-      console.log("✅ Tokens stored in localStorage");
+      if (response.accessToken && response.refreshToken) {
+        storeTokens({
+          accessToken: response.accessToken,
+          refreshToken: response.refreshToken,
+          userId: response.userId || "",
+        });
+      }
 
       setApiError(null);
       toast.success("Login successful!");
