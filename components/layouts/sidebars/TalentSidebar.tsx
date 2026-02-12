@@ -86,7 +86,7 @@ export function TalentSidebar({
           <img
             src="/logo.png"
             alt="TalentNG Logo"
-            className="w-[40px] h-[30px] rounded-[2.679px] object-cover"
+            className="w-[80px] h-[62px] rounded-[4px] object-cover"
           />
           <span className="font-medium text-[16px] text-black font-inter-tight">
             TalentNG

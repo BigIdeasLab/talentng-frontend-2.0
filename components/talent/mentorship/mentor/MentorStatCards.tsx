@@ -27,7 +27,7 @@ function StatCard({
 }: StatCardProps) {
   return (
     <div
-      className={`flex flex-col justify-center gap-3 p-4 rounded-lg border border-gray-200 shadow-sm ${gradient}`}
+      className={`flex flex-col justify-center gap-3 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] ${gradient}`}
     >
       <div className="flex justify-between items-center">
         <div className="flex flex-col gap-2">
@@ -104,9 +104,9 @@ export function MentorStatCards({ stats }: MentorStatCardsProps) {
       value: stats.totalMentees.value.toString(),
       trend: stats.totalMentees.trend,
       icon: <Users className="w-5 h-5" />,
-      gradient: "bg-gradient-to-br from-[#11B981]/8 to-white",
-      iconBg: "bg-[#D1FAE5]",
-      iconColor: "text-[#069668]",
+      gradient: "bg-gradient-to-br from-[#F59E0B]/8 to-white",
+      iconBg: "bg-[#FEF3C7]",
+      iconColor: "text-[#D97706]",
       trendColor: stats.totalMentees.trend.isPositive
         ? "text-[#1AA148]"
         : "text-[#E63C23]",
@@ -116,9 +116,9 @@ export function MentorStatCards({ stats }: MentorStatCardsProps) {
       value: stats.sessionsDone.value.toString(),
       trend: stats.sessionsDone.trend,
       icon: <Video className="w-5 h-5" />,
-      gradient: "bg-gradient-to-br from-[#8B5CF6]/8 to-white",
-      iconBg: "bg-[#F3ECFE]",
-      iconColor: "text-[#8B5CF6]",
+      gradient: "bg-gradient-to-br from-[#008B47]/8 to-white",
+      iconBg: "bg-[#D1FAE5]",
+      iconColor: "text-[#008B47]",
       trendColor: stats.sessionsDone.trend.isPositive
         ? "text-[#8B5CF6]"
         : "text-[#E63C23]",
@@ -131,9 +131,9 @@ export function MentorStatCards({ stats }: MentorStatCardsProps) {
       ),
       trend: stats.totalEarnings.trend,
       icon: <Video className="w-5 h-5" />,
-      gradient: "bg-gradient-to-br from-[#F59E0B]/8 to-white",
-      iconBg: "bg-[#FFEDD5]",
-      iconColor: "text-[#DB7B13]",
+      gradient: "bg-gradient-to-br from-[#2463EB]/8 to-white",
+      iconBg: "bg-[#DBE9FE]",
+      iconColor: "text-[#2463EB]",
       trendColor: stats.totalEarnings.trend.isPositive
         ? "text-[#D97707]"
         : "text-[#E63C23]",
@@ -158,11 +158,11 @@ export function MentorStatCards({ stats }: MentorStatCardsProps) {
           />
         </svg>
       ),
-      gradient: "bg-gradient-to-br from-[#3B81F6]/8 to-white",
-      iconBg: "bg-[#DBE9FE]",
-      iconColor: "text-[#2463EB]",
+      gradient: "bg-gradient-to-br from-[#CCFBF1] to-white",
+      iconBg: "bg-[#CCFBF1]",
+      iconColor: "text-[#0D9488]",
       trendColor: stats.averageRating.trend.isPositive
-        ? "text-[#2463EB]"
+        ? "text-[#0D9488]"
         : "text-[#E63C23]",
     },
   ];

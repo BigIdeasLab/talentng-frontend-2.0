@@ -18,7 +18,7 @@ function SkillItem({ name, percentage, endorsements }: SkillItemProps) {
       </div>
       <div className="relative w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
         <div
-          className="absolute left-0 top-0 h-full rounded-full bg-[#5C30FF] transition-all duration-300"
+          className="absolute left-0 top-0 h-full rounded-full bg-[#2463EB] transition-all duration-300"
           style={{ width: `${percentage}%` }}
         />
       </div>
@@ -38,7 +38,7 @@ interface TopSkillsProps {
 
 export function TopSkills({ skills }: TopSkillsProps) {
   return (
-    <div className="flex flex-col gap-5 p-4 rounded-lg border border-[#B2B2B2]/10 bg-white flex-shrink-0">
+    <div className="flex flex-col gap-5 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white flex-shrink-0">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-1.5">
           <Zap className="w-4 h-4 text-[#E9B305] fill-[#E9B305]" />

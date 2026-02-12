@@ -62,7 +62,7 @@ interface RecentReviewsProps {
 
 export function RecentReviews({ reviews }: RecentReviewsProps) {
   return (
-    <div className="flex flex-col gap-4 p-4 rounded-lg border border-[#E5E6ED] bg-white">
+    <div className="flex flex-col gap-4 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-1.5">
           <MessageSquare className="w-4 h-4 text-[#E9B305]" />
@@ -70,7 +70,7 @@ export function RecentReviews({ reviews }: RecentReviewsProps) {
             Recent Reviews
           </h2>
         </div>
-        <button className="flex items-center gap-1 text-[#5C30FF] text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity">
+        <button className="flex items-center gap-1 text-[#E91E8C] text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity">
           View All
           <ArrowUpRight className="w-3.5 h-3.5" />
         </button>

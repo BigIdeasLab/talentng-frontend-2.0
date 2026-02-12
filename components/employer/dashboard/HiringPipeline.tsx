@@ -51,12 +51,12 @@ export function HiringPipeline({ data }: HiringPipelineProps) {
       : "0.0";
 
   return (
-    <div className="flex flex-col items-start gap-4 p-4 rounded-lg border border-gray-300 bg-white w-full">
+    <div className="flex flex-col items-start gap-4 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white w-full">
       <div className="flex flex-col items-start gap-1 self-stretch flex-shrink-0">
-        <h2 className="font-inter-tight text-lg font-bold text-black">
+        <h2 className="text-[15px] font-bold font-inter-tight">
           Hiring Pipeline
         </h2>
-        <p className="font-inter-tight text-xs font-normal text-[#525866]">
+        <p className="text-[12px] text-[#606060] font-inter-tight">
           Applicant journey stages
         </p>
       </div>
@@ -66,33 +66,33 @@ export function HiringPipeline({ data }: HiringPipelineProps) {
           label="Applied"
           count={data?.applied ?? 0}
           total={totalApplicants}
-          color="#5C30FF"
+          color="#0D9F5C"
         />
         <PipelineStage
           label="Shortlisted"
           count={data?.shortlisted ?? 0}
           total={totalApplicants}
-          color="#5C30FF"
+          color="#E5E7EB"
         />
         <PipelineStage
           label="Invited"
           count={data?.invited ?? 0}
           total={totalApplicants}
-          color="#5C30FF"
+          color="#E5E7EB"
         />
         <PipelineStage
           label="Hired"
           count={data?.hired ?? 0}
           total={totalApplicants}
-          color="#5C30FF"
+          color="#E5E7EB"
         />
       </div>
 
       <div className="flex justify-between items-center self-stretch pt-3 border-t border-gray-200">
-        <span className="font-inter-tight text-xs font-medium text-black">
+        <span className="text-[12px] font-inter-tight text-black">
           Conversion Rate
         </span>
-        <span className="font-inter-tight text-base font-semibold text-[#5C30FF]">
+        <span className="text-[15px] font-bold font-inter-tight text-[#0D9F5C]">
           {conversionRate}%
         </span>
       </div>

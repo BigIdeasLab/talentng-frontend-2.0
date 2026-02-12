@@ -373,54 +373,49 @@ export default function AvailabilityPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#FAFAFA]">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#5C30FF] border-t-transparent" />
+      <div className="flex min-h-screen items-center justify-center bg-white">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#E91E8C] border-t-transparent" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
+    <div className="h-screen overflow-x-hidden bg-white flex flex-col">
       {/* Header */}
-      <header className="border-b border-[#E1E4EA] bg-white px-6 py-5">
+      <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="font-inter-tight text-xl font-semibold text-black">
-              Availability
-            </h1>
-            <p className="mt-1 font-inter-tight text-[13px] text-[#525866]">
-              Click and drag to set your recurring weekly availability
-            </p>
-          </div>
+          <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px]">
+            Availability
+          </h1>
           <div className="flex items-center gap-3">
             {isSaved && !hasChanges && (
               <div className="flex items-center gap-2 rounded-full bg-green-50 px-3 py-1.5 text-green-700">
                 <Check className="h-4 w-4" />
-                <span className="text-sm font-medium">Saved</span>
+                <span className="font-inter-tight text-[13px] font-medium">Saved</span>
               </div>
             )}
             {hasChanges && (
               <div className="flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1.5 text-amber-700">
-                <span className="text-sm font-medium">Unsaved changes</span>
+                <span className="font-inter-tight text-[13px] font-medium">Unsaved changes</span>
               </div>
             )}
           </div>
         </div>
-      </header>
+      </div>
 
-      <div className="px-6 py-6">
+      <div className="flex-1 overflow-y-auto p-4 md:p-6">
         {/* Stats & Quick Actions */}
         <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
           <div className="flex gap-3">
             <div className="flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 shadow-sm">
-              <Clock className="h-4 w-4 text-[#5C30FF]" />
+              <Clock className="h-4 w-4 text-[#E91E8C]" />
               <span className="text-sm font-medium text-black">
                 {getTotalHours()}
               </span>
               <span className="text-xs text-[#525866]">/ week</span>
             </div>
             <div className="flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 shadow-sm">
-              <div className="flex h-4 w-4 items-center justify-center rounded bg-[#5C30FF] text-[10px] font-bold text-white">
+              <div className="flex h-4 w-4 items-center justify-center rounded bg-[#E91E8C] text-[10px] font-bold text-white">
                 {getEnabledDaysCount()}
               </div>
               <span className="text-xs text-[#525866]">days available</span>
@@ -436,20 +431,20 @@ export default function AvailabilityPage() {
             </button>
             <button
               onClick={selectWeekdays9to5}
-              className="flex items-center gap-1.5 rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-xs font-medium text-[#525866] transition-colors hover:border-[#5C30FF] hover:bg-[#F5F3FF] hover:text-[#5C30FF]"
+              className="flex items-center gap-1.5 rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-xs font-medium text-[#525866] transition-colors hover:border-[#E91E8C] hover:bg-[#FDF2F8] hover:text-[#E91E8C]"
             >
               <Zap className="h-3 w-3" />
               Weekdays 9-5
             </button>
             <button
               onClick={selectMornings}
-              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-xs font-medium text-[#525866] transition-colors hover:border-[#5C30FF] hover:bg-[#F5F3FF] hover:text-[#5C30FF]"
+              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-xs font-medium text-[#525866] transition-colors hover:border-[#E91E8C] hover:bg-[#FDF2F8] hover:text-[#E91E8C]"
             >
               Mornings
             </button>
             <button
               onClick={selectAfternoons}
-              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-xs font-medium text-[#525866] transition-colors hover:border-[#5C30FF] hover:bg-[#F5F3FF] hover:text-[#5C30FF]"
+              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-xs font-medium text-[#525866] transition-colors hover:border-[#E91E8C] hover:bg-[#FDF2F8] hover:text-[#E91E8C]"
             >
               Afternoons
             </button>
@@ -571,7 +566,7 @@ export default function AvailabilityPage() {
                     className="border-b border-l border-[#E1E4EA] bg-[#FAFAFA] px-2 py-3 text-center first:border-l-0"
                   >
                     <div
-                      className={`text-sm font-semibold ${dayHasSlots ? "text-[#5C30FF]" : "text-black"}`}
+                      className={`text-sm font-semibold ${dayHasSlots ? "text-[#E91E8C]" : "text-black"}`}
                     >
                       {day.short}
                     </div>
@@ -656,7 +651,7 @@ export default function AvailabilityPage() {
                     const slotColor = isSavedSlot
                       ? "bg-emerald-500" // Green for saved
                       : isNewSlot
-                        ? "bg-[#5C30FF]" // Purple for new
+                        ? "bg-[#E91E8C]" // Purple for new
                         : "";
 
                     return (
@@ -671,7 +666,7 @@ export default function AvailabilityPage() {
                             ? ""
                             : isRemovedSlot
                               ? "bg-red-50"
-                              : "hover:bg-[#F5F3FF]"
+                              : "hover:bg-[#FDF2F8]"
                         }`}
                         style={{ height: "24px" }}
                         onMouseDown={() =>
@@ -714,7 +709,7 @@ export default function AvailabilityPage() {
           {/* Footer */}
           <div className="flex items-center justify-between border-t border-[#E1E4EA] bg-[#FAFAFA] px-5 py-4">
             <div className="text-sm text-[#525866]">
-              <span className="font-semibold text-[#5C30FF]">
+              <span className="font-semibold text-[#E91E8C]">
                 {selectedSlots.size}
               </span>{" "}
               slots selected ({getTotalHours()} per week)
@@ -722,7 +717,7 @@ export default function AvailabilityPage() {
             <Button
               onClick={handleSave}
               disabled={isSaving || !hasChanges}
-              className="rounded-lg bg-[#5C30FF] px-6 py-2 text-sm font-medium text-white hover:bg-[#4A26CC] disabled:opacity-50"
+              className="rounded-lg bg-[#E91E8C] px-6 py-2 text-sm font-medium text-white hover:bg-[#D1187D] disabled:opacity-50"
             >
               {isSaving ? (
                 <span className="flex items-center gap-2">
@@ -744,7 +739,7 @@ export default function AvailabilityPage() {
               <span className="text-xs text-[#525866]">Saved</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="h-3 w-3 rounded bg-[#5C30FF]" />
+              <div className="h-3 w-3 rounded bg-[#E91E8C]" />
               <span className="text-xs text-[#525866]">New</span>
             </div>
             <div className="flex items-center gap-1.5">

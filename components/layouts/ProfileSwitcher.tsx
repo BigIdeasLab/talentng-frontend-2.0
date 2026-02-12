@@ -287,13 +287,20 @@ export function ProfileSwitcher() {
   // Get other roles to show in switcher (exclude current active role)
   const switchableRoles = availableRoles.filter((role) => role !== activeRole);
 
+  const profileBg =
+    activeRole === "recruiter"
+      ? "bg-[#ECFDF5]"
+      : activeRole === "mentor"
+        ? "bg-[#FDE4EF]"
+        : "bg-[#DBEAFE]";
+
   // Don't render until we have an active role (prevents showing wrong role during initial load)
   if (!activeRole) {
     return null;
   }
 
   return (
-    <div className="w-full px-[10px] py-[12px] rounded-lg bg-[#F5F5F5]">
+    <div className={`w-full px-[10px] py-[12px] rounded-lg ${profileBg}`}>
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
           <button className="w-full flex items-center justify-between gap-[8px] hover:opacity-80 transition-opacity">

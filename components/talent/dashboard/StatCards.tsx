@@ -29,7 +29,7 @@ function StatCard({
 }: StatCardProps) {
   return (
     <div
-      className={`flex flex-col justify-center gap-3 p-4 rounded-lg border border-gray-200 shadow-sm ${gradient}`}
+      className={`flex flex-col justify-center gap-3 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] ${gradient}`}
     >
       <div className="flex justify-between items-center">
         <div className="flex flex-col gap-2">
@@ -103,9 +103,9 @@ export function StatCards({ stats }: StatCardsProps) {
       subtitle: "",
       icon: <Eye className="w-5 h-5" />,
       trend: stats.profileViews.trend,
-      gradient: "bg-gradient-to-br from-[#2463EB]/8 to-white",
-      iconBg: "bg-[#DBE9FE]",
-      iconColor: "text-[#2463EB]",
+      gradient: "bg-gradient-to-br from-[#F59E0B]/8 to-white",
+      iconBg: "bg-[#FEF3C7]",
+      iconColor: "text-[#D97706]",
       trendColor: stats.profileViews.trend.isPositive
         ? "text-[#1AA148]"
         : "text-[#E63C23]",
@@ -115,18 +115,18 @@ export function StatCards({ stats }: StatCardsProps) {
       value: stats.applications.value.toString(),
       subtitle: `${stats.applications.inReview} in review`,
       icon: <Briefcase className="w-5 h-5" />,
-      gradient: "bg-gradient-to-br from-[#7C3BED]/8 to-white",
-      iconBg: "bg-[#F3ECFE]",
-      iconColor: "text-[#7C3BED]",
+      gradient: "bg-gradient-to-br from-[#008B47]/8 to-white",
+      iconBg: "bg-[#D1FAE5]",
+      iconColor: "text-[#008B47]",
     },
     {
       title: "Times Hired",
       value: stats.timesHired.value.toString(),
       subtitle: `${formatCurrency(stats.timesHired.totalEarned)} earned`,
       icon: <CheckCircle className="w-5 h-5" />,
-      gradient: "bg-gradient-to-br from-[#008B47]/8 to-white",
-      iconBg: "bg-[#D1FAE5]",
-      iconColor: "text-[#008B47]",
+      gradient: "bg-gradient-to-br from-[#2463EB]/8 to-white",
+      iconBg: "bg-[#DBE9FE]",
+      iconColor: "text-[#2463EB]",
     },
     {
       title: "Profile Score",
@@ -136,7 +136,7 @@ export function StatCards({ stats }: StatCardsProps) {
       gradient: "bg-gradient-to-br from-[#FFEDD5] to-white",
       iconBg: "bg-[#FFEDD5]",
       iconColor: "text-[#EA580B]",
-      trendColor: "text-[#E63C23]",
+      trendColor: "text-[#EA580B]",
     },
   ];
 

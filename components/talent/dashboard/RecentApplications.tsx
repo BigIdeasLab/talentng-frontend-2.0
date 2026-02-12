@@ -18,7 +18,7 @@ function ApplicationItem({
   companyLogo,
 }: ApplicationItemProps) {
   const statusColors: Record<ApplicationStatus, string> = {
-    Interview: "bg-[#F0ECFF] text-[#5C30FF]",
+    Interview: "bg-[#DBEAFE] text-[#2463EB]",
     "In Review": "bg-[#EFF8FF] text-[#2463EB]",
     Hired: "bg-[#EEFDF0] text-[#008B47]",
     Applied: "bg-[#F5F5F5] text-[#606060]",
@@ -66,12 +66,12 @@ interface RecentApplicationsProps {
 
 export function RecentApplications({ applications }: RecentApplicationsProps) {
   return (
-    <div className="flex flex-col gap-4 p-4 rounded-lg border border-[#E5E6ED] bg-white">
+    <div className="flex flex-col gap-4 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white">
       <div className="flex justify-between items-center">
         <h2 className="text-[15px] font-bold font-inter-tight">
           Recent Applications
         </h2>
-        <button className="flex items-center gap-1 text-[#5C30FF] text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity">
+        <button className="flex items-center gap-1 text-[#2463EB] text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity">
           View All
           <ArrowUpRight className="w-3.5 h-3.5" />
         </button>

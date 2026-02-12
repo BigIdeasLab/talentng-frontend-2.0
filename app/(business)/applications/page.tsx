@@ -2,22 +2,15 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Check,
   X,
   Clock,
   Calendar,
-  MessageSquare,
   MapPin,
   Loader2,
+  Search,
+  SlidersHorizontal,
 } from "lucide-react";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { useToast } from "@/hooks";
@@ -82,9 +75,8 @@ export default function ApplicationsPage() {
   const [pendingCount, setPendingCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isActionLoading, setIsActionLoading] = useState(false);
-  const [filter, setFilter] = useState<
-    "all" | "pending" | "accepted" | "rejected"
-  >("all");
+  const [filter, setFilter] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Modal states
   const [acceptModalOpen, setAcceptModalOpen] = useState(false);
@@ -121,9 +113,20 @@ export default function ApplicationsPage() {
     fetchRequests();
   }, [fetchRequests]);
 
+  const TABS = [
+    { id: "all", label: "All" },
+    { id: "pending", label: "Pending" },
+    { id: "accepted", label: "Accepted" },
+    { id: "rejected", label: "Rejected" },
+  ];
+
   const filteredRequests = requests.filter((req) => {
-    if (filter === "all") return true;
-    return req.status === filter;
+    const matchesFilter = filter === "all" || req.status === filter;
+    const matchesSearch =
+      searchQuery === "" ||
+      req.mentee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      req.topic.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesFilter && matchesSearch;
   });
 
   const handleAccept = (id: string) => {
@@ -179,18 +182,14 @@ export default function ApplicationsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
+    <div className="h-screen overflow-x-hidden bg-white flex flex-col">
       {/* Header */}
-      <header className="border-b border-[#E1E4EA] bg-white px-6 py-5">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="font-inter-tight text-xl font-semibold text-black">
-              Mentorship Requests
-            </h1>
-            <p className="mt-1 font-inter-tight text-[13px] text-[#525866]">
-              Review and respond to incoming mentorship requests
-            </p>
-          </div>
+      <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+        {/* Title Row */}
+        <div className="flex items-center justify-between mb-[19px]">
+          <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px]">
+            Mentorship Requests
+          </h1>
           {pendingCount > 0 && (
             <div className="flex items-center gap-2 rounded-full bg-[#FFF4E5] px-3 py-1.5">
               <Clock className="h-4 w-4 text-[#F59E0B]" />
@@ -200,36 +199,62 @@ export default function ApplicationsPage() {
             </div>
           )}
         </div>
-      </header>
 
-      {/* Main Content */}
-      <div className="px-6 py-6">
-        {/* Filter */}
-        <div className="mb-5 flex items-center gap-4">
-          <span className="font-inter-tight text-[13px] font-medium text-[#525866]">
-            Filter:
-          </span>
-          <Select
-            value={filter}
-            onValueChange={(v: typeof filter) => setFilter(v)}
-          >
-            <SelectTrigger className="h-9 w-[150px] border-[#E1E4EA] bg-white">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Requests</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="accepted">Accepted</SelectItem>
-              <SelectItem value="rejected">Rejected</SelectItem>
-            </SelectContent>
-          </Select>
+        {/* Search Bar and Filter */}
+        <div className="flex items-center gap-[8px] mb-[19px]">
+          <div className="flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border border-[#E1E4EA] rounded-[8px]">
+            <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
+            <input
+              type="text"
+              placeholder="Search mentee, topic..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="flex-shrink-0 text-[#B2B2B2] hover:text-black transition-colors"
+              >
+                <X className="w-[15px] h-[15px]" />
+              </button>
+            )}
+          </div>
+
+          <button className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] flex-shrink-0 hover:bg-gray-100 transition-colors">
+            <SlidersHorizontal className="w-[15px] h-[15px] text-black" />
+            <span className="text-[13px] font-normal text-black font-inter-tight">
+              Filter
+            </span>
+          </button>
         </div>
 
+        {/* Filter Tabs */}
+        <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setFilter(tab.id)}
+              className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors ${
+                filter === tab.id
+                  ? "text-black font-medium border-b-2 border-black"
+                  : "text-black/30 font-medium hover:text-black/50"
+              }`}
+            >
+              <span className="text-[13px] font-inter-tight">{tab.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 overflow-hidden">
+        <div className="h-full overflow-y-auto p-4 md:p-6">
         {/* Request Cards */}
-        <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
           {isLoading ? (
             <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
-              <Loader2 className="mx-auto h-6 w-6 animate-spin text-[#5C30FF]" />
+              <Loader2 className="mx-auto h-6 w-6 animate-spin text-[#E91E8C]" />
               <p className="mt-2 font-inter-tight text-[14px] text-[#525866]">
                 Loading requests...
               </p>
@@ -244,124 +269,145 @@ export default function ApplicationsPage() {
             filteredRequests.map((request) => (
               <div
                 key={request.id}
-                className="overflow-hidden rounded-xl border border-[#E1E4EA] bg-white"
+                className="flex flex-col border border-[#E1E4EA] rounded-[16px] bg-white hover:shadow-md transition-shadow"
               >
-                {/* Card Header */}
-                <div className="flex items-start justify-between border-b border-[#E1E4EA] px-6 py-4">
-                  <div className="flex items-center gap-4">
-                    {/* Avatar */}
-                    {request.mentee.avatar ? (
-                      <img
-                        src={request.mentee.avatar}
-                        alt={request.mentee.name}
-                        className="h-12 w-12 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#F5F3FF]">
-                        <span className="font-inter-tight text-[16px] font-semibold text-[#5C30FF]">
-                          {request.mentee.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
+                {/* Card Content */}
+                <div className="flex flex-col gap-3.5 px-4 pt-4 pb-3">
+                  {/* Header - Avatar + Info + Status Badge */}
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center gap-2">
+                      {request.mentee.avatar ? (
+                        <img
+                          src={request.mentee.avatar}
+                          alt={request.mentee.name}
+                          className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-[#FDF2F8] flex items-center justify-center flex-shrink-0">
+                          <span className="text-[12px] font-semibold font-inter-tight text-[#E91E8C]">
+                            {request.mentee.name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")}
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[13px] font-medium font-inter-tight text-black">
+                          {request.mentee.name}
+                        </span>
+                        <span className="text-[12px] font-light font-inter-tight text-[#525866]">
+                          {request.mentee.title} at {request.mentee.company}
                         </span>
                       </div>
-                    )}
-                    {/* Info */}
-                    <div>
-                      <h3 className="font-inter-tight text-[15px] font-semibold text-black">
-                        {request.mentee.name}
-                      </h3>
-                      <p className="font-inter-tight text-[13px] text-[#525866]">
-                        {request.mentee.title} at {request.mentee.company}
-                      </p>
                     </div>
-                  </div>
-                  {/* Status Badge */}
-                  <div
-                    className={`rounded-full px-3 py-1 font-inter-tight text-[12px] font-medium ${
-                      request.status === "pending"
-                        ? "bg-[#FFF4E5] text-[#F59E0B]"
-                        : request.status === "accepted"
-                          ? "bg-[#ECFDF3] text-[#10B981]"
-                          : "bg-[#FEF2F2] text-[#EF4444]"
-                    }`}
-                  >
-                    {request.status.charAt(0).toUpperCase() +
-                      request.status.slice(1)}
-                  </div>
-                </div>
 
-                {/* Card Body */}
-                <div className="px-6 py-4">
-                  {/* Message */}
-                  <div className="mb-4">
-                    <div className="mb-2 flex items-center gap-2">
-                      <MessageSquare className="h-4 w-4 text-[#99A0AE]" />
-                      <span className="font-inter-tight text-[12px] font-medium text-[#99A0AE]">
-                        Message
+                    {/* Status Badge */}
+                    <div
+                      className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md flex-shrink-0 ${
+                        request.status === "pending"
+                          ? "bg-[#FFF4E5]"
+                          : request.status === "accepted"
+                            ? "bg-[#ECFDF3]"
+                            : "bg-[#FEF2F2]"
+                      }`}
+                    >
+                      <div
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          request.status === "pending"
+                            ? "bg-[#F59E0B]"
+                            : request.status === "accepted"
+                              ? "bg-[#10B981]"
+                              : "bg-[#EF4444]"
+                        }`}
+                      />
+                      <span
+                        className={`text-[11px] font-normal font-inter-tight ${
+                          request.status === "pending"
+                            ? "text-[#F59E0B]"
+                            : request.status === "accepted"
+                              ? "text-[#10B981]"
+                              : "text-[#EF4444]"
+                        }`}
+                      >
+                        {request.status.charAt(0).toUpperCase() +
+                          request.status.slice(1)}
                       </span>
                     </div>
-                    <p className="font-inter-tight text-[14px] leading-relaxed text-[#525866]">
-                      {request.message}
-                    </p>
                   </div>
 
                   {/* Topic */}
-                  <div className="mb-4">
-                    <span className="mb-2 block font-inter-tight text-[12px] font-medium text-[#99A0AE]">
-                      Topic
-                    </span>
-                    <span className="rounded-full bg-[#F5F3FF] px-3 py-1 font-inter-tight text-[12px] font-medium text-[#5C30FF]">
-                      {request.topic}
-                    </span>
+                  <div className="text-[15px] font-medium font-inter-tight text-black">
+                    {request.topic}
                   </div>
 
-                  {/* Session Details */}
-                  <div className="flex flex-wrap items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-[#99A0AE]" />
-                      <span className="font-inter-tight text-[13px] text-[#525866]">
+                  {/* Message */}
+                  <p className="text-[13px] font-normal font-inter-tight text-[#525866] leading-relaxed line-clamp-2">
+                    {request.message}
+                  </p>
+
+                  {/* Details as pills */}
+                  <div className="flex items-start content-start gap-x-1 gap-y-1.5 flex-wrap">
+                    <div className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#F5F5F5]">
+                      <Calendar className="w-3 h-3 text-[#525866]" />
+                      <span className="text-[12px] font-normal font-inter-tight text-black leading-[12.6px]">
                         {request.scheduledDate}, {request.scheduledTime}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4 text-[#99A0AE]" />
-                      <span className="font-inter-tight text-[13px] text-[#525866]">
+                    <div className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#F5F5F5]">
+                      <Clock className="w-3 h-3 text-[#525866]" />
+                      <span className="text-[12px] font-normal font-inter-tight text-black leading-[12.6px]">
                         {request.duration}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-[#99A0AE]" />
-                      <span className="font-inter-tight text-[13px] text-[#525866]">
+                    <div className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#F5F5F5]">
+                      <MapPin className="w-3 h-3 text-[#525866]" />
+                      <span className="text-[12px] font-normal font-inter-tight text-black leading-[12.6px]">
                         {request.location}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Card Actions */}
-                {request.status === "pending" && (
-                  <div className="flex items-center justify-end gap-3 border-t border-[#E1E4EA] bg-[#FAFAFA] px-6 py-3">
-                    <Button
-                      variant="outline"
-                      onClick={() => handleReject(request.id)}
-                      className="flex items-center gap-2 rounded-[30px] border-[#E1E4EA] px-4 py-2 font-inter-tight text-[13px] font-normal text-[#525866] hover:border-[#EF4444] hover:bg-[#FEF2F2] hover:text-[#EF4444]"
-                    >
-                      <X className="h-4 w-4" />
-                      Decline
-                    </Button>
-                    <Button
-                      onClick={() => handleAccept(request.id)}
-                      className="flex items-center gap-2 rounded-[30px] bg-[#5C30FF] px-4 py-2 font-inter-tight text-[13px] font-normal text-white hover:bg-[#4A26CC]"
-                    >
-                      <Check className="h-4 w-4" />
-                      Accept
-                    </Button>
+                {/* Footer - Actions */}
+                <div className="flex items-center justify-end px-4 py-2.5 border-t border-[#E1E4EA]">
+                  <div className="flex items-center gap-1">
+                    {request.status === "pending" ? (
+                      <>
+                        <button
+                          onClick={() => handleAccept(request.id)}
+                          className="flex items-center gap-1 px-4 py-2 h-8 bg-[#E91E8C] hover:bg-[#D1187D] rounded-[40px] transition-colors"
+                        >
+                          <Check className="w-4 h-4 text-white" />
+                          <span className="text-[12px] font-medium font-inter-tight text-white">
+                            Accept
+                          </span>
+                        </button>
+                        <button
+                          onClick={() => handleReject(request.id)}
+                          className="flex items-center gap-1 px-4 py-2 h-8 border border-[#E1E4EA] rounded-[40px] hover:border-[#EF4444] hover:bg-[#FEF2F2] hover:text-[#EF4444] transition-colors"
+                        >
+                          <X className="w-4 h-4" />
+                          <span className="text-[12px] font-medium font-inter-tight">
+                            Decline
+                          </span>
+                        </button>
+                      </>
+                    ) : request.status === "accepted" ? (
+                      <span className="text-[12px] font-inter-tight text-[#10B981]">
+                        Request accepted
+                      </span>
+                    ) : (
+                      <span className="text-[12px] font-inter-tight text-[#EF4444]">
+                        Request declined
+                      </span>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             ))
           )}
+        </div>
         </div>
       </div>
 

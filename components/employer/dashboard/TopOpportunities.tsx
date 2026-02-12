@@ -1,4 +1,4 @@
-import { Briefcase, Users } from "lucide-react";
+import { ArrowUpRight, Briefcase, Users } from "lucide-react";
 
 interface OpportunityItemProps {
   title: string;
@@ -18,8 +18,8 @@ function OpportunityItem({ title, applicants, status }: OpportunityItemProps) {
   return (
     <div className="flex h-auto md:h-[50px] px-2.5 py-3 md:py-0 justify-between items-center self-stretch rounded-lg bg-[#FCFCFD]">
       <div className="flex items-center gap-3">
-        <div className="flex w-7 h-7 p-1 justify-center items-center rounded-lg bg-[#F2ECFD] flex-shrink-0">
-          <Briefcase className="w-3.5 h-3.5 text-[#5C30FF]" strokeWidth={1.6} />
+        <div className="flex w-7 h-7 p-1 justify-center items-center rounded-lg bg-[#D1FAE5] flex-shrink-0">
+          <Briefcase className="w-3.5 h-3.5 text-[#0D9F5C]" strokeWidth={1.6} />
         </div>
         <div className="flex flex-col items-start gap-1.5">
           <h3 className="font-inter-tight text-[13px] font-normal text-black">
@@ -59,20 +59,22 @@ interface TopOpportunitiesProps {
 
 export function TopOpportunities({ data }: TopOpportunitiesProps) {
   return (
-    <div className="flex flex-col items-start gap-4 p-4 rounded-lg border border-gray-300 bg-white w-full">
+    <div className="flex flex-col items-start gap-4 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white w-full">
       <div className="flex justify-between items-center self-stretch flex-shrink-0">
-        <div className="flex flex-col items-start gap-1">
-          <h2 className="font-inter-tight text-lg font-bold text-black">
+        <div className="flex items-center gap-1.5">
+          <Briefcase className="w-4 h-4 text-[#0D9F5C]" strokeWidth={1.6} />
+          <h2 className="text-[15px] font-bold font-inter-tight">
             Top Opportunities
           </h2>
-          <p className="font-inter-tight text-xs font-normal text-[#525866]">
-            Your most active job listings
-          </p>
         </div>
-        <button className="font-inter-tight text-xs font-normal text-[#5C30FF] hover:underline">
+        <button className="flex items-center gap-1 text-[#0D9F5C] text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity">
           View All
+          <ArrowUpRight className="w-3.5 h-3.5" />
         </button>
       </div>
+      <p className="text-[12px] text-[#606060] font-inter-tight">
+        Your most active job listings
+      </p>
 
       <div className="flex flex-col items-start gap-2 self-stretch">
         {(data ?? []).map((opportunity) => (

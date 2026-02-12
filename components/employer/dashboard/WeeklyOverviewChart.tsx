@@ -29,12 +29,12 @@ export function WeeklyOverviewChart({ data }: WeeklyOverviewChartProps) {
       interviews: item.interviews,
     })) ?? [];
   return (
-    <div className="flex flex-col items-start gap-4 p-4 rounded-lg border border-gray-300 bg-white w-full">
+    <div className="flex flex-col items-start gap-4 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white w-full">
       <div className="flex flex-col items-start gap-1 self-stretch flex-shrink-0">
-        <h2 className="font-inter-tight text-lg font-bold text-black">
+        <h2 className="text-[15px] font-bold font-inter-tight">
           Weekly Overview
         </h2>
-        <p className="font-inter-tight text-xs font-normal text-[rgba(0,0,0,0.30)]">
+        <p className="text-[12px] text-[#606060] font-inter-tight">
           Applications and profile views this week
         </p>
       </div>
@@ -110,9 +110,9 @@ export function WeeklyOverviewChart({ data }: WeeklyOverviewChartProps) {
             <Line
               type="monotone"
               dataKey="applications"
-              stroke="#5C30FF"
+              stroke="#0D9F5C"
               strokeWidth={1.5}
-              dot={{ fill: "#5C30FF", r: 3 }}
+              dot={{ fill: "#0D9F5C", r: 3 }}
               activeDot={{ r: 5 }}
               fill="url(#colorApplications)"
             />
@@ -124,8 +124,8 @@ export function WeeklyOverviewChart({ data }: WeeklyOverviewChartProps) {
                 x2="0"
                 y2="1"
               >
-                <stop offset="5%" stopColor="#5C30FF" stopOpacity={0.1} />
-                <stop offset="95%" stopColor="#5C30FF" stopOpacity={0} />
+                <stop offset="5%" stopColor="#0D9F5C" stopOpacity={0.1} />
+                <stop offset="95%" stopColor="#0D9F5C" stopOpacity={0} />
               </linearGradient>
             </defs>
           </LineChart>

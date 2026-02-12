@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
-import { Search, SlidersHorizontal, ChevronDown, Loader2 } from "lucide-react";
+import { Search, SlidersHorizontal, X, Loader2 } from "lucide-react";
 import {
   SessionCard,
   type SessionStatus as CardSessionStatus,
@@ -105,7 +105,7 @@ function mapSession(session: any): SessionView {
 export default function SessionsPage() {
   const { toast } = useToast();
   const [sessions, setSessions] = useState<SessionView[]>([]);
-  const [meta, setMeta] = useState<SessionsMetaResponse>({
+  const [_meta, setMeta] = useState<SessionsMetaResponse>({
     total: 0,
     pending: 0,
     upcoming: 0,
@@ -160,17 +160,6 @@ export default function SessionsPage() {
         false);
     return matchesTab && matchesSearch;
   });
-
-  const counts = {
-    all: meta.total || sessions.length,
-    upcoming:
-      meta.pending + meta.upcoming ||
-      sessions.filter((s) => s.status === "upcoming").length,
-    completed:
-      meta.completed || sessions.filter((s) => s.status === "completed").length,
-    cancelled:
-      meta.cancelled || sessions.filter((s) => s.status === "cancelled").length,
-  };
 
   const handleReschedule = (id: string) => {
     const session = sessions.find((s) => s.id === id);
@@ -258,86 +247,76 @@ export default function SessionsPage() {
     }
   };
 
-  const tabs = [
-    { id: "all" as const, label: "All Sessions", count: counts.all },
-    { id: "upcoming" as const, label: "Upcoming", count: counts.upcoming },
-    { id: "completed" as const, label: "Completed", count: counts.completed },
-    { id: "cancelled" as const, label: "Cancelled", count: counts.cancelled },
+  const TABS = [
+    { id: "all", label: "All" },
+    { id: "upcoming", label: "Upcoming" },
+    { id: "completed", label: "Completed" },
+    { id: "cancelled", label: "Cancelled" },
   ];
 
   return (
-    <div className="h-screen overflow-hidden bg-[#FAFAFA]">
-      <div className="flex h-full flex-col overflow-hidden">
-        {/* Header */}
-        <header className="flex-shrink-0 border-b border-[#E1E4EA] bg-white px-6 py-5">
-          <h1 className="font-inter-tight text-xl font-semibold text-black">
-            Sessions
-          </h1>
-          <p className="mt-1 font-inter-tight text-[13px] text-[#525866]">
-            Manage your mentorship sessions
-          </p>
-        </header>
+    <div className="h-screen overflow-x-hidden bg-white flex flex-col">
+      {/* Header */}
+      <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+        {/* Title */}
+        <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px] mb-[19px]">
+          Sessions
+        </h1>
 
-        <div className="flex flex-1 flex-col overflow-hidden px-6 py-6">
-          {/* Search and Filters */}
-          <div className="mb-4 flex flex-shrink-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
-            <div className="flex flex-1 items-center gap-1.5 rounded-lg border border-[#E1E4EA] bg-white px-3 py-2">
-              <Search className="h-4 w-4 text-[#B2B2B2]" strokeWidth={1.125} />
-              <input
-                type="text"
-                placeholder="Search sessions..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 bg-transparent font-inter-tight text-[13px] font-normal text-black outline-none placeholder:text-black/30"
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <button className="flex items-center gap-1 rounded-lg border border-[#E1E4EA] bg-white px-3.5 py-2">
-                <SlidersHorizontal className="h-4 w-4" strokeWidth={1.125} />
-                <span className="font-inter-tight text-[13px] font-normal leading-normal text-black">
-                  Filter
-                </span>
-              </button>
-              <button className="flex items-center gap-1 rounded-lg border border-[#E1E4EA] bg-white px-3.5 py-2">
-                <span className="font-inter-tight text-[13px] font-normal leading-normal text-black">
-                  Newest
-                </span>
-                <ChevronDown className="h-3.5 w-3.5" strokeWidth={2} />
-              </button>
-            </div>
-          </div>
-
-          {/* Filter Tabs */}
-          <div className="mb-6 flex flex-shrink-0 items-center gap-1 overflow-x-auto rounded-lg border border-[#E1E4EA] bg-white p-1">
-            {tabs.map((tab) => (
+        {/* Search Bar and Filter */}
+        <div className="flex items-center gap-[8px] mb-[19px]">
+          <div className="flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border border-[#E1E4EA] rounded-[8px]">
+            <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
+            <input
+              type="text"
+              placeholder="Search mentee, topic..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+            />
+            {searchQuery && (
               <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 rounded-md px-4 py-2 font-inter-tight text-[13px] font-medium transition-colors ${
-                  activeTab === tab.id
-                    ? "bg-[#5C30FF] text-white"
-                    : "text-[#525866] hover:bg-[#F5F3FF]"
-                }`}
+                onClick={() => setSearchQuery("")}
+                className="flex-shrink-0 text-[#B2B2B2] hover:text-black transition-colors"
               >
-                {tab.label}
-                <span
-                  className={`rounded-full px-2 py-0.5 text-[11px] ${
-                    activeTab === tab.id
-                      ? "bg-white/20 text-white"
-                      : "bg-[#F5F5F5] text-[#525866]"
-                  }`}
-                >
-                  {tab.count}
-                </span>
+                <X className="w-[15px] h-[15px]" />
               </button>
-            ))}
+            )}
           </div>
 
-          {/* Session Cards */}
-          <div className="flex flex-1 flex-col gap-4 overflow-y-auto">
+          <button className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] flex-shrink-0 hover:bg-gray-100 transition-colors">
+            <SlidersHorizontal className="w-[15px] h-[15px] text-black" />
+            <span className="text-[13px] font-normal text-black font-inter-tight">
+              Filter
+            </span>
+          </button>
+        </div>
+
+        {/* Filter Tabs */}
+        <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors ${
+                activeTab === tab.id
+                  ? "text-black font-medium border-b-2 border-black"
+                  : "text-black/30 font-medium hover:text-black/50"
+              }`}
+            >
+              <span className="text-[13px] font-inter-tight">{tab.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 overflow-hidden">
+        <div className="h-full overflow-y-auto p-4 md:p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
             {isLoading ? (
               <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
-                <Loader2 className="mx-auto h-6 w-6 animate-spin text-[#5C30FF]" />
+                <Loader2 className="mx-auto h-6 w-6 animate-spin text-[#E91E8C]" />
                 <p className="mt-2 font-inter-tight text-[14px] text-[#525866]">
                   Loading sessions...
                 </p>

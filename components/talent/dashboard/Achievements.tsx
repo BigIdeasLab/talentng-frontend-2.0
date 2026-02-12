@@ -67,8 +67,8 @@ const achievementConfig: Record<
   team_player: {
     icon: <Users className="w-4 h-4 text-white" />,
     iconLocked: <Users className="w-4 h-4 text-[#B5B8BE]" />,
-    bgColor: "bg-[#F0ECFF]",
-    iconBg: "bg-[#5C30FF]",
+    bgColor: "bg-[#DBEAFE]",
+    iconBg: "bg-[#2463EB]",
   },
   top_earner: {
     icon: <Award className="w-3.5 h-3.5 text-white" />,
@@ -84,7 +84,7 @@ interface AchievementsProps {
 
 export function Achievements({ achievements }: AchievementsProps) {
   return (
-    <div className="flex flex-col gap-5 p-4 rounded-lg border border-[#FFFDF5] bg-[#FFFDF5] flex-shrink-0">
+    <div className="flex flex-col gap-5 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-[#FFFDF5] flex-shrink-0">
       <div className="flex items-center gap-1.5">
         <Award className="w-4 h-4 text-[#F59E0B]" />
         <h2 className="text-[15px] font-semibold font-inter-tight">
