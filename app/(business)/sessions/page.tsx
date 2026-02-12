@@ -10,6 +10,8 @@ import {
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { RescheduleModal } from "@/components/ui/reschedule-modal";
 import { useToast } from "@/hooks";
+import { useRequireRole } from "@/hooks/useRequireRole";
+import { PageLoadingState } from "@/lib/page-utils";
 import {
   getSessions,
   completeSession,
@@ -127,6 +129,8 @@ export default function SessionsPage() {
   );
   const [selectedMentorId, setSelectedMentorId] = useState<string>("");
 
+  const hasAccess = useRequireRole(["mentor"]);
+
   const fetchSessions = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -148,8 +152,10 @@ export default function SessionsPage() {
   }, []);
 
   useEffect(() => {
-    fetchSessions();
-  }, [fetchSessions]);
+    if (hasAccess) {
+      fetchSessions();
+    }
+  }, [hasAccess, fetchSessions]);
 
   const filteredSessions = sessions.filter((session) => {
     const matchesTab = activeTab === "all" || session.status === activeTab;
@@ -253,6 +259,10 @@ export default function SessionsPage() {
     { id: "completed", label: "Completed" },
     { id: "cancelled", label: "Cancelled" },
   ];
+
+  if (!hasAccess) {
+    return <PageLoadingState message="Checking access..." />;
+  }
 
   return (
     <div className="h-screen overflow-x-hidden bg-white flex flex-col">

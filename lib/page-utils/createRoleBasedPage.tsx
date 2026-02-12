@@ -12,6 +12,8 @@
 
 import { ReactNode } from "react";
 import { useProfile } from "@/hooks/useProfile";
+import { useRequireRole } from "@/hooks/useRequireRole";
+import { PageLoadingState } from "./PageLoadingState";
 
 export interface RoleComponentMap {
   /** Component to render for talent users */
@@ -42,8 +44,17 @@ export function createRoleBasedPage(
   components: RoleComponentMap,
 ): () => ReactNode {
   return function RoleBasedPageComponent() {
+    const allowedRoles = Object.keys(components).flatMap((key) => {
+      if (key === "employer") return ["recruiter", "employer"];
+      return [key];
+    }) as ("talent" | "recruiter" | "employer" | "mentor")[];
+    const hasAccess = useRequireRole(allowedRoles);
     const { activeRole, userRoles } = useProfile();
     const role = activeRole || userRoles?.[0] || "talent";
+
+    if (!hasAccess) {
+      return <PageLoadingState message="Checking access..." />;
+    }
 
     // Map common role names to component keys
     const componentKey =

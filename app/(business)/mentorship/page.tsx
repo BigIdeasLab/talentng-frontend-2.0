@@ -20,6 +20,8 @@ import {
   type MentorshipSession,
 } from "@/lib/api/mentorship";
 import { toast } from "sonner";
+import { useRequireRole } from "@/hooks/useRequireRole";
+import { PageLoadingState } from "@/lib/page-utils";
 
 const CATEGORIES = [
   "Design",
@@ -148,7 +150,10 @@ export default function MentorshipPage() {
   );
   const [cancellingSession, setCancellingSession] = useState(false);
 
+  const hasAccess = useRequireRole(["talent", "mentor"]);
+
   useEffect(() => {
+    if (!hasAccess) return;
     async function fetchMentors() {
       try {
         setMentorsLoading(true);
@@ -167,9 +172,10 @@ export default function MentorshipPage() {
       }
     }
     fetchMentors();
-  }, []);
+  }, [hasAccess]);
 
   useEffect(() => {
+    if (!hasAccess) return;
     async function fetchSessions() {
       try {
         setSessionsLoading(true);
@@ -186,7 +192,11 @@ export default function MentorshipPage() {
       }
     }
     fetchSessions();
-  }, []);
+  }, [hasAccess]);
+
+  if (!hasAccess) {
+    return <PageLoadingState message="Checking access..." />;
+  }
 
   const filteredMentors = useMemo(() => {
     let filtered = mentors;

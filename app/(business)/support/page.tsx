@@ -1,8 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { useRequireRole } from "@/hooks/useRequireRole";
+import { PageLoadingState } from "@/lib/page-utils";
 
 export default function SupportPage() {
+  const hasAccess = useRequireRole(["talent", "recruiter", "mentor"]);
+
+  if (!hasAccess) {
+    return <PageLoadingState message="Checking access..." />;
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="text-center">

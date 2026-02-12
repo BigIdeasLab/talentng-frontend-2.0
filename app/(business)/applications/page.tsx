@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { useToast } from "@/hooks";
+import { useRequireRole } from "@/hooks/useRequireRole";
+import { PageLoadingState } from "@/lib/page-utils";
 import {
   getRequests,
   getPendingRequestsCount,
@@ -85,6 +87,8 @@ export default function ApplicationsPage() {
     null,
   );
 
+  const hasAccess = useRequireRole(["mentor"]);
+
   const fetchRequests = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -110,8 +114,10 @@ export default function ApplicationsPage() {
   }, []);
 
   useEffect(() => {
-    fetchRequests();
-  }, [fetchRequests]);
+    if (hasAccess) {
+      fetchRequests();
+    }
+  }, [hasAccess, fetchRequests]);
 
   const TABS = [
     { id: "all", label: "All" },
@@ -180,6 +186,10 @@ export default function ApplicationsPage() {
       setIsActionLoading(false);
     }
   };
+
+  if (!hasAccess) {
+    return <PageLoadingState message="Checking access..." />;
+  }
 
   return (
     <div className="h-screen overflow-x-hidden bg-white flex flex-col">

@@ -14,17 +14,23 @@ export const ROLE_ROUTES: Record<string, Role[]> = {
   "/employer": ["recruiter", "employer"],
   "/applicants": ["recruiter", "employer"],
   "/hired-talents": ["recruiter", "employer"],
+  "/discover-talent": ["recruiter"],
 
   // Mentor only routes
   "/mentor": ["mentor"],
-  "/mentorship": ["talent", "mentor"], // Both can access but may see different content
+  "/applications": ["mentor"],
+  "/sessions": ["mentor"],
+  "/availability": ["mentor"],
 
-  // Talent-focused routes (all roles can access, but may see different content)
-  "/discover-talent": ["talent", "recruiter", "mentor"],
-  "/opportunities": ["talent", "recruiter", "mentor"],
+  // Shared routes (talent + mentor)
+  "/mentorship": ["talent", "mentor"],
   "/learning": ["talent", "mentor"],
+
+  // Multi-role routes
+  "/opportunities": ["talent", "recruiter", "mentor"],
   "/projects": ["talent"],
   "/support": ["talent", "recruiter", "mentor"],
+  "/debug": ["talent", "recruiter", "mentor"],
 
   // Universal routes (all authenticated users can access)
   "/dashboard": ["talent", "recruiter", "mentor", "employer"],

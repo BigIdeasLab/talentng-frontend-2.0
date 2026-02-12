@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/useToast";
+import { useRequireRole } from "@/hooks/useRequireRole";
+import { PageLoadingState } from "@/lib/page-utils";
 import {
   getMyAvailability,
   setMyAvailability,
@@ -93,6 +95,8 @@ export default function AvailabilityPage() {
   const [dragMode, setDragMode] = useState<"select" | "deselect">("select");
   const gridRef = useRef<HTMLDivElement>(null);
 
+  const hasAccess = useRequireRole(["mentor"]);
+
   // ============ Data Fetching ============
 
   const fetchAvailability = useCallback(async () => {
@@ -134,8 +138,9 @@ export default function AvailabilityPage() {
   }, []);
 
   useEffect(() => {
+    if (!hasAccess) return;
     fetchAvailability();
-  }, [fetchAvailability]);
+  }, [hasAccess, fetchAvailability]);
 
   // ============ Grid Handlers ============
 
@@ -370,6 +375,10 @@ export default function AvailabilityPage() {
   };
 
   // ============ Render ============
+
+  if (!hasAccess) {
+    return <PageLoadingState message="Checking access..." />;
+  }
 
   if (isLoading) {
     return (

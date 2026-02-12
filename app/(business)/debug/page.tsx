@@ -1,11 +1,15 @@
 "use client";
 
-/**
- * Debug Page
- * Temporary stub page for development/debugging
- */
+import { useRequireRole } from "@/hooks/useRequireRole";
+import { PageLoadingState } from "@/lib/page-utils";
 
 export default function DebugPage() {
+  const hasAccess = useRequireRole(["talent", "recruiter", "mentor"]);
+
+  if (!hasAccess) {
+    return <PageLoadingState message="Checking access..." />;
+  }
+
   return (
     <div className="min-h-screen bg-white p-8">
       <h1 className="text-3xl font-bold">Debug Page</h1>

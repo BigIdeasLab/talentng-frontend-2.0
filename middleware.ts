@@ -24,6 +24,10 @@ const protectedRoutes = [
   "/hired-talents",
   "/mentor",
   "/talent-profile",
+  "/applications",
+  "/sessions",
+  "/availability",
+  "/debug",
 ];
 
 const isProtectedRoute = (pathname: string) => {

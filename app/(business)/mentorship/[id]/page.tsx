@@ -18,6 +18,8 @@ import type {
   PublicMentorDetail,
   SessionReview,
 } from "@/lib/api/mentorship/types";
+import { useRequireRole } from "@/hooks/useRequireRole";
+import { PageLoadingState } from "@/lib/page-utils";
 
 interface AvailabilitySlot {
   date: string;
@@ -52,7 +54,10 @@ export default function MentorDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const hasAccess = useRequireRole(["talent", "mentor"]);
+
   useEffect(() => {
+    if (!hasAccess) return;
     async function fetchMentorData() {
       setIsLoading(true);
       setError(null);
@@ -150,7 +155,7 @@ export default function MentorDetailPage() {
     }
 
     fetchMentorData();
-  }, [mentorId]);
+  }, [mentorId, hasAccess]);
 
   useEffect(() => {
     if (searchParams.get("book") === "true" && !isLoading && mentor) {
@@ -158,6 +163,10 @@ export default function MentorDetailPage() {
       setIsBookingModalOpen(true);
     }
   }, [searchParams, isLoading, mentor]);
+
+  if (!hasAccess) {
+    return <PageLoadingState message="Checking access..." />;
+  }
 
   if (isLoading) {
     return (

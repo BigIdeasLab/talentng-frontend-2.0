@@ -4,23 +4,18 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useProfile } from "./useProfile";
 
-type AllowedRole = "recruiter" | "employer";
-
-interface UseRequireRoleOptions {
-  allowedRoles?: AllowedRole[];
-  redirectTo?: string;
-}
+type AllowedRole = "talent" | "recruiter" | "employer" | "mentor";
 
 /**
  * Hook to enforce role-based access control
- * Redirects to /opportunities if user doesn't have required role
- * @param allowedRoles - Roles that have access (default: ["recruiter"])
- * @param redirectTo - Path to redirect to if no permission (default: "/opportunities")
+ * Redirects to /dashboard if user doesn't have required role
+ * @param allowedRoles - Roles that have access
+ * @param redirectTo - Path to redirect to if no permission (default: "/dashboard")
  * @returns true if user has required role, false otherwise
  */
 export function useRequireRole(
-  allowedRoles: AllowedRole[] = ["recruiter"],
-  redirectTo: string = "/opportunities",
+  allowedRoles: AllowedRole[],
+  redirectTo: string = "/dashboard",
 ): boolean {
   const router = useRouter();
   const { activeRole, userRoles, isLoading } = useProfile();
