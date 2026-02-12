@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks";
 import { useProfile } from "@/hooks/useProfile";
@@ -167,25 +167,18 @@ export function ProfileSwitcher() {
   const { logout } = useAuth();
   const {
     profiles,
-    profilesUI,
     userRoles,
     activeRole,
     setActiveRole,
     currentProfile,
     currentProfileUI,
+    initialProfileName,
+    initialProfileAvatar,
   } = useProfile();
-
-  // Restore active role from localStorage on mount
-  useEffect(() => {
-    if (typeof window !== "undefined" && activeRole) {
-      localStorage.setItem("lastActiveRole", activeRole);
-    }
-  }, [activeRole]);
 
   // Restore last active role when switching roles
   const handleSwitchRole = (role: string) => {
     setIsOpen(false);
-    localStorage.setItem("lastActiveRole", role);
     setActiveRole(role);
   };
 
@@ -209,7 +202,6 @@ export function ProfileSwitcher() {
   const handleLogout = async () => {
     setIsOpen(false);
     // Save the current active role before logging out
-    localStorage.setItem("lastActiveRole", activeRole);
     await logout();
   };
 
@@ -217,6 +209,10 @@ export function ProfileSwitcher() {
   const displayProfile = currentProfileUI || currentProfile;
 
   const DEFAULT_AVATAR = "/default.png";
+
+  // Use server-provided initial values as fallback while profile loads
+  const cachedName = initialProfileName || null;
+  const cachedAvatar = initialProfileAvatar || null;
 
   // Get profile image URL safely
   const getProfileImageUrl = (role: string, profile: any): string => {
@@ -240,9 +236,12 @@ export function ProfileSwitcher() {
     return DEFAULT_AVATAR;
   };
 
-  // Get current active profile image
-  const getCurrentProfileImageUrl = (): string =>
-    getProfileImageUrl(activeRole, displayProfile);
+  // Get current active profile image (use cache while loading)
+  const getCurrentProfileImageUrl = (): string => {
+    const url = getProfileImageUrl(activeRole, displayProfile);
+    if (url === DEFAULT_AVATAR && cachedAvatar) return cachedAvatar;
+    return url;
+  };
 
   // Get display name based on role
   const getDisplayName = (role: string, profile: any) => {
@@ -307,7 +306,7 @@ export function ProfileSwitcher() {
               />
               <div className="min-w-0">
                 <div className="text-[13px] font-normal text-black font-inter-tight truncate">
-                  {getDisplayName(activeRole, displayProfile)}
+                  {displayProfile ? getDisplayName(activeRole, displayProfile) : cachedName || getDisplayName(activeRole, displayProfile)}
                 </div>
                 <div className="text-[11px] text-[rgba(0,0,0,0.30)] font-inter-tight truncate">
                   {getRoleLabel(activeRole)}
@@ -334,7 +333,7 @@ export function ProfileSwitcher() {
             />
             <div className="flex flex-col gap-[2px] min-w-0">
               <div className="text-[12px] font-normal text-black font-inter-tight truncate">
-                {getDisplayName(activeRole, displayProfile)}
+                {displayProfile ? getDisplayName(activeRole, displayProfile) : cachedName || getDisplayName(activeRole, displayProfile)}
               </div>
               <div className="text-[11px] font-light text-[#525866] font-inter-tight truncate">
                 {getRoleLabel(activeRole)}

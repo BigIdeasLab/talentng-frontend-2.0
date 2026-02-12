@@ -6,7 +6,6 @@ import { useProfile } from "@/hooks/useProfile";
 import { useProfileData } from "@/hooks/useProfileData";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useNotificationSocket } from "@/hooks/useNotificationSocket";
-import { COLORS } from "@/lib/constants";
 import { TalentSidebar } from "@/components/layouts/sidebars/TalentSidebar";
 import { RecruiterSidebar } from "@/components/layouts/sidebars/RecruiterSidebar";
 import { MentorSidebar } from "@/components/layouts/sidebars/MentorSidebar";
@@ -47,7 +46,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
     recipientRole: activeRole ? getRecipientRole(activeRole) : "talent",
     onCountUpdate: (unread) => {
       // Update state when count changes
-      setTotalUnreadCount((prev) => unread);
+      setTotalUnreadCount(() => unread);
     },
     onNotificationCreated: () => {
       // Refresh notifications when new one arrives
@@ -77,17 +76,9 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   // Fetch profile data client-side
   useProfileData();
 
-  // Show loading screen while profile data is being fetched or redirecting
-  if (isLoading || !activeRole) {
-    return <LoadingScreen />;
-  }
-
   // Select sidebar based on active role
   const renderSidebar = () => {
-    // Don't render sidebar until we know the actual activeRole
-    if (!activeRole) {
-      return null;
-    }
+    if (!activeRole) return null;
 
     switch (activeRole) {
       case "recruiter":
@@ -140,7 +131,9 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Children Content */}
-      <div className="flex-1 overflow-y-auto scrollbar-styled">{children}</div>
+      <div className="flex-1 overflow-y-auto scrollbar-styled">
+        {isLoading || !activeRole ? <LoadingScreen /> : children}
+      </div>
 
       {/* Notifications Modal */}
       <NotificationsModal

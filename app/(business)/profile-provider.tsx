@@ -46,6 +46,10 @@ export interface ProfileContextType {
 
   // Error state
   error: string | null;
+
+  // Server-provided initial profile display info
+  initialProfileName: string;
+  initialProfileAvatar: string;
 }
 
 export const ProfileContext = createContext<ProfileContextType | undefined>(
@@ -78,13 +82,48 @@ interface AllStats {
   mentor?: any;
 }
 
-interface ProfileProviderProps {
-  children: ReactNode;
+function getProfileDisplayName(role: string, profile: any): string {
+  if (role === "recruiter") {
+    return (
+      profile?.companyName ||
+      profile?.professional?.company ||
+      profile?.company ||
+      profile?.fullName ||
+      "Company"
+    );
+  }
+  if (role === "mentor") {
+    return (
+      profile?.fullName ||
+      `${profile?.personal?.firstName || ""} ${profile?.personal?.lastName || ""}`.trim() ||
+      profile?.companyName ||
+      "Mentor"
+    );
+  }
+  if (profile?.fullName) return profile.fullName;
+  const firstName = profile?.personal?.firstName || profile?.firstName || "";
+  const lastName = profile?.personal?.lastName || profile?.lastName || "";
+  return `${firstName} ${lastName}`.trim() || "User";
 }
 
-export function ProfileProvider({ children }: ProfileProviderProps) {
-  // Client-side state for profiles fetched after auth
-  const [activeRole, setActiveRole] = useState<string>("");
+function getProfileAvatarUrl(profile: any): string {
+  return (
+    profile?.personal?.profileImageUrl ||
+    profile?.profileImageUrl ||
+    profile?.profile_image_url ||
+    "/default.png"
+  );
+}
+
+interface ProfileProviderProps {
+  children: ReactNode;
+  initialRole: string;
+  initialProfileName: string;
+  initialProfileAvatar: string;
+}
+
+export function ProfileProvider({ children, initialRole, initialProfileName, initialProfileAvatar }: ProfileProviderProps) {
+  const [activeRole, setActiveRole] = useState<string>(initialRole);
   const [profiles, setProfiles] = useState<
     Record<string, TalentProfile | RecruiterProfile | MentorProfile | null>
   >({});
@@ -94,16 +133,23 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
   const [userId, setUserId] = useState<string | null>(null);
   const [userRoles, setUserRoles] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!initialRole);
 
-  // Persist activeRole to localStorage whenever it changes
+  // Persist all SSR cookies in one place
   useEffect(() => {
-    if (activeRole && typeof window !== "undefined") {
-      localStorage.setItem("lastActiveRole", activeRole);
-    }
-  }, [activeRole]);
+    if (!activeRole) return;
+    document.cookie = `activeRole=${activeRole}; path=/; max-age=31536000; SameSite=Lax`;
 
-  // Empty - client-side loading is handled in AppLayoutClient
+    const profile = profilesUI[activeRole] || profiles[activeRole];
+    if (!profile) return;
+
+    const name = getProfileDisplayName(activeRole, profile);
+    const avatar = getProfileAvatarUrl(profile);
+    if (name && name !== "User" && name !== "Company" && name !== "Mentor") {
+      document.cookie = `profileName=${encodeURIComponent(name)}; path=/; max-age=31536000; SameSite=Lax`;
+      document.cookie = `profileAvatar=${encodeURIComponent(avatar)}; path=/; max-age=31536000; SameSite=Lax`;
+    }
+  }, [activeRole, profiles, profilesUI]);
 
   // Compute current profile based on active role
   const currentProfile = useMemo(() => {
@@ -132,6 +178,8 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
     isLoading,
     setIsLoading,
     error,
+    initialProfileName,
+    initialProfileAvatar,
   };
 
   return (

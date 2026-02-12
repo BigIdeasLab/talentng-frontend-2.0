@@ -1,11 +1,7 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
-import {
-  getServerCurrentProfile,
-  getServerDashboardStats,
-  getServerTalentRecommendations,
-} from "@/lib/api/talent/server";
+import { useEffect, useCallback, useRef } from "react";
+import { getServerCurrentProfile } from "@/lib/api/talent/server";
 import { getServerCurrentRecruiterProfile } from "@/lib/api/recruiter/server";
 import { getServerCurrentMentorProfile } from "@/lib/api/mentor/server";
 import { mapAPIToUI } from "@/lib/profileMapper";
@@ -21,12 +17,16 @@ import type { MentorProfile } from "@/lib/api/mentor/types";
  */
 export function useProfileData() {
   const {
+    activeRole,
     setProfiles,
     setProfilesUI,
     setActiveRole,
     setIsLoading,
     setUserRoles,
   } = useProfile();
+
+  const activeRoleRef = useRef(activeRole);
+  activeRoleRef.current = activeRole;
 
   const fetchProfiles = useCallback(async () => {
     // Check if user is authenticated
@@ -37,7 +37,7 @@ export function useProfileData() {
     }
 
     try {
-      setIsLoading(true);
+      // isLoading is already initialized correctly by the provider
 
       // Get user roles from localStorage (set by OAuth redirect or login)
       const userRolesStr = localStorage.getItem("userRoles");
@@ -50,17 +50,14 @@ export function useProfileData() {
 
       // Fetch profiles only for roles the user actually has
       const fetchPromises: Promise<any>[] = [];
-      const roleMap: Record<string, string> = {};
 
       if (userRoles.includes("talent")) {
-        roleMap["talent"] = "talent";
         fetchPromises.push(getServerCurrentProfile().catch(() => null));
       } else {
         fetchPromises.push(Promise.resolve(null));
       }
 
       if (userRoles.includes("recruiter")) {
-        roleMap["recruiter"] = "recruiter";
         fetchPromises.push(
           getServerCurrentRecruiterProfile().catch(() => null),
         );
@@ -69,7 +66,6 @@ export function useProfileData() {
       }
 
       if (userRoles.includes("mentor")) {
-        roleMap["mentor"] = "mentor";
         fetchPromises.push(getServerCurrentMentorProfile().catch(() => null));
       } else {
         fetchPromises.push(Promise.resolve(null));
@@ -108,12 +104,9 @@ export function useProfileData() {
       setProfiles(profiles);
       setProfilesUI(profilesUI);
 
-      // Set default active role
+      // Only set active role if not already set by the server cookie
       if (availableRoles.length > 0) {
-        const savedRole = localStorage.getItem("lastActiveRole");
-        if (savedRole && availableRoles.includes(savedRole)) {
-          setActiveRole(savedRole);
-        } else {
+        if (!activeRoleRef.current || !availableRoles.includes(activeRoleRef.current)) {
           setActiveRole(availableRoles[0]);
         }
       } else {
