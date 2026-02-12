@@ -27,7 +27,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-
 const resetPasswordSchema = z.object({
   resetCode: z
     .string()
@@ -105,7 +104,9 @@ const ResetPassword = () => {
       } else if (error.message && error.message.includes("expired")) {
         setError("Code expired");
       }
-      toast.error(error.message || "Failed to reset password. Please try again.");
+      toast.error(
+        error.message || "Failed to reset password. Please try again.",
+      );
     },
   });
 
