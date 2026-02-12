@@ -86,70 +86,67 @@ export function EmployerDashboard() {
 
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 flex-shrink-0">
-          <StatsCard
-            icon={<Users className="w-5 h-5" strokeWidth={1.6} />}
-            value={data?.totalApplicants?.value ?? 0}
-            label="Total Applicants"
-            gradient="bg-gradient-to-br from-[#F59E0B]/8 to-white"
-            iconBg="bg-[#FEF3C7]"
-            iconColor="text-[#D97706]"
-            change={{
-              value: formatChange(data?.totalApplicants?.change ?? 0, true),
-              type:
-                (data?.totalApplicants?.change ?? 0) >= 0
-                  ? "positive"
-                  : "negative",
-            }}
-          />
-          <StatsCard
-            icon={<Briefcase className="w-5 h-5" strokeWidth={1.6} />}
-            value={data?.activeOpportunities?.value ?? 0}
-            label="Active Opportunities"
-            gradient="bg-gradient-to-br from-[#008B47]/8 to-white"
-            iconBg="bg-[#D1FAE5]"
-            iconColor="text-[#008B47]"
-            change={{
-              value: formatChange(
-                data?.activeOpportunities?.change ?? 0,
-                false,
-              ),
-              type:
-                (data?.activeOpportunities?.change ?? 0) >= 0
-                  ? "positive"
-                  : "negative",
-            }}
-          />
-          <StatsCard
-            icon={<TrendingUp className="w-5 h-5" strokeWidth={2} />}
-            value={data?.hiredThisMonth?.value ?? 0}
-            label="Hired This Month"
-            gradient="bg-gradient-to-br from-[#2463EB]/8 to-white"
-            iconBg="bg-[#DBE9FE]"
-            iconColor="text-[#2463EB]"
-            change={{
-              value: formatChange(data?.hiredThisMonth?.change ?? 0, true),
-              type:
-                (data?.hiredThisMonth?.change ?? 0) >= 0
-                  ? "positive"
-                  : "negative",
-            }}
-          />
-          <StatsCard
-            icon={<Clock className="w-5 h-5" strokeWidth={1.6} />}
-            value={data?.pendingReviews?.value ?? 0}
-            label="Pending Reviews"
-            gradient="bg-gradient-to-br from-[#FCE7F3] to-white"
-            iconBg="bg-[#FCE7F3]"
-            iconColor="text-[#DB2777]"
-            change={{
-              value: formatChange(data?.pendingReviews?.change ?? 0, false),
-              type:
-                (data?.pendingReviews?.change ?? 0) >= 0
-                  ? "positive"
-                  : "negative",
-            }}
-          />
-        </div>
+        <StatsCard
+          icon={<Users className="w-5 h-5" strokeWidth={1.6} />}
+          value={data?.totalApplicants?.value ?? 0}
+          label="Total Applicants"
+          gradient="bg-gradient-to-br from-[#F59E0B]/8 to-white"
+          iconBg="bg-[#FEF3C7]"
+          iconColor="text-[#D97706]"
+          change={{
+            value: formatChange(data?.totalApplicants?.change ?? 0, true),
+            type:
+              (data?.totalApplicants?.change ?? 0) >= 0
+                ? "positive"
+                : "negative",
+          }}
+        />
+        <StatsCard
+          icon={<Briefcase className="w-5 h-5" strokeWidth={1.6} />}
+          value={data?.activeOpportunities?.value ?? 0}
+          label="Active Opportunities"
+          gradient="bg-gradient-to-br from-[#008B47]/8 to-white"
+          iconBg="bg-[#D1FAE5]"
+          iconColor="text-[#008B47]"
+          change={{
+            value: formatChange(data?.activeOpportunities?.change ?? 0, false),
+            type:
+              (data?.activeOpportunities?.change ?? 0) >= 0
+                ? "positive"
+                : "negative",
+          }}
+        />
+        <StatsCard
+          icon={<TrendingUp className="w-5 h-5" strokeWidth={2} />}
+          value={data?.hiredThisMonth?.value ?? 0}
+          label="Hired This Month"
+          gradient="bg-gradient-to-br from-[#2463EB]/8 to-white"
+          iconBg="bg-[#DBE9FE]"
+          iconColor="text-[#2463EB]"
+          change={{
+            value: formatChange(data?.hiredThisMonth?.change ?? 0, true),
+            type:
+              (data?.hiredThisMonth?.change ?? 0) >= 0
+                ? "positive"
+                : "negative",
+          }}
+        />
+        <StatsCard
+          icon={<Clock className="w-5 h-5" strokeWidth={1.6} />}
+          value={data?.pendingReviews?.value ?? 0}
+          label="Pending Reviews"
+          gradient="bg-gradient-to-br from-[#FCE7F3] to-white"
+          iconBg="bg-[#FCE7F3]"
+          iconColor="text-[#DB2777]"
+          change={{
+            value: formatChange(data?.pendingReviews?.change ?? 0, false),
+            type:
+              (data?.pendingReviews?.change ?? 0) >= 0
+                ? "positive"
+                : "negative",
+          }}
+        />
+      </div>
 
       {/* Weekly Overview and Hiring Pipeline */}
       <div className="grid grid-cols-1 lg:grid-cols-[5fr_3fr] gap-4 flex-shrink-0">

@@ -391,12 +391,16 @@ export default function AvailabilityPage() {
             {isSaved && !hasChanges && (
               <div className="flex items-center gap-2 rounded-full bg-green-50 px-3 py-1.5 text-green-700">
                 <Check className="h-4 w-4" />
-                <span className="font-inter-tight text-[13px] font-medium">Saved</span>
+                <span className="font-inter-tight text-[13px] font-medium">
+                  Saved
+                </span>
               </div>
             )}
             {hasChanges && (
               <div className="flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1.5 text-amber-700">
-                <span className="font-inter-tight text-[13px] font-medium">Unsaved changes</span>
+                <span className="font-inter-tight text-[13px] font-medium">
+                  Unsaved changes
+                </span>
               </div>
             )}
           </div>
