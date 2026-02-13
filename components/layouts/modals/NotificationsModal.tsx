@@ -60,7 +60,9 @@ export function NotificationsModal({
           </div>
 
           {/* Modal Content */}
-          <div className="flex-1 overflow-y-auto scrollbar-styled">{renderNotifications()}</div>
+          <div className="flex-1 overflow-y-auto scrollbar-styled">
+            {renderNotifications()}
+          </div>
         </div>
       </div>
     </>
