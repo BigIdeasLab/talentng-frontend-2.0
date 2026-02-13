@@ -21,7 +21,10 @@ function SkillItem({ name, percentage, endorsements }: SkillItemProps) {
       <div className="relative w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
         <div
           className="absolute left-0 top-0 h-full rounded-full transition-all duration-300"
-          style={{ width: `${percentage}%`, backgroundColor: ROLE_COLORS.talent.dark }}
+          style={{
+            width: `${percentage}%`,
+            backgroundColor: ROLE_COLORS.talent.dark,
+          }}
         />
       </div>
       <div className="flex items-center gap-1">
@@ -40,7 +43,9 @@ interface TopSkillsProps {
 
 export function TopSkills({ skills }: TopSkillsProps) {
   return (
-    <div className={`flex flex-col gap-5 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white flex-shrink-0 ${cardHover}`}>
+    <div
+      className={`flex flex-col gap-5 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white flex-shrink-0 ${cardHover}`}
+    >
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-1.5">
           <Zap className="w-4 h-4 text-[#E9B305] fill-[#E9B305]" />

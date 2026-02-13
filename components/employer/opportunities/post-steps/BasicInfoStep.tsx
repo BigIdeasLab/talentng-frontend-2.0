@@ -76,7 +76,8 @@ export function BasicInfoStep({
     } else {
       setTimeout(() => {
         const firstError = document.querySelector("[data-error]");
-        if (firstError) firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+        if (firstError)
+          firstError.scrollIntoView({ behavior: "smooth", block: "center" });
       }, 50);
     }
   };
@@ -108,7 +109,10 @@ export function BasicInfoStep({
             }`}
           />
           {errors.title && (
-            <span data-error className="font-inter-tight text-[12px] text-red-500">
+            <span
+              data-error
+              className="font-inter-tight text-[12px] text-red-500"
+            >
               {errors.title}
             </span>
           )}
@@ -154,7 +158,10 @@ export function BasicInfoStep({
               </svg>
             </div>
             {errors.type && (
-              <span data-error className="font-inter-tight text-[12px] text-red-500">
+              <span
+                data-error
+                className="font-inter-tight text-[12px] text-red-500"
+              >
                 {errors.type}
               </span>
             )}
@@ -199,7 +206,10 @@ export function BasicInfoStep({
               </svg>
             </div>
             {errors.category && (
-              <span data-error className="font-inter-tight text-[12px] text-red-500">
+              <span
+                data-error
+                className="font-inter-tight text-[12px] text-red-500"
+              >
                 {errors.category}
               </span>
             )}
@@ -244,7 +254,10 @@ export function BasicInfoStep({
             </svg>
           </div>
           {errors.workMode && (
-            <span data-error className="font-inter-tight text-[12px] text-red-500">
+            <span
+              data-error
+              className="font-inter-tight text-[12px] text-red-500"
+            >
               {errors.workMode}
             </span>
           )}
@@ -291,7 +304,10 @@ export function BasicInfoStep({
             </svg>
           </div>
           {errors.employmentType && (
-            <span data-error className="font-inter-tight text-[12px] text-red-500">
+            <span
+              data-error
+              className="font-inter-tight text-[12px] text-red-500"
+            >
               {errors.employmentType}
             </span>
           )}
@@ -383,7 +399,10 @@ export function BasicInfoStep({
           </div>
         </div>
         {errors.location && (
-          <span data-error className="font-inter-tight text-[12px] text-red-500">
+          <span
+            data-error
+            className="font-inter-tight text-[12px] text-red-500"
+          >
             {errors.location}
           </span>
         )}

@@ -15,7 +15,12 @@ export function MentorHeroSection({
   message,
 }: MentorHeroSectionProps) {
   return (
-    <div className="relative w-full rounded-2xl overflow-hidden p-4 md:p-6 flex-shrink-0" style={{ background: `linear-gradient(to bottom right, ${ROLE_COLORS.mentor.dark}E6, ${ROLE_COLORS.mentor.dark})` }}>
+    <div
+      className="relative w-full rounded-2xl overflow-hidden p-4 md:p-6 flex-shrink-0"
+      style={{
+        background: `linear-gradient(to bottom right, ${ROLE_COLORS.mentor.dark}E6, ${ROLE_COLORS.mentor.dark})`,
+      }}
+    >
       <svg
         className="absolute right-[10%] top-[-5%] opacity-100"
         width="56"

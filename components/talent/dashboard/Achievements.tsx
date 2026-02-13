@@ -94,7 +94,9 @@ interface AchievementsProps {
 
 export function Achievements({ achievements }: AchievementsProps) {
   return (
-    <div className={`flex flex-col gap-5 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-[#FFFDF5] flex-shrink-0 ${cardHover}`}>
+    <div
+      className={`flex flex-col gap-5 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-[#FFFDF5] flex-shrink-0 ${cardHover}`}
+    >
       <div className="flex items-center gap-1.5">
         <Award className="w-4 h-4 text-[#F59E0B]" />
         <h2 className="text-[15px] font-semibold font-inter-tight">
@@ -116,9 +118,13 @@ export function Achievements({ achievements }: AchievementsProps) {
                 description={achievement.description}
                 icon={achievement.isLocked ? config.iconLocked : config.icon}
                 bgColor={achievement.isLocked ? "bg-[#FCFCFB]" : config.bgColor}
-                bgColorStyle={achievement.isLocked ? undefined : config.bgColorStyle}
+                bgColorStyle={
+                  achievement.isLocked ? undefined : config.bgColorStyle
+                }
                 iconBg={achievement.isLocked ? "bg-transparent" : config.iconBg}
-                iconBgColor={achievement.isLocked ? undefined : config.iconBgColor}
+                iconBgColor={
+                  achievement.isLocked ? undefined : config.iconBgColor
+                }
                 isLocked={achievement.isLocked}
               />
             );

@@ -39,7 +39,10 @@ export function WeeklyOverview({ data }: WeeklyOverviewProps) {
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: ROLE_COLORS.mentor.dark }}></div>
+            <div
+              className="w-2.5 h-2.5 rounded-full"
+              style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
+            ></div>
             <span className="text-[12px] text-[#606060] font-inter-tight">
               Sessions
             </span>
@@ -71,8 +74,16 @@ export function WeeklyOverview({ data }: WeeklyOverviewProps) {
                 x2="0"
                 y2="1"
               >
-                <stop offset="5%" stopColor={ROLE_COLORS.mentor.dark} stopOpacity={0.3} />
-                <stop offset="95%" stopColor={ROLE_COLORS.mentor.dark} stopOpacity={0.05} />
+                <stop
+                  offset="5%"
+                  stopColor={ROLE_COLORS.mentor.dark}
+                  stopOpacity={0.3}
+                />
+                <stop
+                  offset="95%"
+                  stopColor={ROLE_COLORS.mentor.dark}
+                  stopOpacity={0.05}
+                />
               </linearGradient>
               <linearGradient id="mentorFillViews" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#606060" stopOpacity={0.3} />

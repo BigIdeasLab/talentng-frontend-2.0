@@ -86,7 +86,8 @@ export function BudgetScopeStep({
   const scrollToFirstError = () => {
     setTimeout(() => {
       const firstError = document.querySelector("[data-error]");
-      if (firstError) firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (firstError)
+        firstError.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 50);
   };
 
@@ -217,7 +218,14 @@ export function BudgetScopeStep({
                   ? "text-black"
                   : "border-[#E1E4EA] text-[#99A0AE] hover:opacity-80"
               }`}
-              style={selectedPayment === "weekly" ? { borderColor: ROLE_COLORS.recruiter.primary, backgroundColor: `${ROLE_COLORS.recruiter.primary}0D` } : undefined}
+              style={
+                selectedPayment === "weekly"
+                  ? {
+                      borderColor: ROLE_COLORS.recruiter.primary,
+                      backgroundColor: `${ROLE_COLORS.recruiter.primary}0D`,
+                    }
+                  : undefined
+              }
             >
               Weekly
             </button>
@@ -229,7 +237,14 @@ export function BudgetScopeStep({
                   ? "text-black"
                   : "border-[#E1E4EA] text-[#99A0AE] hover:opacity-80"
               }`}
-              style={selectedPayment === "monthly" ? { borderColor: ROLE_COLORS.recruiter.primary, backgroundColor: `${ROLE_COLORS.recruiter.primary}0D` } : undefined}
+              style={
+                selectedPayment === "monthly"
+                  ? {
+                      borderColor: ROLE_COLORS.recruiter.primary,
+                      backgroundColor: `${ROLE_COLORS.recruiter.primary}0D`,
+                    }
+                  : undefined
+              }
             >
               Monthly
             </button>
@@ -241,13 +256,23 @@ export function BudgetScopeStep({
                   ? "text-black"
                   : "border-[#E1E4EA] text-[#99A0AE] hover:opacity-80"
               }`}
-              style={selectedPayment === "hourly" ? { borderColor: ROLE_COLORS.recruiter.primary, backgroundColor: `${ROLE_COLORS.recruiter.primary}0D` } : undefined}
+              style={
+                selectedPayment === "hourly"
+                  ? {
+                      borderColor: ROLE_COLORS.recruiter.primary,
+                      backgroundColor: `${ROLE_COLORS.recruiter.primary}0D`,
+                    }
+                  : undefined
+              }
             >
               Hourly
             </button>
           </div>
           {errors.paymentType && (
-            <span data-error className="font-inter-tight text-[12px] text-red-500">
+            <span
+              data-error
+              className="font-inter-tight text-[12px] text-red-500"
+            >
               {errors.paymentType}
             </span>
           )}
@@ -267,7 +292,14 @@ export function BudgetScopeStep({
                   ? "text-black"
                   : "border-[#E1E4EA] text-[#99A0AE] hover:opacity-80"
               }`}
-              style={selectedPriceMode === "range" ? { borderColor: ROLE_COLORS.recruiter.primary, backgroundColor: `${ROLE_COLORS.recruiter.primary}0D` } : undefined}
+              style={
+                selectedPriceMode === "range"
+                  ? {
+                      borderColor: ROLE_COLORS.recruiter.primary,
+                      backgroundColor: `${ROLE_COLORS.recruiter.primary}0D`,
+                    }
+                  : undefined
+              }
             >
               Range (Min - Max)
             </button>
@@ -279,14 +311,24 @@ export function BudgetScopeStep({
                   ? "text-black"
                   : "border-[#E1E4EA] text-[#99A0AE] hover:opacity-80"
               }`}
-              style={selectedPriceMode === "fixed" ? { borderColor: ROLE_COLORS.recruiter.primary, backgroundColor: `${ROLE_COLORS.recruiter.primary}0D` } : undefined}
+              style={
+                selectedPriceMode === "fixed"
+                  ? {
+                      borderColor: ROLE_COLORS.recruiter.primary,
+                      backgroundColor: `${ROLE_COLORS.recruiter.primary}0D`,
+                    }
+                  : undefined
+              }
             >
               Fixed Price
             </button>
           </div>
 
           {(errors.minBudget || errors.maxBudget || errors.price) && (
-            <span data-error className="font-inter-tight text-[12px] text-red-500">
+            <span
+              data-error
+              className="font-inter-tight text-[12px] text-red-500"
+            >
               {errors.minBudget || errors.maxBudget || errors.price}
             </span>
           )}
@@ -363,7 +405,10 @@ export function BudgetScopeStep({
             Duration
           </label>
           {errors.duration && (
-            <span data-error className="font-inter-tight text-[12px] text-red-500">
+            <span
+              data-error
+              className="font-inter-tight text-[12px] text-red-500"
+            >
               {errors.duration}
             </span>
           )}
@@ -409,7 +454,10 @@ export function BudgetScopeStep({
             Start date
           </label>
           {errors.startDate && (
-            <span data-error className="font-inter-tight text-[12px] text-red-500">
+            <span
+              data-error
+              className="font-inter-tight text-[12px] text-red-500"
+            >
               {errors.startDate}
             </span>
           )}
@@ -433,7 +481,10 @@ export function BudgetScopeStep({
             Experience Level
           </label>
           {errors.experienceLevel && (
-            <span data-error className="font-inter-tight text-[12px] text-red-500">
+            <span
+              data-error
+              className="font-inter-tight text-[12px] text-red-500"
+            >
               {errors.experienceLevel}
             </span>
           )}

@@ -419,14 +419,20 @@ export default function AvailabilityPage() {
         <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
           <div className="flex gap-3">
             <div className="flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 shadow-sm">
-              <Clock className="h-4 w-4" style={{ color: ROLE_COLORS.mentor.dark }} />
+              <Clock
+                className="h-4 w-4"
+                style={{ color: ROLE_COLORS.mentor.dark }}
+              />
               <span className="text-sm font-medium text-black">
                 {getTotalHours()}
               </span>
               <span className="text-xs text-[#525866]">/ week</span>
             </div>
             <div className="flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 shadow-sm">
-              <div className="flex h-4 w-4 items-center justify-center rounded text-[10px] font-bold text-white" style={{ backgroundColor: ROLE_COLORS.mentor.dark }}>
+              <div
+                className="flex h-4 w-4 items-center justify-center rounded text-[10px] font-bold text-white"
+                style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
+              >
                 {getEnabledDaysCount()}
               </div>
               <span className="text-xs text-[#525866]">days available</span>
@@ -578,7 +584,9 @@ export default function AvailabilityPage() {
                   >
                     <div
                       className="text-sm font-semibold"
-                      style={{ color: dayHasSlots ? ROLE_COLORS.mentor.dark : "black" }}
+                      style={{
+                        color: dayHasSlots ? ROLE_COLORS.mentor.dark : "black",
+                      }}
                     >
                       {day.short}
                     </div>
@@ -723,7 +731,10 @@ export default function AvailabilityPage() {
           {/* Footer */}
           <div className="flex items-center justify-between border-t border-[#E1E4EA] bg-[#FAFAFA] px-5 py-4">
             <div className="text-sm text-[#525866]">
-              <span className="font-semibold" style={{ color: ROLE_COLORS.mentor.dark }}>
+              <span
+                className="font-semibold"
+                style={{ color: ROLE_COLORS.mentor.dark }}
+              >
                 {selectedSlots.size}
               </span>{" "}
               slots selected ({getTotalHours()} per week)
@@ -754,7 +765,10 @@ export default function AvailabilityPage() {
               <span className="text-xs text-[#525866]">Saved</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="h-3 w-3 rounded" style={{ backgroundColor: ROLE_COLORS.mentor.dark }} />
+              <div
+                className="h-3 w-3 rounded"
+                style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
+              />
               <span className="text-xs text-[#525866]">New</span>
             </div>
             <div className="flex items-center gap-1.5">

@@ -15,7 +15,12 @@ export function WelcomeHeader({
   profileViewsIncreasePercent,
 }: WelcomeHeaderProps) {
   return (
-    <div className="relative w-full rounded-2xl overflow-hidden p-4 md:p-6 flex-shrink-0" style={{ background: `linear-gradient(to bottom right, ${ROLE_COLORS.talent.dark}E6, ${ROLE_COLORS.talent.dark})` }}>
+    <div
+      className="relative w-full rounded-2xl overflow-hidden p-4 md:p-6 flex-shrink-0"
+      style={{
+        background: `linear-gradient(to bottom right, ${ROLE_COLORS.talent.dark}E6, ${ROLE_COLORS.talent.dark})`,
+      }}
+    >
       {/* Decorative Stars */}
       <svg
         className="absolute right-[10%] top-[-5%] opacity-100"
@@ -89,10 +94,16 @@ export function WelcomeHeader({
           </p>
         </div>
         <button className="flex h-[38px] px-4 justify-center items-center gap-1 rounded-lg bg-white hover:bg-gray-100 transition-colors group flex-shrink-0 w-fit">
-          <span className="font-inter-tight text-xs font-medium" style={{ color: ROLE_COLORS.talent.dark }}>
+          <span
+            className="font-inter-tight text-xs font-medium"
+            style={{ color: ROLE_COLORS.talent.dark }}
+          >
             View Opportunities
           </span>
-          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" style={{ color: ROLE_COLORS.talent.dark }} />
+          <ArrowRight
+            className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform"
+            style={{ color: ROLE_COLORS.talent.dark }}
+          />
         </button>
       </div>
     </div>

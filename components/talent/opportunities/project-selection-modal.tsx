@@ -212,7 +212,10 @@ export function ProjectSelectionModal({
               style={{ borderColor: primary }}
             >
               <Upload size={16} style={{ color: primary }} />
-              <span className="font-inter-tight text-[13px] font-medium" style={{ color: primary }}>
+              <span
+                className="font-inter-tight text-[13px] font-medium"
+                style={{ color: primary }}
+              >
                 Upload Work
               </span>
             </button>
@@ -268,7 +271,9 @@ export function ProjectSelectionModal({
                   disabled={isUploading}
                   className="w-full px-[12px] py-[12px] border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[14px] text-black placeholder:text-[#99A0AE] focus:outline-none disabled:bg-gray-50"
                   onFocus={(e) => (e.currentTarget.style.borderColor = primary)}
-                  onBlur={(e) => (e.currentTarget.style.borderColor = "#E1E4EA")}
+                  onBlur={(e) =>
+                    (e.currentTarget.style.borderColor = "#E1E4EA")
+                  }
                 />
               </div>
               <div className="flex flex-col gap-[10px]">
@@ -289,7 +294,9 @@ export function ProjectSelectionModal({
                   maxLength={100}
                   className="w-full px-[12px] py-[12px] pb-[60px] border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[14px] text-black placeholder:text-[#99A0AE] resize-none focus:outline-none disabled:bg-gray-50"
                   onFocus={(e) => (e.currentTarget.style.borderColor = primary)}
-                  onBlur={(e) => (e.currentTarget.style.borderColor = "#E1E4EA")}
+                  onBlur={(e) =>
+                    (e.currentTarget.style.borderColor = "#E1E4EA")
+                  }
                 />
               </div>
               <div className="flex gap-[12px]">
@@ -331,7 +338,10 @@ export function ProjectSelectionModal({
         <div className="flex-1 overflow-y-auto px-[16px] pb-[16px] min-h-[350px]">
           {isLoading && (
             <div className="flex items-center justify-center h-full">
-              <Loader className="w-5 h-5 animate-spin" style={{ color: primary }} />
+              <Loader
+                className="w-5 h-5 animate-spin"
+                style={{ color: primary }}
+              />
             </div>
           )}
 
@@ -359,13 +369,14 @@ export function ProjectSelectionModal({
                     key={galleryItem.id}
                     onClick={() => handleToggleProject(galleryItem)}
                     className={`p-[12px] border rounded-[8px] transition-all ${
-                      isSelected
-                        ? ""
-                        : "border-[#E1E4EA] hover:opacity-80"
+                      isSelected ? "" : "border-[#E1E4EA] hover:opacity-80"
                     }`}
                     style={
                       isSelected
-                        ? { borderColor: primary, backgroundColor: `${primary}1A` }
+                        ? {
+                            borderColor: primary,
+                            backgroundColor: `${primary}1A`,
+                          }
                         : undefined
                     }
                   >

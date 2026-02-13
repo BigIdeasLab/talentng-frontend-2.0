@@ -322,7 +322,9 @@ export function AchievementsSection({
                 icon={achievement.isLocked ? config.iconLocked : config.icon}
                 bgColor={achievement.isLocked ? "bg-[#FCFCFB]" : config.bgColor}
                 iconBg={achievement.isLocked ? "bg-transparent" : config.iconBg}
-                iconBgColor={achievement.isLocked ? undefined : config.iconBgColor}
+                iconBgColor={
+                  achievement.isLocked ? undefined : config.iconBgColor
+                }
                 isLocked={achievement.isLocked}
               />
             );

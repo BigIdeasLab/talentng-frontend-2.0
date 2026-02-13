@@ -152,9 +152,11 @@ export function ApplicationModal({
                   placeholder="Type here (minimum 10 characters)"
                   disabled={isSubmitting}
                   className="w-full px-[12px] py-[18px] pb-[120px] border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[14px] text-black placeholder:text-[#99A0AE] resize-none focus:outline-none disabled:bg-gray-50"
-                style={{ "--tw-ring-color": primary } as React.CSSProperties}
-                onFocus={(e) => (e.currentTarget.style.borderColor = primary)}
-                onBlur={(e) => (e.currentTarget.style.borderColor = "#E1E4EA")}
+                  style={{ "--tw-ring-color": primary } as React.CSSProperties}
+                  onFocus={(e) => (e.currentTarget.style.borderColor = primary)}
+                  onBlur={(e) =>
+                    (e.currentTarget.style.borderColor = "#E1E4EA")
+                  }
                 />
               </div>
 

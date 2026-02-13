@@ -12,9 +12,18 @@ function NotificationItemSkeleton({ color }: { color: string }) {
         style={{ backgroundColor: color }}
       />
       <div className="flex-1 min-w-0 py-0.5 flex flex-col gap-2">
-        <div className="h-[12px] rounded w-3/4" style={{ backgroundColor: color }} />
-        <div className="h-[12px] rounded w-full" style={{ backgroundColor: color }} />
-        <div className="h-[10px] rounded w-[80px] mt-1" style={{ backgroundColor: color }} />
+        <div
+          className="h-[12px] rounded w-3/4"
+          style={{ backgroundColor: color }}
+        />
+        <div
+          className="h-[12px] rounded w-full"
+          style={{ backgroundColor: color }}
+        />
+        <div
+          className="h-[10px] rounded w-[80px] mt-1"
+          style={{ backgroundColor: color }}
+        />
       </div>
     </div>
   );

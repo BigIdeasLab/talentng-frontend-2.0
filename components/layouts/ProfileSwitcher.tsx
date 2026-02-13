@@ -296,7 +296,10 @@ export function ProfileSwitcher() {
   }
 
   return (
-    <div className="w-full px-[10px] py-[12px] rounded-lg" style={{ backgroundColor: roleColors.light }}>
+    <div
+      className="w-full px-[10px] py-[12px] rounded-lg"
+      style={{ backgroundColor: roleColors.light }}
+    >
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
           <button className="w-full flex items-center justify-between gap-[8px] hover:opacity-80 transition-opacity">

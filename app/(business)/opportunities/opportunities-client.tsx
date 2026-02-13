@@ -171,60 +171,60 @@ export function OpportunitiesClient({
 
   return (
     <RoleColorProvider role={activeRole}>
-    <div className="h-screen overflow-x-hidden bg-white flex flex-col">
-      {/* Header */}
-      <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
-        <TalentOpportunitiesHeader
-          searchQuery={searchQuery}
-          onSearchChange={handleSearch}
-          onFilterClick={() => setIsFilterOpen(true)}
-          isLoading={isLoading}
-          filterCount={getFilterCount()}
-          activeFilter={activeFilter}
-          onFilterChange={handleFilterChange}
-        />
-
-        <OpportunitiesFilterModal
-          isOpen={isFilterOpen}
-          onClose={() => setIsFilterOpen(false)}
-          onApply={(filters) => {
-            setAppliedFilters(filters);
-            setIsFilterOpen(false);
-            fetchOpportunitiesWithFilters(0);
-          }}
-          availableSkills={[]}
-          initialFilters={appliedFilters || undefined}
-        />
-      </div>
-
-      {/* Grid Container */}
-      <div className="flex-1 overflow-hidden">
-        {isLoading && <OpportunitiesGridSkeleton />}
-        {error && !isLoading && (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <p className="text-lg font-semibold text-gray-900">
-                Error loading opportunities
-              </p>
-              <p className="text-gray-600">{error}</p>
-            </div>
-          </div>
-        )}
-        {!isLoading && !error && (
-          <OpportunitiesGrid
-            opportunities={opportunities as DisplayOpportunity[]}
-            onApplicationSubmitted={handleApplicationSubmitted}
-            onNextPage={handleNextPage}
-            onPreviousPage={handlePreviousPage}
-            hasNextPage={pagination?.hasNextPage || false}
-            hasPreviousPage={pagination?.hasPreviousPage || false}
-            currentPage={pagination?.currentPage || 1}
-            totalPages={pagination?.totalPages || 1}
-            totalOpportunities={pagination?.total}
+      <div className="h-screen overflow-x-hidden bg-white flex flex-col">
+        {/* Header */}
+        <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+          <TalentOpportunitiesHeader
+            searchQuery={searchQuery}
+            onSearchChange={handleSearch}
+            onFilterClick={() => setIsFilterOpen(true)}
+            isLoading={isLoading}
+            filterCount={getFilterCount()}
+            activeFilter={activeFilter}
+            onFilterChange={handleFilterChange}
           />
-        )}
+
+          <OpportunitiesFilterModal
+            isOpen={isFilterOpen}
+            onClose={() => setIsFilterOpen(false)}
+            onApply={(filters) => {
+              setAppliedFilters(filters);
+              setIsFilterOpen(false);
+              fetchOpportunitiesWithFilters(0);
+            }}
+            availableSkills={[]}
+            initialFilters={appliedFilters || undefined}
+          />
+        </div>
+
+        {/* Grid Container */}
+        <div className="flex-1 overflow-hidden">
+          {isLoading && <OpportunitiesGridSkeleton />}
+          {error && !isLoading && (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center">
+                <p className="text-lg font-semibold text-gray-900">
+                  Error loading opportunities
+                </p>
+                <p className="text-gray-600">{error}</p>
+              </div>
+            </div>
+          )}
+          {!isLoading && !error && (
+            <OpportunitiesGrid
+              opportunities={opportunities as DisplayOpportunity[]}
+              onApplicationSubmitted={handleApplicationSubmitted}
+              onNextPage={handleNextPage}
+              onPreviousPage={handlePreviousPage}
+              hasNextPage={pagination?.hasNextPage || false}
+              hasPreviousPage={pagination?.hasPreviousPage || false}
+              currentPage={pagination?.currentPage || 1}
+              totalPages={pagination?.totalPages || 1}
+              totalOpportunities={pagination?.total}
+            />
+          )}
+        </div>
       </div>
-    </div>
     </RoleColorProvider>
   );
 }

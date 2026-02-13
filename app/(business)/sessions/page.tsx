@@ -327,25 +327,25 @@ export default function SessionsPage() {
           {isLoading ? (
             <SessionsSkeleton />
           ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
-            {filteredSessions.length === 0 ? (
-              <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
-                <p className="font-inter-tight text-[14px] text-[#525866]">
-                  No sessions found
-                </p>
-              </div>
-            ) : (
-              filteredSessions.map((session) => (
-                <SessionCard
-                  key={session.id}
-                  {...session}
-                  onReschedule={handleReschedule}
-                  onCancel={handleCancel}
-                  onComplete={handleComplete}
-                />
-              ))
-            )}
-          </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
+              {filteredSessions.length === 0 ? (
+                <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
+                  <p className="font-inter-tight text-[14px] text-[#525866]">
+                    No sessions found
+                  </p>
+                </div>
+              ) : (
+                filteredSessions.map((session) => (
+                  <SessionCard
+                    key={session.id}
+                    {...session}
+                    onReschedule={handleReschedule}
+                    onCancel={handleCancel}
+                    onComplete={handleComplete}
+                  />
+                ))
+              )}
+            </div>
           )}
         </div>
       </div>

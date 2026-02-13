@@ -834,7 +834,11 @@ export function OpportunityDetails({
                         ? "bg-gray-200 border-gray-200 cursor-not-allowed"
                         : "hover:opacity-80"
                     }`}
-                    style={!isApplied ? { backgroundColor: primary, borderColor: primary } : undefined}
+                    style={
+                      !isApplied
+                        ? { backgroundColor: primary, borderColor: primary }
+                        : undefined
+                    }
                   >
                     <svg
                       width="18"

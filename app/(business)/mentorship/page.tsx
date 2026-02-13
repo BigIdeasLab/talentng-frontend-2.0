@@ -379,9 +379,7 @@ export default function MentorshipPage() {
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
-                onClick={() =>
-                  setActiveCategory(cat === "All" ? "" : cat)
-                }
+                onClick={() => setActiveCategory(cat === "All" ? "" : cat)}
                 className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors font-inter-tight text-[13px] ${
                   (activeCategory === "" && cat === "All") ||
                   activeCategory === cat

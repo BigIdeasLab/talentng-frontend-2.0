@@ -35,7 +35,10 @@ function ProgressBar({ initials, name, course, progress }: ProgressBarProps) {
       <div className="relative w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
         <div
           className="absolute left-0 top-0 h-full rounded-full transition-all duration-300"
-          style={{ width: `${progress}%`, backgroundColor: ROLE_COLORS.mentor.dark }}
+          style={{
+            width: `${progress}%`,
+            backgroundColor: ROLE_COLORS.mentor.dark,
+          }}
         />
       </div>
     </div>
@@ -56,7 +59,10 @@ export function MenteeProgress({ mentees }: MenteeProgressProps) {
             Mentee Progress
           </h2>
         </div>
-        <button className="flex items-center gap-1 text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity" style={{ color: ROLE_COLORS.mentor.dark }}>
+        <button
+          className="flex items-center gap-1 text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity"
+          style={{ color: ROLE_COLORS.mentor.dark }}
+        >
           View All
           <ArrowUpRight className="w-3.5 h-3.5" />
         </button>

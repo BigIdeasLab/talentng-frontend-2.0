@@ -1,7 +1,11 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import { ROLE_COLORS, getRoleColors, type RoleColorPalette } from "./role-colors";
+import {
+  ROLE_COLORS,
+  getRoleColors,
+  type RoleColorPalette,
+} from "./role-colors";
 
 const RoleColorContext = createContext<RoleColorPalette>(ROLE_COLORS.talent);
 

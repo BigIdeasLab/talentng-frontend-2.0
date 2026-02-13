@@ -14,7 +14,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ProfileSwitcher } from "@/components/layouts/ProfileSwitcher";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
-import { sidebarItemBase, sidebarItemActive, sidebarItemInactive } from "@/lib/theme/effects";
+import {
+  sidebarItemBase,
+  sidebarItemActive,
+  sidebarItemInactive,
+} from "@/lib/theme/effects";
 
 interface SidebarProps {
   activeItem?: string;
@@ -128,7 +132,10 @@ export function TalentSidebar({
                 )}
                 style={
                   isActive
-                    ? { backgroundColor: ROLE_COLORS.talent.light, borderColor: ROLE_COLORS.talent.dark }
+                    ? {
+                        backgroundColor: ROLE_COLORS.talent.light,
+                        borderColor: ROLE_COLORS.talent.dark,
+                      }
                     : undefined
                 }
               >
@@ -172,7 +179,10 @@ export function TalentSidebar({
                 )}
                 style={
                   isActive
-                    ? { backgroundColor: ROLE_COLORS.talent.light, borderColor: ROLE_COLORS.talent.dark }
+                    ? {
+                        backgroundColor: ROLE_COLORS.talent.light,
+                        borderColor: ROLE_COLORS.talent.dark,
+                      }
                     : undefined
                 }
               >

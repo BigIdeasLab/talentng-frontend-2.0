@@ -53,7 +53,9 @@ export function HiringPipeline({ data }: HiringPipelineProps) {
   }));
 
   return (
-    <div className={`flex flex-col gap-4 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white ${cardHover}`}>
+    <div
+      className={`flex flex-col gap-4 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white ${cardHover}`}
+    >
       <div className="flex flex-col gap-2">
         <h2 className="text-[15px] font-bold font-inter-tight">
           Hiring Pipeline
@@ -76,7 +78,10 @@ export function HiringPipeline({ data }: HiringPipelineProps) {
           <span className="text-[12px] font-inter-tight text-black">
             Conversion Rate
           </span>
-          <span className="text-[15px] font-bold font-inter-tight" style={{ color: ROLE_COLORS.talent.dark }}>
+          <span
+            className="text-[15px] font-bold font-inter-tight"
+            style={{ color: ROLE_COLORS.talent.dark }}
+          >
             {data.conversionRate.toFixed(1)}%
           </span>
         </div>

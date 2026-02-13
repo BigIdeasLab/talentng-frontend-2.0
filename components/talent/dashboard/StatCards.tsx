@@ -48,7 +48,9 @@ function StatCard({
         <div
           className={`w-[40px] h-[40px] rounded-full ${iconBg} flex items-center justify-center`}
         >
-          <div className={iconColor} style={iconColorStyle}>{icon}</div>
+          <div className={iconColor} style={iconColorStyle}>
+            {icon}
+          </div>
         </div>
       </div>
       {trend ? (
@@ -131,7 +133,9 @@ export function StatCards({ stats }: StatCardsProps) {
       value: stats.timesHired.value.toString(),
       subtitle: `${formatCurrency(stats.timesHired.totalEarned)} earned`,
       icon: <CheckCircle className="w-5 h-5" />,
-      gradientStyle: { background: `linear-gradient(to bottom right, ${ROLE_COLORS.talent.dark}14, white)` },
+      gradientStyle: {
+        background: `linear-gradient(to bottom right, ${ROLE_COLORS.talent.dark}14, white)`,
+      },
       iconBg: "bg-[#DBE9FE]",
       iconColorStyle: { color: ROLE_COLORS.talent.dark },
     },

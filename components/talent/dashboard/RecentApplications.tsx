@@ -19,9 +19,21 @@ function ApplicationItem({
   status,
   companyLogo,
 }: ApplicationItemProps) {
-  const statusStyles: Record<ApplicationStatus, { className: string; style?: React.CSSProperties }> = {
-    Interview: { className: "", style: { backgroundColor: ROLE_COLORS.talent.light, color: ROLE_COLORS.talent.dark } },
-    "In Review": { className: "bg-[#EFF8FF]", style: { color: ROLE_COLORS.talent.dark } },
+  const statusStyles: Record<
+    ApplicationStatus,
+    { className: string; style?: React.CSSProperties }
+  > = {
+    Interview: {
+      className: "",
+      style: {
+        backgroundColor: ROLE_COLORS.talent.light,
+        color: ROLE_COLORS.talent.dark,
+      },
+    },
+    "In Review": {
+      className: "bg-[#EFF8FF]",
+      style: { color: ROLE_COLORS.talent.dark },
+    },
     Hired: { className: "bg-[#EEFDF0] text-[#008B47]" },
     Applied: { className: "bg-[#F5F5F5] text-[#606060]" },
     Rejected: { className: "bg-[#FEE2E2] text-[#DC2626]" },
@@ -69,12 +81,17 @@ interface RecentApplicationsProps {
 
 export function RecentApplications({ applications }: RecentApplicationsProps) {
   return (
-    <div className={`flex flex-col gap-4 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white ${cardHover}`}>
+    <div
+      className={`flex flex-col gap-4 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white ${cardHover}`}
+    >
       <div className="flex justify-between items-center">
         <h2 className="text-[15px] font-bold font-inter-tight">
           Recent Applications
         </h2>
-        <button className="flex items-center gap-1 text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity" style={{ color: ROLE_COLORS.talent.dark }}>
+        <button
+          className="flex items-center gap-1 text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity"
+          style={{ color: ROLE_COLORS.talent.dark }}
+        >
           View All
           <ArrowUpRight className="w-3.5 h-3.5" />
         </button>

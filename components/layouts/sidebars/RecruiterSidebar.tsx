@@ -4,7 +4,11 @@ import { useMemo } from "react";
 import { Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
-import { sidebarItemBase, sidebarItemActive, sidebarItemInactive } from "@/lib/theme/effects";
+import {
+  sidebarItemBase,
+  sidebarItemActive,
+  sidebarItemInactive,
+} from "@/lib/theme/effects";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useProfile } from "@/hooks/useProfile";
@@ -295,7 +299,10 @@ export function RecruiterSidebar({
                   )}
                   style={
                     isActive
-                      ? { backgroundColor: ROLE_COLORS.recruiter.light, borderColor: ROLE_COLORS.recruiter.dark }
+                      ? {
+                          backgroundColor: ROLE_COLORS.recruiter.light,
+                          borderColor: ROLE_COLORS.recruiter.dark,
+                        }
                       : undefined
                   }
                 >
@@ -339,7 +346,10 @@ export function RecruiterSidebar({
                 )}
                 style={
                   isActive
-                    ? { backgroundColor: ROLE_COLORS.recruiter.light, borderColor: ROLE_COLORS.recruiter.dark }
+                    ? {
+                        backgroundColor: ROLE_COLORS.recruiter.light,
+                        borderColor: ROLE_COLORS.recruiter.dark,
+                      }
                     : undefined
                 }
               >

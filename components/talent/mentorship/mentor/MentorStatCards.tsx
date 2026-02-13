@@ -45,7 +45,9 @@ function StatCard({
         <div
           className={`w-[40px] h-[40px] rounded-full ${iconBg} flex items-center justify-center`}
         >
-          <div className={iconColor} style={iconColorStyle}>{icon}</div>
+          <div className={iconColor} style={iconColorStyle}>
+            {icon}
+          </div>
         </div>
       </div>
       <div className="flex items-center gap-1">
@@ -137,7 +139,9 @@ export function MentorStatCards({ stats }: MentorStatCardsProps) {
       ),
       trend: stats.totalEarnings.trend,
       icon: <Video className="w-5 h-5" />,
-      gradientStyle: { background: `linear-gradient(to bottom right, ${ROLE_COLORS.talent.dark}14, white)` },
+      gradientStyle: {
+        background: `linear-gradient(to bottom right, ${ROLE_COLORS.talent.dark}14, white)`,
+      },
       iconBg: "bg-[#DBE9FE]",
       iconColorStyle: { color: ROLE_COLORS.talent.dark },
       trendColor: stats.totalEarnings.trend.isPositive

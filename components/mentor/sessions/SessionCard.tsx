@@ -84,7 +84,10 @@ export function SessionCard({
               />
             ) : (
               <div className="w-8 h-8 rounded-full bg-[#FDF2F8] flex items-center justify-center flex-shrink-0">
-                <span className="text-[12px] font-semibold font-inter-tight" style={{ color: ROLE_COLORS.mentor.dark }}>
+                <span
+                  className="text-[12px] font-semibold font-inter-tight"
+                  style={{ color: ROLE_COLORS.mentor.dark }}
+                >
                   {menteeInitials}
                 </span>
               </div>

@@ -4,8 +4,6 @@ export const cardHover =
 export const sidebarItemBase =
   "w-full flex items-center gap-[8px] px-[12px] py-[6px] rounded-lg transition-colors relative flex-shrink-0";
 
-export const sidebarItemActive =
-  "border-l-2 font-medium text-black";
+export const sidebarItemActive = "border-l-2 font-medium text-black";
 
-export const sidebarItemInactive =
-  "text-[#525866] hover:bg-gray-50";
+export const sidebarItemInactive = "text-[#525866] hover:bg-gray-50";

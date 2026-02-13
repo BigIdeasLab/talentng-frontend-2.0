@@ -127,7 +127,10 @@ export function RescheduleModal({
   return (
     <Modal isOpen={isOpen} onClose={handleClose} size="sm">
       <div className="flex flex-col">
-        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full" style={{ backgroundColor: `${accentColor}1A` }}>
+        <div
+          className="mb-4 flex h-12 w-12 items-center justify-center rounded-full"
+          style={{ backgroundColor: `${accentColor}1A` }}
+        >
           <Calendar className="h-6 w-6" style={{ color: accentColor }} />
         </div>
 
@@ -141,7 +144,10 @@ export function RescheduleModal({
 
         {isFetching ? (
           <div className="flex flex-col items-center justify-center py-10">
-            <Loader2 className="h-6 w-6 animate-spin" style={{ color: accentColor }} />
+            <Loader2
+              className="h-6 w-6 animate-spin"
+              style={{ color: accentColor }}
+            />
             <p className="mt-2 font-inter-tight text-[13px] text-[#525866]">
               Loading available slots...
             </p>
@@ -171,7 +177,10 @@ export function RescheduleModal({
                     }`}
                     style={
                       selectedDate === index
-                        ? { backgroundColor: accentColor, borderColor: accentColor }
+                        ? {
+                            backgroundColor: accentColor,
+                            borderColor: accentColor,
+                          }
                         : undefined
                     }
                   >
@@ -213,7 +222,10 @@ export function RescheduleModal({
                       }`}
                       style={
                         selectedTime === index
-                          ? { backgroundColor: accentColor, borderColor: accentColor }
+                          ? {
+                              backgroundColor: accentColor,
+                              borderColor: accentColor,
+                            }
                           : undefined
                       }
                     >

@@ -75,7 +75,10 @@ export function HiringPipeline({ data }: HiringPipelineProps) {
           <span className="text-[12px] font-inter-tight text-black">
             Conversion Rate
           </span>
-          <span className="text-[15px] font-bold font-inter-tight" style={{ color: ROLE_COLORS.mentor.dark }}>
+          <span
+            className="text-[15px] font-bold font-inter-tight"
+            style={{ color: ROLE_COLORS.mentor.dark }}
+          >
             {data.conversionRate.toFixed(1)}%
           </span>
         </div>

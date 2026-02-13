@@ -306,7 +306,10 @@ export function OpportunitiesFilterModal({
                                 setIsSkillOpen(false);
                               }}
                               className="text-left px-[2px] py-[2px] text-[11px] font-normal rounded border-t border-[#E1E4EA] hover:opacity-80"
-                              style={{ color: primary, backgroundColor: `${primary}0D` }}
+                              style={{
+                                color: primary,
+                                backgroundColor: `${primary}0D`,
+                              }}
                             >
                               + Add "{skillSearch}" as custom skill
                             </button>
@@ -320,7 +323,10 @@ export function OpportunitiesFilterModal({
                           setIsSkillOpen(false);
                         }}
                         className="text-left px-[2px] py-[2px] text-[11px] font-normal rounded hover:opacity-80"
-                        style={{ color: primary, backgroundColor: `${primary}0D` }}
+                        style={{
+                          color: primary,
+                          backgroundColor: `${primary}0D`,
+                        }}
                       >
                         + Add "{skillSearch}" as custom skill
                       </button>
@@ -426,7 +432,11 @@ export function OpportunitiesFilterModal({
             <button
               onClick={handleApplyFilter}
               className="flex-1 flex items-center justify-center px-4 py-[13px] rounded-[8px] hover:opacity-80"
-              style={{ backgroundColor: primary, borderWidth: 1, borderColor: primary }}
+              style={{
+                backgroundColor: primary,
+                borderWidth: 1,
+                borderColor: primary,
+              }}
             >
               <span className="text-[11px] font-normal text-white text-center font-aeonik-trial">
                 Apply Filter

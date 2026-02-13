@@ -69,25 +69,36 @@ export function PostOpportunityForm() {
   const validateAllSections = (): string | null => {
     // Basic Info
     if (
-      !formData.title.trim() || formData.title.trim().length < 5 ||
-      !formData.type || !formData.category || !formData.workMode ||
-      !formData.location || !formData.employmentType
+      !formData.title.trim() ||
+      formData.title.trim().length < 5 ||
+      !formData.type ||
+      !formData.category ||
+      !formData.workMode ||
+      !formData.location ||
+      !formData.employmentType
     ) {
       return "basic-info";
     }
 
     // Description
     if (
-      !formData.description.trim() || formData.description.trim().length < 30 ||
+      !formData.description.trim() ||
+      formData.description.trim().length < 30 ||
       formData.keyResponsibilities.length === 0 ||
-      formData.tags.length === 0 || formData.tools.length === 0
+      formData.tags.length === 0 ||
+      formData.tools.length === 0
     ) {
       return "description";
     }
 
     // Budget & Scope (skip for volunteer)
     if (!isVolunteer) {
-      if (!formData.paymentType || !formData.duration || !formData.startDate || !formData.experienceLevel) {
+      if (
+        !formData.paymentType ||
+        !formData.duration ||
+        !formData.startDate ||
+        !formData.experienceLevel
+      ) {
         return "budget-scope";
       }
       if (formData.priceMode === "range") {
@@ -256,7 +267,11 @@ export function PostOpportunityForm() {
                 ? "font-medium"
                 : "text-[#525866] hover:text-black"
             }`}
-            style={expandedSection === "basic-info" ? { color: ROLE_COLORS.recruiter.primary } : undefined}
+            style={
+              expandedSection === "basic-info"
+                ? { color: ROLE_COLORS.recruiter.primary }
+                : undefined
+            }
           >
             Basic Info
           </button>
@@ -267,7 +282,11 @@ export function PostOpportunityForm() {
                 ? "font-medium"
                 : "text-[#525866] hover:text-black"
             }`}
-            style={expandedSection === "description" ? { color: ROLE_COLORS.recruiter.primary } : undefined}
+            style={
+              expandedSection === "description"
+                ? { color: ROLE_COLORS.recruiter.primary }
+                : undefined
+            }
           >
             Description
           </button>
@@ -279,7 +298,11 @@ export function PostOpportunityForm() {
                   ? "font-medium"
                   : "text-[#525866] hover:text-black"
               }`}
-              style={expandedSection === "budget-scope" ? { color: ROLE_COLORS.recruiter.primary } : undefined}
+              style={
+                expandedSection === "budget-scope"
+                  ? { color: ROLE_COLORS.recruiter.primary }
+                  : undefined
+              }
             >
               Budget & Scope
             </button>
@@ -291,7 +314,11 @@ export function PostOpportunityForm() {
                 ? "font-medium"
                 : "text-[#525866] hover:text-black"
             }`}
-            style={expandedSection === "application-settings" ? { color: ROLE_COLORS.recruiter.primary } : undefined}
+            style={
+              expandedSection === "application-settings"
+                ? { color: ROLE_COLORS.recruiter.primary }
+                : undefined
+            }
           >
             Application Settings
           </button>
@@ -315,7 +342,10 @@ export function PostOpportunityForm() {
             <button
               onClick={handleSave}
               className="px-5 py-2 rounded-full font-inter-tight text-[13px] font-normal text-white hover:opacity-80 transition-colors"
-              style={{ backgroundColor: ROLE_COLORS.recruiter.primary, borderColor: ROLE_COLORS.recruiter.primary }}
+              style={{
+                backgroundColor: ROLE_COLORS.recruiter.primary,
+                borderColor: ROLE_COLORS.recruiter.primary,
+              }}
             >
               Save & Post
             </button>
@@ -455,9 +485,16 @@ export function PostOpportunityForm() {
                           updateFormData({ applicationCap: e.target.value })
                         }
                         className="px-4 py-3 border border-gray-300 rounded-[10px] text-[14px] focus:outline-none"
-                        style={{ "--focus-color": ROLE_COLORS.recruiter.primary } as React.CSSProperties}
-                        onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
-                        onBlur={(e) => e.currentTarget.style.borderColor = ""}
+                        style={
+                          {
+                            "--focus-color": ROLE_COLORS.recruiter.primary,
+                          } as React.CSSProperties
+                        }
+                        onFocus={(e) =>
+                          (e.currentTarget.style.borderColor =
+                            ROLE_COLORS.recruiter.primary)
+                        }
+                        onBlur={(e) => (e.currentTarget.style.borderColor = "")}
                       />
                     </div>
 
@@ -480,8 +517,11 @@ export function PostOpportunityForm() {
                           updateFormData({ closingDate: e.target.value })
                         }
                         className="px-4 py-3 border border-gray-300 rounded-[10px] text-[14px] focus:outline-none"
-                        onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
-                        onBlur={(e) => e.currentTarget.style.borderColor = ""}
+                        onFocus={(e) =>
+                          (e.currentTarget.style.borderColor =
+                            ROLE_COLORS.recruiter.primary)
+                        }
+                        onBlur={(e) => (e.currentTarget.style.borderColor = "")}
                       />
                     </div>
 
@@ -539,7 +579,10 @@ export function PostOpportunityForm() {
               <button
                 onClick={handleSaveAsDraft}
                 className="flex-1 px-4 py-2.5 rounded-full font-inter-tight text-[13px] font-normal text-white hover:opacity-80 transition-colors"
-                style={{ backgroundColor: ROLE_COLORS.recruiter.primary, borderColor: ROLE_COLORS.recruiter.primary }}
+                style={{
+                  backgroundColor: ROLE_COLORS.recruiter.primary,
+                  borderColor: ROLE_COLORS.recruiter.primary,
+                }}
               >
                 Save Draft
               </button>

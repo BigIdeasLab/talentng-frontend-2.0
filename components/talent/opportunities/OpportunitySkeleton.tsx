@@ -17,19 +17,31 @@ function OpportunityCardSkeleton({ color }: { color: string }) {
       <div className="flex flex-col gap-[16px]">
         <div className="flex gap-[8px] items-start justify-between">
           <div className="flex gap-[8px] flex-1">
-            <Skeleton className="w-[34px] h-[34px] rounded-full flex-shrink-0" color={color} />
+            <Skeleton
+              className="w-[34px] h-[34px] rounded-full flex-shrink-0"
+              color={color}
+            />
             <div className="flex-1 flex flex-col gap-[8px]">
               <Skeleton className="h-[13px] w-3/4" color={color} />
               <Skeleton className="h-[12px] w-1/2" color={color} />
             </div>
           </div>
-          <Skeleton className="w-[80px] h-[36px] rounded-full flex-shrink-0" color={color} />
+          <Skeleton
+            className="w-[80px] h-[36px] rounded-full flex-shrink-0"
+            color={color}
+          />
         </div>
 
         <div className="flex items-center gap-[18px]">
           <Skeleton className="h-[12px] w-[80px] flex-shrink-0" color={color} />
-          <Skeleton className="h-[12px] w-[100px] flex-shrink-0" color={color} />
-          <Skeleton className="h-[12px] w-[120px] flex-shrink-0" color={color} />
+          <Skeleton
+            className="h-[12px] w-[100px] flex-shrink-0"
+            color={color}
+          />
+          <Skeleton
+            className="h-[12px] w-[120px] flex-shrink-0"
+            color={color}
+          />
         </div>
       </div>
 

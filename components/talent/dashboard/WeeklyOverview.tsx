@@ -28,7 +28,9 @@ interface WeeklyOverviewProps {
 
 export function WeeklyOverview({ data }: WeeklyOverviewProps) {
   return (
-    <div className={`flex flex-col gap-5 p-4 md:p-6 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white ${cardHover}`}>
+    <div
+      className={`flex flex-col gap-5 p-4 md:p-6 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white ${cardHover}`}
+    >
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <div className="flex flex-col gap-2">
           <h2 className="text-[15px] font-bold font-inter-tight">
@@ -40,7 +42,10 @@ export function WeeklyOverview({ data }: WeeklyOverviewProps) {
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: ROLE_COLORS.talent.dark }}></div>
+            <div
+              className="w-2.5 h-2.5 rounded-full"
+              style={{ backgroundColor: ROLE_COLORS.talent.dark }}
+            ></div>
             <span className="text-[12px] text-[#606060] font-inter-tight">
               Applications
             </span>
@@ -66,8 +71,16 @@ export function WeeklyOverview({ data }: WeeklyOverviewProps) {
           >
             <defs>
               <linearGradient id="fillApplications" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={ROLE_COLORS.talent.dark} stopOpacity={0.3} />
-                <stop offset="95%" stopColor={ROLE_COLORS.talent.dark} stopOpacity={0.05} />
+                <stop
+                  offset="5%"
+                  stopColor={ROLE_COLORS.talent.dark}
+                  stopOpacity={0.3}
+                />
+                <stop
+                  offset="95%"
+                  stopColor={ROLE_COLORS.talent.dark}
+                  stopOpacity={0.05}
+                />
               </linearGradient>
               <linearGradient id="fillViews" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#606060" stopOpacity={0.3} />
