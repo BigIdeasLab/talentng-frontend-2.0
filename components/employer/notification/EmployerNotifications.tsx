@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useNotifications } from "@/hooks/useNotifications";
 import { formatDistanceToNow } from "date-fns";
 import type { InAppNotificationPayload } from "@/lib/types/notification";
+import { EmployerNotificationsSkeleton } from "@/components/skeletons/NotificationsSkeleton";
 
 interface EmployerNotificationsProps {
   onActionClick?: () => void;
@@ -38,11 +39,7 @@ export function EmployerNotifications({
   }, [recruiterNotifications, generalNotifications]);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <p className="text-gray-500">Loading notifications...</p>
-      </div>
-    );
+    return <EmployerNotificationsSkeleton />;
   }
 
   if (error) {

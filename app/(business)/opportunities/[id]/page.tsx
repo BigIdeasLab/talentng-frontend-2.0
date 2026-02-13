@@ -5,6 +5,7 @@ import { PageLoadingState } from "@/lib/page-utils";
 import { OpportunityDetails as EmployerOpportunityDetails } from "@/components/employer/opportunities/OpportunityDetails";
 import { OpportunityDetails as TalentOpportunityDetails } from "@/components/talent/opportunities/OpportunityDetails";
 import { useParams, useSearchParams } from "next/navigation";
+import { RoleColorProvider } from "@/lib/theme/RoleColorContext";
 
 export default function OpportunityPage() {
   const params = useParams();
@@ -26,10 +27,12 @@ export default function OpportunityPage() {
     case "mentor":
     default:
       return (
-        <TalentOpportunityDetails
-          opportunityId={id}
-          applicationId={applicationId}
-        />
+        <RoleColorProvider role={role}>
+          <TalentOpportunityDetails
+            opportunityId={id}
+            applicationId={applicationId}
+          />
+        </RoleColorProvider>
       );
   }
 }

@@ -4,6 +4,8 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ProfileSwitcher } from "../ProfileSwitcher";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import { sidebarItemBase, sidebarItemActive, sidebarItemInactive } from "@/lib/theme/effects";
 
 interface SidebarProps {
   activeItem?: string;
@@ -382,16 +384,16 @@ const getMenuItems = (notificationCount?: number): MenuItem[] => {
       href: "/sessions",
     },
     {
+      id: "opportunities",
+      label: "Opportunities",
+      icon: <WorkIcon />,
+      href: "/opportunities",
+    },
+    {
       id: "notification",
       label: "Notifications",
       icon: <NotificationIcon />,
       badge: notificationCount,
-    },
-    {
-      id: "opportunities",
-      label: "Opportuities",
-      icon: <WorkIcon />,
-      href: "/opportunities",
     },
   ];
   return items;
@@ -453,14 +455,17 @@ export function MentorSidebar({
                   }
                 }}
                 className={cn(
-                  "w-full flex items-center gap-[8px] px-[12px] py-[6px] rounded-lg transition-colors relative flex-shrink-0",
-                  isActive
-                    ? "bg-white text-[#525866]"
-                    : "text-[#525866] hover:bg-white/50",
+                  sidebarItemBase,
+                  isActive ? sidebarItemActive : sidebarItemInactive,
                 )}
+                style={
+                  isActive
+                    ? { backgroundColor: ROLE_COLORS.mentor.light, borderColor: ROLE_COLORS.mentor.dark }
+                    : undefined
+                }
               >
                 {item.icon}
-                <span className="text-[13px] font-normal font-inter-tight text-left flex-1">
+                <span className="text-[13px] font-inter-tight text-left flex-1">
                   {item.label}
                 </span>
                 {item.badge !== undefined && item.badge > 0 && (
@@ -493,14 +498,17 @@ export function MentorSidebar({
                 href={item.href || "#"}
                 onClick={() => onItemSelect?.(item.id)}
                 className={cn(
-                  "w-full flex items-center gap-[8px] px-[12px] py-[6px] rounded-lg transition-colors relative flex-shrink-0",
-                  isActive
-                    ? "bg-white text-[#525866]"
-                    : "text-[#525866] hover:bg-white/50",
+                  sidebarItemBase,
+                  isActive ? sidebarItemActive : sidebarItemInactive,
                 )}
+                style={
+                  isActive
+                    ? { backgroundColor: ROLE_COLORS.mentor.light, borderColor: ROLE_COLORS.mentor.dark }
+                    : undefined
+                }
               >
                 {item.icon}
-                <span className="text-[13px] font-normal font-inter-tight text-left flex-1">
+                <span className="text-[13px] font-inter-tight text-left flex-1">
                   {item.label}
                 </span>
               </MenuComponent>

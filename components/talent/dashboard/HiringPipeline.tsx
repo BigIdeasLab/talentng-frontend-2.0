@@ -1,4 +1,6 @@
 import type { HiringPipelineData } from "@/lib/api/talent";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import { cardHover } from "@/lib/theme/effects";
 
 interface PipelineStageProps {
   label: string;
@@ -47,11 +49,11 @@ export function HiringPipeline({ data }: HiringPipelineProps) {
     label: stage.label,
     count: stage.count,
     progress: (stage.count / maxCount) * 100,
-    color: index === 0 ? "#2463EB" : "#E5E7EB",
+    color: index === 0 ? ROLE_COLORS.talent.dark : "#E5E7EB",
   }));
 
   return (
-    <div className="flex flex-col gap-4 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white">
+    <div className={`flex flex-col gap-4 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white ${cardHover}`}>
       <div className="flex flex-col gap-2">
         <h2 className="text-[15px] font-bold font-inter-tight">
           Hiring Pipeline
@@ -74,7 +76,7 @@ export function HiringPipeline({ data }: HiringPipelineProps) {
           <span className="text-[12px] font-inter-tight text-black">
             Conversion Rate
           </span>
-          <span className="text-[15px] font-bold font-inter-tight text-[#2463EB]">
+          <span className="text-[15px] font-bold font-inter-tight" style={{ color: ROLE_COLORS.talent.dark }}>
             {data.conversionRate.toFixed(1)}%
           </span>
         </div>

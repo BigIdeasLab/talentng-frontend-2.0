@@ -15,6 +15,7 @@ import type {
 import type { OpportunityData } from "./server-data";
 import { getOpportunitiesData } from "./server-data";
 import { useProfile } from "@/hooks";
+import { RoleColorProvider } from "@/lib/theme/RoleColorContext";
 
 interface OpportunitiesClientProps {
   initialOpportunities: OpportunityData[];
@@ -56,7 +57,7 @@ export function OpportunitiesClient({
   const [opportunities, setOpportunities] =
     useState<OpportunityData[]>(initialOpportunities);
   const [pagination, setPagination] = useState(initialPagination);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(initialOpportunities.length === 0);
   const [error, setError] = useState<string | null>(initialError);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialLoadRef = useRef(true);
@@ -169,6 +170,7 @@ export function OpportunitiesClient({
   };
 
   return (
+    <RoleColorProvider role={activeRole}>
     <div className="h-screen overflow-x-hidden bg-white flex flex-col">
       {/* Header */}
       <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
@@ -223,5 +225,6 @@ export function OpportunitiesClient({
         )}
       </div>
     </div>
+    </RoleColorProvider>
   );
 }

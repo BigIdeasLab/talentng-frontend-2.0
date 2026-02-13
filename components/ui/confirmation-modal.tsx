@@ -16,6 +16,7 @@ interface ConfirmationModalProps {
   cancelText?: string;
   type?: ConfirmationType;
   isLoading?: boolean;
+  confirmColor?: string;
 }
 
 const typeConfig = {
@@ -49,6 +50,7 @@ export function ConfirmationModal({
   cancelText = "Cancel",
   type = "default",
   isLoading = false,
+  confirmColor,
 }: ConfirmationModalProps) {
   const config = typeConfig[type];
   const Icon = config.icon;
@@ -91,7 +93,8 @@ export function ConfirmationModal({
           <Button
             onClick={handleConfirm}
             disabled={isLoading}
-            className={`flex-1 rounded-[30px] px-4 py-2.5 font-inter-tight text-[13px] font-normal text-white ${config.confirmBg}`}
+            className={`flex-1 rounded-[30px] px-4 py-2.5 font-inter-tight text-[13px] font-normal text-white ${confirmColor ? "hover:opacity-80" : config.confirmBg}`}
+            style={confirmColor ? { backgroundColor: confirmColor } : undefined}
           >
             {isLoading ? "Loading..." : confirmText}
           </Button>

@@ -3,6 +3,8 @@
 import { useMemo } from "react";
 import { Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import { sidebarItemBase, sidebarItemActive, sidebarItemInactive } from "@/lib/theme/effects";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useProfile } from "@/hooks/useProfile";
@@ -288,14 +290,17 @@ export function RecruiterSidebar({
                     }
                   }}
                   className={cn(
-                    "w-full flex items-center gap-[8px] px-[12px] py-[6px] rounded-lg transition-colors relative flex-shrink-0",
-                    isActive
-                      ? "bg-white text-[#525866]"
-                      : "text-[#525866] hover:bg-white/50",
+                    sidebarItemBase,
+                    isActive ? sidebarItemActive : sidebarItemInactive,
                   )}
+                  style={
+                    isActive
+                      ? { backgroundColor: ROLE_COLORS.recruiter.light, borderColor: ROLE_COLORS.recruiter.dark }
+                      : undefined
+                  }
                 >
                   {item.icon}
-                  <span className="text-[13px] font-normal font-inter-tight text-left flex-1">
+                  <span className="text-[13px] font-inter-tight text-left flex-1">
                     {item.label}
                   </span>
                   {item.badge !== undefined && item.badge > 0 && (
@@ -329,14 +334,17 @@ export function RecruiterSidebar({
                 href={item.href || "#"}
                 onClick={() => onItemSelect?.(item.id)}
                 className={cn(
-                  "w-full flex items-center gap-[8px] px-[12px] py-[6px] rounded-lg transition-colors relative flex-shrink-0",
-                  isActive
-                    ? "bg-white text-[#525866]"
-                    : "text-[#525866] hover:bg-white/50",
+                  sidebarItemBase,
+                  isActive ? sidebarItemActive : sidebarItemInactive,
                 )}
+                style={
+                  isActive
+                    ? { backgroundColor: ROLE_COLORS.recruiter.light, borderColor: ROLE_COLORS.recruiter.dark }
+                    : undefined
+                }
               >
                 {item.icon}
-                <span className="text-[13px] font-normal font-inter-tight text-left flex-1">
+                <span className="text-[13px] font-inter-tight text-left flex-1">
                   {item.label}
                 </span>
               </MenuComponent>

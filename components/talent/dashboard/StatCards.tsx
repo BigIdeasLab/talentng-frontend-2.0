@@ -1,5 +1,7 @@
 import { Eye, Briefcase, CheckCircle, Target } from "lucide-react";
 import type { TalentDashboardStats } from "@/lib/api/talent";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import { cardHover } from "@/lib/theme/effects";
 
 interface StatCardProps {
   title: string;
@@ -10,9 +12,11 @@ interface StatCardProps {
     value: string;
     isPositive: boolean;
   };
-  gradient: string;
+  gradient?: string;
+  gradientStyle?: React.CSSProperties;
   iconBg: string;
-  iconColor: string;
+  iconColor?: string;
+  iconColorStyle?: React.CSSProperties;
   trendColor?: string;
 }
 
@@ -23,13 +27,16 @@ function StatCard({
   icon,
   trend,
   gradient,
+  gradientStyle,
   iconBg,
   iconColor,
+  iconColorStyle,
   trendColor,
 }: StatCardProps) {
   return (
     <div
-      className={`flex flex-col justify-center gap-3 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] ${gradient}`}
+      className={`flex flex-col justify-center gap-3 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] ${cardHover} ${gradient ?? ""}`}
+      style={gradientStyle}
     >
       <div className="flex justify-between items-center">
         <div className="flex flex-col gap-2">
@@ -41,7 +48,7 @@ function StatCard({
         <div
           className={`w-[40px] h-[40px] rounded-full ${iconBg} flex items-center justify-center`}
         >
-          <div className={iconColor}>{icon}</div>
+          <div className={iconColor} style={iconColorStyle}>{icon}</div>
         </div>
       </div>
       {trend ? (
@@ -124,9 +131,9 @@ export function StatCards({ stats }: StatCardsProps) {
       value: stats.timesHired.value.toString(),
       subtitle: `${formatCurrency(stats.timesHired.totalEarned)} earned`,
       icon: <CheckCircle className="w-5 h-5" />,
-      gradient: "bg-gradient-to-br from-[#2463EB]/8 to-white",
+      gradientStyle: { background: `linear-gradient(to bottom right, ${ROLE_COLORS.talent.dark}14, white)` },
       iconBg: "bg-[#DBE9FE]",
-      iconColor: "text-[#2463EB]",
+      iconColorStyle: { color: ROLE_COLORS.talent.dark },
     },
     {
       title: "Profile Score",

@@ -3,6 +3,7 @@ import type {
   MentorAchievement,
   MentorAchievementKey,
 } from "@/lib/api/mentorship";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface AchievementCardProps {
   title: string;
@@ -10,6 +11,7 @@ interface AchievementCardProps {
   icon: React.ReactNode;
   bgColor: string;
   iconBg: string;
+  iconBgColor?: string;
   isLocked?: boolean;
 }
 
@@ -19,6 +21,7 @@ function AchievementCard({
   icon,
   bgColor,
   iconBg,
+  iconBgColor,
   isLocked,
 }: AchievementCardProps) {
   return (
@@ -27,6 +30,7 @@ function AchievementCard({
     >
       <div
         className={`w-8 h-8 rounded-full ${iconBg} flex items-center justify-center flex-shrink-0`}
+        style={iconBgColor ? { backgroundColor: iconBgColor } : undefined}
       >
         {icon}
       </div>
@@ -53,6 +57,7 @@ const achievementConfig: Record<
     iconLocked: React.ReactNode;
     bgColor: string;
     iconBg: string;
+    iconBgColor?: string;
   }
 > = {
   top_mentor: {
@@ -217,7 +222,8 @@ const achievementConfig: Record<
       </svg>
     ),
     bgColor: "bg-[#FCE7F3]",
-    iconBg: "bg-[#E91E8C]",
+    iconBg: "",
+    iconBgColor: ROLE_COLORS.mentor.dark,
   },
   fast_growing: {
     icon: (
@@ -316,6 +322,7 @@ export function AchievementsSection({
                 icon={achievement.isLocked ? config.iconLocked : config.icon}
                 bgColor={achievement.isLocked ? "bg-[#FCFCFB]" : config.bgColor}
                 iconBg={achievement.isLocked ? "bg-transparent" : config.iconBg}
+                iconBgColor={achievement.isLocked ? undefined : config.iconBgColor}
                 isLocked={achievement.isLocked}
               />
             );

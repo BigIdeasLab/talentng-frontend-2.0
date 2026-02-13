@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Loader, Upload } from "lucide-react";
+import { useRoleColors } from "@/lib/theme/RoleColorContext";
 import { getCurrentProfile, uploadGalleryImages } from "@/lib/api/talent";
 import type { GalleryItem } from "@/lib/api/talent";
 import type { Project } from "./application-modal";
@@ -21,6 +22,7 @@ export function ProjectSelectionModal({
   onProjectsSelected,
   onWorkUploaded,
 }: ProjectSelectionModalProps) {
+  const { primary } = useRoleColors();
   const [tempSelected, setTempSelected] = useState<Project[]>(selectedProjects);
   const [projects, setProjects] = useState<GalleryItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -206,10 +208,11 @@ export function ProjectSelectionModal({
             <button
               onClick={() => setShowUploadForm(true)}
               disabled={isUploading}
-              className="w-full flex items-center justify-center gap-[8px] px-[12px] py-[12px] border border-[#5C30FF] border-dashed rounded-[8px] hover:bg-[#F0F7FF] transition-colors disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-[8px] px-[12px] py-[12px] border border-dashed rounded-[8px] hover:opacity-80 transition-colors disabled:opacity-50"
+              style={{ borderColor: primary }}
             >
-              <Upload size={16} className="text-[#5C30FF]" />
-              <span className="text-[#5C30FF] font-inter-tight text-[13px] font-medium">
+              <Upload size={16} style={{ color: primary }} />
+              <span className="font-inter-tight text-[13px] font-medium" style={{ color: primary }}>
                 Upload Work
               </span>
             </button>
@@ -243,7 +246,7 @@ export function ProjectSelectionModal({
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isUploading}
-                className="w-full px-[12px] py-[16px] border border-[#E1E4EA] rounded-[8px] text-[14px] text-[#525866] hover:border-[#5C30FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-[12px] py-[16px] border border-[#E1E4EA] rounded-[8px] text-[14px] text-[#525866] hover:opacity-80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {selectedFile ? selectedFile.name : "Select File"}
               </button>
@@ -263,7 +266,9 @@ export function ProjectSelectionModal({
                     }))
                   }
                   disabled={isUploading}
-                  className="w-full px-[12px] py-[12px] border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[14px] text-black placeholder:text-[#99A0AE] focus:outline-none focus:border-[#5C30FF] disabled:bg-gray-50"
+                  className="w-full px-[12px] py-[12px] border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[14px] text-black placeholder:text-[#99A0AE] focus:outline-none disabled:bg-gray-50"
+                  onFocus={(e) => (e.currentTarget.style.borderColor = primary)}
+                  onBlur={(e) => (e.currentTarget.style.borderColor = "#E1E4EA")}
                 />
               </div>
               <div className="flex flex-col gap-[10px]">
@@ -282,14 +287,17 @@ export function ProjectSelectionModal({
                   }
                   disabled={isUploading}
                   maxLength={100}
-                  className="w-full px-[12px] py-[12px] pb-[60px] border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[14px] text-black placeholder:text-[#99A0AE] resize-none focus:outline-none focus:border-[#5C30FF] disabled:bg-gray-50"
+                  className="w-full px-[12px] py-[12px] pb-[60px] border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[14px] text-black placeholder:text-[#99A0AE] resize-none focus:outline-none disabled:bg-gray-50"
+                  onFocus={(e) => (e.currentTarget.style.borderColor = primary)}
+                  onBlur={(e) => (e.currentTarget.style.borderColor = "#E1E4EA")}
                 />
               </div>
               <div className="flex gap-[12px]">
                 <button
                   type="submit"
                   disabled={isUploading || !selectedFile}
-                  className="flex-1 py-[16px] bg-[#5C30FF] text-white rounded-[20px] font-inter-tight text-[13px] font-normal hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-[6px]"
+                  className="flex-1 py-[16px] text-white rounded-[20px] font-inter-tight text-[13px] font-normal hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-[6px]"
+                  style={{ backgroundColor: primary }}
                 >
                   {isUploading ? (
                     <>
@@ -323,7 +331,7 @@ export function ProjectSelectionModal({
         <div className="flex-1 overflow-y-auto px-[16px] pb-[16px] min-h-[350px]">
           {isLoading && (
             <div className="flex items-center justify-center h-full">
-              <Loader className="w-5 h-5 animate-spin text-[#5C30FF]" />
+              <Loader className="w-5 h-5 animate-spin" style={{ color: primary }} />
             </div>
           )}
 
@@ -352,9 +360,14 @@ export function ProjectSelectionModal({
                     onClick={() => handleToggleProject(galleryItem)}
                     className={`p-[12px] border rounded-[8px] transition-all ${
                       isSelected
-                        ? "border-[#5C30FF] bg-[#F0F7FF]"
-                        : "border-[#E1E4EA] hover:border-[#5C30FF]"
+                        ? ""
+                        : "border-[#E1E4EA] hover:opacity-80"
                     }`}
+                    style={
+                      isSelected
+                        ? { borderColor: primary, backgroundColor: `${primary}1A` }
+                        : undefined
+                    }
                   >
                     <div className="flex items-center gap-[12px]">
                       {/* Project Image */}
@@ -398,7 +411,8 @@ export function ProjectSelectionModal({
             <button
               onClick={handleConfirm}
               disabled={tempSelected.length === 0}
-              className="px-[26px] py-[10px] bg-[#5C30FF] text-white rounded-[24px] font-inter-tight text-[13px] font-normal hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+              className="px-[26px] py-[10px] text-white rounded-[24px] font-inter-tight text-[13px] font-normal hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+              style={{ backgroundColor: primary }}
             >
               Confirm Selection
             </button>

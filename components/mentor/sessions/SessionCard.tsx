@@ -1,4 +1,5 @@
 import { Clock, X, CheckCircle, Calendar, MapPin } from "lucide-react";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface Mentee {
   id: string;
@@ -83,7 +84,7 @@ export function SessionCard({
               />
             ) : (
               <div className="w-8 h-8 rounded-full bg-[#FDF2F8] flex items-center justify-center flex-shrink-0">
-                <span className="text-[12px] font-semibold font-inter-tight text-[#E91E8C]">
+                <span className="text-[12px] font-semibold font-inter-tight" style={{ color: ROLE_COLORS.mentor.dark }}>
                   {menteeInitials}
                 </span>
               </div>
@@ -185,7 +186,8 @@ export function SessionCard({
               {isSessionEnded && (
                 <button
                   onClick={() => onComplete?.(id)}
-                  className="flex items-center gap-1 px-4 py-2 h-8 bg-[#E91E8C] hover:bg-[#D1187D] rounded-[40px] transition-colors"
+                  className="flex items-center gap-1 px-4 py-2 h-8 hover:opacity-80 rounded-[40px] transition-colors"
+                  style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
                 >
                   <CheckCircle className="w-4 h-4 text-white" />
                   <span className="text-[12px] font-medium font-inter-tight text-white">

@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { X, Search, ChevronDown } from "lucide-react";
 import categoriesData from "@/lib/data/categories.json";
 import skillsData from "@/lib/data/skills.json";
+import { useRoleColors } from "@/lib/theme/RoleColorContext";
 
 export interface OpportunitiesFilterState {
   types: string[];
@@ -35,6 +36,7 @@ export function OpportunitiesFilterModal({
   initialFilters,
   availableSkills,
 }: OpportunitiesFilterModalProps) {
+  const { primary } = useRoleColors();
   const modalRef = useRef<HTMLDivElement>(null);
   const typeRef = useRef<HTMLDivElement>(null);
   const skillRef = useRef<HTMLDivElement>(null);
@@ -303,7 +305,8 @@ export function OpportunitiesFilterModal({
                                 setSkillSearch("");
                                 setIsSkillOpen(false);
                               }}
-                              className="text-left px-[2px] py-[2px] text-[11px] font-normal text-[#5C30FF] bg-[#5C30FF]/5 hover:bg-[#5C30FF]/10 rounded border-t border-[#E1E4EA]"
+                              className="text-left px-[2px] py-[2px] text-[11px] font-normal rounded border-t border-[#E1E4EA] hover:opacity-80"
+                              style={{ color: primary, backgroundColor: `${primary}0D` }}
                             >
                               + Add "{skillSearch}" as custom skill
                             </button>
@@ -316,7 +319,8 @@ export function OpportunitiesFilterModal({
                           setSkillSearch("");
                           setIsSkillOpen(false);
                         }}
-                        className="text-left px-[2px] py-[2px] text-[11px] font-normal text-[#5C30FF] bg-[#5C30FF]/5 hover:bg-[#5C30FF]/10 rounded"
+                        className="text-left px-[2px] py-[2px] text-[11px] font-normal rounded hover:opacity-80"
+                        style={{ color: primary, backgroundColor: `${primary}0D` }}
                       >
                         + Add "{skillSearch}" as custom skill
                       </button>
@@ -421,7 +425,8 @@ export function OpportunitiesFilterModal({
             </button>
             <button
               onClick={handleApplyFilter}
-              className="flex-1 flex items-center justify-center px-4 py-[13px] border border-[#5C30FF] rounded-[8px] bg-[#5C30FF]"
+              className="flex-1 flex items-center justify-center px-4 py-[13px] rounded-[8px] hover:opacity-80"
+              style={{ backgroundColor: primary, borderWidth: 1, borderColor: primary }}
             >
               <span className="text-[11px] font-normal text-white text-center font-aeonik-trial">
                 Apply Filter

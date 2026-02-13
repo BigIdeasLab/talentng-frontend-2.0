@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
-import { Search, SlidersHorizontal, X, Loader2 } from "lucide-react";
+import { Search, SlidersHorizontal, X } from "lucide-react";
 import {
   SessionCard,
   type SessionStatus as CardSessionStatus,
@@ -22,6 +22,8 @@ import type {
   MentorshipSession,
   SessionsMetaResponse,
 } from "@/lib/api/mentorship";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import { SessionsSkeleton } from "@/components/mentor/sessions/SessionsSkeleton";
 
 interface SessionView {
   id: string;
@@ -322,15 +324,11 @@ export default function SessionsPage() {
       {/* Content */}
       <div className="flex-1 overflow-hidden">
         <div className="h-full overflow-y-auto p-4 md:p-6">
+          {isLoading ? (
+            <SessionsSkeleton />
+          ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
-            {isLoading ? (
-              <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
-                <Loader2 className="mx-auto h-6 w-6 animate-spin text-[#E91E8C]" />
-                <p className="mt-2 font-inter-tight text-[14px] text-[#525866]">
-                  Loading sessions...
-                </p>
-              </div>
-            ) : filteredSessions.length === 0 ? (
+            {filteredSessions.length === 0 ? (
               <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
                 <p className="font-inter-tight text-[14px] text-[#525866]">
                   No sessions found
@@ -348,6 +346,7 @@ export default function SessionsPage() {
               ))
             )}
           </div>
+          )}
         </div>
       </div>
 
@@ -360,6 +359,7 @@ export default function SessionsPage() {
         confirmText="Yes, Complete"
         type="success"
         isLoading={isActionLoading}
+        confirmColor={ROLE_COLORS.mentor.dark}
       />
 
       <ConfirmationModal
@@ -371,6 +371,7 @@ export default function SessionsPage() {
         confirmText="Yes, Cancel"
         type="danger"
         isLoading={isActionLoading}
+        confirmColor={ROLE_COLORS.mentor.dark}
       />
 
       <RescheduleModal
@@ -378,6 +379,7 @@ export default function SessionsPage() {
         onClose={() => setRescheduleModalOpen(false)}
         onConfirm={confirmReschedule}
         mentorId={selectedMentorId}
+        accentColor={ROLE_COLORS.mentor.dark}
       />
     </div>
   );

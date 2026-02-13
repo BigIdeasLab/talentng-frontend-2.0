@@ -1,6 +1,11 @@
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
+
 function Skeleton({ className }: { className?: string }) {
   return (
-    <div className={`animate-pulse bg-gray-300 rounded ${className ?? ""}`} />
+    <div
+      className={`animate-pulse rounded ${className ?? ""}`}
+      style={{ backgroundColor: ROLE_COLORS.talent.light }}
+    />
   );
 }
 

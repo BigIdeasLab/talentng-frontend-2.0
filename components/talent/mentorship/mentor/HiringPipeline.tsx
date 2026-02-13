@@ -1,4 +1,5 @@
 import type { MentorHiringPipelineData } from "@/lib/api/mentorship";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface PipelineStageProps {
   label: string;
@@ -47,7 +48,7 @@ export function HiringPipeline({ data }: HiringPipelineProps) {
     label: stage.label,
     count: stage.count,
     progress: (stage.count / maxCount) * 100,
-    color: index === 0 ? "#E91E8C" : "#E5E7EB",
+    color: index === 0 ? ROLE_COLORS.mentor.dark : "#E5E7EB",
   }));
 
   return (
@@ -74,7 +75,7 @@ export function HiringPipeline({ data }: HiringPipelineProps) {
           <span className="text-[12px] font-inter-tight text-black">
             Conversion Rate
           </span>
-          <span className="text-[15px] font-bold font-inter-tight text-[#E91E8C]">
+          <span className="text-[15px] font-bold font-inter-tight" style={{ color: ROLE_COLORS.mentor.dark }}>
             {data.conversionRate.toFixed(1)}%
           </span>
         </div>

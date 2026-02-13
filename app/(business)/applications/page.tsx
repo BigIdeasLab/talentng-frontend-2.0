@@ -8,7 +8,6 @@ import {
   Clock,
   Calendar,
   MapPin,
-  Loader2,
   Search,
   SlidersHorizontal,
 } from "lucide-react";
@@ -23,6 +22,8 @@ import {
   rejectRequest,
 } from "@/lib/api/mentorship";
 import type { MentorshipRequest as ApiMentorshipRequest } from "@/lib/api/mentorship";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import { ApplicationsSkeleton } from "@/components/mentor/applications/ApplicationsSkeleton";
 
 interface MentorshipRequest {
   id: string;
@@ -259,15 +260,11 @@ export default function ApplicationsPage() {
       <div className="flex-1 overflow-hidden">
         <div className="h-full overflow-y-auto p-4 md:p-6">
           {/* Request Cards */}
+          {isLoading ? (
+            <ApplicationsSkeleton />
+          ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
-            {isLoading ? (
-              <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
-                <Loader2 className="mx-auto h-6 w-6 animate-spin text-[#E91E8C]" />
-                <p className="mt-2 font-inter-tight text-[14px] text-[#525866]">
-                  Loading requests...
-                </p>
-              </div>
-            ) : filteredRequests.length === 0 ? (
+            {filteredRequests.length === 0 ? (
               <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
                 <p className="font-inter-tight text-[14px] text-[#525866]">
                   No requests found
@@ -292,7 +289,7 @@ export default function ApplicationsPage() {
                           />
                         ) : (
                           <div className="w-8 h-8 rounded-full bg-[#FDF2F8] flex items-center justify-center flex-shrink-0">
-                            <span className="text-[12px] font-semibold font-inter-tight text-[#E91E8C]">
+                            <span className="text-[12px] font-semibold font-inter-tight" style={{ color: ROLE_COLORS.mentor.dark }}>
                               {request.mentee.name
                                 .split(" ")
                                 .map((n) => n[0])
@@ -384,7 +381,8 @@ export default function ApplicationsPage() {
                         <>
                           <button
                             onClick={() => handleAccept(request.id)}
-                            className="flex items-center gap-1 px-4 py-2 h-8 bg-[#E91E8C] hover:bg-[#D1187D] rounded-[40px] transition-colors"
+                            className="flex items-center gap-1 px-4 py-2 h-8 hover:opacity-80 rounded-[40px] transition-colors"
+                            style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
                           >
                             <Check className="w-4 h-4 text-white" />
                             <span className="text-[12px] font-medium font-inter-tight text-white">
@@ -416,6 +414,7 @@ export default function ApplicationsPage() {
               ))
             )}
           </div>
+          )}
         </div>
       </div>
 
@@ -429,6 +428,7 @@ export default function ApplicationsPage() {
         confirmText="Yes, Accept"
         type="success"
         isLoading={isActionLoading}
+        confirmColor={ROLE_COLORS.mentor.dark}
       />
 
       {/* Decline Confirmation Modal */}
@@ -441,6 +441,7 @@ export default function ApplicationsPage() {
         confirmText="Yes, Decline"
         type="danger"
         isLoading={isActionLoading}
+        confirmColor={ROLE_COLORS.mentor.dark}
       />
     </div>
   );

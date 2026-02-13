@@ -1,5 +1,6 @@
 import { Users, Video } from "lucide-react";
 import type { MentorDashboardFullStats } from "@/lib/api/mentorship";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface StatCardProps {
   title: string;
@@ -9,9 +10,11 @@ interface StatCardProps {
     isPositive: boolean;
   };
   icon: React.ReactNode;
-  gradient: string;
+  gradient?: string;
+  gradientStyle?: React.CSSProperties;
   iconBg: string;
-  iconColor: string;
+  iconColor?: string;
+  iconColorStyle?: React.CSSProperties;
   trendColor: string;
 }
 
@@ -21,13 +24,16 @@ function StatCard({
   trend,
   icon,
   gradient,
+  gradientStyle,
   iconBg,
   iconColor,
+  iconColorStyle,
   trendColor,
 }: StatCardProps) {
   return (
     <div
-      className={`flex flex-col justify-center gap-3 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] ${gradient}`}
+      className={`flex flex-col justify-center gap-3 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] ${gradient ?? ""}`}
+      style={gradientStyle}
     >
       <div className="flex justify-between items-center">
         <div className="flex flex-col gap-2">
@@ -39,7 +45,7 @@ function StatCard({
         <div
           className={`w-[40px] h-[40px] rounded-full ${iconBg} flex items-center justify-center`}
         >
-          <div className={iconColor}>{icon}</div>
+          <div className={iconColor} style={iconColorStyle}>{icon}</div>
         </div>
       </div>
       <div className="flex items-center gap-1">
@@ -131,9 +137,9 @@ export function MentorStatCards({ stats }: MentorStatCardsProps) {
       ),
       trend: stats.totalEarnings.trend,
       icon: <Video className="w-5 h-5" />,
-      gradient: "bg-gradient-to-br from-[#2463EB]/8 to-white",
+      gradientStyle: { background: `linear-gradient(to bottom right, ${ROLE_COLORS.talent.dark}14, white)` },
       iconBg: "bg-[#DBE9FE]",
-      iconColor: "text-[#2463EB]",
+      iconColorStyle: { color: ROLE_COLORS.talent.dark },
       trendColor: stats.totalEarnings.trend.isPositive
         ? "text-[#D97707]"
         : "text-[#E63C23]",

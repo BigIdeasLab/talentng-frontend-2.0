@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
 import { useToast } from "@/hooks";
 import type { FormSection } from "@/lib/types";
@@ -65,8 +66,56 @@ export function PostOpportunityForm() {
     sessionStorage.removeItem("opportunityFormData");
   };
 
+  const validateAllSections = (): string | null => {
+    // Basic Info
+    if (
+      !formData.title.trim() || formData.title.trim().length < 5 ||
+      !formData.type || !formData.category || !formData.workMode ||
+      !formData.location || !formData.employmentType
+    ) {
+      return "basic-info";
+    }
+
+    // Description
+    if (
+      !formData.description.trim() || formData.description.trim().length < 30 ||
+      formData.keyResponsibilities.length === 0 ||
+      formData.tags.length === 0 || formData.tools.length === 0
+    ) {
+      return "description";
+    }
+
+    // Budget & Scope (skip for volunteer)
+    if (!isVolunteer) {
+      if (!formData.paymentType || !formData.duration || !formData.startDate || !formData.experienceLevel) {
+        return "budget-scope";
+      }
+      if (formData.priceMode === "range") {
+        if (!formData.minBudget || !formData.maxBudget) return "budget-scope";
+      } else if (!formData.price) {
+        return "budget-scope";
+      }
+    }
+
+    return null;
+  };
+
   const handleSave = () => {
-    // Navigate to preview with the data for user review
+    const failedSection = validateAllSections();
+    if (failedSection) {
+      setExpandedSection(failedSection);
+      setTimeout(() => {
+        const el = sectionRefs.current[failedSection];
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+      toast({
+        title: "Incomplete",
+        description: "Please complete all required fields before posting.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const searchParams = new URLSearchParams();
     searchParams.set("data", JSON.stringify(formData));
     router.push(`/opportunities/preview?${searchParams.toString()}`);
@@ -204,9 +253,10 @@ export function PostOpportunityForm() {
             onClick={() => toggleSection("basic-info")}
             className={`text-[14px] font-normal transition-colors text-left ${
               expandedSection === "basic-info"
-                ? "text-[#5C30FF] font-medium"
+                ? "font-medium"
                 : "text-[#525866] hover:text-black"
             }`}
+            style={expandedSection === "basic-info" ? { color: ROLE_COLORS.recruiter.primary } : undefined}
           >
             Basic Info
           </button>
@@ -214,9 +264,10 @@ export function PostOpportunityForm() {
             onClick={() => toggleSection("description")}
             className={`text-[14px] font-normal transition-colors text-left ${
               expandedSection === "description"
-                ? "text-[#5C30FF] font-medium"
+                ? "font-medium"
                 : "text-[#525866] hover:text-black"
             }`}
+            style={expandedSection === "description" ? { color: ROLE_COLORS.recruiter.primary } : undefined}
           >
             Description
           </button>
@@ -225,9 +276,10 @@ export function PostOpportunityForm() {
               onClick={() => toggleSection("budget-scope")}
               className={`text-[14px] font-normal transition-colors text-left ${
                 expandedSection === "budget-scope"
-                  ? "text-[#5C30FF] font-medium"
+                  ? "font-medium"
                   : "text-[#525866] hover:text-black"
               }`}
+              style={expandedSection === "budget-scope" ? { color: ROLE_COLORS.recruiter.primary } : undefined}
             >
               Budget & Scope
             </button>
@@ -236,9 +288,10 @@ export function PostOpportunityForm() {
             onClick={() => toggleSection("application-settings")}
             className={`text-[14px] font-normal transition-colors text-left ${
               expandedSection === "application-settings"
-                ? "text-[#5C30FF] font-medium"
+                ? "font-medium"
                 : "text-[#525866] hover:text-black"
             }`}
+            style={expandedSection === "application-settings" ? { color: ROLE_COLORS.recruiter.primary } : undefined}
           >
             Application Settings
           </button>
@@ -261,7 +314,8 @@ export function PostOpportunityForm() {
             </button>
             <button
               onClick={handleSave}
-              className="px-5 py-2 bg-[#5C30FF] border border-[#5C30FF] rounded-full font-inter-tight text-[13px] font-normal text-white hover:bg-[#4a26cc] transition-colors"
+              className="px-5 py-2 rounded-full font-inter-tight text-[13px] font-normal text-white hover:opacity-80 transition-colors"
+              style={{ backgroundColor: ROLE_COLORS.recruiter.primary, borderColor: ROLE_COLORS.recruiter.primary }}
             >
               Save & Post
             </button>
@@ -400,7 +454,10 @@ export function PostOpportunityForm() {
                         onChange={(e) =>
                           updateFormData({ applicationCap: e.target.value })
                         }
-                        className="px-4 py-3 border border-gray-300 rounded-[10px] text-[14px] focus:outline-none focus:border-[#5C30FF]"
+                        className="px-4 py-3 border border-gray-300 rounded-[10px] text-[14px] focus:outline-none"
+                        style={{ "--focus-color": ROLE_COLORS.recruiter.primary } as React.CSSProperties}
+                        onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
+                        onBlur={(e) => e.currentTarget.style.borderColor = ""}
                       />
                     </div>
 
@@ -422,7 +479,9 @@ export function PostOpportunityForm() {
                         onChange={(e) =>
                           updateFormData({ closingDate: e.target.value })
                         }
-                        className="px-4 py-3 border border-gray-300 rounded-[10px] text-[14px] focus:outline-none focus:border-[#5C30FF]"
+                        className="px-4 py-3 border border-gray-300 rounded-[10px] text-[14px] focus:outline-none"
+                        onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
+                        onBlur={(e) => e.currentTarget.style.borderColor = ""}
                       />
                     </div>
 
@@ -479,7 +538,8 @@ export function PostOpportunityForm() {
               </button>
               <button
                 onClick={handleSaveAsDraft}
-                className="flex-1 px-4 py-2.5 bg-[#5C30FF] border border-[#5C30FF] rounded-full font-inter-tight text-[13px] font-normal text-white hover:bg-[#4a26cc] transition-colors"
+                className="flex-1 px-4 py-2.5 rounded-full font-inter-tight text-[13px] font-normal text-white hover:opacity-80 transition-colors"
+                style={{ backgroundColor: ROLE_COLORS.recruiter.primary, borderColor: ROLE_COLORS.recruiter.primary }}
               >
                 Save Draft
               </button>

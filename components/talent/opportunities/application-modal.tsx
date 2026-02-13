@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRoleColors } from "@/lib/theme/RoleColorContext";
 import { useApplications } from "@/hooks/useApplications";
 import { useToast, useProfile } from "@/hooks";
 import type { DisplayOpportunity } from "./types";
@@ -29,6 +30,7 @@ export function ApplicationModal({
   onSubmit,
 }: ApplicationModalProps) {
   const { toast } = useToast();
+  const { primary } = useRoleColors();
   const { activeRole } = useProfile();
   const { submit, isLoading: isSubmitting } = useApplications();
   const [proposal, setProposal] = useState("");
@@ -149,7 +151,10 @@ export function ApplicationModal({
                   onChange={(e) => setProposal(e.target.value)}
                   placeholder="Type here (minimum 10 characters)"
                   disabled={isSubmitting}
-                  className="w-full px-[12px] py-[18px] pb-[120px] border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[14px] text-black placeholder:text-[#99A0AE] resize-none focus:outline-none focus:border-[#5C30FF] disabled:bg-gray-50"
+                  className="w-full px-[12px] py-[18px] pb-[120px] border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[14px] text-black placeholder:text-[#99A0AE] resize-none focus:outline-none disabled:bg-gray-50"
+                style={{ "--tw-ring-color": primary } as React.CSSProperties}
+                onFocus={(e) => (e.currentTarget.style.borderColor = primary)}
+                onBlur={(e) => (e.currentTarget.style.borderColor = "#E1E4EA")}
                 />
               </div>
 
@@ -162,7 +167,7 @@ export function ApplicationModal({
                   <button
                     onClick={() => setShowProjectSelection(true)}
                     disabled={isSubmitting}
-                    className="flex items-center gap-[6px] px-[12px] py-[16px] border border-[#E1E4EA] rounded-[8px] hover:border-[#5C30FF] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center gap-[6px] px-[12px] py-[16px] border border-[#E1E4EA] rounded-[8px] hover:opacity-80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <LinkIcon size={20} className="text-[#525866]" />
                     <span className="text-[#525866] font-inter-tight text-[14px] font-normal">
@@ -215,7 +220,8 @@ export function ApplicationModal({
               <button
                 onClick={handleSubmit}
                 disabled={!isFormValid || isSubmitting}
-                className="w-full px-[160px] py-[18px] rounded-[20px] border border-[#5C30FF] bg-[#5C30FF] text-white text-center font-inter-tight text-[13px] font-normal leading-normal hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+                className="w-full px-[160px] py-[18px] rounded-[20px] border text-white text-center font-inter-tight text-[13px] font-normal leading-normal hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+                style={{ backgroundColor: primary, borderColor: primary }}
               >
                 {isSubmitting ? "Submitting..." : "Submit Application"}
               </button>

@@ -1,4 +1,5 @@
 import { Calendar, ArrowRight } from "lucide-react";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface MentorHeroSectionProps {
   name: string;
@@ -14,7 +15,7 @@ export function MentorHeroSection({
   message,
 }: MentorHeroSectionProps) {
   return (
-    <div className="relative w-full rounded-2xl bg-gradient-to-br from-[#f791c3]/90 to-[#f791c3] overflow-hidden p-4 md:p-6 flex-shrink-0">
+    <div className="relative w-full rounded-2xl overflow-hidden p-4 md:p-6 flex-shrink-0" style={{ background: `linear-gradient(to bottom right, ${ROLE_COLORS.mentor.dark}E6, ${ROLE_COLORS.mentor.dark})` }}>
       <svg
         className="absolute right-[10%] top-[-5%] opacity-100"
         width="56"
@@ -24,7 +25,7 @@ export function MentorHeroSection({
       >
         <path
           d="M35 -1.5L42.232 37.768L80.5 45L42.232 52.232L35 90.5L27.768 52.232L-10.5 45L27.768 37.768L35 -1.5Z"
-          fill="#F9A8D4"
+          fill={ROLE_COLORS.mentor.light}
         />
       </svg>
       <svg
@@ -36,7 +37,7 @@ export function MentorHeroSection({
       >
         <path
           d="M27 0L32.296 21.704L54 27L32.296 32.296L27 54L21.704 32.296L0 27L21.704 21.704L27 0Z"
-          fill="#F9A8D4"
+          fill={ROLE_COLORS.mentor.light}
         />
       </svg>
       <svg
@@ -48,7 +49,7 @@ export function MentorHeroSection({
       >
         <path
           d="M27 0L32.296 21.704L54 27L32.296 32.296L27 54L21.704 32.296L0 27L21.704 21.704L27 0Z"
-          fill="#F9A8D4"
+          fill={ROLE_COLORS.mentor.light}
         />
       </svg>
       <svg
@@ -60,7 +61,7 @@ export function MentorHeroSection({
       >
         <path
           d="M16 0L19.113 12.887L32 16L19.113 19.113L16 32L12.887 19.113L0 16L12.887 12.887L16 0Z"
-          fill="#F9A8D4"
+          fill={ROLE_COLORS.mentor.light}
         />
       </svg>
 

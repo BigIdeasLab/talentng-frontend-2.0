@@ -9,11 +9,13 @@ import { RecentActivity } from "./RecentActivity";
 import { QuickActions } from "./QuickActions";
 import { WelcomeHeader } from "./WelcomeHeader";
 import { useRecruiterDashboard } from "@/hooks/useRecruiterDashboard";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 function Skeleton({ className }: { className?: string }) {
   return (
     <div
-      className={`bg-gray-300 animate-pulse rounded-lg ${className ?? ""}`}
+      className={`animate-pulse rounded-lg ${className ?? ""}`}
+      style={{ backgroundColor: ROLE_COLORS.recruiter.light }}
     />
   );
 }

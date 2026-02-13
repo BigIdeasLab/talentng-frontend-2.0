@@ -62,6 +62,11 @@ export function DescriptionStep({
   const handleNext = () => {
     if (validateForm()) {
       onNext();
+    } else {
+      setTimeout(() => {
+        const firstError = document.querySelector("[data-error]");
+        if (firstError) firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 50);
     }
   };
 
@@ -210,7 +215,7 @@ export function DescriptionStep({
             }`}
           />
           {errors.description && (
-            <span className="font-inter-tight text-[12px] text-red-500">
+            <span data-error className="font-inter-tight text-[12px] text-red-500">
               {errors.description}
             </span>
           )}
@@ -222,7 +227,7 @@ export function DescriptionStep({
             Key Responsibilities
           </label>
           {errors.keyResponsibilities && (
-            <span className="font-inter-tight text-[12px] text-red-500">
+            <span data-error className="font-inter-tight text-[12px] text-red-500">
               {errors.keyResponsibilities}
             </span>
           )}
@@ -339,7 +344,7 @@ export function DescriptionStep({
             Tags (Skills)
           </label>
           {errors.tags && (
-            <span className="font-inter-tight text-[12px] text-red-500">
+            <span data-error className="font-inter-tight text-[12px] text-red-500">
               {errors.tags}
             </span>
           )}
@@ -440,7 +445,7 @@ export function DescriptionStep({
             Tools
           </label>
           {errors.tools && (
-            <span className="font-inter-tight text-[12px] text-red-500">
+            <span data-error className="font-inter-tight text-[12px] text-red-500">
               {errors.tools}
             </span>
           )}

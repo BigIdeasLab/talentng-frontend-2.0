@@ -1,5 +1,6 @@
 import { MessageSquare, ArrowUpRight, Star, CheckCircle } from "lucide-react";
 import type { MentorRecentReview } from "@/lib/api/mentorship";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface ReviewCardProps {
   rating: number;
@@ -70,7 +71,7 @@ export function RecentReviews({ reviews }: RecentReviewsProps) {
             Recent Reviews
           </h2>
         </div>
-        <button className="flex items-center gap-1 text-[#E91E8C] text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity">
+        <button className="flex items-center gap-1 text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity" style={{ color: ROLE_COLORS.mentor.dark }}>
           View All
           <ArrowUpRight className="w-3.5 h-3.5" />
         </button>

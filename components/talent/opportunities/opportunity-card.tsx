@@ -9,6 +9,7 @@ import type { DisplayOpportunity } from "./types";
 import { TYPE_CONFIG } from "@/types/opportunities";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
 import { useProfile } from "@/hooks";
+import { useRoleColors } from "@/lib/theme/RoleColorContext";
 
 interface OpportunityCardProps {
   opportunity: DisplayOpportunity;
@@ -23,6 +24,7 @@ export function OpportunityCard({
 }: OpportunityCardProps) {
   const router = useRouter();
   const { activeRole } = useProfile();
+  const { primary } = useRoleColors();
   const [showApplicationModal, setShowApplicationModal] = useState(false);
   const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as
     | "talent"
@@ -156,7 +158,8 @@ export function OpportunityCard({
               <div className="flex items-center justify-end w-full h-8">
                 <button
                   onClick={handleCardClick}
-                  className="flex items-center gap-1 px-4 py-2 h-8 bg-[#5C30FF] border-[0.822px] border-[#5C30FF] rounded-[40px] hover:bg-[#4a26cc] transition-colors"
+                  className="flex items-center gap-1 px-4 py-2 h-8 border-[0.822px] rounded-[40px] hover:opacity-80 transition-colors"
+                  style={{ backgroundColor: primary, borderColor: primary }}
                 >
                   <span className="text-[12px] font-medium font-inter-tight text-white text-center">
                     Learn More
@@ -201,9 +204,10 @@ export function OpportunityCard({
                     disabled={isSavingLoading}
                     className={`flex items-center gap-1 px-4 py-2 h-8 rounded-[40px] transition-colors ${
                       isSaved
-                        ? "bg-[#5C30FF] hover:bg-[#4a26cc]"
+                        ? "hover:opacity-80"
                         : "bg-[#181B25] hover:bg-[#2a2d39]"
                     } ${isSavingLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+                    style={isSaved ? { backgroundColor: primary } : undefined}
                   >
                     <Bookmark
                       className={`w-4 h-4 ${isSaved ? "fill-white" : ""} text-white`}
@@ -223,8 +227,13 @@ export function OpportunityCard({
                     className={`flex items-center gap-1 px-4 py-2 h-8 border-[0.822px] rounded-[40px] transition-colors ${
                       isApplied
                         ? "bg-gray-200 border-gray-200 cursor-not-allowed"
-                        : "bg-[#5C30FF] border-[#5C30FF] hover:bg-[#4a26cc]"
+                        : "hover:opacity-80"
                     }`}
+                    style={
+                      !isApplied
+                        ? { backgroundColor: primary, borderColor: primary }
+                        : undefined
+                    }
                   >
                     <Check
                       className={`w-4 h-4 ${isApplied ? "text-gray-600" : "text-white"}`}

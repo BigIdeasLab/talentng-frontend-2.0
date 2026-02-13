@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface BudgetScopeStepProps {
   formData: {
@@ -82,9 +83,18 @@ export function BudgetScopeStep({
     return Object.keys(newErrors).length === 0;
   };
 
+  const scrollToFirstError = () => {
+    setTimeout(() => {
+      const firstError = document.querySelector("[data-error]");
+      if (firstError) firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 50);
+  };
+
   const handleSubmit = () => {
     if (validateForm()) {
       onSubmit();
+    } else {
+      scrollToFirstError();
     }
   };
 
@@ -204,9 +214,10 @@ export function BudgetScopeStep({
               onClick={() => handlePaymentTypeSelect("weekly")}
               className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors ${
                 selectedPayment === "weekly"
-                  ? "border-[#5C30FF] bg-[#5C30FF]/5 text-black"
-                  : "border-[#E1E4EA] text-[#99A0AE] hover:border-[#5C30FF]/50"
+                  ? "text-black"
+                  : "border-[#E1E4EA] text-[#99A0AE] hover:opacity-80"
               }`}
+              style={selectedPayment === "weekly" ? { borderColor: ROLE_COLORS.recruiter.primary, backgroundColor: `${ROLE_COLORS.recruiter.primary}0D` } : undefined}
             >
               Weekly
             </button>
@@ -215,9 +226,10 @@ export function BudgetScopeStep({
               onClick={() => handlePaymentTypeSelect("monthly")}
               className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors ${
                 selectedPayment === "monthly"
-                  ? "border-[#5C30FF] bg-[#5C30FF]/5 text-black"
-                  : "border-[#E1E4EA] text-[#99A0AE] hover:border-[#5C30FF]/50"
+                  ? "text-black"
+                  : "border-[#E1E4EA] text-[#99A0AE] hover:opacity-80"
               }`}
+              style={selectedPayment === "monthly" ? { borderColor: ROLE_COLORS.recruiter.primary, backgroundColor: `${ROLE_COLORS.recruiter.primary}0D` } : undefined}
             >
               Monthly
             </button>
@@ -226,13 +238,19 @@ export function BudgetScopeStep({
               onClick={() => handlePaymentTypeSelect("hourly")}
               className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors ${
                 selectedPayment === "hourly"
-                  ? "border-[#5C30FF] bg-[#5C30FF]/5 text-black"
-                  : "border-[#E1E4EA] text-[#99A0AE] hover:border-[#5C30FF]/50"
+                  ? "text-black"
+                  : "border-[#E1E4EA] text-[#99A0AE] hover:opacity-80"
               }`}
+              style={selectedPayment === "hourly" ? { borderColor: ROLE_COLORS.recruiter.primary, backgroundColor: `${ROLE_COLORS.recruiter.primary}0D` } : undefined}
             >
               Hourly
             </button>
           </div>
+          {errors.paymentType && (
+            <span data-error className="font-inter-tight text-[12px] text-red-500">
+              {errors.paymentType}
+            </span>
+          )}
         </div>
 
         {/* Pricing */}
@@ -246,9 +264,10 @@ export function BudgetScopeStep({
               onClick={() => handlePriceModeSelect("range")}
               className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors ${
                 selectedPriceMode === "range"
-                  ? "border-[#5C30FF] bg-[#5C30FF]/5 text-black"
-                  : "border-[#E1E4EA] text-[#99A0AE] hover:border-[#5C30FF]/50"
+                  ? "text-black"
+                  : "border-[#E1E4EA] text-[#99A0AE] hover:opacity-80"
               }`}
+              style={selectedPriceMode === "range" ? { borderColor: ROLE_COLORS.recruiter.primary, backgroundColor: `${ROLE_COLORS.recruiter.primary}0D` } : undefined}
             >
               Range (Min - Max)
             </button>
@@ -257,16 +276,17 @@ export function BudgetScopeStep({
               onClick={() => handlePriceModeSelect("fixed")}
               className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors ${
                 selectedPriceMode === "fixed"
-                  ? "border-[#5C30FF] bg-[#5C30FF]/5 text-black"
-                  : "border-[#E1E4EA] text-[#99A0AE] hover:border-[#5C30FF]/50"
+                  ? "text-black"
+                  : "border-[#E1E4EA] text-[#99A0AE] hover:opacity-80"
               }`}
+              style={selectedPriceMode === "fixed" ? { borderColor: ROLE_COLORS.recruiter.primary, backgroundColor: `${ROLE_COLORS.recruiter.primary}0D` } : undefined}
             >
               Fixed Price
             </button>
           </div>
 
           {(errors.minBudget || errors.maxBudget || errors.price) && (
-            <span className="font-inter-tight text-[12px] text-red-500">
+            <span data-error className="font-inter-tight text-[12px] text-red-500">
               {errors.minBudget || errors.maxBudget || errors.price}
             </span>
           )}
@@ -343,7 +363,7 @@ export function BudgetScopeStep({
             Duration
           </label>
           {errors.duration && (
-            <span className="font-inter-tight text-[12px] text-red-500">
+            <span data-error className="font-inter-tight text-[12px] text-red-500">
               {errors.duration}
             </span>
           )}
@@ -389,7 +409,7 @@ export function BudgetScopeStep({
             Start date
           </label>
           {errors.startDate && (
-            <span className="font-inter-tight text-[12px] text-red-500">
+            <span data-error className="font-inter-tight text-[12px] text-red-500">
               {errors.startDate}
             </span>
           )}
@@ -413,7 +433,7 @@ export function BudgetScopeStep({
             Experience Level
           </label>
           {errors.experienceLevel && (
-            <span className="font-inter-tight text-[12px] text-red-500">
+            <span data-error className="font-inter-tight text-[12px] text-red-500">
               {errors.experienceLevel}
             </span>
           )}
@@ -455,8 +475,10 @@ export function BudgetScopeStep({
       {/* Submit Button */}
       <button
         onClick={() => {
-          if (validateForm() && onNext) {
-            onNext();
+          if (validateForm()) {
+            onNext?.();
+          } else {
+            scrollToFirstError();
           }
         }}
         className="w-full h-[44px] bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"

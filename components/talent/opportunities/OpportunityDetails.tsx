@@ -5,41 +5,46 @@ import { useEffect, useState } from "react";
 import { getToolInfo } from "@/lib/utils/tools";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
 import { useAuth } from "@/hooks/useAuth";
+import { useRoleColors } from "@/lib/theme/RoleColorContext";
 import { useProfile } from "@/hooks";
 import { ApplicationModal } from "@/components/talent/opportunities/application-modal";
 import { SimilarOpportunitiesSection } from "./SimilarOpportunitiesSection";
 import type { DisplayOpportunity } from "@/components/talent/opportunities/types";
 import type { Opportunity } from "@/lib/api/opportunities/types";
 
-const typeConfig: Record<
+function getTypeConfig(
+  primary: string,
+): Record<
   string,
   { label: string; bgColor: string; textColor: string; dotColor: string }
-> = {
-  job: {
-    label: "Job Listing",
-    bgColor: "rgba(92, 48, 255, 0.10)",
-    textColor: "#5C30FF",
-    dotColor: "#5C30FF",
-  },
-  internship: {
-    label: "Internship",
-    bgColor: "rgba(0, 139, 71, 0.09)",
-    textColor: "#008B47",
-    dotColor: "#008B47",
-  },
-  volunteer: {
-    label: "Volunteer",
-    bgColor: "rgba(246, 188, 63, 0.10)",
-    textColor: "#D99400",
-    dotColor: "#D99400",
-  },
-  parttime: {
-    label: "Part-time",
-    bgColor: "rgba(92, 48, 255, 0.10)",
-    textColor: "#5C30FF",
-    dotColor: "#5C30FF",
-  },
-};
+> {
+  return {
+    job: {
+      label: "Job Listing",
+      bgColor: `${primary}1A`,
+      textColor: primary,
+      dotColor: primary,
+    },
+    internship: {
+      label: "Internship",
+      bgColor: "rgba(0, 139, 71, 0.09)",
+      textColor: "#008B47",
+      dotColor: "#008B47",
+    },
+    volunteer: {
+      label: "Volunteer",
+      bgColor: "rgba(246, 188, 63, 0.10)",
+      textColor: "#D99400",
+      dotColor: "#D99400",
+    },
+    parttime: {
+      label: "Part-time",
+      bgColor: `${primary}1A`,
+      textColor: primary,
+      dotColor: primary,
+    },
+  };
+}
 
 interface OpportunityDetailsProps {
   opportunityId: string;
@@ -51,6 +56,7 @@ export function OpportunityDetails({
   applicationId,
 }: OpportunityDetailsProps) {
   const router = useRouter();
+  const { primary } = useRoleColors();
   const { user } = useAuth();
   const { activeRole } = useProfile();
   const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as
@@ -176,7 +182,8 @@ export function OpportunityDetails({
           <p className="text-gray-500 mb-4">Opportunity not found</p>
           <button
             onClick={() => router.back()}
-            className="px-4 py-2 bg-[#5C30FF] text-white rounded-full hover:bg-[#4a26cc]"
+            className="px-4 py-2 text-white rounded-full hover:opacity-80 transition-opacity"
+            style={{ backgroundColor: primary }}
           >
             Go Back
           </button>
@@ -196,6 +203,7 @@ export function OpportunityDetails({
     opportunity.type?.toLowerCase() === "parttime"
       ? "parttime"
       : opportunity.type?.toLowerCase() || "job";
+  const typeConfig = getTypeConfig(primary);
   const config = typeConfig[typeConfigKey] || typeConfig.job;
 
   const getCompanyLogo = (): string => {
@@ -292,9 +300,17 @@ export function OpportunityDetails({
                   {tags.map((skill, index) => (
                     <div
                       key={index}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#5C30FF]/10 border border-[#5C30FF] rounded-full"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full"
+                      style={{
+                        backgroundColor: `${primary}1A`,
+                        borderWidth: 1,
+                        borderColor: primary,
+                      }}
                     >
-                      <span className="font-inter-tight text-[12px] text-[#5C30FF] font-medium">
+                      <span
+                        className="font-inter-tight text-[12px] font-medium"
+                        style={{ color: primary }}
+                      >
                         {skill}
                       </span>
                     </div>
@@ -324,7 +340,10 @@ export function OpportunityDetails({
                 <div className="flex flex-col gap-2">
                   {keyResponsibilities.map((item, index) => (
                     <div key={index} className="flex items-start gap-3">
-                      <span className="text-[#5C30FF] text-[14px] flex-shrink-0 pt-0.5">
+                      <span
+                        className="text-[14px] flex-shrink-0 pt-0.5"
+                        style={{ color: primary }}
+                      >
                         •
                       </span>
                       <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
@@ -345,7 +364,10 @@ export function OpportunityDetails({
                 <div className="flex flex-col gap-2">
                   {requirements.map((item, index) => (
                     <div key={index} className="flex items-start gap-3">
-                      <span className="text-[#5C30FF] text-[14px] flex-shrink-0 pt-0.5">
+                      <span
+                        className="text-[14px] flex-shrink-0 pt-0.5"
+                        style={{ color: primary }}
+                      >
                         •
                       </span>
                       <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
@@ -369,7 +391,12 @@ export function OpportunityDetails({
                     return (
                       <div
                         key={index}
-                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#5C30FF]/10 border border-[#5C30FF] rounded-full"
+                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full"
+                        style={{
+                          backgroundColor: `${primary}1A`,
+                          borderWidth: 1,
+                          borderColor: primary,
+                        }}
                       >
                         <img
                           src={toolInfo.logo}
@@ -380,7 +407,10 @@ export function OpportunityDetails({
                               "none";
                           }}
                         />
-                        <span className="font-inter-tight text-[12px] text-[#5C30FF] font-medium">
+                        <span
+                          className="font-inter-tight text-[12px] font-medium"
+                          style={{ color: primary }}
+                        >
                           {tool}
                         </span>
                       </div>
@@ -723,8 +753,13 @@ export function OpportunityDetails({
                       className={`flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] transition-colors ${
                         invitationResponse === "accepted"
                           ? "bg-green-100 border-green-100 cursor-not-allowed"
-                          : "bg-[#5C30FF] hover:bg-[#4a26cc]"
+                          : "hover:opacity-80"
                       } ${isRespondingToInvitation ? "opacity-50 cursor-not-allowed" : ""}`}
+                      style={
+                        invitationResponse !== "accepted"
+                          ? { backgroundColor: primary }
+                          : undefined
+                      }
                     >
                       <svg
                         width="18"
@@ -767,9 +802,10 @@ export function OpportunityDetails({
                     disabled={isSavingLoading}
                     className={`flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] transition-colors ${
                       isSaved
-                        ? "bg-[#5C30FF] hover:bg-[#4a26cc]"
+                        ? "hover:opacity-80"
                         : "bg-[#181B25] hover:bg-[#2a2d3a]"
                     } ${isSavingLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+                    style={isSaved ? { backgroundColor: primary } : undefined}
                   >
                     <svg
                       width="18"
@@ -796,8 +832,9 @@ export function OpportunityDetails({
                     className={`flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] border transition-colors ${
                       isApplied
                         ? "bg-gray-200 border-gray-200 cursor-not-allowed"
-                        : "bg-[#5C30FF] border-[#5C30FF] hover:bg-[#4a26cc]"
+                        : "hover:opacity-80"
                     }`}
+                    style={!isApplied ? { backgroundColor: primary, borderColor: primary } : undefined}
                   >
                     <svg
                       width="18"

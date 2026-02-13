@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { Search, SlidersHorizontal, ChevronDown, Loader2 } from "lucide-react";
+import { Search, SlidersHorizontal, Loader2 } from "lucide-react";
+import { MentorGridSkeleton } from "@/components/talent/mentorship/MentorCardSkeleton";
 import { MentorshipHeader } from "@/components/talent/mentorship/MentorshipHeader";
-import { CategoryFilter } from "@/components/talent/mentorship/CategoryFilter";
 import { MentorGrid } from "@/components/talent/mentorship/MentorGrid";
 import {
   MenteeSessionCard,
@@ -136,7 +136,6 @@ export default function MentorshipPage() {
   >("Find Mentors");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("");
-  const [sortBy, setSortBy] = useState("Newest");
 
   const [mentors, setMentors] = useState<MentorDisplay[]>([]);
   const [mentorsLoading, setMentorsLoading] = useState(true);
@@ -333,17 +332,19 @@ export default function MentorshipPage() {
   ];
 
   return (
-    <div className="flex h-screen flex-col bg-white overflow-hidden">
-      {/* Sticky Header: Tabs + Search/Filter */}
-      <div className="flex-shrink-0 flex flex-col gap-3 p-3 md:p-4 pb-0 md:pb-0">
-        {/* Navigation Tabs */}
-        <div className="flex items-center gap-6 overflow-x-auto scrollbar-hide">
+    <div className="h-screen overflow-x-hidden bg-white flex flex-col">
+      {/* Sticky Header */}
+      <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+        {/* Navigation Tabs as Title */}
+        <div className="flex items-center gap-[8px] mb-[19px]">
           {(["Find Mentors", "My Session", "Messages"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`flex items-center justify-center gap-2 py-3 font-inter-tight text-[13px] font-medium leading-normal whitespace-nowrap ${
-                activeTab === tab ? "text-black" : "text-black/30"
+              className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors font-inter-tight text-[13px] ${
+                activeTab === tab
+                  ? "text-black font-medium border-b-2 border-[#8463FF]"
+                  : "text-black/30 font-medium hover:text-black/50"
               }`}
             >
               {tab}
@@ -351,57 +352,86 @@ export default function MentorshipPage() {
           ))}
         </div>
 
-        {/* Search and Filter Row */}
-        <div className="flex flex-col md:flex-row gap-2.5 md:gap-3 pb-3">
-          {/* Search Bar */}
-          <div className="flex-1 flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[#F5F5F5]">
-            <Search className="w-4 h-4 text-[#B2B2B2]" strokeWidth={1.125} />
+        {/* Search Bar and Filter */}
+        <div className="flex items-center gap-[8px] mb-[19px]">
+          <div className="flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border border-[#E1E4EA] rounded-[8px]">
+            <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
             <input
               type="text"
-              placeholder="Search by name, role, company"
+              placeholder="Search mentors, topics..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 bg-transparent font-inter-tight text-[13px] font-normal leading-normal text-black placeholder:text-black/30 outline-none capitalize"
+              className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
             />
           </div>
 
-          {/* Filter Button */}
-          <button className="flex items-center justify-center gap-1 px-3.5 py-2 rounded-lg bg-[#F5F5F5] font-inter-tight text-[13px] font-normal leading-normal text-black h-[38px]">
-            <SlidersHorizontal className="w-4 h-4" strokeWidth={1.125} />
-            Filter
-          </button>
-
-          {/* Sort Dropdown */}
-          <button className="flex items-center justify-center gap-1 px-3.5 py-2 rounded-lg bg-[#F5F5F5] font-inter-tight text-[13px] font-normal leading-normal text-black h-[38px]">
-            {sortBy}
-            <ChevronDown className="w-3.5 h-3.5" />
+          <button className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] flex-shrink-0 hover:bg-gray-100 transition-colors">
+            <SlidersHorizontal className="w-[15px] h-[15px] text-black" />
+            <span className="text-[13px] font-normal text-black font-inter-tight">
+              Filter
+            </span>
           </button>
         </div>
+
+        {/* Category Tabs (Find Mentors) / Session Filter Tabs (My Session) */}
+        {activeTab === "Find Mentors" && (
+          <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                onClick={() =>
+                  setActiveCategory(cat === "All" ? "" : cat)
+                }
+                className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors font-inter-tight text-[13px] ${
+                  (activeCategory === "" && cat === "All") ||
+                  activeCategory === cat
+                    ? "text-black font-medium border-b-2 border-black"
+                    : "text-black/30 font-medium hover:text-black/50"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {activeTab === "My Session" && (
+          <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
+            {sessionTabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setSessionFilter(tab.id)}
+                className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors font-inter-tight text-[13px] ${
+                  sessionFilter === tab.id
+                    ? "text-black font-medium border-b-2 border-black"
+                    : "text-black/30 font-medium hover:text-black/50"
+                }`}
+              >
+                {tab.label}
+                <span
+                  className={`ml-1 rounded-full px-2 py-0.5 text-[11px] ${
+                    sessionFilter === tab.id
+                      ? "bg-black text-white"
+                      : "bg-[#F5F5F5] text-[#525866]"
+                  }`}
+                >
+                  {tab.count}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto scrollbar-styled px-3 md:px-4 pb-3 md:pb-4">
+      <div className="flex-1 overflow-y-auto scrollbar-styled px-[25px] py-[16px]">
         {/* Find Mentors Tab Content */}
         {activeTab === "Find Mentors" && (
           <div className="flex flex-col gap-5">
             <MentorshipHeader />
 
-            <h2 className="font-inter-tight text-[15px] font-medium leading-normal text-black">
-              Find Your Mentor
-            </h2>
-
-            <CategoryFilter
-              categories={CATEGORIES}
-              activeCategory={activeCategory || "All"}
-              onCategoryChange={(cat) =>
-                setActiveCategory(cat === "All" ? "" : cat)
-              }
-            />
-
             {mentorsLoading ? (
-              <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-[#5C30FF]" />
-              </div>
+              <MentorGridSkeleton />
             ) : (
               <MentorGrid mentors={filteredMentors} />
             )}
@@ -411,33 +441,6 @@ export default function MentorshipPage() {
         {/* My Session Tab Content */}
         {activeTab === "My Session" && (
           <div className="flex flex-col gap-4">
-            {/* Session Filter Tabs */}
-            <div className="flex items-center gap-1 overflow-x-auto rounded-lg border border-[#E1E4EA] bg-white p-1">
-              {sessionTabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setSessionFilter(tab.id)}
-                  className={`flex items-center gap-2 rounded-md px-4 py-2 font-inter-tight text-[13px] font-medium transition-colors whitespace-nowrap ${
-                    sessionFilter === tab.id
-                      ? "bg-[#5C30FF] text-white"
-                      : "text-[#525866] hover:bg-[#F5F3FF]"
-                  }`}
-                >
-                  {tab.label}
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-[11px] ${
-                      sessionFilter === tab.id
-                        ? "bg-white/20 text-white"
-                        : "bg-[#F5F5F5] text-[#525866]"
-                    }`}
-                  >
-                    {tab.count}
-                  </span>
-                </button>
-              ))}
-            </div>
-
-            {/* Session Cards */}
             {sessionsLoading ? (
               <div className="flex items-center justify-center py-12">
                 <Loader2 className="h-8 w-8 animate-spin text-[#5C30FF]" />

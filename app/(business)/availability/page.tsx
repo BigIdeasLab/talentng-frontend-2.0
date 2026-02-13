@@ -13,12 +13,14 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/useToast";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
+import { AvailabilitySkeleton } from "@/components/mentor/availability/AvailabilitySkeleton";
 import {
   getMyAvailability,
   setMyAvailability,
   type AvailabilitySlot,
 } from "@/lib/api/mentorship";
 import { Check, Clock, Zap } from "lucide-react";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 // ============ Constants ============
 
@@ -381,11 +383,7 @@ export default function AvailabilityPage() {
   }
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-white">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#E91E8C] border-t-transparent" />
-      </div>
-    );
+    return <AvailabilitySkeleton />;
   }
 
   return (
@@ -421,14 +419,14 @@ export default function AvailabilityPage() {
         <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
           <div className="flex gap-3">
             <div className="flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 shadow-sm">
-              <Clock className="h-4 w-4 text-[#E91E8C]" />
+              <Clock className="h-4 w-4" style={{ color: ROLE_COLORS.mentor.dark }} />
               <span className="text-sm font-medium text-black">
                 {getTotalHours()}
               </span>
               <span className="text-xs text-[#525866]">/ week</span>
             </div>
             <div className="flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 shadow-sm">
-              <div className="flex h-4 w-4 items-center justify-center rounded bg-[#E91E8C] text-[10px] font-bold text-white">
+              <div className="flex h-4 w-4 items-center justify-center rounded text-[10px] font-bold text-white" style={{ backgroundColor: ROLE_COLORS.mentor.dark }}>
                 {getEnabledDaysCount()}
               </div>
               <span className="text-xs text-[#525866]">days available</span>
@@ -444,20 +442,20 @@ export default function AvailabilityPage() {
             </button>
             <button
               onClick={selectWeekdays9to5}
-              className="flex items-center gap-1.5 rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-xs font-medium text-[#525866] transition-colors hover:border-[#E91E8C] hover:bg-[#FDF2F8] hover:text-[#E91E8C]"
+              className="flex items-center gap-1.5 rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-xs font-medium text-[#525866] transition-colors hover:opacity-80"
             >
               <Zap className="h-3 w-3" />
               Weekdays 9-5
             </button>
             <button
               onClick={selectMornings}
-              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-xs font-medium text-[#525866] transition-colors hover:border-[#E91E8C] hover:bg-[#FDF2F8] hover:text-[#E91E8C]"
+              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-xs font-medium text-[#525866] transition-colors hover:opacity-80"
             >
               Mornings
             </button>
             <button
               onClick={selectAfternoons}
-              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-xs font-medium text-[#525866] transition-colors hover:border-[#E91E8C] hover:bg-[#FDF2F8] hover:text-[#E91E8C]"
+              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-xs font-medium text-[#525866] transition-colors hover:opacity-80"
             >
               Afternoons
             </button>
@@ -579,7 +577,8 @@ export default function AvailabilityPage() {
                     className="border-b border-l border-[#E1E4EA] bg-[#FAFAFA] px-2 py-3 text-center first:border-l-0"
                   >
                     <div
-                      className={`text-sm font-semibold ${dayHasSlots ? "text-[#E91E8C]" : "text-black"}`}
+                      className="text-sm font-semibold"
+                      style={{ color: dayHasSlots ? ROLE_COLORS.mentor.dark : "black" }}
                     >
                       {day.short}
                     </div>
@@ -663,9 +662,10 @@ export default function AvailabilityPage() {
                     // Slot color
                     const slotColor = isSavedSlot
                       ? "bg-emerald-500" // Green for saved
-                      : isNewSlot
-                        ? "bg-[#E91E8C]" // Purple for new
-                        : "";
+                      : "";
+                    const slotStyle = isNewSlot
+                      ? { backgroundColor: ROLE_COLORS.mentor.dark }
+                      : undefined;
 
                     return (
                       <div
@@ -694,6 +694,7 @@ export default function AvailabilityPage() {
                         {isSelected && (
                           <div
                             className={`absolute inset-x-1 inset-y-0 ${slotColor} ${borderRadius}`}
+                            style={slotStyle}
                           >
                             {isBlockTop && (
                               <span
@@ -722,7 +723,7 @@ export default function AvailabilityPage() {
           {/* Footer */}
           <div className="flex items-center justify-between border-t border-[#E1E4EA] bg-[#FAFAFA] px-5 py-4">
             <div className="text-sm text-[#525866]">
-              <span className="font-semibold text-[#E91E8C]">
+              <span className="font-semibold" style={{ color: ROLE_COLORS.mentor.dark }}>
                 {selectedSlots.size}
               </span>{" "}
               slots selected ({getTotalHours()} per week)
@@ -730,7 +731,8 @@ export default function AvailabilityPage() {
             <Button
               onClick={handleSave}
               disabled={isSaving || !hasChanges}
-              className="rounded-lg bg-[#E91E8C] px-6 py-2 text-sm font-medium text-white hover:bg-[#D1187D] disabled:opacity-50"
+              className="rounded-lg px-6 py-2 text-sm font-medium text-white hover:opacity-80 disabled:opacity-50"
+              style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
             >
               {isSaving ? (
                 <span className="flex items-center gap-2">
@@ -752,7 +754,7 @@ export default function AvailabilityPage() {
               <span className="text-xs text-[#525866]">Saved</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="h-3 w-3 rounded bg-[#E91E8C]" />
+              <div className="h-3 w-3 rounded" style={{ backgroundColor: ROLE_COLORS.mentor.dark }} />
               <span className="text-xs text-[#525866]">New</span>
             </div>
             <div className="flex items-center gap-1.5">

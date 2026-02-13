@@ -20,6 +20,7 @@ interface RescheduleModalProps {
   onConfirm: (date: string, startTime: string, endTime: string) => void;
   mentorId: string;
   isLoading?: boolean;
+  accentColor?: string;
 }
 
 export function RescheduleModal({
@@ -28,6 +29,7 @@ export function RescheduleModal({
   onConfirm,
   mentorId,
   isLoading = false,
+  accentColor = "#5C30FF",
 }: RescheduleModalProps) {
   const [availability, setAvailability] = useState<AvailabilityDay[]>([]);
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
@@ -125,8 +127,8 @@ export function RescheduleModal({
   return (
     <Modal isOpen={isOpen} onClose={handleClose} size="sm">
       <div className="flex flex-col">
-        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#F5F3FF]">
-          <Calendar className="h-6 w-6 text-[#5C30FF]" />
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full" style={{ backgroundColor: `${accentColor}1A` }}>
+          <Calendar className="h-6 w-6" style={{ color: accentColor }} />
         </div>
 
         <h3 className="mb-2 font-inter-tight text-[16px] font-semibold text-black">
@@ -139,7 +141,7 @@ export function RescheduleModal({
 
         {isFetching ? (
           <div className="flex flex-col items-center justify-center py-10">
-            <Loader2 className="h-6 w-6 animate-spin text-[#5C30FF]" />
+            <Loader2 className="h-6 w-6 animate-spin" style={{ color: accentColor }} />
             <p className="mt-2 font-inter-tight text-[13px] text-[#525866]">
               Loading available slots...
             </p>
@@ -164,9 +166,14 @@ export function RescheduleModal({
                     }}
                     className={`flex flex-col items-center justify-center gap-1 h-[52px] rounded-lg border transition-colors ${
                       selectedDate === index
-                        ? "bg-[#5C30FF] border-[#5C30FF]"
-                        : "bg-white border-[#E1E4EA] hover:border-[#5C30FF]"
+                        ? "text-white"
+                        : "bg-white border-[#E1E4EA] hover:opacity-80"
                     }`}
+                    style={
+                      selectedDate === index
+                        ? { backgroundColor: accentColor, borderColor: accentColor }
+                        : undefined
+                    }
                   >
                     <span
                       className={`font-inter-tight text-[10px] font-normal ${
@@ -201,9 +208,14 @@ export function RescheduleModal({
                       onClick={() => setSelectedTime(index)}
                       className={`px-4 py-2 rounded-lg border font-inter-tight text-[13px] font-normal transition-colors ${
                         selectedTime === index
-                          ? "bg-[#5C30FF] border-[#5C30FF] text-white"
-                          : "bg-white border-[#E1E4EA] text-black hover:border-[#5C30FF]"
+                          ? "text-white"
+                          : "bg-white border-[#E1E4EA] text-black hover:opacity-80"
                       }`}
+                      style={
+                        selectedTime === index
+                          ? { backgroundColor: accentColor, borderColor: accentColor }
+                          : undefined
+                      }
                     >
                       {time}
                     </button>
@@ -228,7 +240,8 @@ export function RescheduleModal({
             disabled={
               isLoading || selectedDate === null || selectedTime === null
             }
-            className="flex-1 rounded-[30px] bg-[#5C30FF] px-4 py-2.5 font-inter-tight text-[13px] font-normal text-white hover:bg-[#4A26CC] disabled:opacity-50"
+            className="flex-1 rounded-[30px] px-4 py-2.5 font-inter-tight text-[13px] font-normal text-white hover:opacity-80 disabled:opacity-50"
+            style={{ backgroundColor: accentColor }}
           >
             {isLoading ? "Saving..." : "Confirm"}
           </Button>

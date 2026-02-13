@@ -13,6 +13,8 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ProfileSwitcher } from "@/components/layouts/ProfileSwitcher";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import { sidebarItemBase, sidebarItemActive, sidebarItemInactive } from "@/lib/theme/effects";
 
 interface SidebarProps {
   activeItem?: string;
@@ -121,14 +123,17 @@ export function TalentSidebar({
                   }
                 }}
                 className={cn(
-                  "w-full flex items-center gap-[8px] px-[12px] py-[6px] rounded-lg transition-colors relative flex-shrink-0",
-                  isActive
-                    ? "bg-white text-[#525866]"
-                    : "text-[#525866] hover:bg-white/50",
+                  sidebarItemBase,
+                  isActive ? sidebarItemActive : sidebarItemInactive,
                 )}
+                style={
+                  isActive
+                    ? { backgroundColor: ROLE_COLORS.talent.light, borderColor: ROLE_COLORS.talent.dark }
+                    : undefined
+                }
               >
                 <Icon className="w-4 h-4 flex-shrink-0" />
-                <span className="text-[13px] font-normal font-inter-tight text-left flex-1">
+                <span className="text-[13px] font-inter-tight text-left flex-1">
                   {item.label}
                 </span>
                 {item.badge !== undefined && item.badge > 0 && (
@@ -162,14 +167,17 @@ export function TalentSidebar({
                 href={item.href || "#"}
                 onClick={() => onItemSelect?.(item.id)}
                 className={cn(
-                  "w-full flex items-center gap-[8px] px-[12px] py-[6px] rounded-lg transition-colors relative flex-shrink-0",
-                  isActive
-                    ? "bg-white text-[#525866]"
-                    : "text-[#525866] hover:bg-white/50",
+                  sidebarItemBase,
+                  isActive ? sidebarItemActive : sidebarItemInactive,
                 )}
+                style={
+                  isActive
+                    ? { backgroundColor: ROLE_COLORS.talent.light, borderColor: ROLE_COLORS.talent.dark }
+                    : undefined
+                }
               >
                 <Icon className="w-4 h-4 flex-shrink-0" />
-                <span className="text-[13px] font-normal font-inter-tight text-left flex-1">
+                <span className="text-[13px] font-inter-tight text-left flex-1">
                   {item.label}
                 </span>
               </MenuComponent>

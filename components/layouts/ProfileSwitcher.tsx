@@ -9,6 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getRoleColors } from "@/lib/theme/role-colors";
 
 const CaretIcon = () => (
   <svg
@@ -287,12 +288,7 @@ export function ProfileSwitcher() {
   // Get other roles to show in switcher (exclude current active role)
   const switchableRoles = availableRoles.filter((role) => role !== activeRole);
 
-  const profileBg =
-    activeRole === "recruiter"
-      ? "bg-[#ECFDF5]"
-      : activeRole === "mentor"
-        ? "bg-[#FDE4EF]"
-        : "bg-[#DBEAFE]";
+  const roleColors = getRoleColors(activeRole);
 
   // Don't render until we have an active role (prevents showing wrong role during initial load)
   if (!activeRole) {
@@ -300,7 +296,7 @@ export function ProfileSwitcher() {
   }
 
   return (
-    <div className={`w-full px-[10px] py-[12px] rounded-lg ${profileBg}`}>
+    <div className="w-full px-[10px] py-[12px] rounded-lg" style={{ backgroundColor: roleColors.light }}>
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
           <button className="w-full flex items-center justify-between gap-[8px] hover:opacity-80 transition-opacity">
