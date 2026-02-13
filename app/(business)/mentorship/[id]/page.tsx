@@ -103,7 +103,6 @@ export default function MentorDetailPage() {
           id: (raw.id as string) || "",
           userId: (raw.userId as string) || "",
         };
-        console.log("Mapped mentor:", mappedMentor);
         setMentor(mappedMentor);
 
         const reviewsArray = Array.isArray(reviewsData)
@@ -138,9 +137,6 @@ export default function MentorDetailPage() {
           fullDate: dateStr,
           slots,
         }));
-        console.log("[Availability] raw:", rawAvail);
-        console.log("[Availability] flatSlots:", flatSlots);
-        console.log("[Availability] transformed:", transformedAvailability);
         setAvailability(transformedAvailability);
         setBookedSlots(myRequestsData.bookedSlots || []);
       } catch (err) {

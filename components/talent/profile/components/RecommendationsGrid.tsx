@@ -31,20 +31,6 @@ interface RecommendationsGridProps {
 function mapApiRecommendationToUI(
   apiRec: TalentRecommendationDto,
 ): Recommendation {
-  console.log("[mapApiRecommendationToUI] Input:", apiRec);
-  console.log(
-    "[mapApiRecommendationToUI] recommendedBy:",
-    apiRec.recommendedBy,
-  );
-  console.log(
-    "[mapApiRecommendationToUI] companyImage from API:",
-    apiRec.recommendedBy?.companyImage,
-  );
-  console.log(
-    "[mapApiRecommendationToUI] profileImageUrl from API:",
-    apiRec.recommendedBy?.profileImageUrl,
-  );
-
   const mapped = {
     id: apiRec.id,
     name: apiRec.recommendedBy?.company || "Anonymous",
@@ -64,7 +50,6 @@ function mapApiRecommendationToUI(
     isVerified: apiRec.isVerified || false,
   };
 
-  console.log("[mapApiRecommendationToUI] Mapped output:", mapped);
   return mapped;
 }
 
@@ -84,31 +69,14 @@ export function RecommendationsGrid({
   );
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    console.log("[RecommendationsGrid] Component mounted");
-    console.log(
-      "[RecommendationsGrid] externalRecommendations:",
-      externalRecommendations,
-    );
-    console.log(
-      "[RecommendationsGrid] cachedRecommendations:",
-      cachedRecommendations,
-    );
-    console.log(
-      "[RecommendationsGrid] Current recommendations state:",
-      recommendations,
-    );
-  }, [recommendations]);
+  useEffect(() => {}, [recommendations]);
 
   useEffect(() => {
     const fetchRecommendations = async () => {
-      console.log("[RecommendationsGrid] Fetching recommendations...");
       setIsLoading(true);
       try {
         const apiRecs = await getTalentRecommendations();
-        console.log("[RecommendationsGrid] Fetched recommendations:", apiRecs);
         const mapped = apiRecs.map(mapApiRecommendationToUI);
-        console.log("[RecommendationsGrid] Mapped recommendations:", mapped);
         setRecommendations(mapped);
         onRecommendationsLoaded?.(mapped);
         onLoadingChange?.(false);

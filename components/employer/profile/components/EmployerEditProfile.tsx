@@ -610,7 +610,6 @@ export function EmployerEditProfile() {
       setIsLoading(true);
       try {
         const profile = await getCurrentRecruiterProfile();
-        console.log("Fetched recruiter profile:", profile);
 
         // Map API response to form data
         setFormData({

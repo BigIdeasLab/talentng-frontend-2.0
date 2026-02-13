@@ -96,8 +96,6 @@ export default function ApplicationsPage() {
         getRequests({ role: "received" }),
         getPendingRequestsCount(),
       ]);
-      console.log("requestsResponse:", requestsResponse);
-      console.log("countResponse:", countResponse);
       // Handle both { data: [...] } and direct array responses
       const requestsArray = Array.isArray(requestsResponse)
         ? requestsResponse

@@ -46,9 +46,6 @@ const Login = () => {
   const loginMutation = useMutation<AuthResponse, Error, LoginFormValues>({
     mutationFn: (data: LoginFormValues) => login(data.email, data.password),
     onSuccess: async (response) => {
-      console.log("✅ Login successful");
-      console.log("needsOnboarding:", response.needsOnboarding);
-
       if (response.accessToken && response.refreshToken) {
         storeTokens({
           accessToken: response.accessToken,
@@ -60,10 +57,8 @@ const Login = () => {
       toast.success("Login successful!");
 
       if (response.needsOnboarding) {
-        console.log("🔄 Redirecting to onboarding");
         router.push("/onboarding");
       } else {
-        console.log("🔄 Redirecting to dashboard");
         router.push("/dashboard");
       }
     },

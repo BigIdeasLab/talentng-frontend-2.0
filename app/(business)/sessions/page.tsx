@@ -135,7 +135,6 @@ export default function SessionsPage() {
     try {
       setIsLoading(true);
       const response = await getSessions({ role: "mentor" });
-      console.log("Sessions API response:", response);
       const sessionsArray = Array.isArray(response)
         ? response
         : (response?.data ?? []);

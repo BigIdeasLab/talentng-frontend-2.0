@@ -158,7 +158,6 @@ export default function MentorshipPage() {
       try {
         setMentorsLoading(true);
         const data = await listMentors();
-        console.log("listMentors response:", data);
         const raw = data as unknown;
         const mentorsArray = (Array.isArray(raw) ? raw : []) as Record<
           string,
@@ -180,7 +179,6 @@ export default function MentorshipPage() {
       try {
         setSessionsLoading(true);
         const response = await getSessions({ role: "mentee" });
-        console.log("getSessions response:", response);
         const sessionsArray = Array.isArray(response)
           ? response
           : (response?.data ?? []);

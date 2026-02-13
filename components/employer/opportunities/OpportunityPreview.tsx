@@ -239,12 +239,6 @@ export function OpportunityPreview() {
 
   const handleSaveDraft = async () => {
     try {
-      console.log("handleSaveDraft called", {
-        isEditMode,
-        opportunityId,
-        formDataType: formData.type,
-      });
-
       const draftData = {
         ...formData,
         compensation: buildCompensation(),
@@ -269,8 +263,6 @@ export function OpportunityPreview() {
           : undefined,
         status: "draft",
       };
-
-      console.log("draftData prepared:", draftData);
 
       // Map type field to allowed values
       const validTypes = ["Internship", "Volunteer", "Job", "PartTime"];

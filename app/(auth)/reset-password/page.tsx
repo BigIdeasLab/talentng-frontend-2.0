@@ -81,23 +81,17 @@ const ResetPassword = () => {
     mutationFn: (data: ResetPasswordFormValues) =>
       resetPassword(email, data.resetCode, data.password),
     onSuccess: (response) => {
-      console.log("✅ Password reset successful");
-      console.log("needsOnboarding:", response.needsOnboarding);
-
       setError("");
       toast.success("Password reset successfully!");
       // Tokens are already stored by resetPassword via auth-service
 
       if (response.needsOnboarding) {
-        console.log("🔄 Redirecting to onboarding");
         router.push("/onboarding");
       } else {
-        console.log("🔄 Redirecting to dashboard");
         router.push("/dashboard");
       }
     },
     onError: (error: any) => {
-      console.error("Password reset error:", error);
       // Handle specific error messages from backend
       if (error.message && error.message.includes("Invalid reset code")) {
         setError("Invalid code");

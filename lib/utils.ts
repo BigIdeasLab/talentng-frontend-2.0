@@ -66,7 +66,6 @@ export function setCookie(name: string, value: string, days: number = 7) {
   // SameSite=Lax allows the cookie to be sent with same-site requests
   document.cookie =
     name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
-  console.log("[setCookie] Set", name, "cookie");
 }
 
 export function formatDateForDisplay(dateString: string): string {

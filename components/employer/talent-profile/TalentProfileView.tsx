@@ -35,7 +35,6 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
     try {
       const userId = currentProfile?.userId;
       if (!userId) {
-        console.warn("User ID not available");
         return;
       }
 

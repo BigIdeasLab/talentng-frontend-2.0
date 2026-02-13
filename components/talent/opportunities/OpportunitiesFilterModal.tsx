@@ -96,7 +96,6 @@ export function OpportunitiesFilterModal({
   };
 
   const handleApplyFilter = () => {
-    console.log("Filter Modal - Applying filters:", filters);
     onApply(filters);
     onClose();
   };

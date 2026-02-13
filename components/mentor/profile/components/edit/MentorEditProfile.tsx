@@ -723,7 +723,6 @@ export function MentorEditProfile() {
       setIsFetching(true);
       try {
         const response = await getCurrentMentorProfile();
-        console.log("MentorEditProfile: fetched profile:", response);
         // API returns { profile: {...}, isProfileCreated: true } or direct profile
         const profile =
           (response as unknown as { profile?: MentorProfile }).profile ??

@@ -69,10 +69,6 @@ const ConfirmEmailPage = () => {
     mutationFn: (data: ConfirmEmailFormValues) =>
       verifyEmailConfirm(email, data.verificationCode),
     onSuccess: (data: any) => {
-      console.log("✅ Email verification successful");
-      console.log("Response data:", data);
-      console.log("needsOnboarding:", data?.needsOnboarding);
-
       setError("");
       toast.success("Email verified successfully!");
 
@@ -85,15 +81,12 @@ const ConfirmEmailPage = () => {
       }
 
       if (data.needsOnboarding) {
-        console.log("🔄 Redirecting to onboarding");
         router.push("/onboarding");
       } else {
-        console.log("🔄 Redirecting to dashboard");
         router.push("/dashboard");
       }
     },
     onError: (error: any) => {
-      console.error("❌ Verification error:", error);
       // Handle specific error messages from backend
       if (
         error.message &&
@@ -109,7 +102,6 @@ const ConfirmEmailPage = () => {
   });
 
   const onSubmit = (data: ConfirmEmailFormValues) => {
-    console.log("📝 Submitting verification code:", data.verificationCode);
     setError("");
     mutation.mutate(data);
   };

@@ -271,7 +271,7 @@ export function TalentProfile({
                 cachedWorks.length > 0 ? cachedWorks : profileData.gallery || []
               }
               onAddWork={handleOpenUploadWorksModal}
-              onItemClick={(item) => console.log("Item clicked:", item)}
+              onItemClick={() => {}}
               onItemDeleted={handleWorksDeleted}
               isLoading={worksLoading && cachedWorks.length === 0}
             />
@@ -293,9 +293,7 @@ export function TalentProfile({
           {/* Recommendations Tab */}
           {activeTab === "recommendations" && (
             <RecommendationsGrid
-              onRecommendationClick={(recommendation) =>
-                console.log("Recommendation clicked:", recommendation)
-              }
+              onRecommendationClick={() => {}}
               cachedRecommendations={cachedRecommendations}
               onRecommendationsLoaded={setCachedRecommendations}
               isLoading={recommendationsLoading}
@@ -343,12 +341,8 @@ export function TalentProfile({
                 appliedAs: opp.appliedAs || [],
               }))}
               isLoading={opportunitiesLoading}
-              onRemove={(opportunity) =>
-                console.log("Remove opportunity:", opportunity)
-              }
-              onApply={(opportunity) =>
-                console.log("Apply to opportunity:", opportunity)
-              }
+              onRemove={() => {}}
+              onApply={() => {}}
               onApplicationSubmitted={(opportunityId) => {
                 // Refetch opportunities to get updated applied status
                 const fetchSavedOpportunities = async () => {

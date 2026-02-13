@@ -62,9 +62,7 @@ export function EmployerProfile({
     }
   }, [activeTab]);
 
-  const handleCreateOpportunity = () => {
-    console.log("Create Opportunity clicked");
-  };
+  const handleCreateOpportunity = () => {};
 
   return (
     <div className="flex flex-col h-full bg-white md:flex-row">

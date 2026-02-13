@@ -128,9 +128,6 @@ export function useNotificationSocket({
 
       // Handle connection open
       eventSourceRef.current.addEventListener("open", () => {
-        console.log(
-          `Connected to notification stream for role: ${recipientRole}`,
-        );
         reconnectAttemptsRef.current = 0;
       });
 
@@ -145,10 +142,6 @@ export function useNotificationSocket({
           const delay =
             baseReconnectDelay * Math.pow(2, reconnectAttemptsRef.current);
           reconnectAttemptsRef.current += 1;
-
-          console.log(
-            `Reconnecting in ${delay}ms (attempt ${reconnectAttemptsRef.current}/${maxReconnectAttempts})`,
-          );
 
           reconnectTimeoutRef.current = setTimeout(() => {
             connect();
