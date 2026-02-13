@@ -2,7 +2,7 @@
 
 import {
   LayoutDashboard,
-  Telescope,
+  // Telescope,
   Briefcase,
   Bell,
   Users,
@@ -37,12 +37,12 @@ const getMenuItems = (notificationCount?: number): MenuItem[] => [
     icon: LayoutDashboard,
     href: "/dashboard",
   },
-  {
-    id: "discover",
-    label: "Discover Talent",
-    icon: Telescope,
-    href: "/discover-talent",
-  },
+  // {
+  //   id: "discover",
+  //   label: "Discover Talent",
+  //   icon: Telescope,
+  //   href: "/discover-talent",
+  // },
   {
     id: "opportunities",
     label: "Opportunities",

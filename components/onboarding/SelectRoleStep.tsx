@@ -37,10 +37,11 @@ export const SelectRoleStep = ({
   isLoadingRoles?: boolean;
 }) => {
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // console.log("User roles:", existingRoles);
-  }, [existingRoles]);
+    setMounted(true);
+  }, []);
 
   const roles = [
     {
@@ -73,7 +74,7 @@ export const SelectRoleStep = ({
     };
 
     const apiRoles = roleMap[roleId] || [roleId];
-    return apiRoles.some((role) => existingRoles.includes(role));
+    return mounted && apiRoles.some((role) => existingRoles.includes(role));
   };
 
   // Count completed roles for progress badge
