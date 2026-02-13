@@ -1,12 +1,12 @@
 function Skeleton({ className }: { className?: string }) {
   return (
-    <div className={`animate-pulse bg-gray-200 rounded ${className ?? ""}`} />
+    <div className={`animate-pulse bg-gray-300 rounded ${className ?? ""}`} />
   );
 }
 
 export function MentorDashboardSkeleton() {
   return (
-    <div className="px-4 py-6 md:px-8 md:py-7 flex flex-col gap-5 h-full overflow-y-auto scrollbar-styled">
+    <div className="px-4 py-6 md:px-8 md:py-7 flex flex-col gap-5 min-h-full overflow-y-auto scrollbar-styled">
       {/* Hero Section Skeleton */}
       <Skeleton className="w-full h-[105px] rounded-2xl flex-shrink-0" />
 

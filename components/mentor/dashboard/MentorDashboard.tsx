@@ -12,9 +12,9 @@ import { RecentReviews } from "@/components/talent/mentorship/mentor/RecentRevie
 import { MentorDashboardSkeleton } from "./MentorDashboardSkeleton";
 
 export default function MentorDashboard() {
-  const { data, isLoading, error } = useMentorDashboard();
+  const { data, isLoading, isPending, error } = useMentorDashboard();
 
-  if (isLoading) {
+  if (isLoading || isPending) {
     return <MentorDashboardSkeleton />;
   }
 

@@ -12,9 +12,9 @@ import { Achievements } from "./Achievements";
 import { TalentDashboardSkeleton } from "./TalentDashboardSkeleton";
 
 export function TalentDashboard() {
-  const { data, isLoading, error } = useTalentDashboard();
+  const { data, isLoading, isPending, error } = useTalentDashboard();
 
-  if (isLoading) {
+  if (isLoading || isPending) {
     return <TalentDashboardSkeleton />;
   }
 

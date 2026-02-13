@@ -24,6 +24,7 @@ import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
 
 const CATEGORIES = [
+  "All",
   "Design",
   "Innovation",
   "Art",
@@ -150,7 +151,7 @@ export default function MentorshipPage() {
   );
   const [cancellingSession, setCancellingSession] = useState(false);
 
-  const hasAccess = useRequireRole(["talent", "mentor"]);
+  const hasAccess = useRequireRole(["talent"]);
 
   useEffect(() => {
     if (!hasAccess) return;
@@ -192,10 +193,6 @@ export default function MentorshipPage() {
     fetchSessions();
   }, [hasAccess]);
 
-  if (!hasAccess) {
-    return <PageLoadingState message="Checking access..." />;
-  }
-
   const filteredMentors = useMemo(() => {
     let filtered = mentors;
 
@@ -235,6 +232,10 @@ export default function MentorshipPage() {
 
     return filtered;
   }, [sessions, sessionFilter, searchQuery, activeTab]);
+
+  if (!hasAccess) {
+    return <PageLoadingState message="Checking access..." />;
+  }
 
   const sessionCounts = {
     all: sessions.length,
@@ -332,9 +333,11 @@ export default function MentorshipPage() {
   ];
 
   return (
-    <div className="flex h-screen flex-col gap-3 md:gap-3 p-3 md:p-4 bg-white overflow-hidden">
+    <div className="flex h-screen flex-col bg-white overflow-hidden">
+      {/* Sticky Header: Tabs + Search/Filter */}
+      <div className="flex-shrink-0 flex flex-col gap-3 p-3 md:p-4 pb-0 md:pb-0">
       {/* Navigation Tabs */}
-      <div className="flex flex-shrink-0 items-center gap-6 overflow-x-auto scrollbar-hide">
+      <div className="flex items-center gap-6 overflow-x-auto scrollbar-hide">
         {(["Find Mentors", "My Session", "Messages"] as const).map((tab) => (
           <button
             key={tab}
@@ -349,7 +352,7 @@ export default function MentorshipPage() {
       </div>
 
       {/* Search and Filter Row */}
-      <div className="flex flex-shrink-0 flex-col md:flex-row gap-2.5 md:gap-3">
+      <div className="flex flex-col md:flex-row gap-2.5 md:gap-3 pb-3">
         {/* Search Bar */}
         <div className="flex-1 flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-[#F5F5F5]">
           <Search className="w-4 h-4 text-[#B2B2B2]" strokeWidth={1.125} />
@@ -374,49 +377,40 @@ export default function MentorshipPage() {
           <ChevronDown className="w-3.5 h-3.5" />
         </button>
       </div>
+      </div>
 
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto scrollbar-styled px-3 md:px-4 pb-3 md:pb-4">
       {/* Find Mentors Tab Content */}
       {activeTab === "Find Mentors" && (
-        <>
-          {/* Hero Banner */}
-          <div className="flex-shrink-0">
-            <MentorshipHeader />
-          </div>
+        <div className="flex flex-col gap-5">
+          <MentorshipHeader />
 
-          {/* Find Your Mentor Section */}
-          <div className="flex flex-col gap-5 overflow-hidden flex-1">
-            <h2 className="flex-shrink-0 font-inter-tight text-[15px] font-medium leading-normal text-black">
-              Find Your Mentor
-            </h2>
+          <h2 className="font-inter-tight text-[15px] font-medium leading-normal text-black">
+            Find Your Mentor
+          </h2>
 
-            {/* Category Filter */}
-            <div className="flex-shrink-0">
-              <CategoryFilter
-                categories={CATEGORIES}
-                activeCategory={activeCategory}
-                onCategoryChange={setActiveCategory}
-              />
+          <CategoryFilter
+            categories={CATEGORIES}
+            activeCategory={activeCategory || "All"}
+            onCategoryChange={(cat) => setActiveCategory(cat === "All" ? "" : cat)}
+          />
+
+          {mentorsLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-[#5C30FF]" />
             </div>
-
-            {/* Mentor Grid */}
-            <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
-              {mentorsLoading ? (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="h-8 w-8 animate-spin text-[#5C30FF]" />
-                </div>
-              ) : (
-                <MentorGrid mentors={filteredMentors} />
-              )}
-            </div>
-          </div>
-        </>
+          ) : (
+            <MentorGrid mentors={filteredMentors} />
+          )}
+        </div>
       )}
 
       {/* My Session Tab Content */}
       {activeTab === "My Session" && (
-        <div className="flex flex-col gap-4 overflow-hidden flex-1">
+        <div className="flex flex-col gap-4">
           {/* Session Filter Tabs */}
-          <div className="flex flex-shrink-0 items-center gap-1 overflow-x-auto rounded-lg border border-[#E1E4EA] bg-white p-1">
+          <div className="flex items-center gap-1 overflow-x-auto rounded-lg border border-[#E1E4EA] bg-white p-1">
             {sessionTabs.map((tab) => (
               <button
                 key={tab.id}
@@ -442,30 +436,28 @@ export default function MentorshipPage() {
           </div>
 
           {/* Session Cards */}
-          <div className="flex flex-1 flex-col gap-4 overflow-y-auto">
-            {sessionsLoading ? (
-              <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-[#5C30FF]" />
-              </div>
-            ) : filteredSessions.length === 0 ? (
-              <div className="rounded-xl border border-[#E1E4EA] bg-[#FAFAFA] px-6 py-12 text-center">
-                <p className="font-inter-tight text-[14px] text-[#525866]">
-                  No sessions found
-                </p>
-              </div>
-            ) : (
-              filteredSessions.map((session) => (
-                <MenteeSessionCard
-                  key={session.id}
-                  {...session}
-                  onCancel={handleCancelSession}
-                  onJoin={handleJoinSession}
-                  onConfirmCompletion={handleConfirmCompletion}
-                  onDispute={handleDisputeSession}
-                />
-              ))
-            )}
-          </div>
+          {sessionsLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-[#5C30FF]" />
+            </div>
+          ) : filteredSessions.length === 0 ? (
+            <div className="rounded-xl border border-[#E1E4EA] bg-[#FAFAFA] px-6 py-12 text-center">
+              <p className="font-inter-tight text-[14px] text-[#525866]">
+                No sessions found
+              </p>
+            </div>
+          ) : (
+            filteredSessions.map((session) => (
+              <MenteeSessionCard
+                key={session.id}
+                {...session}
+                onCancel={handleCancelSession}
+                onJoin={handleJoinSession}
+                onConfirmCompletion={handleConfirmCompletion}
+                onDispute={handleDisputeSession}
+              />
+            ))
+          )}
         </div>
       )}
 
@@ -479,6 +471,7 @@ export default function MentorshipPage() {
           </div>
         </div>
       )}
+      </div>
 
       {/* Cancel Session Modal */}
       <ConfirmationModal

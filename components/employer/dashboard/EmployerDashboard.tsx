@@ -13,7 +13,7 @@ import { useRecruiterDashboard } from "@/hooks/useRecruiterDashboard";
 function Skeleton({ className }: { className?: string }) {
   return (
     <div
-      className={`bg-gray-200 animate-pulse rounded-lg ${className ?? ""}`}
+      className={`bg-gray-300 animate-pulse rounded-lg ${className ?? ""}`}
     />
   );
 }
@@ -51,9 +51,9 @@ function formatChange(value: number, isPercent: boolean): string {
 }
 
 export function EmployerDashboard() {
-  const { data, isLoading, error } = useRecruiterDashboard();
+  const { data, isLoading, isPending, error } = useRecruiterDashboard();
 
-  if (isLoading) {
+  if (isLoading || isPending) {
     return <DashboardSkeleton />;
   }
 
