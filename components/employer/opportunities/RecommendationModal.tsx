@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface RecommendationModalProps {
   isOpen: boolean;
@@ -31,6 +32,8 @@ export function RecommendationModal({
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(5);
   const [isLoading, setIsLoading] = useState(false);
+  const [titleFocused, setTitleFocused] = useState(false);
+  const [commentFocused, setCommentFocused] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -111,7 +114,15 @@ export function RecommendationModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., Senior Full-Stack Developer"
-              className="px-3 py-2 rounded-[8px] border border-[#E1E4EA] font-inter-tight text-[13px] placeholder:text-black/30 focus:outline-none focus:ring-2 focus:ring-[#5C30FF]/20"
+              className="px-3 py-2 rounded-[8px] border font-inter-tight text-[13px] placeholder:text-black/30 focus:outline-none"
+              style={{
+                borderColor: titleFocused ? ROLE_COLORS.recruiter.primary : "#E1E4EA",
+                boxShadow: titleFocused
+                  ? `0 0 0 2px ${ROLE_COLORS.recruiter.primary}33`
+                  : "none",
+              }}
+              onFocus={() => setTitleFocused(true)}
+              onBlur={() => setTitleFocused(false)}
               required
             />
           </div>
@@ -150,7 +161,15 @@ export function RecommendationModal({
               onChange={(e) => setComment(e.target.value)}
               placeholder="Share your feedback about this talent..."
               rows={4}
-              className="px-3 py-2 rounded-[8px] border border-[#E1E4EA] font-inter-tight text-[13px] placeholder:text-black/30 focus:outline-none focus:ring-2 focus:ring-[#5C30FF]/20 resize-none"
+              className="px-3 py-2 rounded-[8px] border font-inter-tight text-[13px] placeholder:text-black/30 focus:outline-none resize-none"
+              style={{
+                borderColor: commentFocused ? ROLE_COLORS.recruiter.primary : "#E1E4EA",
+                boxShadow: commentFocused
+                  ? `0 0 0 2px ${ROLE_COLORS.recruiter.primary}33`
+                  : "none",
+              }}
+              onFocus={() => setCommentFocused(true)}
+              onBlur={() => setCommentFocused(false)}
               required
             />
           </div>
@@ -167,7 +186,8 @@ export function RecommendationModal({
             <button
               type="submit"
               disabled={isLoading || !title || !comment}
-              className="flex-1 px-4 py-2 rounded-[8px] bg-[#5C30FF] hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-medium text-white transition-colors"
+              className="flex-1 px-4 py-2 rounded-[8px] hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-medium text-white transition-colors"
+              style={{ backgroundColor: ROLE_COLORS.recruiter.primary }}
             >
               {isLoading
                 ? "Submitting..."

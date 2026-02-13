@@ -10,6 +10,7 @@ import { BudgetScopeStep } from "./post-steps/BudgetScopeStep";
 import { Loader2 } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 type FormSection =
   | "basic-info"
@@ -271,9 +272,10 @@ export function EditOpportunityForm({
             onClick={() => toggleSection("basic-info")}
             className={`text-[14px] font-normal transition-colors text-left ${
               expandedSection === "basic-info"
-                ? "text-[#5C30FF] font-medium"
+                ? "font-medium"
                 : "text-[#525866] hover:text-black"
             }`}
+            style={expandedSection === "basic-info" ? { color: ROLE_COLORS.recruiter.primary } : undefined}
           >
             Basic Info
           </button>
@@ -281,9 +283,10 @@ export function EditOpportunityForm({
             onClick={() => toggleSection("description")}
             className={`text-[14px] font-normal transition-colors text-left ${
               expandedSection === "description"
-                ? "text-[#5C30FF] font-medium"
+                ? "font-medium"
                 : "text-[#525866] hover:text-black"
             }`}
+            style={expandedSection === "description" ? { color: ROLE_COLORS.recruiter.primary } : undefined}
           >
             Description
           </button>
@@ -292,9 +295,10 @@ export function EditOpportunityForm({
               onClick={() => toggleSection("budget-scope")}
               className={`text-[14px] font-normal transition-colors text-left ${
                 expandedSection === "budget-scope"
-                  ? "text-[#5C30FF] font-medium"
+                  ? "font-medium"
                   : "text-[#525866] hover:text-black"
               }`}
+              style={expandedSection === "budget-scope" ? { color: ROLE_COLORS.recruiter.primary } : undefined}
             >
               Budget & Scope
             </button>
@@ -303,9 +307,10 @@ export function EditOpportunityForm({
             onClick={() => toggleSection("application-settings")}
             className={`text-[14px] font-normal transition-colors text-left ${
               expandedSection === "application-settings"
-                ? "text-[#5C30FF] font-medium"
+                ? "font-medium"
                 : "text-[#525866] hover:text-black"
             }`}
+            style={expandedSection === "application-settings" ? { color: ROLE_COLORS.recruiter.primary } : undefined}
           >
             Application Settings
           </button>
@@ -330,7 +335,8 @@ export function EditOpportunityForm({
             <button
               onClick={handlePreview}
               disabled={isSaving}
-              className="px-5 py-2 bg-[#5C30FF] border border-[#5C30FF] rounded-full font-inter-tight text-[13px] font-normal text-white hover:bg-[#4a26cc] transition-colors disabled:opacity-50"
+              className="px-5 py-2 rounded-full font-inter-tight text-[13px] font-normal text-white hover:opacity-80 transition-colors disabled:opacity-50"
+              style={{ backgroundColor: ROLE_COLORS.recruiter.primary, borderColor: ROLE_COLORS.recruiter.primary }}
             >
               Preview & Save
             </button>
@@ -552,7 +558,9 @@ export function EditOpportunityForm({
                         onChange={(e) =>
                           updateFormData({ applicationCap: e.target.value })
                         }
-                        className="px-4 py-3 border border-gray-300 rounded-[10px] text-[14px] focus:outline-none focus:border-[#5C30FF]"
+                        className="px-4 py-3 border border-gray-300 rounded-[10px] text-[14px] focus:outline-none"
+                        onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
+                        onBlur={(e) => e.currentTarget.style.borderColor = ""}
                       />
                     </div>
 
@@ -573,7 +581,9 @@ export function EditOpportunityForm({
                         onChange={(e) =>
                           updateFormData({ closingDate: e.target.value })
                         }
-                        className="px-4 py-3 border border-gray-300 rounded-[10px] text-[14px] focus:outline-none focus:border-[#5C30FF]"
+                        className="px-4 py-3 border border-gray-300 rounded-[10px] text-[14px] focus:outline-none"
+                        onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
+                        onBlur={(e) => e.currentTarget.style.borderColor = ""}
                       />
                     </div>
                   </div>

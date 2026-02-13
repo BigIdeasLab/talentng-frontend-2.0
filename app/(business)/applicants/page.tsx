@@ -7,6 +7,7 @@ import { Users, Search, SlidersHorizontal, X } from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
+import { ApplicantsSkeleton } from "@/components/employer/applicants/ApplicantsSkeleton";
 import { useApplications } from "@/hooks/useApplications";
 import {
   mapApplicationsToUI,
@@ -53,7 +54,7 @@ export default function ApplicantsPage() {
   }
 
   if (isLoading) {
-    return <PageLoadingState message="Loading applicants..." />;
+    return <ApplicantsSkeleton />;
   }
 
   if (error) {

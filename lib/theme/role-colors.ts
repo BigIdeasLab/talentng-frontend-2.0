@@ -33,9 +33,9 @@ export const ROLE_COLORS = {
     accent: "#34D399",
   },
   mentor: {
-    primary: "#008b47",
-    primaryHover: "#6B47E6",
-    dark: "#008b47",
+    primary: "#e63c23",
+    primaryHover: "#059669",
+    dark: "#e63c23",
     light: "#FEF2F0",
     accent: "#A890FF",
   },

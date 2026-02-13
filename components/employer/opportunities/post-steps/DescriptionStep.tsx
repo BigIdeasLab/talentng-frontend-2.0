@@ -4,6 +4,7 @@ import { useState } from "react";
 import skills from "@/lib/data/skills.json";
 import toolsData from "@/lib/data/tools.json";
 import { getToolInfo } from "@/lib/utils/tools";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 const tools = toolsData.map((tool) => tool.name);
 
@@ -29,6 +30,7 @@ export function DescriptionStep({
   onNext,
 }: DescriptionStepProps) {
   const [errors, setErrors] = useState<ValidationErrors>({});
+  const [descriptionFocused, setDescriptionFocused] = useState(false);
   const [responsibilityInput, setResponsibilityInput] = useState("");
   const [requirementInput, setRequirementInput] = useState("");
   const [tagsInput, setTagsInput] = useState("");
@@ -210,10 +212,13 @@ export function DescriptionStep({
               updateFormData({ description: e.target.value });
               if (errors.description) setErrors({ ...errors, description: "" });
             }}
+            onFocus={() => setDescriptionFocused(true)}
+            onBlur={() => setDescriptionFocused(false)}
             rows={5}
-            className={`w-full px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none focus:border-[#5C30FF] transition-colors resize-none ${
+            className={`w-full px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none transition-colors resize-none ${
               errors.description ? "border-red-500" : "border-[#E1E4EA]"
             }`}
+            style={descriptionFocused ? { borderColor: ROLE_COLORS.recruiter.primary } : undefined}
           />
           {errors.description && (
             <span
@@ -242,7 +247,7 @@ export function DescriptionStep({
             {/* List of added responsibilities */}
             {formData.keyResponsibilities.map((item, index) => (
               <div key={index} className="flex items-center gap-2 group">
-                <span className="text-[#5C30FF] text-[14px]">•</span>
+                <span className="text-[14px]" style={{ color: ROLE_COLORS.recruiter.primary }}>•</span>
                 <span className="text-[13px] text-black flex-1">{item}</span>
                 <button
                   type="button"
@@ -269,7 +274,7 @@ export function DescriptionStep({
             ))}
             {/* Input for new responsibility */}
             <div className="flex items-center gap-2">
-              <span className="text-[#5C30FF] text-[14px]">•</span>
+              <span className="text-[14px]" style={{ color: ROLE_COLORS.recruiter.primary }}>•</span>
               <input
                 type="text"
                 placeholder="Add responsibility (press Enter)"
@@ -281,7 +286,8 @@ export function DescriptionStep({
               <button
                 type="button"
                 onClick={handleAddResponsibility}
-                className="px-3 py-1 text-[12px] bg-[#5C30FF]/10 text-[#5C30FF] rounded hover:bg-[#5C30FF]/20 transition-colors"
+                className="px-3 py-1 text-[12px] rounded hover:opacity-80 transition-colors"
+                style={{ backgroundColor: `${ROLE_COLORS.recruiter.primary}1A`, color: ROLE_COLORS.recruiter.primary }}
               >
                 Add
               </button>
@@ -298,7 +304,7 @@ export function DescriptionStep({
             {/* List of added requirements */}
             {formData.requirements.map((item, index) => (
               <div key={index} className="flex items-center gap-2 group">
-                <span className="text-[#5C30FF] text-[14px]">•</span>
+                <span className="text-[14px]" style={{ color: ROLE_COLORS.recruiter.primary }}>•</span>
                 <span className="text-[13px] text-black flex-1">{item}</span>
                 <button
                   type="button"
@@ -325,7 +331,7 @@ export function DescriptionStep({
             ))}
             {/* Input for new requirement */}
             <div className="flex items-center gap-2">
-              <span className="text-[#5C30FF] text-[14px]">•</span>
+              <span className="text-[14px]" style={{ color: ROLE_COLORS.recruiter.primary }}>•</span>
               <input
                 type="text"
                 placeholder="Add requirement (press Enter)"
@@ -337,7 +343,8 @@ export function DescriptionStep({
               <button
                 type="button"
                 onClick={handleAddRequirement}
-                className="px-3 py-1 text-[12px] bg-[#5C30FF]/10 text-[#5C30FF] rounded hover:bg-[#5C30FF]/20 transition-colors"
+                className="px-3 py-1 text-[12px] rounded hover:opacity-80 transition-colors"
+                style={{ backgroundColor: `${ROLE_COLORS.recruiter.primary}1A`, color: ROLE_COLORS.recruiter.primary }}
               >
                 Add
               </button>
@@ -364,15 +371,17 @@ export function DescriptionStep({
               {formData.tags.map((tag, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-2 px-3 py-1 bg-[#5C30FF]/10 border border-[#5C30FF] rounded-full"
+                  className="flex items-center gap-2 px-3 py-1 border rounded-full"
+                  style={{ backgroundColor: `${ROLE_COLORS.recruiter.primary}1A`, borderColor: ROLE_COLORS.recruiter.primary }}
                 >
-                  <span className="text-[12px] text-[#5C30FF] font-medium">
+                  <span className="text-[12px] font-medium" style={{ color: ROLE_COLORS.recruiter.primary }}>
                     {tag}
                   </span>
                   <button
                     type="button"
                     onClick={() => handleRemoveTag(index)}
-                    className="text-[#5C30FF] hover:text-[#E63C23] transition-colors"
+                    className="hover:text-[#E63C23] transition-colors"
+                    style={{ color: ROLE_COLORS.recruiter.primary }}
                   >
                     <svg
                       width="14"
@@ -429,7 +438,8 @@ export function DescriptionStep({
                       <button
                         type="button"
                         onClick={() => handleAddTag(tagsInput)}
-                        className="w-full text-left px-3 py-2 text-[13px] text-[#5C30FF] bg-[#5C30FF]/5 hover:bg-[#5C30FF]/10 font-medium border-t border-[#E1E4EA]"
+                        className="w-full text-left px-3 py-2 text-[13px] font-medium border-t border-[#E1E4EA] hover:opacity-80"
+                        style={{ color: ROLE_COLORS.recruiter.primary, backgroundColor: `${ROLE_COLORS.recruiter.primary}0D` }}
                       >
                         + Add "{tagsInput}" as custom tag
                       </button>
@@ -439,7 +449,8 @@ export function DescriptionStep({
                   <button
                     type="button"
                     onClick={() => handleAddTag(tagsInput)}
-                    className="w-full text-left px-3 py-2 text-[13px] text-[#5C30FF] bg-[#5C30FF]/5 hover:bg-[#5C30FF]/10 font-medium"
+                    className="w-full text-left px-3 py-2 text-[13px] font-medium hover:opacity-80"
+                    style={{ color: ROLE_COLORS.recruiter.primary, backgroundColor: `${ROLE_COLORS.recruiter.primary}0D` }}
                   >
                     + Add "{tagsInput}" as custom tag
                   </button>
@@ -470,7 +481,8 @@ export function DescriptionStep({
                 return (
                   <div
                     key={index}
-                    className="flex items-center gap-2 px-2.5 py-1.5 bg-[#5C30FF]/10 border border-[#5C30FF] rounded-full"
+                    className="flex items-center gap-2 px-2.5 py-1.5 border rounded-full"
+                    style={{ backgroundColor: `${ROLE_COLORS.recruiter.primary}1A`, borderColor: ROLE_COLORS.recruiter.primary }}
                   >
                     <img
                       src={toolInfo.logo}
@@ -480,13 +492,14 @@ export function DescriptionStep({
                         (e.target as HTMLImageElement).style.display = "none";
                       }}
                     />
-                    <span className="text-[12px] text-[#5C30FF] font-medium">
+                    <span className="text-[12px] font-medium" style={{ color: ROLE_COLORS.recruiter.primary }}>
                       {tool}
                     </span>
                     <button
                       type="button"
                       onClick={() => handleRemoveTool(index)}
-                      className="text-[#5C30FF] hover:text-[#E63C23] transition-colors"
+                      className="hover:text-[#E63C23] transition-colors"
+                      style={{ color: ROLE_COLORS.recruiter.primary }}
                     >
                       <svg
                         width="14"
@@ -561,7 +574,8 @@ export function DescriptionStep({
                       <button
                         type="button"
                         onClick={() => handleAddTool(toolsInput)}
-                        className="w-full text-left px-3 py-2 text-[13px] text-[#5C30FF] bg-[#5C30FF]/5 hover:bg-[#5C30FF]/10 font-medium border-t border-[#E1E4EA]"
+                        className="w-full text-left px-3 py-2 text-[13px] font-medium border-t border-[#E1E4EA] hover:opacity-80"
+                        style={{ color: ROLE_COLORS.recruiter.primary, backgroundColor: `${ROLE_COLORS.recruiter.primary}0D` }}
                       >
                         + Add "{toolsInput}" as custom tool
                       </button>
@@ -571,7 +585,8 @@ export function DescriptionStep({
                   <button
                     type="button"
                     onClick={() => handleAddTool(toolsInput)}
-                    className="w-full text-left px-3 py-2 text-[13px] text-[#5C30FF] bg-[#5C30FF]/5 hover:bg-[#5C30FF]/10 font-medium"
+                    className="w-full text-left px-3 py-2 text-[13px] font-medium hover:opacity-80"
+                    style={{ color: ROLE_COLORS.recruiter.primary, backgroundColor: `${ROLE_COLORS.recruiter.primary}0D` }}
                   >
                     + Add "{toolsInput}" as custom tool
                   </button>

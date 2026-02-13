@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { useRouter } from "next/navigation";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
 import { useToast } from "@/hooks";
@@ -181,7 +182,13 @@ export function OpportunityCard({
 
           <button
             onClick={handlePost}
-            className="flex items-center gap-0.5 h-8 px-3 bg-[#5C30FF] text-white rounded-full border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors flex-shrink-0"
+            className="flex items-center gap-0.5 h-8 px-3 text-white rounded-full hover:opacity-80 transition-colors flex-shrink-0"
+            style={{
+              backgroundColor: ROLE_COLORS.recruiter.primary,
+              borderWidth: 1,
+              borderStyle: "solid",
+              borderColor: ROLE_COLORS.recruiter.primary,
+            }}
           >
             <svg
               width="14"
@@ -260,7 +267,13 @@ export function OpportunityCard({
         <button
           onClick={handleMarkAsFilled}
           disabled={isLoading}
-          className="flex items-center gap-0.5 h-8 px-3 bg-[#5C30FF] text-white rounded-full border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-0.5 h-8 px-3 text-white rounded-full hover:opacity-80 transition-colors flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{
+            backgroundColor: ROLE_COLORS.recruiter.primary,
+            borderWidth: 1,
+            borderStyle: "solid",
+            borderColor: ROLE_COLORS.recruiter.primary,
+          }}
         >
           <svg
             width="14"
@@ -522,7 +535,8 @@ export function OpportunityCard({
               <Button
                 onClick={confirmPost}
                 disabled={isLoading}
-                className="bg-[#5C30FF] hover:bg-[#4a1fe5]"
+                className="hover:opacity-80"
+                style={{ backgroundColor: ROLE_COLORS.recruiter.primary }}
               >
                 {isLoading ? "Posting..." : "Post Now"}
               </Button>

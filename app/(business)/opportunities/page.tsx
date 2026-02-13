@@ -21,7 +21,6 @@ export default function OpportunitiesPage() {
     case "recruiter":
       return <EmployerOpportunities />;
     case "talent":
-    case "mentor":
     default:
       return (
         <OpportunitiesClient

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getToolInfo } from "@/lib/utils/tools";
 import type { Opportunity } from "@/lib/api/opportunities/types";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 const typeConfig: Record<
   string,
@@ -12,8 +13,8 @@ const typeConfig: Record<
   job: {
     label: "Job Listing",
     bgColor: "rgba(92, 48, 255, 0.10)",
-    textColor: "#5C30FF",
-    dotColor: "#5C30FF",
+    textColor: ROLE_COLORS.recruiter.primary,
+    dotColor: ROLE_COLORS.recruiter.primary,
   },
   internship: {
     label: "Internship",
@@ -30,8 +31,8 @@ const typeConfig: Record<
   parttime: {
     label: "Part-time",
     bgColor: "rgba(92, 48, 255, 0.10)",
-    textColor: "#5C30FF",
-    dotColor: "#5C30FF",
+    textColor: ROLE_COLORS.recruiter.primary,
+    dotColor: ROLE_COLORS.recruiter.primary,
   },
 };
 
@@ -76,7 +77,8 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
           <p className="text-gray-500 mb-4">Opportunity not found</p>
           <button
             onClick={() => router.back()}
-            className="px-4 py-2 bg-[#5C30FF] text-white rounded-full hover:bg-[#4a26cc]"
+            className="px-4 py-2 text-white rounded-full hover:opacity-80"
+            style={{ backgroundColor: ROLE_COLORS.recruiter.primary }}
           >
             Go Back
           </button>
@@ -191,9 +193,18 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                   {tags.map((skill, index) => (
                     <div
                       key={index}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#5C30FF]/10 border border-[#5C30FF] rounded-full"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full"
+                      style={{
+                        backgroundColor: `${ROLE_COLORS.recruiter.primary}1A`,
+                        borderWidth: 1,
+                        borderStyle: "solid",
+                        borderColor: ROLE_COLORS.recruiter.primary,
+                      }}
                     >
-                      <span className="font-inter-tight text-[12px] text-[#5C30FF] font-medium">
+                      <span
+                        className="font-inter-tight text-[12px] font-medium"
+                        style={{ color: ROLE_COLORS.recruiter.primary }}
+                      >
                         {skill}
                       </span>
                     </div>
@@ -223,7 +234,10 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                 <div className="flex flex-col gap-2">
                   {keyResponsibilities.map((item, index) => (
                     <div key={index} className="flex items-start gap-3">
-                      <span className="text-[#5C30FF] text-[14px] flex-shrink-0 pt-0.5">
+                      <span
+                        className="text-[14px] flex-shrink-0 pt-0.5"
+                        style={{ color: ROLE_COLORS.recruiter.primary }}
+                      >
                         •
                       </span>
                       <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
@@ -244,7 +258,10 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                 <div className="flex flex-col gap-2">
                   {requirements.map((item, index) => (
                     <div key={index} className="flex items-start gap-3">
-                      <span className="text-[#5C30FF] text-[14px] flex-shrink-0 pt-0.5">
+                      <span
+                        className="text-[14px] flex-shrink-0 pt-0.5"
+                        style={{ color: ROLE_COLORS.recruiter.primary }}
+                      >
                         •
                       </span>
                       <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
@@ -268,7 +285,13 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                     return (
                       <div
                         key={index}
-                        className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#5C30FF]/10 border border-[#5C30FF] rounded-full"
+                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full"
+                        style={{
+                          backgroundColor: `${ROLE_COLORS.recruiter.primary}1A`,
+                          borderWidth: 1,
+                          borderStyle: "solid",
+                          borderColor: ROLE_COLORS.recruiter.primary,
+                        }}
                       >
                         <img
                           src={toolInfo.logo}
@@ -279,7 +302,10 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                               "none";
                           }}
                         />
-                        <span className="font-inter-tight text-[12px] text-[#5C30FF] font-medium">
+                        <span
+                          className="font-inter-tight text-[12px] font-medium"
+                          style={{ color: ROLE_COLORS.recruiter.primary }}
+                        >
                           {tool}
                         </span>
                       </div>
@@ -567,7 +593,13 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                 </button>
                 <button
                   onClick={handleViewApplicants}
-                  className="flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] border border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4a26cc] transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 h-[48px] px-4 py-3 rounded-[40px] hover:opacity-80 transition-colors"
+                  style={{
+                    backgroundColor: ROLE_COLORS.recruiter.primary,
+                    borderWidth: 1,
+                    borderStyle: "solid",
+                    borderColor: ROLE_COLORS.recruiter.primary,
+                  }}
                 >
                   <span className="font-inter-tight text-[14px] font-normal text-white leading-normal">
                     Applicants

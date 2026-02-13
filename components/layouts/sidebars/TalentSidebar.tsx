@@ -55,6 +55,8 @@ const getMenuItems = (notificationCount?: number): MenuItem[] => [
     icon: Briefcase,
     href: "/opportunities",
   },
+  { id: "mentorship", label: "Mentorship", icon: Users, href: "/mentorship" },
+
   {
     id: "notification",
     label: "Notification",
@@ -62,7 +64,6 @@ const getMenuItems = (notificationCount?: number): MenuItem[] => [
     badge: notificationCount,
     href: "/notifications",
   },
-  { id: "mentorship", label: "Mentorship", icon: Users, href: "/mentorship" },
 ];
 
 const otherItems: Omit<MenuItem, "badge">[] = [

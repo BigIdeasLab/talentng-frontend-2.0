@@ -6,6 +6,7 @@ import {
   updateApplicationStatus,
   scheduleInterview,
 } from "@/lib/api/applications";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { HireApplicationModal } from "@/components/employer/applicants/HireApplicationModal";
 
 interface Applicant {
@@ -194,7 +195,11 @@ export function ApplicantsTable({
                 </button>
                 <button
                   onClick={() => handleHireClick(applicant)}
-                  className="px-3 py-1.5 bg-[#5C30FF] text-white rounded-full font-inter-tight text-[12px] font-medium border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors whitespace-nowrap"
+                  className="px-3 py-1.5 text-white rounded-full font-inter-tight text-[12px] font-medium border hover:opacity-80 transition-colors whitespace-nowrap"
+                  style={{
+                    backgroundColor: ROLE_COLORS.recruiter.primary,
+                    borderColor: ROLE_COLORS.recruiter.primary,
+                  }}
                 >
                   Hire
                 </button>
@@ -267,7 +272,11 @@ export function ApplicantsTable({
                 </button>
                 <button
                   onClick={() => handleHireClick(applicant)}
-                  className="flex-1 px-3 py-1.5 bg-[#5C30FF] text-white rounded-full font-inter-tight text-[11px] font-medium border border-[#5C30FF] hover:bg-[#4a26cc] transition-colors"
+                  className="flex-1 px-3 py-1.5 text-white rounded-full font-inter-tight text-[11px] font-medium border hover:opacity-80 transition-colors"
+                  style={{
+                    backgroundColor: ROLE_COLORS.recruiter.primary,
+                    borderColor: ROLE_COLORS.recruiter.primary,
+                  }}
                 >
                   Hire
                 </button>

@@ -387,12 +387,12 @@ const getMenuItems = (notificationCount?: number): MenuItem[] => {
       icon: <FileIcon />,
       href: "/sessions",
     },
-    {
-      id: "opportunities",
-      label: "Opportunities",
-      icon: <WorkIcon />,
-      href: "/opportunities",
-    },
+    // {
+    //   id: "opportunities",
+    //   label: "Opportunities",
+    //   icon: <WorkIcon />,
+    //   href: "/opportunities",
+    // },
     {
       id: "notification",
       label: "Notifications",
