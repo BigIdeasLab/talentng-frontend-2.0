@@ -218,7 +218,11 @@ export function DescriptionStep({
             className={`w-full px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none transition-colors resize-none ${
               errors.description ? "border-red-500" : "border-[#E1E4EA]"
             }`}
-            style={descriptionFocused ? { borderColor: ROLE_COLORS.recruiter.primary } : undefined}
+            style={
+              descriptionFocused
+                ? { borderColor: ROLE_COLORS.recruiter.primary }
+                : undefined
+            }
           />
           {errors.description && (
             <span
@@ -247,7 +251,12 @@ export function DescriptionStep({
             {/* List of added responsibilities */}
             {formData.keyResponsibilities.map((item, index) => (
               <div key={index} className="flex items-center gap-2 group">
-                <span className="text-[14px]" style={{ color: ROLE_COLORS.recruiter.primary }}>•</span>
+                <span
+                  className="text-[14px]"
+                  style={{ color: ROLE_COLORS.recruiter.primary }}
+                >
+                  •
+                </span>
                 <span className="text-[13px] text-black flex-1">{item}</span>
                 <button
                   type="button"
@@ -274,7 +283,12 @@ export function DescriptionStep({
             ))}
             {/* Input for new responsibility */}
             <div className="flex items-center gap-2">
-              <span className="text-[14px]" style={{ color: ROLE_COLORS.recruiter.primary }}>•</span>
+              <span
+                className="text-[14px]"
+                style={{ color: ROLE_COLORS.recruiter.primary }}
+              >
+                •
+              </span>
               <input
                 type="text"
                 placeholder="Add responsibility (press Enter)"
@@ -287,7 +301,10 @@ export function DescriptionStep({
                 type="button"
                 onClick={handleAddResponsibility}
                 className="px-3 py-1 text-[12px] rounded hover:opacity-80 transition-colors"
-                style={{ backgroundColor: `${ROLE_COLORS.recruiter.primary}1A`, color: ROLE_COLORS.recruiter.primary }}
+                style={{
+                  backgroundColor: `${ROLE_COLORS.recruiter.primary}1A`,
+                  color: ROLE_COLORS.recruiter.primary,
+                }}
               >
                 Add
               </button>
@@ -304,7 +321,12 @@ export function DescriptionStep({
             {/* List of added requirements */}
             {formData.requirements.map((item, index) => (
               <div key={index} className="flex items-center gap-2 group">
-                <span className="text-[14px]" style={{ color: ROLE_COLORS.recruiter.primary }}>•</span>
+                <span
+                  className="text-[14px]"
+                  style={{ color: ROLE_COLORS.recruiter.primary }}
+                >
+                  •
+                </span>
                 <span className="text-[13px] text-black flex-1">{item}</span>
                 <button
                   type="button"
@@ -331,7 +353,12 @@ export function DescriptionStep({
             ))}
             {/* Input for new requirement */}
             <div className="flex items-center gap-2">
-              <span className="text-[14px]" style={{ color: ROLE_COLORS.recruiter.primary }}>•</span>
+              <span
+                className="text-[14px]"
+                style={{ color: ROLE_COLORS.recruiter.primary }}
+              >
+                •
+              </span>
               <input
                 type="text"
                 placeholder="Add requirement (press Enter)"
@@ -344,7 +371,10 @@ export function DescriptionStep({
                 type="button"
                 onClick={handleAddRequirement}
                 className="px-3 py-1 text-[12px] rounded hover:opacity-80 transition-colors"
-                style={{ backgroundColor: `${ROLE_COLORS.recruiter.primary}1A`, color: ROLE_COLORS.recruiter.primary }}
+                style={{
+                  backgroundColor: `${ROLE_COLORS.recruiter.primary}1A`,
+                  color: ROLE_COLORS.recruiter.primary,
+                }}
               >
                 Add
               </button>
@@ -372,9 +402,15 @@ export function DescriptionStep({
                 <div
                   key={index}
                   className="flex items-center gap-2 px-3 py-1 border rounded-full"
-                  style={{ backgroundColor: `${ROLE_COLORS.recruiter.primary}1A`, borderColor: ROLE_COLORS.recruiter.primary }}
+                  style={{
+                    backgroundColor: `${ROLE_COLORS.recruiter.primary}1A`,
+                    borderColor: ROLE_COLORS.recruiter.primary,
+                  }}
                 >
-                  <span className="text-[12px] font-medium" style={{ color: ROLE_COLORS.recruiter.primary }}>
+                  <span
+                    className="text-[12px] font-medium"
+                    style={{ color: ROLE_COLORS.recruiter.primary }}
+                  >
                     {tag}
                   </span>
                   <button
@@ -439,7 +475,10 @@ export function DescriptionStep({
                         type="button"
                         onClick={() => handleAddTag(tagsInput)}
                         className="w-full text-left px-3 py-2 text-[13px] font-medium border-t border-[#E1E4EA] hover:opacity-80"
-                        style={{ color: ROLE_COLORS.recruiter.primary, backgroundColor: `${ROLE_COLORS.recruiter.primary}0D` }}
+                        style={{
+                          color: ROLE_COLORS.recruiter.primary,
+                          backgroundColor: `${ROLE_COLORS.recruiter.primary}0D`,
+                        }}
                       >
                         + Add "{tagsInput}" as custom tag
                       </button>
@@ -450,7 +489,10 @@ export function DescriptionStep({
                     type="button"
                     onClick={() => handleAddTag(tagsInput)}
                     className="w-full text-left px-3 py-2 text-[13px] font-medium hover:opacity-80"
-                    style={{ color: ROLE_COLORS.recruiter.primary, backgroundColor: `${ROLE_COLORS.recruiter.primary}0D` }}
+                    style={{
+                      color: ROLE_COLORS.recruiter.primary,
+                      backgroundColor: `${ROLE_COLORS.recruiter.primary}0D`,
+                    }}
                   >
                     + Add "{tagsInput}" as custom tag
                   </button>
@@ -482,7 +524,10 @@ export function DescriptionStep({
                   <div
                     key={index}
                     className="flex items-center gap-2 px-2.5 py-1.5 border rounded-full"
-                    style={{ backgroundColor: `${ROLE_COLORS.recruiter.primary}1A`, borderColor: ROLE_COLORS.recruiter.primary }}
+                    style={{
+                      backgroundColor: `${ROLE_COLORS.recruiter.primary}1A`,
+                      borderColor: ROLE_COLORS.recruiter.primary,
+                    }}
                   >
                     <img
                       src={toolInfo.logo}
@@ -492,7 +537,10 @@ export function DescriptionStep({
                         (e.target as HTMLImageElement).style.display = "none";
                       }}
                     />
-                    <span className="text-[12px] font-medium" style={{ color: ROLE_COLORS.recruiter.primary }}>
+                    <span
+                      className="text-[12px] font-medium"
+                      style={{ color: ROLE_COLORS.recruiter.primary }}
+                    >
                       {tool}
                     </span>
                     <button
@@ -575,7 +623,10 @@ export function DescriptionStep({
                         type="button"
                         onClick={() => handleAddTool(toolsInput)}
                         className="w-full text-left px-3 py-2 text-[13px] font-medium border-t border-[#E1E4EA] hover:opacity-80"
-                        style={{ color: ROLE_COLORS.recruiter.primary, backgroundColor: `${ROLE_COLORS.recruiter.primary}0D` }}
+                        style={{
+                          color: ROLE_COLORS.recruiter.primary,
+                          backgroundColor: `${ROLE_COLORS.recruiter.primary}0D`,
+                        }}
                       >
                         + Add "{toolsInput}" as custom tool
                       </button>
@@ -586,7 +637,10 @@ export function DescriptionStep({
                     type="button"
                     onClick={() => handleAddTool(toolsInput)}
                     className="w-full text-left px-3 py-2 text-[13px] font-medium hover:opacity-80"
-                    style={{ color: ROLE_COLORS.recruiter.primary, backgroundColor: `${ROLE_COLORS.recruiter.primary}0D` }}
+                    style={{
+                      color: ROLE_COLORS.recruiter.primary,
+                      backgroundColor: `${ROLE_COLORS.recruiter.primary}0D`,
+                    }}
                   >
                     + Add "{toolsInput}" as custom tool
                   </button>

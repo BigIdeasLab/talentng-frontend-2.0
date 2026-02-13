@@ -116,7 +116,9 @@ export function RecommendationModal({
               placeholder="e.g., Senior Full-Stack Developer"
               className="px-3 py-2 rounded-[8px] border font-inter-tight text-[13px] placeholder:text-black/30 focus:outline-none"
               style={{
-                borderColor: titleFocused ? ROLE_COLORS.recruiter.primary : "#E1E4EA",
+                borderColor: titleFocused
+                  ? ROLE_COLORS.recruiter.primary
+                  : "#E1E4EA",
                 boxShadow: titleFocused
                   ? `0 0 0 2px ${ROLE_COLORS.recruiter.primary}33`
                   : "none",
@@ -163,7 +165,9 @@ export function RecommendationModal({
               rows={4}
               className="px-3 py-2 rounded-[8px] border font-inter-tight text-[13px] placeholder:text-black/30 focus:outline-none resize-none"
               style={{
-                borderColor: commentFocused ? ROLE_COLORS.recruiter.primary : "#E1E4EA",
+                borderColor: commentFocused
+                  ? ROLE_COLORS.recruiter.primary
+                  : "#E1E4EA",
                 boxShadow: commentFocused
                   ? `0 0 0 2px ${ROLE_COLORS.recruiter.primary}33`
                   : "none",

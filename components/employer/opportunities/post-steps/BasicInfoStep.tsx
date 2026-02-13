@@ -108,8 +108,11 @@ export function BasicInfoStep({
             className={`w-full px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none transition-colors ${
               errors.title ? "border-red-500" : "border-[#E1E4EA]"
             }`}
-            onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
-            onBlur={(e) => e.currentTarget.style.borderColor = ""}
+            onFocus={(e) =>
+              (e.currentTarget.style.borderColor =
+                ROLE_COLORS.recruiter.primary)
+            }
+            onBlur={(e) => (e.currentTarget.style.borderColor = "")}
           />
           {errors.title && (
             <span
@@ -137,8 +140,11 @@ export function BasicInfoStep({
                 className={`w-full h-[46px] px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none transition-colors bg-white ${
                   errors.type ? "border-red-500" : "border-[#E1E4EA]"
                 }`}
-                onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
-                onBlur={(e) => e.currentTarget.style.borderColor = ""}
+                onFocus={(e) =>
+                  (e.currentTarget.style.borderColor =
+                    ROLE_COLORS.recruiter.primary)
+                }
+                onBlur={(e) => (e.currentTarget.style.borderColor = "")}
               >
                 <option value="" disabled className="text-[#99A0AE]">
                   Select
@@ -186,8 +192,11 @@ export function BasicInfoStep({
                 className={`w-full h-[46px] px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none transition-colors bg-white ${
                   errors.category ? "border-red-500" : "border-[#E1E4EA]"
                 }`}
-                onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
-                onBlur={(e) => e.currentTarget.style.borderColor = ""}
+                onFocus={(e) =>
+                  (e.currentTarget.style.borderColor =
+                    ROLE_COLORS.recruiter.primary)
+                }
+                onBlur={(e) => (e.currentTarget.style.borderColor = "")}
               >
                 <option value="" disabled className="text-[#99A0AE]">
                   Select Category
@@ -238,8 +247,11 @@ export function BasicInfoStep({
               className={`w-full h-[46px] px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] appearance-none outline-none transition-colors bg-white ${
                 errors.workMode ? "border-red-500" : "border-[#E1E4EA]"
               }`}
-              onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
-              onBlur={(e) => e.currentTarget.style.borderColor = ""}
+              onFocus={(e) =>
+                (e.currentTarget.style.borderColor =
+                  ROLE_COLORS.recruiter.primary)
+              }
+              onBlur={(e) => (e.currentTarget.style.borderColor = "")}
             >
               <option value="" disabled className="text-[#99A0AE]">
                 Select
@@ -288,8 +300,11 @@ export function BasicInfoStep({
               className={`w-full h-[46px] px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none transition-colors bg-white ${
                 errors.employmentType ? "border-red-500" : "border-[#E1E4EA]"
               }`}
-              onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
-              onBlur={(e) => e.currentTarget.style.borderColor = ""}
+              onFocus={(e) =>
+                (e.currentTarget.style.borderColor =
+                  ROLE_COLORS.recruiter.primary)
+              }
+              onBlur={(e) => (e.currentTarget.style.borderColor = "")}
             >
               <option value="" disabled className="text-[#99A0AE]">
                 Select
@@ -343,8 +358,11 @@ export function BasicInfoStep({
                 className={`w-full h-[46px] px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none transition-colors bg-white ${
                   errors.location ? "border-red-500" : "border-[#E1E4EA]"
                 }`}
-                onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
-                onBlur={(e) => e.currentTarget.style.borderColor = ""}
+                onFocus={(e) =>
+                  (e.currentTarget.style.borderColor =
+                    ROLE_COLORS.recruiter.primary)
+                }
+                onBlur={(e) => (e.currentTarget.style.borderColor = "")}
               >
                 <option value="">Select State</option>
                 {Object.keys(statesCitiesData).map((state) => (
@@ -387,8 +405,11 @@ export function BasicInfoStep({
                 className={`w-full h-[46px] px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none transition-colors bg-white disabled:bg-[#F5F5F5] disabled:cursor-not-allowed ${
                   errors.location ? "border-red-500" : "border-[#E1E4EA]"
                 }`}
-                onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
-                onBlur={(e) => e.currentTarget.style.borderColor = ""}
+                onFocus={(e) =>
+                  (e.currentTarget.style.borderColor =
+                    ROLE_COLORS.recruiter.primary)
+                }
+                onBlur={(e) => (e.currentTarget.style.borderColor = "")}
               >
                 <option value="">Select City</option>
                 {cities.map((city) => (

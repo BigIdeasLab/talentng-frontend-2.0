@@ -351,8 +351,11 @@ export function BudgetScopeStep({
                   }}
                   onKeyDown={handleKeyDown}
                   disabled={!selectedPriceMode}
-                  onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
-                  onBlur={(e) => e.currentTarget.style.borderColor = ""}
+                  onFocus={(e) =>
+                    (e.currentTarget.style.borderColor =
+                      ROLE_COLORS.recruiter.primary)
+                  }
+                  onBlur={(e) => (e.currentTarget.style.borderColor = "")}
                   className={`w-full pl-6 pr-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none transition-colors disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed ${
                     errors.minBudget ? "border-red-500" : "border-[#E1E4EA]"
                   }`}
@@ -374,8 +377,11 @@ export function BudgetScopeStep({
                   }}
                   onKeyDown={handleKeyDown}
                   disabled={!selectedPriceMode}
-                  onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
-                  onBlur={(e) => e.currentTarget.style.borderColor = ""}
+                  onFocus={(e) =>
+                    (e.currentTarget.style.borderColor =
+                      ROLE_COLORS.recruiter.primary)
+                  }
+                  onBlur={(e) => (e.currentTarget.style.borderColor = "")}
                   className={`w-full pl-6 pr-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none transition-colors disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed ${
                     errors.maxBudget ? "border-red-500" : "border-[#E1E4EA]"
                   }`}
@@ -395,8 +401,11 @@ export function BudgetScopeStep({
                 onChange={(e) => handleBudgetChange(e, "price")}
                 onKeyDown={handleKeyDown}
                 disabled={!selectedPriceMode}
-                onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
-                onBlur={(e) => e.currentTarget.style.borderColor = ""}
+                onFocus={(e) =>
+                  (e.currentTarget.style.borderColor =
+                    ROLE_COLORS.recruiter.primary)
+                }
+                onBlur={(e) => (e.currentTarget.style.borderColor = "")}
                 className={`w-full pl-6 pr-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none transition-colors disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed ${
                   errors.price ? "border-red-500" : "border-[#E1E4EA]"
                 }`}
@@ -425,8 +434,11 @@ export function BudgetScopeStep({
                 updateFormData({ duration: e.target.value });
                 if (errors.duration) setErrors({ ...errors, duration: "" });
               }}
-              onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
-              onBlur={(e) => e.currentTarget.style.borderColor = ""}
+              onFocus={(e) =>
+                (e.currentTarget.style.borderColor =
+                  ROLE_COLORS.recruiter.primary)
+              }
+              onBlur={(e) => (e.currentTarget.style.borderColor = "")}
               className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none transition-colors bg-white"
             >
               <option value="" disabled className="text-[#99A0AE]">
@@ -478,8 +490,11 @@ export function BudgetScopeStep({
                 updateFormData({ startDate: e.target.value });
                 if (errors.startDate) setErrors({ ...errors, startDate: "" });
               }}
-              onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
-              onBlur={(e) => e.currentTarget.style.borderColor = ""}
+              onFocus={(e) =>
+                (e.currentTarget.style.borderColor =
+                  ROLE_COLORS.recruiter.primary)
+              }
+              onBlur={(e) => (e.currentTarget.style.borderColor = "")}
               className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none transition-colors"
             />
           </div>
@@ -506,8 +521,11 @@ export function BudgetScopeStep({
                 if (errors.experienceLevel)
                   setErrors({ ...errors, experienceLevel: "" });
               }}
-              onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
-              onBlur={(e) => e.currentTarget.style.borderColor = ""}
+              onFocus={(e) =>
+                (e.currentTarget.style.borderColor =
+                  ROLE_COLORS.recruiter.primary)
+              }
+              onBlur={(e) => (e.currentTarget.style.borderColor = "")}
               className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black appearance-none outline-none transition-colors bg-white"
             >
               <option value="" disabled className="text-[#99A0AE]">

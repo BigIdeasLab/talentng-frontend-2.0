@@ -82,7 +82,16 @@ export function ApplicantsSkeleton() {
             {/* Table Header */}
             <div className="px-[24px] py-[16px] border-b border-[#E1E4EA]">
               <div className="grid grid-cols-[40px_1fr_80px_1.2fr_140px_120px_110px_1.3fr] gap-4">
-                {["S/N", "Talents", "Hires", "Opportunity", "Location", "Date Applied", "Status", "Actions"].map((h) => (
+                {[
+                  "S/N",
+                  "Talents",
+                  "Hires",
+                  "Opportunity",
+                  "Location",
+                  "Date Applied",
+                  "Status",
+                  "Actions",
+                ].map((h) => (
                   <Skeleton key={h} className="h-[13px] w-[60px]" />
                 ))}
               </div>

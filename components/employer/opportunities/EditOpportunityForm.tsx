@@ -275,7 +275,11 @@ export function EditOpportunityForm({
                 ? "font-medium"
                 : "text-[#525866] hover:text-black"
             }`}
-            style={expandedSection === "basic-info" ? { color: ROLE_COLORS.recruiter.primary } : undefined}
+            style={
+              expandedSection === "basic-info"
+                ? { color: ROLE_COLORS.recruiter.primary }
+                : undefined
+            }
           >
             Basic Info
           </button>
@@ -286,7 +290,11 @@ export function EditOpportunityForm({
                 ? "font-medium"
                 : "text-[#525866] hover:text-black"
             }`}
-            style={expandedSection === "description" ? { color: ROLE_COLORS.recruiter.primary } : undefined}
+            style={
+              expandedSection === "description"
+                ? { color: ROLE_COLORS.recruiter.primary }
+                : undefined
+            }
           >
             Description
           </button>
@@ -298,7 +306,11 @@ export function EditOpportunityForm({
                   ? "font-medium"
                   : "text-[#525866] hover:text-black"
               }`}
-              style={expandedSection === "budget-scope" ? { color: ROLE_COLORS.recruiter.primary } : undefined}
+              style={
+                expandedSection === "budget-scope"
+                  ? { color: ROLE_COLORS.recruiter.primary }
+                  : undefined
+              }
             >
               Budget & Scope
             </button>
@@ -310,7 +322,11 @@ export function EditOpportunityForm({
                 ? "font-medium"
                 : "text-[#525866] hover:text-black"
             }`}
-            style={expandedSection === "application-settings" ? { color: ROLE_COLORS.recruiter.primary } : undefined}
+            style={
+              expandedSection === "application-settings"
+                ? { color: ROLE_COLORS.recruiter.primary }
+                : undefined
+            }
           >
             Application Settings
           </button>
@@ -336,7 +352,10 @@ export function EditOpportunityForm({
               onClick={handlePreview}
               disabled={isSaving}
               className="px-5 py-2 rounded-full font-inter-tight text-[13px] font-normal text-white hover:opacity-80 transition-colors disabled:opacity-50"
-              style={{ backgroundColor: ROLE_COLORS.recruiter.primary, borderColor: ROLE_COLORS.recruiter.primary }}
+              style={{
+                backgroundColor: ROLE_COLORS.recruiter.primary,
+                borderColor: ROLE_COLORS.recruiter.primary,
+              }}
             >
               Preview & Save
             </button>
@@ -559,8 +578,11 @@ export function EditOpportunityForm({
                           updateFormData({ applicationCap: e.target.value })
                         }
                         className="px-4 py-3 border border-gray-300 rounded-[10px] text-[14px] focus:outline-none"
-                        onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
-                        onBlur={(e) => e.currentTarget.style.borderColor = ""}
+                        onFocus={(e) =>
+                          (e.currentTarget.style.borderColor =
+                            ROLE_COLORS.recruiter.primary)
+                        }
+                        onBlur={(e) => (e.currentTarget.style.borderColor = "")}
                       />
                     </div>
 
@@ -582,8 +604,11 @@ export function EditOpportunityForm({
                           updateFormData({ closingDate: e.target.value })
                         }
                         className="px-4 py-3 border border-gray-300 rounded-[10px] text-[14px] focus:outline-none"
-                        onFocus={(e) => e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary}
-                        onBlur={(e) => e.currentTarget.style.borderColor = ""}
+                        onFocus={(e) =>
+                          (e.currentTarget.style.borderColor =
+                            ROLE_COLORS.recruiter.primary)
+                        }
+                        onBlur={(e) => (e.currentTarget.style.borderColor = "")}
                       />
                     </div>
                   </div>
