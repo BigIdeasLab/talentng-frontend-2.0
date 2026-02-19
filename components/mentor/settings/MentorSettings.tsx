@@ -475,7 +475,9 @@ export function MentorSettings() {
                   label="Marketing & Updates"
                   description="Receive news about new features and tips"
                   checked={notifications.emailMarketing}
-                  onChange={(v) => handleNotificationChange("emailMarketing", v)}
+                  onChange={(v) =>
+                    handleNotificationChange("emailMarketing", v)
+                  }
                 />
               </div>
             </div>

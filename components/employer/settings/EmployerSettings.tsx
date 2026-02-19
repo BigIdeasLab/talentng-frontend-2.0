@@ -185,7 +185,9 @@ export function EmployerSettings() {
                 <Input
                   id="website"
                   value={company.website}
-                  onChange={(e) => handleCompanyChange("website", e.target.value)}
+                  onChange={(e) =>
+                    handleCompanyChange("website", e.target.value)
+                  }
                   className="mt-1"
                   placeholder="https://yourcompany.com"
                 />
@@ -285,7 +287,9 @@ export function EmployerSettings() {
                   label="Marketing & Updates"
                   description="Receive news about new features and tips"
                   checked={notifications.emailMarketing}
-                  onChange={(v) => handleNotificationChange("emailMarketing", v)}
+                  onChange={(v) =>
+                    handleNotificationChange("emailMarketing", v)
+                  }
                 />
               </div>
             </div>
