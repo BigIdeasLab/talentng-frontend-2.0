@@ -34,6 +34,8 @@ interface EmployerProfileProps {
     companyStage?: string;
     operatingModel?: string;
   };
+  views?: number;
+  visibility?: "public" | "private";
 }
 
 export function EmployerProfile({
@@ -50,6 +52,8 @@ export function EmployerProfile({
   socialLinks,
   completionPercentage = 0,
   aboutData,
+  views = 0,
+  visibility = "public",
 }: EmployerProfileProps) {
   const { user: _user } = useAuth();
   const [activeTab, setActiveTab] = useState("opportunities");
@@ -73,6 +77,8 @@ export function EmployerProfile({
           stats={stats}
           socialLinks={socialLinks}
           completionPercentage={completionPercentage}
+          views={views}
+          visibility={visibility}
         />
       </div>
 

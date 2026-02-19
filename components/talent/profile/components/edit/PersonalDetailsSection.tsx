@@ -8,9 +8,7 @@ import { updateProfileImage } from "@/lib/api/talent";
 interface PersonalData {
   firstName: string;
   lastName: string;
-  headline: string;
   bio: string;
-  phoneNumber: string;
   state: string;
   city: string;
   profileImageUrl: string;
@@ -157,19 +155,6 @@ export function PersonalDetailsSection({
               </div>
             </div>
 
-            {/* Headline */}
-            <div className="flex flex-col gap-[10px]">
-              <label className="text-[13px] font-normal text-black font-inter-tight">
-                Headline
-              </label>
-              <input
-                type="text"
-                value={formData.headline}
-                onChange={(e) => onInputChange("headline", e.target.value)}
-                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
-              />
-            </div>
-
             {/* Bio */}
             <div className="flex flex-col gap-[10px]">
               <label className="text-[13px] font-normal text-black font-inter-tight">
@@ -180,20 +165,6 @@ export function PersonalDetailsSection({
                 onChange={(e) => onInputChange("bio", e.target.value)}
                 placeholder="Tell us about yourself"
                 className="min-h-[100px] px-[12px] py-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent resize-none"
-              />
-            </div>
-
-            {/* Phone Number */}
-            <div className="flex flex-col gap-[10px]">
-              <label className="text-[13px] font-normal text-black font-inter-tight">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                value={formData.phoneNumber}
-                onChange={(e) => onInputChange("phoneNumber", e.target.value)}
-                placeholder="+234 (0) 703 456 7890"
-                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
               />
             </div>
 

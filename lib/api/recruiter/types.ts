@@ -8,35 +8,29 @@ export interface RecruiterProfile {
   id: string;
   userId: string;
   username: string;
-  bio: string | null;
-  companyName: string | null;
-  companyWebsite: string | null;
+  company: string | null;
   industry: string | null;
+  bio: string | null;
   location: string | null;
-  companyLogoUrl: string | null;
   companySize: string | null;
   companyStage: string | null;
   operatingModel: string | null;
-  visibility: Visibility;
-  isFeatured: boolean;
-  featuredUntil: string | null;
-  views: number;
-  coverImageUrl: string | null;
+  links: Record<string, any> | null;
+  visibility: string | null;
   profileImageUrl: string | null;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface UpdateRecruiterProfileInput {
-  companyName?: string;
-  companyWebsite?: string;
+  company?: string;
   industry?: string;
   bio?: string;
   location?: string;
-  companyLogoUrl?: string;
   companySize?: string;
   companyStage?: string;
   operatingModel?: string;
+  links?: Record<string, any>;
 }
 
 export interface RecruiterFilterParams {
@@ -50,6 +44,7 @@ export interface RecruiterFilterParams {
 export interface RecruiterProfileResponse {
   profile: RecruiterProfile | null;
   isProfileCreated: boolean;
+  profileCompleteness: number;
   message?: string;
 }
 

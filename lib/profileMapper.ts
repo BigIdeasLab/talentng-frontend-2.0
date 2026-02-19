@@ -3,18 +3,15 @@ export interface UIProfileData {
   personal: {
     firstName: string;
     lastName: string;
-    headline: string;
     bio: string;
-    phoneNumber: string;
     state: string;
     city: string;
     profileImageUrl: string;
   };
   professional: {
     role: string;
-    company: string;
+    headline: string;
     category: string;
-    description: string;
     skills: string[];
     stack: { name: string; icon: string }[];
     availability: string;
@@ -141,9 +138,8 @@ export interface APIProfileData {
 export function mapUIToAPI(uiData: UIProfileData): APIProfileData {
   return {
     fullName: `${uiData.personal.firstName} ${uiData.personal.lastName}`.trim(),
-    headline: uiData.personal.headline,
+    headline: uiData.professional.headline,
     bio: uiData.personal.bio,
-    phoneNumber: uiData.personal.phoneNumber,
     profileImageUrl: uiData.personal.profileImageUrl,
     location:
       uiData.personal.state && uiData.personal.city
@@ -179,10 +175,8 @@ export function mapUIToAPI(uiData: UIProfileData): APIProfileData {
       github: uiData.social.github || undefined,
       portfolio: uiData.social.portfolio || undefined,
     },
-    company: uiData.professional.company,
     category: uiData.professional.category,
     availability: uiData.professional.availability,
-    description: uiData.professional.description,
   };
 }
 
@@ -209,9 +203,8 @@ export function mapAPIToUI(
           ? data.stack[0]
           : data.stack[0].name
         : "") || "",
-    company: data.company || "",
+    headline: data.headline || "",
     category: data.category || "",
-    description: data.description || "",
     skills: data.skills || [],
     stack: (data.stack || []).map((item: any) => {
       const name = typeof item === "string" ? item : item.name;
@@ -231,9 +224,7 @@ export function mapAPIToUI(
     personal: {
       firstName: firstName || "",
       lastName: lastName || "",
-      headline: data.headline || "",
       bio: data.bio || "",
-      phoneNumber: data.phoneNumber || "",
       state: state || "",
       city: city || "",
       profileImageUrl: data.profileImageUrl || "",

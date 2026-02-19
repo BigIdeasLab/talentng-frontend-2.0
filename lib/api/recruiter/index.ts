@@ -121,17 +121,6 @@ export async function listRecruiterProfiles(
 }
 
 /**
- * Helper: Update profile image URL only (without file upload)
- */
-export async function updateRecruiterProfileImageUrl(
-  imageUrl: string,
-): Promise<RecruiterProfile> {
-  return updateRecruiterProfile({
-    companyLogoUrl: imageUrl,
-  });
-}
-
-/**
  * Helper: Batch update multiple profile fields
  */
 export async function batchUpdateRecruiterProfile(

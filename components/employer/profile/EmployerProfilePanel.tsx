@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 
 interface EmployerProfilePanelProps {
@@ -31,6 +32,8 @@ interface EmployerProfilePanelProps {
     linkedin?: string;
   };
   completionPercentage?: number;
+  views?: number;
+  visibility?: "public" | "private";
 }
 
 export function EmployerProfilePanel({
@@ -46,60 +49,73 @@ export function EmployerProfilePanel({
   },
   socialLinks,
   completionPercentage = 0,
+  views = 0,
+  visibility = "public",
 }: EmployerProfilePanelProps) {
+  const completeness = completionPercentage ?? 0;
+  const ringSize = 110;
+  const strokeWidth = 2;
+  const radius = (ringSize - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (completeness / 100) * circumference;
+  const ringColor =
+    completeness >= 100
+      ? "#22C55E"
+      : completeness >= 70
+        ? "#F59E0B"
+        : completeness >= 40
+          ? "#F97316"
+          : "#EF4444";
+
   return (
     <div className="hidden lg:flex w-[350px] flex-col bg-white border-r border-[#E1E4EA] px-[25px] py-[15px] overflow-y-auto h-screen scrollbar-hide">
       {/* Company Profile Section */}
       <div className="flex flex-col items-center gap-[20px]">
-        {/* Company Logo with Completion Badge */}
-        <div className="relative w-[110px] h-[110px]">
+        {/* Company Logo with Completion Ring */}
+        <div className="relative" style={{ width: ringSize, height: ringSize }}>
+          <svg
+            width={ringSize}
+            height={ringSize}
+            className="absolute inset-0 -rotate-90"
+          >
+            <circle
+              cx={ringSize / 2}
+              cy={ringSize / 2}
+              r={radius}
+              fill="none"
+              stroke="#E1E4EA"
+              strokeWidth={strokeWidth}
+            />
+            <circle
+              cx={ringSize / 2}
+              cy={ringSize / 2}
+              r={radius}
+              fill="none"
+              stroke={ringColor}
+              strokeWidth={strokeWidth}
+              strokeLinecap="round"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              className="transition-all duration-500"
+            />
+          </svg>
           <img
             src={company?.logo || "/placeholder.svg"}
             alt={company?.name || "Company"}
-            className="w-full h-full object-cover rounded-full p-2"
+            className="absolute rounded-full object-cover"
+            style={{
+              top: strokeWidth + 4,
+              left: strokeWidth + 4,
+              width: ringSize - (strokeWidth + 4) * 2,
+              height: ringSize - (strokeWidth + 4) * 2,
+            }}
           />
-          <svg
-            width="110"
-            height="110"
-            viewBox="0 0 110 110"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="absolute inset-0 w-full h-full pointer-events-none z-10"
+          <div
+            className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[10px] font-medium text-white font-inter-tight"
+            style={{ backgroundColor: ringColor }}
           >
-            <circle
-              cx="55"
-              cy="55"
-              r="54"
-              stroke="#E63C23"
-              strokeWidth="2"
-              strokeOpacity="0.2"
-            />
-            <path
-              d="M55 1C62.0914 1 69.1133 2.39675 75.6649 5.1105C82.2165 7.82426 88.1694 11.8019 93.1838 16.8162C98.1981 21.8306 102.176 27.7835 104.889 34.3351C107.603 40.8867 109 47.9086 109 55"
-              stroke="#E63C23"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <rect
-              x="90"
-              y="15"
-              width="28"
-              height="15"
-              rx="7.5"
-              fill="#E63C23"
-            />
-            <text
-              x="104"
-              y="26.2754"
-              fill="white"
-              fontSize="10"
-              fontFamily="Inter Tight"
-              textAnchor="middle"
-              dominantBaseline="middle"
-            >
-              {completionPercentage}%
-            </text>
-          </svg>
+            {completeness}%
+          </div>
         </div>
 
         {/* Company Info */}
@@ -153,17 +169,36 @@ export function EmployerProfilePanel({
               </div>
             )}
 
-            {/* Response Time */}
-            {stats?.responseTime && (
-              <div className="flex justify-between items-center w-full">
-                <div className="flex items-center gap-[6px]">
-                  <DollarSign className="w-[18px] h-[18px] text-[#525866]" />
-                  <span className="text-[12px] font-normal text-black font-inter-tight">
-                    {stats.responseTime}
-                  </span>
-                </div>
+            {/* Profile Views */}
+            <div className="flex justify-between items-center w-full">
+              <div className="flex items-center gap-1.5">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 22 22"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M1.83 11C1.83 11 4.58 4.58 11 4.58C17.42 4.58 20.17 11 20.17 11C20.17 11 17.42 17.42 11 17.42C4.58 17.42 1.83 11 1.83 11Z"
+                    stroke="#525866"
+                    strokeWidth="1.375"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <circle
+                    cx="11"
+                    cy="11"
+                    r="2.75"
+                    stroke="#525866"
+                    strokeWidth="1.375"
+                  />
+                </svg>
+                <span className="text-[13px] font-normal text-black font-inter-tight">
+                  {views} Profile Views
+                </span>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
@@ -174,6 +209,24 @@ export function EmployerProfilePanel({
           ✏️ Edit Profile
         </Button>
       </Link>
+
+      {/* Visibility Toggle */}
+      <div className="flex justify-between items-center w-full mt-[10px]">
+        <div className="flex flex-col">
+          <span className="text-[13px] font-normal text-black font-inter-tight">
+            Profile Visibility
+          </span>
+          <span className="text-[11px] text-[rgba(0,0,0,0.30)] font-inter-tight">
+            {visibility === "public"
+              ? "Visible to everyone"
+              : "Hidden from search"}
+          </span>
+        </div>
+        <Switch
+          checked={visibility === "public"}
+          // TODO: Add toggle handler
+        />
+      </div>
 
       {/* Social Links Section */}
       {socialLinks && (

@@ -42,8 +42,8 @@ export function MentorProfileSidebar({
   const stackRemaining = Math.max(0, stack.length - 5);
 
   const completeness = profileCompleteness ?? 0;
-  const ringSize = 104;
-  const strokeWidth = 3;
+  const ringSize = 110;
+  const strokeWidth = 2;
   const radius = (ringSize - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (completeness / 100) * circumference;
@@ -57,7 +57,7 @@ export function MentorProfileSidebar({
           : "#EF4444";
 
   return (
-    <div className="w-full lg:w-[350px] bg-white lg:border-r border-[#E1E4EA] flex flex-col px-4 py-7 gap-5 overflow-y-auto lg:h-screen scrollbar-hidden">
+    <div className="hidden lg:flex w-[350px] flex-col bg-white border-r border-[#E1E4EA] px-[25px] py-[15px] overflow-y-auto h-screen scrollbar-hide">
       {/* User Profile */}
       <div className="flex flex-col items-center gap-5">
         {/* Profile Picture with Completeness Ring */}
@@ -91,14 +91,15 @@ export function MentorProfileSidebar({
               className="transition-all duration-500"
             />
           </svg>
-          <div
-            className="absolute rounded-full bg-cover bg-center"
+          <img
+            src={mentor.profileImage || "/default.png"}
+            alt={mentor.name}
+            className="absolute rounded-full object-cover"
             style={{
-              top: (ringSize - 90) / 2,
-              left: (ringSize - 90) / 2,
-              width: 90,
-              height: 90,
-              backgroundImage: `url(${mentor.profileImage || "/default.png"})`,
+              top: strokeWidth + 4,
+              left: strokeWidth + 4,
+              width: ringSize - (strokeWidth + 4) * 2,
+              height: ringSize - (strokeWidth + 4) * 2,
             }}
           />
           {profileCompleteness !== null && (
@@ -112,157 +113,155 @@ export function MentorProfileSidebar({
         </div>
 
         {/* Info Container */}
-        <div className="flex flex-col items-center gap-3 w-[200px]">
-          {/* Name */}
-          <h2 className="text-[16px] font-medium text-black font-inter-tight text-center">
-            {mentor.name}
-          </h2>
-
-          {/* Title */}
-          <p className="text-[14px] font-light text-[rgba(0,0,0,0.30)] font-inter-tight text-center">
-            {mentor.title}
-          </p>
-        </div>
-
-        {/* Details Container */}
-        <div className="flex flex-col items-start gap-3 w-full">
-          {/* Average Rating */}
-          <div className="flex justify-between items-center w-full">
-            <div className="flex items-center gap-1.5">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 22 22"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M11 1.83L13.09 8.26H19.92L14.42 12.24L16.51 18.67L11 14.69L5.49 18.67L7.58 12.24L2.08 8.26H8.91L11 1.83Z"
-                  fill="#FFD700"
-                  stroke="#FFD700"
-                  strokeWidth="1"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span className="text-[13px] font-normal text-black font-inter-tight">
-                {avgRating !== null && avgRating !== undefined
-                  ? avgRating.toFixed(1)
-                  : "N/A"}{" "}
-                Rating
-              </span>
-            </div>
+        <div className="flex flex-col items-center gap-[12px] w-full">
+          <div className="text-center">
+            <h2 className="text-[16px] font-medium text-black font-inter-tight">
+              {mentor.name}
+            </h2>
+            <p className="text-[13px] font-light text-[rgba(0,0,0,0.30)] font-inter-tight">
+              {mentor.title}
+            </p>
           </div>
 
-          {/* Sessions completed */}
-          <div className="flex justify-between items-center w-full">
-            <div className="flex items-center gap-1.5">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 22 22"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M2.29166 12.6807L5.49999 16.0418L6.43867 15.0584M15.125 5.9585L9.56724 11.7809"
-                  stroke="#525866"
-                  strokeWidth="1.375"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M6.875 12.6807L10.0833 16.0418L19.7083 5.9585"
-                  stroke="#525866"
-                  strokeWidth="1.375"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span className="text-[13px] font-normal text-black font-inter-tight">
-                {mentor.sessionsCompleted} Session Completed
-              </span>
+          {/* Details Container */}
+          <div className="flex flex-col items-start gap-[10px] w-full">
+            {/* Average Rating */}
+            <div className="flex justify-between items-center w-full">
+              <div className="flex items-center gap-1.5">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 22 22"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11 1.83L13.09 8.26H19.92L14.42 12.24L16.51 18.67L11 14.69L5.49 18.67L7.58 12.24L2.08 8.26H8.91L11 1.83Z"
+                    fill="#FFD700"
+                    stroke="#FFD700"
+                    strokeWidth="1"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <span className="text-[13px] font-normal text-black font-inter-tight">
+                  {avgRating !== null && avgRating !== undefined
+                    ? avgRating.toFixed(1)
+                    : "N/A"}{" "}
+                  Rating
+                </span>
+              </div>
             </div>
-          </div>
 
-          {/* Mentoring time */}
-          <div className="flex justify-between items-center w-full">
-            <div className="flex items-center gap-1.5">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 22 22"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M7.67767 2.75C7.48159 2.82327 7.28875 2.90319 7.09942 2.98949M18.9911 14.9427C19.0848 14.7399 19.1712 14.533 19.2499 14.3225M16.9571 17.751C17.1145 17.604 17.2667 17.4516 17.4132 17.2938M13.9964 19.5913C14.1743 19.5242 14.3495 19.4517 14.5218 19.3738M11.1429 20.1611C10.9313 20.1684 10.7181 20.1684 10.5064 20.1611M7.13828 19.3787C7.30401 19.4532 7.47242 19.523 7.6433 19.5876M4.28308 17.3441C4.40838 17.4769 4.53767 17.6059 4.67078 17.7309M2.41322 14.3591C2.48186 14.5404 2.55619 14.7188 2.63599 14.8943M1.8378 11.4632C1.83185 11.2724 1.83187 11.0805 1.8378 10.8895M2.40657 8.00904C2.474 7.82985 2.547 7.65337 2.62533 7.47982M4.26793 5.02263C4.40053 4.88138 4.53764 4.74442 4.67903 4.61197"
-                  stroke="#525866"
-                  strokeWidth="1.375"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M12.375 11C12.375 11.7594 11.7594 12.375 11 12.375C10.2406 12.375 9.625 11.7594 9.625 11C9.625 10.2406 10.2406 9.625 11 9.625M12.375 11C12.375 10.2406 11.7594 9.625 11 9.625M12.375 11H14.6667M11 9.625V5.5"
-                  stroke="#525866"
-                  strokeWidth="1.375"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M20.1667 11.0002C20.1667 5.93755 16.0626 1.8335 11 1.8335"
-                  stroke="#525866"
-                  strokeWidth="1.375"
-                  strokeLinecap="round"
-                />
-              </svg>
-              <span className="text-[13px] font-normal text-black font-inter-tight">
-                {mentor.mentoringTime} mins mentoring time
-              </span>
+            {/* Sessions completed */}
+            <div className="flex justify-between items-center w-full">
+              <div className="flex items-center gap-1.5">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 22 22"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2.29166 12.6807L5.49999 16.0418L6.43867 15.0584M15.125 5.9585L9.56724 11.7809"
+                    stroke="#525866"
+                    strokeWidth="1.375"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M6.875 12.6807L10.0833 16.0418L19.7083 5.9585"
+                    stroke="#525866"
+                    strokeWidth="1.375"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <span className="text-[13px] font-normal text-black font-inter-tight">
+                  {mentor.sessionsCompleted} Session Completed
+                </span>
+              </div>
             </div>
-          </div>
 
-          {/* Profile Views */}
-          <div className="flex justify-between items-center w-full">
-            <div className="flex items-center gap-1.5">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 22 22"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M1.83 11C1.83 11 4.58 4.58 11 4.58C17.42 4.58 20.17 11 20.17 11C20.17 11 17.42 17.42 11 17.42C4.58 17.42 1.83 11 1.83 11Z"
-                  stroke="#525866"
-                  strokeWidth="1.375"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <circle
-                  cx="11"
-                  cy="11"
-                  r="2.75"
-                  stroke="#525866"
-                  strokeWidth="1.375"
-                />
-              </svg>
-              <span className="text-[13px] font-normal text-black font-inter-tight">
-                {views} Profile Views
-              </span>
+            {/* Mentoring time */}
+            <div className="flex justify-between items-center w-full">
+              <div className="flex items-center gap-1.5">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 22 22"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7.67767 2.75C7.48159 2.82327 7.28875 2.90319 7.09942 2.98949M18.9911 14.9427C19.0848 14.7399 19.1712 14.533 19.2499 14.3225M16.9571 17.751C17.1145 17.604 17.2667 17.4516 17.4132 17.2938M13.9964 19.5913C14.1743 19.5242 14.3495 19.4517 14.5218 19.3738M11.1429 20.1611C10.9313 20.1684 10.7181 20.1684 10.5064 20.1611M7.13828 19.3787C7.30401 19.4532 7.47242 19.523 7.6433 19.5876M4.28308 17.3441C4.40838 17.4769 4.53767 17.6059 4.67078 17.7309M2.41322 14.3591C2.48186 14.5404 2.55619 14.7188 2.63599 14.8943M1.8378 11.4632C1.83185 11.2724 1.83187 11.0805 1.8378 10.8895M2.40657 8.00904C2.474 7.82985 2.547 7.65337 2.62533 7.47982M4.26793 5.02263C4.40053 4.88138 4.53764 4.74442 4.67903 4.61197"
+                    stroke="#525866"
+                    strokeWidth="1.375"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M12.375 11C12.375 11.7594 11.7594 12.375 11 12.375C10.2406 12.375 9.625 11.7594 9.625 11C9.625 10.2406 10.2406 9.625 11 9.625M12.375 11C12.375 10.2406 11.7594 9.625 11 9.625M12.375 11H14.6667M11 9.625V5.5"
+                    stroke="#525866"
+                    strokeWidth="1.375"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M20.1667 11.0002C20.1667 5.93755 16.0626 1.8335 11 1.8335"
+                    stroke="#525866"
+                    strokeWidth="1.375"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <span className="text-[13px] font-normal text-black font-inter-tight">
+                  {mentor.mentoringTime} mins mentoring time
+                </span>
+              </div>
+            </div>
+
+            {/* Profile Views */}
+            <div className="flex justify-between items-center w-full">
+              <div className="flex items-center gap-1.5">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 22 22"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M1.83 11C1.83 11 4.58 4.58 11 4.58C17.42 4.58 20.17 11 20.17 11C20.17 11 17.42 17.42 11 17.42C4.58 17.42 1.83 11 1.83 11Z"
+                    stroke="#525866"
+                    strokeWidth="1.375"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <circle
+                    cx="11"
+                    cy="11"
+                    r="2.75"
+                    stroke="#525866"
+                    strokeWidth="1.375"
+                  />
+                </svg>
+                <span className="text-[13px] font-normal text-black font-inter-tight">
+                  {views} Profile Views
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Edit Profile Button */}
-      <Button
-        onClick={onEditProfile}
-        className="w-full h-auto rounded-[40px] bg-[#181B25] hover:bg-[#2a2f3a] text-white px-16 py-4 font-normal text-[15px]"
-      >
-        Edit Profile
-      </Button>
+      <Link href="/profile/edit" className="w-full mt-[15px]">
+        <Button className="w-full h-[40px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-aeonik text-[14px] font-normal flex-shrink-0">
+          ✏️ Edit Profile
+        </Button>
+      </Link>
 
       {/* Visibility Toggle */}
-      <div className="flex justify-between items-center w-full">
+      <div className="flex justify-between items-center w-full mt-[10px]">
         <div className="flex flex-col">
           <span className="text-[13px] font-normal text-black font-inter-tight">
             Profile Visibility
@@ -281,7 +280,7 @@ export function MentorProfileSidebar({
 
       {/* Stack Section */}
       {displayedStack.length > 0 && (
-        <div className="flex flex-col items-start gap-[12px]">
+        <div className="flex flex-col items-start gap-[12px] mt-[20px] flex-shrink-0">
           <h3 className="text-[12px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
             Stack
           </h3>
@@ -309,7 +308,7 @@ export function MentorProfileSidebar({
       )}
 
       {/* Social Links */}
-      <div className="flex flex-col items-start gap-7">
+      <div className="flex flex-col items-start gap-7 mt-[20px]">
         <div className="flex flex-col items-start gap-4 w-full">
           {/* Header */}
           <h3 className="text-[11px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">

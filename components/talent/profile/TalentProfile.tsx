@@ -27,24 +27,24 @@ interface TalentProfileProps {
   initialRecommendations?: any[];
   initialServices?: any[];
   initialError?: string | null;
+  profileCompleteness?: number;
+  views?: number;
+  visibility?: "public" | "private";
 }
 
 const DEFAULT_PROFILE_DATA: UIProfileData = {
   personal: {
     firstName: "",
     lastName: "",
-    headline: "",
     bio: "",
-    phoneNumber: "",
     state: "",
     city: "",
     profileImageUrl: "",
   },
   professional: {
     role: "",
-    company: "",
+    headline: "",
     category: "",
-    description: "",
     skills: [],
     stack: [],
     availability: "",
@@ -74,6 +74,9 @@ export function TalentProfile({
   initialRecommendations = [],
   initialServices = [],
   initialError = null,
+  profileCompleteness = 0,
+  views = 0,
+  visibility = "public",
 }: TalentProfileProps) {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("works");
@@ -206,7 +209,7 @@ export function TalentProfile({
                 ? `${profileData.personal.firstName} ${profileData.personal.lastName}`.trim()
                 : user?.fullName || "User",
             headline:
-              profileData?.personal?.headline ||
+              profileData?.professional?.headline ||
               "Product & Interaction Designer",
             profileImageUrl: profileData?.personal?.profileImageUrl,
             location:
@@ -255,7 +258,9 @@ export function TalentProfile({
             instagram: profileData?.social?.instagram || "#",
             linkedin: profileData?.social?.linkedin || "#",
           }}
-          completionPercentage={stats?.profileCompletion ?? 0}
+          completionPercentage={profileCompleteness}
+          views={views}
+          visibility={visibility}
         />
       </div>
 

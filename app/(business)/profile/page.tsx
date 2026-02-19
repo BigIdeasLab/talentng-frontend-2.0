@@ -42,16 +42,11 @@ export default function ProfilePage() {
 
   switch (role) {
     case "recruiter": {
-      const completionFields = [
-        displayProfile?.professional?.company,
-        displayProfile?.personal?.state,
-        displayProfile?.professional?.description,
-        displayProfile?.personal?.profileImageUrl,
-        displayProfile?.professional?.category,
-      ].filter(Boolean);
-      const completionPercentage = Math.round(
-        (completionFields.length / 5) * 100,
-      );
+      const completionPercentage = profileData?.profileCompleteness ?? 0;
+      const recruiterData = rawProfile as any;
+      const views = recruiterData?.views ?? 0;
+      const visibility =
+        recruiterData?.visibility === "private" ? "private" : "public";
 
       return (
         <EmployerProfile
@@ -74,6 +69,8 @@ export default function ProfilePage() {
             companyStage: displayProfile?.professional?.companyStage,
             operatingModel: displayProfile?.professional?.operatingModel,
           }}
+          views={views}
+          visibility={visibility}
         />
       );
     }
@@ -92,6 +89,12 @@ export default function ProfilePage() {
     }
     case "talent":
     default: {
+      const talentData = rawProfile as any;
+      const talentCompleteness = profileData?.profileCompleteness ?? 0;
+      const talentViews = talentData?.stats?.views ?? 0;
+      const talentVisibility =
+        talentData?.visibility === "private" ? "private" : "public";
+
       return (
         <TalentProfile
           initialProfileData={displayProfile}
@@ -100,6 +103,9 @@ export default function ProfilePage() {
           initialRecommendations={[]}
           initialServices={[]}
           initialError={error}
+          profileCompleteness={talentCompleteness}
+          views={talentViews}
+          visibility={talentVisibility}
         />
       );
     }

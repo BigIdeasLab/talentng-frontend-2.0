@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 interface WelcomeHeaderProps {
@@ -82,12 +83,15 @@ export function WelcomeHeader({
             awaiting your attention.
           </p>
         </div>
-        <button className="flex h-[38px] px-4 justify-center items-center gap-1 rounded-lg bg-white hover:bg-gray-100 transition-colors group flex-shrink-0 w-fit">
+        <Link
+          href="/applicants"
+          className="flex h-[38px] px-4 justify-center items-center gap-1 rounded-lg bg-white hover:bg-gray-100 transition-colors group flex-shrink-0 w-fit"
+        >
           <span className="font-inter-tight text-xs font-medium text-[#0D9F5C]">
             Review Applicants
           </span>
           <ArrowRight className="w-3.5 h-3.5 text-[#0D9F5C] group-hover:translate-x-0.5 transition-transform" />
-        </button>
+        </Link>
       </div>
     </div>
   );
