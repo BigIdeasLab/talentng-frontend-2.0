@@ -187,7 +187,13 @@ Recruiter Applicant Detail Page (Backend): Implement GET /applications/{id} retu
 Recruiter Applicants List Page (Frontend): Build ApplicantsHeader with title and "Hired Talents" link with count badge. Implement SearchAndFilters with search input, Filter/Sort dropdowns and Build ApplicantsTable
 
 Recruiter Applicants List Page (Backend): Implement GET /applications with recruiter filtering, searchQuery, sortBy, status filter, and pagination. Return user.talentProfile, opportunity details, and interview status.
+/
 
+//
+
+//
+
+//
 Mentor Dashboard (Backend): Implement GET /mentor/dashboard returning stats (totalSessions, totalEarnings, rating, menteesCount), weekly overview, upcoming sessions, recent reviews, and achievements.
 
 Mentor Dashboard (Frontend): Build dashboard with StatCards, WeeklyOverview, UpcomingInterviews, RecentReviews, and Achievements components.
