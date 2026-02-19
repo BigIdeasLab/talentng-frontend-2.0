@@ -12,7 +12,11 @@ import { OpportunitiesGrid } from "@/components/talent/profile/components/Opport
 import { CreateServiceModal } from "@/components/talent/profile/components/CreateServiceModal";
 import { UploadWorksModal } from "@/components/talent/profile/components/UploadWorksModal";
 import { ServiceDetailView } from "./components/ServiceDetailView";
-import type { DashboardStats, Service, GalleryItem } from "@/lib/api/talent/types";
+import type {
+  DashboardStats,
+  Service,
+  GalleryItem,
+} from "@/lib/api/talent/types";
 import type { UIProfileData } from "@/lib/profileMapper";
 import type { Opportunity } from "@/lib/api/opportunities/types";
 
@@ -285,7 +289,9 @@ export function TalentProfile({
               onAddService={handleOpenCreateServiceModal}
               onServiceClick={setSelectedService}
               onEditService={handleEditService}
-              onServiceDeleted={() => setServiceRefreshTrigger((prev) => prev + 1)}
+              onServiceDeleted={() =>
+                setServiceRefreshTrigger((prev) => prev + 1)
+              }
               refreshTrigger={serviceRefreshTrigger}
               cachedServices={cachedServices}
               onServicesLoaded={setCachedServices}
@@ -372,7 +378,18 @@ export function TalentProfile({
         isOpen={isUploadWorksModalOpen}
         onClose={handleCloseUploadWorksModal}
         onSuccess={handleWorksUploaded}
-        editItem={editingWork ? { id: editingWork.id, title: editingWork.title, description: editingWork.description || "", images: editingWork.images || [(editingWork as any).url].filter(Boolean) } : null}
+        editItem={
+          editingWork
+            ? {
+                id: editingWork.id,
+                title: editingWork.title,
+                description: editingWork.description || "",
+                images:
+                  editingWork.images ||
+                  [(editingWork as any).url].filter(Boolean),
+              }
+            : null
+        }
       />
 
       {/* Create Service Modal */}

@@ -187,3 +187,73 @@ Recruiter Applicant Detail Page (Backend): Implement GET /applications/{id} retu
 Recruiter Applicants List Page (Frontend): Build ApplicantsHeader with title and "Hired Talents" link with count badge. Implement SearchAndFilters with search input, Filter/Sort dropdowns and Build ApplicantsTable
 
 Recruiter Applicants List Page (Backend): Implement GET /applications with recruiter filtering, searchQuery, sortBy, status filter, and pagination. Return user.talentProfile, opportunity details, and interview status.
+
+Mentor Dashboard (Backend): Implement GET /mentor/dashboard returning stats (totalSessions, totalEarnings, rating, menteesCount), weekly overview, upcoming sessions, recent reviews, and achievements.
+
+Mentor Dashboard (Frontend): Build dashboard with StatCards, WeeklyOverview, UpcomingInterviews, RecentReviews, and Achievements components.
+
+Mentor Profile Page (Backend): Implement GET /mentor/me returning full profile data including about, experience, background, reviews, sessions, and earnings.
+
+Mentor Profile Page (Frontend): Build profile page with tabs (About, Experience, Background, Reviews, Sessions, Earnings), profile sidebar with avatar, name, headline, stats, and social links.
+
+Mentor Profile Edit (Backend): Implement PATCH /mentor/me for updating profile details with validation.
+
+Mentor Profile Edit (Frontend): Build edit profile form with sections for personal details, professional details, experience, education, and social links.
+
+Mentor Availability (Backend): Implement GET/PUT /mentor/availability for managing weekly schedule with recurring time slots, session duration, buffer time, timezone, and meeting link.
+
+Mentor Availability (Frontend): Build interactive weekly availability grid with drag-select time slots, duration selector, buffer time, timezone picker, meeting link input, and save functionality.
+
+Mentor Sessions (Backend): Implement GET /sessions for mentor's sessions, POST /sessions/{id}/confirm, POST /sessions/{id}/complete, POST /sessions/{id}/cancel, POST /sessions/{id}/reschedule.
+
+Mentor Sessions (Frontend): Build sessions list page with SessionCard components, filter tabs (upcoming/completed/cancelled), and actions (confirm, complete, cancel, reschedule).
+
+Mentor Requests (Backend): Implement GET /requests for incoming requests, POST /requests/{id}/accept, POST /requests/{id}/reject for managing mentorship requests.
+
+Mentor Requests (Frontend): Build requests page with incoming requests list, accept/decline actions, request details modal, and empty state.
+
+Mentor Settings (Backend): Implement GET/PATCH /mentor/settings for mentor-specific settings.
+
+Mentor Settings (Frontend): Build settings page with profile visibility, notification preferences, session settings, and payment settings.
+
+Mentor Notifications (Backend): Implement GET /notifications with mentor-specific notification types.
+
+Mentor Notifications (Frontend): Build notifications component with mentor-specific notifications, read/unread states, and action handling.
+
+Mentor Onboarding (Backend): Implement POST /mentor/onboard for creating mentor profile with expertise, bio, session pricing, and availability setup.
+
+Mentor Onboarding (Frontend): Build multi-step onboarding with MentorProfileStep (bio, headline, photo), MentorExpertiseStep (skills, categories, years experience), pricing setup, and availability configuration.
+
+Mentors Discovery (Backend): Implement GET /mentors with searchQuery, category filter, pagination, sortBy (rating, price, sessions), returning public mentor profiles.
+
+Mentors Discovery (Frontend): Build mentorship discovery page with MentorGrid, MentorCard components, category filter, search bar, and pagination.
+
+Mentor Detail (Backend): Implement GET /mentors/{id} returning full mentor profile, GET /mentors/{id}/reviews, GET /mentors/{id}/availability with available time slots.
+
+Mentor Detail (Frontend): Build mentor detail page with profile hero, about section, expertise/specializations, reviews, availability calendar, and booking CTA.
+
+Book Mentor (Backend): Implement POST /requests for creating mentorship request with mentorId, session type, topic, goals, and preferred schedule.
+
+Book Mentor (Frontend): Build booking modal with mentor profile, session type selection, time slot picker from availability, details form (topic, goals), and confirmation.
+
+My Mentors/Requests (Backend): Implement GET /requests for talent's sent requests, POST /requests/{id}/cancel for cancelling pending requests.
+
+My Mentors/Requests (Frontend): Build my-requests page with sent requests list, status filters (pending/accepted/rejected/cancelled), request details, and cancel action.
+
+My Sessions (Backend): Implement GET /sessions for talent's sessions with mentor, POST /sessions/{id}/complete, POST /sessions/{id}/cancel, POST /sessions/{id}/dispute.
+
+My Sessions (Frontend): Build sessions page with MenteeSessionCard components, upcoming/past tabs, session details, and actions (cancel, complete, leave review).
+
+Talent Settings (Backend): Implement GET/PATCH /talent/settings for talent-specific settings.
+
+Talent Settings (Frontend): Build settings page with profile visibility, notification preferences, and account settings (currently placeholder).
+
+Employer Settings (Backend): Implement GET/PATCH /employer/settings for employer-specific settings.
+
+Employer Settings (Frontend): Build settings page with company settings, notification preferences, team management, and billing.
+
+Sessions Page (Frontend): Build sessions management page for mentors with session list, filters, and action modals.
+
+Availability Page (Frontend): Build standalone availability management page with interactive grid for mentors.
+
+Mentorship Applications Page (Frontend): Build applications page for mentors to manage incoming requests (accept/decline).

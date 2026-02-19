@@ -385,7 +385,11 @@ export function ProjectSelectionModal({
                     <div className="flex items-center gap-[12px]">
                       {/* Project Image */}
                       <img
-                        src={galleryItem.images?.[0] || (galleryItem as any).url || ""}
+                        src={
+                          galleryItem.images?.[0] ||
+                          (galleryItem as any).url ||
+                          ""
+                        }
                         alt={galleryItem.title}
                         className="w-[124px] h-[93px] object-cover rounded-[7px] flex-shrink-0"
                       />

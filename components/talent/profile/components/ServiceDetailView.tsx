@@ -59,14 +59,20 @@ export function ServiceDetailView({
                 {images.length > 1 && (
                   <>
                     <button
-                      onClick={(e) => { e.stopPropagation(); goToPrev(); }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        goToPrev();
+                      }}
                       className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 bg-black/40 hover:bg-black/60 rounded-full transition-opacity opacity-0 group-hover:opacity-100"
                       aria-label="Previous image"
                     >
                       <ChevronLeft className="w-5 h-5 text-white" />
                     </button>
                     <button
-                      onClick={(e) => { e.stopPropagation(); goToNext(); }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        goToNext();
+                      }}
                       className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-black/40 hover:bg-black/60 rounded-full transition-opacity opacity-0 group-hover:opacity-100"
                       aria-label="Next image"
                     >
@@ -78,7 +84,10 @@ export function ServiceDetailView({
                       {images.map((_, idx) => (
                         <button
                           key={idx}
-                          onClick={(e) => { e.stopPropagation(); setCurrentIndex(idx); }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setCurrentIndex(idx);
+                          }}
                           className={`w-2 h-2 rounded-full transition-colors ${
                             idx === currentIndex
                               ? "bg-white"
@@ -98,7 +107,10 @@ export function ServiceDetailView({
                   {images.map((image, idx) => (
                     <button
                       key={idx}
-                      onClick={(e) => { e.stopPropagation(); setCurrentIndex(idx); }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrentIndex(idx);
+                      }}
                       className={`relative w-full aspect-[135/101] rounded-[4px] overflow-hidden bg-gray-100 transition-opacity ${
                         idx === currentIndex
                           ? "ring-2 ring-[#5C30FF] opacity-100"

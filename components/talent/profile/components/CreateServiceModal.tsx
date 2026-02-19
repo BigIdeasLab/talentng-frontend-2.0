@@ -173,9 +173,14 @@ export function CreateServiceModal({
       );
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : `Failed to ${editService ? "update" : "create"} service`;
+        err instanceof Error
+          ? err.message
+          : `Failed to ${editService ? "update" : "create"} service`;
       setError(errorMessage);
-      console.error(`Error ${editService ? "updating" : "creating"} service:`, err);
+      console.error(
+        `Error ${editService ? "updating" : "creating"} service:`,
+        err,
+      );
     } finally {
       setIsLoading(false);
     }
@@ -258,7 +263,9 @@ export function CreateServiceModal({
                             type="button"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setImages((prev) => prev.filter((_, i) => i !== idx));
+                              setImages((prev) =>
+                                prev.filter((_, i) => i !== idx),
+                              );
                             }}
                             className="absolute top-1 right-1 p-0.5 bg-black/50 hover:bg-black/70 rounded-full transition-colors"
                           >
@@ -366,7 +373,9 @@ export function CreateServiceModal({
                       Pricing
                     </label>
                     <div className="flex px-3 py-3.5 items-center gap-2 rounded-[8px] border border-[#E1E4EA]">
-                      <span className="text-[14px] font-inter-tight text-black/50">₦</span>
+                      <span className="text-[14px] font-inter-tight text-black/50">
+                        ₦
+                      </span>
                       <input
                         id="price"
                         name="price"

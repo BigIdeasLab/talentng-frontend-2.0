@@ -9,7 +9,12 @@ interface UploadWorksModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: (message?: string, gallery?: any[]) => void;
-  editItem?: { id: string; title: string; description: string; images: string[] } | null;
+  editItem?: {
+    id: string;
+    title: string;
+    description: string;
+    images: string[];
+  } | null;
 }
 
 export function UploadWorksModal({
@@ -33,7 +38,10 @@ export function UploadWorksModal({
   useEffect(() => {
     if (editItem) {
       const imgs = editItem.images || [];
-      setFormData({ title: editItem.title || "", description: editItem.description || "" });
+      setFormData({
+        title: editItem.title || "",
+        description: editItem.description || "",
+      });
       setExistingImages(imgs);
       setPreviewUrls([]);
       setSelectedFiles([]);
@@ -60,7 +68,8 @@ export function UploadWorksModal({
         file.type === "application/pdf",
     );
 
-    const totalFiles = existingImages.length + selectedFiles.length + newFiles.length;
+    const totalFiles =
+      existingImages.length + selectedFiles.length + newFiles.length;
     if (totalFiles > 4) {
       setError("Maximum 4 files allowed");
       return;
@@ -156,7 +165,9 @@ export function UploadWorksModal({
 
       onClose();
       onSuccess?.(
-        editItem ? "Work updated successfully!" : `Successfully uploaded ${selectedFiles.length} work${selectedFiles.length > 1 ? "s" : ""}!`,
+        editItem
+          ? "Work updated successfully!"
+          : `Successfully uploaded ${selectedFiles.length} work${selectedFiles.length > 1 ? "s" : ""}!`,
         result.gallery || [],
       );
     } catch (err) {
@@ -248,7 +259,10 @@ export function UploadWorksModal({
                   ) : (
                     <div className="grid grid-cols-2 gap-1.5 p-2 w-full h-full overflow-y-auto">
                       {existingImages.map((url, idx) => (
-                        <div key={`existing-${idx}`} className="relative aspect-square">
+                        <div
+                          key={`existing-${idx}`}
+                          className="relative aspect-square"
+                        >
                           <img
                             src={url}
                             alt={`Existing ${idx + 1}`}
@@ -256,7 +270,10 @@ export function UploadWorksModal({
                           />
                           <button
                             type="button"
-                            onClick={(e) => { e.stopPropagation(); handleRemoveExisting(idx); }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemoveExisting(idx);
+                            }}
                             className="absolute top-1 right-1 p-0.5 bg-black/50 hover:bg-black/70 rounded-full transition-colors"
                           >
                             <X className="w-3 h-3 text-white" />
@@ -264,7 +281,10 @@ export function UploadWorksModal({
                         </div>
                       ))}
                       {selectedFiles.map((file, idx) => (
-                        <div key={`new-${idx}`} className="relative aspect-square">
+                        <div
+                          key={`new-${idx}`}
+                          className="relative aspect-square"
+                        >
                           {file.type.startsWith("image/") ? (
                             <img
                               src={previewUrls[idx]}
@@ -286,7 +306,10 @@ export function UploadWorksModal({
                           )}
                           <button
                             type="button"
-                            onClick={(e) => { e.stopPropagation(); handleRemoveFile(idx); }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemoveFile(idx);
+                            }}
                             className="absolute top-1 right-1 p-0.5 bg-black/50 hover:bg-black/70 rounded-full transition-colors"
                           >
                             <X className="w-3 h-3 text-white" />
@@ -301,7 +324,10 @@ export function UploadWorksModal({
                     multiple
                     accept="image/*,video/*,.pdf"
                     onChange={handleInputChange}
-                    disabled={isLoading || existingImages.length + selectedFiles.length >= 4}
+                    disabled={
+                      isLoading ||
+                      existingImages.length + selectedFiles.length >= 4
+                    }
                     className="hidden"
                   />
                 </div>
@@ -314,7 +340,10 @@ export function UploadWorksModal({
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
                       className="text-[#5C30FF] underline hover:no-underline"
-                      disabled={isLoading || existingImages.length + selectedFiles.length >= 4}
+                      disabled={
+                        isLoading ||
+                        existingImages.length + selectedFiles.length >= 4
+                      }
                     >
                       browse
                     </button>
@@ -443,7 +472,9 @@ export function UploadWorksModal({
                   <button
                     type="button"
                     onClick={handleSubmit}
-                    disabled={isLoading || (!editItem && selectedFiles.length === 0)}
+                    disabled={
+                      isLoading || (!editItem && selectedFiles.length === 0)
+                    }
                     className="flex-1 flex justify-center items-center gap-2 px-6 py-2.5 rounded-[8px] border border-[#5C30FF] bg-[#5C30FF] text-[13px] font-inter-tight text-white leading-normal transition-colors hover:bg-[#4a26cc] disabled:opacity-50"
                   >
                     {isLoading ? (
