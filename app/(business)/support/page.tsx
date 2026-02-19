@@ -3,7 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRequireRole } from "@/hooks/useRequireRole";
+import { useProfile } from "@/hooks/useProfile";
 import { PageLoadingState } from "@/lib/page-utils";
+import { getRoleColors } from "@/lib/theme/role-colors";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -113,21 +115,25 @@ function FAQAccordion({
   onToggle: () => void;
 }) {
   return (
-    <div className="border border-gray-200 rounded-lg mb-3 overflow-hidden">
+    <div className="border border-[#E1E4EA] rounded-[12px] mb-3 overflow-hidden">
       <button
         onClick={onToggle}
-        className="w-full px-5 py-4 text-left bg-white hover:bg-gray-50 flex justify-between items-center transition-colors"
+        className="w-full px-5 py-4 text-left bg-white hover:bg-[#F5F5F5] flex justify-between items-center transition-colors"
       >
-        <span className="font-medium text-gray-900">{item.question}</span>
+        <span className="text-[13px] font-medium font-inter-tight text-black">
+          {item.question}
+        </span>
         {isOpen ? (
-          <ChevronUp className="w-5 h-5 text-gray-500 flex-shrink-0" />
+          <ChevronUp className="w-5 h-5 text-[#525866] flex-shrink-0" />
         ) : (
-          <ChevronDown className="w-5 h-5 text-gray-500 flex-shrink-0" />
+          <ChevronDown className="w-5 h-5 text-[#525866] flex-shrink-0" />
         )}
       </button>
       {isOpen && (
-        <div className="px-5 py-4 bg-gray-50 border-t border-gray-200">
-          <p className="text-gray-600 text-sm leading-relaxed">{item.answer}</p>
+        <div className="px-5 py-4 bg-[#F5F5F5] border-t border-[#E1E4EA]">
+          <p className="text-[13px] font-inter-tight text-[#525866] leading-relaxed">
+            {item.answer}
+          </p>
         </div>
       )}
     </div>
@@ -135,6 +141,8 @@ function FAQAccordion({
 }
 
 function ContactForm() {
+  const { activeRole } = useProfile();
+  const roleColors = getRoleColors(activeRole);
   const [formData, setFormData] = useState({
     subject: "",
     message: "",
@@ -166,7 +174,10 @@ function ContactForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <Label htmlFor="subject" className="text-sm font-medium text-gray-700">
+        <Label
+          htmlFor="subject"
+          className="text-[12px] font-medium font-inter-tight text-[#525866]"
+        >
           Subject
         </Label>
         <Input
@@ -180,7 +191,10 @@ function ContactForm() {
         />
       </div>
       <div>
-        <Label htmlFor="message" className="text-sm font-medium text-gray-700">
+        <Label
+          htmlFor="message"
+          className="text-[12px] font-medium font-inter-tight text-[#525866]"
+        >
           Message
         </Label>
         <Textarea
@@ -197,7 +211,8 @@ function ContactForm() {
       <Button
         type="submit"
         disabled={mutation.isPending}
-        className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+        className="w-full text-white hover:opacity-90"
+        style={{ backgroundColor: roleColors.primary }}
       >
         {mutation.isPending ? (
           <>
@@ -217,6 +232,8 @@ function ContactForm() {
 
 export default function SupportPage() {
   const hasAccess = useRequireRole(["talent", "recruiter", "mentor"]);
+  const { activeRole } = useProfile();
+  const roleColors = getRoleColors(activeRole);
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
 
   if (!hasAccess) {
@@ -224,104 +241,100 @@ export default function SupportPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-16">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            How can we help you?
-          </h1>
-          <p className="text-lg text-purple-100 max-w-2xl">
-            Find answers to common questions or get in touch with our support
-            team.
-          </p>
-        </div>
+    <div className="h-screen bg-white flex flex-col">
+      <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+        <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px]">
+          Support
+        </h1>
+        <p className="text-[13px] font-inter-tight text-[#525866] mt-2">
+          Find answers or get in touch with our support team
+        </p>
       </div>
 
-      <div className="container mx-auto px-4 py-12">
-        {/* Help Categories */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-          {helpCategories.map((category, index) => (
-            <Link
-              key={index}
-              href={category.link}
-              className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-200 transition-all group"
-            >
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 mb-4 group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                {category.icon}
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-1">
-                {category.title}
-              </h3>
-              <p className="text-sm text-gray-500">{category.description}</p>
-            </Link>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* FAQ Section */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">
-                Frequently Asked Questions
-              </h2>
-              <div>
-                {faqData.map((item, index) => (
-                  <FAQAccordion
-                    key={index}
-                    item={item}
-                    isOpen={openFAQ === index}
-                    onToggle={() =>
-                      setOpenFAQ(openFAQ === index ? null : index)
-                    }
-                  />
-                ))}
-              </div>
-            </div>
+      <div className="flex-1 overflow-hidden">
+        <div className="h-full overflow-y-auto p-4 md:p-6 space-y-6">
+          {/* Help Categories */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {helpCategories.map((category, index) => (
+              <Link
+                key={index}
+                href={category.link}
+                className="border border-[#E1E4EA] rounded-[12px] p-4 hover:bg-[#F5F5F5] transition-colors"
+              >
+                <div
+                  className="w-10 h-10 rounded-[10px] flex items-center justify-center mb-3"
+                  style={{ backgroundColor: `${roleColors.primary}15` }}
+                >
+                  <span style={{ color: roleColors.primary }}>
+                    {category.icon}
+                  </span>
+                </div>
+                <h3 className="text-[13px] font-medium font-inter-tight text-black mb-1">
+                  {category.title}
+                </h3>
+                <p className="text-[11px] font-inter-tight text-[#525866]">
+                  {category.description}
+                </p>
+              </Link>
+            ))}
           </div>
 
-          {/* Contact Section */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-4">
-              <h2 className="text-xl font-bold text-gray-900 mb-2">
-                Contact Support
-              </h2>
-              <p className="text-sm text-gray-500 mb-6">
-                Can't find what you're looking for? Send us a message and we'll
-                get back to you.
-              </p>
-              <ContactForm />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* FAQ Section */}
+            <div className="lg:col-span-2">
+              <div className="border border-[#E1E4EA] rounded-[16px] bg-white p-5">
+                <h2 className="text-[15px] font-medium font-inter-tight text-black mb-4">
+                  Frequently Asked Questions
+                </h2>
+                <div>
+                  {faqData.map((item, index) => (
+                    <FAQAccordion
+                      key={index}
+                      item={item}
+                      isOpen={openFAQ === index}
+                      onToggle={() =>
+                        setOpenFAQ(openFAQ === index ? null : index)
+                      }
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
 
-              <div className="mt-6 pt-6 border-t border-gray-100">
-                <p className="text-sm font-medium text-gray-700 mb-3">
-                  Other ways to reach us:
+            {/* Contact Section */}
+            <div className="lg:col-span-1">
+              <div className="border border-[#E1E4EA] rounded-[16px] bg-white p-5">
+                <h2 className="text-[15px] font-medium font-inter-tight text-black mb-2">
+                  Contact Support
+                </h2>
+                <p className="text-[12px] font-inter-tight text-[#525866] mb-4">
+                  Can't find what you're looking for? Send us a message and
+                  we'll get back to you.
                 </p>
-                <div className="space-y-2">
-                  <a
-                    href="mailto:support@talent.ng"
-                    className="flex items-center gap-2 text-sm text-gray-600 hover:text-purple-600 transition-colors"
-                  >
-                    <Mail className="w-4 h-4" />
-                    support@talent.ng
-                  </a>
-                  <p className="flex items-center gap-2 text-sm text-gray-600">
-                    <MessageCircle className="w-4 h-4" />
-                    Live chat (9am - 6pm WAT)
+                <ContactForm />
+
+                <div className="mt-4 pt-4 border-t border-[#E1E4EA]">
+                  <p className="text-[12px] font-medium font-inter-tight text-black mb-3">
+                    Other ways to reach us:
                   </p>
+                  <div className="space-y-2">
+                    <a
+                      href="mailto:support@talent.ng"
+                      className="flex items-center gap-2 text-[12px] font-inter-tight text-[#525866] hover:opacity-70 transition-opacity"
+                      style={{ color: roleColors.primary }}
+                    >
+                      <Mail className="w-4 h-4" />
+                      support@talent.ng
+                    </a>
+                    <p className="flex items-center gap-2 text-[12px] font-inter-tight text-[#525866]">
+                      <MessageCircle className="w-4 h-4" />
+                      Live chat (9am - 6pm WAT)
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Back Link */}
-        <div className="mt-12 text-center">
-          <Link
-            href="/dashboard"
-            className="text-purple-600 hover:text-purple-700 font-medium"
-          >
-            ← Back to Dashboard
-          </Link>
         </div>
       </div>
     </div>
