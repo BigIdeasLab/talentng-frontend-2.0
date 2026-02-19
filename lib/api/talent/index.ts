@@ -162,7 +162,42 @@ export async function deleteGalleryItem(
 }
 
 /**
- * 10. List All Talent Profiles
+ * 10. List All Gallery Items
+ * GET /talent/gallery
+ */
+export async function getGalleryItems(): Promise<GalleryItem[]> {
+  return apiClient<GalleryItem[]>("/talent/gallery", {
+    method: "GET",
+  });
+}
+
+/**
+ * 11. Get Single Gallery Item
+ * GET /talent/gallery/:id
+ */
+export async function getGalleryItem(itemId: string): Promise<GalleryItem> {
+  return apiClient<GalleryItem>(`/talent/gallery/${itemId}`, {
+    method: "GET",
+  });
+}
+
+/**
+ * 11. Update Gallery Item
+ * PATCH /talent/gallery/:id
+ * Updates title, description, and/or images
+ */
+export async function updateGalleryItem(
+  itemId: string,
+  data: { title?: string; description?: string; images?: string[] },
+): Promise<TalentProfile> {
+  return apiClient<TalentProfile>(`/talent/gallery/${itemId}`, {
+    method: "PATCH",
+    body: data,
+  });
+}
+
+/**
+ * 13. List All Talent Profiles
  * GET /talent
  */
 export async function listTalentProfiles(

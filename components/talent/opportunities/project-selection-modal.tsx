@@ -45,7 +45,9 @@ export function ProjectSelectionModal({
       setIsLoading(true);
       setError(null);
       try {
-        const profile = await getCurrentProfile();
+        const response = await getCurrentProfile();
+        // API returns { profile: { gallery: [...] } } wrapper
+        const profile = (response as any).profile || response;
         setProjects(profile.gallery || []);
       } catch (err) {
         const message =
@@ -67,7 +69,7 @@ export function ProjectSelectionModal({
     const project: Project = {
       id: galleryItem.id,
       title: galleryItem.title,
-      image: galleryItem.url,
+      image: galleryItem.images?.[0] || (galleryItem as any).url || "",
       tags: galleryItem.description ? [galleryItem.description] : [],
     };
 
@@ -124,7 +126,7 @@ export function ProjectSelectionModal({
         const newProject: Project = {
           id: newItem.id,
           title: newItem.title,
-          image: newItem.url,
+          image: newItem.images?.[0] || (newItem as any).url || "",
           tags: newItem.description ? [newItem.description] : [],
         };
         if (tempSelected.length < 3) {
@@ -383,7 +385,7 @@ export function ProjectSelectionModal({
                     <div className="flex items-center gap-[12px]">
                       {/* Project Image */}
                       <img
-                        src={galleryItem.url}
+                        src={galleryItem.images?.[0] || (galleryItem as any).url || ""}
                         alt={galleryItem.title}
                         className="w-[124px] h-[93px] object-cover rounded-[7px] flex-shrink-0"
                       />

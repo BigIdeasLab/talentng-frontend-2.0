@@ -2,15 +2,18 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Briefcase, Star } from "lucide-react";
+import { Briefcase, Star, MoreVertical, Loader } from "lucide-react";
 import { useToast } from "@/hooks";
 import { EmptyState } from "./EmptyState";
 import { useMyServices } from "@/hooks/useTalentApi";
+import { deleteService } from "@/lib/api/talent";
 import type { Service } from "@/lib/api/talent-service";
 
 interface ServicesGridProps {
   onServiceClick?: (service: Service) => void;
   onAddService?: () => void;
+  onEditService?: (service: Service) => void;
+  onServiceDeleted?: () => void;
   refreshTrigger?: number;
   cachedServices?: Service[];
   onServicesLoaded?: (services: Service[]) => void;
@@ -24,6 +27,8 @@ const PLACEHOLDER_IMAGE =
 export function ServicesGrid({
   onServiceClick,
   onAddService,
+  onEditService,
+  onServiceDeleted,
   refreshTrigger,
   cachedServices = [],
   onServicesLoaded,
@@ -41,6 +46,36 @@ export function ServicesGrid({
     parentIsLoading && cachedServices.length === 0,
   );
   const [error, setError] = useState<string | null>(null);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const handleDelete = async (serviceId: string) => {
+    setOpenMenuId(null);
+
+    if (!confirm("Are you sure you want to delete this service?")) {
+      return;
+    }
+
+    setDeletingId(serviceId);
+    try {
+      await deleteService(serviceId);
+      setServices((prev) => prev.filter((s) => s.id !== serviceId));
+      toast({
+        title: "Service deleted",
+        description: "The service has been removed.",
+      });
+      onServiceDeleted?.();
+    } catch (err) {
+      toast({
+        title: "Error",
+        description:
+          err instanceof Error ? err.message : "Failed to delete service",
+        variant: "destructive",
+      });
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   useEffect(() => {
     if (hookServices) {
@@ -128,34 +163,101 @@ export function ServicesGrid({
     <div className="w-full px-[15px] py-[15px]">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[10px] gap-y-[20px]">
         {services.map((service) => (
-          <button
+          <div
             key={service.id}
-            onClick={() => onServiceClick?.(service)}
-            className="group flex flex-col items-start gap-[8px] text-left hover:opacity-80 transition-opacity"
+            className="group relative flex flex-col items-start gap-[8px] text-left"
           >
             {/* Service Image */}
             <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-100">
-              {service.images && service.images.length > 0 ? (
+              <button
+                onClick={() => onServiceClick?.(service)}
+                className="relative w-full h-full"
+              >
                 <Image
-                  src={service.images[0]}
+                  src={service.images?.[0] || PLACEHOLDER_IMAGE}
                   alt={service.title}
                   fill
-                  className="object-cover"
+                  className="object-cover group-hover:scale-105 transition-transform duration-200"
                   unoptimized
                 />
-              ) : (
-                <Image
-                  src={PLACEHOLDER_IMAGE}
-                  alt={service.title}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
-              )}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200" />
+              </button>
+
+              {/* 3-Dot Menu Button */}
+              <div className="absolute top-2 right-2">
+                <button
+                  onClick={() =>
+                    setOpenMenuId(openMenuId === service.id ? null : service.id)
+                  }
+                  className="p-2 bg-white text-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100"
+                >
+                  <MoreVertical className="w-4 h-4" />
+                </button>
+
+                {/* Dropdown Menu */}
+                {openMenuId === service.id && (
+                  <div className="absolute top-full right-0 mt-1 bg-white rounded shadow-lg border border-gray-200 z-40 min-w-[120px]">
+                    <button
+                      onClick={() => {
+                        setOpenMenuId(null);
+                        onServiceClick?.(service);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors border-b border-gray-200"
+                    >
+                      View
+                    </button>
+                    <button
+                      onClick={() => {
+                        setOpenMenuId(null);
+                        onEditService?.(service);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors border-b border-gray-200"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(service.id)}
+                      disabled={deletingId === service.id}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50 flex items-center gap-2"
+                    >
+                      {deletingId === service.id ? (
+                        <>
+                          <Loader className="w-3 h-3 animate-spin" />
+                          Deleting...
+                        </>
+                      ) : (
+                        "Delete"
+                      )}
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Service Details */}
-            <div className="flex flex-col items-start gap-[12px] w-full">
+            <button
+              onClick={() => onServiceClick?.(service)}
+              className="flex flex-col items-start gap-[12px] w-full hover:opacity-80 transition-opacity"
+            >
+              {/* Title */}
+              <h3 className="text-[15px] font-medium leading-normal font-inter-tight text-black">
+                {service.title}
+              </h3>
+
+              {/* Price */}
+              {service.price && (
+                <div className="flex items-center gap-[4px]">
+                  <Briefcase
+                    className="w-[16px] h-[16px]"
+                    strokeWidth={1.2}
+                    color="rgba(0, 0, 0, 0.3)"
+                  />
+                  <span className="text-[13px] font-light leading-normal font-inter-tight text-[rgba(0,0,0,0.30)]">
+                    ₦{Number(service.price).toLocaleString()}
+                  </span>
+                </div>
+              )}
+
               {/* Tags */}
               {service.tags && service.tags.length > 0 && (
                 <div className="flex flex-wrap items-center gap-[4px]">
@@ -179,11 +281,6 @@ export function ServicesGrid({
                 </div>
               )}
 
-              {/* Title */}
-              <h3 className="text-[15px] font-medium leading-normal font-inter-tight text-black">
-                {service.title}
-              </h3>
-
               {/* Rating */}
               {service.totalReviews > 0 && (
                 <div className="flex items-center gap-[4px]">
@@ -198,22 +295,8 @@ export function ServicesGrid({
                   </span>
                 </div>
               )}
-
-              {/* Price */}
-              {service.price && (
-                <div className="flex items-center gap-[4px]">
-                  <Briefcase
-                    className="w-[16px] h-[16px]"
-                    strokeWidth={1.2}
-                    color="rgba(0, 0, 0, 0.3)"
-                  />
-                  <span className="text-[13px] font-light leading-normal font-inter-tight text-[rgba(0,0,0,0.30)]">
-                    {service.price}
-                  </span>
-                </div>
-              )}
-            </div>
-          </button>
+            </button>
+          </div>
         ))}
       </div>
     </div>

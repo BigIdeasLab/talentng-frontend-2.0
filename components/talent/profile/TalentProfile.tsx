@@ -12,7 +12,7 @@ import { OpportunitiesGrid } from "@/components/talent/profile/components/Opport
 import { CreateServiceModal } from "@/components/talent/profile/components/CreateServiceModal";
 import { UploadWorksModal } from "@/components/talent/profile/components/UploadWorksModal";
 import { ServiceDetailView } from "./components/ServiceDetailView";
-import type { DashboardStats, Service } from "@/lib/api/talent/types";
+import type { DashboardStats, Service, GalleryItem } from "@/lib/api/talent/types";
 import type { UIProfileData } from "@/lib/profileMapper";
 import type { Opportunity } from "@/lib/api/opportunities/types";
 
@@ -89,8 +89,9 @@ export function TalentProfile({
   const [servicesLoading, setServicesLoading] = useState(
     !initialServices || initialServices.length === 0,
   );
-  const [cachedWorks, setCachedWorks] = useState<any[]>([]);
-  const [worksLoading, setWorksLoading] = useState(true);
+  const [cachedWorks, setCachedWorks] = useState<GalleryItem[]>([]);
+  const [editingWork, setEditingWork] = useState<GalleryItem | null>(null);
+  const [editingService, setEditingService] = useState<Service | null>(null);
   const [cachedRecommendations, setCachedRecommendations] = useState<any[]>(
     initialRecommendations || [],
   );
@@ -112,14 +113,6 @@ export function TalentProfile({
       setProfileData(initialProfileData);
     }
   }, [initialProfileData]);
-
-  useEffect(() => {
-    // Initialize cached works from profileData.gallery
-    if (profileData?.gallery && profileData.gallery.length > 0) {
-      setCachedWorks(profileData.gallery);
-    }
-    setWorksLoading(false);
-  }, [profileData?.gallery]);
 
   useEffect(() => {
     // Scroll to top when tab changes
@@ -159,16 +152,20 @@ export function TalentProfile({
 
   const handleCloseUploadWorksModal = () => {
     setIsUploadWorksModalOpen(false);
+    setEditingWork(null);
   };
 
-  const handleWorksUploaded = (message?: string, gallery?: any[]) => {
-    if (gallery && gallery.length > 0) {
-      setCachedWorks(gallery);
-    }
+  const handleWorksUploaded = () => {
+    setWorksRefreshTrigger((prev) => prev + 1);
   };
 
   const handleWorksDeleted = () => {
     setWorksRefreshTrigger((prev) => prev + 1);
+  };
+
+  const handleEditWork = (item: GalleryItem) => {
+    setEditingWork(item);
+    setIsUploadWorksModalOpen(true);
   };
 
   const handleOpenCreateServiceModal = () => {
@@ -177,6 +174,12 @@ export function TalentProfile({
 
   const handleCloseCreateServiceModal = () => {
     setIsCreateServiceModalOpen(false);
+    setEditingService(null);
+  };
+
+  const handleEditService = (service: Service) => {
+    setEditingService(service);
+    setIsCreateServiceModalOpen(true);
   };
 
   const handleServiceCreated = (message?: string, services?: any[]) => {
@@ -267,13 +270,12 @@ export function TalentProfile({
           {/* My Works Tab */}
           {activeTab === "works" && (
             <WorksGrid
-              items={
-                cachedWorks.length > 0 ? cachedWorks : profileData.gallery || []
-              }
               onAddWork={handleOpenUploadWorksModal}
-              onItemClick={() => {}}
               onItemDeleted={handleWorksDeleted}
-              isLoading={worksLoading && cachedWorks.length === 0}
+              onEditWork={handleEditWork}
+              refreshTrigger={worksRefreshTrigger}
+              cachedItems={cachedWorks}
+              onItemsLoaded={setCachedWorks}
             />
           )}
 
@@ -282,6 +284,8 @@ export function TalentProfile({
             <ServicesGrid
               onAddService={handleOpenCreateServiceModal}
               onServiceClick={setSelectedService}
+              onEditService={handleEditService}
+              onServiceDeleted={() => setServiceRefreshTrigger((prev) => prev + 1)}
               refreshTrigger={serviceRefreshTrigger}
               cachedServices={cachedServices}
               onServicesLoaded={setCachedServices}
@@ -368,6 +372,7 @@ export function TalentProfile({
         isOpen={isUploadWorksModalOpen}
         onClose={handleCloseUploadWorksModal}
         onSuccess={handleWorksUploaded}
+        editItem={editingWork ? { id: editingWork.id, title: editingWork.title, description: editingWork.description || "", images: editingWork.images || [(editingWork as any).url].filter(Boolean) } : null}
       />
 
       {/* Create Service Modal */}
@@ -375,6 +380,7 @@ export function TalentProfile({
         isOpen={isCreateServiceModalOpen}
         onClose={handleCloseCreateServiceModal}
         onSuccess={handleServiceCreated}
+        editService={editingService}
       />
 
       {/* Service Detail View */}

@@ -6,34 +6,57 @@ import { MoreVertical, Loader } from "lucide-react";
 import { useToast } from "@/hooks";
 import { EmptyState } from "./EmptyState";
 import { WorkDetailView } from "./WorkDetailView";
-import { deleteGalleryItem } from "@/lib/api/talent";
+import { deleteGalleryItem, getGalleryItems } from "@/lib/api/talent";
 import type { GalleryItem } from "@/lib/api/talent";
 
 interface WorksGridProps {
-  items?: GalleryItem[];
-  isLoading?: boolean;
   onItemClick?: (item: GalleryItem) => void;
   onAddWork?: () => void;
   onItemDeleted?: () => void;
+  onEditWork?: (item: GalleryItem) => void;
+  refreshTrigger?: number;
+  cachedItems?: GalleryItem[];
+  onItemsLoaded?: (items: GalleryItem[]) => void;
 }
 
 export function WorksGrid({
-  items = [],
-  isLoading = false,
   onItemClick,
   onAddWork,
   onItemDeleted,
+  onEditWork,
+  refreshTrigger,
+  cachedItems = [],
+  onItemsLoaded,
 }: WorksGridProps) {
   const { toast } = useToast();
-  const [displayItems, setDisplayItems] = useState<GalleryItem[]>([]);
+  const [displayItems, setDisplayItems] = useState<GalleryItem[]>(cachedItems);
+  const [loading, setLoading] = useState(cachedItems.length === 0);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
+  const fetchGallery = async (showLoading = true) => {
+    if (showLoading) setLoading(true);
+    try {
+      const gallery = await getGalleryItems();
+      setDisplayItems(gallery);
+      onItemsLoaded?.(gallery);
+    } catch {
+      // keep existing data on error
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    setDisplayItems(items);
-  }, [items]);
+    if (cachedItems.length > 0) {
+      // Have cache — refresh silently in the background
+      fetchGallery(false);
+    } else {
+      fetchGallery(true);
+    }
+  }, [refreshTrigger]);
 
   const handleDelete = async (itemId: string) => {
     setError(null);
@@ -46,7 +69,7 @@ export function WorksGrid({
     setDeletingId(itemId);
     try {
       await deleteGalleryItem(itemId);
-      setDisplayItems((prev) => prev.filter((item) => item.id !== itemId));
+      await fetchGallery();
       toast({
         title: "Success",
         description: "Work deleted successfully",
@@ -71,7 +94,7 @@ export function WorksGrid({
     setOpenMenuId(null);
   };
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="w-full h-64 flex items-center justify-center">
         <div className="animate-pulse text-gray-400">Loading portfolio...</div>
@@ -87,7 +110,7 @@ export function WorksGrid({
           <button
             onClick={() => {
               setError(null);
-              setDisplayItems(items);
+              fetchGallery();
             }}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
           >
@@ -111,24 +134,29 @@ export function WorksGrid({
 
   return (
     <>
-      <div className="w-full px-[20px] py-[20px]">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[15px] auto-rows-max">
-          {displayItems.map((item) => (
+      <div className="w-full px-[15px] py-[15px]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[10px] gap-y-[20px]">
+          {displayItems.map((item) => {
+            const imageUrl = item.images?.[0] || (item as any).url;
+            if (!imageUrl) return null;
+
+            return (
             <div
               key={item.id}
-              className="group relative w-full overflow-hidden rounded-lg bg-gray-100"
-              style={{
-                aspectRatio: "4/3",
-              }}
+              className="group flex flex-col"
             >
+              <div
+                className="relative w-full overflow-hidden rounded-lg bg-gray-100"
+                style={{ aspectRatio: "4/3" }}
+              >
               {/* Card Content - Clickable to view details */}
               <button
                 onClick={() => handleViewWork(item)}
                 className="relative w-full h-full overflow-hidden hover:shadow-lg transition-all duration-200"
               >
                 <Image
-                  src={item.url}
-                  alt={item.key || "Portfolio item"}
+                  src={imageUrl}
+                  alt={item.title || "Portfolio item"}
                   fill
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                   unoptimized
@@ -157,6 +185,15 @@ export function WorksGrid({
                       View
                     </button>
                     <button
+                      onClick={() => {
+                        setOpenMenuId(null);
+                        onEditWork?.(item);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors border-b border-gray-200"
+                    >
+                      Edit
+                    </button>
+                    <button
                       onClick={() => handleDelete(item.id)}
                       disabled={deletingId === item.id}
                       className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50 flex items-center gap-2"
@@ -173,8 +210,16 @@ export function WorksGrid({
                   </div>
                 )}
               </div>
+              </div>
+              {/* Title */}
+              {item.title && (
+                <p className="text-[14px] font-medium font-inter-tight text-black mt-2 truncate">
+                  {item.title}
+                </p>
+              )}
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -185,7 +230,7 @@ export function WorksGrid({
             id: selectedItem.id,
             title: selectedItem.title || "Untitled Work",
             description: selectedItem.description || "",
-            images: [selectedItem.url],
+            images: selectedItem.images || [(selectedItem as any).url].filter(Boolean),
             createdAt: selectedItem.createdAt,
           }}
           onClose={() => setSelectedItem(null)}

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Bookmark, Check } from "lucide-react";
 import { EmptyState } from "./EmptyState";
@@ -103,6 +104,7 @@ export function OpportunitiesGrid({
   onSaveToggle,
   onApplicationSubmitted,
 }: OpportunitiesGridProps) {
+  const router = useRouter();
   const { activeRole } = useProfile();
   const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as
     | "talent"
@@ -208,7 +210,7 @@ export function OpportunitiesGrid({
         title="No saved opportunities yet"
         description="Browse opportunities and save the ones that interest you. Build your wishlist here."
         buttonText="Discover Opportunities"
-        onButtonClick={onApply as any}
+        onButtonClick={() => router.push("/opportunities")}
       />
     );
   }

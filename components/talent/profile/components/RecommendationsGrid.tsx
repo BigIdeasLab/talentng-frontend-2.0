@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { EmptyState } from "./EmptyState";
 import { getTalentRecommendations } from "@/lib/api/talent";
@@ -68,18 +68,48 @@ export function RecommendationsGrid({
     externalIsLoading && cachedRecommendations.length === 0,
   );
   const [error, setError] = useState<string | null>(null);
+  const hasFetched = useRef(false);
 
-  useEffect(() => {}, [recommendations]);
+  // Keep callback refs stable to avoid re-triggering the effect
+  const onRecommendationsLoadedRef = useRef(onRecommendationsLoaded);
+  onRecommendationsLoadedRef.current = onRecommendationsLoaded;
+  const onLoadingChangeRef = useRef(onLoadingChange);
+  onLoadingChangeRef.current = onLoadingChange;
 
+  // Sync external/cached data when provided
   useEffect(() => {
+    if (cachedRecommendations && cachedRecommendations.length > 0) {
+      setRecommendations(cachedRecommendations);
+      setIsLoading(false);
+      onLoadingChangeRef.current?.(false);
+      hasFetched.current = true;
+    } else if (externalRecommendations && externalRecommendations.length > 0) {
+      setRecommendations(externalRecommendations);
+      setIsLoading(false);
+      onLoadingChangeRef.current?.(false);
+      hasFetched.current = true;
+    }
+  }, [cachedRecommendations, externalRecommendations]);
+
+  // Fetch from API only once if no data is provided
+  useEffect(() => {
+    if (hasFetched.current) return;
+
+    const hasCache = cachedRecommendations && cachedRecommendations.length > 0;
+    const hasExternal =
+      externalRecommendations && externalRecommendations.length > 0;
+    if (hasCache || hasExternal) return;
+
+    hasFetched.current = true;
+
     const fetchRecommendations = async () => {
       setIsLoading(true);
       try {
         const apiRecs = await getTalentRecommendations();
         const mapped = apiRecs.map(mapApiRecommendationToUI);
         setRecommendations(mapped);
-        onRecommendationsLoaded?.(mapped);
-        onLoadingChange?.(false);
+        onRecommendationsLoadedRef.current?.(mapped);
+        onLoadingChangeRef.current?.(false);
       } catch (err) {
         const errorMsg =
           err instanceof Error
@@ -90,38 +120,15 @@ export function RecommendationsGrid({
           err,
         );
         setError(errorMsg);
-        onLoadingChange?.(false);
+        onLoadingChangeRef.current?.(false);
       } finally {
         setIsLoading(false);
       }
     };
 
-    // Use cached data if available
-    if (cachedRecommendations && cachedRecommendations.length > 0) {
-      console.log("[RecommendationsGrid] Using cached recommendations");
-      setRecommendations(cachedRecommendations);
-      setIsLoading(false);
-      onLoadingChange?.(false);
-      return;
-    }
-
-    if (externalRecommendations && externalRecommendations.length > 0) {
-      console.log("[RecommendationsGrid] Using external recommendations");
-      setRecommendations(externalRecommendations);
-      setIsLoading(false);
-      onLoadingChange?.(false);
-      return;
-    }
-
-    // Fetch if no data is provided
-    console.log("[RecommendationsGrid] No cached data, fetching from API");
     fetchRecommendations();
-  }, [
-    cachedRecommendations,
-    externalRecommendations,
-    onRecommendationsLoaded,
-    onLoadingChange,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (isLoading) {
     return (
@@ -155,15 +162,6 @@ export function RecommendationsGrid({
     <div className="w-full px-[15px] py-[15px]">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-[8px]">
         {recommendations.map((recommendation, idx) => {
-          console.log(
-            `[RecommendationsGrid] Rendering recommendation ${idx}:`,
-            recommendation,
-          );
-          console.log(
-            `[RecommendationsGrid] companyImage for ${idx}:`,
-            recommendation.companyImage,
-          );
-
           return (
             <button
               key={recommendation.id}

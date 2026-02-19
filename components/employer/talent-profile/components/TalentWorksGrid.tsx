@@ -36,8 +36,8 @@ export function TalentWorksGrid({
               className="relative w-full h-full overflow-hidden hover:shadow-lg transition-all duration-200"
             >
               <Image
-                src={item.url}
-                alt={item.key || "Portfolio item"}
+                src={item.images?.[0] || (item as any).url || ""}
+                alt={item.title || "Portfolio item"}
                 fill
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                 unoptimized

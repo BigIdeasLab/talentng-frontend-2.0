@@ -1,21 +1,22 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { X, Loader } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { uploadGalleryImages } from "@/lib/api/talent";
+import { uploadGalleryImages, updateGalleryItem } from "@/lib/api/talent";
 import type { TalentProfile } from "@/lib/api/talent";
 
 interface UploadWorksModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: (message?: string, gallery?: any[]) => void;
+  editItem?: { id: string; title: string; description: string; images: string[] } | null;
 }
 
 export function UploadWorksModal({
   isOpen,
   onClose,
   onSuccess,
+  editItem,
 }: UploadWorksModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +27,18 @@ export function UploadWorksModal({
     title: "",
     description: "",
   });
+  const [existingImages, setExistingImages] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editItem) {
+      const imgs = editItem.images || [];
+      setFormData({ title: editItem.title || "", description: editItem.description || "" });
+      setExistingImages(imgs);
+      setPreviewUrls([]);
+      setSelectedFiles([]);
+    }
+  }, [editItem]);
 
   const handleFormChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -48,9 +60,9 @@ export function UploadWorksModal({
         file.type === "application/pdf",
     );
 
-    const totalFiles = selectedFiles.length + newFiles.length;
-    if (totalFiles > 10) {
-      setError("Maximum 10 files allowed");
+    const totalFiles = existingImages.length + selectedFiles.length + newFiles.length;
+    if (totalFiles > 4) {
+      setError("Maximum 4 files allowed");
       return;
     }
 
@@ -82,6 +94,10 @@ export function UploadWorksModal({
     handleFileSelect(e.dataTransfer.files);
   };
 
+  const handleRemoveExisting = (index: number) => {
+    setExistingImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleRemoveFile = (index: number) => {
     setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
     setPreviewUrls((prev) => {
@@ -94,18 +110,45 @@ export function UploadWorksModal({
     e.preventDefault();
     setError(null);
 
-    if (selectedFiles.length === 0) {
+    if (selectedFiles.length === 0 && !editItem) {
       setError("Please select at least one file to upload");
       return;
     }
 
+    // Warn if all images would be removed during edit
+    if (editItem && existingImages.length === 0 && selectedFiles.length === 0) {
+      const confirmed = confirm(
+        "Removing all images will delete this work. Do you want to continue?",
+      );
+      if (!confirmed) return;
+    }
+
     setIsLoading(true);
     try {
-      const result = await uploadGalleryImages(
-        selectedFiles,
-        formData.title,
-        formData.description,
-      );
+      let result: TalentProfile;
+
+      if (editItem) {
+        if (existingImages.length === 0 && selectedFiles.length === 0) {
+          // User confirmed deletion — delete the gallery item
+          const { deleteGalleryItem } = await import("@/lib/api/talent");
+          await deleteGalleryItem(editItem.id);
+          onClose();
+          onSuccess?.("Work deleted successfully.", []);
+          return;
+        }
+
+        result = await updateGalleryItem(editItem.id, {
+          title: formData.title,
+          description: formData.description,
+          images: existingImages,
+        });
+      } else {
+        result = await uploadGalleryImages(
+          selectedFiles,
+          formData.title,
+          formData.description,
+        );
+      }
 
       setSelectedFiles([]);
       setPreviewUrls([]);
@@ -113,7 +156,7 @@ export function UploadWorksModal({
 
       onClose();
       onSuccess?.(
-        `Successfully uploaded ${selectedFiles.length} work${selectedFiles.length > 1 ? "s" : ""}!`,
+        editItem ? "Work updated successfully!" : `Successfully uploaded ${selectedFiles.length} work${selectedFiles.length > 1 ? "s" : ""}!`,
         result.gallery || [],
       );
     } catch (err) {
@@ -130,6 +173,7 @@ export function UploadWorksModal({
     previewUrls.forEach((url) => URL.revokeObjectURL(url));
     setSelectedFiles([]);
     setPreviewUrls([]);
+    setExistingImages([]);
     setFormData({ title: "", description: "" });
     setError(null);
     onClose();
@@ -143,7 +187,7 @@ export function UploadWorksModal({
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-4 border-b border-[#E1E4EA] flex-shrink-0">
           <h2 className="text-xl font-semibold font-inter-tight text-black capitalize leading-4">
-            Add Work to Portfolio
+            {editItem ? "Edit Work" : "Add Work to Portfolio"}
           </h2>
           <button
             onClick={handleClose}
@@ -185,7 +229,7 @@ export function UploadWorksModal({
                   onDrop={handleDrop}
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  {selectedFiles.length === 0 ? (
+                  {existingImages.length === 0 && selectedFiles.length === 0 ? (
                     <div className="flex flex-col items-center gap-2">
                       <svg
                         width="80"
@@ -203,8 +247,24 @@ export function UploadWorksModal({
                     </div>
                   ) : (
                     <div className="grid grid-cols-2 gap-1.5 p-2 w-full h-full overflow-y-auto">
+                      {existingImages.map((url, idx) => (
+                        <div key={`existing-${idx}`} className="relative aspect-square">
+                          <img
+                            src={url}
+                            alt={`Existing ${idx + 1}`}
+                            className="w-full h-full object-cover rounded-[6px]"
+                          />
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); handleRemoveExisting(idx); }}
+                            className="absolute top-1 right-1 p-0.5 bg-black/50 hover:bg-black/70 rounded-full transition-colors"
+                          >
+                            <X className="w-3 h-3 text-white" />
+                          </button>
+                        </div>
+                      ))}
                       {selectedFiles.map((file, idx) => (
-                        <div key={idx} className="relative aspect-square">
+                        <div key={`new-${idx}`} className="relative aspect-square">
                           {file.type.startsWith("image/") ? (
                             <img
                               src={previewUrls[idx]}
@@ -224,6 +284,13 @@ export function UploadWorksModal({
                               </span>
                             </div>
                           )}
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); handleRemoveFile(idx); }}
+                            className="absolute top-1 right-1 p-0.5 bg-black/50 hover:bg-black/70 rounded-full transition-colors"
+                          >
+                            <X className="w-3 h-3 text-white" />
+                          </button>
                         </div>
                       ))}
                     </div>
@@ -234,7 +301,7 @@ export function UploadWorksModal({
                     multiple
                     accept="image/*,video/*,.pdf"
                     onChange={handleInputChange}
-                    disabled={isLoading || selectedFiles.length >= 10}
+                    disabled={isLoading || existingImages.length + selectedFiles.length >= 4}
                     className="hidden"
                   />
                 </div>
@@ -247,13 +314,13 @@ export function UploadWorksModal({
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
                       className="text-[#5C30FF] underline hover:no-underline"
-                      disabled={isLoading || selectedFiles.length >= 10}
+                      disabled={isLoading || existingImages.length + selectedFiles.length >= 4}
                     >
                       browse
                     </button>
                   </div>
                   <p className="text-sm font-inter-tight text-black/30 leading-normal">
-                    Max 10 files (Images, Videos, PDFs)
+                    Max 4 files (Images, Videos, PDFs)
                   </p>
                 </div>
               </div>
@@ -318,7 +385,7 @@ export function UploadWorksModal({
                 {selectedFiles.length > 0 && (
                   <div className="flex flex-col gap-2">
                     <p className="text-[14px] font-inter-tight text-[#525866] leading-normal">
-                      Files ({selectedFiles.length}/10)
+                      Files ({existingImages.length + selectedFiles.length}/4)
                     </p>
                     <div className="flex flex-col gap-1.5 max-h-[330px] overflow-y-auto">
                       {selectedFiles.map((file, idx) => (
@@ -376,14 +443,16 @@ export function UploadWorksModal({
                   <button
                     type="button"
                     onClick={handleSubmit}
-                    disabled={isLoading || selectedFiles.length === 0}
+                    disabled={isLoading || (!editItem && selectedFiles.length === 0)}
                     className="flex-1 flex justify-center items-center gap-2 px-6 py-2.5 rounded-[8px] border border-[#5C30FF] bg-[#5C30FF] text-[13px] font-inter-tight text-white leading-normal transition-colors hover:bg-[#4a26cc] disabled:opacity-50"
                   >
                     {isLoading ? (
                       <>
                         <Loader className="w-3 h-3 animate-spin" />
-                        Uploading...
+                        {editItem ? "Saving..." : "Uploading..."}
                       </>
+                    ) : editItem ? (
+                      "Save Changes"
                     ) : (
                       `Upload ${selectedFiles.length} ${selectedFiles.length === 1 ? "File" : "Files"}`
                     )}

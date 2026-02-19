@@ -1,6 +1,7 @@
 "use client";
 
-import { X } from "lucide-react";
+import { useState } from "react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import type { Service } from "@/lib/api/talent-service";
 
@@ -16,13 +17,21 @@ export function ServiceDetailView({
   service,
   onClose,
 }: ServiceDetailViewProps) {
-  const mainImage = service.images?.[0] || PLACEHOLDER_IMAGE;
-  const thumbnails = service.images?.slice(1, 5) || [];
+  const images = service.images?.length ? service.images : [PLACEHOLDER_IMAGE];
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const goToPrev = () => {
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
 
   return (
-    <div className="fixed top-0 right-0 bottom-0 z-50 bg-white overflow-y-auto scrollbar-styled h-screen w-[calc(100%-80px)] md:w-[calc(100%-260px)] shadow-lg">
-      <div className="flex justify-center items-start bg-white min-h-screen">
-        <div className="w-full px-3 md:px-6 py-5 md:py-5">
+    <div className="fixed top-0 right-0 bottom-0 z-50 bg-white overflow-y-auto scrollbar-styled h-screen w-[calc(100%-80px)] md:w-[calc(100%-250px)]">
+      <div className="bg-white min-h-screen">
+        <div className="w-full px-4 md:px-8 pt-10 pb-10">
           {/* Close Button - Fixed Position */}
           <button
             onClick={onClose}
@@ -32,30 +41,89 @@ export function ServiceDetailView({
             <X className="w-5 h-5 text-gray-600" />
           </button>
 
-          {/* Content Container */}
-          <div className="flex flex-col gap-6 w-full max-w-[565px] mx-auto">
-            {/* Header Section */}
-            <div className="flex flex-col gap-4">
+          {/* Content Container — side-by-side on md+ */}
+          <div className="flex flex-col md:flex-row gap-6 w-full">
+            {/* Left — Image Carousel */}
+            <div className="w-full md:w-1/2 flex flex-col gap-4">
+              {/* Main Image with Arrows */}
+              <div className="relative w-full aspect-[565/425] rounded-[6px] overflow-hidden bg-gray-100 group">
+                <Image
+                  src={images[currentIndex]}
+                  alt={`${service.title} ${currentIndex + 1}`}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+
+                {/* Navigation Arrows — only show if more than 1 image */}
+                {images.length > 1 && (
+                  <>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); goToPrev(); }}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 bg-black/40 hover:bg-black/60 rounded-full transition-opacity opacity-0 group-hover:opacity-100"
+                      aria-label="Previous image"
+                    >
+                      <ChevronLeft className="w-5 h-5 text-white" />
+                    </button>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); goToNext(); }}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-black/40 hover:bg-black/60 rounded-full transition-opacity opacity-0 group-hover:opacity-100"
+                      aria-label="Next image"
+                    >
+                      <ChevronRight className="w-5 h-5 text-white" />
+                    </button>
+
+                    {/* Dot Indicators */}
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                      {images.map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={(e) => { e.stopPropagation(); setCurrentIndex(idx); }}
+                          className={`w-2 h-2 rounded-full transition-colors ${
+                            idx === currentIndex
+                              ? "bg-white"
+                              : "bg-white/50 hover:bg-white/75"
+                          }`}
+                          aria-label={`Go to image ${idx + 1}`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Thumbnail Strip */}
+              {images.length > 1 && (
+                <div className="flex items-start gap-1.5">
+                  {images.map((image, idx) => (
+                    <button
+                      key={idx}
+                      onClick={(e) => { e.stopPropagation(); setCurrentIndex(idx); }}
+                      className={`relative w-full aspect-[135/101] rounded-[4px] overflow-hidden bg-gray-100 transition-opacity ${
+                        idx === currentIndex
+                          ? "ring-2 ring-[#5C30FF] opacity-100"
+                          : "opacity-60 hover:opacity-100"
+                      }`}
+                    >
+                      <Image
+                        src={image}
+                        alt={`${service.title} thumbnail ${idx + 1}`}
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Right — Details */}
+            <div className="w-full md:w-1/2 min-w-0 flex flex-col gap-4">
               {/* Service Title */}
               <h1 className="text-[34px] font-semibold leading-normal font-inter-tight text-black">
                 {service.title}
               </h1>
-
-              {/* Tags */}
-              {service.tags && service.tags.length > 0 && (
-                <div className="flex flex-wrap items-start gap-x-1 gap-y-1.5">
-                  {service.tags.map((tag, idx) => (
-                    <div
-                      key={idx}
-                      className="flex px-3 py-2 justify-center items-center rounded-[24px] bg-[#F5F5F5]"
-                    >
-                      <span className="text-[12px] font-normal leading-[105%] text-center font-inter-tight text-black">
-                        {tag}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
 
               {/* Pricing */}
               {service.price && (
@@ -90,8 +158,24 @@ export function ServiceDetailView({
                     />
                   </svg>
                   <span className="text-[14px] font-light leading-normal font-inter-tight text-[#525866]">
-                    {service.price}
+                    ₦{Number(service.price).toLocaleString()}
                   </span>
+                </div>
+              )}
+
+              {/* Tags */}
+              {service.tags && service.tags.length > 0 && (
+                <div className="flex flex-wrap items-start gap-x-1 gap-y-1.5">
+                  {service.tags.map((tag, idx) => (
+                    <div
+                      key={idx}
+                      className="flex px-3 py-2 justify-center items-center rounded-[24px] bg-[#F5F5F5]"
+                    >
+                      <span className="text-[12px] font-normal leading-[105%] text-center font-inter-tight text-black">
+                        {tag}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               )}
 
@@ -122,58 +206,13 @@ export function ServiceDetailView({
                   Get in touch
                 </span>
               </button>
-            </div>
 
-            {/* Images Section */}
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col gap-4">
-                {/* Main Image */}
-                <div className="relative w-full aspect-[565/425] rounded-[6px] overflow-hidden bg-gray-100">
-                  <Image
-                    src={mainImage}
-                    alt={service.title}
-                    fill
-                    className="object-cover"
-                    unoptimized
-                  />
-                </div>
-
-                {/* Thumbnail Images */}
-                {thumbnails.length > 0 && (
-                  <div className="flex items-start gap-1.5">
-                    {thumbnails.map((image, idx) => (
-                      <div
-                        key={idx}
-                        className="relative w-full aspect-[135/101] rounded-[4px] overflow-hidden bg-gray-100"
-                      >
-                        <Image
-                          src={image}
-                          alt={`${service.title} thumbnail ${idx + 1}`}
-                          fill
-                          className="object-cover"
-                          unoptimized
-                        />
-                      </div>
-                    ))}
-                    {/* Fill remaining slots with placeholder if less than 4 thumbnails */}
-                    {Array.from({
-                      length: Math.max(0, 4 - thumbnails.length),
-                    }).map((_, idx) => (
-                      <div
-                        key={`placeholder-${idx}`}
-                        className="relative w-full aspect-[135/101] rounded-[4px] overflow-hidden bg-gray-100"
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* About Service Section */}
-              <div className="flex flex-col gap-4">
+              {/* About Service */}
+              <div className="flex flex-col gap-4 mt-2">
                 <h2 className="text-[21px] font-semibold leading-normal font-inter-tight text-black">
                   About Service
                 </h2>
-                <p className="text-[15px] font-normal leading-[22px] font-inter-tight text-black whitespace-pre-wrap">
+                <p className="text-[15px] font-normal leading-[22px] font-inter-tight text-black whitespace-pre-wrap break-words overflow-hidden">
                   {service.about}
                 </p>
               </div>

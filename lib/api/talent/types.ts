@@ -9,13 +9,10 @@ export interface PortfolioItem {
 
 export interface GalleryItem {
   id: string;
-  key: string;
-  url: string;
-  mime: string;
-  sizeBytes: string;
   title: string;
   description: string;
   createdAt: string;
+  images: string[];
 }
 
 export interface DashboardStats {

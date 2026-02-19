@@ -1,15 +1,17 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { X, Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCreateService, useMyServices } from "@/hooks/useTalentApi";
+import { updateService } from "@/lib/api/talent";
 import type { CreateServiceInput, Service } from "@/lib/api/talent-service";
 
 interface CreateServiceModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: (message?: string, services?: Service[]) => void;
+  editService?: Service | null;
 }
 
 const COMMON_TAGS = [
@@ -33,6 +35,7 @@ export function CreateServiceModal({
   isOpen,
   onClose,
   onSuccess,
+  editService,
 }: CreateServiceModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -51,6 +54,18 @@ export function CreateServiceModal({
   const createServiceMutation = useCreateService();
   const { refetch } = useMyServices();
 
+  useEffect(() => {
+    if (editService) {
+      setFormData({
+        title: editService.title || "",
+        about: editService.about || "",
+        price: editService.price || "",
+      });
+      setImages(editService.images || []);
+      setSelectedTags(editService.tags || []);
+    }
+  }, [editService]);
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -62,7 +77,7 @@ export function CreateServiceModal({
   };
 
   const handleAddImage = (file: File) => {
-    if (images.length >= 5) return;
+    if (images.length >= 4) return;
 
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -137,7 +152,11 @@ export function CreateServiceModal({
         tags: selectedTags.length > 0 ? selectedTags : undefined,
       };
 
-      await createServiceMutation.mutateAsync(serviceData);
+      if (editService) {
+        await updateService(editService.id, serviceData);
+      } else {
+        await createServiceMutation.mutateAsync(serviceData);
+      }
 
       const { data: updatedServices } = await refetch();
 
@@ -147,14 +166,16 @@ export function CreateServiceModal({
       setNewTag("");
       onClose();
       onSuccess?.(
-        `Service ${isDraft ? "saved as draft" : "published"} successfully!`,
+        editService
+          ? "Service updated successfully!"
+          : `Service ${isDraft ? "saved as draft" : "published"} successfully!`,
         updatedServices,
       );
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "Failed to create service";
+        err instanceof Error ? err.message : `Failed to ${editService ? "update" : "create"} service`;
       setError(errorMessage);
-      console.error("Error creating service:", err);
+      console.error(`Error ${editService ? "updating" : "creating"} service:`, err);
     } finally {
       setIsLoading(false);
     }
@@ -168,7 +189,7 @@ export function CreateServiceModal({
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-4 border-b border-[#E1E4EA] flex-shrink-0">
           <h2 className="text-xl font-semibold font-inter-tight text-black capitalize leading-4">
-            New Service
+            {editService ? "Edit Service" : "New Service"}
           </h2>
           <button
             onClick={onClose}
@@ -233,6 +254,16 @@ export function CreateServiceModal({
                             alt={`Preview ${idx + 1}`}
                             className="w-full h-full object-cover rounded-[6px]"
                           />
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setImages((prev) => prev.filter((_, i) => i !== idx));
+                            }}
+                            className="absolute top-1 right-1 p-0.5 bg-black/50 hover:bg-black/70 rounded-full transition-colors"
+                          >
+                            <X className="w-3 h-3 text-white" />
+                          </button>
                         </div>
                       ))}
                     </div>
@@ -243,7 +274,7 @@ export function CreateServiceModal({
                     accept="image/*"
                     multiple
                     onChange={handleFileInputChange}
-                    disabled={isLoading || images.length >= 5}
+                    disabled={isLoading || images.length >= 4}
                     className="hidden"
                   />
                 </div>
@@ -258,13 +289,13 @@ export function CreateServiceModal({
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
                       className="text-[#5C30FF] underline hover:no-underline"
-                      disabled={isLoading || images.length >= 5}
+                      disabled={isLoading || images.length >= 4}
                     >
                       browse
                     </button>
                   </div>
                   <p className="text-sm font-inter-tight text-black/30 leading-normal">
-                    Min 1, Max 5 (5MB each)
+                    Min 1, Max 4 (5MB each)
                   </p>
                 </div>
               </div>
@@ -334,14 +365,21 @@ export function CreateServiceModal({
                     >
                       Pricing
                     </label>
-                    <div className="flex px-3 py-3.5 items-start gap-2 rounded-[8px] border border-[#E1E4EA]">
+                    <div className="flex px-3 py-3.5 items-center gap-2 rounded-[8px] border border-[#E1E4EA]">
+                      <span className="text-[14px] font-inter-tight text-black/50">₦</span>
                       <input
                         id="price"
                         name="price"
                         type="text"
+                        inputMode="numeric"
                         value={formData.price}
-                        onChange={handleInputChange}
-                        placeholder="$"
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (value === "" || /^\d+$/.test(value)) {
+                            handleInputChange(e);
+                          }
+                        }}
+                        placeholder="0"
                         disabled={isLoading}
                         className="flex-1 text-[14px] font-inter-tight text-black placeholder:text-black/30 leading-normal outline-none bg-transparent"
                       />

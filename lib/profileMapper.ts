@@ -269,13 +269,10 @@ export function mapAPIToUI(
     },
     gallery: (data.gallery || []).map((item: any) => ({
       id: item.id || "",
-      key: item.key || "",
-      url: item.url || "",
-      mime: item.mime || "",
-      sizeBytes: item.sizeBytes || "",
       title: item.title || "",
       description: item.description || "",
       createdAt: item.createdAt || "",
+      images: item.images || [],
     })),
     social: {
       dribbble: data.links?.dribbble || data.socialLinks?.dribbble || "",
