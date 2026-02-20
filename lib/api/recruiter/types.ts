@@ -31,6 +31,7 @@ export interface UpdateRecruiterProfileInput {
   companyStage?: string;
   operatingModel?: string;
   links?: Record<string, any>;
+  visibility?: Visibility;
 }
 
 export interface RecruiterFilterParams {

@@ -38,7 +38,7 @@ export function PersonalDetailsSection({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  const ringSize = 90;
+  const ringSize = 110;
   const strokeWidth = 2;
   const radius = (ringSize - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;

@@ -35,6 +35,7 @@ interface EmployerProfilePanelProps {
   completionPercentage?: number;
   views?: number;
   visibility?: "public" | "private";
+  onVisibilityChange?: (visibility: "public" | "private") => void;
 }
 
 export function EmployerProfilePanel({
@@ -52,6 +53,7 @@ export function EmployerProfilePanel({
   completionPercentage = 0,
   views = 0,
   visibility = "public",
+  onVisibilityChange,
 }: EmployerProfilePanelProps) {
   const completeness = completionPercentage ?? 0;
   const ringSize = 110;
@@ -233,7 +235,9 @@ export function EmployerProfilePanel({
         </div>
         <Switch
           checked={visibility === "public"}
-          // TODO: Add toggle handler
+          onCheckedChange={(checked) =>
+            onVisibilityChange?.(checked ? "public" : "private")
+          }
         />
       </div>
 

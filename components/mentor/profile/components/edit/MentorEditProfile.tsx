@@ -216,7 +216,7 @@ function PersonalDetailsSection({
   profileCompleteness: number;
 }) {
   const completeness = profileCompleteness ?? 0;
-  const ringSize = 90;
+  const ringSize = 110;
   const strokeWidth = 2;
   const radius = (ringSize - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks";
 import { EmployerProfilePanel } from "./EmployerProfilePanel";
 import { EmployerProfileNav } from "./EmployerProfileNav";
 import { OpportunitiesTab } from "./tabs/OpportunitiesTab";
 import { PastHiresTab } from "./tabs/PastHiresTab";
 import { AboutTab } from "./tabs/AboutTab";
+import { updateRecruiterProfile } from "@/lib/api/recruiter";
 
 interface EmployerProfileProps {
   companyData?: {
@@ -57,6 +58,20 @@ export function EmployerProfile({
 }: EmployerProfileProps) {
   const { user: _user } = useAuth();
   const [activeTab, setActiveTab] = useState("opportunities");
+  const [currentVisibility, setCurrentVisibility] = useState(visibility);
+
+  const handleVisibilityChange = useCallback(
+    async (newVisibility: "public" | "private") => {
+      const previousVisibility = currentVisibility;
+      setCurrentVisibility(newVisibility);
+      try {
+        await updateRecruiterProfile({ visibility: newVisibility });
+      } catch {
+        setCurrentVisibility(previousVisibility);
+      }
+    },
+    [currentVisibility],
+  );
 
   useEffect(() => {
     // Scroll to top when tab changes
@@ -78,7 +93,8 @@ export function EmployerProfile({
           socialLinks={socialLinks}
           completionPercentage={completionPercentage}
           views={views}
-          visibility={visibility}
+          visibility={currentVisibility}
+          onVisibilityChange={handleVisibilityChange}
         />
       </div>
 
