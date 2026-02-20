@@ -130,6 +130,7 @@ export interface APIProfileData {
   category?: string | null;
   availability?: string | null;
   description?: string | null;
+  visibility?: "public" | "private";
 }
 
 /**

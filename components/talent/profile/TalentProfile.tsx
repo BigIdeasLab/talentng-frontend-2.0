@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { updateProfile } from "@/lib/api/talent";
 import { ProfilePanel } from "@/components/talent/profile/components/ProfilePanel";
 import { ProfileNav } from "@/components/talent/profile/components/ProfileNav";
 import { WorksGrid } from "@/components/talent/profile/components/WorksGrid";
@@ -80,6 +81,7 @@ export function TalentProfile({
 }: TalentProfileProps) {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("works");
+  const [currentVisibility, setCurrentVisibility] = useState(visibility);
   const [profileData, setProfileData] = useState<UIProfileData>(
     initialProfileData || DEFAULT_PROFILE_DATA,
   );
@@ -189,6 +191,19 @@ export function TalentProfile({
     setIsCreateServiceModalOpen(true);
   };
 
+  const handleVisibilityChange = useCallback(
+    async (newVisibility: "public" | "private") => {
+      const previousVisibility = currentVisibility;
+      setCurrentVisibility(newVisibility);
+      try {
+        await updateProfile({ visibility: newVisibility });
+      } catch {
+        setCurrentVisibility(previousVisibility);
+      }
+    },
+    [currentVisibility],
+  );
+
   const handleServiceCreated = (message?: string, services?: any[]) => {
     // Only cache services with valid IDs
     const validServices = services?.filter((s) => s.id && s.id !== "0") || [];
@@ -260,7 +275,8 @@ export function TalentProfile({
           }}
           completionPercentage={profileCompleteness}
           views={views}
-          visibility={visibility}
+          visibility={currentVisibility}
+          onVisibilityChange={handleVisibilityChange}
         />
       </div>
 

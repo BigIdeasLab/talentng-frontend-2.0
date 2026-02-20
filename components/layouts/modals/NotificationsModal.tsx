@@ -5,7 +5,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { TalentNotifications } from "@/components/talent/notification/TalentNotifications";
 import { EmployerNotifications } from "@/components/employer/notification/EmployerNotifications";
 import { MentorNotifications } from "@/components/mentor/notification/MentorNotifications";
-import { getRoleColors } from "@/lib/theme/role-colors";
+
 
 interface NotificationsModalProps {
   isOpen: boolean;
@@ -23,8 +23,6 @@ export function NotificationsModal({
   };
 
   if (!isOpen) return null;
-
-  const roleColors = getRoleColors(activeRole);
 
   const renderNotifications = () => {
     switch (activeRole) {
@@ -47,7 +45,7 @@ export function NotificationsModal({
       <div className="fixed left-[250px] top-0 bottom-0 w-[350px] z-50">
         <div
           className="w-full h-full flex flex-col overflow-hidden shadow-lg"
-          style={{ backgroundColor: roleColors.light }}
+          style={{ backgroundColor: "#FFFFFF" }}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Modal Header */}

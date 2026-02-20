@@ -131,7 +131,11 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Children Content */}
-      <div className="flex-1 overflow-y-auto scrollbar-styled">
+      <div
+        className={`flex-1 overflow-y-auto scrollbar-styled transition-all duration-200 ${
+          isNotificationsOpen ? "blur-sm pointer-events-none" : ""
+        }`}
+      >
         {isLoading || !activeRole ? <LoadingScreen /> : children}
       </div>
 

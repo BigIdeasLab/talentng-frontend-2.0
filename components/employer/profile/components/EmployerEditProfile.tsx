@@ -164,6 +164,12 @@ function PersonalDetailsSection({
           ? "#F97316"
           : "#EF4444";
 
+  const [animatedOffset, setAnimatedOffset] = useState(circumference);
+  useEffect(() => {
+    const timer = requestAnimationFrame(() => setAnimatedOffset(strokeDashoffset));
+    return () => cancelAnimationFrame(timer);
+  }, [strokeDashoffset]);
+
   const handleProfileImageClick = () => {
     fileInputRef.current?.click();
   };
@@ -217,7 +223,7 @@ function PersonalDetailsSection({
                   strokeWidth={strokeWidth}
                   strokeLinecap="round"
                   strokeDasharray={circumference}
-                  strokeDashoffset={strokeDashoffset}
+                  strokeDashoffset={animatedOffset}
                   className="transition-all duration-500"
                 />
               </svg>
@@ -533,49 +539,31 @@ export function EmployerEditProfile() {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const [profileCompleteness, setProfileCompleteness] = useState(0);
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const queryClient = useQueryClient();
 
   // Fetch recruiter profile data with caching
   const {
-    data: profileData,
+    data: queryData,
     isLoading,
     refetch,
     error,
   } = useQuery({
     queryKey: ["recruiter-profile"],
     queryFn: async () => {
-      console.log("Fetching recruiter profile...");
       const response = await fetchProfileByRole("recruiter");
       const data = response as any;
-      console.log("API Response:", data);
-      console.log("Profile Completeness:", data.profileCompleteness);
-      console.log("Profile Data:", data.profile);
-
-      // Set completion percentage from the response
-      const completeness =
-        data.profileCompleteness ?? data.profileCompleteness ?? 0;
-      console.log("Setting completion percentage to:", completeness);
-      setProfileCompleteness(completeness);
-      // Return the profile data
-      return data.profile ?? response;
+      return {
+        profile: data.profile ?? response,
+        profileCompleteness: data.profileCompleteness ?? 0,
+      };
     },
     staleTime: 5 * 60 * 1000,
   });
 
-  // Log when error occurs
-  useEffect(() => {
-    if (error) {
-      console.error("Query error:", error);
-    }
-  }, [error]);
-
-  // Log when profileCompleteness state changes
-  useEffect(() => {
-    console.log("Profile completeness state updated to:", profileCompleteness);
-  }, [profileCompleteness]);
+  const profileData = queryData?.profile;
+  const profileCompleteness = queryData?.profileCompleteness ?? 0;
 
   // Populate form when profile data loads
   useEffect(() => {

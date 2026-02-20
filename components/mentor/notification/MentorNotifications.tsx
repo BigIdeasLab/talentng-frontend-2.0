@@ -202,9 +202,7 @@ export function MentorNotifications({
         return (
           <div
             key={notification.id}
-            className={`flex gap-3 px-5 py-4 border-b border-gray-100 hover:bg-gray-50 transition-colors ${
-              formatted.isUnread ? colors.bg : ""
-            }`}
+            className={`flex gap-3 px-5 py-4 border-b border-gray-100 hover:bg-gray-50 transition-colors`}
             onClick={(e) => {
               const target = e.target as HTMLElement;
               if (target.closest("button")) {

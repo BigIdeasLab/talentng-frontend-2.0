@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { SmoothCollapse } from "@/components/SmoothCollapse";
 import { SectionHeader } from "./SectionHeader";
 import { updateProfileImage } from "@/lib/api/talent";
@@ -22,6 +22,7 @@ interface PersonalDetailsSectionProps {
   sectionRef: (el: HTMLDivElement | null) => void;
   statesCities: Record<string, { major_cities: string[] }>;
   onNext: () => void;
+  completionPercentage?: number;
 }
 
 export function PersonalDetailsSection({
@@ -32,9 +33,31 @@ export function PersonalDetailsSection({
   sectionRef,
   statesCities,
   onNext,
+  completionPercentage = 0,
 }: PersonalDetailsSectionProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+
+  const ringSize = 90;
+  const strokeWidth = 2;
+  const radius = (ringSize - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset =
+    circumference - (completionPercentage / 100) * circumference;
+  const ringColor =
+    completionPercentage >= 100
+      ? "#22C55E"
+      : completionPercentage >= 70
+        ? "#F59E0B"
+        : completionPercentage >= 40
+          ? "#F97316"
+          : "#EF4444";
+
+  const [animatedOffset, setAnimatedOffset] = useState(circumference);
+  useEffect(() => {
+    const timer = requestAnimationFrame(() => setAnimatedOffset(strokeDashoffset));
+    return () => cancelAnimationFrame(timer);
+  }, [strokeDashoffset]);
 
   const handleProfileImageClick = () => {
     fileInputRef.current?.click();
@@ -82,7 +105,10 @@ export function PersonalDetailsSection({
           <div className="h-[1px] bg-[#E1E4EA]" />
           <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
             {/* Profile Picture */}
-            <div className="relative w-[90px] h-[90px]">
+            <div
+              className="relative"
+              style={{ width: ringSize, height: ringSize }}
+            >
               <input
                 ref={fileInputRef}
                 type="file"
@@ -90,42 +116,57 @@ export function PersonalDetailsSection({
                 onChange={handleFileChange}
                 className="hidden"
               />
+              <svg
+                width={ringSize}
+                height={ringSize}
+                className="absolute inset-0 -rotate-90"
+              >
+                <circle
+                  cx={ringSize / 2}
+                  cy={ringSize / 2}
+                  r={radius}
+                  fill="none"
+                  stroke="#E1E4EA"
+                  strokeWidth={strokeWidth}
+                />
+                <circle
+                  cx={ringSize / 2}
+                  cy={ringSize / 2}
+                  r={radius}
+                  fill="none"
+                  stroke={ringColor}
+                  strokeWidth={strokeWidth}
+                  strokeLinecap="round"
+                  strokeDasharray={circumference}
+                  strokeDashoffset={animatedOffset}
+                  className="transition-all duration-500"
+                />
+              </svg>
               <button
                 type="button"
                 onClick={handleProfileImageClick}
                 disabled={isUploading}
-                className="absolute inset-0 w-full h-full rounded-full cursor-pointer hover:opacity-80 transition-opacity disabled:opacity-50"
+                className="absolute rounded-full cursor-pointer hover:opacity-80 transition-opacity disabled:opacity-50"
                 title="Click to change profile picture"
+                style={{
+                  top: strokeWidth + 4,
+                  left: strokeWidth + 4,
+                  width: ringSize - (strokeWidth + 4) * 2,
+                  height: ringSize - (strokeWidth + 4) * 2,
+                }}
               >
                 <img
                   src={formData.profileImageUrl || "/logo.png"}
                   alt="Profile"
-                  className="w-full h-full object-cover rounded-full p-2"
+                  className="w-full h-full object-cover rounded-full"
                 />
               </button>
-              <svg
-                width="110"
-                height="110"
-                viewBox="0 0 110 110"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="absolute inset-0 w-full h-full pointer-events-none"
+              <div
+                className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[10px] font-medium text-white font-inter-tight"
+                style={{ backgroundColor: ringColor }}
               >
-                <circle
-                  cx="55"
-                  cy="55"
-                  r="54"
-                  stroke="#E63C23"
-                  strokeWidth="2"
-                  strokeOpacity="0.2"
-                />
-                <path
-                  d="M55 1C62.0914 1 69.1133 2.39675 75.6649 5.1105C82.2165 7.82426 88.1694 11.8019 93.1838 16.8162C98.1981 21.8306 102.176 27.7835 104.889 34.3351C107.603 40.8867 109 47.9086 109 55"
-                  stroke="#E63C23"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
+                {completionPercentage}%
+              </div>
             </div>
 
             {/* Name Fields */}

@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { EditProfileSidebar } from "@/components/talent/profile/components/edit/Sidebar";
 import { EditProfileActionBar } from "@/components/talent/profile/components/edit/ActionBar";
 import { PersonalDetailsSection } from "@/components/talent/profile/components/edit/PersonalDetailsSection";
@@ -20,6 +19,7 @@ import {
 } from "@/lib/profileMapper";
 import { useProfile } from "@/hooks/useProfile";
 import { updateServerTalentProfile } from "@/lib/api/talent/server";
+import { fetchProfileByRole } from "@/lib/api/profile-service";
 
 const availableSkills = [
   "Website Design",
@@ -108,6 +108,22 @@ export function TalentEditProfile() {
   // Get current profile from context
   const { currentProfile, isLoading } = useProfile();
   const profileData = currentProfile;
+  const [profileCompleteness, setProfileCompleteness] = useState(0);
+
+  // Fetch profile completeness from API (context doesn't include it)
+  useEffect(() => {
+    let cancelled = false;
+    fetchProfileByRole("talent")
+      .then((res: any) => {
+        if (!cancelled) {
+          setProfileCompleteness(res?.profileCompleteness ?? 0);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Load profile data when it becomes available
   useEffect(() => {
@@ -405,6 +421,7 @@ export function TalentEditProfile() {
               }}
               statesCities={statesCities}
               onNext={() => toggleSection("professional")}
+              completionPercentage={profileCompleteness}
             />
 
             <ProfessionalDetailsSection

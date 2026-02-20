@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { MapPin, Briefcase, Users } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,7 @@ interface ProfilePanelProps {
   completionPercentage?: number;
   views?: number;
   visibility?: "public" | "private";
+  onVisibilityChange?: (visibility: "public" | "private") => void;
 }
 
 const defaultSkills = [
@@ -54,6 +56,7 @@ export function ProfilePanel({
   completionPercentage = 0,
   views = 0,
   visibility = "public",
+  onVisibilityChange,
 }: ProfilePanelProps) {
   const displayedSkills = skills.slice(0, 4);
   const skillsRemaining = Math.max(0, skills.length - 4);
@@ -74,6 +77,12 @@ export function ProfilePanel({
         : completeness >= 40
           ? "#F97316"
           : "#EF4444";
+
+  const [animatedOffset, setAnimatedOffset] = useState(circumference);
+  useEffect(() => {
+    const timer = requestAnimationFrame(() => setAnimatedOffset(strokeDashoffset));
+    return () => cancelAnimationFrame(timer);
+  }, [strokeDashoffset]);
 
   return (
     <div className="hidden lg:flex w-[350px] flex-col bg-white border-r border-[#E1E4EA] px-[25px] py-[15px] overflow-y-auto h-screen scrollbar-hide">
@@ -103,7 +112,7 @@ export function ProfilePanel({
               strokeWidth={strokeWidth}
               strokeLinecap="round"
               strokeDasharray={circumference}
-              strokeDashoffset={strokeDashoffset}
+              strokeDashoffset={animatedOffset}
               className="transition-all duration-500"
             />
           </svg>
@@ -230,7 +239,12 @@ export function ProfilePanel({
               : "Hidden from search"}
           </span>
         </div>
-        <Switch checked={visibility === "public"} />
+        <Switch
+          checked={visibility === "public"}
+          onCheckedChange={(checked) =>
+            onVisibilityChange?.(checked ? "public" : "private")
+          }
+        />
       </div>
 
       {/* Skills Section */}
