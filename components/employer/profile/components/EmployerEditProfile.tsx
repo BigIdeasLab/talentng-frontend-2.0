@@ -14,6 +14,7 @@ import {
   updateRecruiterProfile,
   updateRecruiterProfileImage,
 } from "@/lib/api/recruiter";
+import { fetchProfileByRole } from "@/lib/api/profile-service";
 import statesCities from "@/lib/data/states-cities.json";
 
 interface EmployerFormData {
@@ -542,16 +543,39 @@ export function EmployerEditProfile() {
     data: profileData,
     isLoading,
     refetch,
+    error,
   } = useQuery({
     queryKey: ["recruiter-profile"],
     queryFn: async () => {
-      const response = await getCurrentRecruiterProfile();
+      console.log("Fetching recruiter profile...");
+      const response = await fetchProfileByRole("recruiter");
       const data = response as any;
-      setProfileCompleteness(data.profileCompleteness || 0);
+      console.log("API Response:", data);
+      console.log("Profile Completeness:", data.profileCompleteness);
+      console.log("Profile Data:", data.profile);
+
+      // Set completion percentage from the response
+      const completeness =
+        data.profileCompleteness ?? data.profileCompleteness ?? 0;
+      console.log("Setting completion percentage to:", completeness);
+      setProfileCompleteness(completeness);
+      // Return the profile data
       return data.profile ?? response;
     },
     staleTime: 5 * 60 * 1000,
   });
+
+  // Log when error occurs
+  useEffect(() => {
+    if (error) {
+      console.error("Query error:", error);
+    }
+  }, [error]);
+
+  // Log when profileCompleteness state changes
+  useEffect(() => {
+    console.log("Profile completeness state updated to:", profileCompleteness);
+  }, [profileCompleteness]);
 
   // Populate form when profile data loads
   useEffect(() => {

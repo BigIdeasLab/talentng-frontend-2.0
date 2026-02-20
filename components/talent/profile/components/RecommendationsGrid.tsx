@@ -127,8 +127,7 @@ export function RecommendationsGrid({
     };
 
     fetchRecommendations();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [cachedRecommendations, externalRecommendations]);
 
   if (isLoading) {
     return (
