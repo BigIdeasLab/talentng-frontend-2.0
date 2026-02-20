@@ -59,7 +59,9 @@ export function MentorProfileSidebar({
 
   const [animatedOffset, setAnimatedOffset] = useState(circumference);
   useEffect(() => {
-    const timer = requestAnimationFrame(() => setAnimatedOffset(strokeDashoffset));
+    const timer = requestAnimationFrame(() =>
+      setAnimatedOffset(strokeDashoffset),
+    );
     return () => cancelAnimationFrame(timer);
   }, [strokeDashoffset]);
 

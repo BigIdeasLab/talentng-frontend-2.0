@@ -6,7 +6,6 @@ import { TalentNotifications } from "@/components/talent/notification/TalentNoti
 import { EmployerNotifications } from "@/components/employer/notification/EmployerNotifications";
 import { MentorNotifications } from "@/components/mentor/notification/MentorNotifications";
 
-
 interface NotificationsModalProps {
   isOpen: boolean;
   onClose: () => void;
