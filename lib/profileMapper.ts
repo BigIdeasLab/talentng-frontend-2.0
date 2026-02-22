@@ -206,7 +206,9 @@ export function mapAPIToUI(
         : "") || "",
     headline: data.headline || "",
     category: data.category || "",
-    skills: data.skills || [],
+    skills: (data.skills || []).map((item: any) =>
+      typeof item === "string" ? item : item?.name || "",
+    ),
     stack: (data.stack || []).map((item: any) => {
       const name = typeof item === "string" ? item : item.name;
       return {

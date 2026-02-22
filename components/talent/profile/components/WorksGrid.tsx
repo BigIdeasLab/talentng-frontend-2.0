@@ -40,10 +40,11 @@ export function WorksGrid({
     if (showLoading) setLoading(true);
     try {
       const gallery = await getGalleryItems();
+      console.log("[WorksGrid] fetched gallery:", gallery);
       setDisplayItems(gallery);
       onItemsLoaded?.(gallery);
-    } catch {
-      // keep existing data on error
+    } catch (err) {
+      console.error("[WorksGrid] fetch error:", err);
     } finally {
       setLoading(false);
     }

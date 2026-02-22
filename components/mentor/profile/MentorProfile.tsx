@@ -61,10 +61,10 @@ export function MentorProfile({
   };
 
   const socialLinks = {
-    telegram: profileData.links?.telegram,
-    twitter: profileData.links?.twitter,
-    instagram: profileData.links?.instagram,
-    linkedin: profileData.links?.linkedIn,
+    twitter: profileData.links?.twitter || "",
+    instagram: profileData.links?.instagram || "",
+    linkedin: profileData.links?.linkedIn || "",
+    website: profileData.links?.website || "",
   };
 
   const bio = profileData.bio || "";

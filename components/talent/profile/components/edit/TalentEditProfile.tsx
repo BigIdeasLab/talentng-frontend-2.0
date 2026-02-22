@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { EditProfileSidebar } from "@/components/talent/profile/components/edit/Sidebar";
 import { EditProfileActionBar } from "@/components/talent/profile/components/edit/ActionBar";
 import { PersonalDetailsSection } from "@/components/talent/profile/components/edit/PersonalDetailsSection";
@@ -72,19 +72,19 @@ const DEFAULT_PROFILE_DATA: UIProfileData = {
     portfolioItems: [],
   },
   social: {
-    dribbble: "",
-    telegram: "",
     twitter: "",
     instagram: "",
     linkedin: "",
-    github: "",
-    portfolio: "",
+    website: "",
   },
 };
 
 export function TalentEditProfile() {
   const router = useRouter();
-  const [expandedSection, setExpandedSection] = useState<string>("personal");
+  const searchParams = useSearchParams();
+  const [expandedSection, setExpandedSection] = useState<string>(
+    searchParams.get("section") || "personal",
+  );
   const [formData, setFormData] = useState<UIProfileData>(DEFAULT_PROFILE_DATA);
   const [editingExperienceIndex, setEditingExperienceIndex] = useState<
     number | null
@@ -157,6 +157,18 @@ export function TalentEditProfile() {
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [hasUnsavedChanges]);
+
+  useEffect(() => {
+    const section = searchParams.get("section");
+    if (section) {
+      setTimeout(() => {
+        const element = sectionRefs.current[section];
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 300);
+    }
+  }, [searchParams]);
 
   const toggleSection = (section: string) => {
     setExpandedSection(expandedSection === section ? "" : section);
@@ -492,7 +504,7 @@ export function TalentEditProfile() {
               sectionRef={(el) => {
                 if (el) sectionRefs.current["social"] = el;
               }}
-              onNext={() => toggleSection("")}
+              onNext={handleSaveProfile}
             />
           </div>
         </div>

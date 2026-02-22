@@ -22,10 +22,10 @@ interface EmployerProfileProps {
     responseTime?: string;
   };
   socialLinks?: {
-    telegram?: string;
     twitter?: string;
     instagram?: string;
     linkedin?: string;
+    website?: string;
   };
   completionPercentage?: number;
   aboutData?: {

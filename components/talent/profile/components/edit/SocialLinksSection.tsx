@@ -3,11 +3,10 @@ import { SectionHeader } from "./SectionHeader";
 import { Button } from "@/components/ui/button";
 
 interface SocialData {
-  dribbble: string;
-  telegram: string;
   twitter: string;
   instagram: string;
   linkedin: string;
+  website: string;
 }
 
 interface SocialLinksSectionProps {
@@ -20,51 +19,6 @@ interface SocialLinksSectionProps {
 }
 
 const socialPlatforms = [
-  {
-    name: "Dribbble",
-    key: "dribbble",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path
-          d="M8.00065 14.6663C11.6825 14.6663 14.6673 11.6816 14.6673 7.99967C14.6673 4.31778 11.6825 1.33301 8.00065 1.33301C4.31875 1.33301 1.33398 4.31778 1.33398 7.99967C1.33398 11.6816 4.31875 14.6663 8.00065 14.6663Z"
-          stroke="black"
-          strokeOpacity="0.3"
-        />
-        <path
-          d="M14.6667 8.84277C14.0488 8.7269 13.4133 8.6665 12.7648 8.6665C9.19653 8.6665 6.0229 10.4948 4 13.3332"
-          stroke="black"
-          strokeOpacity="0.3"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M12.6673 3.33301C10.581 5.77795 7.44592 7.33301 3.9404 7.33301C3.04356 7.33301 2.17097 7.23121 1.33398 7.03881"
-          stroke="black"
-          strokeOpacity="0.3"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M9.74455 14.6667C9.91162 13.8573 9.99935 13.0191 9.99935 12.1605C9.99935 7.9498 7.88888 4.23097 4.66602 2"
-          stroke="black"
-          strokeOpacity="0.3"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
-  },
-  {
-    name: "Telegram",
-    key: "telegram",
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path
-          d="M7.99092 10.2722L10.1519 12.7291C10.9525 13.6393 11.3528 14.0944 11.7718 13.9836C12.1908 13.8728 12.3345 13.2739 12.6219 12.0759L14.2159 5.4306C14.6585 3.58555 14.8798 2.66303 14.3879 2.208C13.896 1.75298 13.0433 2.0915 11.3381 2.76855L3.42649 5.90966C2.06261 6.45116 1.38066 6.72193 1.33737 7.1872C1.33293 7.2348 1.33286 7.28273 1.33715 7.33033C1.37901 7.7958 2.06013 8.06887 3.42235 8.61487C4.03957 8.86227 4.34819 8.986 4.56945 9.22293C4.59433 9.24953 4.61825 9.27713 4.64117 9.3056C4.84504 9.55893 4.93205 9.8914 5.10604 10.5563L5.43167 11.8007C5.60099 12.4477 5.68565 12.7712 5.90737 12.8153C6.1291 12.8594 6.32215 12.5911 6.70825 12.0546L7.99092 10.2722ZM7.99092 10.2722L7.77905 10.0514C7.53792 9.80006 7.41739 9.67447 7.41739 9.51833C7.41739 9.3622 7.53792 9.23653 7.77905 8.9852L10.1611 6.50273"
-          stroke="#525866"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
-  },
   {
     name: "X",
     key: "twitter",
@@ -124,6 +78,24 @@ const socialPlatforms = [
       </svg>
     ),
   },
+  {
+    name: "Website",
+    key: "website",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="6.5" stroke="#525866" />
+        <path
+          d="M1.5 8H14.5"
+          stroke="#525866"
+          strokeLinecap="round"
+        />
+        <path
+          d="M8 1.5C9.65685 3.15685 10.6569 5.48568 10.6569 8C10.6569 10.5143 9.65685 12.8432 8 14.5C6.34315 12.8432 5.34315 10.5143 5.34315 8C5.34315 5.48568 6.34315 3.15685 8 1.5Z"
+          stroke="#525866"
+        />
+      </svg>
+    ),
+  },
 ];
 
 export function SocialLinksSection({
@@ -171,7 +143,7 @@ export function SocialLinksSection({
                 onClick={onNext}
                 className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal"
               >
-                Next
+                Save
               </Button>
             </div>
           </div>

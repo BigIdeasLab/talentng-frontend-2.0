@@ -268,10 +268,10 @@ export function TalentProfile({
             ]
           }
           socialLinks={{
-            telegram: profileData?.social?.telegram || "#",
-            twitter: profileData?.social?.twitter || "#",
-            instagram: profileData?.social?.instagram || "#",
-            linkedin: profileData?.social?.linkedin || "#",
+            twitter: profileData?.social?.twitter || "",
+            instagram: profileData?.social?.instagram || "",
+            linkedin: profileData?.social?.linkedin || "",
+            website: profileData?.social?.website || "",
           }}
           completionPercentage={profileCompleteness}
           views={views}

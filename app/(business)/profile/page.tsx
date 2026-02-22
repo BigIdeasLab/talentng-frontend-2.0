@@ -61,6 +61,12 @@ export default function ProfilePage() {
             talentsHired: 0,
             responseTime: "—",
           }}
+          socialLinks={{
+            twitter: recruiterData?.links?.twitter || "",
+            instagram: recruiterData?.links?.instagram || "",
+            linkedin: recruiterData?.links?.linkedIn || recruiterData?.links?.linkedin || "",
+            website: recruiterData?.links?.website || "",
+          }}
           completionPercentage={completionPercentage}
           aboutData={{
             bio: displayProfile?.personal?.bio,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { SmoothCollapse } from "@/components/SmoothCollapse";
@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { cn } from "@/lib/utils";
 import {
-  getCurrentRecruiterProfile,
   updateRecruiterProfile,
   updateRecruiterProfileImage,
 } from "@/lib/api/recruiter";
@@ -32,6 +31,8 @@ interface EmployerFormData {
     operatingModel: string;
   };
   social: {
+    twitter: string;
+    instagram: string;
     website: string;
     linkedin: string;
   };
@@ -52,6 +53,8 @@ const DEFAULT_EMPLOYER_DATA: EmployerFormData = {
     operatingModel: "",
   },
   social: {
+    twitter: "",
+    instagram: "",
     website: "",
     linkedin: "",
   },
@@ -166,10 +169,10 @@ function PersonalDetailsSection({
 
   const [animatedOffset, setAnimatedOffset] = useState(circumference);
   useEffect(() => {
-    const timer = requestAnimationFrame(() =>
+    const timer = window.requestAnimationFrame(() =>
       setAnimatedOffset(strokeDashoffset),
     );
-    return () => cancelAnimationFrame(timer);
+    return () => window.cancelAnimationFrame(timer);
   }, [strokeDashoffset]);
 
   const handleProfileImageClick = () => {
@@ -485,18 +488,62 @@ function SocialLinksSection({
         <>
           <div className="h-[1px] bg-[#E1E4EA]" />
           <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
-            {/* Website */}
+            {/* X (Twitter) */}
             <div className="flex flex-col gap-[10px]">
               <label className="text-[13px] font-normal text-black font-inter-tight">
-                Website
+                X
               </label>
-              <input
-                type="url"
-                value={formData.website}
-                onChange={(e) => onInputChange("website", e.target.value)}
-                placeholder="https://example.com"
-                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
-              />
+              <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M2 14L7.03227 8.96773M7.03227 8.96773L2 2H5.33333L8.96773 7.03227M7.03227 8.96773L10.6667 14H14L8.96773 7.03227M14 2L8.96773 7.03227"
+                    stroke="#525866"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <input
+                  type="text"
+                  value={formData.twitter}
+                  onChange={(e) => onInputChange("twitter", e.target.value)}
+                  placeholder="Paste Link Here"
+                  className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+                />
+              </div>
+            </div>
+
+            {/* Instagram */}
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-[13px] font-normal text-black font-inter-tight">
+                Instagram
+              </label>
+              <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M1.66602 8.00033C1.66602 5.01477 1.66602 3.52199 2.59351 2.59449C3.52101 1.66699 5.01379 1.66699 7.99935 1.66699C10.9849 1.66699 12.4777 1.66699 13.4052 2.59449C14.3327 3.52199 14.3327 5.01477 14.3327 8.00033C14.3327 10.9859 14.3327 12.4787 13.4052 13.4062C12.4777 14.3337 10.9849 14.3337 7.99935 14.3337C5.01379 14.3337 3.52101 14.3337 2.59351 13.4062C1.66602 12.4787 1.66602 10.9859 1.66602 8.00033Z"
+                    stroke="#525866"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M11 8C11 9.65687 9.65687 11 8 11C6.34315 11 5 9.65687 5 8C5 6.34315 6.34315 5 8 5C9.65687 5 11 6.34315 11 8Z"
+                    stroke="#525866"
+                  />
+                  <path
+                    d="M11.672 4.33301H11.666"
+                    stroke="#525866"
+                    strokeWidth="1.33333"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <input
+                  type="text"
+                  value={formData.instagram}
+                  onChange={(e) => onInputChange("instagram", e.target.value)}
+                  placeholder="Paste Link Here"
+                  className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+                />
+              </div>
             </div>
 
             {/* LinkedIn */}
@@ -504,13 +551,58 @@ function SocialLinksSection({
               <label className="text-[13px] font-normal text-black font-inter-tight">
                 LinkedIn
               </label>
-              <input
-                type="url"
-                value={formData.linkedin}
-                onChange={(e) => onInputChange("linkedin", e.target.value)}
-                placeholder="https://linkedin.com/company/..."
-                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
-              />
+              <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M3.00065 6.33301H2.66732C2.03878 6.33301 1.72451 6.33301 1.52924 6.52827C1.33398 6.72354 1.33398 7.03781 1.33398 7.66634V13.333C1.33398 13.9615 1.33398 14.2758 1.52924 14.4711C1.72451 14.6663 2.03878 14.6663 2.66732 14.6663H3.00065C3.62919 14.6663 3.94346 14.6663 4.13872 14.4711C4.33398 14.2758 4.33398 13.9615 4.33398 13.333V7.66634C4.33398 7.03781 4.33398 6.72354 4.13872 6.52827C3.94346 6.33301 3.62919 6.33301 3.00065 6.33301Z"
+                    stroke="#525866"
+                  />
+                  <path
+                    d="M4.33398 2.83301C4.33398 3.66143 3.66241 4.33301 2.83398 4.33301C2.00556 4.33301 1.33398 3.66143 1.33398 2.83301C1.33398 2.00458 2.00556 1.33301 2.83398 1.33301C3.66241 1.33301 4.33398 2.00458 4.33398 2.83301Z"
+                    stroke="#525866"
+                  />
+                  <path
+                    d="M8.21798 6.33301H7.66732C7.03878 6.33301 6.72452 6.33301 6.52924 6.52827C6.33398 6.72354 6.33398 7.03781 6.33398 7.66634V13.333C6.33398 13.9615 6.33398 14.2758 6.52924 14.4711C6.72452 14.6663 7.03878 14.6663 7.66732 14.6663H8.00065C8.62918 14.6663 8.94345 14.6663 9.13872 14.4711C9.33398 14.2758 9.33398 13.9615 9.33398 13.333L9.33405 10.9997C9.33405 9.89521 9.68605 8.99974 10.7259 8.99974C11.2458 8.99974 11.6673 9.44747 11.6673 9.99974V12.9997C11.6673 13.6283 11.6673 13.9425 11.8626 14.1378C12.0578 14.3331 12.3721 14.3331 13.0007 14.3331H13.3331C13.9615 14.3331 14.2757 14.3331 14.471 14.1379C14.6663 13.9427 14.6663 13.6285 14.6665 13.0001L14.6674 9.33314C14.6674 7.67634 13.0916 6.33317 11.5319 6.33317C10.6439 6.33317 9.85178 6.76841 9.33405 7.44901C9.33398 7.02894 9.33398 6.81894 9.24278 6.66301C9.18498 6.56425 9.10272 6.48203 9.00398 6.42425C8.84805 6.33301 8.63805 6.33301 8.21798 6.33301Z"
+                    stroke="#525866"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <input
+                  type="text"
+                  value={formData.linkedin}
+                  onChange={(e) => onInputChange("linkedin", e.target.value)}
+                  placeholder="Paste Link Here"
+                  className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+                />
+              </div>
+            </div>
+
+            {/* Website */}
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-[13px] font-normal text-black font-inter-tight">
+                Website
+              </label>
+              <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <circle cx="8" cy="8" r="6.5" stroke="#525866" />
+                  <path
+                    d="M1.5 8H14.5"
+                    stroke="#525866"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M8 1.5C9.65685 3.15685 10.6569 5.48568 10.6569 8C10.6569 10.5143 9.65685 12.8432 8 14.5C6.34315 12.8432 5.34315 10.5143 5.34315 8C5.34315 5.48568 6.34315 3.15685 8 1.5Z"
+                    stroke="#525866"
+                  />
+                </svg>
+                <input
+                  type="text"
+                  value={formData.website}
+                  onChange={(e) => onInputChange("website", e.target.value)}
+                  placeholder="Paste Link Here"
+                  className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+                />
+              </div>
             </div>
 
             <div className="flex justify-end">
@@ -530,8 +622,9 @@ function SocialLinksSection({
 }
 
 export function EmployerEditProfile() {
-  const router = useRouter();
-  const [expandedSection, setExpandedSection] = useState<string>("personal");
+  const _router = useRouter();
+  const searchParams = useSearchParams();
+  const [expandedSection, setExpandedSection] = useState<string>(searchParams.get("section") || "personal");
   const [formData, setFormData] = useState<EmployerFormData>(
     DEFAULT_EMPLOYER_DATA,
   );
@@ -548,9 +641,9 @@ export function EmployerEditProfile() {
   // Fetch recruiter profile data with caching
   const {
     data: queryData,
-    isLoading,
-    refetch,
-    error,
+    isLoading: _isLoading,
+    refetch: _refetch,
+    error: _error,
   } = useQuery({
     queryKey: ["recruiter-profile"],
     queryFn: async () => {
@@ -586,6 +679,8 @@ export function EmployerEditProfile() {
           operatingModel: profileData.operatingModel || "",
         },
         social: {
+          twitter: links.twitter || "",
+          instagram: links.instagram || "",
           website: links.website || "",
           linkedin: links.linkedin || "",
         },
@@ -607,6 +702,18 @@ export function EmployerEditProfile() {
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [hasUnsavedChanges]);
+
+  useEffect(() => {
+    const section = searchParams.get("section");
+    if (section) {
+      setTimeout(() => {
+        const element = sectionRefs.current[section];
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 300);
+    }
+  }, [searchParams]);
 
   const toggleSection = (section: string) => {
     setExpandedSection(expandedSection === section ? "" : section);
@@ -692,6 +799,8 @@ export function EmployerEditProfile() {
         .join(", ");
 
       const links: Record<string, string> = {};
+      if (formData.social.twitter) links.twitter = formData.social.twitter;
+      if (formData.social.instagram) links.instagram = formData.social.instagram;
       if (formData.social.website) links.website = formData.social.website;
       if (formData.social.linkedin) links.linkedin = formData.social.linkedin;
 

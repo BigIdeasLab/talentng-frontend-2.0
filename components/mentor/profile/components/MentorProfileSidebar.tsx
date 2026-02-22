@@ -15,10 +15,10 @@ interface MentorProfileSidebarProps {
   };
   stack?: string[];
   socialLinks?: {
-    telegram?: string;
     twitter?: string;
     instagram?: string;
     linkedin?: string;
+    website?: string;
   };
   profileCompleteness?: number | null;
   avgRating?: number | null;
@@ -37,7 +37,6 @@ export function MentorProfileSidebar({
   views = 0,
   visibility = "public",
   onToggleVisibility,
-  onEditProfile,
 }: MentorProfileSidebarProps) {
   const displayedStack = stack.slice(0, 5);
   const stackRemaining = Math.max(0, stack.length - 5);
@@ -59,10 +58,10 @@ export function MentorProfileSidebar({
 
   const [animatedOffset, setAnimatedOffset] = useState(circumference);
   useEffect(() => {
-    const timer = requestAnimationFrame(() =>
+    const timer = window.requestAnimationFrame(() =>
       setAnimatedOffset(strokeDashoffset),
     );
-    return () => cancelAnimationFrame(timer);
+    return () => window.cancelAnimationFrame(timer);
   }, [strokeDashoffset]);
 
   return (
@@ -294,17 +293,21 @@ export function MentorProfileSidebar({
             Stack
           </h3>
           <div className="flex flex-wrap gap-[6px] w-full">
-            {displayedStack.map((tool, idx) => (
-              <div
-                key={idx}
-                className="px-[10px] py-[7px] rounded-full bg-[#F5F5F5] flex items-center gap-[5px]"
-              >
-                <div className="w-[16px] h-[16px] rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex-shrink-0" />
-                <span className="text-[11px] font-normal text-black font-inter-tight">
-                  {tool}
-                </span>
-              </div>
-            ))}
+            {displayedStack.map((tool, idx) => {
+              const toolName =
+                typeof tool === "string" ? tool : (tool as any)?.name || "";
+              return (
+                <div
+                  key={idx}
+                  className="px-[10px] py-[7px] rounded-full bg-[#F5F5F5] flex items-center gap-[5px]"
+                >
+                  <div className="w-[16px] h-[16px] rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex-shrink-0" />
+                  <span className="text-[11px] font-normal text-black font-inter-tight">
+                    {toolName}
+                  </span>
+                </div>
+              );
+            })}
             {stackRemaining > 0 && (
               <div className="px-[10px] py-[7px] rounded-full bg-[#F5F5F5]">
                 <span className="text-[11px] font-normal text-black font-inter-tight">
@@ -319,248 +322,140 @@ export function MentorProfileSidebar({
       {/* Social Links */}
       <div className="flex flex-col items-start gap-7 mt-[20px]">
         <div className="flex flex-col items-start gap-4 w-full">
-          {/* Header */}
           <h3 className="text-[11px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
             Social Links
           </h3>
-
-          {/* Social Link Items */}
           <div className="flex flex-col gap-2 w-full">
-            {/* Telegram */}
-            <div className="flex justify-between items-center w-full">
-              <div className="flex items-center gap-1.5">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 22 22"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M10.9866 14.1243L13.9579 17.5025C15.0587 18.754 15.6092 19.3798 16.1853 19.2274C16.7614 19.0751 16.9591 18.2516 17.3542 16.6043L19.546 7.46707C20.1546 4.93012 20.4588 3.66166 19.7824 3.036C19.1061 2.41035 17.9337 2.87581 15.5889 3.80675L4.71054 8.12578C2.8352 8.87034 1.89752 9.24266 1.83799 9.8824C1.8319 9.94785 1.8318 10.0138 1.83769 10.0792C1.89526 10.7192 2.83179 11.0947 4.70485 11.8454C5.55353 12.1856 5.97787 12.3557 6.28211 12.6815C6.31632 12.7181 6.34921 12.7561 6.38073 12.7952C6.66104 13.1435 6.78068 13.6007 7.01992 14.5149L7.46766 16.2259C7.70047 17.1155 7.81688 17.5604 8.12175 17.6211C8.42663 17.6817 8.69207 17.3128 9.22296 16.5751L10.9866 14.1243ZM10.9866 14.1243L10.6953 13.8207C10.3638 13.4751 10.198 13.3024 10.198 13.0877C10.198 12.873 10.3638 12.7002 10.6953 12.3546L13.9706 8.94125"
-                    stroke="#525866"
-                    strokeWidth="1.375"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <span className="text-[13px] font-normal text-black font-inter-tight">
-                  Telegram
-                </span>
-              </div>
-              {socialLinks?.telegram && (
-                <Link
-                  href={socialLinks.telegram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 22 22"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+            {[
+              {
+                name: "X",
+                url: socialLinks?.twitter,
+                icon: (
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path
-                      d="M10.1739 2.75C6.82897 2.75602 5.0774 2.83816 3.95801 3.95773C2.75 5.16593 2.75 7.11051 2.75 10.9996C2.75 14.8888 2.75 16.8334 3.95801 18.0415C5.16601 19.2498 7.11028 19.2498 10.9989 19.2498C14.8873 19.2498 16.8316 19.2498 18.0396 18.0415C19.1589 16.922 19.2411 15.1701 19.2471 11.8247"
+                      d="M2 14L7.03227 8.96773M7.03227 8.96773L2 2H5.33333L8.96773 7.03227M7.03227 8.96773L10.6667 14H14L8.96773 7.03227M14 2L8.96773 7.03227"
                       stroke="#525866"
-                      strokeWidth="1.375"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M18.8431 3.20458L10.1281 11.9702M18.8431 3.20458C18.3903 2.75119 15.3399 2.79345 14.695 2.80262M18.8431 3.20458C19.296 3.65798 19.2537 6.71231 19.2445 7.35802"
-                      stroke="#525866"
-                      strokeWidth="1.375"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     />
                   </svg>
-                </Link>
-              )}
-            </div>
-
-            {/* X (Twitter) */}
-            <div className="flex justify-between items-center w-full">
-              <div className="flex items-center gap-1.5">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 22 22"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M2.75 19.25L9.66937 12.3306M9.66937 12.3306L2.75 2.75H7.33333L12.3306 9.66937M9.66937 12.3306L14.6667 19.25H19.25L12.3306 9.66937M19.25 2.75L12.3306 9.66937"
-                    stroke="#525866"
-                    strokeWidth="1.375"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <span className="text-[13px] font-normal text-black font-inter-tight">
-                  X
-                </span>
-              </div>
-              {socialLinks?.twitter && (
-                <Link
-                  href={socialLinks.twitter}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 22 22"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                ),
+              },
+              {
+                name: "Instagram",
+                url: socialLinks?.instagram,
+                icon: (
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path
-                      d="M10.1739 2.75C6.82897 2.75602 5.0774 2.83816 3.95801 3.95773C2.75 5.16593 2.75 7.11051 2.75 10.9996C2.75 14.8888 2.75 16.8334 3.95801 18.0415C5.16601 19.2498 7.11028 19.2498 10.9989 19.2498C14.8873 19.2498 16.8316 19.2498 18.0396 18.0415C19.1589 16.922 19.2411 15.1701 19.2471 11.8247"
+                      d="M1.66602 8.00033C1.66602 5.01477 1.66602 3.52199 2.59351 2.59449C3.52101 1.66699 5.01379 1.66699 7.99935 1.66699C10.9849 1.66699 12.4777 1.66699 13.4052 2.59449C14.3327 3.52199 14.3327 5.01477 14.3327 8.00033C14.3327 10.9859 14.3327 12.4787 13.4052 13.4062C12.4777 14.3337 10.9849 14.3337 7.99935 14.3337C5.01379 14.3337 3.52101 14.3337 2.59351 13.4062C1.66602 12.4787 1.66602 10.9859 1.66602 8.00033Z"
                       stroke="#525866"
-                      strokeWidth="1.375"
-                      strokeLinecap="round"
                       strokeLinejoin="round"
                     />
                     <path
-                      d="M18.8431 3.20458L10.1281 11.9702M18.8431 3.20458C18.3903 2.75119 15.3399 2.79345 14.695 2.80262M18.8431 3.20458C19.296 3.65798 19.2537 6.71231 19.2445 7.35802"
+                      d="M11 8C11 9.65687 9.65687 11 8 11C6.34315 11 5 9.65687 5 8C5 6.34315 6.34315 5 8 5C9.65687 5 11 6.34315 11 8Z"
                       stroke="#525866"
-                      strokeWidth="1.375"
+                    />
+                    <path
+                      d="M11.672 4.33301H11.666"
+                      stroke="#525866"
+                      strokeWidth="1.33333"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     />
                   </svg>
-                </Link>
-              )}
-            </div>
-
-            {/* Instagram */}
-            <div className="flex justify-between items-center w-full">
-              <div className="flex items-center gap-1.5">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 22 22"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M2.29166 10.9998C2.29166 6.89469 2.29166 4.84212 3.56696 3.56681C4.84227 2.2915 6.89484 2.2915 11 2.2915C15.1051 2.2915 17.1577 2.2915 18.4331 3.56681C19.7083 4.84212 19.7083 6.89469 19.7083 10.9998C19.7083 15.1049 19.7083 17.1575 18.4331 18.4329C17.1577 19.7082 15.1051 19.7082 11 19.7082C6.89484 19.7082 4.84227 19.7082 3.56696 18.4329C2.29166 17.1575 2.29166 15.1049 2.29166 10.9998Z"
-                    stroke="#525866"
-                    strokeWidth="1.375"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M15.125 11C15.125 13.2782 13.2782 15.125 11 15.125C8.72183 15.125 6.875 13.2782 6.875 11C6.875 8.72183 8.72183 6.875 11 6.875C13.2782 6.875 15.125 8.72183 15.125 11Z"
-                    stroke="#525866"
-                    strokeWidth="1.375"
-                  />
-                  <path
-                    d="M16.0498 5.9585H16.0408"
-                    stroke="#525866"
-                    strokeWidth="1.83333"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <span className="text-[13px] font-normal text-black font-inter-tight">
-                  Instagram
-                </span>
-              </div>
-              {socialLinks?.instagram && (
-                <Link
-                  href={socialLinks.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 22 22"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                ),
+              },
+              {
+                name: "LinkedIn",
+                url: socialLinks?.linkedin,
+                icon: (
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path
-                      d="M10.1739 2.75C6.82897 2.75602 5.0774 2.83816 3.95801 3.95773C2.75 5.16593 2.75 7.11051 2.75 10.9996C2.75 14.8888 2.75 16.8334 3.95801 18.0415C5.16601 19.2498 7.11028 19.2498 10.9989 19.2498C14.8873 19.2498 16.8316 19.2498 18.0396 18.0415C19.1589 16.922 19.2411 15.1701 19.2471 11.8247"
+                      d="M3.00065 6.33301H2.66732C2.03878 6.33301 1.72451 6.33301 1.52924 6.52827C1.33398 6.72354 1.33398 7.03781 1.33398 7.66634V13.333C1.33398 13.9615 1.33398 14.2758 1.52924 14.4711C1.72451 14.6663 2.03878 14.6663 2.66732 14.6663H3.00065C3.62919 14.6663 3.94346 14.6663 4.13872 14.4711C4.33398 14.2758 4.33398 13.9615 4.33398 13.333V7.66634C4.33398 7.03781 4.33398 6.72354 4.13872 6.52827C3.94346 6.33301 3.62919 6.33301 3.00065 6.33301Z"
                       stroke="#525866"
-                      strokeWidth="1.375"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
                     />
                     <path
-                      d="M18.8431 3.20458L10.1281 11.9702M18.8431 3.20458C18.3903 2.75119 15.3399 2.79345 14.695 2.80262M18.8431 3.20458C19.296 3.65798 19.2537 6.71231 19.2445 7.35802"
+                      d="M4.33398 2.83301C4.33398 3.66143 3.66241 4.33301 2.83398 4.33301C2.00556 4.33301 1.33398 3.66143 1.33398 2.83301C1.33398 2.00458 2.00556 1.33301 2.83398 1.33301C3.66241 1.33301 4.33398 2.00458 4.33398 2.83301Z"
                       stroke="#525866"
-                      strokeWidth="1.375"
-                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M8.21798 6.33301H7.66732C7.03878 6.33301 6.72452 6.33301 6.52924 6.52827C6.33398 6.72354 6.33398 7.03781 6.33398 7.66634V13.333C6.33398 13.9615 6.33398 14.2758 6.52924 14.4711C6.72452 14.6663 7.03878 14.6663 7.66732 14.6663H8.00065C8.62918 14.6663 8.94345 14.6663 9.13872 14.4711C9.33398 14.2758 9.33398 13.9615 9.33398 13.333L9.33405 10.9997C9.33405 9.89521 9.68605 8.99974 10.7259 8.99974C11.2458 8.99974 11.6673 9.44747 11.6673 9.99974V12.9997C11.6673 13.6283 11.6673 13.9425 11.8626 14.1378C12.0578 14.3331 12.3721 14.3331 13.0007 14.3331H13.3331C13.9615 14.3331 14.2757 14.3331 14.471 14.1379C14.6663 13.9427 14.6663 13.6285 14.6665 13.0001L14.6674 9.33314C14.6674 7.67634 13.0916 6.33317 11.5319 6.33317C10.6439 6.33317 9.85178 6.76841 9.33405 7.44901C9.33398 7.02894 9.33398 6.81894 9.24278 6.66301C9.18498 6.56425 9.10272 6.48203 9.00398 6.42425C8.84805 6.33301 8.63805 6.33301 8.21798 6.33301Z"
+                      stroke="#525866"
                       strokeLinejoin="round"
                     />
                   </svg>
-                </Link>
-              )}
-            </div>
-
-            {/* LinkedIn */}
-            <div className="flex justify-between items-center w-full">
-              <div className="flex items-center gap-1.5">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 22 22"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M4.12501 8.7085H3.66668C2.80243 8.7085 2.37032 8.7085 2.10183 8.97698C1.83334 9.24548 1.83334 9.6776 1.83334 10.5418V18.3335C1.83334 19.1977 1.83334 19.6298 2.10183 19.8983C2.37032 20.1668 2.80243 20.1668 3.66668 20.1668H4.12501C4.98925 20.1668 5.42137 20.1668 5.68986 19.8983C5.95834 19.6298 5.95834 19.1977 5.95834 18.3335V10.5418C5.95834 9.6776 5.95834 9.24548 5.68986 8.97698C5.42137 8.7085 4.98925 8.7085 4.12501 8.7085Z"
-                    stroke="#525866"
-                    strokeWidth="1.375"
-                  />
-                  <path
-                    d="M5.95834 3.896C5.95834 5.03508 5.03493 5.9585 3.89584 5.9585C2.75676 5.9585 1.83334 5.03508 1.83334 3.896C1.83334 2.75691 2.75676 1.8335 3.89584 1.8335C5.03493 1.8335 5.95834 2.75691 5.95834 3.896Z"
-                    stroke="#525866"
-                    strokeWidth="1.375"
-                  />
-                  <path
-                    d="M11.2988 8.7085H10.5417C9.67744 8.7085 9.24533 8.7085 8.97683 8.97698C8.70834 9.24548 8.70834 9.6776 8.70834 10.5418V18.3335C8.70834 19.1977 8.70834 19.6298 8.97683 19.8983C9.24533 20.1668 9.67744 20.1668 10.5417 20.1668H11C11.8642 20.1668 12.2964 20.1668 12.5649 19.8983C12.8333 19.6298 12.8333 19.1977 12.8333 18.3335L12.8334 15.1253C12.8334 13.6065 13.3174 12.3753 14.7473 12.3753C15.4621 12.3753 16.0417 12.9909 16.0417 13.7503V17.8753C16.0417 18.7395 16.0417 19.1716 16.3102 19.4401C16.5786 19.7086 17.0108 19.7086 17.875 19.7086H18.3322C19.1962 19.7086 19.6282 19.7086 19.8967 19.4402C20.1652 19.1718 20.1653 18.7398 20.1655 17.8757L20.1668 12.8337C20.1668 10.5556 18 8.70872 15.8554 8.70872C14.6345 8.70872 13.5453 9.30717 12.8334 10.243C12.8333 9.6654 12.8333 9.37665 12.7079 9.16225C12.6285 9.02645 12.5154 8.9134 12.3796 8.83396C12.1652 8.7085 11.8764 8.7085 11.2988 8.7085Z"
-                    stroke="#525866"
-                    strokeWidth="1.375"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <span className="text-[13px] font-normal text-black font-inter-tight">
-                  LinkendIn
-                </span>
-              </div>
-              {socialLinks?.linkedin && (
-                <Link
-                  href={socialLinks.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 22 22"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                ),
+              },
+              {
+                name: "Website",
+                url: socialLinks?.website,
+                icon: (
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <circle cx="8" cy="8" r="6.5" stroke="#525866" />
                     <path
-                      d="M10.1739 2.75C6.82897 2.75602 5.0774 2.83816 3.95801 3.95773C2.75 5.16593 2.75 7.11051 2.75 10.9996C2.75 14.8888 2.75 16.8334 3.95801 18.0415C5.16601 19.2498 7.11028 19.2498 10.9989 19.2498C14.8873 19.2498 16.8316 19.2498 18.0396 18.0415C19.1589 16.922 19.2411 15.1701 19.2471 11.8247"
+                      d="M1.5 8H14.5"
                       stroke="#525866"
-                      strokeWidth="1.375"
                       strokeLinecap="round"
-                      strokeLinejoin="round"
                     />
                     <path
-                      d="M18.8431 3.20458L10.1281 11.9702M18.8431 3.20458C18.3903 2.75119 15.3399 2.79345 14.695 2.80262M18.8431 3.20458C19.296 3.65798 19.2537 6.71231 19.2445 7.35802"
+                      d="M8 1.5C9.65685 3.15685 10.6569 5.48568 10.6569 8C10.6569 10.5143 9.65685 12.8432 8 14.5C6.34315 12.8432 5.34315 10.5143 5.34315 8C5.34315 5.48568 6.34315 3.15685 8 1.5Z"
                       stroke="#525866"
-                      strokeWidth="1.375"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
                     />
                   </svg>
-                </Link>
-              )}
-            </div>
+                ),
+              },
+            ].map((social, idx) => (
+              <div
+                key={idx}
+                className="flex justify-between items-center w-full"
+              >
+                <div className="flex items-center gap-1.5">
+                  {social.icon}
+                  <span className="text-[13px] font-normal text-black font-inter-tight">
+                    {social.name}
+                  </span>
+                </div>
+                {social.url ? (
+                  <Link
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#525866] hover:text-black transition-colors"
+                  >
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 22 22"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-[18px] h-[18px]"
+                    >
+                      <path
+                        d="M10.1739 2.75C6.82897 2.75602 5.0774 2.83816 3.95801 3.95773C2.75 5.16593 2.75 7.11051 2.75 10.9996C2.75 14.8888 2.75 16.8334 3.95801 18.0415C5.16601 19.2498 7.11028 19.2498 10.9989 19.2498C14.8873 19.2498 16.8316 19.2498 18.0396 18.0415C19.1589 16.922 19.2411 15.1701 19.2471 11.8247"
+                        stroke="currentColor"
+                        strokeWidth="1.375"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M18.8432 3.20458L10.1282 11.9702M18.8432 3.20458C18.3904 2.75119 15.34 2.79345 14.6951 2.80262M18.8432 3.20458C19.296 3.65798 19.2538 6.71231 19.2446 7.35802"
+                        stroke="currentColor"
+                        strokeWidth="1.375"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </Link>
+                ) : (
+                  <Link
+                    href="/profile/edit?section=social"
+                    className="text-[10px] font-normal text-[#5C30FF] font-inter-tight hover:underline"
+                  >
+                    Add
+                  </Link>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </div>
