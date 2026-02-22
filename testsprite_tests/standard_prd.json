@@ -370,10 +370,7 @@
       {
         "name": "User Registration",
         "description": "Register new user account with email and password",
-        "files": [
-          "app/(auth)/signup/page.tsx",
-          "lib/api/auth-service.ts"
-        ],
+        "files": ["app/(auth)/signup/page.tsx", "lib/api/auth-service.ts"],
         "entry_route": "/signup",
         "user_interactions": [
           "Fill email input field",
