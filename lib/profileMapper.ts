@@ -20,6 +20,7 @@ export interface UIProfileData {
     companyStage?: string;
     operatingModel?: string;
   };
+  company?: string;
   experience: {
     id: string;
     company: string;
@@ -234,6 +235,7 @@ export function mapAPIToUI(
       profileImageUrl: data.profileImageUrl || "",
     },
     professional: mappedProfessional,
+    company: data.company || "",
     experience: (data.workExperience || []).map((exp: any, idx: number) => ({
       id: exp.id || `${idx}`,
       company: exp.company,

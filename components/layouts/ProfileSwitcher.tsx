@@ -175,6 +175,7 @@ export function ProfileSwitcher() {
     currentProfileUI,
     initialProfileName,
     initialProfileAvatar,
+    isLoading,
   } = useProfile();
 
   // Restore last active role when switching roles
@@ -248,9 +249,9 @@ export function ProfileSwitcher() {
   const getDisplayName = (role: string, profile: any) => {
     if (role === "recruiter") {
       return (
+        profile?.company ||
         profile?.companyName ||
         profile?.professional?.company ||
-        profile?.company ||
         profile?.fullName ||
         "Company"
       );
@@ -289,6 +290,21 @@ export function ProfileSwitcher() {
   const switchableRoles = availableRoles.filter((role) => role !== activeRole);
 
   const roleColors = getRoleColors(activeRole);
+
+  // Show loading skeleton while profile data is being fetched
+  if (isLoading) {
+    return (
+      <div className="w-full px-[10px] py-[12px] rounded-lg bg-gray-100 animate-pulse">
+        <div className="flex items-center gap-[8px] min-w-0">
+          <div className="w-[28px] h-[28px] rounded-full bg-gray-200" />
+          <div className="min-w-0 flex-1">
+            <div className="h-3 w-20 bg-gray-200 rounded mb-1" />
+            <div className="h-2 w-12 bg-gray-200 rounded" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Don't render until we have an active role (prevents showing wrong role during initial load)
   if (!activeRole) {

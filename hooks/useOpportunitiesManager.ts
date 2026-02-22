@@ -12,9 +12,11 @@ import {
   unsaveOpportunity,
   getSaveStatus,
   getSavedOpportunities,
+  reopenOpportunity,
   type Opportunity,
   type GetOpportunitiesParams,
   type PaginatedOpportunitiesResponse,
+  type ReopenOpportunityResponse,
 } from "@/lib/api/opportunities";
 
 interface UseOpportunitiesManagerReturn {
@@ -39,6 +41,7 @@ interface UseOpportunitiesManagerReturn {
     limit?: number,
     offset?: number,
   ) => Promise<PaginatedOpportunitiesResponse>;
+  reopen: (id: string) => Promise<ReopenOpportunityResponse>;
 }
 
 export function useOpportunitiesManager(): UseOpportunitiesManagerReturn {
@@ -248,6 +251,32 @@ export function useOpportunitiesManager(): UseOpportunitiesManagerReturn {
     [],
   );
 
+  const reopen = useCallback(
+    async (id: string): Promise<ReopenOpportunityResponse> => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        return await reopenOpportunity(id);
+      } catch (err: any) {
+        // Extract error message from the response
+        let errorMsg = "Failed to reopen opportunity";
+        if (err instanceof Error) {
+          errorMsg = err.message;
+        } else if (err?.data?.message) {
+          errorMsg = err.data.message;
+        } else if (typeof err?.message === "string") {
+          errorMsg = err.message;
+        }
+        setError(errorMsg);
+        console.error("Failed to reopen opportunity:", err);
+        throw new Error(errorMsg);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [],
+  );
+
   return {
     isLoading,
     error,
@@ -262,5 +291,6 @@ export function useOpportunitiesManager(): UseOpportunitiesManagerReturn {
     unsave,
     checkSaveStatus,
     getSaved,
+    reopen,
   };
 }

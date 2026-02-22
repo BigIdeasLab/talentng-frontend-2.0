@@ -40,7 +40,8 @@ export function PostOpportunityForm() {
   const router = useRouter();
   const pathname = usePathname();
   const { toast } = useToast();
-  const { create, isLoading } = useOpportunitiesManager();
+  const { create, getAll, isLoading } = useOpportunitiesManager();
+  const [titleError, setTitleError] = useState<string>("");
   const [expandedSection, setExpandedSection] = useState<string>("basic-info");
   const [showExitModal, setShowExitModal] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState<
@@ -65,6 +66,33 @@ export function PostOpportunityForm() {
     setFormData(DEFAULT_FORM_DATA);
     sessionStorage.removeItem("opportunityFormData");
   };
+
+  const checkDuplicateTitle = async () => {
+    const title = formData.title.trim();
+    if (!title) {
+      setTitleError("");
+      return;
+    }
+    try {
+      const response = await getAll({ status: "active", limit: 100 });
+      const draftResponse = await getAll({ status: "draft", limit: 100 });
+      const allOpportunities = [...response.data, ...draftResponse.data];
+      const duplicate = allOpportunities.some(
+        (opp) => opp.title.toLowerCase() === title.toLowerCase(),
+      );
+      setTitleError(
+        duplicate ? "You already have an opportunity with this title." : "",
+      );
+    } catch {
+      setTitleError("");
+    }
+  };
+
+  useEffect(() => {
+    if (formData.title.trim()) {
+      checkDuplicateTitle();
+    }
+  }, []);
 
   const validateAllSections = (): string | null => {
     // Basic Info
@@ -112,6 +140,20 @@ export function PostOpportunityForm() {
   };
 
   const handleSave = () => {
+    if (titleError) {
+      setExpandedSection("basic-info");
+      setTimeout(() => {
+        const el = sectionRefs.current["basic-info"];
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+      toast({
+        title: "Duplicate Title",
+        description: "Please choose a different title before continuing.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const failedSection = validateAllSections();
     if (failedSection) {
       setExpandedSection(failedSection);
@@ -224,9 +266,14 @@ export function PostOpportunityForm() {
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Failed to save draft";
+      const isDuplicate = message
+        .toLowerCase()
+        .includes("already have an opportunity with this title");
       toast({
-        title: "Error",
-        description: message,
+        title: isDuplicate ? "Duplicate Title" : "Error",
+        description: isDuplicate
+          ? "You already have an opportunity with this title. Please choose a different title."
+          : message,
         variant: "destructive",
       });
     }
@@ -373,8 +420,13 @@ export function PostOpportunityForm() {
                   location: formData.location,
                   employmentType: formData.employmentType,
                 }}
-                updateFormData={updateFormData}
+                updateFormData={(data) => {
+                  updateFormData(data);
+                  if (data.title !== undefined) setTitleError("");
+                }}
                 onNext={() => toggleSection("description")}
+                titleError={titleError}
+                onTitleBlur={checkDuplicateTitle}
               />
             </FormSectionComponent>
 

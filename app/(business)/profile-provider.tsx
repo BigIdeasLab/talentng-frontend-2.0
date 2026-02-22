@@ -85,9 +85,9 @@ interface AllStats {
 function getProfileDisplayName(role: string, profile: any): string {
   if (role === "recruiter") {
     return (
+      profile?.company ||
       profile?.companyName ||
       profile?.professional?.company ||
-      profile?.company ||
       profile?.fullName ||
       "Company"
     );

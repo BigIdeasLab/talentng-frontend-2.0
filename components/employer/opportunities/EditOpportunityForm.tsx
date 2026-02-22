@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
 import { useToast } from "@/hooks";
 import { BasicInfoStep } from "./post-steps/BasicInfoStep";
@@ -26,12 +26,22 @@ export function EditOpportunityForm({
   opportunityId,
 }: EditOpportunityFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
-  const { getById, update, isLoading: apiLoading } = useOpportunitiesManager();
-  const [expandedSection, setExpandedSection] = useState<string>("basic-info");
+  const {
+    getById,
+    getAll,
+    update,
+    isLoading: apiLoading,
+  } = useOpportunitiesManager();
+  const initialSection = searchParams.get("section") as FormSection | null;
+  const [expandedSection, setExpandedSection] = useState<string>(
+    initialSection || "basic-info",
+  );
   const [showExitModal, setShowExitModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [titleError, setTitleError] = useState<string>("");
   const [pendingNavigation, setPendingNavigation] = useState<
     (() => void) | null
   >(null);
@@ -140,6 +150,47 @@ export function EditOpportunityForm({
     fetchOpportunity();
   }, [opportunityId, router]);
 
+  // Scroll to section from URL param after data loads
+  useEffect(() => {
+    if (!isLoading && initialSection) {
+      setTimeout(() => {
+        const element = sectionRefs.current[initialSection];
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 100);
+    }
+  }, [isLoading, initialSection]);
+
+  const checkDuplicateTitle = async () => {
+    const title = formData.title.trim();
+    if (!title) {
+      setTitleError("");
+      return;
+    }
+    try {
+      const response = await getAll({ status: "active", limit: 100 });
+      const draftResponse = await getAll({ status: "draft", limit: 100 });
+      const allOpportunities = [...response.data, ...draftResponse.data];
+      const duplicate = allOpportunities.some(
+        (opp) =>
+          opp.id !== opportunityId &&
+          opp.title.toLowerCase() === title.toLowerCase(),
+      );
+      setTitleError(
+        duplicate ? "You already have an opportunity with this title." : "",
+      );
+    } catch {
+      setTitleError("");
+    }
+  };
+
+  useEffect(() => {
+    if (!isLoading && formData.title.trim()) {
+      checkDuplicateTitle();
+    }
+  }, [isLoading]);
+
   const buildCompensation = (): string => {
     if (!formData.paymentType) return "";
 
@@ -151,6 +202,20 @@ export function EditOpportunityForm({
   };
 
   const handleSave = async () => {
+    if (titleError) {
+      setExpandedSection("basic-info");
+      setTimeout(() => {
+        const el = sectionRefs.current["basic-info"];
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+      toast({
+        title: "Duplicate Title",
+        description: "Please choose a different title before continuing.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSaving(true);
     try {
       const updateData = {
@@ -179,9 +244,14 @@ export function EditOpportunityForm({
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Failed to update opportunity";
+      const isDuplicate = message
+        .toLowerCase()
+        .includes("already have an opportunity with this title");
       toast({
-        title: "Error",
-        description: message,
+        title: isDuplicate ? "Duplicate Title" : "Error",
+        description: isDuplicate
+          ? "You already have an opportunity with this title. Please go back and choose a different title."
+          : message,
         variant: "destructive",
       });
     } finally {
@@ -244,6 +314,20 @@ export function EditOpportunityForm({
   };
 
   const handlePreview = () => {
+    if (titleError) {
+      setExpandedSection("basic-info");
+      setTimeout(() => {
+        const el = sectionRefs.current["basic-info"];
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+      toast({
+        title: "Duplicate Title",
+        description: "Please choose a different title before continuing.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const searchParams = new URLSearchParams();
     searchParams.set("data", JSON.stringify(formData));
     searchParams.set("edit", opportunityId);
@@ -408,8 +492,13 @@ export function EditOpportunityForm({
                         location: formData.location,
                         employmentType: formData.employmentType,
                       }}
-                      updateFormData={updateFormData}
+                      updateFormData={(data) => {
+                        updateFormData(data);
+                        if (data.title !== undefined) setTitleError("");
+                      }}
                       onNext={() => toggleSection("description")}
+                      titleError={titleError}
+                      onTitleBlur={checkDuplicateTitle}
                     />
                   </div>
                 </>

@@ -27,6 +27,7 @@ export function OpportunityCard({
   const config = TYPE_CONFIG[opportunity.type] || TYPE_CONFIG["job-listing"];
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showReopenModal, setShowReopenModal] = useState(false);
   const [applicants, setApplicants] = useState<Application[]>([]);
   const [loadingApplicants, setLoadingApplicants] = useState(false);
   const {
@@ -34,6 +35,7 @@ export function OpportunityCard({
     post,
     delete: deleteOpp,
     updateStatus,
+    reopen,
   } = useOpportunitiesManager();
 
   useEffect(() => {
@@ -57,7 +59,7 @@ export function OpportunityCard({
   }, [opportunity.id, activeTab]);
 
   const handleCardClick = (e: React.MouseEvent) => {
-    if (isLoading || showModal || showDeleteModal) {
+    if (isLoading || showModal || showDeleteModal || showReopenModal) {
       e.preventDefault();
       e.stopPropagation();
       return;
@@ -107,34 +109,37 @@ export function OpportunityCard({
     }
   };
 
+  const hadCap = opportunity.applicationCap && opportunity.applicationCap > 0;
+
+  const confirmReopen = async () => {
+    try {
+      const response = await reopen(opportunity.id);
+      setShowReopenModal(false);
+      toast({
+        title: "Success",
+        description: response.message || "Opportunity reopened successfully",
+      });
+      onMutationSuccess?.();
+      if (hadCap) {
+        router.push(
+          `/opportunities/edit/${opportunity.id}?section=application-settings`,
+        );
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to reopen opportunity";
+      toast({
+        title: "Error",
+        description: message,
+        variant: "destructive",
+      });
+      setShowReopenModal(false);
+    }
+  };
+
   const renderOpportunityActions = () => {
     if (activeTab === "closed") {
-      return (
-        <div className="flex items-center gap-2">
-          <div className="flex -space-x-2.5">
-            {applicants.length > 0 ? (
-              applicants.map((app) => (
-                <img
-                  key={app.id}
-                  src={app.user.talentProfile.profileImageUrl}
-                  alt={app.user.talentProfile.fullName}
-                  title={app.user.talentProfile.fullName}
-                  className="w-6 h-6 rounded-full border border-white flex-shrink-0 object-cover"
-                />
-              ))
-            ) : (
-              <>
-                <div className="w-6 h-6 rounded-full bg-gray-300 border border-white flex-shrink-0" />
-                <div className="w-6 h-6 rounded-full bg-gray-400 border border-white flex-shrink-0" />
-                <div className="w-6 h-6 rounded-full bg-gray-500 border border-white flex-shrink-0" />
-              </>
-            )}
-          </div>
-          <div className="text-xs font-medium font-inter-tight text-black">
-            {opportunity.applicantsCount} Talent Applied
-          </div>
-        </div>
-      );
+      return null;
     }
 
     if (activeTab === "draft") {
@@ -516,6 +521,98 @@ export function OpportunityCard({
         </div>
       )}
 
+      {/* Closed Opportunities Section - With Reopen Button */}
+      {activeTab === "closed" && (
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            router.push(`/opportunities/${opportunity.id}/applicants`);
+          }}
+          className="flex items-center justify-between p-3 border-t border-[#E1E4EA] rounded-b-[16px] hover:bg-gray-50 transition-colors"
+        >
+          <div className="flex items-center gap-2 cursor-pointer">
+            <div className="flex -space-x-2.5">
+              {loadingApplicants ? (
+                <>
+                  <div className="w-6 h-6 rounded-full bg-gray-300 border border-white flex-shrink-0 animate-pulse" />
+                  <div className="w-6 h-6 rounded-full bg-gray-400 border border-white flex-shrink-0 animate-pulse" />
+                  <div className="w-6 h-6 rounded-full bg-gray-500 border border-white flex-shrink-0 animate-pulse" />
+                </>
+              ) : applicants.length > 0 ? (
+                applicants.map((app) => (
+                  <img
+                    key={app.id}
+                    src={app.user.talentProfile.profileImageUrl}
+                    alt={app.user.talentProfile.fullName}
+                    title={app.user.talentProfile.fullName}
+                    className="w-6 h-6 rounded-full border border-white flex-shrink-0 object-cover"
+                  />
+                ))
+              ) : (
+                <>
+                  <div className="w-6 h-6 rounded-full bg-gray-300 border border-white flex-shrink-0" />
+                  <div className="w-6 h-6 rounded-full bg-gray-400 border border-white flex-shrink-0" />
+                  <div className="w-6 h-6 rounded-full bg-gray-500 border border-white flex-shrink-0" />
+                </>
+              )}
+            </div>
+            <p className="text-xs font-medium font-inter-tight">
+              <span className="text-black">
+                {opportunity.applicantsCount} talents applied.{" "}
+              </span>
+              <span className="text-[#E39B00] underline">View</span>
+            </p>
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowReopenModal(true);
+            }}
+            disabled={isLoading}
+            className="flex items-center gap-0.5 h-8 px-3 text-white rounded-full hover:opacity-80 transition-colors flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              backgroundColor: ROLE_COLORS.recruiter.primary,
+              borderWidth: 1,
+              borderStyle: "solid",
+              borderColor: ROLE_COLORS.recruiter.primary,
+            }}
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M2.25 9C2.25 5.27208 5.27208 2.25 9 2.25C12.7279 2.25 15.75 5.27208 15.75 9C15.75 12.7279 12.7279 15.75 9 15.75C5.27208 15.75 2.25 12.7279 2.25 9Z"
+                stroke="white"
+                strokeWidth="1.125"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M9 6V9L11.25 10.5"
+                stroke="white"
+                strokeWidth="1.125"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M6.75 2.625L7.125 3.75M11.25 2.625L10.875 3.75M6.75 15.375L7.125 14.25M11.25 15.375L10.875 14.25M2.625 6.75L3.75 7.125M2.625 11.25L3.75 10.875M15.375 6.75L14.25 7.125M15.375 11.25L14.25 10.875"
+                stroke="white"
+                strokeWidth="1.125"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span className="text-[10px] font-medium font-inter-tight">
+              {isLoading ? "Reopening..." : "Reopen"}
+            </span>
+          </button>
+        </div>
+      )}
+
       {/* Post Confirmation Modal */}
       {activeTab === "draft" && (
         <Modal
@@ -572,6 +669,39 @@ export function OpportunityCard({
           </>
         }
       />
+
+      {/* Reopen Confirmation Modal */}
+      {activeTab === "closed" && (
+        <Modal
+          isOpen={showReopenModal}
+          onClose={() => setShowReopenModal(false)}
+          title="Reopen Opportunity"
+          description={
+            hadCap
+              ? `Are you sure you want to reopen "${opportunity.title}"? It will be visible to all talents and accept new applications. Any previous application cap will be cleared.`
+              : `Are you sure you want to reopen "${opportunity.title}"? It will be visible to all talents and accept new applications.`
+          }
+          footer={
+            <>
+              <Button
+                variant="outline"
+                onClick={() => setShowReopenModal(false)}
+                disabled={isLoading}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={confirmReopen}
+                disabled={isLoading}
+                className="hover:opacity-80"
+                style={{ backgroundColor: ROLE_COLORS.recruiter.primary }}
+              >
+                {isLoading ? "Reopening..." : "Reopen"}
+              </Button>
+            </>
+          }
+        />
+      )}
     </div>
   );
 }

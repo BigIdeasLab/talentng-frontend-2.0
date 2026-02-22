@@ -8,6 +8,7 @@ import type {
   Opportunity,
   GetOpportunitiesParams,
   PaginatedOpportunitiesResponse,
+  ReopenOpportunityResponse,
 } from "./types";
 
 export const getOpportunities = async (
@@ -98,9 +99,18 @@ export const getSavedOpportunities = async (
   return response;
 };
 
+export const reopenOpportunity = async (
+  id: string,
+): Promise<ReopenOpportunityResponse> => {
+  return apiClient<ReopenOpportunityResponse>(`/opportunities/${id}/reopen`, {
+    method: "POST",
+  });
+};
+
 // Export types
 export type {
   Opportunity,
   GetOpportunitiesParams,
   PaginatedOpportunitiesResponse,
+  ReopenOpportunityResponse,
 };

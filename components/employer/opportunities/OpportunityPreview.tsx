@@ -294,9 +294,14 @@ export function OpportunityPreview() {
       router.push("/opportunities?tab=draft");
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to save";
+      const isDuplicate = message
+        .toLowerCase()
+        .includes("already have an opportunity with this title");
       toast({
-        title: "Error",
-        description: message,
+        title: isDuplicate ? "Duplicate Title" : "Error",
+        description: isDuplicate
+          ? "You already have an opportunity with this title. Please go back and choose a different title."
+          : message,
         variant: "destructive",
       });
     }
@@ -357,9 +362,14 @@ export function OpportunityPreview() {
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Failed to update opportunity";
+      const isDuplicate = message
+        .toLowerCase()
+        .includes("already have an opportunity with this title");
       toast({
-        title: "Error",
-        description: message,
+        title: isDuplicate ? "Duplicate Title" : "Error",
+        description: isDuplicate
+          ? "You already have an opportunity with this title. Please go back and choose a different title."
+          : message,
         variant: "destructive",
       });
     }

@@ -16,6 +16,8 @@ interface BasicInfoStepProps {
   };
   updateFormData: (data: Partial<BasicInfoStepProps["formData"]>) => void;
   onNext: () => void;
+  titleError?: string;
+  onTitleBlur?: () => void;
 }
 
 interface ValidationErrors {
@@ -34,6 +36,8 @@ export function BasicInfoStep({
   formData,
   updateFormData,
   onNext,
+  titleError,
+  onTitleBlur,
 }: BasicInfoStepProps) {
   const [errors, setErrors] = useState<ValidationErrors>({});
 
@@ -106,20 +110,23 @@ export function BasicInfoStep({
               if (errors.title) setErrors({ ...errors, title: "" });
             }}
             className={`w-full px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none transition-colors ${
-              errors.title ? "border-red-500" : "border-[#E1E4EA]"
+              errors.title || titleError ? "border-red-500" : "border-[#E1E4EA]"
             }`}
             onFocus={(e) =>
               (e.currentTarget.style.borderColor =
                 ROLE_COLORS.recruiter.primary)
             }
-            onBlur={(e) => (e.currentTarget.style.borderColor = "")}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = "";
+              onTitleBlur?.();
+            }}
           />
-          {errors.title && (
+          {(errors.title || titleError) && (
             <span
               data-error
               className="font-inter-tight text-[12px] text-red-500"
             >
-              {errors.title}
+              {errors.title || titleError}
             </span>
           )}
         </div>

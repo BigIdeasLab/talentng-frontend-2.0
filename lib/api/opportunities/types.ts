@@ -102,3 +102,14 @@ export interface GetOpportunitiesParams {
   sortBy?: "createdAt" | "applicationCount" | "title";
   sortOrder?: "asc" | "desc";
 }
+
+export interface ReopenOpportunityResponse {
+  id: string;
+  status: string;
+  applicationCap: number | null;
+  closingDate: string | null;
+  hadApplicationCap: boolean;
+  previousCap: number | null;
+  hadClosingDate: boolean;
+  message: string;
+}
