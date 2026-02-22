@@ -37,6 +37,7 @@ export interface OpportunityCard {
   closingDate?: string;
   appliedAs?: ("talent" | "mentor")[];
   saved?: boolean;
+  workType?: string;
 }
 
 // Component props

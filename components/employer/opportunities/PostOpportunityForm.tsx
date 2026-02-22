@@ -20,7 +20,7 @@ const DEFAULT_FORM_DATA = {
   tags: [] as string[],
   tools: [] as string[],
   category: "",
-  workMode: "",
+  workType: "",
   location: "",
   paymentType: "" as "weekly" | "monthly" | "hourly" | "",
   priceMode: "range" as "range" | "fixed",
@@ -54,7 +54,22 @@ export function PostOpportunityForm() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        return { ...DEFAULT_FORM_DATA, ...parsed };
+        return {
+          ...DEFAULT_FORM_DATA,
+          ...parsed,
+          workType: (parsed.workType || "").toLowerCase() || "",
+          experienceLevel: (() => {
+            const level = parsed.experienceLevel || "";
+            const normalized = level.toLowerCase();
+            if (normalized === "junior" || normalized === "entry")
+              return "Entry";
+            if (normalized === "mid" || normalized === "intermediate")
+              return "Intermediate";
+            if (normalized === "senior") return "Senior";
+            if (normalized === "expert") return "Expert";
+            return level;
+          })(),
+        };
       } catch (e) {
         console.error("Failed to parse saved form data:", e);
       }
@@ -101,7 +116,7 @@ export function PostOpportunityForm() {
       formData.title.trim().length < 5 ||
       !formData.type ||
       !formData.category ||
-      !formData.workMode ||
+      !formData.workType ||
       !formData.location ||
       !formData.employmentType
     ) {
@@ -416,7 +431,7 @@ export function PostOpportunityForm() {
                   type: formData.type,
                   title: formData.title,
                   category: formData.category,
-                  workMode: formData.workMode,
+                  workType: formData.workType,
                   location: formData.location,
                   employmentType: formData.employmentType,
                 }}

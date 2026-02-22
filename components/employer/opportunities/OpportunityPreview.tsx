@@ -48,7 +48,7 @@ interface FormData {
   tags: string[];
   tools: string[];
   category: string;
-  workMode: string; // Work location: remote, hybrid, on-site
+  workType: string; // Work location: remote, hybrid, on-site
   location: string;
   paymentType: "weekly" | "monthly" | "hourly" | "";
   priceMode: "range" | "fixed";
@@ -96,7 +96,7 @@ const DEFAULT_FORM_DATA: FormData = {
   ],
   tools: ["VSCode", "Git", "Docker", "PostgreSQL", "MongoDB", "AWS"],
   category: "Engineering",
-  workMode: "hybrid",
+  workType: "hybrid",
   location: "Lagos, Nigeria",
   paymentType: "monthly",
   priceMode: "range",
@@ -212,7 +212,21 @@ export function OpportunityPreview() {
     if (dataParam) {
       try {
         const parsedData = JSON.parse(decodeURIComponent(dataParam));
-        setFormData(parsedData);
+        setFormData({
+          ...parsedData,
+          workType: (parsedData.workType || "").toLowerCase() || "",
+          experienceLevel: (() => {
+            const level = parsedData.experienceLevel || "";
+            const normalized = level.toLowerCase();
+            if (normalized === "junior" || normalized === "entry")
+              return "Entry";
+            if (normalized === "mid" || normalized === "intermediate")
+              return "Intermediate";
+            if (normalized === "senior") return "Senior";
+            if (normalized === "expert") return "Expert";
+            return level;
+          })(),
+        });
       } catch (error) {
         console.error("Failed to parse form data:", error);
       }
@@ -636,53 +650,50 @@ export function OpportunityPreview() {
                   )}
 
                 {/* Work Mode & Employment Type */}
-                {(formData.workMode || formData.employmentType) && (
+                {(formData.workType || formData.employmentType) && (
                   <div className="flex flex-col gap-2.5">
                     <div className="flex items-center gap-2">
-                      {/* Work Mode */}
-                      {formData.workMode && (
-                        <div className="flex items-center gap-2">
-                          <div className="w-[30px] h-[30px] rounded-full bg-[#F5F5F5] flex items-center justify-center flex-shrink-0">
-                            <svg
-                              width="17"
-                              height="17"
-                              viewBox="0 0 20 20"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M1.66602 11.6663C1.66602 9.32559 1.66602 8.15518 2.22778 7.31444C2.47098 6.95047 2.78348 6.63797 3.14745 6.39477C3.98819 5.83301 5.15858 5.83301 7.49935 5.83301H12.4993C14.8401 5.83301 16.0105 5.83301 16.8513 6.39477C17.2152 6.63797 17.5277 6.95047 17.7709 7.31444C18.3327 8.15518 18.3327 9.32559 18.3327 11.6663C18.3327 14.0071 18.3327 15.1775 17.7709 16.0183C17.5277 16.3822 17.2152 16.6947 16.8513 16.9379C16.0105 17.4997 14.8401 17.4997 12.4993 17.4997H7.49935C5.15858 17.4997 3.98819 17.4997 3.14745 16.9379C2.78348 16.6947 2.47098 16.3822 2.22778 16.0183C1.66602 15.1775 1.66602 14.0071 1.66602 11.6663Z"
-                                stroke="#606060"
-                                strokeWidth="1.25"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M13.3337 5.83333C13.3337 4.26198 13.3337 3.47631 12.8455 2.98816C12.3573 2.5 11.5717 2.5 10.0003 2.5C8.42899 2.5 7.6433 2.5 7.15515 2.98816C6.66699 3.47631 6.66699 4.26198 6.66699 5.83333"
-                                stroke="#606060"
-                                strokeWidth="1.25"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M5 9.16699L5.54331 9.33533C8.40425 10.222 11.5957 10.222 14.4567 9.33533L15 9.16699M10 10.0003V11.667"
-                                stroke="#606060"
-                                strokeWidth="1.25"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </div>
-                          <div className="flex flex-col gap-1.5">
-                            <span className="font-inter-tight text-[13px] font-medium text-black">
-                              {formData.workMode}
-                            </span>
-                            <span className="font-inter-tight text-[12px] font-light text-[#525866]">
-                              Work Mode
-                            </span>
-                          </div>
-                        </div>
-                      )}
+                      <div className="w-[30px] h-[30px] rounded-full bg-[#F5F5F5] flex items-center justify-center flex-shrink-0">
+                        <svg
+                          width="17"
+                          height="17"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M1.66602 11.6663C1.66602 9.32559 1.66602 8.15518 2.22778 7.31444C2.47098 6.95047 2.78348 6.63797 3.14745 6.39477C3.98819 5.83301 5.15858 5.83301 7.49935 5.83301H12.4993C14.8401 5.83301 16.0105 5.83301 16.8513 6.39477C17.2152 6.63797 17.5277 6.95047 17.7709 7.31444C18.3327 8.15518 18.3327 9.32559  11.66618.33273C18.3327 14.0071 18.3327 15.1775 17.7709 16.0183C17.5277 16.3822 17.2152 16.6947 16.8513 16.9379C16.0105 17.4997 14.8401 17.4997 12.4993 17.4997H7.49935C5.15858 17.4997 3.98819 17.4997 3.14745 16.9379C2.78348 16.6947 2.47098 16.3822 2.22778 16.0183C1.66602 15.1775 1.66602 14.0071 1.66602 11.6663Z"
+                            stroke="#606060"
+                            strokeWidth="1.25"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M13.3337 5.83333C13.3337 4.26198 13.3337 3.47631 12.8455 2.98816C12.3573 2.5 11.5717 2.5 10.0003 2.5C8.42899 2.5 7.6433 2.5 7.15515 2.98816C6.66699 3.47631 6.66699 4.26198 6.66699 5.83333"
+                            stroke="#606060"
+                            strokeWidth="1.25"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M5 9.16699L5.54331 9.33533C8.40425 10.222 11.5957 10.222 14.4567 9.33533L15 9.16699M10 10.0003V11.667"
+                            stroke="#606060"
+                            strokeWidth="1.25"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        <span className="font-inter-tight text-[13px] font-medium text-black">
+                          {[formData.employmentType, formData.workType]
+                            .filter(Boolean)
+                            .join(" • ")}
+                        </span>
+                        <span className="font-inter-tight text-[12px] font-light text-[#525866]">
+                          Job Type • Work Mode
+                        </span>
+                      </div>
                     </div>
                   </div>
                 )}

@@ -10,7 +10,7 @@ interface BasicInfoStepProps {
     type: string; // Opportunity type
     title: string;
     category: string;
-    workMode: string; // Work location: remote, hybrid, on-site
+    workType: string; // Work location: remote, hybrid, on-site
     location: string;
     employmentType: string; // Employment arrangement
   };
@@ -61,8 +61,8 @@ export function BasicInfoStep({
     if (!formData.category) {
       newErrors.category = "Category is required";
     }
-    if (!formData.workMode) {
-      newErrors.workMode = "Work mode is required";
+    if (!formData.workType) {
+      newErrors.workType = "Work mode is required";
     }
     if (!selectedState || !selectedCity) {
       newErrors.location = "Both state and city are required";
@@ -246,13 +246,13 @@ export function BasicInfoStep({
           </label>
           <div className="relative">
             <select
-              value={formData.workMode}
+              value={formData.workType}
               onChange={(e) => {
-                updateFormData({ workMode: e.target.value });
-                if (errors.workMode) setErrors({ ...errors, workMode: "" });
+                updateFormData({ workType: e.target.value });
+                if (errors.workType) setErrors({ ...errors, workType: "" });
               }}
               className={`w-full h-[46px] px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] appearance-none outline-none transition-colors bg-white ${
-                errors.workMode ? "border-red-500" : "border-[#E1E4EA]"
+                errors.workType ? "border-red-500" : "border-[#E1E4EA]"
               }`}
               onFocus={(e) =>
                 (e.currentTarget.style.borderColor =
@@ -281,12 +281,12 @@ export function BasicInfoStep({
               />
             </svg>
           </div>
-          {errors.workMode && (
+          {errors.workType && (
             <span
               data-error
               className="font-inter-tight text-[12px] text-red-500"
             >
-              {errors.workMode}
+              {errors.workType}
             </span>
           )}
         </div>

@@ -378,7 +378,7 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                   )}
 
                 {/* Employment Type */}
-                {opportunity.employmentType && (
+                {(opportunity.employmentType || opportunity.workType) && (
                   <div className="flex items-center gap-2">
                     <div className="w-[28px] h-[28px] rounded-full bg-[#F5F5F5] flex items-center justify-center flex-shrink-0">
                       <svg
@@ -413,10 +413,12 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                     </div>
                     <div className="flex flex-col gap-1">
                       <span className="font-inter-tight text-[12px] font-medium text-black leading-normal">
-                        {opportunity.employmentType}
+                        {[opportunity.employmentType, opportunity.workType]
+                          .filter(Boolean)
+                          .join(" • ")}
                       </span>
                       <span className="font-inter-tight text-[11px] font-light text-[#525866] leading-normal">
-                        Job Type
+                        Job Type • Work Mode
                       </span>
                     </div>
                   </div>

@@ -71,6 +71,7 @@ export const transformOpportunityToCard = (
     closingDate: opp.closingDate,
     appliedAs: opp.appliedAs || [],
     saved: opp.saved ?? false,
+    workType: opp.workType,
   };
   return result;
 };

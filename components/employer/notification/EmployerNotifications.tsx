@@ -198,21 +198,26 @@ export function EmployerNotifications({
       {allNotifications.map((notification) => {
         const formatted = formatNotification(notification);
         const colors = getTypeColors(formatted.payloadType);
+        const isUnread = !notification.readAt;
 
         return (
           <div
             key={notification.id}
-            className={`flex gap-3 px-5 py-4 border-b border-gray-100 hover:bg-gray-50 transition-colors`}
+            className={`flex gap-3 px-5 py-4 border-b border-gray-100 hover:bg-gray-50 transition-colors ${isUnread ? "bg-blue-50/50" : ""}`}
             onClick={(e) => {
               const target = e.target as HTMLElement;
               if (target.closest("button")) {
                 return;
               }
-              handleNotificationClick(notification.id, formatted.action, true);
+              handleNotificationClick(notification.id, formatted.action, false);
             }}
             role="button"
             tabIndex={0}
           >
+            {/* Unread indicator */}
+            {isUnread && (
+              <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2" />
+            )}
             {/* Avatar with image or emoji */}
             {formatted.display.type === "image" ? (
               <img
@@ -240,7 +245,9 @@ export function EmployerNotifications({
             {/* Content */}
             <div className="flex-1 min-w-0 py-0.5">
               <p className="text-[12px] leading-snug">
-                <span className="font-semibold text-gray-900">
+                <span
+                  className={`${isUnread ? "font-semibold" : "font-medium"} text-gray-900`}
+                >
                   {formatted.title}
                 </span>{" "}
                 <span className="font-normal text-gray-700">
@@ -250,11 +257,6 @@ export function EmployerNotifications({
 
               <div className="flex flex-col gap-0.5 mt-1.5">
                 <div className="flex items-center gap-1.5">
-                  {formatted.isUnread && (
-                    <div
-                      className={`w-2 h-2 rounded-full flex-shrink-0 ${colors.badge}`}
-                    ></div>
-                  )}
                   <p className="text-[10px] text-gray-500">
                     {formatted.timestamp}
                   </p>

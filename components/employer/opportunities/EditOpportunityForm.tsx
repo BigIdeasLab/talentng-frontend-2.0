@@ -56,7 +56,7 @@ export function EditOpportunityForm({
     tags: string[];
     tools: string[];
     category: string;
-    workMode: string;
+    workType: string;
     location: string;
     paymentType: "weekly" | "monthly" | "hourly" | "";
     priceMode: "range" | "fixed";
@@ -80,7 +80,7 @@ export function EditOpportunityForm({
       tags: [],
       tools: [],
       category: "",
-      workMode: "",
+      workType: "",
       location: "",
       paymentType: "",
       priceMode: "range",
@@ -117,7 +117,7 @@ export function EditOpportunityForm({
           tags: data.tags || [],
           tools: data.tools || [],
           category: data.category || "",
-          workMode: data.workType || "",
+          workType: (data.workType || "").toLowerCase() || "",
           location: data.location || "",
           paymentType,
           priceMode: (data.priceMode || "range") as "range" | "fixed",
@@ -128,7 +128,17 @@ export function EditOpportunityForm({
           startDate: data.startDate
             ? new Date(data.startDate).toISOString().split("T")[0]
             : "",
-          experienceLevel: data.experienceLevel || "",
+          experienceLevel: (() => {
+            const level = data.experienceLevel || "";
+            const normalized = level.toLowerCase();
+            if (normalized === "junior" || normalized === "entry")
+              return "Entry";
+            if (normalized === "mid" || normalized === "intermediate")
+              return "Intermediate";
+            if (normalized === "senior") return "Senior";
+            if (normalized === "expert") return "Expert";
+            return level;
+          })(),
           employmentType: data.employmentType || "",
           status: (data.status || "draft") as any,
           applicationCap: data.applicationCap
@@ -488,7 +498,7 @@ export function EditOpportunityForm({
                         type: formData.type,
                         title: formData.title,
                         category: formData.category,
-                        workMode: formData.workMode,
+                        workType: formData.workType,
                         location: formData.location,
                         employmentType: formData.employmentType,
                       }}
@@ -603,6 +613,7 @@ export function EditOpportunityForm({
                         }}
                         updateFormData={updateFormData}
                         onSubmit={() => toggleSection("application-settings")}
+                        onNext={() => toggleSection("application-settings")}
                       />
                     </div>
                   </>
