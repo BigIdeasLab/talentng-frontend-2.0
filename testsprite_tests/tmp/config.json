@@ -1,0 +1,17 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:8080",
+  "executionArgs": {
+    "projectName": "talentng-frontend",
+    "projectPath": "c:\\Users\\hecan\\Documents\\talentng-frontend",
+    "testIds": [],
+    "additionalInstruction": "Focus on testing public pages (landing, login, signup, forgot-password) as these do not require authentication. Test UI elements and form validation.",
+    "envs": {
+      "API_KEY": "sk-user-g6lzD0nTwsqzo9Sq1mvLxZ1aeytN4Awn6BBAMYr6GPAquORoksKMP60YdjvsuGlqlW26IjULqB96EfTSjCf0zU0OzUEk2ehbOG24L9AlstF7eW6_Q6jtXuVPTxfrTYvniRY"
+    }
+  },
+  "serverPort": 48048,
+  "proxy": "http://eff515b0-831a-4352-a5c6-8f91453398e1:uEjms1OTSW8pfbPeVSrLtCqCNA0BUCva@tun.testsprite.com:8080"
+}

@@ -1,0 +1,527 @@
+version: "2"
+type: frontend
+tech_stack:
+  - TypeScript
+  - Next.js 16.1.6
+  - React 18.3
+  - Tailwind CSS
+  - Radix UI
+  - TanStack Query
+  - React Hook Form
+  - Zod
+  - Framer Motion
+  - date-fns
+  - Recharts
+  - Lucide React
+
+routes:
+  - path: /
+    file: app/page.tsx
+    auth_required: false
+    description: Landing page
+  - path: /login
+    file: app/(auth)/login/page.tsx
+    auth_required: false
+    description: User login page
+  - path: /signup
+    file: app/(auth)/signup/page.tsx
+    auth_required: false
+    description: User registration page
+  - path: /forgot-password
+    file: app/(auth)/forgot-password/page.tsx
+    auth_required: false
+    description: Password recovery request page
+  - path: /reset-password
+    file: app/(auth)/reset-password/page.tsx
+    auth_required: false
+    description: Password reset page
+  - path: /confirm-email
+    file: app/(auth)/confirm-email/page.tsx
+    auth_required: false
+    description: Email confirmation page
+  - path: /onboarding
+    file: app/(auth)/onboarding/page.tsx
+    auth_required: true
+    description: User onboarding and role selection
+  - path: /dashboard
+    file: app/(business)/dashboard/page.tsx
+    auth_required: true
+    description: Role-specific dashboard
+  - path: /profile
+    file: app/(business)/profile/page.tsx
+    auth_required: true
+    description: User profile page
+  - path: /profile/edit
+    file: app/(business)/profile/edit/page.tsx
+    auth_required: true
+    description: Edit profile page
+  - path: /opportunities
+    file: app/(business)/opportunities/page.tsx
+    auth_required: true
+    description: Browse job opportunities
+  - path: /opportunities/post
+    file: app/(business)/opportunities/post/page.tsx
+    auth_required: true
+    description: Post new opportunity (Employer only)
+  - path: /opportunities/[id]
+    file: app/(business)/opportunities/[id]/page.tsx
+    auth_required: true
+    description: Opportunity details page
+  - path: /opportunities/[id]/applicants
+    file: app/(business)/opportunities/[id]/applicants/page.tsx
+    auth_required: true
+    description: View applicants for opportunity (Employer only)
+  - path: /applicants
+    file: app/(business)/applicants/page.tsx
+    auth_required: true
+    description: All applicants management (Employer only)
+  - path: /applicants/[id]
+    file: app/(business)/applicants/[id]/page.tsx
+    auth_required: true
+    description: Applicant details (Employer only)
+  - path: /applicants/hired-talents
+    file: app/(business)/applicants/hired-talents/page.tsx
+    auth_required: true
+    description: Hired talents list (Employer only)
+  - path: /discover-talent
+    file: app/(business)/discover-talent/page.tsx
+    auth_required: true
+    description: Talent discovery page (Employer only)
+  - path: /discover-talent/[userId]
+    file: app/(business)/discover-talent/[userId]/page.tsx
+    auth_required: true
+    description: Talent profile view
+  - path: /mentorship
+    file: app/(business)/mentorship/page.tsx
+    auth_required: true
+    description: Browse mentors
+  - path: /mentorship/[id]
+    file: app/(business)/mentorship/[id]/page.tsx
+    auth_required: true
+    description: Mentor profile and booking
+  - path: /sessions
+    file: app/(business)/sessions/page.tsx
+    auth_required: true
+    description: Session management (Mentor only)
+  - path: /applications
+    file: app/(business)/applications/page.tsx
+    auth_required: true
+    description: My applications (Talent only)
+  - path: /availability
+    file: app/(business)/availability/page.tsx
+    auth_required: true
+    description: Set availability (Mentor only)
+  - path: /settings
+    file: app/(business)/settings/page.tsx
+    auth_required: true
+    description: Account settings
+  - path: /support
+    file: app/(business)/support/page.tsx
+    auth_required: true
+    description: Support center
+
+features:
+  - name: User Registration
+    description: Register new user account with email and password
+    files:
+      - app/(auth)/signup/page.tsx
+      - lib/api/auth-service.ts
+    entry_route: /signup
+    user_interactions:
+      - Fill email input field
+      - Fill password input field
+      - Fill confirm password input field
+      - Click Sign Up button to submit
+      - See error message on invalid credentials
+      - See success message and redirect to login
+    api_calls:
+      - method: POST
+        endpoint: /auth/register
+    auth_required: false
+
+  - name: User Login
+    description: Login with email and password credentials
+    files:
+      - app/(auth)/login/page.tsx
+      - hooks/useAuth.ts
+      - lib/api/auth-service.ts
+    entry_route: /login
+    user_interactions:
+      - Fill email input field
+      - Fill password input field
+      - Click Login button to submit
+      - See error message on invalid credentials
+      - Redirect to dashboard on success
+    api_calls:
+      - method: POST
+        endpoint: /auth/login
+    auth_required: false
+
+  - name: Role Selection
+    description: Select user role during onboarding (Talent, Employer, or Mentor)
+    files:
+      - components/onboarding/SelectRoleStep.tsx
+      - lib/types/onboarding.ts
+    entry_route: /onboarding
+    user_interactions:
+      - View available role options
+      - Click on role card to select
+      - Click Continue button
+      - Proceed to role-specific profile setup
+    api_calls: []
+    auth_required: true
+
+  - name: Talent Profile Setup
+    description: Complete talent profile with personal and professional information
+    files:
+      - components/onboarding/CreateProfileStep.tsx
+      - components/onboarding/ShowcaseSkillsStep.tsx
+      - lib/api/talent.ts
+    entry_route: /onboarding
+    user_interactions:
+      - Fill first name and last name
+      - Fill username
+      - Select location
+      - Write bio
+      - Add skills and tech stack
+      - Add portfolio link
+      - Click Continue to save
+    api_calls:
+      - method: POST
+        endpoint: /talent/profile
+      - method: PUT
+        endpoint: /talent/profile
+    auth_required: true
+
+  - name: Employer Profile Setup
+    description: Complete employer/company profile
+    files:
+      - components/onboarding/CompanyDetailsStep.tsx
+      - components/onboarding/CompanyProfileStep.tsx
+    entry_route: /onboarding
+    user_interactions:
+      - Fill company name
+      - Select industry
+      - Fill company username
+      - Select location
+      - Write company bio
+      - Upload company logo
+      - Click Continue to save
+    api_calls:
+      - method: POST
+        endpoint: /recruiter/profile
+      - method: PUT
+        endpoint: /recruiter/profile
+    auth_required: true
+
+  - name: Mentor Profile Setup
+    description: Complete mentor profile with expertise and session settings
+    files:
+      - components/onboarding/MentorExpertiseStep.tsx
+      - components/onboarding/MentorProfileStep.tsx
+    entry_route: /onboarding
+    user_interactions:
+      - Select areas of expertise
+      - Enter years of experience
+      - Select mentorship style
+      - Add LinkedIn profile
+      - Set session duration and pricing
+      - Click Continue to save
+    api_calls:
+      - method: POST
+        endpoint: /mentor/profile
+      - method: PUT
+        endpoint: /mentor/profile
+    auth_required: true
+
+  - name: Talent Dashboard
+    description: View talent dashboard with stats, applications, and upcoming interviews
+    files:
+      - components/talent/dashboard/TalentDashboard.tsx
+      - hooks/useTalentDashboard.ts
+    entry_route: /dashboard
+    user_interactions:
+      - View welcome header with name
+      - View stat cards (earnings, hired count, applications)
+      - View weekly overview chart
+      - View hiring pipeline status
+      - View recent applications
+      - View upcoming interviews
+      - View top skills
+      - View achievements
+    api_calls:
+      - method: GET
+        endpoint: /talent/dashboard
+    auth_required: true
+
+  - name: Browse Opportunities
+    description: Search and filter job opportunities
+    files:
+      - app/(business)/opportunities/page.tsx
+      - components/talent/opportunities/opportunities-grid.tsx
+      - hooks/useOpportunities.ts
+    entry_route: /opportunities
+    user_interactions:
+      - View list of opportunities
+      - Search by keywords
+      - Filter by type (Job, Internship, Volunteer, Part-time)
+      - Filter by status (Open, Closed, Draft)
+      - Sort by newest, oldest, rate
+      - Click on opportunity card to view details
+      - Save opportunity
+    api_calls:
+      - method: GET
+        endpoint: /opportunities
+    auth_required: true
+
+  - name: Apply for Opportunity
+    description: Submit application for a job opportunity
+    files:
+      - components/talent/opportunities/application-modal.tsx
+      - components/talent/opportunities/project-selection-modal.tsx
+      - hooks/useApplications.ts
+    entry_route: /opportunities/[id]
+    user_interactions:
+      - Click Apply button on opportunity
+      - Write proposal (minimum 10 characters)
+      - Attach portfolio projects (max 3)
+      - Click Submit Application
+      - See success/error message
+    api_calls:
+      - method: POST
+        endpoint: /applications
+    auth_required: true
+
+  - name: Post Opportunity
+    description: Create new job opportunity (Employer only)
+    files:
+      - app/(business)/opportunities/post/page.tsx
+      - components/employer/opportunities/post-steps/BasicInfoStep.tsx
+      - components/employer/opportunities/post-steps/BudgetScopeStep.tsx
+    entry_route: /opportunities/post
+    user_interactions:
+      - Fill job title
+      - Select job type
+      - Select category
+      - Fill location
+      - Select employment type
+      - Select experience level
+      - Set start date
+      - Write job description
+      - Add key responsibilities
+      - Add requirements
+      - Set budget (fixed or range)
+      - Select payment type
+      - Add required skills/tools
+      - Set application cap
+      - Set closing date
+      - Click Post to publish
+    api_calls:
+      - method: POST
+        endpoint: /opportunities
+    auth_required: true
+
+  - name: Manage Applicants
+    description: View and manage applicants for posted opportunities
+    files:
+      - components/employer/opportunities/ApplicantsView.tsx
+      - components/employer/opportunities/ApplicantsTable.tsx
+    entry_route: /opportunities/[id]/applicants
+    user_interactions:
+      - View list of applicants
+      - Filter by status
+      - Search applicants
+      - Click applicant to view profile
+      - Shortlist candidate
+      - Reject candidate
+      - Hire candidate
+    api_calls:
+      - method: GET
+        endpoint: /opportunities/{id}/applications
+      - method: PUT
+        endpoint: /applications/{id}/status
+    auth_required: true
+
+  - name: Discover Talent
+    description: Search and discover talents (Employer only)
+    files:
+      - components/DiscoverTalent/DiscoverTalentHeader.tsx
+      - components/DiscoverTalent/TalentGrid.tsx
+      - components/DiscoverTalent/TalentCard.tsx
+    entry_route: /discover-talent
+    user_interactions:
+      - Search talents by name, skills, or services
+      - Filter by category
+      - Filter by skills
+      - Filter by location
+      - Filter by availability
+      - View talent cards
+      - Click to view full profile
+      - Click Hire button
+    api_calls:
+      - method: GET
+        endpoint: /talent
+    auth_required: true
+
+  - name: Book Mentorship Session
+    description: Book a mentorship session with a mentor
+    files:
+      - app/(business)/mentorship/[id]/page.tsx
+      - lib/api/mentorship.ts
+    entry_route: /mentorship/[id]
+    user_interactions:
+      - View mentor profile
+      - View expertise and industries
+      - View session pricing
+      - Select available time slot
+      - Add session topic/note
+      - Click Book Session
+      - Confirm booking
+    api_calls:
+      - method: POST
+        endpoint: /mentorship/sessions
+    auth_required: true
+
+  - name: Manage Sessions
+    description: Manage mentorship sessions (Mentor only)
+    files:
+      - app/(business)/sessions/page.tsx
+      - components/mentor/sessions/SessionCard.tsx
+    entry_route: /sessions
+    user_interactions:
+      - View all sessions
+      - Filter by status (Upcoming, Completed, Cancelled)
+      - Search by mentee name or topic
+      - Confirm pending session
+      - Reschedule session
+      - Cancel session
+      - Mark session as complete
+    api_calls:
+      - method: GET
+        endpoint: /mentorship/sessions
+      - method: PUT
+        endpoint: /mentorship/sessions/{id}/complete
+      - method: PUT
+        endpoint: /mentorship/sessions/{id}/cancel
+      - method: PUT
+        endpoint: /mentorship/sessions/{id}/reschedule
+    auth_required: true
+
+  - name: Profile Management
+    description: Edit and manage user profile
+    files:
+      - app/(business)/profile/edit/page.tsx
+      - components/talent/profile/TalentProfile.tsx
+      - components/employer/profile/EmployerProfile.tsx
+      - components/mentor/profile/MentorProfile.tsx
+    entry_route: /profile/edit
+    user_interactions:
+      - Edit personal information
+      - Edit professional details
+      - Add/remove skills
+      - Upload profile photo
+      - Add social links
+      - Toggle profile visibility
+      - Save changes
+    api_calls:
+      - method: PUT
+        endpoint: /talent/profile
+      - method: PUT
+        endpoint: /recruiter/profile
+      - method: PUT
+        endpoint: /mentor/profile
+    auth_required: true
+
+  - name: Portfolio Management
+    description: Upload and manage portfolio works
+    files:
+      - components/talent/profile/components/WorksGrid.tsx
+      - components/talent/profile/components/UploadWorksModal.tsx
+    entry_route: /profile
+    user_interactions:
+      - Click Add New Work
+      - Enter work title
+      - Enter description
+      - Upload images
+      - Click Save
+      - Edit existing work
+      - Delete work
+    api_calls:
+      - method: POST
+        endpoint: /talent/gallery
+      - method: PUT
+        endpoint: /talent/gallery/{id}
+      - method: DELETE
+        endpoint: /talent/gallery/{id}
+    auth_required: true
+
+  - name: Services Management
+    description: Create and manage service offerings
+    files:
+      - components/talent/profile/components/ServicesGrid.tsx
+      - components/talent/profile/components/CreateServiceModal.tsx
+    entry_route: /profile
+    user_interactions:
+      - Click Add Service
+      - Enter service title
+      - Enter description
+      - Set price
+      - Set delivery time
+      - Add features
+      - Upload images
+      - Click Save
+      - Edit existing service
+      - Delete service
+    api_calls:
+      - method: POST
+        endpoint: /talent/services
+      - method: PUT
+        endpoint: /talent/services/{id}
+      - method: DELETE
+        endpoint: /talent/services/{id}
+    auth_required: true
+
+  - name: Notifications
+    description: View and manage notifications
+    files:
+      - components/talent/notification/TalentNotifications.tsx
+      - hooks/useNotifications.ts
+    entry_route: /dashboard
+    user_interactions:
+      - Click notification bell icon
+      - View notification list
+      - See unread indicator
+      - Click notification to view details
+      - Mark as read
+      - Navigate to related page via action button
+    api_calls:
+      - method: GET
+        endpoint: /notifications
+      - method: PUT
+        endpoint: /notifications/{id}/read
+    auth_required: true
+
+  - name: Profile Switching
+    description: Switch between multiple user roles
+    files:
+      - components/layouts/ProfileSwitcher.tsx
+      - app/(business)/profile-provider.tsx
+    entry_route: /dashboard
+    user_interactions:
+      - Click profile switcher dropdown
+      - View available roles
+      - Select different role
+      - View role-specific dashboard
+    api_calls: []
+    auth_required: true
+
+known_limitations:
+  - issue: Backend API required for full functionality
+    location: lib/api/index.ts
+    impact: Most features require a running backend server at TALENTNG_API_URL
+  - issue: Authentication tokens stored in localStorage
+    location: lib/auth.ts
+    impact: Tokens may be vulnerable to XSS attacks; consider httpOnly cookies
+  - issue: Middleware deprecated warning
+    location: middleware.ts
+    impact: Next.js 16 shows deprecation warning for middleware convention

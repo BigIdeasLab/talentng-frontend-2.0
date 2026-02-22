@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks";
 import { EmployerProfilePanel } from "./EmployerProfilePanel";
 import { EmployerProfileNav } from "./EmployerProfileNav";
@@ -56,6 +57,7 @@ export function EmployerProfile({
   views = 0,
   visibility = "public",
 }: EmployerProfileProps) {
+  const router = useRouter();
   const { user: _user } = useAuth();
   const [activeTab, setActiveTab] = useState("opportunities");
   const [currentVisibility, setCurrentVisibility] = useState(visibility);
@@ -81,7 +83,9 @@ export function EmployerProfile({
     }
   }, [activeTab]);
 
-  const handleCreateOpportunity = () => {};
+  const handleCreateOpportunity = () => {
+    router.push("/opportunities/post");
+  };
 
   return (
     <div className="flex flex-col h-full bg-white md:flex-row">
