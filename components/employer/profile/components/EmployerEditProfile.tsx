@@ -624,7 +624,9 @@ function SocialLinksSection({
 export function EmployerEditProfile() {
   const _router = useRouter();
   const searchParams = useSearchParams();
-  const [expandedSection, setExpandedSection] = useState<string>(searchParams.get("section") || "personal");
+  const [expandedSection, setExpandedSection] = useState<string>(
+    searchParams.get("section") || "personal",
+  );
   const [formData, setFormData] = useState<EmployerFormData>(
     DEFAULT_EMPLOYER_DATA,
   );
@@ -800,7 +802,8 @@ export function EmployerEditProfile() {
 
       const links: Record<string, string> = {};
       if (formData.social.twitter) links.twitter = formData.social.twitter;
-      if (formData.social.instagram) links.instagram = formData.social.instagram;
+      if (formData.social.instagram)
+        links.instagram = formData.social.instagram;
       if (formData.social.website) links.website = formData.social.website;
       if (formData.social.linkedin) links.linkedin = formData.social.linkedin;
 

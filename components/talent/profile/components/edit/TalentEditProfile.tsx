@@ -72,6 +72,8 @@ const DEFAULT_PROFILE_DATA: UIProfileData = {
     portfolioItems: [],
   },
   social: {
+    dribbble: "",
+    telegram: "",
     twitter: "",
     instagram: "",
     linkedin: "",

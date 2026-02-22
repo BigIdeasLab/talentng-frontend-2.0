@@ -84,11 +84,7 @@ const socialPlatforms = [
     icon: (
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
         <circle cx="8" cy="8" r="6.5" stroke="#525866" />
-        <path
-          d="M1.5 8H14.5"
-          stroke="#525866"
-          strokeLinecap="round"
-        />
+        <path d="M1.5 8H14.5" stroke="#525866" strokeLinecap="round" />
         <path
           d="M8 1.5C9.65685 3.15685 10.6569 5.48568 10.6569 8C10.6569 10.5143 9.65685 12.8432 8 14.5C6.34315 12.8432 5.34315 10.5143 5.34315 8C5.34315 5.48568 6.34315 3.15685 8 1.5Z"
           stroke="#525866"

@@ -64,7 +64,10 @@ export default function ProfilePage() {
           socialLinks={{
             twitter: recruiterData?.links?.twitter || "",
             instagram: recruiterData?.links?.instagram || "",
-            linkedin: recruiterData?.links?.linkedIn || recruiterData?.links?.linkedin || "",
+            linkedin:
+              recruiterData?.links?.linkedIn ||
+              recruiterData?.links?.linkedin ||
+              "",
             website: recruiterData?.links?.website || "",
           }}
           completionPercentage={completionPercentage}

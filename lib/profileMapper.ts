@@ -66,6 +66,7 @@ export interface UIProfileData {
     linkedin: string;
     github?: string;
     portfolio?: string;
+    website: string;
   };
 }
 
@@ -276,6 +277,7 @@ export function mapAPIToUI(
       linkedin: data.links?.linkedin || data.socialLinks?.linkedin || "",
       github: data.links?.github || data.socialLinks?.github || "",
       portfolio: data.links?.portfolio || data.socialLinks?.portfolio || "",
+      website: data.links?.website || data.socialLinks?.website || "",
     },
   };
 }

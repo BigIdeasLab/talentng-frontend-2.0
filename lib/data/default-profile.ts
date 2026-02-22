@@ -37,5 +37,6 @@ export const DEFAULT_PROFILE_DATA: UIProfileData = {
     linkedin: "",
     github: "",
     portfolio: "",
+    website: "",
   },
 };
