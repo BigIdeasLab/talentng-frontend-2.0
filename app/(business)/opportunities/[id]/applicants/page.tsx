@@ -319,76 +319,76 @@ export default function OpportunityApplicantsPage() {
 
           {/* Filter Button */}
           <div className="relative flex-shrink-0">
-          <button
-            onClick={() => {
-              setIsFilterOpen(true);
-            }}
-            className="flex items-center gap-[5px] px-[14px] py-[7px] rounded-[8px] bg-[#F5F5F5] hover:bg-[#e8e8e8] transition-colors relative"
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 18 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+            <button
+              onClick={() => {
+                setIsFilterOpen(true);
+              }}
+              className="flex items-center gap-[5px] px-[14px] py-[7px] rounded-[8px] bg-[#F5F5F5] hover:bg-[#e8e8e8] transition-colors relative"
             >
-              <path
-                d="M2.25 5.25H4.5"
-                stroke="black"
-                strokeWidth="1.125"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M2.25 12.75H6.75"
-                stroke="black"
-                strokeWidth="1.125"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M13.5 12.75H15.75"
-                stroke="black"
-                strokeWidth="1.125"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M11.25 5.25H15.75"
-                stroke="black"
-                strokeWidth="1.125"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M4.5 5.25C4.5 4.55109 4.5 4.20164 4.61418 3.92597C4.76642 3.55844 5.05844 3.26642 5.42597 3.11418C5.70164 3 6.05109 3 6.75 3C7.44891 3 7.79835 3 8.07405 3.11418C8.44155 3.26642 8.7336 3.55844 8.88585 3.92597C9 4.20164 9 4.55109 9 5.25C9 5.94891 9 6.29837 8.88585 6.57403C8.7336 6.94157 8.44155 7.23358 8.07405 7.38582C7.79835 7.5 7.44891 7.5 6.75 7.5C6.05109 7.5 5.70164 7.5 5.42597 7.38582C5.05844 7.23358 4.76642 6.94157 4.61418 6.57403C4.5 6.29837 4.5 5.94891 4.5 5.25Z"
-                stroke="black"
-                strokeWidth="1.125"
-              />
-              <path
-                d="M9 12.75C9 12.0511 9 11.7017 9.11415 11.426C9.2664 11.0585 9.55845 10.7664 9.92595 10.6141C10.2017 10.5 10.5511 10.5 11.25 10.5C11.9489 10.5 12.2983 10.5 12.574 10.6141C12.9415 10.7664 13.2336 11.0585 13.3858 11.426C13.5 11.7017 13.5 12.0511 13.5 12.75C13.5 13.4489 13.5 13.7983 13.3858 14.074C13.2336 14.4415 12.9415 14.7336 12.574 14.8858C12.2983 15 11.9489 15 11.25 15C10.5511 15 10.2017 15 9.92595 14.8858C9.55845 14.7336 9.2664 14.4415 9.11415 14.074C9 13.7983 9 13.4489 9 12.75Z"
-                stroke="black"
-                strokeWidth="1.125"
-              />
-            </svg>
-            <span className="font-inter-tight text-[13px] font-normal text-black leading-normal">
-              Filter
-            </span>
-            {getFilterCount() > 0 && (
-              <div className="absolute -top-2 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold">
-                {getFilterCount()}
-              </div>
-            )}
-          </button>
-          <ApplicantFilterModal
-            isOpen={isFilterOpen}
-            onClose={() => setIsFilterOpen(false)}
-            onApply={(newFilters) => setFilters(newFilters)}
-            initialFilters={filters}
-            availableStatuses={availableStatuses}
-            availableLocations={availableLocations}
-            availableSkills={availableSkills}
-          />
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 18 18"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2.25 5.25H4.5"
+                  stroke="black"
+                  strokeWidth="1.125"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M2.25 12.75H6.75"
+                  stroke="black"
+                  strokeWidth="1.125"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M13.5 12.75H15.75"
+                  stroke="black"
+                  strokeWidth="1.125"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M11.25 5.25H15.75"
+                  stroke="black"
+                  strokeWidth="1.125"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M4.5 5.25C4.5 4.55109 4.5 4.20164 4.61418 3.92597C4.76642 3.55844 5.05844 3.26642 5.42597 3.11418C5.70164 3 6.05109 3 6.75 3C7.44891 3 7.79835 3 8.07405 3.11418C8.44155 3.26642 8.7336 3.55844 8.88585 3.92597C9 4.20164 9 4.55109 9 5.25C9 5.94891 9 6.29837 8.88585 6.57403C8.7336 6.94157 8.44155 7.23358 8.07405 7.38582C7.79835 7.5 7.44891 7.5 6.75 7.5C6.05109 7.5 5.70164 7.5 5.42597 7.38582C5.05844 7.23358 4.76642 6.94157 4.61418 6.57403C4.5 6.29837 4.5 5.94891 4.5 5.25Z"
+                  stroke="black"
+                  strokeWidth="1.125"
+                />
+                <path
+                  d="M9 12.75C9 12.0511 9 11.7017 9.11415 11.426C9.2664 11.0585 9.55845 10.7664 9.92595 10.6141C10.2017 10.5 10.5511 10.5 11.25 10.5C11.9489 10.5 12.2983 10.5 12.574 10.6141C12.9415 10.7664 13.2336 11.0585 13.3858 11.426C13.5 11.7017 13.5 12.0511 13.5 12.75C13.5 13.4489 13.5 13.7983 13.3858 14.074C13.2336 14.4415 12.9415 14.7336 12.574 14.8858C12.2983 15 11.9489 15 11.25 15C10.5511 15 10.2017 15 9.92595 14.8858C9.55845 14.7336 9.2664 14.4415 9.11415 14.074C9 13.7983 9 13.4489 9 12.75Z"
+                  stroke="black"
+                  strokeWidth="1.125"
+                />
+              </svg>
+              <span className="font-inter-tight text-[13px] font-normal text-black leading-normal">
+                Filter
+              </span>
+              {getFilterCount() > 0 && (
+                <div className="absolute -top-2 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold">
+                  {getFilterCount()}
+                </div>
+              )}
+            </button>
+            <ApplicantFilterModal
+              isOpen={isFilterOpen}
+              onClose={() => setIsFilterOpen(false)}
+              onApply={(newFilters) => setFilters(newFilters)}
+              initialFilters={filters}
+              availableStatuses={availableStatuses}
+              availableLocations={availableLocations}
+              availableSkills={availableSkills}
+            />
           </div>
 
           {/* Sort Button */}
@@ -616,7 +616,6 @@ export default function OpportunityApplicantsPage() {
           )}
         </div>
       </div>
-
     </div>
   );
 }
