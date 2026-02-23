@@ -50,9 +50,18 @@ export default function ApplicantsPage() {
     skills: [],
     dateRange: "all",
   });
-  const { data: rawApplicants = [], isLoading, error: queryError } = useRecruiterApplicationsQuery({});
+  const {
+    data: rawApplicants = [],
+    isLoading,
+    error: queryError,
+  } = useRecruiterApplicationsQuery({});
   const hasAccess = useRequireRole(["recruiter"]);
-  const error = queryError instanceof Error ? queryError.message : (queryError ? "Failed to load" : null);
+  const error =
+    queryError instanceof Error
+      ? queryError.message
+      : queryError
+        ? "Failed to load"
+        : null;
 
   useEffect(() => {
     if (rawApplicants) {

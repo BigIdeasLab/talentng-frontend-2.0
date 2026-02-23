@@ -37,10 +37,8 @@ const transformApplicationToHire = (app: Application): PastHire => {
 
 export function PastHiresTab() {
   const [searchQuery, setSearchQuery] = useState("");
-  const {
-    data: applicationsRaw = [],
-    isLoading,
-  } = useRecruiterApplicationsQuery({ status: "hired" });
+  const { data: applicationsRaw = [], isLoading } =
+    useRecruiterApplicationsQuery({ status: "hired" });
 
   const pastHires: PastHire[] = applicationsRaw.map(transformApplicationToHire);
 

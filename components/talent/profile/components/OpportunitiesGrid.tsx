@@ -5,7 +5,10 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Bookmark, Check } from "lucide-react";
 import { EmptyState } from "./EmptyState";
-import { useSaveOpportunity, useUnsaveOpportunity } from "@/hooks/useTalentOpportunities";
+import {
+  useSaveOpportunity,
+  useUnsaveOpportunity,
+} from "@/hooks/useTalentOpportunities";
 import { useProfile } from "@/hooks";
 import { ApplicationModal } from "@/components/talent/opportunities/application-modal";
 import type { DisplayOpportunity } from "@/components/talent/opportunities/types";
@@ -134,7 +137,6 @@ export function OpportunitiesGrid({
         .map((opp) => opp.id),
     ),
   );
-
 
   // Sync appliedIds when opportunities or role changes
   useEffect(() => {
@@ -310,7 +312,9 @@ export function OpportunitiesGrid({
                   {/* Remove Button */}
                   <button
                     onClick={() => handleToggleSave(opportunity)}
-                    disabled={saveMutation.isPending || unsaveMutation.isPending}
+                    disabled={
+                      saveMutation.isPending || unsaveMutation.isPending
+                    }
                     className="flex h-[36px] px-[16px] py-[12px] items-center gap-[3px] rounded-[50px] bg-[#181B25] hover:bg-[#2a2d3a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Bookmark

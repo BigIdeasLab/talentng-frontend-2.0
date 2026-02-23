@@ -62,7 +62,12 @@ export default function ApplicantProposalPage() {
   } = useApplicationQuery(applicationId);
 
   const applicant = applicantData || null;
-  const error = queryError instanceof Error ? queryError.message : (queryError ? "Failed to load applicant" : null);
+  const error =
+    queryError instanceof Error
+      ? queryError.message
+      : queryError
+        ? "Failed to load applicant"
+        : null;
 
   const updateStatusMutation = useUpdateApplicationStatus();
   const scheduleInterviewMutation = useScheduleInterview();
@@ -75,7 +80,10 @@ export default function ApplicantProposalPage() {
     _message: string,
   ) => {
     try {
-      await updateStatusMutation.mutateAsync({ applicationId, status: "hired" });
+      await updateStatusMutation.mutateAsync({
+        applicationId,
+        status: "hired",
+      });
       toast({
         title: "Success",
         description: "Talent has been hired successfully",
@@ -99,7 +107,10 @@ export default function ApplicantProposalPage() {
     _note: string,
   ) => {
     try {
-      await updateStatusMutation.mutateAsync({ applicationId, status: "rejected" });
+      await updateStatusMutation.mutateAsync({
+        applicationId,
+        status: "rejected",
+      });
       toast({
         title: "Success",
         description: "Application has been declined",
@@ -303,7 +314,9 @@ export default function ApplicantProposalPage() {
   const interviewStatus = latestInterview?.status;
 
   // Determine which status to display
-  let statusDisplay = statusDisplayMap[applicant.status as keyof typeof statusDisplayMap] || statusDisplayMap.applied;
+  let statusDisplay =
+    statusDisplayMap[applicant.status as keyof typeof statusDisplayMap] ||
+    statusDisplayMap.applied;
   if (applicant.status === "shortlisted") {
     if (interviewStatus === "cancelled") {
       // If interview cancelled, show "In Review"
@@ -313,7 +326,10 @@ export default function ApplicantProposalPage() {
       interviewStatus === "rescheduled"
     ) {
       // If scheduled or rescheduled, show interview status
-      statusDisplay = interviewStatusDisplayMap[interviewStatus as keyof typeof interviewStatusDisplayMap];
+      statusDisplay =
+        interviewStatusDisplayMap[
+          interviewStatus as keyof typeof interviewStatusDisplayMap
+        ];
     }
     // If completed or no interview, show "Shortlisted" (default statusDisplay)
   }

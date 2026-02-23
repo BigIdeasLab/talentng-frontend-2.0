@@ -43,4 +43,3 @@ export function useCompleteOnboarding() {
     mutationFn: completeOnboarding,
   });
 }
-

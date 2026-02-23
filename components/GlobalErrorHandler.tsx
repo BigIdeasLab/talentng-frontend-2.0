@@ -16,7 +16,9 @@ export function GlobalErrorHandler() {
         if (error?.isRoleMismatch) {
           if (error.actualRole) {
             // Auto-sync frontend role with backend role if they mismatched
-            console.log(`Auto-syncing role to ${error.actualRole} from backend error`);
+            console.log(
+              `Auto-syncing role to ${error.actualRole} from backend error`,
+            );
             setActiveRole(error.actualRole);
             localStorage.setItem("activeRole", error.actualRole);
             document.cookie = `activeRole=${error.actualRole}; path=/; max-age=31536000; SameSite=Lax`;
@@ -28,20 +30,22 @@ export function GlobalErrorHandler() {
     });
 
     // Intercept mutation errors
-    const unsubscribeMutation = queryClient.getMutationCache().subscribe((event) => {
-      if (event.type === "updated" && event.action.type === "error") {
-        const error = event.action.error as any;
-        if (error?.isRoleMismatch) {
-          if (error.actualRole) {
-            setActiveRole(error.actualRole);
-            localStorage.setItem("activeRole", error.actualRole);
-            document.cookie = `activeRole=${error.actualRole}; path=/; max-age=31536000; SameSite=Lax`;
-          } else if (error.requiredRole) {
-            triggerRoleSwitch(error.requiredRole);
+    const unsubscribeMutation = queryClient
+      .getMutationCache()
+      .subscribe((event) => {
+        if (event.type === "updated" && event.action.type === "error") {
+          const error = event.action.error as any;
+          if (error?.isRoleMismatch) {
+            if (error.actualRole) {
+              setActiveRole(error.actualRole);
+              localStorage.setItem("activeRole", error.actualRole);
+              document.cookie = `activeRole=${error.actualRole}; path=/; max-age=31536000; SameSite=Lax`;
+            } else if (error.requiredRole) {
+              triggerRoleSwitch(error.requiredRole);
+            }
           }
         }
-      }
-    });
+      });
 
     return () => {
       unsubscribeQuery();

@@ -4,9 +4,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useProfile } from "@/hooks/useProfile";
-import { 
-  useCreateOpportunity, 
-  useUpdateOpportunity 
+import {
+  useCreateOpportunity,
+  useUpdateOpportunity,
 } from "@/hooks/useRecruiterOpportunities";
 import { useToast } from "@/hooks";
 import { getToolInfo } from "@/lib/utils/tools";

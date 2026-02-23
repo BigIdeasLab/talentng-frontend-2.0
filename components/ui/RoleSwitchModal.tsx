@@ -33,7 +33,7 @@ export function RoleSwitchModal({
         title: "Role switched",
         description: `You are now active as a ${requiredRole}`,
       });
-      
+
       if (onSwitchSuccess) {
         onSwitchSuccess();
       } else {
@@ -65,7 +65,8 @@ export function RoleSwitchModal({
         </div>
         <div className="px-2">
           <p className="text-sm text-gray-700">
-            This action requires you to be active as a <strong>{requiredRole}</strong>.
+            This action requires you to be active as a{" "}
+            <strong>{requiredRole}</strong>.
           </p>
           <p className="text-[13px] text-gray-500 mt-2">
             Would you like to switch your active role now?
@@ -78,7 +79,8 @@ export function RoleSwitchModal({
             className="w-full bg-[#5C30FF] hover:bg-[#4a26cc] text-white border-0"
           >
             {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            Switch to {requiredRole.charAt(0).toUpperCase() + requiredRole.slice(1)}
+            Switch to{" "}
+            {requiredRole.charAt(0).toUpperCase() + requiredRole.slice(1)}
           </Button>
           <Button
             variant="ghost"

@@ -3,7 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getToolInfo } from "@/lib/utils/tools";
-import { useOpportunityQuery, useSaveOpportunity, useUnsaveOpportunity } from "@/hooks/useTalentOpportunities";
+import {
+  useOpportunityQuery,
+  useSaveOpportunity,
+  useUnsaveOpportunity,
+} from "@/hooks/useTalentOpportunities";
 import { useAuth } from "@/hooks/useAuth";
 import { useRoleColors } from "@/lib/theme/RoleColorContext";
 import { useProfile } from "@/hooks";
@@ -100,7 +104,6 @@ export function OpportunityDetails({
       }
     }
   }, [opportunity, currentProfileType, applicationId]);
-
 
   // No longer needed: fetchOpportunityDetails is provided by useQuery
 

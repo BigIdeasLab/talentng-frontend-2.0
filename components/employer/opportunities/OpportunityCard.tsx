@@ -3,11 +3,11 @@
 import { useState, useEffect } from "react";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { useRouter } from "next/navigation";
-import { 
-  useDeleteOpportunity, 
-  useUpdateOpportunity, 
-  usePostOpportunity, 
-  useReopenOpportunity 
+import {
+  useDeleteOpportunity,
+  useUpdateOpportunity,
+  usePostOpportunity,
+  useReopenOpportunity,
 } from "@/hooks/useRecruiterOpportunities";
 import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
 import { useToast } from "@/hooks";
@@ -245,9 +245,9 @@ export function OpportunityCard({
     const handleMarkAsFilled = async (e: React.MouseEvent) => {
       e.stopPropagation();
       try {
-        await updateMutation.mutateAsync({ 
-          id: opportunity.id, 
-          data: { status: "closed" } 
+        await updateMutation.mutateAsync({
+          id: opportunity.id,
+          data: { status: "closed" },
         });
         toast({
           title: "Success",

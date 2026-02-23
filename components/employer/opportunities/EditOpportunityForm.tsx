@@ -2,10 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { 
-  useRecruiterOpportunityQuery, 
-  useUpdateOpportunity, 
-  useRecruiterOpportunitiesQuery 
+import {
+  useRecruiterOpportunityQuery,
+  useUpdateOpportunity,
+  useRecruiterOpportunitiesQuery,
 } from "@/hooks/useRecruiterOpportunities";
 import { useToast } from "@/hooks";
 import { BasicInfoStep } from "./post-steps/BasicInfoStep";

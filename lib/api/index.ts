@@ -201,25 +201,33 @@ const apiClient = async <T>(
           "A database error occurred. Please try again in a moment.";
       } else if (response.status === 403) {
         // Special handling for role mismatch (Phase 6.1)
-        if (errorMessage.toLowerCase().includes("role") || 
-            errorMessage.toLowerCase().includes("permission") ||
-            errorMessage.toLowerCase().includes("forbidden") ||
-            errorMessage.toLowerCase().includes("access denied")) {
-          
+        if (
+          errorMessage.toLowerCase().includes("role") ||
+          errorMessage.toLowerCase().includes("permission") ||
+          errorMessage.toLowerCase().includes("forbidden") ||
+          errorMessage.toLowerCase().includes("access denied")
+        ) {
           const error = new Error(errorMessage);
           (error as any).status = 403;
           (error as any).isRoleMismatch = true;
-          
+
           // Try to extract actual role from message "Your active role: recruiter"
-          const roleMatch = errorMessage.match(/Your active role: ([a-zA-Z]+)/i);
+          const roleMatch = errorMessage.match(
+            /Your active role: ([a-zA-Z]+)/i,
+          );
           if (roleMatch && roleMatch[1]) {
             (error as any).actualRole = roleMatch[1].toLowerCase();
           }
 
-          (error as any).requiredRole = errorData.requiredRole || 
-            (endpoint.includes("/recruiter") ? "recruiter" : 
-             endpoint.includes("/talent") ? "talent" : 
-             endpoint.includes("/mentor") ? "mentor" : undefined);
+          (error as any).requiredRole =
+            errorData.requiredRole ||
+            (endpoint.includes("/recruiter")
+              ? "recruiter"
+              : endpoint.includes("/talent")
+                ? "talent"
+                : endpoint.includes("/mentor")
+                  ? "mentor"
+                  : undefined);
           (error as any).data = errorData;
           throw error;
         }

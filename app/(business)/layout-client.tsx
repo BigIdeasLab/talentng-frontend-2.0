@@ -20,7 +20,8 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [totalUnreadCount, setTotalUnreadCount] = useState(0);
-  const { activeRole, isLoading, roleSwitchRequired, triggerRoleSwitch } = useProfile();
+  const { activeRole, isLoading, roleSwitchRequired, triggerRoleSwitch } =
+    useProfile();
 
   // Map active role to recipient role for notifications
   const getRecipientRole = (
@@ -118,7 +119,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
     <div className="flex h-screen bg-white flex-col md:flex-row">
       {/* Global Error Listener (Phase 6) */}
       <GlobalErrorHandler />
-      
+
       {/* Mobile Sidebar */}
       <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-[#E1E4EA]">
         <div className="font-medium text-[18px] text-black font-inter-tight">

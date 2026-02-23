@@ -7,7 +7,10 @@ import { ApplicationStatusBanner } from "./application-status-banner";
 import { ApplicationModal } from "./application-modal";
 import type { DisplayOpportunity } from "./types";
 import { TYPE_CONFIG } from "@/types/opportunities";
-import { useSaveOpportunity, useUnsaveOpportunity } from "@/hooks/useTalentOpportunities";
+import {
+  useSaveOpportunity,
+  useUnsaveOpportunity,
+} from "@/hooks/useTalentOpportunities";
 import { useProfile } from "@/hooks";
 import { useRoleColors } from "@/lib/theme/RoleColorContext";
 

@@ -53,10 +53,7 @@ export function useProfileData() {
 
       // The currently active role (from the JWT `act` claim)
       const jwtActiveRole: string | null =
-        decoded?.act ||
-        decoded?.activeRole ||
-        decoded?.active_role ||
-        null;
+        decoded?.act || decoded?.activeRole || decoded?.active_role || null;
 
       console.log(
         `[useProfileData] JWT → act: ${jwtActiveRole}, roles: [${jwtRoles.join(", ")}]`,
@@ -85,9 +82,7 @@ export function useProfileData() {
       // If JWT has no `act` claim, fall back to context → localStorage → cookie → first role
       if (!currentActiveRole) {
         currentActiveRole =
-          activeRoleRef.current ||
-          localStorage.getItem("activeRole") ||
-          null;
+          activeRoleRef.current || localStorage.getItem("activeRole") || null;
 
         if (!currentActiveRole) {
           const cookies = document.cookie.split(";").reduce(
@@ -131,12 +126,14 @@ export function useProfileData() {
       let mentorProfile = null;
 
       // Guard with the roles we derived above (JWT first, then localStorage)
-      const rolesGuard =
-        userRoles.length > 0 ? userRoles : [currentActiveRole];
+      const rolesGuard = userRoles.length > 0 ? userRoles : [currentActiveRole];
 
       if (currentActiveRole === "talent" && rolesGuard.includes("talent")) {
         talentProfile = await getServerCurrentProfile().catch((e) => {
-          console.error("[useProfileData] talent profile fetch failed:", e?.message);
+          console.error(
+            "[useProfileData] talent profile fetch failed:",
+            e?.message,
+          );
           return null;
         });
       } else if (
@@ -157,7 +154,10 @@ export function useProfileData() {
         rolesGuard.includes("mentor")
       ) {
         mentorProfile = await getServerCurrentMentorProfile().catch((e) => {
-          console.error("[useProfileData] mentor profile fetch failed:", e?.message);
+          console.error(
+            "[useProfileData] mentor profile fetch failed:",
+            e?.message,
+          );
           return null;
         });
       }

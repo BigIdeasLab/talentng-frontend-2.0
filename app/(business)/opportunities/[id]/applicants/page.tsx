@@ -73,7 +73,7 @@ export default function OpportunityApplicantsPage() {
   } = useRecruiterApplicationsQuery({ opportunityId });
 
   const isLoading = isOppLoading || isAppsLoading;
-  const error = (oppError || appsError) ? "Failed to load" : null;
+  const error = oppError || appsError ? "Failed to load" : null;
 
   useEffect(() => {
     if (rawApplicants) {

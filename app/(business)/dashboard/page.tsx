@@ -24,9 +24,11 @@ export default function DashboardPage() {
           const { decodeToken } = require("@/lib/auth");
           const decoded = decodeToken(token);
           const jwtActiveRole = decoded?.act || decoded?.activeRole;
-          
+
           if (jwtActiveRole && jwtActiveRole !== activeRole) {
-            console.log(`Fixing Dashboard mismatch: context=${activeRole}, token=${jwtActiveRole}`);
+            console.log(
+              `Fixing Dashboard mismatch: context=${activeRole}, token=${jwtActiveRole}`,
+            );
             setActiveRole(jwtActiveRole);
           }
         } catch (e) {}

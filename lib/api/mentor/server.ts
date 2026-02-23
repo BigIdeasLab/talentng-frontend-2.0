@@ -62,7 +62,9 @@ export async function getServerSearchMentors(
   const queryParams = new URLSearchParams();
   queryParams.append("q", query);
 
-  return apiClient<MentorProfile[]>(`/mentors/search?${queryParams.toString()}`);
+  return apiClient<MentorProfile[]>(
+    `/mentors/search?${queryParams.toString()}`,
+  );
 }
 
 /**

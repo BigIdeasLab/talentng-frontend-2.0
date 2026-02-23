@@ -201,16 +201,11 @@ export interface SwitchRoleResponse {
  * NOTE: Backend only returns { accessToken, activeRole } — no refreshToken.
  * We keep the existing refreshToken from localStorage.
  */
-export const switchRole = async (
-  role: string,
-): Promise<SwitchRoleResponse> => {
-
+export const switchRole = async (role: string): Promise<SwitchRoleResponse> => {
   const response = await apiClient<SwitchRoleResponse>("/auth/switch-role", {
     method: "POST",
     body: { role },
   });
-
-
 
   // Store the new access token; keep existing refreshToken + userId from localStorage
   if (response.accessToken && typeof window !== "undefined") {
@@ -222,12 +217,10 @@ export const switchRole = async (
       refreshToken: response.refreshToken || existingRefreshToken,
       userId: existingUserId,
     });
-
   }
 
   // Persist active role to localStorage and cookies for SSR/middleware checks
   if (typeof window !== "undefined") {
-
     localStorage.setItem("activeRole", response.activeRole);
     document.cookie = `activeRole=${response.activeRole}; path=/; max-age=31536000; SameSite=Lax`;
   }

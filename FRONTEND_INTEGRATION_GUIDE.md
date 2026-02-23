@@ -66,16 +66,17 @@ To access recruiter data, the user must switch their active role first (see Sect
 
 The following old generic endpoints have been marked as deprecated in OpenAPI/Swagger and should be replaced with their Role-Prefixed equivalents. They will be fully removed 90 days after announcement.
 
-| Old Endpoint | Replace With | Reason |
-|:---|:---|:---|
-| `POST /opportunities` | `POST /recruiter/opportunities` | Creation should be explicitly tied to the Recruiter role. |
-| `GET /opportunities/saved` | `GET /talent/opportunities/saved` | Viewing saved jobs is a Talent-specific action. |
-| `POST /applications/invitations/send` | `POST /recruiter/invitations/send` | Sending invites is a Recruiter action. |
-| `GET /applications/invitations/sent` | `GET /recruiter/invitations/sent` | Viewing sent invites is a Recruiter action. |
+| Old Endpoint                          | Replace With                       | Reason                                                    |
+| :------------------------------------ | :--------------------------------- | :-------------------------------------------------------- |
+| `POST /opportunities`                 | `POST /recruiter/opportunities`    | Creation should be explicitly tied to the Recruiter role. |
+| `GET /opportunities/saved`            | `GET /talent/opportunities/saved`  | Viewing saved jobs is a Talent-specific action.           |
+| `POST /applications/invitations/send` | `POST /recruiter/invitations/send` | Sending invites is a Recruiter action.                    |
+| `GET /applications/invitations/sent`  | `GET /recruiter/invitations/sent`  | Viewing sent invites is a Recruiter action.               |
 
 ### 3.2 Strict Scope-Based Filtering
 
 Shared resource endpoints like `GET /applications/:id` and `PATCH /applications/:id` now require strict ownership checks:
+
 - A `talent` can only interact with applications they submitted.
 - A `recruiter` can only interact with applications attached to opportunities they posted.
 - Accessing an entity you don't own returns `403 Forbidden`.
@@ -83,6 +84,7 @@ Shared resource endpoints like `GET /applications/:id` and `PATCH /applications/
 ### 3.3 Admin Endpoints - Stricter Access
 
 Admin endpoints now require:
+
 1. User must have 'admin' in their roles array
 2. User's active role must be 'admin' (unless they are explicitly bypassing with special tools)
 
@@ -93,44 +95,49 @@ Admin endpoints now require:
 We have implemented the `{role}/{resource}` pattern across the board. Below are the mappings of old paths to new paths.
 
 ### 4.1 Backward-Compatible Aliases (Profile)
+
 You can begin migrating these immediately. The old `/me` paths will remain working for 90 days.
 
-| Old Endpoint | New Endpoint | Method |
-|:---|:---|:---|
-| `/talent/me` | `/talent/profile` | GET, PATCH |
+| Old Endpoint    | New Endpoint         | Method     |
+| :-------------- | :------------------- | :--------- |
+| `/talent/me`    | `/talent/profile`    | GET, PATCH |
 | `/recruiter/me` | `/recruiter/profile` | GET, PATCH |
-| `/mentor/me` | `/mentor/profile` | GET, PATCH |
+| `/mentor/me`    | `/mentor/profile`    | GET, PATCH |
 
 ### 4.2 New Role-Prefixed Endpoints (Phase 1 Implementations)
 
 These endpoints explicitly tie resources to the active role of the caller.
 
 #### Talent Endpoints (Requires `talent` active role)
-| New Endpoint | Method | Purpose |
-|:---|:---|:---|
-| `/talent/applications` | GET | List applications submitted by the talent. |
-| `/talent/opportunities` | GET | Browse all active opportunities. |
-| `/talent/opportunities/saved`| GET | List opportunities saved by the talent. |
-| `/talent/sessions` | GET | List the talent's mentorship sessions (where role is mentee).|
+
+| New Endpoint                  | Method | Purpose                                                       |
+| :---------------------------- | :----- | :------------------------------------------------------------ |
+| `/talent/applications`        | GET    | List applications submitted by the talent.                    |
+| `/talent/opportunities`       | GET    | Browse all active opportunities.                              |
+| `/talent/opportunities/saved` | GET    | List opportunities saved by the talent.                       |
+| `/talent/sessions`            | GET    | List the talent's mentorship sessions (where role is mentee). |
 
 #### Recruiter Endpoints (Requires `recruiter` active role)
-| New Endpoint | Method | Purpose |
-|:---|:---|:---|
-| `/recruiter/opportunities` | GET | List opportunities posted by the recruiter. |
-| `/recruiter/applications` | GET | List applications for the recruiter's posted opportunities. |
-| `/recruiter/invitations/sent`| GET | List invitations sent by the recruiter. |
-| `/recruiter/invitations/send`| POST | Send invitations to talents. |
+
+| New Endpoint                  | Method | Purpose                                                     |
+| :---------------------------- | :----- | :---------------------------------------------------------- |
+| `/recruiter/opportunities`    | GET    | List opportunities posted by the recruiter.                 |
+| `/recruiter/applications`     | GET    | List applications for the recruiter's posted opportunities. |
+| `/recruiter/invitations/sent` | GET    | List invitations sent by the recruiter.                     |
+| `/recruiter/invitations/send` | POST   | Send invitations to talents.                                |
 
 #### Mentor Endpoints (Requires `mentor` active role)
-| New Endpoint | Method | Purpose |
-|:---|:---|:---|
-| `/mentor/sessions` | GET | List the mentor's booked sessions (where role is mentor).|
+
+| New Endpoint       | Method | Purpose                                                   |
+| :----------------- | :----- | :-------------------------------------------------------- |
+| `/mentor/sessions` | GET    | List the mentor's booked sessions (where role is mentor). |
 
 #### Admin Endpoints (Requires `admin` active role)
-| New Endpoint | Method | Purpose |
-|:---|:---|:---|
-| `/admin/opportunities` | GET | List all opportunities (unrestricted system-wide). |
-| `/admin/applications` | GET | List all applications (unrestricted system-wide). |
+
+| New Endpoint           | Method | Purpose                                            |
+| :--------------------- | :----- | :------------------------------------------------- |
+| `/admin/opportunities` | GET    | List all opportunities (unrestricted system-wide). |
+| `/admin/applications`  | GET    | List all applications (unrestricted system-wide).  |
 
 ---
 
@@ -138,13 +145,13 @@ These endpoints explicitly tie resources to the active role of the caller.
 
 Public access endpoints (those that don't require Authentication) have been standardized to use **plural nouns**. Use these for SEO pages and unauthenticated browsing.
 
-| Endpoint | Method | Auth Required | Purpose |
-|:---|:---|:---|:---|
-| `/talents` | GET | No | Browse public talent profiles (previously nested or missing). |
-| `/talents/:userId` | GET | No | View a specific public talent profile. |
-| `/recruiters/:id` | GET | No | View a specific public recruiter profile. |
-| `/mentors` | GET | No | Browse public mentor profiles. |
-| `/mentors/:id` | GET | No | View a specific public mentor profile. |
+| Endpoint           | Method | Auth Required | Purpose                                                       |
+| :----------------- | :----- | :------------ | :------------------------------------------------------------ |
+| `/talents`         | GET    | No            | Browse public talent profiles (previously nested or missing). |
+| `/talents/:userId` | GET    | No            | View a specific public talent profile.                        |
+| `/recruiters/:id`  | GET    | No            | View a specific public recruiter profile.                     |
+| `/mentors`         | GET    | No            | Browse public mentor profiles.                                |
+| `/mentors/:id`     | GET    | No            | View a specific public mentor profile.                        |
 
 > Note: Accessing private user scopes unauthenticated will return `404 Not Found` (to prevent information leakage) rather than `401 Unauthorized`.
 
@@ -158,20 +165,20 @@ Public access endpoints (those that don't require Authentication) have been stan
 // Current token has activeRole: 'talent'
 // User wants to access recruiter data
 
-const response = await fetch('/auth/switch-role', {
-  method: 'POST',
+const response = await fetch("/auth/switch-role", {
+  method: "POST",
   headers: {
     Authorization: `Bearer ${currentToken}`,
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
-  body: JSON.stringify({ role: 'recruiter' }),
+  body: JSON.stringify({ role: "recruiter" }),
 });
 
 const { accessToken, activeRole } = await response.json();
 
 // Store new token and use for subsequent requests
-localStorage.setItem('accessToken', accessToken);
-localStorage.setItem('activeRole', activeRole);
+localStorage.setItem("accessToken", accessToken);
+localStorage.setItem("activeRole", activeRole);
 ```
 
 ### 6.2 Frontend State Management
@@ -205,19 +212,19 @@ const authState = {
 ```javascript
 // Handle role-based access errors
 try {
-  const response = await fetch('/api/recruiter/applications', {
+  const response = await fetch("/api/recruiter/applications", {
     headers: { Authorization: `Bearer ${token}` },
   });
 
   if (response.status === 403) {
     const error = await response.json();
-    if (error.message.includes('active role')) {
+    if (error.message.includes("active role")) {
       // Prompt user to switch roles
       showRoleSwitchModal();
     }
   }
 } catch (error) {
-  console.error('API Error:', error);
+  console.error("API Error:", error);
 }
 ```
 
@@ -231,15 +238,15 @@ try {
 // Using new role-based access
 async function getTalentProfile() {
   // Ensure user has talent active role
-  const currentRole = localStorage.getItem('activeRole');
+  const currentRole = localStorage.getItem("activeRole");
 
-  if (currentRole !== 'talent') {
+  if (currentRole !== "talent") {
     // Switch to talent first
-    await api.switchRole('talent');
+    await api.switchRole("talent");
   }
 
   // Use the new Alias
-  return api.get<TalentProfile>('/talent/profile');
+  return api.get<TalentProfile>("/talent/profile");
 }
 ```
 
@@ -247,16 +254,16 @@ async function getTalentProfile() {
 
 ```typescript
 async function inviteTalentToJob(opportunityId: string, talentIds: string[]) {
-  const currentRole = localStorage.getItem('activeRole');
+  const currentRole = localStorage.getItem("activeRole");
 
-  if (currentRole !== 'recruiter') {
-    await api.switchRole('recruiter');
+  if (currentRole !== "recruiter") {
+    await api.switchRole("recruiter");
   }
 
   // Use the new Role-Prefixed invitation endpoint
-  return api.post('/recruiter/invitations/send', {
+  return api.post("/recruiter/invitations/send", {
     opportunityId,
-    talentIds
+    talentIds,
   });
 }
 ```
@@ -273,25 +280,26 @@ Instead of a single "God Hook" (`useOpportunities`) that has to manage condition
 // 🧑‍💻 For the Talent App / Context
 export function useTalentOpportunities(filters) {
   return useQuery({
-    queryKey: ['opportunities', 'talent', filters],
-    queryFn: () => api.get('/talent/opportunities', { params: filters }),
+    queryKey: ["opportunities", "talent", filters],
+    queryFn: () => api.get("/talent/opportunities", { params: filters }),
     // Only fetch if the user is currently acting as a talent
-    enabled: currentRole === 'talent'
+    enabled: currentRole === "talent",
   });
 }
 
 // 🏢 For the Recruiter App / Context
 export function useRecruiterOpportunities(filters) {
   return useQuery({
-    queryKey: ['opportunities', 'recruiter', filters],
-    queryFn: () => api.get('/recruiter/opportunities', { params: filters }),
+    queryKey: ["opportunities", "recruiter", filters],
+    queryFn: () => api.get("/recruiter/opportunities", { params: filters }),
     // Only fetch if the user is currently acting as a recruiter
-    enabled: currentRole === 'recruiter'
+    enabled: currentRole === "recruiter",
   });
 }
 ```
 
 **Why this is better:**
+
 1. **Separation of Concerns:** The Talent view of an opportunity is fundamentally different from a Recruiter's view (Recruiters see applicant counts, Talents see application status). Splitting the hooks allows you to tightly strictly type the expected responses (`TalentOpportunityDto` vs `RecruiterOpportunityDto`).
 2. **Simplified Invalidation:** When a recruiter posts a new job, you only invalidate the `['opportunities', 'recruiter']` cache.
 3. **Cleaner Components:** Your UI components (e.g., `RecruiterJobDashboard`) can directly call `useRecruiterOpportunities()` without passing down role conditions.

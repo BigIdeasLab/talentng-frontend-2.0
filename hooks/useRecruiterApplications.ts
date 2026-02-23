@@ -71,7 +71,9 @@ export function useUpdateApplicationStatus() {
       status: "shortlisted" | "rejected" | "hired";
     }) => updateApplicationStatus(applicationId, status),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["applications", "recruiter"] });
+      queryClient.invalidateQueries({
+        queryKey: ["applications", "recruiter"],
+      });
     },
   });
 }
@@ -91,7 +93,9 @@ export function useScheduleInterview() {
       input: ScheduleInterviewInput;
     }) => scheduleInterview(applicationId, input),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["applications", "recruiter"] });
+      queryClient.invalidateQueries({
+        queryKey: ["applications", "recruiter"],
+      });
     },
   });
 }
@@ -113,7 +117,9 @@ export function useRescheduleInterview() {
       input: RescheduleInterviewInput;
     }) => rescheduleInterview(applicationId, interviewId, input),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["applications", "recruiter"] });
+      queryClient.invalidateQueries({
+        queryKey: ["applications", "recruiter"],
+      });
     },
   });
 }
@@ -135,7 +141,9 @@ export function useCancelInterview() {
       reason?: string;
     }) => cancelInterview(applicationId, interviewId, reason),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["applications", "recruiter"] });
+      queryClient.invalidateQueries({
+        queryKey: ["applications", "recruiter"],
+      });
     },
   });
 }
@@ -157,7 +165,9 @@ export function useCompleteInterview() {
       input: CompleteInterviewInput;
     }) => completeInterview(applicationId, interviewId, input),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["applications", "recruiter"] });
+      queryClient.invalidateQueries({
+        queryKey: ["applications", "recruiter"],
+      });
     },
   });
 }

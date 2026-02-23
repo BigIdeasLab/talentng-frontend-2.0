@@ -31,7 +31,9 @@ export async function searchMentors(query: string): Promise<MentorProfile[]> {
   const queryParams = new URLSearchParams();
   queryParams.append("q", query);
 
-  return apiClient<MentorProfile[]>(`/mentors/search?${queryParams.toString()}`);
+  return apiClient<MentorProfile[]>(
+    `/mentors/search?${queryParams.toString()}`,
+  );
 }
 
 /**

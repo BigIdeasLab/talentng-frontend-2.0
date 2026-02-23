@@ -107,7 +107,9 @@ export default function HiredTalentsPage() {
     }
   }, [rawApplications, isAppsLoading]);
 
-  const fetchRecommendationsForTalents = async (applications: Application[]) => {
+  const fetchRecommendationsForTalents = async (
+    applications: Application[],
+  ) => {
     try {
       setIsLoading(true);
       const hired = applications.filter((app) => app.status === "hired");

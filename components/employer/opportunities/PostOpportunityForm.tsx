@@ -3,9 +3,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
-import { 
-  useCreateOpportunity, 
-  useRecruiterOpportunitiesQuery 
+import {
+  useCreateOpportunity,
+  useRecruiterOpportunitiesQuery,
 } from "@/hooks/useRecruiterOpportunities";
 import { useToast } from "@/hooks";
 import type { FormSection } from "@/lib/types";

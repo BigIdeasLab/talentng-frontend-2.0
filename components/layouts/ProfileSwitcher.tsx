@@ -219,11 +219,14 @@ export function ProfileSwitcher() {
   };
 
   // Get display profile (use UI version if available, fallback to raw)
-  const displayProfile = currentProfileUI || currentProfile || (
-    activeRole === "recruiter" ? user?.recruiterProfile :
-    activeRole === "talent" ? user?.talentProfile :
-    user?.mentorProfile
-  );
+  const displayProfile =
+    currentProfileUI ||
+    currentProfile ||
+    (activeRole === "recruiter"
+      ? user?.recruiterProfile
+      : activeRole === "talent"
+        ? user?.talentProfile
+        : user?.mentorProfile);
 
   const DEFAULT_AVATAR = "/default.png";
 
@@ -292,8 +295,16 @@ export function ProfileSwitcher() {
     if (profile?.fullName) {
       return profile.fullName;
     }
-    const firstName = profile?.personal?.firstName || profile?.firstName || user?.fullName?.split(" ")[0] || "";
-    const lastName = profile?.personal?.lastName || profile?.lastName || user?.fullName?.split(" ").slice(1).join(" ") || "";
+    const firstName =
+      profile?.personal?.firstName ||
+      profile?.firstName ||
+      user?.fullName?.split(" ")[0] ||
+      "";
+    const lastName =
+      profile?.personal?.lastName ||
+      profile?.lastName ||
+      user?.fullName?.split(" ").slice(1).join(" ") ||
+      "";
     return `${firstName} ${lastName}`.trim() || user?.fullName || "User";
   };
 
