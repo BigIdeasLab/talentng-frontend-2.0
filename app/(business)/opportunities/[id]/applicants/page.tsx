@@ -2,13 +2,17 @@
 
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Users } from "lucide-react";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useApplications } from "@/hooks/useApplications";
 import type { Application } from "@/lib/api/applications";
+import {
+  ApplicantFilterModal,
+  type ApplicantFilterState,
+} from "@/components/employer/applicants/ApplicantFilterModal";
 
 const statusDisplayMap: Record<
   string,
@@ -28,12 +32,14 @@ interface MappedApplicant {
   avatar: string;
   role: string;
   hires: number;
+  skills: string[];
   opportunity: {
     title: string;
     type?: string;
   };
   location: string;
   dateApplied: string;
+  createdAt: string;
   status: string;
 }
 
@@ -44,7 +50,14 @@ export default function OpportunityApplicantsPage() {
   const hasAccess = useRequireRole(["recruiter"]);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [_sortBy, _setSortBy] = useState("Newest");
+  const [sortBy, setSortBy] = useState("newest");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filters, setFilters] = useState<ApplicantFilterState>({
+    status: [],
+    location: "",
+    skills: [],
+    dateRange: "all",
+  });
   const [applicants, setApplicants] = useState<MappedApplicant[]>([]);
   const [opportunityTitle, setOpportunityTitle] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -87,6 +100,7 @@ export default function OpportunityApplicantsPage() {
       avatar: app.user.talentProfile.profileImageUrl,
       role: app.user.talentProfile.headline,
       hires: app.user.talentProfile.hiredCount,
+      skills: app.user.talentProfile.skills || [],
       opportunity: {
         title: app.opportunity.title,
         type: app.opportunity.type,
@@ -97,9 +111,108 @@ export default function OpportunityApplicantsPage() {
         day: "numeric",
         year: "numeric",
       }),
+      createdAt: app.createdAt,
       status: app.status,
     }));
   };
+
+  // Extract available filter options from applicants data
+  const availableStatuses = useMemo(() => {
+    return [...new Set(applicants.map((a) => a.status))];
+  }, [applicants]);
+
+  const availableLocations = useMemo(() => {
+    return [...new Set(applicants.map((a) => a.location).filter(Boolean))];
+  }, [applicants]);
+
+  const availableSkills = useMemo(() => {
+    return [...new Set(applicants.flatMap((a) => a.skills || []))];
+  }, [applicants]);
+
+  const getFilterCount = () => {
+    let count = 0;
+    if (filters.status.length > 0) count += filters.status.length;
+    if (filters.location) count += 1;
+    if (filters.skills.length > 0) count += filters.skills.length;
+    if (filters.dateRange !== "all") count += 1;
+    return count;
+  };
+
+  const filteredApplicants = useMemo(() => {
+    let result = applicants;
+
+    // Search filter
+    if (searchQuery) {
+      result = result.filter((applicant) =>
+        applicant.name.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+    }
+
+    // Status filter
+    if (filters.status.length > 0) {
+      result = result.filter((applicant) =>
+        filters.status.includes(applicant.status),
+      );
+    }
+
+    // Location filter
+    if (filters.location) {
+      result = result.filter(
+        (applicant) =>
+          applicant.location.toLowerCase() === filters.location.toLowerCase(),
+      );
+    }
+
+    // Skills filter
+    if (filters.skills.length > 0) {
+      result = result.filter((applicant) =>
+        filters.skills.some((skill) =>
+          applicant.skills?.some(
+            (s) => s.toLowerCase() === skill.toLowerCase(),
+          ),
+        ),
+      );
+    }
+
+    // Date filter
+    if (filters.dateRange !== "all") {
+      const now = new Date();
+      result = result.filter((applicant) => {
+        const created = new Date(applicant.createdAt);
+        if (filters.dateRange === "today") {
+          return created.toDateString() === now.toDateString();
+        }
+        if (filters.dateRange === "week") {
+          const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          return created >= weekAgo;
+        }
+        if (filters.dateRange === "month") {
+          const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          return created >= monthAgo;
+        }
+        return true;
+      });
+    }
+
+    // Sort
+    if (sortBy === "newest") {
+      result = [...result].sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
+    } else if (sortBy === "oldest") {
+      result = [...result].sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+      );
+    } else if (sortBy === "name-asc") {
+      result = [...result].sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === "name-desc") {
+      result = [...result].sort((a, b) => b.name.localeCompare(a.name));
+    }
+
+    return result;
+  }, [applicants, searchQuery, filters, sortBy]);
 
   if (!hasAccess) {
     return <PageLoadingState message="Checking access..." />;
@@ -127,10 +240,6 @@ export default function OpportunityApplicantsPage() {
       </div>
     );
   }
-
-  const filteredApplicants = applicants.filter((applicant) =>
-    applicant.name.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
 
   return (
     <div className="h-screen bg-white overflow-hidden flex flex-col">
@@ -174,7 +283,7 @@ export default function OpportunityApplicantsPage() {
         </div>
 
         {/* Search and Filters */}
-        <div className="flex items-center gap-[8px] mb-[20px]">
+        <div className="flex items-center gap-[8px] mb-[20px] relative overflow-visible">
           {/* Search Container */}
           <div className="flex-1 max-w-[585px] flex items-center gap-[6px] px-[12px] py-[7px] rounded-[8px] border border-[#E1E4EA]">
             <svg
@@ -209,7 +318,13 @@ export default function OpportunityApplicantsPage() {
           </div>
 
           {/* Filter Button */}
-          <button className="flex items-center gap-[5px] px-[14px] py-[7px] rounded-[8px] bg-[#F5F5F5] hover:bg-[#e8e8e8] transition-colors flex-shrink-0">
+          <div className="relative flex-shrink-0">
+          <button
+            onClick={() => {
+              setIsFilterOpen(true);
+            }}
+            className="flex items-center gap-[5px] px-[14px] py-[7px] rounded-[8px] bg-[#F5F5F5] hover:bg-[#e8e8e8] transition-colors relative"
+          >
             <svg
               width="16"
               height="16"
@@ -259,26 +374,70 @@ export default function OpportunityApplicantsPage() {
             <span className="font-inter-tight text-[13px] font-normal text-black leading-normal">
               Filter
             </span>
+            {getFilterCount() > 0 && (
+              <div className="absolute -top-2 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold">
+                {getFilterCount()}
+              </div>
+            )}
           </button>
+          <ApplicantFilterModal
+            isOpen={isFilterOpen}
+            onClose={() => setIsFilterOpen(false)}
+            onApply={(newFilters) => setFilters(newFilters)}
+            initialFilters={filters}
+            availableStatuses={availableStatuses}
+            availableLocations={availableLocations}
+            availableSkills={availableSkills}
+          />
+          </div>
 
           {/* Sort Button */}
-          <button className="flex items-center gap-[5px] px-[14px] py-[7px] rounded-[8px] bg-[#F5F5F5] hover:bg-[#e8e8e8] transition-colors flex-shrink-0">
-            <span className="font-inter-tight text-[13px] font-normal text-black leading-normal">
-              {_sortBy}
-            </span>
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M11.2826 6.2209C11.3525 6.29058 11.4079 6.37338 11.4458 6.46454C11.4837 6.5557 11.5031 6.65344 11.5031 6.75215C11.5031 6.85086 11.4837 6.9486 11.4458 7.03977C11.4079 7.13093 11.3525 7.21373 11.2826 7.2834L8.28255 10.2834C8.21287 10.3533 8.13008 10.4088 8.03892 10.4467C7.94775 10.4845 7.85001 10.504 7.7513 10.504C7.65259 10.504 7.55485 10.4845 7.46369 10.4467C7.37252 10.4088 7.28973 10.3533 7.22005 10.2834L4.22005 7.2834C4.07915 7.14251 4 6.95141 4 6.75215C4 6.5529 4.07915 6.3618 4.22005 6.2209C4.36095 6.08001 4.55204 6.00085 4.7513 6.00085C4.95056 6.00085 5.14165 6.08001 5.28255 6.2209L7.75193 8.68903L10.2213 6.21903C10.2911 6.14942 10.3739 6.09425 10.465 6.05666C10.5561 6.01908 10.6538 5.99983 10.7523 6C10.8509 6.00018 10.9484 6.01977 11.0394 6.05768C11.1304 6.09558 11.213 6.15105 11.2826 6.2209Z"
-                fill="black"
-              />
-            </svg>
-          </button>
+          <div className="relative group">
+            <button className="flex items-center gap-[5px] px-[14px] py-[7px] rounded-[8px] bg-[#F5F5F5] hover:bg-[#e8e8e8] transition-colors flex-shrink-0">
+              <span className="font-inter-tight text-[13px] font-normal text-black leading-normal">
+                {sortBy === "newest"
+                  ? "Newest"
+                  : sortBy === "oldest"
+                    ? "Oldest"
+                    : sortBy === "name-asc"
+                      ? "A-Z"
+                      : "Z-A"}
+              </span>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11.2826 6.2209C11.3525 6.29058 11.4079 6.37338 11.4458 6.46454C11.4837 6.5557 11.5031 6.65344 11.5031 6.75215C11.5031 6.85086 11.4837 6.9486 11.4458 7.03977C11.4079 7.13093 11.3525 7.21373 11.2826 7.2834L8.28255 10.2834C8.21287 10.3533 8.13008 10.4088 8.03892 10.4467C7.94775 10.4845 7.85001 10.504 7.7513 10.504C7.65259 10.504 7.55485 10.4845 7.46369 10.4467C7.37252 10.4088 7.28973 10.3533 7.22005 10.2834L4.22005 7.2834C4.07915 7.14251 4 6.95141 4 6.75215C4 6.5529 4.07915 6.3618 4.22005 6.2209C4.36095 6.08001 4.55204 6.00085 4.7513 6.00085C4.95056 6.00085 5.14165 6.08001 5.28255 6.2209L7.75193 8.68903L10.2213 6.21903C10.2911 6.14942 10.3739 6.09425 10.465 6.05666C10.5561 6.01908 10.6538 5.99983 10.7523 6C10.8509 6.00018 10.9484 6.01977 11.0394 6.05768C11.1304 6.09558 11.213 6.15105 11.2826 6.2209Z"
+                  fill="black"
+                />
+              </svg>
+            </button>
+            {/* Sort Dropdown */}
+            <div className="absolute top-full right-0 mt-1 w-[120px] bg-white rounded-[8px] shadow-lg border border-[#E1E4EA] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
+              {[
+                { value: "newest", label: "Newest" },
+                { value: "oldest", label: "Oldest" },
+                { value: "name-asc", label: "A-Z" },
+                { value: "name-desc", label: "Z-A" },
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => setSortBy(option.value)}
+                  className={`w-full text-left px-3 py-2 text-[12px] hover:bg-gray-50 first:rounded-t-[8px] last:rounded-b-[8px] ${
+                    sortBy === option.value
+                      ? "bg-[#5C30FF]/10 text-[#5C30FF]"
+                      : "text-black"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Table */}
@@ -457,6 +616,7 @@ export default function OpportunityApplicantsPage() {
           )}
         </div>
       </div>
+
     </div>
   );
 }

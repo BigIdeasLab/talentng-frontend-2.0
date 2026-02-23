@@ -371,7 +371,9 @@ export function BasicInfoStep({
                 }
                 onBlur={(e) => (e.currentTarget.style.borderColor = "")}
               >
-                <option value="">Select State</option>
+                <option value="" disabled className="text-[#99A0AE]">
+                  Select
+                </option>
                 {Object.keys(statesCitiesData).map((state) => (
                   <option key={state} value={state}>
                     {state}
@@ -418,7 +420,9 @@ export function BasicInfoStep({
                 }
                 onBlur={(e) => (e.currentTarget.style.borderColor = "")}
               >
-                <option value="">Select City</option>
+                <option value="" disabled className="text-[#99A0AE]">
+                  {selectedState ? "Select" : "Select state first"}
+                </option>
                 {cities.map((city) => (
                   <option key={city} value={city}>
                     {city}
