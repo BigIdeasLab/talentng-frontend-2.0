@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import Link from "next/link";
 import type { RecentApplication, ApplicationStatus } from "@/lib/api/talent";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { cardHover } from "@/lib/theme/effects";
@@ -88,13 +89,14 @@ export function RecentApplications({ applications }: RecentApplicationsProps) {
         <h2 className="text-[15px] font-bold font-inter-tight">
           Recent Applications
         </h2>
-        <button
+        <Link
+          href="/my-applications"
           className="flex items-center gap-1 text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity"
           style={{ color: ROLE_COLORS.talent.dark }}
         >
           View All
           <ArrowUpRight className="w-3.5 h-3.5" />
-        </button>
+        </Link>
       </div>
       <div className="flex flex-col gap-3">
         {applications.length === 0 ? (

@@ -8,6 +8,7 @@ import {
   Users,
   Headphones,
   Settings,
+  FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -56,6 +57,12 @@ const getMenuItems = (notificationCount?: number): MenuItem[] => [
     href: "/opportunities",
   },
   { id: "mentorship", label: "Mentorship", icon: Users, href: "/mentorship" },
+  {
+    id: "my-applications",
+    label: "My Applications",
+    icon: FileText,
+    href: "/my-applications",
+  },
 
   {
     id: "notification",
