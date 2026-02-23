@@ -1,3 +1,4 @@
+import { useRouter } from "next/navigation";
 import { ArrowUpRight, Briefcase, Users } from "lucide-react";
 
 interface OpportunityItemProps {
@@ -58,6 +59,8 @@ interface TopOpportunitiesProps {
 }
 
 export function TopOpportunities({ data }: TopOpportunitiesProps) {
+  const router = useRouter();
+
   return (
     <div className="flex flex-col items-start gap-4 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white w-full">
       <div className="flex justify-between items-center self-stretch flex-shrink-0">
@@ -67,7 +70,10 @@ export function TopOpportunities({ data }: TopOpportunitiesProps) {
             Top Opportunities
           </h2>
         </div>
-        <button className="flex items-center gap-1 text-[#0D9F5C] text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity">
+        <button
+          onClick={() => router.push("/opportunities")}
+          className="flex items-center gap-1 text-[#0D9F5C] text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity"
+        >
           View All
           <ArrowUpRight className="w-3.5 h-3.5" />
         </button>

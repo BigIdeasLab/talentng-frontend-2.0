@@ -1,4 +1,4 @@
-import { Users, Calendar, Activity, ArrowUpRight } from "lucide-react";
+import { Users, Calendar, Activity } from "lucide-react";
 
 interface ActivityItemProps {
   message: string;
@@ -70,17 +70,11 @@ function formatTimeAgo(timestamp: string): string {
 export function RecentActivity({ data }: RecentActivityProps) {
   return (
     <div className="flex flex-col items-start gap-4 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white w-full">
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-1.5">
-          <Activity className="w-4 h-4 text-[#3D82F6]" />
-          <h2 className="text-[15px] font-bold font-inter-tight">
-            Recent Activity
-          </h2>
-        </div>
-        <button className="flex items-center gap-1 text-[#0D9F5C] text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity">
-          View All
-          <ArrowUpRight className="w-3.5 h-3.5" />
-        </button>
+      <div className="flex items-center gap-1.5">
+        <Activity className="w-4 h-4 text-[#3D82F6]" />
+        <h2 className="text-[15px] font-bold font-inter-tight">
+          Recent Activity
+        </h2>
       </div>
 
       <div className="flex flex-col items-start gap-3 self-stretch">

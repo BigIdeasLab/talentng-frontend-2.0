@@ -1,3 +1,4 @@
+import { useRouter } from "next/navigation";
 import { Users, Briefcase, CheckCircle, UserCheck } from "lucide-react";
 
 interface ActionButtonProps {
@@ -23,6 +24,8 @@ function ActionButton({ icon, label, onClick }: ActionButtonProps) {
 }
 
 export function QuickActions() {
+  const router = useRouter();
+
   return (
     <div className="flex flex-col md:flex-row w-full px-5 py-4 md:py-5 justify-between items-start md:items-center gap-3 rounded-lg bg-[#FFFDF5] flex-shrink-0">
       <div className="flex flex-col items-start gap-1.5 md:gap-0.5 w-full md:w-auto">
@@ -43,9 +46,7 @@ export function QuickActions() {
             <Users className="w-3.5 h-3.5 text-[#525866]" strokeWidth={1.24} />
           }
           label="View Applicants"
-          onClick={() => {
-            /* Handle navigation */
-          }}
+          onClick={() => router.push("/applicants")}
         />
         <ActionButton
           icon={
@@ -55,9 +56,7 @@ export function QuickActions() {
             />
           }
           label="Post Opportunity"
-          onClick={() => {
-            /* Handle navigation */
-          }}
+          onClick={() => router.push("/opportunities/post")}
         />
         <ActionButton
           icon={
@@ -67,9 +66,7 @@ export function QuickActions() {
             />
           }
           label="Hired Talents"
-          onClick={() => {
-            /* Handle navigation */
-          }}
+          onClick={() => router.push("/applicants/hired-talents")}
         />
       </div>
     </div>
