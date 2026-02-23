@@ -8,7 +8,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
 import { ApplicantsSkeleton } from "@/components/employer/applicants/ApplicantsSkeleton";
-import { useApplications } from "@/hooks/useApplications";
+import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
 import {
   mapApplicationsToUI,
   type MappedApplicant,
@@ -50,16 +50,19 @@ export default function ApplicantsPage() {
     skills: [],
     dateRange: "all",
   });
-  const { getAll, isLoading, error } = useApplications();
+  const { data: rawApplicants = [], isLoading, error: queryError } = useRecruiterApplicationsQuery({});
   const hasAccess = useRequireRole(["recruiter"]);
+  const error = queryError instanceof Error ? queryError.message : (queryError ? "Failed to load" : null);
 
   useEffect(() => {
-    if (hasAccess) {
-      getAll().then((data) => {
-        setApplicants(mapApplicationsToUI(data));
-      });
+    if (rawApplicants) {
+      setApplicants(mapApplicationsToUI(rawApplicants));
     }
-  }, [hasAccess, getAll]);
+  }, [rawApplicants]);
+
+  const fetchApplicants = async () => {
+    // No longer needed as useQuery handles it
+  };
 
   const availableStatuses = useMemo(() => {
     return [...new Set(applicants.map((a) => a.status))];

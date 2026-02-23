@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks";
-import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { useSavedOpportunitiesQuery } from "@/hooks/useTalentOpportunities";
 import { updateProfile } from "@/lib/api/talent";
 import { ProfilePanel } from "@/components/talent/profile/components/ProfilePanel";
 import { ProfileNav } from "@/components/talent/profile/components/ProfileNav";
@@ -108,11 +108,13 @@ export function TalentProfile({
   const [recommendationsLoading, setRecommendationsLoading] = useState(
     !initialRecommendations || initialRecommendations.length === 0,
   );
-  const [cachedOpportunities, setCachedOpportunities] = useState<Opportunity[]>(
-    [],
-  );
-  const [opportunitiesLoading, setOpportunitiesLoading] = useState(true);
-  const { getSaved } = useOpportunitiesManager();
+  const {
+    data: savedOppsData,
+    isLoading: opportunitiesLoading,
+    refetch: refetchSavedOpportunities,
+  } = useSavedOpportunitiesQuery(100, 0);
+
+  const cachedOpportunities = savedOppsData?.data || [];
 
   useEffect(() => {
     setStats(initialStats);
@@ -133,24 +135,10 @@ export function TalentProfile({
   }, [activeTab]);
 
   useEffect(() => {
-    // Fetch saved opportunities
-    const fetchSavedOpportunities = async () => {
-      setOpportunitiesLoading(true);
-      try {
-        const response = await getSaved(100, 0);
-        setCachedOpportunities(response.data || []);
-      } catch (error) {
-        console.error("Failed to fetch saved opportunities:", error);
-        setCachedOpportunities([]);
-      } finally {
-        setOpportunitiesLoading(false);
-      }
-    };
-
     if (activeTab === "opportunities") {
-      fetchSavedOpportunities();
+      refetchSavedOpportunities();
     }
-  }, [activeTab, getSaved]);
+  }, [activeTab]);
 
   const handleAddNewWork = () => {
     setIsUploadWorksModalOpen(true);
@@ -376,19 +364,7 @@ export function TalentProfile({
               onRemove={() => {}}
               onApply={() => {}}
               onApplicationSubmitted={(opportunityId) => {
-                // Refetch opportunities to get updated applied status
-                const fetchSavedOpportunities = async () => {
-                  try {
-                    const response = await getSaved(100, 0);
-                    setCachedOpportunities(response.data || []);
-                  } catch (error) {
-                    console.error(
-                      "Failed to fetch saved opportunities:",
-                      error,
-                    );
-                  }
-                };
-                fetchSavedOpportunities();
+                refetchSavedOpportunities();
               }}
             />
           )}

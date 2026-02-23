@@ -1,17 +1,44 @@
 "use client";
 
+import { useEffect } from "react";
 import { useSwitchRoleParam } from "@/lib/page-utils";
 import { useProfile } from "@/hooks/useProfile";
 import { TalentDashboard } from "@/components/talent/dashboard/TalentDashboard";
 import { EmployerDashboard } from "@/components/employer/dashboard/EmployerDashboard";
 import MentorDashboard from "@/components/mentor/dashboard/MentorDashboard";
 
+import { LoadingScreen } from "@/components/layouts/LoadingScreen";
+
 export default function DashboardPage() {
   // Handle switchRole query parameter (from add-role onboarding)
   useSwitchRoleParam();
 
-  const { activeRole, userRoles } = useProfile();
-  const role = activeRole || userRoles?.[0] || "talent";
+  const { activeRole, isLoading, setActiveRole } = useProfile();
+
+  // Safeguard: Ensure the frontend role matches the token's role
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        try {
+          const { decodeToken } = require("@/lib/auth");
+          const decoded = decodeToken(token);
+          const jwtActiveRole = decoded?.act || decoded?.activeRole;
+          
+          if (jwtActiveRole && jwtActiveRole !== activeRole) {
+            console.log(`Fixing Dashboard mismatch: context=${activeRole}, token=${jwtActiveRole}`);
+            setActiveRole(jwtActiveRole);
+          }
+        } catch (e) {}
+      }
+    }
+  }, [activeRole, setActiveRole]);
+
+  if (isLoading || !activeRole) {
+    return <LoadingScreen />;
+  }
+
+  const role = activeRole;
 
   switch (role) {
     case "recruiter":
@@ -19,7 +46,8 @@ export default function DashboardPage() {
     case "mentor":
       return <MentorDashboard />;
     case "talent":
-    default:
       return <TalentDashboard />;
+    default:
+      return null;
   }
 }

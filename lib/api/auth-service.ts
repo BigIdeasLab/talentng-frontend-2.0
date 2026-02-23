@@ -187,3 +187,50 @@ export const refreshAuthToken = async (): Promise<AuthResponse> => {
   handleAuthResponse(response);
   return response;
 };
+
+export interface SwitchRoleResponse {
+  accessToken: string;
+  refreshToken?: string; // Backend does NOT return refreshToken on switch-role
+  activeRole: string;
+}
+
+/**
+ * Switch the user's active role
+ * POST /auth/switch-role
+ * Issues a new access token scoped to the requested role.
+ * NOTE: Backend only returns { accessToken, activeRole } — no refreshToken.
+ * We keep the existing refreshToken from localStorage.
+ */
+export const switchRole = async (
+  role: string,
+): Promise<SwitchRoleResponse> => {
+
+  const response = await apiClient<SwitchRoleResponse>("/auth/switch-role", {
+    method: "POST",
+    body: { role },
+  });
+
+
+
+  // Store the new access token; keep existing refreshToken + userId from localStorage
+  if (response.accessToken && typeof window !== "undefined") {
+    const existingRefreshToken = localStorage.getItem("refreshToken") || "";
+    const existingUserId = localStorage.getItem("userId") || "";
+
+    storeTokens({
+      accessToken: response.accessToken,
+      refreshToken: response.refreshToken || existingRefreshToken,
+      userId: existingUserId,
+    });
+
+  }
+
+  // Persist active role to localStorage and cookies for SSR/middleware checks
+  if (typeof window !== "undefined") {
+
+    localStorage.setItem("activeRole", response.activeRole);
+    document.cookie = `activeRole=${response.activeRole}; path=/; max-age=31536000; SameSite=Lax`;
+  }
+
+  return response;
+};

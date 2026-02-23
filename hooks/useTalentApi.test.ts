@@ -2,15 +2,13 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useCurrentProfile, useTalentProfile } from "./useTalentApi";
-import * as talentService from "@/lib/api/talent-service";
+import * as talentApi from "@/lib/api/talent";
 import React from "react";
 
-// Mock the talent service
-vi.mock("@/lib/api/talent-service", () => ({
-  talentProfileApi: {
-    getCurrentProfile: vi.fn(),
-    getTalentProfileByUserId: vi.fn(),
-  },
+// Mock the talent API
+vi.mock("@/lib/api/talent", () => ({
+  getCurrentProfile: vi.fn(),
+  getTalentProfileByUserId: vi.fn(),
 }));
 
 // Create test wrapper with QueryClient
@@ -57,9 +55,7 @@ describe("useTalentApi Hooks", () => {
         services: [],
       } as any;
 
-      vi.mocked(
-        talentService.talentProfileApi.getCurrentProfile,
-      ).mockResolvedValue(mockProfile);
+      vi.mocked(talentApi.getCurrentProfile).mockResolvedValue(mockProfile);
 
       const { result } = renderHook(() => useCurrentProfile(), {
         wrapper: createWrapper(),
@@ -79,9 +75,7 @@ describe("useTalentApi Hooks", () => {
 
     it("should handle profile fetch error", async () => {
       const error = new Error("Failed to fetch profile");
-      vi.mocked(
-        talentService.talentProfileApi.getCurrentProfile,
-      ).mockRejectedValue(error);
+      vi.mocked(talentApi.getCurrentProfile).mockRejectedValue(error);
 
       const { result } = renderHook(() => useCurrentProfile(), {
         wrapper: createWrapper(),
@@ -119,9 +113,9 @@ describe("useTalentApi Hooks", () => {
         services: [],
       } as any;
 
-      vi.mocked(
-        talentService.talentProfileApi.getTalentProfileByUserId,
-      ).mockResolvedValue(mockProfile);
+      vi.mocked(talentApi.getTalentProfileByUserId).mockResolvedValue(
+        mockProfile,
+      );
 
       const { result } = renderHook(() => useTalentProfile(userId), {
         wrapper: createWrapper(),
@@ -132,9 +126,7 @@ describe("useTalentApi Hooks", () => {
       });
 
       expect(result.current.data).toEqual(mockProfile);
-      expect(
-        talentService.talentProfileApi.getTalentProfileByUserId,
-      ).toHaveBeenCalledWith(userId);
+      expect(talentApi.getTalentProfileByUserId).toHaveBeenCalledWith(userId);
     });
   });
 });

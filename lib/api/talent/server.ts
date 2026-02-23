@@ -17,21 +17,21 @@ import type {
 
 /**
  * Get Current User's Talent Profile
- * GET /talent/me
+ * GET /talent/profile
  * Returns profile response with isProfileCreated flag
  */
 export async function getServerCurrentProfile(): Promise<TalentProfileResponse> {
-  return apiClient<TalentProfileResponse>("/talent/me");
+  return apiClient<TalentProfileResponse>("/talent/profile");
 }
 
 /**
  * Update Current User's Talent Profile
- * PATCH /talent/me
+ * PATCH /talent/profile
  */
 export async function updateServerTalentProfile(
   data: APIProfileData,
 ): Promise<TalentProfile> {
-  return apiClient<TalentProfile>("/talent/me", {
+  return apiClient<TalentProfile>("/talent/profile", {
     method: "PATCH",
     body: data,
   });

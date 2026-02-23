@@ -3,8 +3,15 @@
 import { useState, useEffect } from "react";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { useRouter } from "next/navigation";
-import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { 
+  useDeleteOpportunity, 
+  useUpdateOpportunity, 
+  usePostOpportunity, 
+  useReopenOpportunity 
+} from "@/hooks/useRecruiterOpportunities";
+import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
 import { useToast } from "@/hooks";
+import { type Application } from "@/lib/api/applications/types";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import {
@@ -15,7 +22,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { OpportunityCardProps } from "@/lib/types";
 import { TYPE_CONFIG } from "@/types/opportunities";
-import { getApplications, type Application } from "@/lib/api/applications";
 
 export function OpportunityCard({
   opportunity,
@@ -28,35 +34,26 @@ export function OpportunityCard({
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showReopenModal, setShowReopenModal] = useState(false);
-  const [applicants, setApplicants] = useState<Application[]>([]);
-  const [loadingApplicants, setLoadingApplicants] = useState(false);
-  const {
-    isLoading,
-    post,
-    delete: deleteOpp,
-    updateStatus,
-    reopen,
-  } = useOpportunitiesManager();
 
-  useEffect(() => {
-    if (activeTab === "open" || activeTab === "closed") {
-      const fetchApplicants = async () => {
-        setLoadingApplicants(true);
-        try {
-          const data = await getApplications({
-            opportunityId: opportunity.id,
-          });
-          setApplicants(data.slice(0, 3));
-        } catch (error) {
-          console.error("Error fetching applicants:", error);
-        } finally {
-          setLoadingApplicants(false);
-        }
-      };
+  const deleteMutation = useDeleteOpportunity();
+  const updateMutation = useUpdateOpportunity();
+  const postMutation = usePostOpportunity();
+  const reopenMutation = useReopenOpportunity();
 
-      fetchApplicants();
-    }
-  }, [opportunity.id, activeTab]);
+  const isMutationLoading =
+    deleteMutation.isPending ||
+    updateMutation.isPending ||
+    postMutation.isPending ||
+    reopenMutation.isPending;
+
+  const { data: applicantsRaw, isLoading: loadingApplicants } =
+    useRecruiterApplicationsQuery({
+      opportunityId: opportunity.id,
+    });
+
+  const applicants: Application[] = applicantsRaw || [];
+  const displayApplicants = applicants.slice(0, 3);
+  const isLoading = isMutationLoading; // Mapping for compatibility with existing UI disabled states
 
   const handleCardClick = (e: React.MouseEvent) => {
     if (isLoading || showModal || showDeleteModal || showReopenModal) {
@@ -69,7 +66,7 @@ export function OpportunityCard({
 
   const confirmPost = async () => {
     try {
-      await post(opportunity.id);
+      await postMutation.mutateAsync(opportunity.id);
       setShowModal(false);
       toast({
         title: "Success",
@@ -90,7 +87,7 @@ export function OpportunityCard({
 
   const confirmDelete = async () => {
     try {
-      await deleteOpp(opportunity.id);
+      await deleteMutation.mutateAsync(opportunity.id);
       setShowDeleteModal(false);
       toast({
         title: "Success",
@@ -113,7 +110,7 @@ export function OpportunityCard({
 
   const confirmReopen = async () => {
     try {
-      const response = await reopen(opportunity.id);
+      const response = await reopenMutation.mutateAsync(opportunity.id);
       setShowReopenModal(false);
       toast({
         title: "Success",
@@ -248,7 +245,10 @@ export function OpportunityCard({
     const handleMarkAsFilled = async (e: React.MouseEvent) => {
       e.stopPropagation();
       try {
-        await updateStatus(opportunity.id, "closed");
+        await updateMutation.mutateAsync({ 
+          id: opportunity.id, 
+          data: { status: "closed" } 
+        });
         toast({
           title: "Success",
           description: "Opportunity marked as filled",
@@ -493,8 +493,8 @@ export function OpportunityCard({
                 <div className="w-6 h-6 rounded-full bg-gray-400 border border-white flex-shrink-0 animate-pulse" />
                 <div className="w-6 h-6 rounded-full bg-gray-500 border border-white flex-shrink-0 animate-pulse" />
               </>
-            ) : applicants.length > 0 ? (
-              applicants.map((app) => (
+            ) : displayApplicants.length > 0 ? (
+              displayApplicants.map((app) => (
                 <img
                   key={app.id}
                   src={app.user.talentProfile.profileImageUrl}
@@ -538,8 +538,8 @@ export function OpportunityCard({
                   <div className="w-6 h-6 rounded-full bg-gray-400 border border-white flex-shrink-0 animate-pulse" />
                   <div className="w-6 h-6 rounded-full bg-gray-500 border border-white flex-shrink-0 animate-pulse" />
                 </>
-              ) : applicants.length > 0 ? (
-                applicants.map((app) => (
+              ) : displayApplicants.length > 0 ? (
+                displayApplicants.map((app) => (
                   <img
                     key={app.id}
                     src={app.user.talentProfile.profileImageUrl}

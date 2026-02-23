@@ -2,7 +2,11 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { 
+  useRecruiterOpportunityQuery, 
+  useUpdateOpportunity, 
+  useRecruiterOpportunitiesQuery 
+} from "@/hooks/useRecruiterOpportunities";
 import { useToast } from "@/hooks";
 import { BasicInfoStep } from "./post-steps/BasicInfoStep";
 import { DescriptionStep } from "./post-steps/DescriptionStep";
@@ -28,24 +32,26 @@ export function EditOpportunityForm({
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const {
-    getById,
-    getAll,
-    update,
-    isLoading: apiLoading,
-  } = useOpportunitiesManager();
   const initialSection = searchParams.get("section") as FormSection | null;
   const [expandedSection, setExpandedSection] = useState<string>(
     initialSection || "basic-info",
   );
   const [showExitModal, setShowExitModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
   const [titleError, setTitleError] = useState<string>("");
   const [pendingNavigation, setPendingNavigation] = useState<
     (() => void) | null
   >(null);
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+  const {
+    data: opportunity,
+    isLoading: isOppLoading,
+    error: oppError,
+  } = useRecruiterOpportunityQuery(opportunityId);
+
+  const updateMutation = useUpdateOpportunity();
+  const { data: opportunitiesRaw } = useRecruiterOpportunitiesQuery();
+  const allExistingOpportunities = opportunitiesRaw?.data || [];
 
   const [formData, setFormData] = useState<{
     type: string;
@@ -70,95 +76,95 @@ export function EditOpportunityForm({
     status: "active" | "closed" | "draft";
     applicationCap: string;
     closingDate: string;
-  }>(() => {
-    return {
-      type: "",
-      title: "",
-      description: "",
-      keyResponsibilities: [],
-      requirements: [],
-      tags: [],
-      tools: [],
-      category: "",
-      workType: "",
-      location: "",
-      paymentType: "",
-      priceMode: "range",
-      minBudget: "",
-      maxBudget: "",
-      price: "",
-      duration: "",
-      startDate: "",
-      experienceLevel: "",
-      employmentType: "",
-      status: "draft",
-      applicationCap: "",
-      closingDate: "",
-    };
+  }>({
+    type: "",
+    title: "",
+    description: "",
+    keyResponsibilities: [],
+    requirements: [],
+    tags: [],
+    tools: [],
+    category: "",
+    workType: "",
+    location: "",
+    paymentType: "",
+    priceMode: "range",
+    minBudget: "",
+    maxBudget: "",
+    price: "",
+    duration: "",
+    startDate: "",
+    experienceLevel: "",
+    employmentType: "",
+    status: "draft",
+    applicationCap: "",
+    closingDate: "",
   });
 
-  // Fetch opportunity data on mount
+  const [isLoading, setIsLoading] = useState(true);
+  const isSaving = updateMutation.isPending;
+
   useEffect(() => {
-    const fetchOpportunity = async () => {
-      try {
-        const data = await getById(opportunityId);
-        const paymentType = (data.paymentType || "") as
-          | "weekly"
-          | "monthly"
-          | "hourly"
-          | "";
+    if (opportunity) {
+      const paymentType = (opportunity.paymentType || "") as
+        | "weekly"
+        | "monthly"
+        | "hourly"
+        | "";
 
-        setFormData({
-          type: data.type || "",
-          title: data.title || "",
-          description: data.description || "",
-          keyResponsibilities: data.keyResponsibilities || [],
-          requirements: data.requirements || [],
-          tags: data.tags || [],
-          tools: data.tools || [],
-          category: data.category || "",
-          workType: (data.workType || "").toLowerCase() || "",
-          location: data.location || "",
-          paymentType,
-          priceMode: (data.priceMode || "range") as "range" | "fixed",
-          minBudget: data.minBudget ? String(data.minBudget) : "",
-          maxBudget: data.maxBudget ? String(data.maxBudget) : "",
-          price: data.price ? String(data.price) : "",
-          duration: data.duration || "",
-          startDate: data.startDate
-            ? new Date(data.startDate).toISOString().split("T")[0]
-            : "",
-          experienceLevel: (() => {
-            const level = data.experienceLevel || "";
-            const normalized = level.toLowerCase();
-            if (normalized === "junior" || normalized === "entry")
-              return "Entry";
-            if (normalized === "mid" || normalized === "intermediate")
-              return "Intermediate";
-            if (normalized === "senior") return "Senior";
-            if (normalized === "expert") return "Expert";
-            return level;
-          })(),
-          employmentType: data.employmentType || "",
-          status: (data.status || "draft") as any,
-          applicationCap: data.applicationCap
-            ? String(data.applicationCap)
-            : "",
-          closingDate: data.closingDate
-            ? new Date(data.closingDate).toISOString().split("T")[0]
-            : "",
-        });
-      } catch (error) {
-        console.error("Error fetching opportunity:", error);
-        alert("Failed to load opportunity. Redirecting...");
-        router.push("/opportunities");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      setFormData({
+        type: opportunity.type || "",
+        title: opportunity.title || "",
+        description: opportunity.description || "",
+        keyResponsibilities: opportunity.keyResponsibilities || [],
+        requirements: opportunity.requirements || [],
+        tags: opportunity.tags || [],
+        tools: opportunity.tools || [],
+        category: opportunity.category || "",
+        workType: (opportunity.workType || "").toLowerCase() || "",
+        location: opportunity.location || "",
+        paymentType,
+        priceMode: (opportunity.priceMode || "range") as "range" | "fixed",
+        minBudget: opportunity.minBudget ? String(opportunity.minBudget) : "",
+        maxBudget: opportunity.maxBudget ? String(opportunity.maxBudget) : "",
+        price: opportunity.price ? String(opportunity.price) : "",
+        duration: opportunity.duration || "",
+        startDate: opportunity.startDate
+          ? new Date(opportunity.startDate).toISOString().split("T")[0]
+          : "",
+        experienceLevel: (() => {
+          const level = opportunity.experienceLevel || "";
+          const normalized = level.toLowerCase();
+          if (normalized === "junior" || normalized === "entry") return "Entry";
+          if (normalized === "mid" || normalized === "intermediate")
+            return "Intermediate";
+          if (normalized === "senior") return "Senior";
+          if (normalized === "expert") return "Expert";
+          return level;
+        })(),
+        employmentType: opportunity.employmentType || "",
+        status: (opportunity.status || "draft") as any,
+        applicationCap: opportunity.applicationCap
+          ? String(opportunity.applicationCap)
+          : "",
+        closingDate: opportunity.closingDate
+          ? new Date(opportunity.closingDate).toISOString().split("T")[0]
+          : "",
+      });
+      setIsLoading(false);
+    }
+  }, [opportunity]);
 
-    fetchOpportunity();
-  }, [opportunityId, router]);
+  useEffect(() => {
+    if (oppError) {
+      toast({
+        title: "Error",
+        description: "Failed to load opportunity. Redirecting...",
+        variant: "destructive",
+      });
+      router.push("/opportunities");
+    }
+  }, [oppError, router, toast]);
 
   // Scroll to section from URL param after data loads
   useEffect(() => {
@@ -172,27 +178,20 @@ export function EditOpportunityForm({
     }
   }, [isLoading, initialSection]);
 
-  const checkDuplicateTitle = async () => {
+  const checkDuplicateTitle = () => {
     const title = formData.title.trim();
     if (!title) {
       setTitleError("");
       return;
     }
-    try {
-      const response = await getAll({ status: "active", limit: 100 });
-      const draftResponse = await getAll({ status: "draft", limit: 100 });
-      const allOpportunities = [...response.data, ...draftResponse.data];
-      const duplicate = allOpportunities.some(
-        (opp) =>
-          opp.id !== opportunityId &&
-          opp.title.toLowerCase() === title.toLowerCase(),
-      );
-      setTitleError(
-        duplicate ? "You already have an opportunity with this title." : "",
-      );
-    } catch {
-      setTitleError("");
-    }
+    const duplicate = allExistingOpportunities.some(
+      (opp) =>
+        opp.id !== opportunityId &&
+        opp.title.toLowerCase() === title.toLowerCase(),
+    );
+    setTitleError(
+      duplicate ? "You already have an opportunity with this title." : "",
+    );
   };
 
   useEffect(() => {
@@ -226,7 +225,6 @@ export function EditOpportunityForm({
       return;
     }
 
-    setIsSaving(true);
     try {
       const updateData = {
         ...formData,
@@ -245,7 +243,10 @@ export function EditOpportunityForm({
           : undefined,
       };
 
-      await update(opportunityId, updateData);
+      await updateMutation.mutateAsync({
+        id: opportunityId,
+        data: updateData,
+      });
       toast({
         title: "Success",
         description: "Opportunity updated successfully",
@@ -264,8 +265,6 @@ export function EditOpportunityForm({
           : message,
         variant: "destructive",
       });
-    } finally {
-      setIsSaving(false);
     }
   };
 

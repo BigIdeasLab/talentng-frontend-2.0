@@ -7,7 +7,8 @@ import { Users } from "lucide-react";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
 import { EmptyState } from "@/components/ui/empty-state";
-import { useApplications } from "@/hooks/useApplications";
+import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
+import { useRecruiterOpportunityQuery } from "@/hooks/useRecruiterOpportunities";
 import type { Application } from "@/lib/api/applications";
 import {
   ApplicantFilterModal,
@@ -59,35 +60,31 @@ export default function OpportunityApplicantsPage() {
     dateRange: "all",
   });
   const [applicants, setApplicants] = useState<MappedApplicant[]>([]);
-  const [opportunityTitle, setOpportunityTitle] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const { getAll, isLoading } = useApplications();
+  const {
+    data: opportunity,
+    isLoading: isOppLoading,
+    error: oppError,
+  } = useRecruiterOpportunityQuery(opportunityId);
+
+  const {
+    data: rawApplicants = [],
+    isLoading: isAppsLoading,
+    error: appsError,
+  } = useRecruiterApplicationsQuery({ opportunityId });
+
+  const isLoading = isOppLoading || isAppsLoading;
+  const error = (oppError || appsError) ? "Failed to load" : null;
 
   useEffect(() => {
-    if (hasAccess) {
-      fetchOpportunityAndApplicants();
+    if (rawApplicants) {
+      setApplicants(mapApplicationsToUI(rawApplicants));
     }
-  }, [hasAccess, opportunityId]);
+  }, [rawApplicants]);
+
+  const opportunityTitle = opportunity?.title || "";
 
   const fetchOpportunityAndApplicants = async () => {
-    try {
-      setError(null);
-
-      // Fetch opportunity details
-      const { getOpportunityById } = await import("@/lib/api/opportunities");
-      const opportunity = await getOpportunityById(opportunityId);
-      setOpportunityTitle(opportunity?.title || "");
-
-      // Fetch applicants for this opportunity
-      const data = await getAll(opportunityId);
-      const mapped = mapApplicationsToUI(data || []);
-      setApplicants(mapped);
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Failed to load applicants";
-      setError(message);
-      console.error("Error fetching opportunity and applicants:", err);
-    }
+    // No longer needed
   };
 
   const mapApplicationsToUI = (

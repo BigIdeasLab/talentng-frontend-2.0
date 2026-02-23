@@ -13,7 +13,8 @@ import type {
 } from "./types";
 
 /**
- * Submit an application with optional note and attachments
+ * Submit an application (talent only)
+ * POST /talent/applications
  * Handles FormData for file uploads
  */
 export const submitApplication = async (
@@ -34,33 +35,74 @@ export const submitApplication = async (
     });
   }
 
-  return apiClient<ApplicationResponse>("/applications", {
+  return apiClient<ApplicationResponse>("/talent/applications", {
     method: "POST",
     body: formData,
   });
 };
 
 /**
- * Legacy method - submit basic application
+ * Legacy method - submit basic application (talent only)
+ * POST /talent/applications
  */
 export const applyToOpportunity = async (
   application: Application,
 ): Promise<ApplicationResponse> => {
-  return apiClient<ApplicationResponse>("/applications", {
+  return apiClient<ApplicationResponse>("/talent/applications", {
     method: "POST",
     body: application,
   });
 };
 
 /**
- * Get all applications for current user
+ * Get all applications for current talent
+ * GET /talent/applications
+ */
+export const getTalentApplications = async (): Promise<Application[]> => {
+  return apiClient<Application[]>("/talent/applications");
+};
+
+/**
+ * Get applications for a recruiter (with filters)
+ * GET /recruiter/applications
+ */
+export const getRecruiterApplications = async (params: {
+  status?: string;
+  opportunityId?: string;
+  limit?: number;
+  offset?: number;
+}): Promise<Application[]> => {
+  const query = new URLSearchParams();
+  if (params.status) query.append("status", params.status);
+  if (params.opportunityId) query.append("opportunityId", params.opportunityId);
+  if (params.limit) query.append("limit", String(params.limit));
+  if (params.offset) query.append("offset", String(params.offset));
+
+  const queryString = query.toString();
+  const endpoint = `/recruiter/applications${queryString ? `?${queryString}` : ""}`;
+
+  return apiClient<Application[]>(endpoint);
+};
+
+/**
+ * Get all applications for current user (generic, kept for backward compat)
+ * GET /applications
  */
 export const getApplications = async (): Promise<Application[]> => {
   return apiClient<Application[]>("/applications");
 };
 
 /**
- * Get applications with filters
+ * Get a single application by ID
+ */
+export const getApplicationById = async (
+  applicationId: string,
+): Promise<Application> => {
+  return apiClient<Application>(`/applications/${applicationId}`);
+};
+
+/**
+ * Get applications with filters (generic, kept for backward compat)
  */
 export const getApplicationsWithFilters = async (params: {
   status?: string;
@@ -188,14 +230,14 @@ export const completeInterview = async (
 };
 
 /**
- * Send job invitations to talents
- * POST /applications/invitations/send
+ * Send job invitations to talents (recruiter only)
+ * POST /recruiter/invitations/send
  */
 export const sendInvitations = async (input: {
   opportunityId: string;
   talentIds: string[];
 }): Promise<InvitationResponse[]> => {
-  return apiClient<InvitationResponse[]>("/applications/invitations/send", {
+  return apiClient<InvitationResponse[]>("/recruiter/invitations/send", {
     method: "POST",
     body: input,
   });

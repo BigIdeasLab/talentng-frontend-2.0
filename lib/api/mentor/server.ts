@@ -14,47 +14,47 @@ import type {
 
 /**
  * Get Current User's Mentor Profile
- * GET /mentor/me
+ * GET /mentor/profile
  * Returns profile response with isProfileCreated flag
  */
 export async function getServerCurrentMentorProfile(): Promise<MentorProfileResponse> {
-  return apiClient<MentorProfileResponse>("/mentor/me");
+  return apiClient<MentorProfileResponse>("/mentor/profile");
 }
 
 /**
  * Update Current User's Mentor Profile
- * PATCH /mentor/me
+ * PATCH /mentor/profile
  */
 export async function updateServerMentorProfile(
   data: UpdateMentorProfileInput,
 ): Promise<MentorProfile> {
-  return apiClient<MentorProfile>("/mentor/me", {
+  return apiClient<MentorProfile>("/mentor/profile", {
     method: "PATCH",
     body: data,
   });
 }
 
 /**
- * Get Mentor Profile by ID
- * GET /mentor/:id
+ * Get Mentor Profile by ID (Public)
+ * GET /mentors/:id
  */
 export async function getServerMentorProfileById(
   id: string,
 ): Promise<MentorProfile> {
-  return apiClient<MentorProfile>(`/mentor/${id}`);
+  return apiClient<MentorProfile>(`/mentors/${id}`);
 }
 
 /**
  * Get All Mentors (Public)
- * GET /mentor
+ * GET /mentors
  */
 export async function getServerAllMentors(): Promise<MentorProfile[]> {
-  return apiClient<MentorProfile[]>("/mentor");
+  return apiClient<MentorProfile[]>("/mentors");
 }
 
 /**
  * Search Mentors (Public)
- * GET /mentor/search
+ * GET /mentors/search
  */
 export async function getServerSearchMentors(
   query: string,
@@ -62,7 +62,7 @@ export async function getServerSearchMentors(
   const queryParams = new URLSearchParams();
   queryParams.append("q", query);
 
-  return apiClient<MentorProfile[]>(`/mentor/search?${queryParams.toString()}`);
+  return apiClient<MentorProfile[]>(`/mentors/search?${queryParams.toString()}`);
 }
 
 /**

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
-import { useApplications } from "@/hooks/useApplications";
+import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
 import { useToast } from "@/hooks";
 import { RecommendationModal } from "@/components/employer/opportunities/RecommendationModal";
 import {
@@ -89,19 +89,28 @@ export default function HiredTalentsPage() {
     useState<TalentRecommendationDto | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const hasAccess = useRequireRole(["recruiter"]);
-  const { getAll } = useApplications();
+
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (!hasAccess) return;
-    fetchHiredTalents();
-  }, [hasAccess]);
+  const {
+    data: rawApplications = [],
+    isLoading: isAppsLoading,
+    error: appsError,
+  } = useRecruiterApplicationsQuery({ status: "hired" });
 
-  const fetchHiredTalents = async () => {
+  useEffect(() => {
+    if (rawApplications.length > 0) {
+      fetchRecommendationsForTalents(rawApplications);
+    } else if (!isAppsLoading) {
+      setHiredTalents([]);
+      setIsLoading(false);
+    }
+  }, [rawApplications, isAppsLoading]);
+
+  const fetchRecommendationsForTalents = async (applications: Application[]) => {
     try {
       setIsLoading(true);
-      const allApplications = await getAll();
-      const hired = allApplications.filter((app) => app.status === "hired");
+      const hired = applications.filter((app) => app.status === "hired");
       const talentMap = groupApplicationsByTalent(hired);
 
       // Fetch recommendations for each talent
@@ -127,6 +136,10 @@ export default function HiredTalentsPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const fetchHiredTalents = async () => {
+    // No longer needed directly, handled by useQuery and useEffect
   };
 
   const handleRecommendationSubmit = async (data: {

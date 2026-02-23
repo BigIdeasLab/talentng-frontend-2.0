@@ -8,11 +8,12 @@
 
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
-  userProfileApi,
-  userOnboardingApi,
+  getCurrentUser,
+  checkUsernameAvailability,
+  completeOnboarding,
   type UsernameAvailability,
-  type User,
-} from "@/lib/api/user-service";
+} from "@/lib/api/users";
+import type { User } from "@/lib/types/auth";
 
 /**
  * Profile Hooks
@@ -20,7 +21,7 @@ import {
 export function useCurrentUser() {
   return useQuery({
     queryKey: ["current-user"],
-    queryFn: userProfileApi.getCurrentUser,
+    queryFn: getCurrentUser,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
@@ -31,7 +32,7 @@ export function useCurrentUser() {
 export function useCheckUsernameAvailability(username: string) {
   return useQuery({
     queryKey: ["username-availability", username],
-    queryFn: () => userOnboardingApi.checkUsernameAvailability(username),
+    queryFn: () => checkUsernameAvailability(username),
     staleTime: 1 * 60 * 1000, // 1 minute
     enabled: username.length > 0, // Only run when username is not empty
   });
@@ -39,6 +40,7 @@ export function useCheckUsernameAvailability(username: string) {
 
 export function useCompleteOnboarding() {
   return useMutation({
-    mutationFn: userOnboardingApi.completeOnboarding,
+    mutationFn: completeOnboarding,
   });
 }
+

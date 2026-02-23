@@ -14,33 +14,33 @@ import type {
 
 /**
  * 1. Get Current User's Recruiter Profile
- * GET /recruiter/me
+ * GET /recruiter/profile
  */
 export async function getCurrentRecruiterProfile(): Promise<RecruiterProfile> {
-  return apiClient<RecruiterProfile>("/recruiter/me");
+  return apiClient<RecruiterProfile>("/recruiter/profile");
 }
 
 /**
  * 2. Update Current User's Recruiter Profile
- * PATCH /recruiter/me
+ * PATCH /recruiter/profile
  */
 export async function updateRecruiterProfile(
   data: UpdateRecruiterProfileInput,
 ): Promise<RecruiterProfile> {
-  return apiClient<RecruiterProfile>("/recruiter/me", {
+  return apiClient<RecruiterProfile>("/recruiter/profile", {
     method: "PATCH",
     body: data,
   });
 }
 
 /**
- * 3. Get Recruiter Profile by User ID
- * GET /recruiter/:userId
+ * 3. Get Recruiter Profile by User ID (Public)
+ * GET /recruiters/:userId
  */
 export async function getRecruiterProfileByUserId(
   userId: string,
 ): Promise<RecruiterProfile> {
-  return apiClient<RecruiterProfile>(`/recruiter/${userId}`);
+  return apiClient<RecruiterProfile>(`/recruiters/${userId}`);
 }
 
 /**
@@ -95,8 +95,8 @@ export async function updateRecruiterLogoImage(
 }
 
 /**
- * 7. List All Recruiter Profiles
- * GET /recruiter
+ * 7. List All Recruiter Profiles (Public)
+ * GET /recruiters
  */
 export async function listRecruiterProfiles(
   filters?: RecruiterFilterParams,
@@ -115,7 +115,7 @@ export async function listRecruiterProfiles(
   }
 
   const query = queryParams.toString();
-  const endpoint = query ? `/recruiter?${query}` : "/recruiter";
+  const endpoint = query ? `/recruiters?${query}` : "/recruiters";
 
   return apiClient<RecruiterProfile[]>(endpoint);
 }

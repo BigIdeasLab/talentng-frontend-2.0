@@ -12,13 +12,15 @@ import { MentorSidebar } from "@/components/layouts/sidebars/MentorSidebar";
 import { MobileSidebar } from "@/components/talent/profile/components/MobileSidebar";
 import { LoadingScreen } from "@/components/layouts/LoadingScreen";
 import { NotificationsModal } from "@/components/layouts/modals/NotificationsModal";
+import { RoleSwitchModal } from "@/components/ui/RoleSwitchModal";
+import { GlobalErrorHandler } from "@/components/GlobalErrorHandler";
 
 export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [totalUnreadCount, setTotalUnreadCount] = useState(0);
-  const { activeRole, isLoading } = useProfile();
+  const { activeRole, isLoading, roleSwitchRequired, triggerRoleSwitch } = useProfile();
 
   // Map active role to recipient role for notifications
   const getRecipientRole = (
@@ -114,6 +116,9 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex h-screen bg-white flex-col md:flex-row">
+      {/* Global Error Listener (Phase 6) */}
+      <GlobalErrorHandler />
+      
       {/* Mobile Sidebar */}
       <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-[#E1E4EA]">
         <div className="font-medium text-[18px] text-black font-inter-tight">
@@ -139,10 +144,16 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
         {isLoading || !activeRole ? <LoadingScreen /> : children}
       </div>
 
-      {/* Notifications Modal */}
       <NotificationsModal
         isOpen={isNotificationsOpen}
         onClose={() => setIsNotificationsOpen(false)}
+      />
+
+      {/* Role Switch Modal (Phase 6) */}
+      <RoleSwitchModal
+        isOpen={!!roleSwitchRequired}
+        onClose={() => triggerRoleSwitch("")}
+        requiredRole={roleSwitchRequired as any}
       />
     </div>
   );

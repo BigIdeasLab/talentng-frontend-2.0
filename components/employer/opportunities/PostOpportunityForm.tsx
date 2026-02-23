@@ -3,7 +3,10 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
-import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { 
+  useCreateOpportunity, 
+  useRecruiterOpportunitiesQuery 
+} from "@/hooks/useRecruiterOpportunities";
 import { useToast } from "@/hooks";
 import type { FormSection } from "@/lib/types";
 import { FormSectionComponent } from "./FormSection";
@@ -40,7 +43,10 @@ export function PostOpportunityForm() {
   const router = useRouter();
   const pathname = usePathname();
   const { toast } = useToast();
-  const { create, getAll, isLoading } = useOpportunitiesManager();
+  const createMutation = useCreateOpportunity();
+  const { data: opportunitiesRaw } = useRecruiterOpportunitiesQuery();
+  const allExistingOpportunities = opportunitiesRaw?.data || [];
+
   const [titleError, setTitleError] = useState<string>("");
   const [expandedSection, setExpandedSection] = useState<string>("basic-info");
   const [showExitModal, setShowExitModal] = useState(false);
@@ -82,25 +88,18 @@ export function PostOpportunityForm() {
     sessionStorage.removeItem("opportunityFormData");
   };
 
-  const checkDuplicateTitle = async () => {
+  const checkDuplicateTitle = () => {
     const title = formData.title.trim();
     if (!title) {
       setTitleError("");
       return;
     }
-    try {
-      const response = await getAll({ status: "active", limit: 100 });
-      const draftResponse = await getAll({ status: "draft", limit: 100 });
-      const allOpportunities = [...response.data, ...draftResponse.data];
-      const duplicate = allOpportunities.some(
-        (opp) => opp.title.toLowerCase() === title.toLowerCase(),
-      );
-      setTitleError(
-        duplicate ? "You already have an opportunity with this title." : "",
-      );
-    } catch {
-      setTitleError("");
-    }
+    const duplicate = allExistingOpportunities.some(
+      (opp) => opp.title.toLowerCase() === title.toLowerCase(),
+    );
+    setTitleError(
+      duplicate ? "You already have an opportunity with this title." : "",
+    );
   };
 
   useEffect(() => {
@@ -271,7 +270,7 @@ export function PostOpportunityForm() {
   // Handle save as draft
   const handleSaveAsDraft = async () => {
     try {
-      await create(transformFormData("draft"));
+      await createMutation.mutateAsync(transformFormData("draft"));
       clearForm();
       toast({
         title: "Success",

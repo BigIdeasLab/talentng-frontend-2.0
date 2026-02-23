@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useProfile } from "@/hooks/useProfile";
-import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { useRecruiterOpportunitiesQuery } from "@/hooks/useRecruiterOpportunities";
 import type {
   TabType,
   SortType,
@@ -22,17 +22,21 @@ export function EmployerOpportunities() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { currentProfile } = useProfile();
-  const { getAll, isLoading: apiLoading } = useOpportunitiesManager();
+
   const [activeTab, setActiveTab] = useState<TabType>("open");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortType>("newest");
-  const [opportunities, setOpportunities] = useState<OpportunityCard[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch opportunities on mount
-  useEffect(() => {
-    fetchOpportunities();
-  }, [currentProfile]);
+  const {
+    data: opportunitiesRaw,
+    isLoading,
+    refetch: fetchOpportunities,
+  } = useRecruiterOpportunitiesQuery();
+
+  // Transform API response to card format
+  const opportunities: OpportunityCard[] = (opportunitiesRaw?.data || []).map(
+    transformOpportunityToCard,
+  );
 
   // Handle tab from query params
   useEffect(() => {
@@ -42,30 +46,7 @@ export function EmployerOpportunities() {
     }
   }, [searchParams]);
 
-  const fetchOpportunities = async () => {
-    try {
-      setIsLoading(true);
-      const userId = currentProfile?.userId;
-      if (!userId) return;
-
-      // Fetch all opportunities (we'll filter by status in UI tabs)
-      const response = await getAll({
-        postedById: userId,
-      });
-
-      // Transform API response to card format
-      const transformedOpportunities = (response.data || []).map(
-        transformOpportunityToCard,
-      );
-
-      setOpportunities(transformedOpportunities);
-    } catch (error) {
-      console.error("Error fetching opportunities:", error);
-      setOpportunities([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // fetchOpportunities handled by useQuery hook
 
   const handlePostClick = () => {
     router.push("/opportunities/post");

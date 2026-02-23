@@ -7,18 +7,18 @@ import apiClient from "@/lib/api";
 import type { Mentor, MentorAvailability, BookSessionRequest } from "./types";
 
 export const getMentors = async (query?: string): Promise<Mentor[]> => {
-  const endpoint = query ? `/mentor?q=${query}` : "/mentor";
+  const endpoint = query ? `/mentors?q=${query}` : "/mentors";
   return apiClient<Mentor[]>(endpoint);
 };
 
 export const getMentorById = async (id: string): Promise<Mentor> => {
-  return apiClient<Mentor>(`/mentor/${id}`);
+  return apiClient<Mentor>(`/mentors/${id}`);
 };
 
 export const getMentorAvailability = async (
   mentorId: string,
 ): Promise<MentorAvailability[]> => {
-  return apiClient<MentorAvailability[]>(`/mentor/${mentorId}/availability`);
+  return apiClient<MentorAvailability[]>(`/mentors/${mentorId}/availability`);
 };
 
 export const bookSession = async (

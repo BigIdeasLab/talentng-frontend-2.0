@@ -86,19 +86,73 @@ export {
   useCompleteOnboarding,
 } from "./useUserApi";
 
-/**
- * useApplications() - Job application CRUD
- *
- * Returns: { isLoading, error, getAll, getById, submit, updateStatus }
- */
-export { useApplications } from "./useApplications";
+// ============================================================================
+// Role-Specific Opportunity Hooks (NEW)
+// ============================================================================
 
 /**
- * useOpportunitiesManager() - Job opportunity CRUD
- *
- * Returns: { isLoading, error, getAll, create, update, post, delete, save, unsave, ... }
+ * Talent opportunity hooks — browse, save, unsave
+ * Target: GET /talent/opportunities, /talent/opportunities/saved
  */
-export { useOpportunitiesManager } from "./useOpportunitiesManager";
+export {
+  useTalentOpportunitiesQuery,
+  useOpportunityQuery,
+  useSavedOpportunitiesQuery,
+  useOpportunitySaveStatus,
+  useSaveOpportunity,
+  useUnsaveOpportunity,
+} from "./useTalentOpportunities";
+
+/**
+ * Recruiter opportunity hooks — CRUD, publish, reopen
+ * Target: GET /recruiter/opportunities, POST /recruiter/opportunities
+ */
+export {
+  useRecruiterOpportunitiesQuery,
+  useRecruiterOpportunityQuery,
+  useCreateOpportunity,
+  useUpdateOpportunity,
+  usePostOpportunity,
+  useDeleteOpportunity,
+  useReopenOpportunity,
+} from "./useRecruiterOpportunities";
+
+// ============================================================================
+// Role-Specific Application Hooks (NEW)
+// ============================================================================
+
+/**
+ * Talent application hooks — view own applications, submit, respond to invitations
+ * Target: GET /talent/applications, POST /talent/applications
+ */
+export {
+  useTalentApplicationsQuery,
+  useSubmitApplication,
+  useRespondToInvitation,
+} from "./useTalentApplications";
+
+/**
+ * Recruiter application hooks — view applicants, manage status, interviews, invitations
+ * Target: GET /recruiter/applications, PATCH /applications/:id
+ */
+export {
+  useRecruiterApplicationsQuery,
+  useApplicationQuery,
+  useUpdateApplicationStatus,
+  useScheduleInterview,
+  useRescheduleInterview,
+  useCancelInterview,
+  useCompleteInterview,
+  useSendInvitations,
+  useLeaveRecommendation,
+} from "./useRecruiterApplications";
+
+/**
+ * Dashboard hooks for talent and recruiter
+ */
+export { useTalentDashboard } from "./useTalentDashboard";
+export { useRecruiterDashboard } from "./useRecruiterDashboard";
+export { useMentorDashboard } from "./useMentorDashboard";
 
 // ============================================================================
 // UI State Hooks

@@ -4,7 +4,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useProfile } from "@/hooks/useProfile";
-import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { 
+  useCreateOpportunity, 
+  useUpdateOpportunity 
+} from "@/hooks/useRecruiterOpportunities";
 import { useToast } from "@/hooks";
 import { getToolInfo } from "@/lib/utils/tools";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
@@ -117,7 +120,9 @@ export function OpportunityPreview() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const { currentProfile, currentProfileUI, activeRole } = useProfile();
-  const { create, update, isLoading: apiLoading } = useOpportunitiesManager();
+  const createMutation = useCreateOpportunity();
+  const updateMutation = useUpdateOpportunity();
+  const apiLoading = createMutation.isPending || updateMutation.isPending;
   const [formData, setFormData] = useState<FormData>(DEFAULT_FORM_DATA);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -293,13 +298,16 @@ export function OpportunityPreview() {
       console.log("finalData ready:", finalData);
 
       if (isEditMode && opportunityId) {
-        await update(opportunityId, finalData);
+        await updateMutation.mutateAsync({
+          id: opportunityId,
+          data: finalData,
+        });
         toast({
           title: "Success",
           description: "Opportunity updated",
         });
       } else {
-        await create(finalData);
+        await createMutation.mutateAsync(finalData);
         toast({
           title: "Success",
           description: "Opportunity saved as draft",
@@ -360,13 +368,16 @@ export function OpportunityPreview() {
       };
 
       if (isEditMode && opportunityId) {
-        await update(opportunityId, finalData);
+        await updateMutation.mutateAsync({
+          id: opportunityId,
+          data: finalData,
+        });
         toast({
           title: "Success",
           description: "Opportunity updated successfully",
         });
       } else {
-        await create(finalData);
+        await createMutation.mutateAsync(finalData);
         toast({
           title: "Success",
           description: "Opportunity posted successfully",

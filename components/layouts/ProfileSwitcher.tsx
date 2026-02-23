@@ -165,12 +165,13 @@ const LogoutIcon = () => (
 export function ProfileSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const {
     profiles,
     userRoles,
     activeRole,
     setActiveRole,
+    switchRole,
     currentProfile,
     currentProfileUI,
     initialProfileName,
@@ -179,9 +180,19 @@ export function ProfileSwitcher() {
   } = useProfile();
 
   // Restore last active role when switching roles
-  const handleSwitchRole = (role: string) => {
+  const handleSwitchRole = async (role: string) => {
     setIsOpen(false);
-    setActiveRole(role);
+    try {
+      if (switchRole) {
+        await switchRole(role);
+        // Navigate to the current path without query parameters to prevent re-triggering switchRole params
+        window.location.href = window.location.pathname;
+      } else {
+        setActiveRole(role);
+      }
+    } catch (error) {
+      console.error("Failed to switch role:", error);
+    }
   };
 
   const handleProfile = () => {
@@ -208,7 +219,11 @@ export function ProfileSwitcher() {
   };
 
   // Get display profile (use UI version if available, fallback to raw)
-  const displayProfile = currentProfileUI || currentProfile;
+  const displayProfile = currentProfileUI || currentProfile || (
+    activeRole === "recruiter" ? user?.recruiterProfile :
+    activeRole === "talent" ? user?.talentProfile :
+    user?.mentorProfile
+  );
 
   const DEFAULT_AVATAR = "/default.png";
 
@@ -236,6 +251,15 @@ export function ProfileSwitcher() {
     }
 
     return DEFAULT_AVATAR;
+  };
+
+  // Helper to get profile for any role (current or switchable)
+  const getProfileForRole = (role: string) => {
+    if (profiles[role]) return profiles[role];
+    if (role === "recruiter") return user?.recruiterProfile;
+    if (role === "talent") return user?.talentProfile;
+    if (role === "mentor") return user?.mentorProfile;
+    return null;
   };
 
   // Get current active profile image (use cache while loading)
@@ -268,9 +292,9 @@ export function ProfileSwitcher() {
     if (profile?.fullName) {
       return profile.fullName;
     }
-    const firstName = profile?.personal?.firstName || profile?.firstName || "";
-    const lastName = profile?.personal?.lastName || profile?.lastName || "";
-    return `${firstName} ${lastName}`.trim() || "User";
+    const firstName = profile?.personal?.firstName || profile?.firstName || user?.fullName?.split(" ")[0] || "";
+    const lastName = profile?.personal?.lastName || profile?.lastName || user?.fullName?.split(" ").slice(1).join(" ") || "";
+    return `${firstName} ${lastName}`.trim() || user?.fullName || "User";
   };
 
   // Get display label based on role
@@ -281,10 +305,8 @@ export function ProfileSwitcher() {
     return role.charAt(0).toUpperCase() + role.slice(1);
   };
 
-  // Get available roles (only those with profiles loaded)
-  const availableRoles = userRoles.filter(
-    (role) => profiles[role] !== null && profiles[role] !== undefined,
-  );
+  // Get available roles (all roles user is authorized for)
+  const availableRoles = userRoles;
 
   // Get other roles to show in switcher (exclude current active role)
   const switchableRoles = availableRoles.filter((role) => role !== activeRole);
@@ -403,7 +425,7 @@ export function ProfileSwitcher() {
               </div>
               <div className="flex flex-col gap-[8px]">
                 {switchableRoles.map((role) => {
-                  const profile = profiles[role];
+                  const profile = getProfileForRole(role);
                   const displayName = getDisplayName(role, profile);
                   const profileImage = getProfileImageUrl(role, profile);
 

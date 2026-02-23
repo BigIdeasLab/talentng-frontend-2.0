@@ -7,7 +7,7 @@ import { ApplicationStatusBanner } from "./application-status-banner";
 import { ApplicationModal } from "./application-modal";
 import type { DisplayOpportunity } from "./types";
 import { TYPE_CONFIG } from "@/types/opportunities";
-import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { useSaveOpportunity, useUnsaveOpportunity } from "@/hooks/useTalentOpportunities";
 import { useProfile } from "@/hooks";
 import { useRoleColors } from "@/lib/theme/RoleColorContext";
 
@@ -39,8 +39,11 @@ export function OpportunityCard({
   });
   const [isApplied, setIsApplied] = useState(hasAppliedAsCurrentRole);
   const [isSaved, setIsSaved] = useState(opportunity.saved ?? false);
-  const [isSavingLoading, setIsSavingLoading] = useState(false);
-  const { save: saveOpp, unsave: unsaveOpp } = useOpportunitiesManager();
+
+  const saveMutation = useSaveOpportunity();
+  const unsaveMutation = useUnsaveOpportunity();
+  const isSavingLoading = saveMutation.isPending || unsaveMutation.isPending;
+
   const config = TYPE_CONFIG[opportunity.type] || TYPE_CONFIG["job-listing"];
   const isVolunteer = opportunity.type === "Volunteer";
 
@@ -57,20 +60,17 @@ export function OpportunityCard({
   }, [opportunity.id, opportunity.appliedAs, currentProfileType]);
 
   const handleToggleSave = async () => {
-    setIsSavingLoading(true);
     try {
       if (isSaved) {
-        await unsaveOpp(opportunity.id);
+        await unsaveMutation.mutateAsync(opportunity.id);
         setIsSaved(false);
       } else {
-        await saveOpp(opportunity.id);
+        await saveMutation.mutateAsync(opportunity.id);
         setIsSaved(true);
       }
       onSaveToggle?.(opportunity.id, !isSaved);
     } catch (error) {
       console.error("Failed to toggle save status:", error);
-    } finally {
-      setIsSavingLoading(false);
     }
   };
 

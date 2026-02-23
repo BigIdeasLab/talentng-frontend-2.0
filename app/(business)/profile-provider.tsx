@@ -1,10 +1,11 @@
 "use client";
 
-import { createContext, ReactNode, useState, useMemo, useEffect } from "react";
+import { createContext, ReactNode, useState, useMemo, useEffect, useCallback } from "react";
 import type { UIProfileData } from "@/lib/profileMapper";
 import type { TalentProfile, DashboardStats } from "@/lib/api/talent/types";
 import type { RecruiterProfile } from "@/lib/api/recruiter/types";
 import type { MentorProfile } from "@/lib/api/mentor/types";
+import { switchRole as switchRoleApi } from "@/lib/api/auth-service";
 
 export interface ProfileContextType {
   // User info
@@ -15,6 +16,12 @@ export interface ProfileContextType {
   // Current active role
   activeRole: string;
   setActiveRole: (role: string) => void;
+  /** Switch the active role via POST /auth/switch-role, updates token + context */
+  switchRole: (role: string) => Promise<void>;
+  
+  // Role mismatch handling (Phase 6)
+  triggerRoleSwitch: (role: string) => void;
+  roleSwitchRequired: string | null;
 
   // All profiles by role
   profiles: Record<
@@ -139,6 +146,26 @@ export function ProfileProvider({
   const [userRoles, setUserRoles] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(!initialRole);
+  const [roleSwitchRequired, setRoleSwitchRequired] = useState<string | null>(null);
+
+  const triggerRoleSwitch = useCallback((role: string) => {
+    setRoleSwitchRequired(role);
+  }, []);
+
+  const closeRoleSwitch = useCallback(() => {
+    setRoleSwitchRequired(null);
+  }, []);
+
+  const switchRole = useCallback(
+    async (role: string) => {
+      // Only call the API — don't update React state here.
+      // The caller (ProfileSwitcher) reloads the page after this resolves,
+      // so any state updates would just cause a redundant re-render.
+      // switchRoleApi stores the new token + updates localStorage/cookies.
+      await switchRoleApi(role);
+    },
+    [],
+  );
 
   // Persist all SSR cookies in one place
   useEffect(() => {
@@ -172,6 +199,7 @@ export function ProfileProvider({
     setUserRoles,
     activeRole,
     setActiveRole,
+    switchRole,
     profiles,
     setProfiles,
     profilesUI,
@@ -183,6 +211,8 @@ export function ProfileProvider({
     isLoading,
     setIsLoading,
     error,
+    roleSwitchRequired,
+    triggerRoleSwitch,
     initialProfileName,
     initialProfileAvatar,
   };

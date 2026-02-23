@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getToolInfo } from "@/lib/utils/tools";
-import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { useOpportunityQuery, useSaveOpportunity, useUnsaveOpportunity } from "@/hooks/useTalentOpportunities";
 import { useAuth } from "@/hooks/useAuth";
 import { useRoleColors } from "@/lib/theme/RoleColorContext";
 import { useProfile } from "@/hooks";
@@ -62,69 +62,60 @@ export function OpportunityDetails({
   const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as
     | "talent"
     | "mentor";
-  const [opportunity, setOpportunity] = useState<Opportunity | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const {
+    data: opportunity,
+    isLoading: isOppLoading,
+    error: oppError,
+    refetch: fetchOpportunityDetails,
+  } = useOpportunityQuery(opportunityId);
+
+  const saveMutation = useSaveOpportunity();
+  const unsaveMutation = useUnsaveOpportunity();
+
   const [isSaved, setIsSaved] = useState(false);
   const [isApplied, setIsApplied] = useState(false);
-  const [isSavingLoading, setIsSavingLoading] = useState(false);
+  const isSavingLoading = saveMutation.isPending || unsaveMutation.isPending;
   const [showApplicationModal, setShowApplicationModal] = useState(false);
   const [isRespondingToInvitation, setIsRespondingToInvitation] =
     useState(false);
   const [invitationResponse, setInvitationResponse] = useState<
     "accepted" | "declined" | null
   >(null);
-  const { save: saveOpp, unsave: unsaveOpp } = useOpportunitiesManager();
 
   useEffect(() => {
-    fetchOpportunityDetails();
-  }, [opportunityId]);
-
-  const fetchOpportunityDetails = async () => {
-    try {
-      setIsLoading(true);
-      const { getOpportunityById } = await import("@/lib/api/opportunities");
-      const data = await getOpportunityById(opportunityId);
-      setOpportunity(data);
-      // Set applied status from opportunity data based on current profile type
-      if (data?.appliedAs) {
-        setIsApplied(data.appliedAs.includes(currentProfileType));
+    if (opportunity) {
+      if (opportunity.appliedAs) {
+        setIsApplied(opportunity.appliedAs.includes(currentProfileType));
       }
-      // Set saved status from opportunity data
-      if (data?.saved !== undefined) {
-        setIsSaved(data.saved);
+      if (opportunity.saved !== undefined) {
+        setIsSaved(opportunity.saved);
       }
-      // Initialize invitation response state from API data
-      // Find the application in the applications array that matches the applicationId
-      if (applicationId && data?.applications) {
-        const currentApp = data.applications.find(
+      if (applicationId && opportunity.applications) {
+        const currentApp = opportunity.applications.find(
           (app) => app.id === applicationId,
         );
         if (currentApp?.inviteResponse) {
           setInvitationResponse(currentApp.inviteResponse);
         }
       }
-    } catch (error) {
-      console.error("Error fetching opportunity:", error);
-    } finally {
-      setIsLoading(false);
     }
-  };
+  }, [opportunity, currentProfileType, applicationId]);
+
+
+  // No longer needed: fetchOpportunityDetails is provided by useQuery
 
   const handleToggleSave = async () => {
     if (!opportunity) return;
-    setIsSavingLoading(true);
     try {
       if (isSaved) {
-        await unsaveOpp(opportunity.id);
+        await unsaveMutation.mutateAsync(opportunity.id);
         setIsSaved(false);
       } else {
-        await saveOpp(opportunity.id);
+        await saveMutation.mutateAsync(opportunity.id);
         setIsSaved(true);
       }
     } catch (error) {
       console.error("Failed to toggle save status:", error);
-    } finally {
-      setIsSavingLoading(false);
     }
   };
 
@@ -167,7 +158,7 @@ export function OpportunityDetails({
     }
   };
 
-  if (isLoading) {
+  if (isOppLoading) {
     return (
       <div className="h-screen flex items-center justify-center">
         <p className="text-gray-500">Loading opportunity details...</p>

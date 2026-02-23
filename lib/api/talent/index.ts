@@ -26,20 +26,20 @@ import type { TalentDashboardResponse } from "./dashboard-types";
 
 /**
  * 1. Get Current User's Talent Profile
- * GET /talent/me
+ * GET /talent/profile
  */
 export async function getCurrentProfile(): Promise<TalentProfile> {
-  return apiClient<TalentProfile>("/talent/me");
+  return apiClient<TalentProfile>("/talent/profile");
 }
 
 /**
  * 2. Update Current User's Talent Profile
- * PATCH /talent/me
+ * PATCH /talent/profile
  */
 export async function updateProfile(
   data: Partial<APIProfileData>,
 ): Promise<TalentProfile> {
-  return apiClient<TalentProfile>("/talent/me", {
+  return apiClient<TalentProfile>("/talent/profile", {
     method: "PATCH",
     body: data,
   });
@@ -197,8 +197,8 @@ export async function updateGalleryItem(
 }
 
 /**
- * 13. List All Talent Profiles
- * GET /talent
+ * 13. List All Talent Profiles (Public)
+ * GET /talents
  */
 export async function listTalentProfiles(
   filters?: TalentFilterParams,
@@ -214,19 +214,19 @@ export async function listTalentProfiles(
   }
 
   const query = queryParams.toString();
-  const endpoint = query ? `/talent?${query}` : "/talent";
+  const endpoint = query ? `/talents?${query}` : "/talents";
 
   return apiClient<PaginatedTalentResponse>(endpoint);
 }
 
 /**
- * 11. Get Talent Profile by User ID
- * GET /talent/:userId
+ * 14. Get Talent Profile by User ID (Public)
+ * GET /talents/:userId
  */
 export async function getTalentProfileByUserId(
   userId: string,
 ): Promise<TalentProfile> {
-  return apiClient<TalentProfile>(`/talent/${userId}`);
+  return apiClient<TalentProfile>(`/talents/${userId}`);
 }
 
 /**

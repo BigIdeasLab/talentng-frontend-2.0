@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useProfile } from "@/hooks/useProfile";
-import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { useRecruiterOpportunitiesQuery } from "@/hooks/useRecruiterOpportunities";
 import { transformOpportunityToCard } from "@/lib/utils/opportunities";
 import { OpportunityCard as OpportunityCardComponent } from "@/components/employer/opportunities/OpportunityCard";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -13,37 +13,16 @@ import type { OpportunityCard } from "@/lib/types";
 export function OpportunitiesTab() {
   const router = useRouter();
   const { currentProfile } = useProfile();
-  const { getAll } = useOpportunitiesManager();
-  const [opportunities, setOpportunities] = useState<OpportunityCard[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    fetchOpportunities();
-  }, [currentProfile]);
+  const {
+    data: opportunitiesRaw,
+    isLoading,
+    refetch: fetchOpportunities,
+  } = useRecruiterOpportunitiesQuery();
 
-  const fetchOpportunities = async () => {
-    try {
-      setIsLoading(true);
-      const userId = currentProfile?.userId;
-      if (!userId) return;
-
-      const response = await getAll({
-        postedById: userId,
-      });
-
-      // Transform API response to card format and filter for open/active only
-      const transformedOpportunities = (response.data || [])
-        .map(transformOpportunityToCard)
-        .filter((opp) => opp.status === "active");
-
-      setOpportunities(transformedOpportunities);
-    } catch (error) {
-      console.error("Error fetching opportunities:", error);
-      setOpportunities([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const opportunities: OpportunityCard[] = (opportunitiesRaw?.data || [])
+    .map(transformOpportunityToCard)
+    .filter((opp) => opp.status === "active");
 
   if (isLoading) {
     return (

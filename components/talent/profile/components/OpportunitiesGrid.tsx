@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Bookmark, Check } from "lucide-react";
 import { EmptyState } from "./EmptyState";
-import { useOpportunitiesManager } from "@/hooks/useOpportunitiesManager";
+import { useSaveOpportunity, useUnsaveOpportunity } from "@/hooks/useTalentOpportunities";
 import { useProfile } from "@/hooks";
 import { ApplicationModal } from "@/components/talent/opportunities/application-modal";
 import type { DisplayOpportunity } from "@/components/talent/opportunities/types";
@@ -124,6 +124,9 @@ export function OpportunitiesGrid({
   const [selectedOpportunity, setSelectedOpportunity] =
     useState<DisplayOpportunity | null>(null);
   const [showApplicationModal, setShowApplicationModal] = useState(false);
+  const saveMutation = useSaveOpportunity();
+  const unsaveMutation = useUnsaveOpportunity();
+
   const [appliedIds, setAppliedIds] = useState<Set<string>>(
     new Set(
       opportunities
@@ -131,7 +134,7 @@ export function OpportunitiesGrid({
         .map((opp) => opp.id),
     ),
   );
-  const { save: saveOpp, unsave: unsaveOpp } = useOpportunitiesManager();
+
 
   // Sync appliedIds when opportunities or role changes
   useEffect(() => {
@@ -144,17 +147,16 @@ export function OpportunitiesGrid({
   }, [opportunities, currentProfileType]);
 
   const handleToggleSave = async (opportunity: Opportunity) => {
-    setSavingIds((prev) => new Set(prev).add(opportunity.id));
     try {
       const currentSavedState = localSavedState[opportunity.id] ?? false;
       if (currentSavedState) {
-        await unsaveOpp(opportunity.id);
+        await unsaveMutation.mutateAsync(opportunity.id);
         setLocalSavedState((prev) => ({
           ...prev,
           [opportunity.id]: false,
         }));
       } else {
-        await saveOpp(opportunity.id);
+        await saveMutation.mutateAsync(opportunity.id);
         setLocalSavedState((prev) => ({
           ...prev,
           [opportunity.id]: true,
@@ -163,12 +165,6 @@ export function OpportunitiesGrid({
       onSaveToggle?.(opportunity.id, !currentSavedState);
     } catch (error) {
       console.error("Failed to toggle save status:", error);
-    } finally {
-      setSavingIds((prev) => {
-        const newSet = new Set(prev);
-        newSet.delete(opportunity.id);
-        return newSet;
-      });
     }
   };
 
@@ -314,7 +310,7 @@ export function OpportunitiesGrid({
                   {/* Remove Button */}
                   <button
                     onClick={() => handleToggleSave(opportunity)}
-                    disabled={savingIds.has(opportunity.id)}
+                    disabled={saveMutation.isPending || unsaveMutation.isPending}
                     className="flex h-[36px] px-[16px] py-[12px] items-center gap-[3px] rounded-[50px] bg-[#181B25] hover:bg-[#2a2d3a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Bookmark

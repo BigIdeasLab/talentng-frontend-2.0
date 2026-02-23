@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { Search, SlidersHorizontal } from "lucide-react";
-import { useApplications } from "@/hooks/useApplications";
-import { Application } from "@/lib/api/applications";
+import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
+import { type Application } from "@/lib/api/applications/types";
 
 interface PastHire {
   id: string;
@@ -37,28 +37,12 @@ const transformApplicationToHire = (app: Application): PastHire => {
 
 export function PastHiresTab() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [pastHires, setPastHires] = useState<PastHire[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const { getAll } = useApplications();
+  const {
+    data: applicationsRaw = [],
+    isLoading,
+  } = useRecruiterApplicationsQuery({ status: "hired" });
 
-  useEffect(() => {
-    fetchHiredTalents();
-  }, []);
-
-  const fetchHiredTalents = async () => {
-    try {
-      setIsLoading(true);
-      const allApplications = await getAll();
-      const hired = allApplications.filter((app) => app.status === "hired");
-      const transformedHires = hired.map(transformApplicationToHire);
-      setPastHires(transformedHires);
-    } catch (error) {
-      console.error("Error fetching hired talents:", error);
-      setPastHires([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const pastHires: PastHire[] = applicationsRaw.map(transformApplicationToHire);
 
   const filteredHires =
     searchQuery.trim() === ""

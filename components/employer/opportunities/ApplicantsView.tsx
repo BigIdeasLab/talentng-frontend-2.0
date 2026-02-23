@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useApplications } from "@/hooks/useApplications";
+import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
+import { useRecruiterOpportunityQuery } from "@/hooks/useRecruiterOpportunities";
 import { useToast } from "@/hooks";
 import { ApplicantsTable } from "./ApplicantsTable";
 import { ApplicantsHeader } from "./ApplicantsHeader";
@@ -22,45 +23,26 @@ export function ApplicantsView({
   closingDate,
 }: ApplicantsViewProps) {
   const { toast } = useToast();
-  const { getAll, isLoading, error } = useApplications();
+  const {
+    data: opportunity,
+    isLoading: isOppLoading,
+    error: oppError,
+  } = useRecruiterOpportunityQuery(opportunityId);
+
+  const {
+    data: applicants = [],
+    isLoading: isAppsLoading,
+    error: appsError,
+  } = useRecruiterApplicationsQuery({ opportunityId });
+
+  const isLoading = isOppLoading || isAppsLoading;
+  const error = (oppError || appsError) ? "Failed to load" : null;
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
-  const [applicants, setApplicants] = useState<Application[]>([]);
-  const [opportunityTitle, setOpportunityTitle] = useState("");
-
-  useEffect(() => {
-    fetchOpportunityAndApplicants();
-  }, [opportunityId]);
+  const opportunityTitle = opportunity?.title || "";
 
   const fetchOpportunityAndApplicants = async () => {
-    await fetchOpportunity();
-    await fetchApplicants();
-  };
-
-  const fetchOpportunity = async () => {
-    try {
-      const { getOpportunityById } = await import("@/lib/api/opportunities");
-      const data = await getOpportunityById(opportunityId);
-      setOpportunityTitle(data?.title || "");
-    } catch (err) {
-      console.error("Error fetching opportunity:", err);
-    }
-  };
-
-  const fetchApplicants = async () => {
-    try {
-      const data = await getAll(opportunityId);
-      setApplicants(data || []);
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Failed to load applicants";
-      toast({
-        title: "Error",
-        description: message,
-        variant: "destructive",
-      });
-      setApplicants([]);
-    }
+    // Handled by useQuery
   };
 
   const getProgressPercentage = () => {

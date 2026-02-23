@@ -4,7 +4,7 @@ import { useState } from "react";
 import { X, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRoleColors } from "@/lib/theme/RoleColorContext";
-import { useApplications } from "@/hooks/useApplications";
+import { useSubmitApplication } from "@/hooks/useTalentApplications";
 import { useToast, useProfile } from "@/hooks";
 import type { DisplayOpportunity } from "./types";
 import { ProjectSelectionModal } from "./project-selection-modal";
@@ -32,7 +32,8 @@ export function ApplicationModal({
   const { toast } = useToast();
   const { primary } = useRoleColors();
   const { activeRole } = useProfile();
-  const { submit, isLoading: isSubmitting } = useApplications();
+  const submitMutation = useSubmitApplication();
+  const isSubmitting = submitMutation.isPending;
   const [proposal, setProposal] = useState("");
   const [selectedProjects, setSelectedProjects] = useState<Project[]>([]);
   const [showProjectSelection, setShowProjectSelection] = useState(false);
@@ -61,7 +62,7 @@ export function ApplicationModal({
       const profileType = (activeRole === "mentor" ? "mentor" : "talent") as
         | "talent"
         | "mentor";
-      await submit({
+      await submitMutation.mutateAsync({
         opportunityId: opportunity.id,
         profileType,
         note: proposal.trim() || undefined,
@@ -96,6 +97,8 @@ export function ApplicationModal({
         description: message,
         variant: "destructive",
       });
+    } finally {
+      // isSubmitting automatically handled by mutation state
     }
   };
 

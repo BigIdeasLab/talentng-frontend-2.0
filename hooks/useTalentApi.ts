@@ -2,17 +2,32 @@
  * Centralized Talent API Hooks
  * Single point of access for all talent-related React Query hooks
  *
- * These hooks wrap the talent service layer with React Query for
+ * These hooks wrap the talent API layer with React Query for
  * caching, invalidation, and state management
  */
 
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
-  talentProfileApi,
-  talentDiscoveryApi,
-  talentServicesApi,
-  talentGalleryApi,
-  talentRecommendationsApi,
+  getCurrentProfile,
+  getTalentProfileByUserId,
+  updateProfile,
+  updateProfileImage,
+  updateCoverImage,
+  getDashboardStats,
+  listTalentProfiles,
+  getMyServices,
+  createService,
+  updateService,
+  deleteService,
+  getTalentServices,
+  searchServicesByTags,
+  addServiceReview,
+  uploadGalleryImages,
+  deleteGalleryItem,
+  getTalentRecommendations,
+  createRecommendation,
+  getRecommendationStats,
+  deleteRecommendation,
   type TalentProfile,
   type DashboardStats,
   type Service,
@@ -21,7 +36,7 @@ import {
   type TalentRecommendationDto,
   type CreateRecommendationDto,
   type TalentFilterParams,
-} from "@/lib/services/talent-api-service";
+} from "@/lib/api/talent";
 
 /**
  * Profile Hooks
@@ -29,7 +44,7 @@ import {
 export function useCurrentProfile() {
   return useQuery({
     queryKey: ["current-profile"],
-    queryFn: talentProfileApi.getCurrentProfile,
+    queryFn: getCurrentProfile,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
@@ -37,7 +52,7 @@ export function useCurrentProfile() {
 export function useTalentProfile(userId: string) {
   return useQuery({
     queryKey: ["talent-profile", userId],
-    queryFn: () => talentProfileApi.getTalentProfileByUserId(userId),
+    queryFn: () => getTalentProfileByUserId(userId),
     staleTime: 5 * 60 * 1000,
   });
 }
@@ -45,26 +60,26 @@ export function useTalentProfile(userId: string) {
 export function useDashboardStats() {
   return useQuery({
     queryKey: ["dashboard-stats"],
-    queryFn: talentProfileApi.getDashboardStats,
+    queryFn: getDashboardStats,
     staleTime: 5 * 60 * 1000,
   });
 }
 
 export function useUpdateProfile() {
   return useMutation({
-    mutationFn: talentProfileApi.updateProfile,
+    mutationFn: updateProfile,
   });
 }
 
 export function useUpdateProfileImage() {
   return useMutation({
-    mutationFn: talentProfileApi.updateProfileImage,
+    mutationFn: updateProfileImage,
   });
 }
 
 export function useUpdateCoverImage() {
   return useMutation({
-    mutationFn: talentProfileApi.updateCoverImage,
+    mutationFn: updateCoverImage,
   });
 }
 
@@ -74,7 +89,7 @@ export function useUpdateCoverImage() {
 export function useListTalentProfiles(filters?: TalentFilterParams) {
   return useQuery({
     queryKey: ["talent-profiles", filters],
-    queryFn: () => talentDiscoveryApi.listTalentProfiles(filters),
+    queryFn: () => listTalentProfiles(filters),
     staleTime: 5 * 60 * 1000,
   });
 }
@@ -85,34 +100,34 @@ export function useListTalentProfiles(filters?: TalentFilterParams) {
 export function useMyServices() {
   return useQuery({
     queryKey: ["my-services"],
-    queryFn: talentServicesApi.getMyServices,
+    queryFn: getMyServices,
     staleTime: 5 * 60 * 1000,
   });
 }
 
 export function useCreateService() {
   return useMutation({
-    mutationFn: talentServicesApi.createService,
+    mutationFn: createService,
   });
 }
 
 export function useUpdateService() {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateServiceInput }) =>
-      talentServicesApi.updateService(id, data),
+      updateService(id, data),
   });
 }
 
 export function useDeleteService() {
   return useMutation({
-    mutationFn: talentServicesApi.deleteService,
+    mutationFn: deleteService,
   });
 }
 
 export function useTalentServices(talentId: string) {
   return useQuery({
     queryKey: ["talent-services", talentId],
-    queryFn: () => talentServicesApi.getTalentServices(talentId),
+    queryFn: () => getTalentServices(talentId),
     staleTime: 5 * 60 * 1000,
   });
 }
@@ -120,7 +135,7 @@ export function useTalentServices(talentId: string) {
 export function useSearchServicesByTags(tags: string[]) {
   return useQuery({
     queryKey: ["search-services", tags],
-    queryFn: () => talentServicesApi.searchServicesByTags(tags),
+    queryFn: () => searchServicesByTags(tags),
     staleTime: 5 * 60 * 1000,
     enabled: tags.length > 0,
   });
@@ -129,7 +144,7 @@ export function useSearchServicesByTags(tags: string[]) {
 export function useAddServiceReview() {
   return useMutation({
     mutationFn: ({ serviceId, data }: { serviceId: string; data: any }) =>
-      talentServicesApi.addServiceReview(serviceId, data),
+      addServiceReview(serviceId, data),
   });
 }
 
@@ -138,13 +153,13 @@ export function useAddServiceReview() {
  */
 export function useUploadGalleryImages() {
   return useMutation({
-    mutationFn: (files: File[]) => talentGalleryApi.uploadGalleryImages(files),
+    mutationFn: (files: File[]) => uploadGalleryImages(files),
   });
 }
 
 export function useDeleteGalleryItem() {
   return useMutation({
-    mutationFn: talentGalleryApi.deleteGalleryItem,
+    mutationFn: deleteGalleryItem,
   });
 }
 
@@ -154,7 +169,7 @@ export function useDeleteGalleryItem() {
 export function useTalentRecommendations() {
   return useQuery({
     queryKey: ["talent-recommendations"],
-    queryFn: talentRecommendationsApi.getTalentRecommendations,
+    queryFn: getTalentRecommendations,
     staleTime: 5 * 60 * 1000,
   });
 }
@@ -167,21 +182,21 @@ export function useCreateRecommendation() {
     }: {
       talentUserId: string;
       data: CreateRecommendationDto;
-    }) => talentRecommendationsApi.createRecommendation(talentUserId, data),
+    }) => createRecommendation(talentUserId, data),
   });
 }
 
 export function useGetRecommendationStats(talentUserId: string) {
   return useQuery({
     queryKey: ["recommendation-stats", talentUserId],
-    queryFn: () =>
-      talentRecommendationsApi.getRecommendationStats(talentUserId),
+    queryFn: () => getRecommendationStats(talentUserId),
     staleTime: 5 * 60 * 1000,
   });
 }
 
 export function useDeleteRecommendation() {
   return useMutation({
-    mutationFn: talentRecommendationsApi.deleteRecommendation,
+    mutationFn: deleteRecommendation,
   });
 }
+

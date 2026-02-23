@@ -2,11 +2,10 @@
  * Server-side data fetching for discover talent page
  * This runs on the server and passes data to client components
  *
- * Uses centralized talent API from @/lib/api/talent-service
+ * Uses centralized talent API from @/lib/api/talent
  */
 
-import { talentDiscoveryApi } from "@/lib/api/talent-service";
-import type { TalentProfile } from "@/lib/api/talent-service";
+import { listTalentProfiles, type TalentProfile } from "@/lib/api/talent";
 
 /**
  * TalentData - UI representation of TalentProfile
@@ -88,7 +87,7 @@ export async function getDiscoverTalentData(
     filters.limit = limit;
     filters.offset = offset;
 
-    const response = await talentDiscoveryApi.listTalentProfiles(filters);
+    const response = await listTalentProfiles(filters);
 
     const talents = response.data.map(mapTalentToUI);
 

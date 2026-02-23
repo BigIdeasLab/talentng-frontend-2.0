@@ -33,6 +33,7 @@ export interface ApplicationInterview {
   applicationId: string;
   scheduledDate: string;
   message?: string;
+  meetingLink?: string;
   status: "scheduled" | "completed" | "cancelled" | "rescheduled";
   createdAt: string;
   updatedAt: string;
@@ -60,6 +61,7 @@ export interface ApplicationSubmission {
   profileType: "talent" | "mentor";
   note?: string;
   attachments?: File[];
+  galleryIds?: string[];
 }
 
 export interface ApplicationResponse {

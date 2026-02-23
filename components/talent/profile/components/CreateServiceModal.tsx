@@ -5,7 +5,7 @@ import { X, Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCreateService, useMyServices } from "@/hooks/useTalentApi";
 import { updateService } from "@/lib/api/talent";
-import type { CreateServiceInput, Service } from "@/lib/api/talent-service";
+import type { CreateServiceInput, Service } from "@/lib/api/talent";
 
 interface CreateServiceModalProps {
   isOpen: boolean;

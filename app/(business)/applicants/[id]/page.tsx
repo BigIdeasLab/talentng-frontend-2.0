@@ -12,16 +12,18 @@ import { HireApplicationModal } from "@/components/employer/applicants/HireAppli
 import { RescheduleInterviewModal } from "@/components/employer/applicants/RescheduleInterviewModal";
 import { CancelInterviewModal } from "@/components/employer/applicants/CancelInterviewModal";
 import { ApplicantDetailSkeleton } from "@/components/skeletons/ApplicantDetailSkeleton";
-import { useApplications } from "@/hooks/useApplications";
-import apiClient from "@/lib/api";
 import {
-  rescheduleInterview,
-  cancelInterview,
-  completeInterview,
-} from "@/lib/api/applications";
+  useApplicationQuery,
+  useUpdateApplicationStatus,
+  useScheduleInterview,
+  useRescheduleInterview,
+  useCancelInterview,
+  useCompleteInterview,
+} from "@/hooks/useRecruiterApplications";
 import type { Application, ApplicationInterview } from "@/lib/api/applications";
 
 const statusDisplayMap = {
+  invited: { label: "Invited", bg: "#E0E7FF", text: "#3730A3" },
   applied: { label: "In Review", bg: "#DBE9FE", text: "#5C30FF" },
   shortlisted: { label: "Shortlisted", bg: "#FEF3C7", text: "#92400D" },
   rejected: { label: "Rejected", bg: "#FEE2E1", text: "#991B1B" },
@@ -44,8 +46,7 @@ export default function ApplicantProposalPage() {
   const applicationId = params.id as string;
   const hasAccess = useRequireRole(["recruiter"]);
 
-  const [applicant, setApplicant] = useState<Application | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [isDeclineModalOpen, setIsDeclineModalOpen] = useState(false);
   const [isHireModalOpen, setIsHireModalOpen] = useState(false);
@@ -53,33 +54,28 @@ export default function ApplicantProposalPage() {
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [selectedInterview, setSelectedInterview] =
     useState<ApplicationInterview | null>(null);
-  const { getById, isLoading, updateStatus } = useApplications();
-  const { toast } = useToast();
+  const {
+    data: applicantData,
+    isLoading,
+    error: queryError,
+    refetch: fetchApplicant,
+  } = useApplicationQuery(applicationId);
 
-  useEffect(() => {
-    if (!hasAccess) return;
-    fetchApplicant();
-  }, [hasAccess, applicationId, getById]);
+  const applicant = applicantData || null;
+  const error = queryError instanceof Error ? queryError.message : (queryError ? "Failed to load applicant" : null);
 
-  const fetchApplicant = async () => {
-    try {
-      setError(null);
-      const data = await getById(applicationId);
-      setApplicant(data);
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Failed to load applicant";
-      setError(message);
-      console.error("Error fetching applicant:", err);
-    }
-  };
+  const updateStatusMutation = useUpdateApplicationStatus();
+  const scheduleInterviewMutation = useScheduleInterview();
+  const rescheduleInterviewMutation = useRescheduleInterview();
+  const cancelInterviewMutation = useCancelInterview();
+  const completeInterviewMutation = useCompleteInterview();
 
   const handleHireApplicant = async (
     applicationId: string,
     _message: string,
   ) => {
     try {
-      await updateStatus(applicationId, "hired");
+      await updateStatusMutation.mutateAsync({ applicationId, status: "hired" });
       toast({
         title: "Success",
         description: "Talent has been hired successfully",
@@ -103,7 +99,7 @@ export default function ApplicantProposalPage() {
     _note: string,
   ) => {
     try {
-      await updateStatus(applicationId, "rejected");
+      await updateStatusMutation.mutateAsync({ applicationId, status: "rejected" });
       toast({
         title: "Success",
         description: "Application has been declined",
@@ -130,22 +126,14 @@ export default function ApplicantProposalPage() {
   ) => {
     try {
       // Call the schedule interview endpoint
-      const response = await apiClient<Application>(
-        `/applications/${applicationId}/schedule-interview`,
-        {
-          method: "POST",
-          body: {
-            scheduledDate,
-            message,
-            meetingLink,
-          },
+      await scheduleInterviewMutation.mutateAsync({
+        applicationId,
+        input: {
+          scheduledDate,
+          message,
+          meetingLink,
         },
-      );
-
-      // Update the applicant state with the response
-      if (response) {
-        setApplicant(response);
-      }
+      });
 
       toast({
         title: "Success",
@@ -180,15 +168,14 @@ export default function ApplicantProposalPage() {
     meetingLink?: string,
   ) => {
     try {
-      const response = await rescheduleInterview(
+      await rescheduleInterviewMutation.mutateAsync({
         applicationId,
         interviewId,
-        scheduledDate,
-        message,
-        meetingLink,
-      );
-
-      setApplicant(response);
+        input: {
+          newDate: scheduledDate,
+          message,
+        },
+      });
       toast({
         title: "Success",
         description: "Interview has been rescheduled",
@@ -220,13 +207,11 @@ export default function ApplicantProposalPage() {
     reason: string,
   ) => {
     try {
-      const response = await cancelInterview(
+      await cancelInterviewMutation.mutateAsync({
         applicationId,
         interviewId,
         reason,
-      );
-
-      setApplicant(response);
+      });
       toast({
         title: "Success",
         description: "Interview has been cancelled and talent notified",
@@ -257,9 +242,11 @@ export default function ApplicantProposalPage() {
     interviewId: string,
   ) => {
     try {
-      const response = await completeInterview(applicationId, interviewId);
-
-      setApplicant(response);
+      await completeInterviewMutation.mutateAsync({
+        applicationId,
+        interviewId,
+        input: {},
+      });
       toast({
         title: "Success",
         description: "Interview marked as completed",
@@ -316,7 +303,7 @@ export default function ApplicantProposalPage() {
   const interviewStatus = latestInterview?.status;
 
   // Determine which status to display
-  let statusDisplay = statusDisplayMap[applicant.status];
+  let statusDisplay = statusDisplayMap[applicant.status as keyof typeof statusDisplayMap] || statusDisplayMap.applied;
   if (applicant.status === "shortlisted") {
     if (interviewStatus === "cancelled") {
       // If interview cancelled, show "In Review"
@@ -326,7 +313,7 @@ export default function ApplicantProposalPage() {
       interviewStatus === "rescheduled"
     ) {
       // If scheduled or rescheduled, show interview status
-      statusDisplay = interviewStatusDisplayMap[interviewStatus];
+      statusDisplay = interviewStatusDisplayMap[interviewStatus as keyof typeof interviewStatusDisplayMap];
     }
     // If completed or no interview, show "Shortlisted" (default statusDisplay)
   }

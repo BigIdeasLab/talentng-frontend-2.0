@@ -7,7 +7,7 @@ import { useToast } from "@/hooks";
 import { EmptyState } from "./EmptyState";
 import { useMyServices } from "@/hooks/useTalentApi";
 import { deleteService } from "@/lib/api/talent";
-import type { Service } from "@/lib/api/talent-service";
+import type { Service } from "@/lib/api/talent";
 
 interface ServicesGridProps {
   onServiceClick?: (service: Service) => void;

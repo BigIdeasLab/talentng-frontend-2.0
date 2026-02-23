@@ -17,39 +17,39 @@ import type {
 
 /**
  * 1. Get All Mentors (Public)
- * GET /mentor
+ * GET /mentors
  */
 export async function getAllMentors(): Promise<MentorProfile[]> {
-  return apiClient<MentorProfile[]>("/mentor");
+  return apiClient<MentorProfile[]>("/mentors");
 }
 
 /**
  * 2. Search Mentors (Public)
- * GET /mentor/search
+ * GET /mentors/search
  */
 export async function searchMentors(query: string): Promise<MentorProfile[]> {
   const queryParams = new URLSearchParams();
   queryParams.append("q", query);
 
-  return apiClient<MentorProfile[]>(`/mentor/search?${queryParams.toString()}`);
+  return apiClient<MentorProfile[]>(`/mentors/search?${queryParams.toString()}`);
 }
 
 /**
  * 3. Get Current User's Mentor Profile
- * GET /mentor/me
+ * GET /mentor/profile
  */
 export async function getCurrentMentorProfile(): Promise<MentorProfile> {
-  return apiClient<MentorProfile>("/mentor/me");
+  return apiClient<MentorProfile>("/mentor/profile");
 }
 
 /**
  * 4. Update Current User's Mentor Profile
- * PATCH /mentor/me
+ * PATCH /mentor/profile
  */
 export async function updateMentorProfile(
   data: UpdateMentorProfileInput,
 ): Promise<MentorProfile> {
-  return apiClient<MentorProfile>("/mentor/me", {
+  return apiClient<MentorProfile>("/mentor/profile", {
     method: "PATCH",
     body: data,
   });
@@ -57,10 +57,10 @@ export async function updateMentorProfile(
 
 /**
  * 5. Get Mentor Profile by ID (Public)
- * GET /mentor/:id
+ * GET /mentors/:id
  */
 export async function getMentorProfileById(id: string): Promise<MentorProfile> {
-  return apiClient<MentorProfile>(`/mentor/${id}`);
+  return apiClient<MentorProfile>(`/mentors/${id}`);
 }
 
 /**
@@ -109,13 +109,13 @@ export async function setMentorAvailability(
 }
 
 /**
- * 9. Get Mentor's Available Slots
- * GET /mentor/:id/availability
+ * 9. Get Mentor's Available Slots (Public)
+ * GET /mentors/:id/availability
  */
 export async function getMentorAvailableSlots(
   mentorId: string,
 ): Promise<MentorAvailability[]> {
-  return apiClient<MentorAvailability[]>(`/mentor/${mentorId}/availability`);
+  return apiClient<MentorAvailability[]>(`/mentors/${mentorId}/availability`);
 }
 
 /**

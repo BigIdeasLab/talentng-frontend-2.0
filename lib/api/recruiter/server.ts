@@ -14,44 +14,44 @@ import type {
 
 /**
  * Get Current User's Recruiter Profile
- * GET /recruiter/me
+ * GET /recruiter/profile
  * Returns profile response with isProfileCreated flag
  */
 export async function getServerCurrentRecruiterProfile(): Promise<RecruiterProfileResponse> {
-  return apiClient<RecruiterProfileResponse>("/recruiter/me");
+  return apiClient<RecruiterProfileResponse>("/recruiter/profile");
 }
 
 /**
  * Update Current User's Recruiter Profile
- * PATCH /recruiter/me
+ * PATCH /recruiter/profile
  */
 export async function updateServerRecruiterProfile(
   data: UpdateRecruiterProfileInput,
 ): Promise<RecruiterProfile> {
-  return apiClient<RecruiterProfile>("/recruiter/me", {
+  return apiClient<RecruiterProfile>("/recruiter/profile", {
     method: "PATCH",
     body: data,
   });
 }
 
 /**
- * Get Recruiter Profile by User ID
- * GET /recruiter/:userId
+ * Get Recruiter Profile by User ID (Public)
+ * GET /recruiters/:userId
  */
 export async function getServerRecruiterProfileByUserId(
   userId: string,
 ): Promise<RecruiterProfile> {
-  return apiClient<RecruiterProfile>(`/recruiter/${userId}`);
+  return apiClient<RecruiterProfile>(`/recruiters/${userId}`);
 }
 
 /**
- * List All Recruiter Profiles
- * GET /recruiter
+ * List All Recruiter Profiles (Public)
+ * GET /recruiters
  */
 export async function getServerListRecruiterProfiles(): Promise<
   RecruiterProfile[]
 > {
-  return apiClient<RecruiterProfile[]>("/recruiter");
+  return apiClient<RecruiterProfile[]>("/recruiters");
 }
 
 /**

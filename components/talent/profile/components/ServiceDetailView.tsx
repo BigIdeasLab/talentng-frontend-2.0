@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
-import type { Service } from "@/lib/api/talent-service";
+import type { Service } from "@/lib/api/talent";
 
 interface ServiceDetailViewProps {
   service: Service;
