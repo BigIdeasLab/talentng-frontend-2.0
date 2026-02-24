@@ -387,6 +387,12 @@ const getMenuItems = (notificationCount?: number): MenuItem[] => {
       icon: <FileIcon />,
       href: "/sessions",
     },
+    {
+      id: "upcoming",
+      label: "Upcoming",
+      icon: <AvailabilityIcon />,
+      href: "/upcoming",
+    },
     // {
     //   id: "opportunities",
     //   label: "Opportunities",

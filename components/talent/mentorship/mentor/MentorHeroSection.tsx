@@ -88,7 +88,7 @@ export function MentorHeroSection({
           </p>
         </div>
         <Link
-          href="/availability"
+          href="/sessions"
           className="flex h-[38px] px-4 justify-center items-center gap-1 rounded-lg bg-white hover:bg-gray-100 transition-colors group flex-shrink-0 w-fit"
         >
           <span className="font-inter-tight text-xs font-medium text-[#DB2777]">

@@ -81,7 +81,7 @@ export function MenteeProgress({ mentees }: MenteeProgressProps) {
           </h2>
         </div>
         <Link
-          href="/sessions"
+          href="/applications"
           className="flex items-center gap-1 text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity"
           style={{ color: ROLE_COLORS.mentor.dark }}
         >

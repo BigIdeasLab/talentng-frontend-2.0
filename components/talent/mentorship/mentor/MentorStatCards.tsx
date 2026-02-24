@@ -166,7 +166,7 @@ export function MentorStatCards({ stats }: MentorStatCardsProps) {
       trendColor: stats.pendingRequests.trend.isPositive
         ? "text-[#1AA148]"
         : "text-[#D97706]",
-      href: "/mentor/requests",
+      href: "/applications",
     },
     {
       title: "Avg Rating",

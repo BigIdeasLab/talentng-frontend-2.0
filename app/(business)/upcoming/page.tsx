@@ -10,8 +10,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { useToast } from "@/hooks";
-import { useRequireRole } from "@/hooks/useRequireRole";
-import { PageLoadingState } from "@/lib/page-utils";
+import { useProfile } from "@/hooks/useProfile";
 import { getTalentApplications } from "@/lib/api/applications/index";
 import { getSessions } from "@/lib/api/mentorship";
 import type {
@@ -22,6 +21,9 @@ import type { MentorshipSession } from "@/lib/api/mentorship/types";
 import { TalentInterviewCard } from "@/components/talent/applications/TalentInterviewCard";
 import { TalentSessionCard } from "@/components/talent/applications/TalentSessionCard";
 import { EmptyState } from "@/components/ui/empty-state";
+import { RecruiterUpcoming } from "@/components/employer/upcoming/RecruiterUpcoming";
+import { MentorUpcoming } from "@/components/mentor/upcoming/MentorUpcoming";
+import { LoadingScreen } from "@/components/layouts/LoadingScreen";
 
 interface UpcomingItem {
   type: "interview" | "session";
@@ -40,8 +42,25 @@ const FILTER_TABS = [
 ];
 
 export default function UpcomingPage() {
+  const { activeRole, isLoading: roleLoading } = useProfile();
+
+  if (roleLoading || !activeRole) {
+    return <LoadingScreen />;
+  }
+
+  if (activeRole === "recruiter") {
+    return <RecruiterUpcoming />;
+  }
+
+  if (activeRole === "mentor") {
+    return <MentorUpcoming />;
+  }
+
+  return <TalentUpcoming />;
+}
+
+function TalentUpcoming() {
   const { toast } = useToast();
-  const hasAccess = useRequireRole(["talent"]);
 
   const [jobApplications, setJobApplications] = useState<Application[]>([]);
   const [sessions, setSessions] = useState<MentorshipSession[]>([]);
@@ -69,8 +88,8 @@ export default function UpcomingPage() {
   }, []);
 
   useEffect(() => {
-    if (hasAccess) fetchData();
-  }, [hasAccess, fetchData]);
+    fetchData();
+  }, [fetchData]);
 
   // Build unified list
   const upcomingItems: UpcomingItem[] = [];
@@ -127,10 +146,6 @@ export default function UpcomingPage() {
     }
     return true;
   });
-
-  if (!hasAccess) {
-    return <PageLoadingState message="Checking access..." />;
-  }
 
   return (
     <div className="h-screen overflow-x-hidden bg-white flex flex-col">

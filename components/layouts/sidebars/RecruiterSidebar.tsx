@@ -227,6 +227,12 @@ const getMenuItems = (notificationCount?: number): MenuItem[] => [
     href: "/applicants",
   },
   {
+    id: "upcoming",
+    label: "Upcoming",
+    icon: <WorkIcon />,
+    href: "/upcoming",
+  },
+  {
     id: "notification",
     label: "Notifications",
     icon: <Bell className="w-5 h-5" strokeWidth={1.25} stroke="#525866" />,
