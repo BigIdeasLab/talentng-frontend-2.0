@@ -1,4 +1,4 @@
-import { Clock, X, CheckCircle, Calendar, MapPin } from "lucide-react";
+import { Clock, X, CheckCircle, Calendar, MapPin, Video } from "lucide-react";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface Mentee {
@@ -150,12 +150,26 @@ export function SessionCard({
               {duration}
             </span>
           </div>
-          <div className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#F5F5F5]">
-            <MapPin className="w-3 h-3 text-[#525866]" />
-            <span className="text-[12px] font-normal font-inter-tight text-black leading-[12.6px]">
-              {location}
-            </span>
-          </div>
+          {location && /^https?:\/\//i.test(location) ? (
+            <a
+              href={location}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#EFF6FF] hover:bg-[#DBEAFE] transition-colors"
+            >
+              <Video className="w-3 h-3 text-[#2563EB]" />
+              <span className="text-[12px] font-medium font-inter-tight text-[#2563EB] leading-[12.6px]">
+                Join Meeting
+              </span>
+            </a>
+          ) : (
+            <div className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#F5F5F5]">
+              <MapPin className="w-3 h-3 text-[#525866]" />
+              <span className="text-[12px] font-normal font-inter-tight text-black leading-[12.6px]">
+                {location}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 

@@ -91,6 +91,7 @@ export default function AvailabilityPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+  const [meetingLinkError, setMeetingLinkError] = useState(false);
 
   // Grid-specific state
   const [isDragging, setIsDragging] = useState(false);
@@ -292,6 +293,18 @@ export default function AvailabilityPage() {
   };
 
   const handleSave = async () => {
+    // Validate meeting link is provided
+    if (!defaultMeetingLink.trim()) {
+      setMeetingLinkError(true);
+      toast({
+        title: "Meeting link required",
+        description: "Please provide a default meeting link before saving.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setMeetingLinkError(false);
+
     try {
       setIsSaving(true);
 
@@ -546,20 +559,32 @@ export default function AvailabilityPage() {
               </Select>
             </div>
 
-            <div className="flex items-center gap-2">
-              <label className="text-xs font-medium text-[#525866]">
-                Meeting Link
-              </label>
-              <Input
-                type="url"
-                placeholder="https://meet.google.com/..."
-                value={defaultMeetingLink}
-                onChange={(e) => {
-                  setDefaultMeetingLink(e.target.value);
-                  setHasChanges(true);
-                }}
-                className="h-8 w-48 border-[#E1E4EA] text-xs"
-              />
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <label className="text-xs font-medium text-[#525866]">
+                  Meeting Link <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  type="url"
+                  placeholder="https://meet.google.com/..."
+                  value={defaultMeetingLink}
+                  onChange={(e) => {
+                    setDefaultMeetingLink(e.target.value);
+                    setHasChanges(true);
+                    if (e.target.value.trim()) setMeetingLinkError(false);
+                  }}
+                  className={`h-8 w-48 text-xs ${
+                    meetingLinkError
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-[#E1E4EA]"
+                  }`}
+                />
+              </div>
+              {meetingLinkError && (
+                <span className="text-[10px] text-red-500 ml-[82px]">
+                  Meeting link is required
+                </span>
+              )}
             </div>
           </div>
 

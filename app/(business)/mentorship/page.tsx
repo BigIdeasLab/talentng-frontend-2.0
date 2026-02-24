@@ -365,7 +365,10 @@ export default function MentorshipPage() {
             />
           </div>
 
-          <button className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] flex-shrink-0 hover:bg-gray-100 transition-colors">
+          <button 
+            onClick={() => toast("Advanced filters are coming soon!")}
+            className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] flex-shrink-0 hover:bg-gray-100 transition-colors"
+          >
             <SlidersHorizontal className="w-[15px] h-[15px] text-black" />
             <span className="text-[13px] font-normal text-black font-inter-tight">
               Filter
@@ -431,7 +434,9 @@ export default function MentorshipPage() {
             {mentorsLoading ? (
               <MentorGridSkeleton />
             ) : (
-              <MentorGrid mentors={filteredMentors} />
+              <div id="mentors">
+                <MentorGrid mentors={filteredMentors} />
+              </div>
             )}
           </div>
         )}

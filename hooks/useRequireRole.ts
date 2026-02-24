@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useProfile } from "./useProfile";
 
@@ -19,20 +19,35 @@ export function useRequireRole(
 ): boolean {
   const router = useRouter();
   const { activeRole, userRoles, isLoading } = useProfile();
+  const hasRedirected = useRef(false);
+
+  // Stabilize allowedRoles so a new array literal on each render
+  // doesn't cause the useEffect to re-fire infinitely
+  const rolesKey = JSON.stringify(allowedRoles);
+  const stableAllowedRoles = useMemo<AllowedRole[]>(
+    () => JSON.parse(rolesKey),
+    [rolesKey],
+  );
 
   useEffect(() => {
     if (isLoading) return;
 
     const role = activeRole || userRoles?.[0] || "talent";
-    const hasAccess = allowedRoles.includes(role as AllowedRole);
+    const hasAccess = stableAllowedRoles.includes(role as AllowedRole);
 
-    if (!hasAccess) {
+    if (!hasAccess && !hasRedirected.current) {
+      hasRedirected.current = true;
       router.replace(redirectTo);
     }
-  }, [activeRole, userRoles, isLoading, allowedRoles, redirectTo, router]);
+  }, [activeRole, userRoles, isLoading, stableAllowedRoles, redirectTo, router]);
+
+  // Reset redirect guard when role changes (allows re-evaluation)
+  useEffect(() => {
+    hasRedirected.current = false;
+  }, [activeRole]);
 
   if (isLoading) return false;
 
   const role = activeRole || userRoles?.[0] || "talent";
-  return allowedRoles.includes(role as AllowedRole);
+  return stableAllowedRoles.includes(role as AllowedRole);
 }

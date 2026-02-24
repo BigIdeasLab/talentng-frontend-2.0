@@ -16,7 +16,7 @@ import { useToast } from "@/hooks";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
 import {
-  getRequests,
+  getMentorMentorshipRequests,
   getPendingRequestsCount,
   acceptRequest,
   rejectRequest,
@@ -94,7 +94,7 @@ export default function ApplicationsPage() {
     try {
       setIsLoading(true);
       const [requestsResponse, countResponse] = await Promise.all([
-        getRequests({ role: "received" }),
+        getMentorMentorshipRequests({}),
         getPendingRequestsCount(),
       ]);
       // Handle both { data: [...] } and direct array responses

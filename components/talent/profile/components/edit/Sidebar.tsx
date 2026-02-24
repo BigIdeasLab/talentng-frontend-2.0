@@ -10,7 +10,6 @@ const sections = [
   { id: "professional", label: "Professional Details" },
   { id: "experience", label: "Work Experience" },
   { id: "education", label: "Education" },
-  { id: "portfolio", label: "Portfolio" },
   { id: "social", label: "Social Links" },
 ];
 

@@ -266,3 +266,24 @@ export interface TalentProfileResponse {
   isProfileCreated: boolean;
   message?: string;
 }
+
+/**
+ * Talent Settings — GET/PATCH /talent/settings
+ * Fields are read directly from the raw profile row (bypasses formatTalentProfile).
+ * Never returns 404; returns safe defaults if no profile exists yet.
+ */
+export interface TalentSettings {
+  // Visibility
+  profileVisible: boolean;
+
+  // Email Notifications
+  emailApplications: boolean;
+  emailInterviews: boolean;
+  emailMarketing: boolean;
+
+  // Push Notifications
+  pushApplications: boolean;
+  pushInterviews: boolean;
+}
+
+export type UpdateTalentSettingsInput = Partial<TalentSettings>;

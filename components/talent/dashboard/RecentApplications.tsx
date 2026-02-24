@@ -6,6 +6,8 @@ import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { cardHover } from "@/lib/theme/effects";
 
 interface ApplicationItemProps {
+  id: string;
+  opportunityId?: string;
   title: string;
   company: string;
   timeAgo: string;
@@ -14,6 +16,8 @@ interface ApplicationItemProps {
 }
 
 function ApplicationItem({
+  id,
+  opportunityId,
   title,
   company,
   timeAgo,
@@ -41,19 +45,29 @@ function ApplicationItem({
   };
 
   return (
-    <div className="flex items-center justify-between gap-3 p-3 rounded-lg bg-[#FCFCFD]">
-      <div className="flex items-center gap-3 flex-1">
-        <div className="w-10 h-10 rounded-lg bg-[#002224] flex-shrink-0 overflow-hidden">
-          {companyLogo && (
+    <Link
+      href={opportunityId ? `/opportunities/${opportunityId}` : `/opportunities/${id}`}
+      className="flex items-center justify-between gap-3 p-3 rounded-lg bg-[#FCFCFD] hover:bg-[#F8F9FB] transition-colors group"
+    >
+      <div className="flex items-center gap-3 flex-1 min-w-0">
+        <div className="w-10 h-10 rounded-lg bg-[#F0F1F3] flex-shrink-0 overflow-hidden flex items-center justify-center">
+          {companyLogo ? (
             <img
               src={companyLogo}
               alt={company}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
             />
+          ) : (
+            <span className="text-[#525866] text-xs font-bold">
+              {company?.charAt(0) || "?"}
+            </span>
           )}
         </div>
         <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-          <h3 className="text-[13px] font-inter-tight text-black truncate">
+          <h3 className="text-[13px] font-inter-tight text-black truncate group-hover:text-blue-600 transition-colors">
             {title}
           </h3>
           <p className="text-[11px] text-[#606060] font-inter-tight">
@@ -72,7 +86,7 @@ function ApplicationItem({
           {status}
         </span>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -107,6 +121,8 @@ export function RecentApplications({ applications }: RecentApplicationsProps) {
           applications.map((app) => (
             <ApplicationItem
               key={app.id}
+              id={app.id}
+              opportunityId={app.opportunityId}
               title={app.title}
               company={app.company}
               timeAgo={formatDistanceToNow(new Date(app.appliedAt), {

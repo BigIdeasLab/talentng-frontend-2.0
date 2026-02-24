@@ -1,4 +1,5 @@
 import { MessageSquare, ArrowUpRight, Star, CheckCircle } from "lucide-react";
+import Link from "next/link";
 import type { MentorRecentReview } from "@/lib/api/mentorship";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
@@ -71,13 +72,14 @@ export function RecentReviews({ reviews }: RecentReviewsProps) {
             Recent Reviews
           </h2>
         </div>
-        <button
+        <Link
+          href="/sessions"
           className="flex items-center gap-1 text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity"
           style={{ color: ROLE_COLORS.mentor.dark }}
         >
           View All
           <ArrowUpRight className="w-3.5 h-3.5" />
-        </button>
+        </Link>
       </div>
       {reviews.length === 0 ? (
         <p className="text-[12px] text-[#606060] font-inter-tight text-center py-6">

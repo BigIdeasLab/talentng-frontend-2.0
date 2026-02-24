@@ -30,6 +30,7 @@ export interface Opportunity {
   description: string;
   requirements: string[];
   company: string;
+  companyWebsite?: string;
   logo: string;
   keyResponsibilities: string[];
   employmentType: "Full-Time" | "Part-Time" | "Contract" | string;

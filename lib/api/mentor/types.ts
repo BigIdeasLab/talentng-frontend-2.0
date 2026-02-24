@@ -29,14 +29,25 @@ export interface MentorProfile {
   avgRating: number | null;
   totalSessions: number;
   totalMentees: number;
-  totalEarnings: string;
-  sessionRate: number | null;
   sessionDuration: number;
-  sessionCurrency: string;
   bufferTime: number;
+  advanceBookingDays: number;
+  cancellationPolicy: string;
+  autoAccept: boolean;
+  showStats: boolean;
   defaultMeetingLink: string | null;
   timezone: string;
   experience: any[];
+  // Notification preferences
+  emailNewRequests: boolean;
+  emailSessionReminders: boolean;
+  emailMarketing: boolean;
+  pushNewRequests: boolean;
+  pushSessionReminders: boolean;
+  // Deprecated (kept in DB, removed from API)
+  /** @deprecated */ totalEarnings?: string;
+  /** @deprecated */ sessionRate?: number | null;
+  /** @deprecated */ sessionCurrency?: string;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
@@ -102,3 +113,29 @@ export interface MentorProfileResponse {
   isProfileCreated: boolean;
   message?: string;
 }
+
+/**
+ * Mentor Settings (returned by GET /mentor/settings)
+ */
+export interface MentorSettings {
+  // Session settings
+  sessionDuration: number;
+  bufferTime: number;
+  advanceBookingDays: number;
+  cancellationPolicy: string;
+  autoAccept: boolean;
+  // Visibility settings
+  visibility: Visibility;
+  showStats: boolean;
+  // Notification preferences
+  emailNewRequests: boolean;
+  emailSessionReminders: boolean;
+  emailMarketing: boolean;
+  pushNewRequests: boolean;
+  pushSessionReminders: boolean;
+}
+
+/**
+ * Input for PATCH /mentor/settings
+ */
+export type UpdateMentorSettingsInput = Partial<MentorSettings>;

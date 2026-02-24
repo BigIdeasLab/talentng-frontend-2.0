@@ -476,8 +476,8 @@ export function OpportunityDetails({
                     </div>
                   )}
 
-                {/* Employment Type */}
-                {opportunity.employmentType && (
+                {/* Employment Type & Work Mode */}
+                {(opportunity.employmentType || opportunity.workType) && (
                   <div className="flex items-center gap-2">
                     <div className="w-[30px] h-[30px] rounded-full bg-[#F5F5F5] flex items-center justify-center flex-shrink-0">
                       <svg
@@ -512,10 +512,17 @@ export function OpportunityDetails({
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <span className="font-inter-tight text-[13px] font-medium text-black">
-                        {opportunity.employmentType}
+                        {[opportunity.employmentType, opportunity.workType]
+                          .filter(Boolean)
+                          .join(" • ")}
                       </span>
                       <span className="font-inter-tight text-[12px] font-light text-[#525866]">
-                        Job Type
+                        {[
+                          opportunity.employmentType && "Job Type",
+                          opportunity.workType && "Work Mode",
+                        ]
+                          .filter(Boolean)
+                          .join(" • ")}
                       </span>
                     </div>
                   </div>
@@ -883,11 +890,18 @@ export function OpportunityDetails({
                   {opportunity.description}
                 </p>
               )}
-              <button className="w-full flex items-center justify-center py-4 px-4 rounded-[40px] border border-[#F5F5F5] bg-[#F5F5F5] hover:bg-[#e8e8e8] transition-colors">
-                <span className="font-inter-tight text-[13px] font-normal text-black leading-normal capitalize">
-                  Learn More About {opportunity.company}
-                </span>
-              </button>
+              {opportunity.companyWebsite && (
+                <a
+                  href={opportunity.companyWebsite}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center py-4 px-4 rounded-[40px] border border-[#F5F5F5] bg-[#F5F5F5] hover:bg-[#e8e8e8] transition-colors"
+                >
+                  <span className="font-inter-tight text-[13px] font-normal text-black leading-normal capitalize">
+                    Learn More About {opportunity.company}
+                  </span>
+                </a>
+              )}
             </div>
           </div>
         </div>

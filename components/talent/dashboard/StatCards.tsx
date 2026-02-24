@@ -1,4 +1,5 @@
 import { Eye, Briefcase, CheckCircle, Target } from "lucide-react";
+import Link from "next/link";
 import type { TalentDashboardStats } from "@/lib/api/talent";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { cardHover } from "@/lib/theme/effects";
@@ -18,6 +19,7 @@ interface StatCardProps {
   iconColor?: string;
   iconColorStyle?: React.CSSProperties;
   trendColor?: string;
+  href?: string;
 }
 
 function StatCard({
@@ -32,21 +34,21 @@ function StatCard({
   iconColor,
   iconColorStyle,
   trendColor,
+  href,
 }: StatCardProps) {
-  return (
-    <div
-      className={`flex flex-col justify-center gap-3 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] ${cardHover} ${gradient ?? ""}`}
-      style={gradientStyle}
-    >
+  const content = (
+    <>
       <div className="flex justify-between items-center">
         <div className="flex flex-col gap-2">
           <h3 className="text-[#606060] text-[12px] font-medium font-inter-tight">
             {title}
           </h3>
-          <p className="text-[20px] font-bold font-inter-tight">{value}</p>
+          <p className="text-[20px] font-bold font-inter-tight group-hover:text-blue-600 transition-colors">
+            {value}
+          </p>
         </div>
         <div
-          className={`w-[40px] h-[40px] rounded-full ${iconBg} flex items-center justify-center`}
+          className={`w-[40px] h-[40px] rounded-full ${iconBg} flex items-center justify-center group-hover:scale-110 transition-transform`}
         >
           <div className={iconColor} style={iconColorStyle}>
             {icon}
@@ -86,6 +88,27 @@ function StatCard({
           {subtitle}
         </p>
       )}
+    </>
+  );
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        className={`flex flex-col justify-center gap-3 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] ${cardHover} ${gradient ?? ""} group transition-all`}
+        style={gradientStyle}
+      >
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <div
+      className={`flex flex-col justify-center gap-3 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] ${cardHover} ${gradient ?? ""}`}
+      style={gradientStyle}
+    >
+      {content}
     </div>
   );
 }
@@ -118,6 +141,7 @@ export function StatCards({ stats }: StatCardsProps) {
       trendColor: stats.profileViews.trend.isPositive
         ? "text-[#1AA148]"
         : "text-[#E63C23]",
+      href: "/profile",
     },
     {
       title: "Applications",
@@ -127,6 +151,7 @@ export function StatCards({ stats }: StatCardsProps) {
       gradient: "bg-gradient-to-br from-[#008B47]/8 to-white",
       iconBg: "bg-[#D1FAE5]",
       iconColor: "text-[#008B47]",
+      href: "/my-applications",
     },
     {
       title: "Times Hired",
@@ -138,6 +163,7 @@ export function StatCards({ stats }: StatCardsProps) {
       },
       iconBg: "bg-[#DBE9FE]",
       iconColorStyle: { color: ROLE_COLORS.talent.dark },
+      href: "/my-applications",
     },
     {
       title: "Profile Score",
@@ -148,6 +174,7 @@ export function StatCards({ stats }: StatCardsProps) {
       iconBg: "bg-[#FFEDD5]",
       iconColor: "text-[#EA580B]",
       trendColor: "text-[#EA580B]",
+      href: "/profile",
     },
   ];
 

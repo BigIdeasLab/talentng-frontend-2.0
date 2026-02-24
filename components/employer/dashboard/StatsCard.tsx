@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import Link from "next/link";
 
 interface StatsCardProps {
   icon: ReactNode;
@@ -11,6 +12,7 @@ interface StatsCardProps {
   gradient: string;
   iconBg: string;
   iconColor: string;
+  href?: string;
 }
 
 export function StatsCard({
@@ -21,20 +23,21 @@ export function StatsCard({
   gradient,
   iconBg,
   iconColor,
+  href,
 }: StatsCardProps) {
-  return (
-    <div
-      className={`flex flex-col justify-center gap-3 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] ${gradient}`}
-    >
+  const content = (
+    <>
       <div className="flex justify-between items-center">
         <div className="flex flex-col gap-2">
           <h3 className="text-[#606060] text-[12px] font-medium font-inter-tight">
             {label}
           </h3>
-          <p className="text-[20px] font-bold font-inter-tight">{value}</p>
+          <p className="text-[20px] font-bold font-inter-tight group-hover:text-blue-600 transition-colors">
+            {value}
+          </p>
         </div>
         <div
-          className={`w-[40px] h-[40px] rounded-full ${iconBg} flex items-center justify-center`}
+          className={`w-[40px] h-[40px] rounded-full ${iconBg} flex items-center justify-center group-hover:scale-110 transition-transform`}
         >
           <div className={iconColor}>{icon}</div>
         </div>
@@ -70,6 +73,25 @@ export function StatsCard({
           </span>
         </div>
       )}
+    </>
+  );
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        className={`flex flex-col justify-center gap-3 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] ${gradient} group transition-all hover:-translate-y-1`}
+      >
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <div
+      className={`flex flex-col justify-center gap-3 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] ${gradient}`}
+    >
+      {content}
     </div>
   );
 }

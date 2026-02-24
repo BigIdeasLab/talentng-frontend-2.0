@@ -41,6 +41,9 @@ export async function getOpportunitiesData(params?: {
   limit?: number;
   offset?: number;
   type?: string;
+  category?: string;
+  skills?: string;
+  location?: string;
 }): Promise<OpportunitiesResponse> {
   try {
     const response = await getOpportunities({
@@ -49,6 +52,9 @@ export async function getOpportunitiesData(params?: {
       offset: params?.offset || 0,
       ...(params?.searchQuery && { q: params.searchQuery }),
       ...(params?.type && { type: params.type }),
+      ...(params?.category && { category: params.category }),
+      ...(params?.skills && { skills: params.skills }),
+      ...(params?.location && { location: params.location }),
     });
 
     const opportunities: OpportunityData[] = (response.data || []).map(

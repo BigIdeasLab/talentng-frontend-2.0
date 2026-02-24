@@ -2,6 +2,7 @@
 
 import { format } from "date-fns";
 import { MapPin, Calendar } from "lucide-react";
+import Link from "next/link";
 import type { Application } from "@/lib/api/applications/types";
 
 interface JobApplicationCardProps {
@@ -23,16 +24,35 @@ export function JobApplicationCard({ application }: JobApplicationCardProps) {
   const status = STATUS_CONFIG[application.status] || STATUS_CONFIG.applied;
   const opportunity = application.opportunity;
 
+  // Prefer company logo, then recruiter avatar, then fall back to initial
+  const logoUrl =
+    opportunity.logo ||
+    opportunity.postedBy?.recruiterProfile?.profileImageUrl ||
+    null;
+
   return (
-    <div className="flex flex-col border border-[#E1E4EA] rounded-[16px] bg-white hover:shadow-md transition-shadow">
+    <Link
+      href={`/opportunities/${opportunity.id}`}
+      className="flex flex-col border border-[#E1E4EA] rounded-[16px] bg-white hover:shadow-md hover:border-[#C8CCd4] transition-all cursor-pointer"
+    >
       <div className="flex flex-col gap-3 p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 flex-1 min-w-0">
-            <div className="w-10 h-10 rounded-lg bg-[#002224] flex-shrink-0 overflow-hidden">
-              {opportunity.company && (
-                <div className="w-full h-full flex items-center justify-center text-white text-xs font-bold">
+            <div className="w-10 h-10 rounded-lg bg-[#F0F1F3] flex-shrink-0 overflow-hidden flex items-center justify-center">
+              {logoUrl ? (
+                <img
+                  src={logoUrl}
+                  alt={opportunity.company}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              ) : null}
+              {opportunity.company && !logoUrl && (
+                <span className="text-[#525866] text-xs font-bold">
                   {opportunity.company.charAt(0)}
-                </div>
+                </span>
               )}
             </div>
             <div className="flex flex-col gap-1 flex-1 min-w-0">
@@ -79,6 +99,6 @@ export function JobApplicationCard({ application }: JobApplicationCardProps) {
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

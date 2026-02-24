@@ -192,7 +192,7 @@ const SettingsIcon = () => (
 );
 
 const otherItems: Omit<MenuItem, "badge">[] = [
-  { id: "support", label: "Support", icon: <SupportIcon /> },
+  { id: "support", label: "Support", icon: <SupportIcon />, href: "/support" },
   {
     id: "settings",
     label: "Settings",

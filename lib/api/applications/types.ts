@@ -26,6 +26,15 @@ export interface Opportunity {
   type: string;
   description?: string;
   location: string;
+  logo?: string | null;
+  postedBy?: {
+    id: string;
+    username: string;
+    recruiterProfile: {
+      profileImageUrl: string | null;
+      company: string | null;
+    } | null;
+  } | null;
 }
 
 export interface ApplicationInterview {

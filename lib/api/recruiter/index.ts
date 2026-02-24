@@ -10,6 +10,8 @@ import type {
   UpdateRecruiterProfileInput,
   RecruiterFilterParams,
   RecruiterDashboardResponse,
+  RecruiterSettings,
+  UpdateRecruiterSettingsInput,
 } from "./types";
 
 /**
@@ -143,4 +145,27 @@ export type {
   UpdateRecruiterProfileInput,
   RecruiterFilterParams,
   RecruiterDashboardResponse,
+  RecruiterSettings,
+  UpdateRecruiterSettingsInput,
 } from "./types";
+
+/**
+ * Get Recruiter Settings
+ * GET /recruiter/settings
+ */
+export async function getRecruiterSettings(): Promise<RecruiterSettings> {
+  return apiClient<RecruiterSettings>("/recruiter/settings");
+}
+
+/**
+ * Update Recruiter Settings
+ * PATCH /recruiter/settings
+ */
+export async function updateRecruiterSettings(
+  data: UpdateRecruiterSettingsInput,
+): Promise<RecruiterSettings> {
+  return apiClient<RecruiterSettings>("/recruiter/settings", {
+    method: "PATCH",
+    body: data,
+  });
+}

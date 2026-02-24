@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Calendar, ArrowRight } from "lucide-react";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
@@ -86,12 +87,15 @@ export function MentorHeroSection({
             scheduled this week. {message}
           </p>
         </div>
-        <button className="flex h-[38px] px-4 justify-center items-center gap-1 rounded-lg bg-white hover:bg-gray-100 transition-colors group flex-shrink-0 w-fit">
+        <Link
+          href="/availability"
+          className="flex h-[38px] px-4 justify-center items-center gap-1 rounded-lg bg-white hover:bg-gray-100 transition-colors group flex-shrink-0 w-fit"
+        >
           <span className="font-inter-tight text-xs font-medium text-[#DB2777]">
             View Schedule
           </span>
           <ArrowRight className="w-3.5 h-3.5 text-[#DB2777] group-hover:translate-x-0.5 transition-transform" />
-        </button>
+        </Link>
       </div>
     </div>
   );

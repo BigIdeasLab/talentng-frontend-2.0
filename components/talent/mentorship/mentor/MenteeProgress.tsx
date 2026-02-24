@@ -1,26 +1,47 @@
+import Link from "next/link";
 import { Target, ArrowUpRight } from "lucide-react";
 import type { MentorMenteeProgress } from "@/lib/api/mentorship";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface ProgressBarProps {
+  id: string;
   initials: string;
   name: string;
+  imageUrl: string | null;
   course: string;
   progress: number;
 }
 
-function ProgressBar({ initials, name, course, progress }: ProgressBarProps) {
+function ProgressBar({
+  id,
+  initials,
+  name,
+  imageUrl,
+  course,
+  progress,
+}: ProgressBarProps) {
   return (
-    <div className="flex flex-col gap-2">
+    <Link
+      href="/sessions"
+      className="flex flex-col gap-2 group hover:bg-gray-50 p-2 rounded-lg transition-colors"
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-full bg-[#0C9F86] flex items-center justify-center flex-shrink-0">
-            <span className="text-[10px] font-medium font-inter-tight text-white">
-              {initials}
-            </span>
-          </div>
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt={name}
+              className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+            />
+          ) : (
+            <div className="w-7 h-7 rounded-full bg-[#0C9F86] flex items-center justify-center flex-shrink-0">
+              <span className="text-[10px] font-medium font-inter-tight text-white">
+                {initials}
+              </span>
+            </div>
+          )}
           <div className="flex flex-col gap-0.5">
-            <p className="text-[12px] font-medium font-inter-tight text-black">
+            <p className="text-[12px] font-medium font-inter-tight text-black group-hover:text-[#0C9F86] transition-colors">
               {name}
             </p>
             <p className="text-[11px] text-[#606060] font-inter-tight">
@@ -41,7 +62,7 @@ function ProgressBar({ initials, name, course, progress }: ProgressBarProps) {
           }}
         />
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -59,13 +80,14 @@ export function MenteeProgress({ mentees }: MenteeProgressProps) {
             Mentee Progress
           </h2>
         </div>
-        <button
+        <Link
+          href="/sessions"
           className="flex items-center gap-1 text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity"
           style={{ color: ROLE_COLORS.mentor.dark }}
         >
           View All
           <ArrowUpRight className="w-3.5 h-3.5" />
-        </button>
+        </Link>
       </div>
       <div className="flex flex-col gap-3">
         {mentees.length === 0 ? (
@@ -76,8 +98,10 @@ export function MenteeProgress({ mentees }: MenteeProgressProps) {
           mentees.map((mentee) => (
             <ProgressBar
               key={mentee.id}
+              id={mentee.id}
               initials={mentee.initials}
               name={mentee.name}
+              imageUrl={mentee.profileImageUrl}
               course={mentee.course}
               progress={mentee.progress}
             />

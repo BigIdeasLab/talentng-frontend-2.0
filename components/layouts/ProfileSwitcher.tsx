@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/hooks";
 import { useProfile } from "@/hooks/useProfile";
 import {
@@ -507,12 +508,16 @@ export function ProfileSwitcher() {
 
           {/* Help & Logout */}
           <div className="flex flex-col gap-[4px] px-[14px] py-[6px]">
-            <button className="flex items-center gap-[8px] hover:opacity-70 transition-opacity py-[6px]">
+            <Link 
+              href="/support"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-[8px] hover:opacity-70 transition-opacity py-[6px]"
+            >
               <HelpIcon />
               <span className="text-[12px] text-black font-inter-tight">
                 Help
               </span>
-            </button>
+            </Link>
             <button
               onClick={handleLogout}
               className="flex items-center gap-[8px] hover:opacity-70 transition-opacity py-[6px]"

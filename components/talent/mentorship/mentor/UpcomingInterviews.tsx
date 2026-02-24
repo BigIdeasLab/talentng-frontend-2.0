@@ -1,38 +1,69 @@
 import { Calendar, Clock } from "lucide-react";
+import Link from "next/link";
 import type { MentorUpcomingSession } from "@/lib/api/mentorship";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface SessionCardProps {
+  id: string;
   name: string;
+  initials: string;
+  imageUrl: string | null;
   topic: string;
   date: string;
   time: string;
   duration: string;
 }
 
-function SessionCard({ name, topic, date, time, duration }: SessionCardProps) {
+function SessionCard({
+  id,
+  name,
+  initials,
+  imageUrl,
+  topic,
+  date,
+  time,
+  duration,
+}: SessionCardProps) {
   return (
-    <div
-      className="flex justify-between items-start p-4 rounded-lg border border-dashed"
+    <Link
+      href="/sessions"
+      className="flex justify-between items-start p-4 rounded-lg border border-dashed hover:bg-[#FDF2F8] transition-colors group"
       style={{
         borderColor: ROLE_COLORS.mentor.dark,
         backgroundColor: ROLE_COLORS.mentor.light,
       }}
     >
-      <div className="flex flex-col gap-2.5">
-        <h3 className="text-[13px] font-inter-tight text-black">{name}</h3>
-        <p className="text-[11px] text-[#606060] font-inter-tight">{topic}</p>
-        <div className="flex items-center gap-1">
-          <Clock
-            className="w-2.5 h-2.5"
-            style={{ color: ROLE_COLORS.mentor.dark }}
+      <div className="flex items-start gap-3">
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={name}
+            className="w-8 h-8 rounded-full object-cover flex-shrink-0"
           />
-          <span
-            className="text-[11px] font-medium font-inter-tight"
-            style={{ color: ROLE_COLORS.mentor.dark }}
-          >
-            {date} · {time}
-          </span>
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-[#DB2777]/20 flex items-center justify-center flex-shrink-0">
+            <span className="text-[10px] font-medium font-inter-tight text-[#DB2777]">
+              {initials}
+            </span>
+          </div>
+        )}
+        <div className="flex flex-col gap-2.5">
+          <h3 className="text-[13px] font-medium font-inter-tight text-black group-hover:text-[#DB2777] transition-colors">
+            {name}
+          </h3>
+          <p className="text-[11px] text-[#606060] font-inter-tight">{topic}</p>
+          <div className="flex items-center gap-1">
+            <Clock
+              className="w-2.5 h-2.5"
+              style={{ color: ROLE_COLORS.mentor.dark }}
+            />
+            <span
+              className="text-[11px] font-medium font-inter-tight"
+              style={{ color: ROLE_COLORS.mentor.dark }}
+            >
+              {date} · {time}
+            </span>
+          </div>
         </div>
       </div>
       <div className="flex items-center justify-center px-2 py-1 rounded-lg border border-[#E4E7EB] bg-white h-[18px]">
@@ -40,7 +71,7 @@ function SessionCard({ name, topic, date, time, duration }: SessionCardProps) {
           {duration}
         </span>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -69,7 +100,10 @@ export function UpcomingInterviews({ sessions }: UpcomingInterviewsProps) {
           sessions.map((session) => (
             <SessionCard
               key={session.id}
+              id={session.id}
               name={session.menteeName}
+              initials={session.menteeInitials}
+              imageUrl={session.menteeProfileImageUrl}
               topic={session.topic}
               date={session.scheduledDate}
               time={session.scheduledTime}

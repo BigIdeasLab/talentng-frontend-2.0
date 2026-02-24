@@ -70,6 +70,7 @@ export type ApplicationStatus =
 
 export interface RecentApplication {
   id: string;
+  opportunityId?: string;
   title: string;
   company: string;
   companyLogo: string | null;
@@ -82,6 +83,10 @@ export interface UpcomingInterview {
   company: string;
   position: string;
   scheduledAt: string;
+  status: string;
+  opportunityId?: string;
+  location?: string;
+  meetingLink?: string;
 }
 
 export interface TopSkill {

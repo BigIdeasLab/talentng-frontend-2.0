@@ -1,56 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Loader2,
   Bell,
   Shield,
-  Users,
-  CreditCard,
   Trash2,
-  UserPlus,
   Mail,
+  User,
+  LogOut,
+  Eye,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
-
-interface NotificationSettings {
-  emailNewApplications: boolean;
-  emailMessages: boolean;
-  emailMarketing: boolean;
-  pushNewApplications: boolean;
-  pushMessages: boolean;
-}
-
-interface CompanySettings {
-  companyName: string;
-  website: string;
-  description: string;
-  industry: string;
-  size: string;
-}
-
-const defaultNotifications: NotificationSettings = {
-  emailNewApplications: true,
-  emailMessages: true,
-  emailMarketing: false,
-  pushNewApplications: true,
-  pushMessages: true,
-};
-
-const defaultCompany: CompanySettings = {
-  companyName: "",
-  website: "",
-  description: "",
-  industry: "",
-  size: "",
-};
+import {
+  getRecruiterSettings,
+  updateRecruiterSettings,
+} from "@/lib/api/recruiter";
+import { getCurrentUser } from "@/lib/api/users";
+import { logoutAllDevices } from "@/lib/api/auth";
+import type { RecruiterSettings as RecruiterSettingsType } from "@/lib/api/recruiter/types";
 
 function SettingsSection({
   title,
@@ -106,38 +80,102 @@ function ToggleSetting({
 
 export function EmployerSettings() {
   const roleColors = ROLE_COLORS.recruiter;
-  const [notifications, setNotifications] =
-    useState<NotificationSettings>(defaultNotifications);
-  const [company, setCompany] = useState<CompanySettings>(defaultCompany);
+  const queryClient = useQueryClient();
 
-  const saveNotifications = useMutation({
-    mutationFn: async (data: NotificationSettings) => {
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      return { success: true };
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  // Fetch settings from the API
+  const {
+    data: settings,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["recruiterSettings"],
+    queryFn: getRecruiterSettings,
+  });
+
+  // Fetch real user data for email
+  const { data: userData } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: getCurrentUser,
+  });
+
+  // Local state — initialized from API data
+  const [notifications, setNotifications] = useState<RecruiterSettingsType>({
+    emailNewApplications: true,
+    emailMarketing: false,
+    pushNewApplications: true,
+  });
+
+  const [visibility, setVisibility] = useState({
+    profileVisible: true,
+  });
+
+
+
+  // Sync local state when API data arrives
+  useEffect(() => {
+    if (settings) {
+      setNotifications(settings);
+    }
+  }, [settings]);
+
+  const saveSettings = useMutation({
+    mutationFn: (data: Partial<RecruiterSettingsType>) =>
+      updateRecruiterSettings(data),
+    onSuccess: () => {
+      toast.success("Settings saved");
+      queryClient.invalidateQueries({ queryKey: ["recruiterSettings"] });
     },
-    onSuccess: () => toast.success("Notification settings saved"),
     onError: () => toast.error("Failed to save settings"),
   });
 
-  const saveCompany = useMutation({
-    mutationFn: async (data: CompanySettings) => {
+  const changePassword = useMutation({
+    mutationFn: async () => {
+      // Mocking password change as no endpoint exists yet
       await new Promise((resolve) => setTimeout(resolve, 800));
+      if (newPassword !== confirmPassword)
+        throw new Error("Passwords don't match");
       return { success: true };
     },
-    onSuccess: () => toast.success("Company settings saved"),
-    onError: () => toast.error("Failed to save settings"),
+    onSuccess: () => {
+      toast.success("Password changed successfully");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    },
+    onError: (error: any) =>
+      toast.error(error.message || "Failed to change password"),
   });
 
-  const handleNotificationChange = (
-    key: keyof NotificationSettings,
-    value: boolean,
-  ) => {
-    setNotifications((prev) => ({ ...prev, [key]: value }));
-  };
+  const handleLogoutAll = useMutation({
+    mutationFn: logoutAllDevices,
+    onSuccess: () => {
+      toast.success("Logged out from all devices");
+      window.location.href = "/login";
+    },
+    onError: () => toast.error("Failed to sign out from all devices"),
+  });
 
-  const handleCompanyChange = (key: keyof CompanySettings, value: string) => {
-    setCompany((prev) => ({ ...prev, [key]: value }));
-  };
+  if (isLoading) {
+    return (
+      <div className="h-screen bg-white flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-[#525866]" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="h-screen bg-white flex items-center justify-center">
+        <p className="text-[13px] text-red-500">
+          Failed to load settings. Please try again.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen bg-white flex flex-col">
@@ -146,117 +184,36 @@ export function EmployerSettings() {
           Settings
         </h1>
         <p className="text-[13px] font-inter-tight text-[#525866] mt-2">
-          Manage your company and account settings
+          Manage your recruiter preferences and account
         </p>
       </div>
 
       <div className="flex-1 overflow-hidden">
         <div className="h-full overflow-y-auto p-4 md:p-6 space-y-6">
-          {/* Company Settings */}
+          {/* Profile Visibility */}
           <SettingsSection
-            title="Company Information"
-            description="Basic information about your company"
+            title="Profile Discovery"
+            description="Control how your company profile appears to candidates"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label
-                  htmlFor="company-name"
-                  className="text-[12px] font-medium font-inter-tight text-[#525866]"
-                >
-                  Company Name
-                </Label>
-                <Input
-                  id="company-name"
-                  value={company.companyName}
-                  onChange={(e) =>
-                    handleCompanyChange("companyName", e.target.value)
-                  }
-                  className="mt-1"
-                  placeholder="Your Company Name"
-                />
-              </div>
-              <div>
-                <Label
-                  htmlFor="website"
-                  className="text-[12px] font-medium font-inter-tight text-[#525866]"
-                >
-                  Website
-                </Label>
-                <Input
-                  id="website"
-                  value={company.website}
-                  onChange={(e) =>
-                    handleCompanyChange("website", e.target.value)
-                  }
-                  className="mt-1"
-                  placeholder="https://yourcompany.com"
-                />
-              </div>
-              <div>
-                <Label
-                  htmlFor="industry"
-                  className="text-[12px] font-medium font-inter-tight text-[#525866]"
-                >
-                  Industry
-                </Label>
-                <Input
-                  id="industry"
-                  value={company.industry}
-                  onChange={(e) =>
-                    handleCompanyChange("industry", e.target.value)
-                  }
-                  className="mt-1"
-                  placeholder="Technology, Healthcare, etc."
-                />
-              </div>
-              <div>
-                <Label
-                  htmlFor="size"
-                  className="text-[12px] font-medium font-inter-tight text-[#525866]"
-                >
-                  Company Size
-                </Label>
-                <Input
-                  id="size"
-                  value={company.size}
-                  onChange={(e) => handleCompanyChange("size", e.target.value)}
-                  className="mt-1"
-                  placeholder="1-10, 11-50, 51-200, etc."
-                />
-              </div>
-              <div className="md:col-span-2">
-                <Label
-                  htmlFor="description"
-                  className="text-[12px] font-medium font-inter-tight text-[#525866]"
-                >
-                  Company Description
-                </Label>
-                <Textarea
-                  id="description"
-                  value={company.description}
-                  onChange={(e) =>
-                    handleCompanyChange("description", e.target.value)
-                  }
-                  className="mt-1"
-                  rows={4}
-                  placeholder="Tell us about your company..."
-                />
-              </div>
+            <div className="space-y-1">
+              <ToggleSetting
+                label="Public Profile"
+                description="Allow candidates to find and view your company profile"
+                checked={visibility.profileVisible}
+                onChange={(v) => setVisibility({ profileVisible: v })}
+              />
             </div>
             <div className="mt-4 flex justify-end">
               <Button
-                onClick={() => saveCompany.mutate(company)}
-                disabled={saveCompany.isPending}
                 className="text-white hover:opacity-90"
                 style={{ backgroundColor: roleColors.primary }}
               >
-                {saveCompany.isPending && (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                )}
-                Save Changes
+                Save Visibility
               </Button>
             </div>
           </SettingsSection>
+
+
 
           {/* Notification Preferences */}
           <SettingsSection
@@ -274,21 +231,21 @@ export function EmployerSettings() {
                   description="Get notified when candidates apply to your opportunities"
                   checked={notifications.emailNewApplications}
                   onChange={(v) =>
-                    handleNotificationChange("emailNewApplications", v)
+                    setNotifications((prev) => ({
+                      ...prev,
+                      emailNewApplications: v,
+                    }))
                   }
-                />
-                <ToggleSetting
-                  label="Messages"
-                  description="Get notified when you receive new messages"
-                  checked={notifications.emailMessages}
-                  onChange={(v) => handleNotificationChange("emailMessages", v)}
                 />
                 <ToggleSetting
                   label="Marketing & Updates"
                   description="Receive news about new features and tips"
                   checked={notifications.emailMarketing}
                   onChange={(v) =>
-                    handleNotificationChange("emailMarketing", v)
+                    setNotifications((prev) => ({
+                      ...prev,
+                      emailMarketing: v,
+                    }))
                   }
                 />
               </div>
@@ -304,98 +261,27 @@ export function EmployerSettings() {
                   label="New Applications"
                   checked={notifications.pushNewApplications}
                   onChange={(v) =>
-                    handleNotificationChange("pushNewApplications", v)
+                    setNotifications((prev) => ({
+                      ...prev,
+                      pushNewApplications: v,
+                    }))
                   }
-                />
-                <ToggleSetting
-                  label="Messages"
-                  checked={notifications.pushMessages}
-                  onChange={(v) => handleNotificationChange("pushMessages", v)}
                 />
               </div>
             </div>
 
             <div className="mt-4 flex justify-end">
               <Button
-                onClick={() => saveNotifications.mutate(notifications)}
-                disabled={saveNotifications.isPending}
+                onClick={() => saveSettings.mutate(notifications)}
+                disabled={saveSettings.isPending}
                 className="text-white hover:opacity-90"
                 style={{ backgroundColor: roleColors.primary }}
               >
-                {saveNotifications.isPending && (
+                {saveSettings.isPending && (
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 )}
                 Save Changes
               </Button>
-            </div>
-          </SettingsSection>
-
-          {/* Team Management */}
-          <SettingsSection
-            title="Team Management"
-            description="Manage your team members and their access"
-          >
-            <div className="text-center py-8">
-              <div className="w-16 h-16 bg-[#F5F5F5] rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-[#B2B2B2]" />
-              </div>
-              <h3 className="text-[14px] font-medium font-inter-tight text-black mb-2">
-                Team Management
-              </h3>
-              <p className="text-[13px] font-inter-tight text-[#525866] mb-4">
-                Invite team members to collaborate on hiring
-              </p>
-              <Button
-                className="text-white hover:opacity-90"
-                style={{ backgroundColor: roleColors.primary }}
-              >
-                <UserPlus className="w-4 h-4 mr-2" />
-                Invite Team Member
-              </Button>
-            </div>
-            <div className="mt-6 border-t border-[#E1E4EA] pt-6">
-              <p className="text-[12px] font-inter-tight text-[#525866] text-center">
-                No team members yet
-              </p>
-            </div>
-          </SettingsSection>
-
-          {/* Billing */}
-          <SettingsSection
-            title="Billing & Payments"
-            description="Manage your subscription and payment methods"
-          >
-            <div className="text-center py-8">
-              <div className="w-16 h-16 bg-[#F5F5F5] rounded-full flex items-center justify-center mx-auto mb-4">
-                <CreditCard className="w-8 h-8 text-[#B2B2B2]" />
-              </div>
-              <h3 className="text-[14px] font-medium font-inter-tight text-black mb-2">
-                Billing Settings
-              </h3>
-              <p className="text-[13px] font-inter-tight text-[#525866] mb-4">
-                Manage your subscription plan and payment methods
-              </p>
-              <Button
-                className="text-white hover:opacity-90"
-                style={{ backgroundColor: roleColors.primary }}
-              >
-                Manage Subscription
-              </Button>
-            </div>
-            <div className="mt-6 border-t border-[#E1E4EA] pt-6">
-              <div className="flex items-center justify-between py-3">
-                <div>
-                  <p className="text-[13px] font-medium font-inter-tight text-black">
-                    Current Plan
-                  </p>
-                  <p className="text-[12px] font-inter-tight text-[#525866]">
-                    Free Plan
-                  </p>
-                </div>
-                <Button variant="outline" size="sm">
-                  Upgrade
-                </Button>
-              </div>
             </div>
           </SettingsSection>
 
@@ -415,6 +301,8 @@ export function EmployerSettings() {
                 <Input
                   id="current-password"
                   type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
                   className="mt-1"
                   placeholder="Enter current password"
                 />
@@ -429,6 +317,8 @@ export function EmployerSettings() {
                 <Input
                   id="new-password"
                   type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
                   className="mt-1"
                   placeholder="Enter new password"
                 />
@@ -443,14 +333,26 @@ export function EmployerSettings() {
                 <Input
                   id="confirm-password"
                   type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   className="mt-1"
                   placeholder="Confirm new password"
                 />
               </div>
               <Button
+                onClick={() => changePassword.mutate()}
+                disabled={
+                  changePassword.isPending ||
+                  !currentPassword ||
+                  !newPassword ||
+                  !confirmPassword
+                }
                 className="text-white hover:opacity-90"
                 style={{ backgroundColor: roleColors.primary }}
               >
+                {changePassword.isPending && (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                )}
                 <Shield className="w-4 h-4 mr-2" />
                 Change Password
               </Button>
@@ -459,25 +361,66 @@ export function EmployerSettings() {
 
           {/* Account */}
           <SettingsSection title="Account" description="Manage your account">
-            <div className="flex items-center justify-between py-3 border-b border-[#E1E4EA]">
-              <div className="flex items-center gap-3">
-                <Trash2 className="w-5 h-5 text-red-500" />
-                <div>
-                  <p className="text-[13px] font-medium font-inter-tight text-red-600">
-                    Delete Account
-                  </p>
-                  <p className="text-[12px] font-inter-tight text-[#525866]">
-                    Permanently delete your account and all data
-                  </p>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between py-3 border-b border-[#E1E4EA]">
+                <div className="flex items-center gap-3">
+                  <User className="w-5 h-5 text-[#B2B2B2]" />
+                  <div>
+                    <p className="text-[13px] font-medium font-inter-tight text-black">
+                      Email Address
+                    </p>
+                    <p className="text-[12px] font-inter-tight text-[#525866]">
+                      {userData?.email || "Loading..."}
+                    </p>
+                  </div>
                 </div>
+                <Button variant="outline" size="sm" asChild>
+                  <a href="/profile/edit">Change</a>
+                </Button>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-red-600 border-red-200 hover:bg-red-50"
-              >
-                Delete
-              </Button>
+
+              <div className="flex items-center justify-between py-3 border-b border-[#E1E4EA]">
+                <div className="flex items-center gap-3">
+                  <LogOut className="w-5 h-5 text-[#B2B2B2]" />
+                  <div>
+                    <p className="text-[13px] font-medium font-inter-tight text-black">
+                      Sign out from all devices
+                    </p>
+                    <p className="text-[12px] font-inter-tight text-[#525866]">
+                      Log out from all active sessions
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleLogoutAll.mutate()}
+                  disabled={handleLogoutAll.isPending}
+                >
+                  {handleLogoutAll.isPending ? "Signing out..." : "Sign Out"}
+                </Button>
+              </div>
+
+              <div className="flex items-center justify-between py-3">
+                <div className="flex items-center gap-3">
+                  <Trash2 className="w-5 h-5 text-red-500" />
+                  <div>
+                    <p className="text-[13px] font-medium font-inter-tight text-red-600">
+                      Delete Account
+                    </p>
+                    <p className="text-[12px] font-inter-tight text-[#525866]">
+                      Permanently delete your account and all data
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-red-600 border-red-200 hover:bg-red-50"
+                >
+                  Delete
+                </Button>
+              </div>
             </div>
           </SettingsSection>
         </div>

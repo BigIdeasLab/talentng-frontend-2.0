@@ -21,6 +21,8 @@ import type {
   RecommendationStatsDto,
   CreateRecommendationDto,
   UpdateRecommendationDto,
+  TalentSettings,
+  UpdateTalentSettingsInput,
 } from "./types";
 import type { TalentDashboardResponse } from "./dashboard-types";
 
@@ -483,7 +485,31 @@ export type {
   RecommendationStatsDto,
   CreateRecommendationDto,
   UpdateRecommendationDto,
+  TalentSettings,
+  UpdateTalentSettingsInput,
 };
+
+/**
+ * Get Talent Settings
+ * GET /talent/settings
+ * Never returns 404 — returns safe defaults if profile doesn't exist yet.
+ */
+export async function getTalentSettings(): Promise<TalentSettings> {
+  return apiClient<TalentSettings>("/talent/settings");
+}
+
+/**
+ * Update Talent Settings
+ * PATCH /talent/settings
+ */
+export async function updateTalentSettings(
+  data: UpdateTalentSettingsInput,
+): Promise<TalentSettings> {
+  return apiClient<TalentSettings>("/talent/settings", {
+    method: "PATCH",
+    body: data,
+  });
+}
 
 export type {
   TalentDashboardResponse,

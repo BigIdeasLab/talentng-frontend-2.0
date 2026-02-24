@@ -13,6 +13,8 @@ import type {
   MentorAvailability,
   Booking,
   MentorSearchFilters,
+  MentorSettings,
+  UpdateMentorSettingsInput,
 } from "./types";
 
 /**
@@ -190,4 +192,27 @@ export type {
   MentorAvailability,
   Booking,
   MentorSearchFilters,
+  MentorSettings,
+  UpdateMentorSettingsInput,
 } from "./types";
+
+/**
+ * Get Mentor Settings
+ * GET /mentor/settings
+ */
+export async function getMentorSettings(): Promise<MentorSettings> {
+  return apiClient<MentorSettings>("/mentor/settings");
+}
+
+/**
+ * Update Mentor Settings
+ * PATCH /mentor/settings
+ */
+export async function updateMentorSettings(
+  data: UpdateMentorSettingsInput,
+): Promise<MentorSettings> {
+  return apiClient<MentorSettings>("/mentor/settings", {
+    method: "PATCH",
+    body: data,
+  });
+}

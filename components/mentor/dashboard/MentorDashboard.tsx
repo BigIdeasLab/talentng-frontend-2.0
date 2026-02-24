@@ -10,19 +10,34 @@ import { UpcomingInterviews } from "@/components/talent/mentorship/mentor/Upcomi
 import { MenteeProgress } from "@/components/talent/mentorship/mentor/MenteeProgress";
 import { RecentReviews } from "@/components/talent/mentorship/mentor/RecentReviews";
 import { MentorDashboardSkeleton } from "./MentorDashboardSkeleton";
+import type { MentorDashboardResponse } from "@/lib/api/mentorship";
 
 export default function MentorDashboard() {
-  const { data, isLoading, isPending, error } = useMentorDashboard();
+  const { data: rawData, isLoading, isPending, error } = useMentorDashboard();
 
   if (isLoading || isPending) {
     return <MentorDashboardSkeleton />;
   }
 
-  if (error || !data) {
+  if (error || !rawData) {
     return (
       <div className="px-4 py-6 md:px-8 md:py-7">
         <p className="text-red-500 text-[13px]">
           Failed to load dashboard data
+        </p>
+      </div>
+    );
+  }
+
+  // Handle possible API envelope wrapping: { data: { user, stats, ... } }
+  const data: MentorDashboardResponse = (rawData as any).data ?? rawData;
+
+  if (!data.user) {
+    console.error("[MentorDashboard] Unexpected response shape:", rawData);
+    return (
+      <div className="px-4 py-6 md:px-8 md:py-7">
+        <p className="text-red-500 text-[13px]">
+          Dashboard data unavailable. Check console for details.
         </p>
       </div>
     );

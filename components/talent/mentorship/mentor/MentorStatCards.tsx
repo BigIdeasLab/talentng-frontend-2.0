@@ -1,6 +1,6 @@
-import { Users, Video } from "lucide-react";
+import { Users, Video, Inbox } from "lucide-react";
+import Link from "next/link";
 import type { MentorDashboardFullStats } from "@/lib/api/mentorship";
-import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface StatCardProps {
   title: string;
@@ -16,6 +16,7 @@ interface StatCardProps {
   iconColor?: string;
   iconColorStyle?: React.CSSProperties;
   trendColor: string;
+  href?: string;
 }
 
 function StatCard({
@@ -29,21 +30,19 @@ function StatCard({
   iconColor,
   iconColorStyle,
   trendColor,
+  href,
 }: StatCardProps) {
-  return (
-    <div
-      className={`flex flex-col justify-center gap-3 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] ${gradient ?? ""}`}
-      style={gradientStyle}
-    >
+  const content = (
+    <>
       <div className="flex justify-between items-center">
         <div className="flex flex-col gap-2">
           <h3 className="text-[#606060] text-[12px] font-medium font-inter-tight">
             {title}
           </h3>
-          <p className="text-[20px] font-bold font-inter-tight">{value}</p>
+          <p className="text-[20px] font-bold font-inter-tight group-hover:text-[#DB2777] transition-colors">{value}</p>
         </div>
         <div
-          className={`w-[40px] h-[40px] rounded-full ${iconBg} flex items-center justify-center`}
+          className={`w-[40px] h-[40px] rounded-full ${iconBg} flex items-center justify-center group-hover:scale-110 transition-transform`}
         >
           <div className={iconColor} style={iconColorStyle}>
             {icon}
@@ -77,6 +76,27 @@ function StatCard({
           {trend.value}
         </span>
       </div>
+    </>
+  );
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        className={`flex flex-col justify-center gap-3 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] ${gradient ?? ""} group transition-all hover:-translate-y-1`}
+        style={gradientStyle}
+      >
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <div
+      className={`flex flex-col justify-center gap-3 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] ${gradient ?? ""}`}
+      style={gradientStyle}
+    >
+      {content}
     </div>
   );
 }
@@ -115,6 +135,7 @@ export function MentorStatCards({ stats }: MentorStatCardsProps) {
       gradient: "bg-gradient-to-br from-[#F59E0B]/8 to-white",
       iconBg: "bg-[#FEF3C7]",
       iconColor: "text-[#D97706]",
+      href: "/sessions",
       trendColor: stats.totalMentees.trend.isPositive
         ? "text-[#1AA148]"
         : "text-[#E63C23]",
@@ -127,31 +148,29 @@ export function MentorStatCards({ stats }: MentorStatCardsProps) {
       gradient: "bg-gradient-to-br from-[#008B47]/8 to-white",
       iconBg: "bg-[#D1FAE5]",
       iconColor: "text-[#008B47]",
+      href: "/sessions",
       trendColor: stats.sessionsDone.trend.isPositive
         ? "text-[#8B5CF6]"
         : "text-[#E63C23]",
     },
     {
-      title: "Total Earnings",
-      value: formatCurrency(
-        stats.totalEarnings.value,
-        stats.totalEarnings.currency,
-      ),
-      trend: stats.totalEarnings.trend,
-      icon: <Video className="w-5 h-5" />,
-      gradientStyle: {
-        background: `linear-gradient(to bottom right, ${ROLE_COLORS.talent.dark}14, white)`,
-      },
-      iconBg: "bg-[#DBE9FE]",
-      iconColorStyle: { color: ROLE_COLORS.talent.dark },
-      trendColor: stats.totalEarnings.trend.isPositive
-        ? "text-[#D97707]"
-        : "text-[#E63C23]",
+      title: "Pending Requests",
+      value: stats.pendingRequests.value.toString(),
+      trend: stats.pendingRequests.trend,
+      icon: <Inbox className="w-5 h-5" />,
+      gradient: "bg-gradient-to-br from-[#F59E0B]/8 to-white",
+      iconBg: "bg-[#FEF3C7]",
+      iconColor: "text-[#D97706]",
+      trendColor: stats.pendingRequests.trend.isPositive
+        ? "text-[#1AA148]"
+        : "text-[#D97706]",
+      href: "/mentor/requests",
     },
     {
       title: "Avg Rating",
       value: stats.averageRating.value.toFixed(1),
       trend: stats.averageRating.trend,
+      href: "/sessions", // No specific reviews page yet
       icon: (
         <svg
           className="w-5 h-5"

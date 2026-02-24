@@ -2,6 +2,7 @@
 
 import { format } from "date-fns";
 import { Calendar, Clock, MapPin } from "lucide-react";
+import Link from "next/link";
 import type { MentorshipRequest } from "@/lib/api/mentorship/types";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
@@ -47,7 +48,10 @@ export function MentorshipRequestCard({ request }: MentorshipRequestCardProps) {
   const scheduledDate = new Date(`${datePart}T${request.scheduledTime}:00`);
 
   return (
-    <div className="flex flex-col border border-[#E1E4EA] rounded-[16px] bg-white hover:shadow-md transition-shadow">
+    <Link
+      href={`/mentorship/${mentor.id}`}
+      className="flex flex-col border border-[#E1E4EA] rounded-[16px] bg-white hover:shadow-md hover:border-[#C8CCd4] transition-all cursor-pointer"
+    >
       <div className="flex flex-col gap-3.5 px-4 pt-4 pb-3">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2">
@@ -138,6 +142,6 @@ export function MentorshipRequestCard({ request }: MentorshipRequestCardProps) {
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

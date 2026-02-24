@@ -159,6 +159,103 @@ export function ProfessionalDetailsSection({
               />
             </div>
 
+            {/* Skills */}
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-[13px] font-normal text-black font-inter-tight">
+                Skills
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={skillsInput}
+                  onChange={(e) => {
+                    setSkillsInput(e.target.value);
+                    setShowSkillsDropdown(e.target.value.length > 0);
+                  }}
+                  onFocus={() => setShowSkillsDropdown(skillsInput.length > 0)}
+                  onBlur={() => setTimeout(() => setShowSkillsDropdown(false), 200)}
+                  onKeyDown={handleSkillsKeyDown}
+                  placeholder="Type a skill and press Enter..."
+                  className="w-full px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                />
+                {showSkillsDropdown && filteredSkills.length > 0 && (
+                  <div className="absolute z-10 top-full left-0 right-0 mt-1 bg-white border border-[#E1E4EA] rounded-[8px] shadow-lg max-h-[200px] overflow-y-auto">
+                    {filteredSkills.map((skill) => (
+                      <button
+                        key={skill}
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => handleAddSkill(skill)}
+                        className="w-full text-left px-3 py-2 text-[13px] font-inter-tight text-black hover:bg-[#F5F5F5] transition-colors"
+                      >
+                        {skill}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {formData.skills.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {formData.skills.map((skill, index) => (
+                    <SkillTag
+                      key={skill}
+                      skill={skill}
+                      onRemove={() => onRemoveSkill(index)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Stack / Tools */}
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-[13px] font-normal text-black font-inter-tight">
+                Stack / Tools
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={stackInput}
+                  onChange={(e) => {
+                    setStackInput(e.target.value);
+                    setShowStackDropdown(e.target.value.length > 0);
+                  }}
+                  onFocus={() => setShowStackDropdown(stackInput.length > 0)}
+                  onBlur={() => setTimeout(() => setShowStackDropdown(false), 200)}
+                  onKeyDown={handleStackKeyDown}
+                  placeholder="Type a tool name..."
+                  className="w-full px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                />
+                {showStackDropdown && filteredStack.length > 0 && (
+                  <div className="absolute z-10 top-full left-0 right-0 mt-1 bg-white border border-[#E1E4EA] rounded-[8px] shadow-lg max-h-[200px] overflow-y-auto">
+                    {filteredStack.map((tool) => (
+                      <button
+                        key={tool.name}
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => handleAddStack(tool.name)}
+                        className="w-full text-left px-3 py-2 text-[13px] font-inter-tight text-black hover:bg-[#F5F5F5] transition-colors flex items-center gap-2"
+                      >
+                        <span>{tool.icon}</span>
+                        <span>{tool.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {formData.stack.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {formData.stack.map((tool, index) => (
+                    <StackTag
+                      key={tool.name}
+                      tool={tool}
+                      onRemove={() => onRemoveStack(index)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* Next Button */}
             <div className="flex justify-end">
               <Button

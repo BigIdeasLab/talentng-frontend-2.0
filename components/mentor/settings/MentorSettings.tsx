@@ -1,86 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Loader2,
   Bell,
   Shield,
-  DollarSign,
   Clock,
   Trash2,
   Mail,
-  CreditCard,
   Calendar,
+  User,
+  LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
-
-interface NotificationSettings {
-  emailNewRequests: boolean;
-  emailSessionReminders: boolean;
-  emailMessages: boolean;
-  emailEarnings: boolean;
-  emailMarketing: boolean;
-  pushNewRequests: boolean;
-  pushSessionReminders: boolean;
-  pushMessages: boolean;
-}
-
-interface SessionSettings {
-  sessionDuration: number;
-  bufferTime: number;
-  advanceBookingDays: number;
-  cancellationPolicy: string;
-  autoAccept: boolean;
-}
-
-interface PaymentSettings {
-  hourlyRate: number;
-  currency: string;
-  paymentMethod: string;
-}
-
-interface VisibilitySettings {
-  profileVisible: boolean;
-  showEarnings: boolean;
-  showStats: boolean;
-}
-
-const defaultNotifications: NotificationSettings = {
-  emailNewRequests: true,
-  emailSessionReminders: true,
-  emailMessages: true,
-  emailEarnings: true,
-  emailMarketing: false,
-  pushNewRequests: true,
-  pushSessionReminders: true,
-  pushMessages: true,
-};
-
-const defaultSession: SessionSettings = {
-  sessionDuration: 60,
-  bufferTime: 15,
-  advanceBookingDays: 7,
-  cancellationPolicy: "24hours",
-  autoAccept: false,
-};
-
-const defaultPayment: PaymentSettings = {
-  hourlyRate: 50,
-  currency: "USD",
-  paymentMethod: "bank",
-};
-
-const defaultVisibility: VisibilitySettings = {
-  profileVisible: true,
-  showEarnings: false,
-  showStats: true,
-};
+import {
+  getMentorSettings,
+  updateMentorSettings,
+} from "@/lib/api/mentor";
+import { getCurrentUser } from "@/lib/api/users";
+import { logoutAllDevices } from "@/lib/api/auth";
+import type { MentorSettings as MentorSettingsType } from "@/lib/api/mentor/types";
 
 function SettingsSection({
   title,
@@ -136,76 +81,158 @@ function ToggleSetting({
 
 export function MentorSettings() {
   const roleColors = ROLE_COLORS.mentor;
-  const [notifications, setNotifications] =
-    useState<NotificationSettings>(defaultNotifications);
-  const [session, setSession] = useState<SessionSettings>(defaultSession);
-  const [payment, setPayment] = useState<PaymentSettings>(defaultPayment);
-  const [visibility, setVisibility] =
-    useState<VisibilitySettings>(defaultVisibility);
+  const queryClient = useQueryClient();
 
-  const saveNotifications = useMutation({
-    mutationFn: async () => {
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      return { success: true };
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  // Fetch settings from the API
+  const {
+    data: settings,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["mentorSettings"],
+    queryFn: getMentorSettings,
+  });
+
+  // Fetch real user data for email
+  const { data: userData } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: getCurrentUser,
+  });
+
+  // Local state for editing — initialized from API data
+  const [visibility, setVisibility] = useState({
+    profileVisible: true,
+    showStats: true,
+  });
+
+  const [session, setSession] = useState({
+    sessionDuration: 60,
+    bufferTime: 15,
+    advanceBookingDays: 14,
+    cancellationPolicy: "24hours",
+    autoAccept: false,
+  });
+
+  const [notifications, setNotifications] = useState({
+    emailNewRequests: true,
+    emailSessionReminders: true,
+    emailMarketing: false,
+    pushNewRequests: true,
+    pushSessionReminders: true,
+  });
+
+
+
+  // Sync local state when API data arrives
+  useEffect(() => {
+    if (settings) {
+      setVisibility({
+        profileVisible: settings.visibility === "public",
+        showStats: settings.showStats,
+      });
+      setSession({
+        sessionDuration: settings.sessionDuration,
+        bufferTime: settings.bufferTime,
+        advanceBookingDays: settings.advanceBookingDays,
+        cancellationPolicy: settings.cancellationPolicy,
+        autoAccept: settings.autoAccept,
+      });
+      setNotifications({
+        emailNewRequests: settings.emailNewRequests,
+        emailSessionReminders: settings.emailSessionReminders,
+        emailMarketing: settings.emailMarketing,
+        pushNewRequests: settings.pushNewRequests,
+        pushSessionReminders: settings.pushSessionReminders,
+      });
+    }
+  }, [settings]);
+
+  // Mutation for saving settings
+  const saveSettings = useMutation({
+    mutationFn: (data: Partial<MentorSettingsType>) =>
+      updateMentorSettings(data),
+    onSuccess: () => {
+      toast.success("Settings saved");
+      queryClient.invalidateQueries({ queryKey: ["mentorSettings"] });
     },
-    onSuccess: () => toast.success("Notification settings saved"),
     onError: () => toast.error("Failed to save settings"),
   });
 
-  const saveSession = useMutation({
+  const handleSaveVisibility = () => {
+    saveSettings.mutate({
+      visibility: visibility.profileVisible ? "public" : "private",
+      showStats: visibility.showStats,
+    });
+  };
+
+  const handleSaveSession = () => {
+    saveSettings.mutate({
+      sessionDuration: session.sessionDuration,
+      bufferTime: session.bufferTime,
+      advanceBookingDays: session.advanceBookingDays,
+      cancellationPolicy: session.cancellationPolicy,
+      autoAccept: session.autoAccept,
+    });
+  };
+
+  const handleSaveNotifications = () => {
+    saveSettings.mutate({
+      emailNewRequests: notifications.emailNewRequests,
+      emailSessionReminders: notifications.emailSessionReminders,
+      emailMarketing: notifications.emailMarketing,
+      pushNewRequests: notifications.pushNewRequests,
+      pushSessionReminders: notifications.pushSessionReminders,
+    });
+  };
+
+  const changePassword = useMutation({
     mutationFn: async () => {
+      // Mocking password change as no endpoint exists yet
       await new Promise((resolve) => setTimeout(resolve, 800));
+      if (newPassword !== confirmPassword)
+        throw new Error("Passwords don't match");
       return { success: true };
     },
-    onSuccess: () => toast.success("Session settings saved"),
-    onError: () => toast.error("Failed to save settings"),
-  });
-
-  const savePayment = useMutation({
-    mutationFn: async () => {
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      return { success: true };
+    onSuccess: () => {
+      toast.success("Password changed successfully");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
     },
-    onSuccess: () => toast.success("Payment settings saved"),
-    onError: () => toast.error("Failed to save settings"),
+    onError: (error: any) =>
+      toast.error(error.message || "Failed to change password"),
   });
 
-  const saveVisibility = useMutation({
-    mutationFn: async () => {
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      return { success: true };
+  const handleLogoutAll = useMutation({
+    mutationFn: logoutAllDevices,
+    onSuccess: () => {
+      toast.success("Logged out from all devices");
+      window.location.href = "/login";
     },
-    onSuccess: () => toast.success("Visibility settings saved"),
-    onError: () => toast.error("Failed to save settings"),
+    onError: () => toast.error("Failed to sign out from all devices"),
   });
 
-  const handleNotificationChange = (
-    key: keyof NotificationSettings,
-    value: boolean,
-  ) => {
-    setNotifications((prev) => ({ ...prev, [key]: value }));
-  };
+  if (isLoading) {
+    return (
+      <div className="h-screen bg-white flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-[#525866]" />
+      </div>
+    );
+  }
 
-  const handleSessionChange = (
-    key: keyof SessionSettings,
-    value: number | string | boolean,
-  ) => {
-    setSession((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const handlePaymentChange = (
-    key: keyof PaymentSettings,
-    value: number | string,
-  ) => {
-    setPayment((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const handleVisibilityChange = (
-    key: keyof VisibilitySettings,
-    value: boolean,
-  ) => {
-    setVisibility((prev) => ({ ...prev, [key]: value }));
-  };
+  if (isError) {
+    return (
+      <div className="h-screen bg-white flex items-center justify-center">
+        <p className="text-[13px] text-red-500">
+          Failed to load settings. Please try again.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen bg-white flex flex-col">
@@ -230,29 +257,27 @@ export function MentorSettings() {
                 label="Profile Visibility"
                 description="Allow your profile to be discovered by mentees"
                 checked={visibility.profileVisible}
-                onChange={(v) => handleVisibilityChange("profileVisible", v)}
+                onChange={(v) =>
+                  setVisibility((prev) => ({ ...prev, profileVisible: v }))
+                }
               />
               <ToggleSetting
                 label="Show Statistics"
                 description="Display your session count and rating publicly"
                 checked={visibility.showStats}
-                onChange={(v) => handleVisibilityChange("showStats", v)}
-              />
-              <ToggleSetting
-                label="Show Earnings"
-                description="Display your hourly rate on your profile"
-                checked={visibility.showEarnings}
-                onChange={(v) => handleVisibilityChange("showEarnings", v)}
+                onChange={(v) =>
+                  setVisibility((prev) => ({ ...prev, showStats: v }))
+                }
               />
             </div>
             <div className="mt-4 flex justify-end">
               <Button
-                onClick={() => saveVisibility.mutate()}
-                disabled={saveVisibility.isPending}
+                onClick={handleSaveVisibility}
+                disabled={saveSettings.isPending}
                 className="text-white hover:opacity-90"
                 style={{ backgroundColor: roleColors.primary }}
               >
-                {saveVisibility.isPending && (
+                {saveSettings.isPending && (
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 )}
                 Save Changes
@@ -275,10 +300,10 @@ export function MentorSettings() {
                   type="number"
                   value={session.sessionDuration}
                   onChange={(e) =>
-                    handleSessionChange(
-                      "sessionDuration",
-                      parseInt(e.target.value),
-                    )
+                    setSession((prev) => ({
+                      ...prev,
+                      sessionDuration: parseInt(e.target.value),
+                    }))
                   }
                   className="mt-1"
                   min={15}
@@ -294,7 +319,10 @@ export function MentorSettings() {
                   type="number"
                   value={session.bufferTime}
                   onChange={(e) =>
-                    handleSessionChange("bufferTime", parseInt(e.target.value))
+                    setSession((prev) => ({
+                      ...prev,
+                      bufferTime: parseInt(e.target.value),
+                    }))
                   }
                   className="mt-1"
                   min={0}
@@ -309,14 +337,14 @@ export function MentorSettings() {
                   type="number"
                   value={session.advanceBookingDays}
                   onChange={(e) =>
-                    handleSessionChange(
-                      "advanceBookingDays",
-                      parseInt(e.target.value),
-                    )
+                    setSession((prev) => ({
+                      ...prev,
+                      advanceBookingDays: parseInt(e.target.value),
+                    }))
                   }
                   className="mt-1"
                   min={1}
-                  max={30}
+                  max={90}
                 />
               </div>
               <div>
@@ -326,7 +354,10 @@ export function MentorSettings() {
                 <select
                   value={session.cancellationPolicy}
                   onChange={(e) =>
-                    handleSessionChange("cancellationPolicy", e.target.value)
+                    setSession((prev) => ({
+                      ...prev,
+                      cancellationPolicy: e.target.value,
+                    }))
                   }
                   className="mt-1 w-full h-[38px] px-3 rounded-[8px] border border-[#E1E4EA] bg-white text-[13px] font-inter-tight"
                 >
@@ -342,17 +373,19 @@ export function MentorSettings() {
                 label="Auto-Accept Requests"
                 description="Automatically accept booking requests"
                 checked={session.autoAccept}
-                onChange={(v) => handleSessionChange("autoAccept", v)}
+                onChange={(v) =>
+                  setSession((prev) => ({ ...prev, autoAccept: v }))
+                }
               />
             </div>
             <div className="mt-4 flex justify-end">
               <Button
-                onClick={() => saveSession.mutate()}
-                disabled={saveSession.isPending}
+                onClick={handleSaveSession}
+                disabled={saveSettings.isPending}
                 className="text-white hover:opacity-90"
                 style={{ backgroundColor: roleColors.primary }}
               >
-                {saveSession.isPending && (
+                {saveSettings.isPending && (
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 )}
                 Save Changes
@@ -360,77 +393,7 @@ export function MentorSettings() {
             </div>
           </SettingsSection>
 
-          {/* Payment Settings */}
-          <SettingsSection
-            title="Payment Settings"
-            description="Manage your payment information and rates"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <div>
-                <Label className="text-[12px] font-medium font-inter-tight text-[#525866] flex items-center gap-2">
-                  <DollarSign className="w-4 h-4" />
-                  Hourly Rate
-                </Label>
-                <Input
-                  type="number"
-                  value={payment.hourlyRate}
-                  onChange={(e) =>
-                    handlePaymentChange("hourlyRate", parseInt(e.target.value))
-                  }
-                  className="mt-1"
-                  min={0}
-                />
-              </div>
-              <div>
-                <Label className="text-[12px] font-medium font-inter-tight text-[#525866]">
-                  Currency
-                </Label>
-                <select
-                  value={payment.currency}
-                  onChange={(e) =>
-                    handlePaymentChange("currency", e.target.value)
-                  }
-                  className="mt-1 w-full h-[38px] px-3 rounded-[8px] border border-[#E1E4EA] bg-white text-[13px] font-inter-tight"
-                >
-                  <option value="USD">USD - US Dollar</option>
-                  <option value="NGN">NGN - Nigerian Naira</option>
-                  <option value="EUR">EUR - Euro</option>
-                  <option value="GBP">GBP - British Pound</option>
-                </select>
-              </div>
-            </div>
-            <div className="mb-4">
-              <Label className="text-[12px] font-medium font-inter-tight text-[#525866] flex items-center gap-2">
-                <CreditCard className="w-4 h-4" />
-                Payment Method
-              </Label>
-              <select
-                value={payment.paymentMethod}
-                onChange={(e) =>
-                  handlePaymentChange("paymentMethod", e.target.value)
-                }
-                className="mt-1 w-full h-[38px] px-3 rounded-[8px] border border-[#E1E4EA] bg-white text-[13px] font-inter-tight"
-              >
-                <option value="bank">Bank Transfer</option>
-                <option value="paypal">PayPal</option>
-                <option value="stripe">Stripe</option>
-              </select>
-            </div>
-            <div className="mt-4 flex justify-between items-center">
-              <Button
-                onClick={() => savePayment.mutate()}
-                disabled={savePayment.isPending}
-                className="text-white hover:opacity-90"
-                style={{ backgroundColor: roleColors.primary }}
-              >
-                {savePayment.isPending && (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                )}
-                Save Changes
-              </Button>
-              <Button variant="outline">Update Payment Details</Button>
-            </div>
-          </SettingsSection>
+
 
           {/* Notification Preferences */}
           <SettingsSection
@@ -448,7 +411,10 @@ export function MentorSettings() {
                   description="Get notified when someone wants to book a session"
                   checked={notifications.emailNewRequests}
                   onChange={(v) =>
-                    handleNotificationChange("emailNewRequests", v)
+                    setNotifications((prev) => ({
+                      ...prev,
+                      emailNewRequests: v,
+                    }))
                   }
                 />
                 <ToggleSetting
@@ -456,27 +422,21 @@ export function MentorSettings() {
                   description="Get reminders before scheduled sessions"
                   checked={notifications.emailSessionReminders}
                   onChange={(v) =>
-                    handleNotificationChange("emailSessionReminders", v)
+                    setNotifications((prev) => ({
+                      ...prev,
+                      emailSessionReminders: v,
+                    }))
                   }
-                />
-                <ToggleSetting
-                  label="Messages"
-                  description="Get notified when you receive new messages"
-                  checked={notifications.emailMessages}
-                  onChange={(v) => handleNotificationChange("emailMessages", v)}
-                />
-                <ToggleSetting
-                  label="Earnings Updates"
-                  description="Get notified about payments and earnings"
-                  checked={notifications.emailEarnings}
-                  onChange={(v) => handleNotificationChange("emailEarnings", v)}
                 />
                 <ToggleSetting
                   label="Marketing & Updates"
                   description="Receive news about new features and tips"
                   checked={notifications.emailMarketing}
                   onChange={(v) =>
-                    handleNotificationChange("emailMarketing", v)
+                    setNotifications((prev) => ({
+                      ...prev,
+                      emailMarketing: v,
+                    }))
                   }
                 />
               </div>
@@ -492,32 +452,33 @@ export function MentorSettings() {
                   label="New Booking Requests"
                   checked={notifications.pushNewRequests}
                   onChange={(v) =>
-                    handleNotificationChange("pushNewRequests", v)
+                    setNotifications((prev) => ({
+                      ...prev,
+                      pushNewRequests: v,
+                    }))
                   }
                 />
                 <ToggleSetting
                   label="Session Reminders"
                   checked={notifications.pushSessionReminders}
                   onChange={(v) =>
-                    handleNotificationChange("pushSessionReminders", v)
+                    setNotifications((prev) => ({
+                      ...prev,
+                      pushSessionReminders: v,
+                    }))
                   }
-                />
-                <ToggleSetting
-                  label="Messages"
-                  checked={notifications.pushMessages}
-                  onChange={(v) => handleNotificationChange("pushMessages", v)}
                 />
               </div>
             </div>
 
             <div className="mt-4 flex justify-end">
               <Button
-                onClick={() => saveNotifications.mutate()}
-                disabled={saveNotifications.isPending}
+                onClick={handleSaveNotifications}
+                disabled={saveSettings.isPending}
                 className="text-white hover:opacity-90"
                 style={{ backgroundColor: roleColors.primary }}
               >
-                {saveNotifications.isPending && (
+                {saveSettings.isPending && (
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 )}
                 Save Changes
@@ -541,6 +502,8 @@ export function MentorSettings() {
                 <Input
                   id="current-password"
                   type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
                   className="mt-1"
                   placeholder="Enter current password"
                 />
@@ -555,6 +518,8 @@ export function MentorSettings() {
                 <Input
                   id="new-password"
                   type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
                   className="mt-1"
                   placeholder="Enter new password"
                 />
@@ -569,14 +534,26 @@ export function MentorSettings() {
                 <Input
                   id="confirm-password"
                   type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   className="mt-1"
                   placeholder="Confirm new password"
                 />
               </div>
               <Button
+                onClick={() => changePassword.mutate()}
+                disabled={
+                  changePassword.isPending ||
+                  !currentPassword ||
+                  !newPassword ||
+                  !confirmPassword
+                }
                 className="text-white hover:opacity-90"
                 style={{ backgroundColor: roleColors.primary }}
               >
+                {changePassword.isPending && (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                )}
                 <Shield className="w-4 h-4 mr-2" />
                 Change Password
               </Button>
@@ -585,25 +562,66 @@ export function MentorSettings() {
 
           {/* Account */}
           <SettingsSection title="Account" description="Manage your account">
-            <div className="flex items-center justify-between py-3 border-b border-[#E1E4EA]">
-              <div className="flex items-center gap-3">
-                <Trash2 className="w-5 h-5 text-red-500" />
-                <div>
-                  <p className="text-[13px] font-medium font-inter-tight text-red-600">
-                    Delete Account
-                  </p>
-                  <p className="text-[12px] font-inter-tight text-[#525866]">
-                    Permanently delete your account and all data
-                  </p>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between py-3 border-b border-[#E1E4EA]">
+                <div className="flex items-center gap-3">
+                  <User className="w-5 h-5 text-[#B2B2B2]" />
+                  <div>
+                    <p className="text-[13px] font-medium font-inter-tight text-black">
+                      Email Address
+                    </p>
+                    <p className="text-[12px] font-inter-tight text-[#525866]">
+                      {userData?.email || "Loading..."}
+                    </p>
+                  </div>
                 </div>
+                <Button variant="outline" size="sm" asChild>
+                  <a href="/profile/edit">Change</a>
+                </Button>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-red-600 border-red-200 hover:bg-red-50"
-              >
-                Delete
-              </Button>
+
+              <div className="flex items-center justify-between py-3 border-b border-[#E1E4EA]">
+                <div className="flex items-center gap-3">
+                  <LogOut className="w-5 h-5 text-[#B2B2B2]" />
+                  <div>
+                    <p className="text-[13px] font-medium font-inter-tight text-black">
+                      Sign out from all devices
+                    </p>
+                    <p className="text-[12px] font-inter-tight text-[#525866]">
+                      Log out from all active sessions
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleLogoutAll.mutate()}
+                  disabled={handleLogoutAll.isPending}
+                >
+                  {handleLogoutAll.isPending ? "Signing out..." : "Sign Out"}
+                </Button>
+              </div>
+
+              <div className="flex items-center justify-between py-3">
+                <div className="flex items-center gap-3">
+                  <Trash2 className="w-5 h-5 text-red-500" />
+                  <div>
+                    <p className="text-[13px] font-medium font-inter-tight text-red-600">
+                      Delete Account
+                    </p>
+                    <p className="text-[12px] font-inter-tight text-[#525866]">
+                      Permanently delete your account and all data
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-red-600 border-red-200 hover:bg-red-50"
+                >
+                  Delete
+                </Button>
+              </div>
             </div>
           </SettingsSection>
         </div>

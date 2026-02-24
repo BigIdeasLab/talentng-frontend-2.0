@@ -27,9 +27,8 @@ export interface MentorDashboardStats {
     value: number;
     trend: MentorDashboardStatTrend;
   };
-  totalEarnings: {
+  pendingRequests: {
     value: number;
-    currency: string;
     trend: MentorDashboardStatTrend;
   };
   averageRating: {
@@ -60,6 +59,7 @@ export interface MentorUpcomingSession {
   id: string;
   menteeName: string;
   menteeInitials: string;
+  menteeProfileImageUrl: string | null;
   topic: string;
   scheduledDate: string;
   scheduledTime: string;
@@ -70,6 +70,7 @@ export interface MentorMenteeProgress {
   id: string;
   name: string;
   initials: string;
+  profileImageUrl: string | null;
   course: string;
   progress: number;
 }

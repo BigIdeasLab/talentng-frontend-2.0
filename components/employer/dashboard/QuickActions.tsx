@@ -1,16 +1,16 @@
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Users, Briefcase, CheckCircle, UserCheck } from "lucide-react";
 
 interface ActionButtonProps {
   icon: React.ReactNode;
   label: string;
-  onClick?: () => void;
+  href: string;
 }
 
-function ActionButton({ icon, label, onClick }: ActionButtonProps) {
+function ActionButton({ icon, label, href }: ActionButtonProps) {
   return (
-    <button
-      onClick={onClick}
+    <Link
+      href={href}
       className="flex h-8 px-3.5 flex-col justify-center items-start gap-2 rounded-lg border border-[#E1E4EA] bg-white hover:bg-gray-50 transition-colors"
     >
       <div className="flex items-center gap-1">
@@ -19,12 +19,11 @@ function ActionButton({ icon, label, onClick }: ActionButtonProps) {
           {label}
         </span>
       </div>
-    </button>
+    </Link>
   );
 }
 
 export function QuickActions() {
-  const router = useRouter();
 
   return (
     <div className="flex flex-col md:flex-row w-full px-5 py-4 md:py-5 justify-between items-start md:items-center gap-3 rounded-lg bg-[#FFFDF5] flex-shrink-0">
@@ -46,7 +45,7 @@ export function QuickActions() {
             <Users className="w-3.5 h-3.5 text-[#525866]" strokeWidth={1.24} />
           }
           label="View Applicants"
-          onClick={() => router.push("/applicants")}
+          href="/applicants"
         />
         <ActionButton
           icon={
@@ -56,7 +55,7 @@ export function QuickActions() {
             />
           }
           label="Post Opportunity"
-          onClick={() => router.push("/opportunities/post")}
+          href="/opportunities/post"
         />
         <ActionButton
           icon={
@@ -66,7 +65,7 @@ export function QuickActions() {
             />
           }
           label="Hired Talents"
-          onClick={() => router.push("/applicants/hired-talents")}
+          href="/applicants/hired-talents"
         />
       </div>
     </div>

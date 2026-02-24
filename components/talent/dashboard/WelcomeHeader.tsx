@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
@@ -93,7 +94,10 @@ export function WelcomeHeader({
             this week!
           </p>
         </div>
-        <button className="flex h-[38px] px-4 justify-center items-center gap-1 rounded-lg bg-white hover:bg-gray-100 transition-colors group flex-shrink-0 w-fit">
+        <Link
+          href="/opportunities"
+          className="flex h-[38px] px-4 justify-center items-center gap-1 rounded-lg bg-white hover:bg-gray-100 transition-colors group flex-shrink-0 w-fit"
+        >
           <span
             className="font-inter-tight text-xs font-medium"
             style={{ color: ROLE_COLORS.talent.dark }}
@@ -104,7 +108,7 @@ export function WelcomeHeader({
             className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform"
             style={{ color: ROLE_COLORS.talent.dark }}
           />
-        </button>
+        </Link>
       </div>
     </div>
   );

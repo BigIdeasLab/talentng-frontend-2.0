@@ -9,6 +9,7 @@ import {
   Headphones,
   Settings,
   FileText,
+  Calendar,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -63,6 +64,12 @@ const getMenuItems = (notificationCount?: number): MenuItem[] => [
     icon: FileText,
     href: "/my-applications",
   },
+  {
+    id: "upcoming",
+    label: "Upcoming",
+    icon: Calendar,
+    href: "/upcoming",
+  },
 
   {
     id: "notification",
@@ -74,7 +81,7 @@ const getMenuItems = (notificationCount?: number): MenuItem[] => [
 ];
 
 const otherItems: Omit<MenuItem, "badge">[] = [
-  { id: "support", label: "Support", icon: Headphones },
+  { id: "support", label: "Support", icon: Headphones, href: "/support" },
   { id: "settings", label: "Settings", icon: Settings, href: "/settings" },
 ];
 

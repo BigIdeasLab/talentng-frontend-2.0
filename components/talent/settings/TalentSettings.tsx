@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Loader2,
   Bell,
@@ -17,42 +17,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
-
-interface NotificationSettings {
-  emailApplications: boolean;
-  emailInterviews: boolean;
-  emailMessages: boolean;
-  emailMarketing: boolean;
-  pushApplications: boolean;
-  pushInterviews: boolean;
-  pushMessages: boolean;
-}
-
-interface VisibilitySettings {
-  profileVisible: boolean;
-  showEmail: boolean;
-  showPhone: boolean;
-  showLocation: boolean;
-  allowRecruiters: boolean;
-}
-
-const defaultNotifications: NotificationSettings = {
-  emailApplications: true,
-  emailInterviews: true,
-  emailMessages: true,
-  emailMarketing: false,
-  pushApplications: true,
-  pushInterviews: true,
-  pushMessages: true,
-};
-
-const defaultVisibility: VisibilitySettings = {
-  profileVisible: true,
-  showEmail: false,
-  showPhone: false,
-  showLocation: true,
-  allowRecruiters: true,
-};
+import {
+  getTalentSettings,
+  updateTalentSettings,
+} from "@/lib/api/talent";
+import { getCurrentUser } from "@/lib/api/users";
+import { logoutAllDevices } from "@/lib/api/auth";
+import type { TalentSettings as TalentSettingsType } from "@/lib/api/talent/types";
 
 function SettingsSection({
   title,
@@ -108,35 +79,66 @@ function ToggleSetting({
 
 export function TalentSettings() {
   const roleColors = ROLE_COLORS.talent;
-  const [notifications, setNotifications] =
-    useState<NotificationSettings>(defaultNotifications);
-  const [visibility, setVisibility] =
-    useState<VisibilitySettings>(defaultVisibility);
+  const queryClient = useQueryClient();
+
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const saveNotifications = useMutation({
-    mutationFn: async (data: NotificationSettings) => {
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      return { success: true };
-    },
-    onSuccess: () => toast.success("Notification settings saved"),
-    onError: () => toast.error("Failed to save settings"),
+  // Fetch settings from the real API
+  const {
+    data: settings,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["talentSettings"],
+    queryFn: getTalentSettings,
   });
 
-  const saveVisibility = useMutation({
-    mutationFn: async (data: VisibilitySettings) => {
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      return { success: true };
+  // Fetch real user data for email
+  const { data: userData } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: getCurrentUser,
+  });
+
+  // Local state — initialized from API data once loaded
+  const [visibility, setVisibility] = useState({ profileVisible: true });
+  const [notifications, setNotifications] = useState({
+    emailApplications: true,
+    emailInterviews: true,
+    emailMarketing: false,
+    pushApplications: true,
+    pushInterviews: true,
+  });
+
+  // Sync from API on load
+  useEffect(() => {
+    if (settings) {
+      setVisibility({ profileVisible: settings.profileVisible });
+      setNotifications({
+        emailApplications: settings.emailApplications,
+        emailInterviews: settings.emailInterviews,
+        emailMarketing: settings.emailMarketing,
+        pushApplications: settings.pushApplications,
+        pushInterviews: settings.pushInterviews,
+      });
+    }
+  }, [settings]);
+
+  const saveSettings = useMutation({
+    mutationFn: (data: Partial<TalentSettingsType>) =>
+      updateTalentSettings(data),
+    onSuccess: () => {
+      toast.success("Settings saved");
+      queryClient.invalidateQueries({ queryKey: ["talentSettings"] });
     },
-    onSuccess: () => toast.success("Visibility settings saved"),
     onError: () => toast.error("Failed to save settings"),
   });
 
   const changePassword = useMutation({
     mutationFn: async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Mocking password change as no endpoint exists yet
+      await new Promise((resolve) => setTimeout(resolve, 800));
       if (newPassword !== confirmPassword)
         throw new Error("Passwords don't match");
       return { success: true };
@@ -147,23 +149,37 @@ export function TalentSettings() {
       setNewPassword("");
       setConfirmPassword("");
     },
-    onError: (error) =>
+    onError: (error: any) =>
       toast.error(error.message || "Failed to change password"),
   });
 
-  const handleNotificationChange = (
-    key: keyof NotificationSettings,
-    value: boolean,
-  ) => {
-    setNotifications((prev) => ({ ...prev, [key]: value }));
-  };
+  const handleLogoutAll = useMutation({
+    mutationFn: logoutAllDevices,
+    onSuccess: () => {
+      toast.success("Logged out from all devices");
+      // Redirect or reload
+      window.location.href = "/login";
+    },
+    onError: () => toast.error("Failed to sign out from all devices"),
+  });
 
-  const handleVisibilityChange = (
-    key: keyof VisibilitySettings,
-    value: boolean,
-  ) => {
-    setVisibility((prev) => ({ ...prev, [key]: value }));
-  };
+  if (isLoading) {
+    return (
+      <div className="h-screen bg-white flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-[#525866]" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="h-screen bg-white flex items-center justify-center">
+        <p className="text-[13px] text-red-500">
+          Failed to load settings. Please try again.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen bg-white flex flex-col">
@@ -188,41 +204,17 @@ export function TalentSettings() {
                 label="Profile Visibility"
                 description="Allow your profile to be discovered by recruiters"
                 checked={visibility.profileVisible}
-                onChange={(v) => handleVisibilityChange("profileVisible", v)}
-              />
-              <ToggleSetting
-                label="Show Email"
-                description="Display your email address on your profile"
-                checked={visibility.showEmail}
-                onChange={(v) => handleVisibilityChange("showEmail", v)}
-              />
-              <ToggleSetting
-                label="Show Phone Number"
-                description="Display your phone number on your profile"
-                checked={visibility.showPhone}
-                onChange={(v) => handleVisibilityChange("showPhone", v)}
-              />
-              <ToggleSetting
-                label="Show Location"
-                description="Display your location on your profile"
-                checked={visibility.showLocation}
-                onChange={(v) => handleVisibilityChange("showLocation", v)}
-              />
-              <ToggleSetting
-                label="Allow Recruiters to Contact"
-                description="Let recruiters reach out to you with opportunities"
-                checked={visibility.allowRecruiters}
-                onChange={(v) => handleVisibilityChange("allowRecruiters", v)}
+                onChange={(v) => setVisibility({ profileVisible: v })}
               />
             </div>
             <div className="mt-4 flex justify-end">
               <Button
-                onClick={() => saveVisibility.mutate(visibility)}
-                disabled={saveVisibility.isPending}
+                onClick={() => saveSettings.mutate({ profileVisible: visibility.profileVisible })}
+                disabled={saveSettings.isPending}
                 className="text-white hover:opacity-90"
                 style={{ backgroundColor: roleColors.primary }}
               >
-                {saveVisibility.isPending && (
+                {saveSettings.isPending && (
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 )}
                 Save Changes
@@ -246,7 +238,7 @@ export function TalentSettings() {
                   description="Get notified when employers view or respond to your applications"
                   checked={notifications.emailApplications}
                   onChange={(v) =>
-                    handleNotificationChange("emailApplications", v)
+                    setNotifications((prev) => ({ ...prev, emailApplications: v }))
                   }
                 />
                 <ToggleSetting
@@ -254,21 +246,15 @@ export function TalentSettings() {
                   description="Get notified when you're invited for an interview"
                   checked={notifications.emailInterviews}
                   onChange={(v) =>
-                    handleNotificationChange("emailInterviews", v)
+                    setNotifications((prev) => ({ ...prev, emailInterviews: v }))
                   }
-                />
-                <ToggleSetting
-                  label="Messages"
-                  description="Get notified when you receive new messages"
-                  checked={notifications.emailMessages}
-                  onChange={(v) => handleNotificationChange("emailMessages", v)}
                 />
                 <ToggleSetting
                   label="Marketing & Updates"
                   description="Receive news about new features and opportunities"
                   checked={notifications.emailMarketing}
                   onChange={(v) =>
-                    handleNotificationChange("emailMarketing", v)
+                    setNotifications((prev) => ({ ...prev, emailMarketing: v }))
                   }
                 />
               </div>
@@ -284,32 +270,27 @@ export function TalentSettings() {
                   label="Application Updates"
                   checked={notifications.pushApplications}
                   onChange={(v) =>
-                    handleNotificationChange("pushApplications", v)
+                    setNotifications((prev) => ({ ...prev, pushApplications: v }))
                   }
                 />
                 <ToggleSetting
                   label="Interview Invitations"
                   checked={notifications.pushInterviews}
                   onChange={(v) =>
-                    handleNotificationChange("pushInterviews", v)
+                    setNotifications((prev) => ({ ...prev, pushInterviews: v }))
                   }
-                />
-                <ToggleSetting
-                  label="Messages"
-                  checked={notifications.pushMessages}
-                  onChange={(v) => handleNotificationChange("pushMessages", v)}
                 />
               </div>
             </div>
 
             <div className="mt-4 flex justify-end">
               <Button
-                onClick={() => saveNotifications.mutate(notifications)}
-                disabled={saveNotifications.isPending}
+                onClick={() => saveSettings.mutate(notifications)}
+                disabled={saveSettings.isPending}
                 className="text-white hover:opacity-90"
                 style={{ backgroundColor: roleColors.primary }}
               >
-                {saveNotifications.isPending && (
+                {saveSettings.isPending && (
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 )}
                 Save Changes
@@ -405,12 +386,12 @@ export function TalentSettings() {
                       Email Address
                     </p>
                     <p className="text-[12px] font-inter-tight text-[#525866]">
-                      your.email@example.com
+                      {userData?.email || "Loading..."}
                     </p>
                   </div>
                 </div>
-                <Button variant="outline" size="sm">
-                  Change
+                <Button variant="outline" size="sm" asChild>
+                  <a href="/profile/edit">Change</a>
                 </Button>
               </div>
 
@@ -426,8 +407,13 @@ export function TalentSettings() {
                     </p>
                   </div>
                 </div>
-                <Button variant="outline" size="sm">
-                  Sign Out
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleLogoutAll.mutate()}
+                  disabled={handleLogoutAll.isPending}
+                >
+                  {handleLogoutAll.isPending ? "Signing out..." : "Sign Out"}
                 </Button>
               </div>
 

@@ -95,6 +95,7 @@ export function EmployerDashboard() {
           gradient="bg-gradient-to-br from-[#F59E0B]/8 to-white"
           iconBg="bg-[#FEF3C7]"
           iconColor="text-[#D97706]"
+          href="/applicants"
           change={{
             value: formatChange(data?.totalApplicants?.change ?? 0, true),
             type:
@@ -110,6 +111,7 @@ export function EmployerDashboard() {
           gradient="bg-gradient-to-br from-[#008B47]/8 to-white"
           iconBg="bg-[#D1FAE5]"
           iconColor="text-[#008B47]"
+          href="/opportunities"
           change={{
             value: formatChange(data?.activeOpportunities?.change ?? 0, false),
             type:
@@ -125,6 +127,7 @@ export function EmployerDashboard() {
           gradient="bg-gradient-to-br from-[#2463EB]/8 to-white"
           iconBg="bg-[#DBE9FE]"
           iconColor="text-[#2463EB]"
+          href="/applicants/hired-talents"
           change={{
             value: formatChange(data?.hiredThisMonth?.change ?? 0, true),
             type:
@@ -140,6 +143,7 @@ export function EmployerDashboard() {
           gradient="bg-gradient-to-br from-[#FCE7F3] to-white"
           iconBg="bg-[#FCE7F3]"
           iconColor="text-[#DB2777]"
+          href="/applicants"
           change={{
             value: formatChange(data?.pendingReviews?.change ?? 0, false),
             type:

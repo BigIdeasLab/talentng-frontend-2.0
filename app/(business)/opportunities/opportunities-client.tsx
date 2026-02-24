@@ -76,6 +76,7 @@ export function OpportunitiesClient({
       const filter = filterType ?? activeFilter;
 
       try {
+        // Fetch results with the applied filters
         const {
           opportunities: newOpportunities,
           pagination: newPagination,
@@ -85,6 +86,9 @@ export function OpportunitiesClient({
           limit: LIMIT,
           offset: pageOffset,
           type: filter === "all" || filter === "applied" ? undefined : filter,
+          category: appliedFilters?.categories?.join(","),
+          skills: appliedFilters?.skills?.join(","),
+          location: appliedFilters?.location,
         });
 
         // Filter by "applied" status if that's the active filter (based on current profile type)

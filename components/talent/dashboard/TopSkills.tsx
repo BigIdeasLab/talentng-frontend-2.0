@@ -1,4 +1,5 @@
 import { Zap, Heart } from "lucide-react";
+import Link from "next/link";
 import type { TopSkill } from "@/lib/api/talent";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { cardHover } from "@/lib/theme/effects";
@@ -53,9 +54,9 @@ export function TopSkills({ skills }: TopSkillsProps) {
             Top Skills
           </h2>
         </div>
-        <button className="px-2 py-1.5 rounded-md border border-gray-200 text-[12px] font-inter-tight text-black hover:bg-gray-50 transition-colors">
+        <Link href="/profile/edit?section=professional" className="px-2 py-1.5 rounded-md border border-gray-200 text-[12px] font-inter-tight text-black hover:bg-gray-50 transition-colors">
           Add Skills
-        </button>
+        </Link>
       </div>
       {skills.length === 0 ? (
         <p className="text-[12px] text-[#606060] font-inter-tight text-center py-6">

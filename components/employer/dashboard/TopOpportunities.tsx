@@ -1,7 +1,9 @@
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ArrowUpRight, Briefcase, Users } from "lucide-react";
 
 interface OpportunityItemProps {
+  id: string;
   title: string;
   applicants: number;
   status: "active" | "closed" | "draft";
@@ -13,17 +15,25 @@ const statusConfig = {
   draft: { bg: "bg-[#F3F4F6]", text: "text-[#606060]", label: "Draft" },
 };
 
-function OpportunityItem({ title, applicants, status }: OpportunityItemProps) {
+function OpportunityItem({
+  id,
+  title,
+  applicants,
+  status,
+}: OpportunityItemProps) {
   const config = statusConfig[status];
 
   return (
-    <div className="flex h-auto md:h-[50px] px-2.5 py-3 md:py-0 justify-between items-center self-stretch rounded-lg bg-[#FCFCFD]">
+    <Link
+      href={`/opportunities/${id}`}
+      className="flex h-auto md:h-[50px] px-2.5 py-3 md:py-0 justify-between items-center self-stretch rounded-lg bg-[#FCFCFD] hover:bg-[#F3F4F6] transition-colors group"
+    >
       <div className="flex items-center gap-3">
         <div className="flex w-7 h-7 p-1 justify-center items-center rounded-lg bg-[#D1FAE5] flex-shrink-0">
           <Briefcase className="w-3.5 h-3.5 text-[#0D9F5C]" strokeWidth={1.6} />
         </div>
         <div className="flex flex-col items-start gap-1.5">
-          <h3 className="font-inter-tight text-[13px] font-normal text-black">
+          <h3 className="font-inter-tight text-[13px] font-normal text-black group-hover:text-[#0D9F5C] transition-colors">
             {title}
           </h3>
           <div className="flex items-center gap-1">
@@ -43,7 +53,7 @@ function OpportunityItem({ title, applicants, status }: OpportunityItemProps) {
           {config.label}
         </span>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -86,6 +96,7 @@ export function TopOpportunities({ data }: TopOpportunitiesProps) {
         {(data ?? []).map((opportunity) => (
           <OpportunityItem
             key={opportunity.id}
+            id={opportunity.id}
             title={opportunity.title}
             applicants={opportunity.applicants}
             status={opportunity.status}

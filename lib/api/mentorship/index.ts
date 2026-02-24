@@ -208,7 +208,41 @@ export async function createRequest(
 }
 
 /**
- * List mentorship requests
+ * List mentorship requests for a talent (sent requests)
+ * GET /talent/mentorship-requests
+ */
+export async function getTalentMentorshipRequests(
+  params?: Omit<RequestsQueryParams, "role">,
+): Promise<PaginatedResponse<MentorshipRequest>> {
+  const queryParams = new URLSearchParams();
+  if (params?.status) queryParams.append("status", params.status);
+  if (params?.page) queryParams.append("page", params.page.toString());
+  if (params?.limit) queryParams.append("limit", params.limit.toString());
+
+  const queryString = queryParams.toString();
+  const endpoint = `/talent/mentorship-requests${queryString ? `?${queryString}` : ""}`;
+  return apiClient<PaginatedResponse<MentorshipRequest>>(endpoint);
+}
+
+/**
+ * List mentorship requests for a mentor (received requests)
+ * GET /mentor/mentorship-requests
+ */
+export async function getMentorMentorshipRequests(
+  params?: Omit<RequestsQueryParams, "role">,
+): Promise<PaginatedResponse<MentorshipRequest>> {
+  const queryParams = new URLSearchParams();
+  if (params?.status) queryParams.append("status", params.status);
+  if (params?.page) queryParams.append("page", params.page.toString());
+  if (params?.limit) queryParams.append("limit", params.limit.toString());
+
+  const queryString = queryParams.toString();
+  const endpoint = `/mentor/mentorship-requests${queryString ? `?${queryString}` : ""}`;
+  return apiClient<PaginatedResponse<MentorshipRequest>>(endpoint);
+}
+
+/**
+ * List mentorship requests (Generic/Legacy)
  * GET /requests
  */
 export async function getRequests(

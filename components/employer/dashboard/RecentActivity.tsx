@@ -1,4 +1,5 @@
 import { Users, Calendar, Activity } from "lucide-react";
+import Link from "next/link";
 
 interface ActivityItemProps {
   message: string;
@@ -12,11 +13,13 @@ function ActivityItem({ message, timeAgo, type }: ActivityItemProps) {
       icon: Users,
       bgColor: "bg-[#ECFDF5]",
       iconColor: "text-[#0D9F5C]",
+      link: "/applicants",
     },
     interview: {
       icon: Calendar,
       bgColor: "bg-[#E6F2FF]",
       iconColor: "text-[#3D82F6]",
+      link: "/sessions",
     },
   };
 
@@ -24,21 +27,24 @@ function ActivityItem({ message, timeAgo, type }: ActivityItemProps) {
   const Icon = config.icon;
 
   return (
-    <div className="flex items-start gap-2.5 self-stretch pb-3 border-b border-gray-200 last:border-0 last:pb-0">
+    <Link
+      href={config.link}
+      className="flex items-start gap-2.5 self-stretch pb-3 border-b border-gray-200 last:border-0 last:pb-0 hover:bg-gray-50 transition-colors group"
+    >
       <div
         className={`flex w-6 h-6 p-1 justify-center items-center rounded-full ${config.bgColor} flex-shrink-0`}
       >
         <Icon className={`w-3.5 h-3.5 ${config.iconColor}`} strokeWidth={2} />
       </div>
       <div className="flex flex-col items-start gap-1.5 flex-1 min-w-0">
-        <p className="font-inter-tight text-xs font-normal text-[#525866] self-stretch break-words">
+        <p className="font-inter-tight text-xs font-normal text-[#525866] self-stretch break-words group-hover:text-black transition-colors">
           {message}
         </p>
         <span className="font-inter-tight text-[11px] font-normal text-[#525866]">
           {timeAgo}
         </span>
       </div>
-    </div>
+    </Link>
   );
 }
 

@@ -66,17 +66,16 @@ To access recruiter data, the user must switch their active role first (see Sect
 
 The following old generic endpoints have been marked as deprecated in OpenAPI/Swagger and should be replaced with their Role-Prefixed equivalents. They will be fully removed 90 days after announcement.
 
-| Old Endpoint                          | Replace With                       | Reason                                                    |
-| :------------------------------------ | :--------------------------------- | :-------------------------------------------------------- |
-| `POST /opportunities`                 | `POST /recruiter/opportunities`    | Creation should be explicitly tied to the Recruiter role. |
-| `GET /opportunities/saved`            | `GET /talent/opportunities/saved`  | Viewing saved jobs is a Talent-specific action.           |
-| `POST /applications/invitations/send` | `POST /recruiter/invitations/send` | Sending invites is a Recruiter action.                    |
-| `GET /applications/invitations/sent`  | `GET /recruiter/invitations/sent`  | Viewing sent invites is a Recruiter action.               |
+| Old Endpoint | Replace With | Reason |
+|:---|:---|:---|
+| `POST /opportunities` | `POST /recruiter/opportunities` | Creation should be explicitly tied to the Recruiter role. |
+| `GET /opportunities/saved` | `GET /talent/opportunities/saved` | Viewing saved jobs is a Talent-specific action. |
+| `POST /applications/invitations/send` | `POST /recruiter/invitations/send` | Sending invites is a Recruiter action. |
+| `GET /applications/invitations/sent` | `GET /recruiter/invitations/sent` | Viewing sent invites is a Recruiter action. |
 
 ### 3.2 Strict Scope-Based Filtering
 
 Shared resource endpoints like `GET /applications/:id` and `PATCH /applications/:id` now require strict ownership checks:
-
 - A `talent` can only interact with applications they submitted.
 - A `recruiter` can only interact with applications attached to opportunities they posted.
 - Accessing an entity you don't own returns `403 Forbidden`.
@@ -84,7 +83,6 @@ Shared resource endpoints like `GET /applications/:id` and `PATCH /applications/
 ### 3.3 Admin Endpoints - Stricter Access
 
 Admin endpoints now require:
-
 1. User must have 'admin' in their roles array
 2. User's active role must be 'admin' (unless they are explicitly bypassing with special tools)
 
@@ -95,49 +93,44 @@ Admin endpoints now require:
 We have implemented the `{role}/{resource}` pattern across the board. Below are the mappings of old paths to new paths.
 
 ### 4.1 Backward-Compatible Aliases (Profile)
-
 You can begin migrating these immediately. The old `/me` paths will remain working for 90 days.
 
-| Old Endpoint    | New Endpoint         | Method     |
-| :-------------- | :------------------- | :--------- |
-| `/talent/me`    | `/talent/profile`    | GET, PATCH |
+| Old Endpoint | New Endpoint | Method |
+|:---|:---|:---|
+| `/talent/me` | `/talent/profile` | GET, PATCH |
 | `/recruiter/me` | `/recruiter/profile` | GET, PATCH |
-| `/mentor/me`    | `/mentor/profile`    | GET, PATCH |
+| `/mentor/me` | `/mentor/profile` | GET, PATCH |
 
 ### 4.2 New Role-Prefixed Endpoints (Phase 1 Implementations)
 
 These endpoints explicitly tie resources to the active role of the caller.
 
 #### Talent Endpoints (Requires `talent` active role)
-
-| New Endpoint                  | Method | Purpose                                                       |
-| :---------------------------- | :----- | :------------------------------------------------------------ |
-| `/talent/applications`        | GET    | List applications submitted by the talent.                    |
-| `/talent/opportunities`       | GET    | Browse all active opportunities.                              |
-| `/talent/opportunities/saved` | GET    | List opportunities saved by the talent.                       |
-| `/talent/sessions`            | GET    | List the talent's mentorship sessions (where role is mentee). |
+| New Endpoint | Method | Purpose |
+|:---|:---|:---|
+| `/talent/applications` | GET | List applications submitted by the talent. |
+| `/talent/opportunities` | GET | Browse all active opportunities. |
+| `/talent/opportunities/saved`| GET | List opportunities saved by the talent. |
+| `/talent/sessions` | GET | List the talent's mentorship sessions (where role is mentee).|
 
 #### Recruiter Endpoints (Requires `recruiter` active role)
-
-| New Endpoint                  | Method | Purpose                                                     |
-| :---------------------------- | :----- | :---------------------------------------------------------- |
-| `/recruiter/opportunities`    | GET    | List opportunities posted by the recruiter.                 |
-| `/recruiter/applications`     | GET    | List applications for the recruiter's posted opportunities. |
-| `/recruiter/invitations/sent` | GET    | List invitations sent by the recruiter.                     |
-| `/recruiter/invitations/send` | POST   | Send invitations to talents.                                |
+| New Endpoint | Method | Purpose |
+|:---|:---|:---|
+| `/recruiter/opportunities` | GET | List opportunities posted by the recruiter. |
+| `/recruiter/applications` | GET | List applications for the recruiter's posted opportunities. |
+| `/recruiter/invitations/sent`| GET | List invitations sent by the recruiter. |
+| `/recruiter/invitations/send`| POST | Send invitations to talents. |
 
 #### Mentor Endpoints (Requires `mentor` active role)
-
-| New Endpoint       | Method | Purpose                                                   |
-| :----------------- | :----- | :-------------------------------------------------------- |
-| `/mentor/sessions` | GET    | List the mentor's booked sessions (where role is mentor). |
+| New Endpoint | Method | Purpose |
+|:---|:---|:---|
+| `/mentor/sessions` | GET | List the mentor's booked sessions (where role is mentor).|
 
 #### Admin Endpoints (Requires `admin` active role)
-
-| New Endpoint           | Method | Purpose                                            |
-| :--------------------- | :----- | :------------------------------------------------- |
-| `/admin/opportunities` | GET    | List all opportunities (unrestricted system-wide). |
-| `/admin/applications`  | GET    | List all applications (unrestricted system-wide).  |
+| New Endpoint | Method | Purpose |
+|:---|:---|:---|
+| `/admin/opportunities` | GET | List all opportunities (unrestricted system-wide). |
+| `/admin/applications` | GET | List all applications (unrestricted system-wide). |
 
 ---
 
@@ -145,13 +138,13 @@ These endpoints explicitly tie resources to the active role of the caller.
 
 Public access endpoints (those that don't require Authentication) have been standardized to use **plural nouns**. Use these for SEO pages and unauthenticated browsing.
 
-| Endpoint           | Method | Auth Required | Purpose                                                       |
-| :----------------- | :----- | :------------ | :------------------------------------------------------------ |
-| `/talents`         | GET    | No            | Browse public talent profiles (previously nested or missing). |
-| `/talents/:userId` | GET    | No            | View a specific public talent profile.                        |
-| `/recruiters/:id`  | GET    | No            | View a specific public recruiter profile.                     |
-| `/mentors`         | GET    | No            | Browse public mentor profiles.                                |
-| `/mentors/:id`     | GET    | No            | View a specific public mentor profile.                        |
+| Endpoint | Method | Auth Required | Purpose |
+|:---|:---|:---|:---|
+| `/talents` | GET | No | Browse public talent profiles (previously nested or missing). |
+| `/talents/:userId` | GET | No | View a specific public talent profile. |
+| `/recruiters/:id` | GET | No | View a specific public recruiter profile. |
+| `/mentors` | GET | No | Browse public mentor profiles. |
+| `/mentors/:id` | GET | No | View a specific public mentor profile. |
 
 > Note: Accessing private user scopes unauthenticated will return `404 Not Found` (to prevent information leakage) rather than `401 Unauthorized`.
 
@@ -165,20 +158,20 @@ Public access endpoints (those that don't require Authentication) have been stan
 // Current token has activeRole: 'talent'
 // User wants to access recruiter data
 
-const response = await fetch("/auth/switch-role", {
-  method: "POST",
+const response = await fetch('/auth/switch-role', {
+  method: 'POST',
   headers: {
     Authorization: `Bearer ${currentToken}`,
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
-  body: JSON.stringify({ role: "recruiter" }),
+  body: JSON.stringify({ role: 'recruiter' }),
 });
 
 const { accessToken, activeRole } = await response.json();
 
 // Store new token and use for subsequent requests
-localStorage.setItem("accessToken", accessToken);
-localStorage.setItem("activeRole", activeRole);
+localStorage.setItem('accessToken', accessToken);
+localStorage.setItem('activeRole', activeRole);
 ```
 
 ### 6.2 Frontend State Management
@@ -212,19 +205,19 @@ const authState = {
 ```javascript
 // Handle role-based access errors
 try {
-  const response = await fetch("/api/recruiter/applications", {
+  const response = await fetch('/api/recruiter/applications', {
     headers: { Authorization: `Bearer ${token}` },
   });
 
   if (response.status === 403) {
     const error = await response.json();
-    if (error.message.includes("active role")) {
+    if (error.message.includes('active role')) {
       // Prompt user to switch roles
       showRoleSwitchModal();
     }
   }
 } catch (error) {
-  console.error("API Error:", error);
+  console.error('API Error:', error);
 }
 ```
 
@@ -238,15 +231,15 @@ try {
 // Using new role-based access
 async function getTalentProfile() {
   // Ensure user has talent active role
-  const currentRole = localStorage.getItem("activeRole");
+  const currentRole = localStorage.getItem('activeRole');
 
-  if (currentRole !== "talent") {
+  if (currentRole !== 'talent') {
     // Switch to talent first
-    await api.switchRole("talent");
+    await api.switchRole('talent');
   }
 
   // Use the new Alias
-  return api.get<TalentProfile>("/talent/profile");
+  return api.get<TalentProfile>('/talent/profile');
 }
 ```
 
@@ -254,16 +247,16 @@ async function getTalentProfile() {
 
 ```typescript
 async function inviteTalentToJob(opportunityId: string, talentIds: string[]) {
-  const currentRole = localStorage.getItem("activeRole");
+  const currentRole = localStorage.getItem('activeRole');
 
-  if (currentRole !== "recruiter") {
-    await api.switchRole("recruiter");
+  if (currentRole !== 'recruiter') {
+    await api.switchRole('recruiter');
   }
 
   // Use the new Role-Prefixed invitation endpoint
-  return api.post("/recruiter/invitations/send", {
+  return api.post('/recruiter/invitations/send', {
     opportunityId,
-    talentIds,
+    talentIds
   });
 }
 ```
@@ -280,26 +273,25 @@ Instead of a single "God Hook" (`useOpportunities`) that has to manage condition
 // 🧑‍💻 For the Talent App / Context
 export function useTalentOpportunities(filters) {
   return useQuery({
-    queryKey: ["opportunities", "talent", filters],
-    queryFn: () => api.get("/talent/opportunities", { params: filters }),
+    queryKey: ['opportunities', 'talent', filters],
+    queryFn: () => api.get('/talent/opportunities', { params: filters }),
     // Only fetch if the user is currently acting as a talent
-    enabled: currentRole === "talent",
+    enabled: currentRole === 'talent'
   });
 }
 
 // 🏢 For the Recruiter App / Context
 export function useRecruiterOpportunities(filters) {
   return useQuery({
-    queryKey: ["opportunities", "recruiter", filters],
-    queryFn: () => api.get("/recruiter/opportunities", { params: filters }),
+    queryKey: ['opportunities', 'recruiter', filters],
+    queryFn: () => api.get('/recruiter/opportunities', { params: filters }),
     // Only fetch if the user is currently acting as a recruiter
-    enabled: currentRole === "recruiter",
+    enabled: currentRole === 'recruiter'
   });
 }
 ```
 
 **Why this is better:**
-
 1. **Separation of Concerns:** The Talent view of an opportunity is fundamentally different from a Recruiter's view (Recruiters see applicant counts, Talents see application status). Splitting the hooks allows you to tightly strictly type the expected responses (`TalentOpportunityDto` vs `RecruiterOpportunityDto`).
 2. **Simplified Invalidation:** When a recruiter posts a new job, you only invalidate the `['opportunities', 'recruiter']` cache.
 3. **Cleaner Components:** Your UI components (e.g., `RecruiterJobDashboard`) can directly call `useRecruiterOpportunities()` without passing down role conditions.
@@ -309,3 +301,396 @@ export function useRecruiterOpportunities(filters) {
 **Document Version**: 2.0
 **API Version**: v2 (Standardized)
 **Deprecation Date**: TBD (90 days from announcement)
+
+---
+
+## 9. Settings API
+
+> All settings endpoints require a valid `Authorization: Bearer <accessToken>` header and the user's **active role** must match the endpoint's role prefix. Settings are stored directly on the role's profile model — there is no separate settings table.
+
+### Status — All Endpoints Live ✅
+
+| Role | GET | PATCH | Status |
+|------|-----|-------|--------|
+| Talent | `GET /talent/settings` | `PATCH /talent/settings` | ✅ **Live** — ready to wire up |
+| Mentor | `GET /mentor/settings` | `PATCH /mentor/settings` | ✅ **Live** |
+| Recruiter | `GET /recruiter/settings` | `PATCH /recruiter/settings` | ✅ **Live** |
+
+> **Talent Settings** were previously mock-only on the frontend. The backend endpoints are now fully implemented and wired to the database. You can drop in the React Query hooks below to replace all mock mutations.
+
+---
+
+### 9.1 Talent Settings
+
+#### Endpoints
+
+| Method | URL | Auth |
+|--------|-----|------|
+| `GET` | `/talent/settings` | Bearer, active role = `talent` |
+| `PATCH` | `/talent/settings` | Bearer, active role = `talent` |
+
+#### Response Shape (`GET /talent/settings`)
+
+```json
+{
+  "profileVisible": true,
+  "emailApplications": true,
+  "emailInterviews": true,
+  "emailMarketing": false,
+  "pushApplications": true,
+  "pushInterviews": true
+}
+```
+
+> **Never returns 404.** If the talent profile has not been created yet, the endpoint returns safe defaults instead of an error — no error handling needed for the `GET`.
+
+> **Implementation note:** The settings fields (`profileVisible`, `emailApplications`, etc.) are read directly from the raw database row via an internal `getTalentProfileRaw()` method, bypassing the `formatTalentProfile()` transform which is scoped to display data only.
+
+#### Request Shape (`PATCH /talent/settings`)
+
+All fields are **optional** — send only what you want to update.
+
+```json
+{
+  "profileVisible": false,
+  "emailApplications": true,
+  "emailInterviews": false,
+  "emailMarketing": true,
+  "pushApplications": true,
+  "pushInterviews": false
+}
+```
+
+#### TypeScript Interface
+
+```typescript
+interface TalentSettings {
+  // Visibility
+  profileVisible: boolean;        // Is profile public?
+
+  // Email Notifications
+  emailApplications: boolean;     // Application status updates
+  emailInterviews: boolean;       // Interview invitations
+  emailMarketing: boolean;        // Marketing & feature announcements
+
+  // Push Notifications
+  pushApplications: boolean;      // Application status updates
+  pushInterviews: boolean;        // Interview invitations
+}
+```
+
+#### React Query Example
+
+```typescript
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '@/lib/api'; // your axios/fetch wrapper
+
+// GET
+export function useTalentSettings() {
+  return useQuery({
+    queryKey: ['talent', 'settings'],
+    queryFn: () => api.get<TalentSettings>('/talent/settings').then(r => r.data),
+  });
+}
+
+// PATCH
+export function useUpdateTalentSettings() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (dto: Partial<TalentSettings>) =>
+      api.patch('/talent/settings', dto).then(r => r.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['talent', 'settings'] });
+    },
+  });
+}
+```
+
+---
+
+### 9.2 Mentor Settings
+
+#### Endpoints
+
+| Method | URL | Auth |
+|--------|-----|------|
+| `GET` | `/mentor/settings` | Bearer, active role = `mentor` |
+| `PATCH` | `/mentor/settings` | Bearer, active role = `mentor` |
+
+#### Response Shape (`GET /mentor/settings`)
+
+```json
+{
+  "sessionDuration": 60,
+  "bufferTime": 15,
+  "advanceBookingDays": 14,
+  "cancellationPolicy": "24hours",
+  "autoAccept": false,
+  "visibility": "public",
+  "showStats": true,
+  "emailNewRequests": true,
+  "emailSessionReminders": true,
+  "emailMarketing": false,
+  "pushNewRequests": true,
+  "pushSessionReminders": true
+}
+```
+
+#### Request Shape (`PATCH /mentor/settings`)
+
+All fields are **optional**.
+
+```json
+{
+  "sessionDuration": 60,
+  "bufferTime": 15,
+  "advanceBookingDays": 14,
+  "cancellationPolicy": "24hours",
+  "autoAccept": false,
+  "visibility": "public",
+  "showStats": true,
+  "emailNewRequests": true,
+  "emailSessionReminders": true,
+  "emailMarketing": false,
+  "pushNewRequests": true,
+  "pushSessionReminders": true
+}
+```
+
+#### TypeScript Interface
+
+```typescript
+type CancellationPolicy = '24hours' | '12hours' | '6hours' | 'no-policy';
+type ProfileVisibility = 'public' | 'private';
+
+interface MentorSettings {
+  // Session Configuration
+  sessionDuration: 30 | 60 | 90 | 120;    // Minutes per session
+  bufferTime: 0 | 15 | 30 | 45;           // Buffer between sessions (minutes)
+  advanceBookingDays: number;              // 1–90 days
+  cancellationPolicy: CancellationPolicy;
+  autoAccept: boolean;                    // Auto-confirm booking requests
+
+  // Visibility
+  visibility: ProfileVisibility;           // Profile public/private
+  showStats: boolean;                      // Show session count & avg rating
+
+  // Email Notifications
+  emailNewRequests: boolean;              // New booking requests
+  emailSessionReminders: boolean;         // Session reminders
+  emailMarketing: boolean;               // Marketing & announcements
+
+  // Push Notifications
+  pushNewRequests: boolean;
+  pushSessionReminders: boolean;
+}
+```
+
+#### React Query Example
+
+```typescript
+export function useMentorSettings() {
+  return useQuery({
+    queryKey: ['mentor', 'settings'],
+    queryFn: () => api.get<MentorSettings>('/mentor/settings').then(r => r.data),
+  });
+}
+
+export function useUpdateMentorSettings() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (dto: Partial<MentorSettings>) =>
+      api.patch('/mentor/settings', dto).then(r => r.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['mentor', 'settings'] });
+    },
+  });
+}
+```
+
+---
+
+### 9.3 Recruiter Settings
+
+#### Endpoints
+
+| Method | URL | Auth |
+|--------|-----|------|
+| `GET` | `/recruiter/settings` | Bearer, active role = `recruiter` |
+| `PATCH` | `/recruiter/settings` | Bearer, active role = `recruiter` |
+
+#### Response Shape (`GET /recruiter/settings`)
+
+```json
+{
+  "emailNewApplications": true,
+  "emailMarketing": false,
+  "pushNewApplications": true
+}
+```
+
+#### Request Shape (`PATCH /recruiter/settings`)
+
+All fields are **optional**.
+
+```json
+{
+  "emailNewApplications": true,
+  "emailMarketing": false,
+  "pushNewApplications": true
+}
+```
+
+#### TypeScript Interface
+
+```typescript
+interface RecruiterSettings {
+  // Email Notifications
+  emailNewApplications: boolean;  // When candidates apply
+  emailMarketing: boolean;        // Marketing & feature updates
+
+  // Push Notifications
+  pushNewApplications: boolean;   // When candidates apply
+}
+```
+
+#### React Query Example
+
+```typescript
+export function useRecruiterSettings() {
+  return useQuery({
+    queryKey: ['recruiter', 'settings'],
+    queryFn: () => api.get<RecruiterSettings>('/recruiter/settings').then(r => r.data),
+  });
+}
+
+export function useUpdateRecruiterSettings() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (dto: Partial<RecruiterSettings>) =>
+      api.patch('/recruiter/settings', dto).then(r => r.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['recruiter', 'settings'] });
+    },
+  });
+}
+```
+
+---
+
+### 9.4 Removed / Deprecated Fields (All Roles)
+
+The following fields have been **permanently removed** from all settings UIs and will no longer be accepted or returned by the settings endpoints:
+
+| Field | Role(s) | Reason |
+|---|---|---|
+| `emailMessages` | Talent, Mentor | Messages section removed from UI |
+| `pushMessages` | Talent, Mentor | Messages section removed from UI |
+| `emailEarnings` | Mentor | Earnings section removed |
+| `showEarnings` | Mentor | Earnings section removed |
+| `sessionRate` | Mentor | Payment settings removed |
+| `sessionCurrency` | Mentor | Payment settings removed |
+| `paymentMethod` | Mentor | Payment settings removed |
+| `emailMessages` | Recruiter | Messages section removed |
+| `pushMessages` | Recruiter | Messages section removed |
+| `showEmail` | Talent | Visibility simplified |
+| `showPhone` | Talent | Visibility simplified |
+| `showLocation` | Talent | Visibility simplified |
+| `allowRecruiters` | Talent | Visibility simplified |
+
+> **Note:** The deprecated `sessionRate` and `sessionCurrency` fields still exist in the `MentorProfile` database model for backward compatibility, but are **not exposed** via the settings API endpoints and should not be rendered in the UI.
+
+---
+
+### 9.5 Universal Pattern: Optimistic Updates
+
+For a snappy UX, implement optimistic updates in your settings mutations so the UI reflects changes immediately, with a rollback on error:
+
+```typescript
+export function useUpdateMentorSettings() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (dto: Partial<MentorSettings>) =>
+      api.patch('/mentor/settings', dto).then(r => r.data),
+
+    onMutate: async (newValues) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['mentor', 'settings'] });
+
+      // Snapshot the previous value for rollback
+      const previous = queryClient.getQueryData<MentorSettings>(['mentor', 'settings']);
+
+      // Optimistically update cache
+      queryClient.setQueryData<MentorSettings>(['mentor', 'settings'], (old) => ({
+        ...old!,
+        ...newValues,
+      }));
+
+      return { previous };
+    },
+
+    onError: (_err, _newValues, context) => {
+      // Roll back on error
+      if (context?.previous) {
+        queryClient.setQueryData(['mentor', 'settings'], context.previous);
+      }
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['mentor', 'settings'] });
+    },
+  });
+}
+```
+
+---
+
+**Document Version**: 2.1
+**Settings API Added**: 2026-02-23
+**Deprecation Date**: TBD (90 days from announcement)
+
+---
+
+## 10. Mentorship Request Standardization
+
+We have standardized the mentorship request endpoints to follow the role-prefixed pattern. This ensures strict data scoping and simpler frontend logic.
+
+### 10.1 Key Endpoints
+
+| Resource | New Standard Endpoint | Method | Role Context |
+|:---|:---|:---|:---|
+| **Sent Requests** | `/talent/mentorship-requests` | GET | `talent` |
+| **Received Requests** | `/mentor/mentorship-requests` | GET | `mentor` |
+
+### 10.2 Data Structures
+
+#### Talent Context (Sent Requests)
+The `GET /talent/mentorship-requests` endpoint returns an array (or paginated response) of `MentorshipRequest` objects. Each object includes the **mentor profile** nested within.
+
+```typescript
+interface MentorshipRequest {
+  id: string;
+  topic: string;
+  message: string | null;
+  scheduledDate: string; // ISO format
+  scheduledTime: string; // HH:mm
+  status: 'pending' | 'accepted' | 'rejected' | 'cancelled';
+  mentor: {
+    fullName: string;
+    headline: string;
+    profileImageUrl: string | null;
+  };
+}
+```
+
+#### Mentor Context (Received Requests)
+The `GET /mentor/mentorship-requests` endpoint returns requests received by the mentor, including the **mentee profile**.
+
+### 10.3 Integration Summary
+
+- **Automatic Filtering**: No need to pass `role="sent"` or `userId`. The system automatically scopes results to the authenticated user.
+- **Default Sorting**: Results are returned newest-first by default.
+- **Nested Reliability**: The backend guarantees that the nested profile objects (mentor/mentee) required for dashboards and list views are always included.
+
+---
+

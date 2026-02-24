@@ -8,7 +8,7 @@ import { PersonalDetailsSection } from "@/components/talent/profile/components/e
 import { ProfessionalDetailsSection } from "@/components/talent/profile/components/edit/ProfessionalDetailsSection";
 import { WorkExperienceSection } from "@/components/talent/profile/components/edit/WorkExperienceSection";
 import { EducationSection } from "@/components/talent/profile/components/edit/EducationSection";
-import { PortfolioSection } from "@/components/talent/profile/components/edit/PortfolioSection";
+
 import { SocialLinksSection } from "@/components/talent/profile/components/edit/SocialLinksSection";
 import { Modal } from "@/components/ui/modal";
 import statesCities from "@/lib/data/states-cities.json";
@@ -94,9 +94,7 @@ export function TalentEditProfile() {
   const [editingEducationIndex, setEditingEducationIndex] = useState<
     number | null
   >(null);
-  const [editingPortfolioIndex, setEditingPortfolioIndex] = useState<
-    number | null
-  >(null);
+
   const [skillsDropdownOpen, setSkillsDropdownOpen] = useState(false);
   const [stackDropdownOpen, setStackDropdownOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -328,66 +326,7 @@ export function TalentEditProfile() {
     }));
   };
 
-  const handlePortfolioChange = (url: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      portfolio: {
-        ...prev.portfolio,
-        resumeUrl: url,
-      },
-    }));
-  };
 
-  const handleAddPortfolioItem = () => {
-    setFormData((prev) => ({
-      ...prev,
-      portfolio: {
-        ...prev.portfolio,
-        portfolioItems: [
-          ...prev.portfolio.portfolioItems,
-          {
-            id: Date.now().toString(),
-            title: "",
-            description: "",
-            url: "",
-            image: "",
-            technologies: [],
-          },
-        ],
-      },
-    }));
-  };
-
-  const handleUpdatePortfolioItem = (
-    index: number,
-    field: string,
-    value: string,
-  ) => {
-    const updated = [...formData.portfolio.portfolioItems];
-    updated[index] = {
-      ...updated[index],
-      [field]: value,
-    };
-    setFormData((prev) => ({
-      ...prev,
-      portfolio: {
-        ...prev.portfolio,
-        portfolioItems: updated,
-      },
-    }));
-  };
-
-  const handleRemovePortfolioItem = (index: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      portfolio: {
-        ...prev.portfolio,
-        portfolioItems: prev.portfolio.portfolioItems.filter(
-          (_, i) => i !== index,
-        ),
-      },
-    }));
-  };
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -480,23 +419,10 @@ export function TalentEditProfile() {
               sectionRef={(el) => {
                 if (el) sectionRefs.current["education"] = el;
               }}
-              onNext={() => toggleSection("portfolio")}
-            />
-
-            <PortfolioSection
-              isOpen={expandedSection === "portfolio"}
-              onToggle={() => toggleSection("portfolio")}
-              portfolioItems={formData.portfolio.portfolioItems}
-              editingIndex={editingPortfolioIndex}
-              onEditingChange={setEditingPortfolioIndex}
-              onAddPortfolioItem={handleAddPortfolioItem}
-              onUpdatePortfolioItem={handleUpdatePortfolioItem}
-              onRemovePortfolioItem={handleRemovePortfolioItem}
-              sectionRef={(el) => {
-                if (el) sectionRefs.current["portfolio"] = el;
-              }}
               onNext={() => toggleSection("social")}
             />
+
+
 
             <SocialLinksSection
               isOpen={expandedSection === "social"}

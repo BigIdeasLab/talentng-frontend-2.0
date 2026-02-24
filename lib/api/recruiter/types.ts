@@ -18,6 +18,10 @@ export interface RecruiterProfile {
   links: Record<string, any> | null;
   visibility: string | null;
   profileImageUrl: string | null;
+  // Notification preferences
+  emailNewApplications: boolean;
+  emailMarketing: boolean;
+  pushNewApplications: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -100,3 +104,14 @@ export interface RecruiterDashboardResponse {
     timestamp: string;
   }>;
 }
+
+/**
+ * Recruiter notification settings (GET/PATCH /recruiter/settings)
+ */
+export interface RecruiterSettings {
+  emailNewApplications: boolean;
+  emailMarketing: boolean;
+  pushNewApplications: boolean;
+}
+
+export type UpdateRecruiterSettingsInput = Partial<RecruiterSettings>;
