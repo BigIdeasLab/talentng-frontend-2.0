@@ -49,6 +49,11 @@ export interface PaginatedTalentResponse {
   pagination: TalentPaginationInfo;
 }
 
+export interface StackItem {
+  id?: string;
+  name: string;
+}
+
 export interface TalentProfile {
   id: string;
   userId: string;
@@ -58,7 +63,7 @@ export interface TalentProfile {
   profileImageUrl: string | null;
   coverImageUrl: string | null;
   skills: string[];
-  stack: string[];
+  stack: StackItem[] | string[];
   location: string | null;
   availability: string | null;
   phoneNumber: string | null;
@@ -67,7 +72,7 @@ export interface TalentProfile {
   duration: string | null;
   description: string | null;
   resumeUrl: string | null;
-  visibility: "public" | "private";
+  visibility: "public" | "private" | "PUBLIC" | "PRIVATE";
   isFeatured: boolean;
   featuredUntil: string | null;
   createdAt: string;
@@ -106,6 +111,18 @@ export interface TalentProfile {
   };
   services?: Service[];
   recommendations?: TalentRecommendationDto[];
+  user?: {
+    id: string;
+    username: string;
+    email: string;
+    role: string;
+    status: string;
+    isVerified: boolean;
+    verificationLevel: string;
+    twoFactorEnabled: boolean;
+    createdAt: string;
+    updatedAt: string;
+  };
 }
 
 export interface APIProfileData {

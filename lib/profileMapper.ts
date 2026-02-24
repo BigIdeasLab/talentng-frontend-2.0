@@ -53,10 +53,9 @@ export interface UIProfileData {
   };
   gallery: {
     id: string;
-    key: string;
-    url: string;
-    mime: string;
-    sizeBytes: string;
+    title?: string;
+    description?: string;
+    images: string[];
     createdAt: string;
   }[];
   social: {
@@ -113,10 +112,9 @@ export interface APIProfileData {
   }[];
   gallery?: {
     id: string;
-    key: string;
-    url: string;
-    mime: string;
-    sizeBytes: string;
+    title?: string;
+    description?: string;
+    images: string[];
     createdAt: string;
   }[];
   links?: {
@@ -269,7 +267,12 @@ export function mapAPIToUI(
       title: item.title || "",
       description: item.description || "",
       createdAt: item.createdAt || "",
-      images: item.images || [],
+      images:
+        item.images && Array.isArray(item.images) && item.images.length > 0
+          ? item.images
+          : item.url
+            ? [item.url]
+            : [],
     })),
     social: {
       dribbble: data.links?.dribbble || data.socialLinks?.dribbble || "",

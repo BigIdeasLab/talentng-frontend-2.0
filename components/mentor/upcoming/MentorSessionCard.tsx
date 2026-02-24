@@ -181,7 +181,10 @@ export function MentorSessionCard({ session }: MentorSessionCardProps) {
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#FEF2F0] hover:bg-[#FDE8E4] transition-colors"
               >
-                <Video className="w-3 h-3" style={{ color: ROLE_COLORS.mentor.dark }} />
+                <Video
+                  className="w-3 h-3"
+                  style={{ color: ROLE_COLORS.mentor.dark }}
+                />
                 <span
                   className="text-[12px] font-medium font-inter-tight leading-[12.6px]"
                   style={{ color: ROLE_COLORS.mentor.dark }}
@@ -204,7 +207,10 @@ export function MentorSessionCard({ session }: MentorSessionCardProps) {
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#FEF2F0] hover:bg-[#FDE8E4] transition-colors"
             >
-              <Video className="w-3 h-3" style={{ color: ROLE_COLORS.mentor.dark }} />
+              <Video
+                className="w-3 h-3"
+                style={{ color: ROLE_COLORS.mentor.dark }}
+              />
               <span
                 className="text-[12px] font-medium font-inter-tight leading-[12.6px]"
                 style={{ color: ROLE_COLORS.mentor.dark }}

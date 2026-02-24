@@ -24,11 +24,12 @@ export function TalentCard({ talent }: TalentCardProps) {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-[8px]">
               <Image
-                src={talent.avatar}
+                src={talent.avatar || "/default-avatar.jpg"}
                 alt={talent.fullName}
                 width={34}
                 height={34}
                 className="w-[34px] h-[34px] rounded-full object-cover flex-shrink-0"
+                unoptimized
               />
               <div className="flex flex-col gap-[8px]">
                 <h3 className="text-[13px] font-medium text-black font-inter-tight">
@@ -139,21 +140,37 @@ export function TalentCard({ talent }: TalentCardProps) {
         </div>
 
         {/* Gallery */}
-        <div className="flex flex-col gap-[11px]">
-          <div className="flex items-center gap-[7px] overflow-x-auto scrollbar-hidden">
-            {talent.gallery.map((img, idx) => (
-              <Image
-                key={idx}
-                src={img}
-                alt={`Gallery ${idx + 1}`}
-                width={147}
-                height={147}
-                className="h-[147px] w-[147px] object-cover rounded flex-shrink-0"
-              />
-            ))}
-          </div>
+        <div className="flex items-center gap-[7px] overflow-x-auto scrollbar-hidden">
+          {talent.gallery.filter(Boolean).map((img, idx) => (
+            <Image
+              key={idx}
+              src={img}
+              alt={`Gallery ${idx + 1}`}
+              width={147}
+              height={147}
+              className="h-[147px] w-[147px] object-cover rounded flex-shrink-0"
+              unoptimized
+            />
+          ))}
+        </div>
 
-          {/* Skills */}
+        {/* Skills & Stack */}
+        <div className="flex flex-col gap-[8px]">
+          {talent.stack.length > 0 && (
+            <div className="flex flex-wrap gap-[4px] items-start">
+              {talent.stack.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="px-[11px] py-[9px] flex justify-center items-center rounded-full bg-[#EEF2FF] border border-[#E0E7FF]"
+                >
+                  <span className="text-[11px] font-medium text-[#4338CA] font-inter-tight leading-[105%]">
+                    {item}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+          
           <div className="flex flex-wrap gap-[4px] items-start">
             {talent.skills.map((skill, idx) => (
               <div

@@ -28,6 +28,32 @@ export function WeeklyOverviewChart({ data }: WeeklyOverviewChartProps) {
       applications: item.applications,
       interviews: item.interviews,
     })) ?? [];
+
+  const maxValue =
+    data?.reduce(
+      (max, item) => Math.max(max, item.applications, item.interviews),
+      0,
+    ) ?? 0;
+
+  const yAxisMax =
+    maxValue > 0 ? Math.max(Math.ceil(maxValue / 5) * 5, 12) : 80;
+  const yAxisTicks = [
+    0,
+    Math.round(yAxisMax / 4),
+    Math.round(yAxisMax / 2),
+    Math.round((3 * yAxisMax) / 4),
+    yAxisMax,
+  ];
+
+  console.log(
+    "WeeklyOverviewChart - data:",
+    data,
+    "maxValue:",
+    maxValue,
+    "yAxisMax:",
+    yAxisMax,
+  );
+
   return (
     <div className="flex flex-col items-start gap-4 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white w-full">
       <div className="flex flex-col items-start gap-1 self-stretch flex-shrink-0">
@@ -68,8 +94,8 @@ export function WeeklyOverviewChart({ data }: WeeklyOverviewChartProps) {
                 fontSize: 11,
                 fontFamily: "Inter Tight",
               }}
-              domain={[0, 80]}
-              ticks={[0, 20, 40, 60, 80]}
+              domain={[0, yAxisMax]}
+              ticks={yAxisTicks}
             />
             <Tooltip
               contentStyle={{

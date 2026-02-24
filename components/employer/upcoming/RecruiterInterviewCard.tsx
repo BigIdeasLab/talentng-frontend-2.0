@@ -3,7 +3,10 @@
 import { format } from "date-fns";
 import { Calendar, Clock, Video, ExternalLink } from "lucide-react";
 import Link from "next/link";
-import type { ApplicationInterview, Application } from "@/lib/api/applications/types";
+import type {
+  ApplicationInterview,
+  Application,
+} from "@/lib/api/applications/types";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface RecruiterInterviewCardProps {
@@ -48,7 +51,8 @@ export function RecruiterInterviewCard({
   const status = STATUS_CONFIG[interview.status] || STATUS_CONFIG.scheduled;
   const scheduledDate = new Date(interview.scheduledDate);
   const talent = application.user?.talentProfile;
-  const candidateName = talent?.fullName || application.user?.username || "Candidate";
+  const candidateName =
+    talent?.fullName || application.user?.username || "Candidate";
   const candidateAvatar = talent?.profileImageUrl || null;
 
   return (
@@ -131,7 +135,10 @@ export function RecruiterInterviewCard({
               className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#ECFDF5] hover:bg-[#D1FAE5] transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
-              <Video className="w-3 h-3" style={{ color: ROLE_COLORS.recruiter.dark }} />
+              <Video
+                className="w-3 h-3"
+                style={{ color: ROLE_COLORS.recruiter.dark }}
+              />
               <span
                 className="text-[12px] font-medium font-inter-tight leading-[12.6px]"
                 style={{ color: ROLE_COLORS.recruiter.dark }}

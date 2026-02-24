@@ -1,3 +1,5 @@
+import type { GalleryItem, StackItem } from "./profile";
+
 export interface Talent {
   id: string;
   userId: string;
@@ -5,13 +7,14 @@ export interface Talent {
   headline: string | null;
   bio: string | null;
   skills: string[];
+  stack?: StackItem[] | string[];
   workExperience: any[];
   education: any[];
   location: string | null;
-  links: string | null;
+  links: any | null;
   portfolioItems: any[];
   resumeUrl: string | null;
-  visibility: "public" | "private";
+  visibility: "public" | "private" | "PUBLIC" | "PRIVATE";
   isFeatured: boolean;
   featuredUntil: string | null;
   views: number;
@@ -20,7 +23,7 @@ export interface Talent {
   company: string | null;
   duration: string | null;
   description: string | null;
-  gallery: any[];
+  gallery: GalleryItem[];
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
@@ -31,10 +34,10 @@ export interface Talent {
     id: string;
     username: string;
     email: string;
-    role: "talent";
-    status: "active" | "inactive";
+    role: string;
+    status: string;
     isVerified: boolean;
-    verificationLevel: "basic" | "intermediate" | "advanced";
+    verificationLevel: string;
     emailVerifiedAt: string | null;
     lastLoginAt: string | null;
     createdAt: string;
@@ -42,5 +45,11 @@ export interface Talent {
     deletedAt: string | null;
     oneSignalPlayerId: string | null;
     twoFactorEnabled: boolean;
+  };
+  stats?: {
+    earnings: string;
+    hired: number;
+    views: number;
+    completionPercentage: number;
   };
 }

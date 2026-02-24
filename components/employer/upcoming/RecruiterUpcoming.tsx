@@ -71,7 +71,8 @@ export function RecruiterUpcoming() {
       const q = searchQuery.toLowerCase();
       const { application } = item.interview;
       const talent = application.user?.talentProfile;
-      const candidateName = talent?.fullName || application.user?.username || "";
+      const candidateName =
+        talent?.fullName || application.user?.username || "";
       return (
         application.opportunity.title.toLowerCase().includes(q) ||
         candidateName.toLowerCase().includes(q)

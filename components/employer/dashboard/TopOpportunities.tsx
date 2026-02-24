@@ -7,6 +7,7 @@ interface OpportunityItemProps {
   title: string;
   applicants: number;
   status: "active" | "closed" | "draft";
+  image?: string;
 }
 
 const statusConfig = {
@@ -20,6 +21,7 @@ function OpportunityItem({
   title,
   applicants,
   status,
+  image,
 }: OpportunityItemProps) {
   const config = statusConfig[status];
 
@@ -29,9 +31,20 @@ function OpportunityItem({
       className="flex h-auto md:h-[50px] px-2.5 py-3 md:py-0 justify-between items-center self-stretch rounded-lg bg-[#FCFCFD] hover:bg-[#F3F4F6] transition-colors group"
     >
       <div className="flex items-center gap-3">
-        <div className="flex w-7 h-7 p-1 justify-center items-center rounded-lg bg-[#D1FAE5] flex-shrink-0">
-          <Briefcase className="w-3.5 h-3.5 text-[#0D9F5C]" strokeWidth={1.6} />
-        </div>
+        {image ? (
+          <img
+            src={image}
+            alt={title}
+            className="w-7 h-7 rounded-lg object-cover flex-shrink-0"
+          />
+        ) : (
+          <div className="flex w-7 h-7 p-1 justify-center items-center rounded-lg bg-[#D1FAE5] flex-shrink-0">
+            <Briefcase
+              className="w-3.5 h-3.5 text-[#0D9F5C]"
+              strokeWidth={1.6}
+            />
+          </div>
+        )}
         <div className="flex flex-col items-start gap-1.5">
           <h3 className="font-inter-tight text-[13px] font-normal text-black group-hover:text-[#0D9F5C] transition-colors">
             {title}
@@ -62,6 +75,7 @@ interface TopOpportunityData {
   title: string;
   applicants: number;
   status: "active" | "closed" | "draft";
+  image?: string;
 }
 
 interface TopOpportunitiesProps {
@@ -100,6 +114,7 @@ export function TopOpportunities({ data }: TopOpportunitiesProps) {
             title={opportunity.title}
             applicants={opportunity.applicants}
             status={opportunity.status}
+            image={opportunity.image}
           />
         ))}
       </div>

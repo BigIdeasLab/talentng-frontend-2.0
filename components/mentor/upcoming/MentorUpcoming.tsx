@@ -1,13 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import {
-  Calendar,
-  Users,
-  Search,
-  X,
-  SlidersHorizontal,
-} from "lucide-react";
+import { Calendar, Users, Search, X, SlidersHorizontal } from "lucide-react";
 import { getSessions } from "@/lib/api/mentorship";
 import type { MentorshipSession } from "@/lib/api/mentorship/types";
 import { MentorSessionCard } from "./MentorSessionCard";
@@ -27,7 +21,9 @@ export function MentorUpcoming() {
   const fetchData = useCallback(async () => {
     try {
       setIsLoading(true);
-      const sessionsResponse = await getSessions({ role: "mentor" }).catch(() => []);
+      const sessionsResponse = await getSessions({ role: "mentor" }).catch(
+        () => [],
+      );
       const sessionsArray = Array.isArray(sessionsResponse)
         ? sessionsResponse
         : (sessionsResponse?.data ?? []);

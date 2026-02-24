@@ -22,20 +22,38 @@ export interface TalentData {
   avatar: string;
   gallery: string[];
   skills: string[];
+  stack: string[];
 }
 
-const mapTalentToUI = (profile: TalentProfile, index: number): TalentData => ({
-  id: index + 1,
-  userId: profile.userId,
-  fullName: profile.fullName || "Talent",
-  headline: profile.headline || profile.category || "Professional",
-  location: profile.location || "Not specified",
-  timesHired: profile.stats?.hired || 0,
-  earnings: parseInt(profile.stats?.earnings || "0"),
-  avatar: profile.profileImageUrl || "/default-avatar.jpg",
-  gallery: profile.gallery?.map((item) => item.images?.[0]) || [],
-  skills: profile.skills || [],
-});
+const mapTalentToUI = (profile: TalentProfile, index: number): TalentData => {
+  const gallery =
+    profile.gallery
+      ?.flatMap((item: any) => {
+        if (item.images && Array.isArray(item.images) && item.images.length > 0) {
+          return item.images;
+        }
+        if (item.url) {
+          return [item.url];
+        }
+        return [];
+      })
+      .filter(Boolean) || [];
+
+  return {
+    id: index + 1,
+    userId: profile.userId,
+    fullName: profile.fullName || "Talent",
+    headline: profile.headline || profile.category || "Professional",
+    location: profile.location || "Not specified",
+    timesHired: profile.stats?.hired || 0,
+    earnings: parseInt(profile.stats?.earnings || "0"),
+    avatar: profile.profileImageUrl || "/default-avatar.jpg",
+    gallery,
+    skills: profile.skills || [],
+    stack:
+      profile.stack?.map((s) => (typeof s === "string" ? s : s.name)) || [],
+  };
+};
 
 export interface GetDiscoverTalentDataParams {
   searchQuery?: string;
@@ -88,6 +106,9 @@ export async function getDiscoverTalentData(
     filters.offset = offset;
 
     const response = await listTalentProfiles(filters);
+
+    // Debug: log full raw API response
+    console.log("[discover-talent] RAW API response:", JSON.stringify(response, null, 2));
 
     const talents = response.data.map(mapTalentToUI);
 

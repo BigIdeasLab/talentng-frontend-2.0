@@ -55,11 +55,14 @@ function formatChange(value: number, isPercent: boolean): string {
 export function EmployerDashboard() {
   const { data, isLoading, isPending, error } = useRecruiterDashboard();
 
+  console.log("Recruiter Dashboard Data:", data);
+
   if (isLoading || isPending) {
     return <DashboardSkeleton />;
   }
 
   if (error) {
+    console.error("Recruiter Dashboard Error:", error);
     return (
       <div className="px-4 py-6 md:px-8 md:py-7">
         <div className="flex flex-col items-center justify-center gap-4 py-12">

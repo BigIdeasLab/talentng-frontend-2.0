@@ -7,6 +7,19 @@ export type PortfolioItem = {
   sizeBytes: string;
 };
 
+export type GalleryItem = {
+  id: string;
+  title: string;
+  description: string;
+  createdAt: string;
+  images: string[];
+};
+
+export type StackItem = {
+  id?: string;
+  name: string;
+};
+
 export type TalentProfile = {
   id: string;
   userId: string;
@@ -16,22 +29,25 @@ export type TalentProfile = {
   bio: string | null;
 
   skills: string[];
-  workExperience: string[];
-  education: string[];
+  stack: StackItem[] | string[];
+  workExperience: any[];
+  education: any[];
   company: string | null;
   duration: string | null;
   description: string | null;
 
-  availability: "full_time" | "part_time" | "freelance" | "" | null;
+  availability: string | null;
   location: string | null;
 
   links: {
     github?: string;
     linkedin?: string;
+    twitter?: string;
+    portfolio?: string;
   } | null;
 
   resumeUrl: string | null;
-  visibility: "public" | "private";
+  visibility: "public" | "private" | "PUBLIC" | "PRIVATE";
   isFeatured: boolean;
   featuredUntil: string | null;
 
@@ -41,7 +57,7 @@ export type TalentProfile = {
   profileImageUrl: string | null;
 
   portfolioItems: PortfolioItem[];
-  gallery: PortfolioItem[];
+  gallery: GalleryItem[];
 
   createdAt: string;
   updatedAt: string;
@@ -61,5 +77,12 @@ export type TalentProfile = {
     updatedAt: string;
     deletedAt: string | null;
     oneSignalPlayerId: string | null;
+    twoFactorEnabled?: boolean;
+  };
+  stats?: {
+    earnings: string;
+    hired: number;
+    views: number;
+    completionPercentage: number;
   };
 };

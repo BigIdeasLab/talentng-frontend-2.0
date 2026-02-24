@@ -5,9 +5,10 @@ interface ActivityItemProps {
   message: string;
   timeAgo: string;
   type: "application" | "interview";
+  image?: string;
 }
 
-function ActivityItem({ message, timeAgo, type }: ActivityItemProps) {
+function ActivityItem({ message, timeAgo, type, image }: ActivityItemProps) {
   const iconConfig = {
     application: {
       icon: Users,
@@ -31,11 +32,19 @@ function ActivityItem({ message, timeAgo, type }: ActivityItemProps) {
       href={config.link}
       className="flex items-start gap-2.5 self-stretch pb-3 border-b border-gray-200 last:border-0 last:pb-0 hover:bg-gray-50 transition-colors group"
     >
-      <div
-        className={`flex w-6 h-6 p-1 justify-center items-center rounded-full ${config.bgColor} flex-shrink-0`}
-      >
-        <Icon className={`w-3.5 h-3.5 ${config.iconColor}`} strokeWidth={2} />
-      </div>
+      {image ? (
+        <img
+          src={image}
+          alt=""
+          className="w-6 h-6 rounded-full object-cover flex-shrink-0"
+        />
+      ) : (
+        <div
+          className={`flex w-6 h-6 p-1 justify-center items-center rounded-full ${config.bgColor} flex-shrink-0`}
+        >
+          <Icon className={`w-3.5 h-3.5 ${config.iconColor}`} strokeWidth={2} />
+        </div>
+      )}
       <div className="flex flex-col items-start gap-1.5 flex-1 min-w-0">
         <p className="font-inter-tight text-xs font-normal text-[#525866] self-stretch break-words group-hover:text-black transition-colors">
           {message}
@@ -53,6 +62,7 @@ interface RecentActivityData {
   type: "application" | "interview";
   message: string;
   timestamp: string;
+  image?: string;
 }
 
 interface RecentActivityProps {
@@ -90,6 +100,7 @@ export function RecentActivity({ data }: RecentActivityProps) {
             message={activity.message}
             timeAgo={formatTimeAgo(activity.timestamp)}
             type={activity.type}
+            image={activity.image}
           />
         ))}
       </div>
