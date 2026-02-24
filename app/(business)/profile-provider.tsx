@@ -39,8 +39,14 @@ export interface ProfileContextType {
     profiles:
       | Record<string, TalentProfile | RecruiterProfile | MentorProfile | null>
       | ((
-          prev: Record<string, TalentProfile | RecruiterProfile | MentorProfile | null>,
-        ) => Record<string, TalentProfile | RecruiterProfile | MentorProfile | null>),
+          prev: Record<
+            string,
+            TalentProfile | RecruiterProfile | MentorProfile | null
+          >,
+        ) => Record<
+          string,
+          TalentProfile | RecruiterProfile | MentorProfile | null
+        >),
   ) => void;
 
   // Mapped UI data by role

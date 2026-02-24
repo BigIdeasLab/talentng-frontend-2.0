@@ -69,7 +69,7 @@ export function useProfileData() {
       // 2. JWT roles
       // 3. localStorage fallback
       let userRoles = (
-        (currentUser?.roles && currentUser.roles.length > 0)
+        currentUser?.roles && currentUser.roles.length > 0
           ? currentUser.roles
           : jwtRoles
       ).map((r: string) => r.trim().toLowerCase());
@@ -164,7 +164,10 @@ export function useProfileData() {
       } else if (currentActiveRole === "recruiter") {
         activeProfileData = await getServerCurrentRecruiterProfile().catch(
           (e) => {
-            console.error("[useProfileData] recruiter fetch failed:", e?.message);
+            console.error(
+              "[useProfileData] recruiter fetch failed:",
+              e?.message,
+            );
             return null;
           },
         );
