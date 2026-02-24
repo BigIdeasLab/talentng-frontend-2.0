@@ -29,14 +29,14 @@ export const ROLE_COLORS = {
     primary: "#047857",
     primaryHover: "#059669",
     dark: "#047857",
-    light: "#ECFDF5",
+    light: "#D1FAE5",
     accent: "#34D399",
   },
   mentor: {
     primary: "#e63c23",
     primaryHover: "#059669",
     dark: "#e63c23",
-    light: "#FEF2F0",
+    light: "#FFE4E2",
     accent: "#A890FF",
   },
 } as const satisfies Record<string, RoleColorPalette>;

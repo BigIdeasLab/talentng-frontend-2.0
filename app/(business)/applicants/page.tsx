@@ -51,8 +51,9 @@ export default function ApplicantsPage() {
     dateRange: "all",
   });
   const {
-    data: rawApplicants = [],
+    data: rawApplicants,
     isLoading,
+    isPending,
     error: queryError,
   } = useRecruiterApplicationsQuery({});
   const hasAccess = useRequireRole(["recruiter"]);
@@ -194,7 +195,7 @@ export default function ApplicantsPage() {
     return <PageLoadingState message="Checking access..." />;
   }
 
-  if (isLoading) {
+  if (isLoading || isPending || !rawApplicants) {
     return <ApplicantsSkeleton />;
   }
 

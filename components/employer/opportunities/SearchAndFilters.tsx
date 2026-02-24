@@ -14,6 +14,7 @@ interface SearchAndFiltersProps {
   onSearchChange: (query: string) => void;
   sortBy: SortType;
   onSortChange: (sort: SortType) => void;
+  onFilterClick: () => void;
 }
 
 export function SearchAndFilters({
@@ -21,6 +22,7 @@ export function SearchAndFilters({
   onSearchChange,
   sortBy,
   onSortChange,
+  onFilterClick,
 }: SearchAndFiltersProps) {
   return (
     <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
@@ -57,7 +59,10 @@ export function SearchAndFilters({
         />
       </div>
 
-      <button className="flex items-center gap-1.5 px-3 h-9 hover:bg-gray-50 rounded-lg transition-colors flex-shrink-0">
+      <button
+        onClick={onFilterClick}
+        className="flex items-center gap-1.5 px-3 h-9 hover:bg-gray-50 rounded-lg transition-colors flex-shrink-0"
+      >
         <svg
           width="15"
           height="15"

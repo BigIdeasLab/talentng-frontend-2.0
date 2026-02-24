@@ -23,13 +23,18 @@ export interface TalentData {
   gallery: string[];
   skills: string[];
   stack: string[];
+  createdAt: string;
 }
 
 const mapTalentToUI = (profile: TalentProfile, index: number): TalentData => {
   const gallery =
     profile.gallery
       ?.flatMap((item: any) => {
-        if (item.images && Array.isArray(item.images) && item.images.length > 0) {
+        if (
+          item.images &&
+          Array.isArray(item.images) &&
+          item.images.length > 0
+        ) {
           return item.images;
         }
         if (item.url) {
@@ -52,6 +57,7 @@ const mapTalentToUI = (profile: TalentProfile, index: number): TalentData => {
     skills: profile.skills || [],
     stack:
       profile.stack?.map((s) => (typeof s === "string" ? s : s.name)) || [],
+    createdAt: profile.createdAt || new Date().toISOString(),
   };
 };
 
@@ -61,6 +67,7 @@ export interface GetDiscoverTalentDataParams {
   skills?: string[];
   location?: string;
   availability?: string;
+  sort?: string;
   limit?: number;
   offset?: number;
 }
@@ -89,6 +96,7 @@ export async function getDiscoverTalentData(
       skills,
       location,
       availability,
+      sort,
       limit = 20,
       offset = 0,
     } = params;
@@ -101,14 +109,12 @@ export async function getDiscoverTalentData(
     if (location) filters.location = location;
     if (availability && availability !== "All")
       filters.availability = availability;
+    if (sort) filters.sort = sort;
 
     filters.limit = limit;
     filters.offset = offset;
 
     const response = await listTalentProfiles(filters);
-
-    // Debug: log full raw API response
-    console.log("[discover-talent] RAW API response:", JSON.stringify(response, null, 2));
 
     const talents = response.data.map(mapTalentToUI);
 

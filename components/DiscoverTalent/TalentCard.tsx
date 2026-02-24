@@ -170,7 +170,7 @@ export function TalentCard({ talent }: TalentCardProps) {
               ))}
             </div>
           )}
-          
+
           <div className="flex flex-wrap gap-[4px] items-start">
             {talent.skills.map((skill, idx) => (
               <div

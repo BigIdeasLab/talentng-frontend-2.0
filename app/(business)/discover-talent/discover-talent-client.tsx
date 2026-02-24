@@ -24,9 +24,10 @@ export function DiscoverTalentClient({
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [talents, setTalents] = useState<TalentData[]>(initialTalents);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(initialError);
   const [filters, setFilters] = useState<FilterState | null>(null);
+  const [sortBy, setSortBy] = useState("newest");
   const [offset, setOffset] = useState(0);
   const [pagination, setPagination] = useState<any>(initialPagination);
   const LIMIT = 20;
@@ -34,7 +35,7 @@ export function DiscoverTalentClient({
   const isInitialLoadRef = useRef(true);
 
   useEffect(() => {
-    fetchTalents(searchQuery, selectedCategory, filters, 0);
+    fetchTalents(searchQuery, selectedCategory, filters, 0, sortBy);
   }, []);
 
   const fetchTalents = async (
@@ -42,6 +43,7 @@ export function DiscoverTalentClient({
     category: string,
     appliedFilters: FilterState | null,
     pageOffset: number = 0,
+    sort: string = sortBy,
   ) => {
     // Only show loading skeleton on initial load, not on filter/category changes
     if (isInitialLoadRef.current) {
@@ -63,6 +65,7 @@ export function DiscoverTalentClient({
         skills: appliedFilters?.skills || [],
         location: appliedFilters?.location,
         availability: appliedFilters?.availability,
+        sort,
         limit: LIMIT,
         offset: pageOffset,
       });
@@ -102,13 +105,24 @@ export function DiscoverTalentClient({
     fetchTalents(searchQuery, selectedCategory, appliedFilters, 0);
   };
 
+  const handleSortChange = (sort: string) => {
+    setSortBy(sort);
+    fetchTalents(searchQuery, selectedCategory, filters, 0, sort);
+  };
+
   const handleNextPage = () => {
-    fetchTalents(searchQuery, selectedCategory, filters, offset + LIMIT);
+    fetchTalents(searchQuery, selectedCategory, filters, offset + LIMIT, sortBy);
   };
 
   const handlePreviousPage = () => {
     if (offset > 0) {
-      fetchTalents(searchQuery, selectedCategory, filters, offset - LIMIT);
+      fetchTalents(
+        searchQuery,
+        selectedCategory,
+        filters,
+        offset - LIMIT,
+        sortBy,
+      );
     }
   };
 
@@ -120,6 +134,8 @@ export function DiscoverTalentClient({
         searchQuery={searchQuery}
         onSearchChange={handleSearch}
         onFilterApply={handleFilterApply}
+        sortBy={sortBy}
+        onSortChange={handleSortChange}
         isLoading={loading}
       />
       {loading && <TalentGridSkeleton />}
@@ -130,7 +146,21 @@ export function DiscoverTalentClient({
       )}
       {!loading && !error && (
         <TalentGrid
-          talents={talents}
+          talents={[...talents].sort((a, b) => {
+            if (sortBy === "newest") {
+              return (
+                new Date(b.createdAt || 0).getTime() -
+                new Date(a.createdAt || 0).getTime()
+              );
+            }
+            if (sortBy === "oldest") {
+              return (
+                new Date(a.createdAt || 0).getTime() -
+                new Date(b.createdAt || 0).getTime()
+              );
+            }
+            return 0;
+          })}
           onNextPage={handleNextPage}
           onPreviousPage={handlePreviousPage}
           hasNextPage={pagination?.hasNextPage || false}

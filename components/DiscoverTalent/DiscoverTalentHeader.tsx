@@ -1,10 +1,16 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Search, SlidersHorizontal, X, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FilterModal, type FilterState } from "./FilterModal";
 import categories from "@/lib/data/categories.json";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface DiscoverTalentHeaderProps {
   selectedCategory: string;
@@ -12,6 +18,8 @@ interface DiscoverTalentHeaderProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   onFilterApply?: (filters: FilterState) => void;
+  sortBy?: string;
+  onSortChange?: (sort: string) => void;
   isLoading?: boolean;
   error?: string | null;
 }
@@ -28,6 +36,8 @@ export function DiscoverTalentHeader({
   searchQuery,
   onSearchChange,
   onFilterApply,
+  sortBy = "newest",
+  onSortChange,
   isLoading = false,
   error = null,
 }: DiscoverTalentHeaderProps) {
@@ -175,6 +185,32 @@ export function DiscoverTalentHeader({
               }}
             />
           </div>
+
+          {/* Sort Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                disabled={isLoading}
+                className={cn(
+                  "h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed",
+                  isLoading ? "bg-gray-100" : "bg-[#F5F5F5]",
+                )}
+              >
+                <span className="text-[13px] font-normal text-black font-inter-tight capitalize">
+                  {sortBy === "newest" ? "Newest" : "Oldest"}
+                </span>
+                <ChevronDown className="w-4 h-4 text-black" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onSortChange?.("newest")}>
+                Newest
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onSortChange?.("oldest")}>
+                Oldest
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Error Message */}
