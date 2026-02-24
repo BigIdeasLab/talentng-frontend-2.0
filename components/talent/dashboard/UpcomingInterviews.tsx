@@ -6,7 +6,10 @@ import { format } from "date-fns";
 import Link from "next/link";
 import type { UpcomingInterview } from "@/lib/api/talent";
 import type { MentorshipSession } from "@/lib/api/mentorship/types";
-import type { Application, ApplicationInterview } from "@/lib/api/applications/types";
+import type {
+  Application,
+  ApplicationInterview,
+} from "@/lib/api/applications/types";
 import { getSessions } from "@/lib/api/mentorship";
 import { getTalentApplications } from "@/lib/api/applications/index";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
@@ -21,10 +24,21 @@ interface EventCardProps {
   opportunityId?: string;
 }
 
-function EventCard({ type, title, subtitle, date, time, opportunityId }: EventCardProps) {
+function EventCard({
+  type,
+  title,
+  subtitle,
+  date,
+  time,
+  opportunityId,
+}: EventCardProps) {
   const isSession = type === "session";
-  const href = isSession ? "/upcoming" : (opportunityId ? `/opportunities/${opportunityId}` : "/opportunities");
-  
+  const href = isSession
+    ? "/upcoming"
+    : opportunityId
+      ? `/opportunities/${opportunityId}`
+      : "/opportunities";
+
   return (
     <Link
       href={href}
@@ -78,9 +92,7 @@ function EventCard({ type, title, subtitle, date, time, opportunityId }: EventCa
         <span
           className="text-[10px] font-medium font-inter-tight px-2 py-0.5 rounded-full"
           style={{
-            backgroundColor: isSession
-              ? ROLE_COLORS.mentor.light
-              : "#EFF6FF",
+            backgroundColor: isSession ? ROLE_COLORS.mentor.light : "#EFF6FF",
             color: isSession
               ? ROLE_COLORS.mentor.dark
               : ROLE_COLORS.talent.dark,

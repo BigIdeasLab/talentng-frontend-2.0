@@ -46,7 +46,11 @@ function ApplicationItem({
 
   return (
     <Link
-      href={opportunityId ? `/opportunities/${opportunityId}` : `/opportunities/${id}`}
+      href={
+        opportunityId
+          ? `/opportunities/${opportunityId}`
+          : `/opportunities/${id}`
+      }
       className="flex items-center justify-between gap-3 p-3 rounded-lg bg-[#FCFCFD] hover:bg-[#F8F9FB] transition-colors group"
     >
       <div className="flex items-center gap-3 flex-1 min-w-0">

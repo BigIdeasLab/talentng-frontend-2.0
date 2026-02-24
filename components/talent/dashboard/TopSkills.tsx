@@ -54,7 +54,10 @@ export function TopSkills({ skills }: TopSkillsProps) {
             Top Skills
           </h2>
         </div>
-        <Link href="/profile/edit?section=professional" className="px-2 py-1.5 rounded-md border border-gray-200 text-[12px] font-inter-tight text-black hover:bg-gray-50 transition-colors">
+        <Link
+          href="/profile/edit?section=professional"
+          className="px-2 py-1.5 rounded-md border border-gray-200 text-[12px] font-inter-tight text-black hover:bg-gray-50 transition-colors"
+        >
           Add Skills
         </Link>
       </div>

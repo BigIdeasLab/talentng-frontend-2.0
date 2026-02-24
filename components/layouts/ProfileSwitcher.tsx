@@ -508,7 +508,7 @@ export function ProfileSwitcher() {
 
           {/* Help & Logout */}
           <div className="flex flex-col gap-[4px] px-[14px] py-[6px]">
-            <Link 
+            <Link
               href="/support"
               onClick={() => setIsOpen(false)}
               className="flex items-center gap-[8px] hover:opacity-70 transition-opacity py-[6px]"

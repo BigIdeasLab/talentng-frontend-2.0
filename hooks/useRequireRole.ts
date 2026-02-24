@@ -39,7 +39,14 @@ export function useRequireRole(
       hasRedirected.current = true;
       router.replace(redirectTo);
     }
-  }, [activeRole, userRoles, isLoading, stableAllowedRoles, redirectTo, router]);
+  }, [
+    activeRole,
+    userRoles,
+    isLoading,
+    stableAllowedRoles,
+    redirectTo,
+    router,
+  ]);
 
   // Reset redirect guard when role changes (allows re-evaluation)
   useEffect(() => {

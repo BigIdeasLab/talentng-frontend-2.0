@@ -14,7 +14,10 @@ import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
 import { getTalentApplications } from "@/lib/api/applications/index";
 import { getSessions } from "@/lib/api/mentorship";
-import type { Application, ApplicationInterview } from "@/lib/api/applications/types";
+import type {
+  Application,
+  ApplicationInterview,
+} from "@/lib/api/applications/types";
 import type { MentorshipSession } from "@/lib/api/mentorship/types";
 import { TalentInterviewCard } from "@/components/talent/applications/TalentInterviewCard";
 import { TalentSessionCard } from "@/components/talent/applications/TalentSessionCard";

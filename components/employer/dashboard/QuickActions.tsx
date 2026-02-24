@@ -24,7 +24,6 @@ function ActionButton({ icon, label, href }: ActionButtonProps) {
 }
 
 export function QuickActions() {
-
   return (
     <div className="flex flex-col md:flex-row w-full px-5 py-4 md:py-5 justify-between items-start md:items-center gap-3 rounded-lg bg-[#FFFDF5] flex-shrink-0">
       <div className="flex flex-col items-start gap-1.5 md:gap-0.5 w-full md:w-auto">

@@ -365,7 +365,7 @@ export default function MentorshipPage() {
             />
           </div>
 
-          <button 
+          <button
             onClick={() => toast("Advanced filters are coming soon!")}
             className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] flex-shrink-0 hover:bg-gray-100 transition-colors"
           >

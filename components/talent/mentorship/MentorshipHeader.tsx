@@ -101,7 +101,10 @@ export function MentorshipHeader() {
         </h1>
 
         {/* CTA Button */}
-        <Link href="/mentorship#mentors" className="inline-flex items-center gap-1 px-3 py-2.5 rounded-full bg-[#181B25] text-white font-inter-tight text-[12px] font-medium w-fit hover:bg-[#252831] transition-colors">
+        <Link
+          href="/mentorship#mentors"
+          className="inline-flex items-center gap-1 px-3 py-2.5 rounded-full bg-[#181B25] text-white font-inter-tight text-[12px] font-medium w-fit hover:bg-[#252831] transition-colors"
+        >
           Get Started
           <ArrowRight className="w-4 h-4" strokeWidth={1.125} />
         </Link>

@@ -65,8 +65,7 @@ export function TalentSessionCard({ session }: TalentSessionCardProps) {
   const mentorName = mentor.fullName || mentor.name || "Unknown Mentor";
   const mentorAvatar = mentor.profileImageUrl || mentor.avatar || null;
 
-  const rawDate =
-    session.startTime || session.scheduledAt || session.createdAt;
+  const rawDate = session.startTime || session.scheduledAt || session.createdAt;
   const scheduledDate = new Date(rawDate);
 
   // Resolve meeting link: try meetingLink, then location, then mentor's default
@@ -177,8 +176,8 @@ export function TalentSessionCard({ session }: TalentSessionCardProps) {
               </span>
             </div>
           )}
-          {session.location && (
-            /^https?:\/\//i.test(session.location) ? (
+          {session.location &&
+            (/^https?:\/\//i.test(session.location) ? (
               <a
                 href={session.location}
                 target="_blank"
@@ -197,8 +196,7 @@ export function TalentSessionCard({ session }: TalentSessionCardProps) {
                   {session.location}
                 </span>
               </div>
-            )
-          )}
+            ))}
           {meetingLink && (
             <a
               href={meetingLink}

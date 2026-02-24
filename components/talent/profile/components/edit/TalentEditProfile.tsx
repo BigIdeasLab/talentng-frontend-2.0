@@ -326,8 +326,6 @@ export function TalentEditProfile() {
     }));
   };
 
-
-
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSaveProfile = async () => {
@@ -421,8 +419,6 @@ export function TalentEditProfile() {
               }}
               onNext={() => toggleSection("social")}
             />
-
-
 
             <SocialLinksSection
               isOpen={expandedSection === "social"}

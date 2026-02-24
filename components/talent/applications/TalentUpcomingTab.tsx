@@ -4,7 +4,10 @@ import { useState, useEffect, useCallback } from "react";
 import { Calendar, Briefcase, Users } from "lucide-react";
 import { getSessions } from "@/lib/api/mentorship";
 import type { MentorshipSession } from "@/lib/api/mentorship/types";
-import type { Application, ApplicationInterview } from "@/lib/api/applications/types";
+import type {
+  Application,
+  ApplicationInterview,
+} from "@/lib/api/applications/types";
 import { TalentInterviewCard } from "./TalentInterviewCard";
 import { TalentSessionCard } from "./TalentSessionCard";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -29,9 +32,7 @@ interface TalentUpcomingTabProps {
   jobApplications: Application[];
 }
 
-export function TalentUpcomingTab({
-  jobApplications,
-}: TalentUpcomingTabProps) {
+export function TalentUpcomingTab({ jobApplications }: TalentUpcomingTabProps) {
   const [sessions, setSessions] = useState<MentorshipSession[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState("all");

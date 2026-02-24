@@ -173,7 +173,9 @@ export function ProfessionalDetailsSection({
                     setShowSkillsDropdown(e.target.value.length > 0);
                   }}
                   onFocus={() => setShowSkillsDropdown(skillsInput.length > 0)}
-                  onBlur={() => setTimeout(() => setShowSkillsDropdown(false), 200)}
+                  onBlur={() =>
+                    setTimeout(() => setShowSkillsDropdown(false), 200)
+                  }
                   onKeyDown={handleSkillsKeyDown}
                   placeholder="Type a skill and press Enter..."
                   className="w-full px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
@@ -221,7 +223,9 @@ export function ProfessionalDetailsSection({
                     setShowStackDropdown(e.target.value.length > 0);
                   }}
                   onFocus={() => setShowStackDropdown(stackInput.length > 0)}
-                  onBlur={() => setTimeout(() => setShowStackDropdown(false), 200)}
+                  onBlur={() =>
+                    setTimeout(() => setShowStackDropdown(false), 200)
+                  }
                   onKeyDown={handleStackKeyDown}
                   placeholder="Type a tool name..."
                   className="w-full px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"

@@ -113,8 +113,6 @@ export function EmployerSettings() {
     profileVisible: true,
   });
 
-
-
   // Sync local state when API data arrives
   useEffect(() => {
     if (settings) {
@@ -212,8 +210,6 @@ export function EmployerSettings() {
               </Button>
             </div>
           </SettingsSection>
-
-
 
           {/* Notification Preferences */}
           <SettingsSection

@@ -17,10 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
-import {
-  getTalentSettings,
-  updateTalentSettings,
-} from "@/lib/api/talent";
+import { getTalentSettings, updateTalentSettings } from "@/lib/api/talent";
 import { getCurrentUser } from "@/lib/api/users";
 import { logoutAllDevices } from "@/lib/api/auth";
 import type { TalentSettings as TalentSettingsType } from "@/lib/api/talent/types";
@@ -209,7 +206,11 @@ export function TalentSettings() {
             </div>
             <div className="mt-4 flex justify-end">
               <Button
-                onClick={() => saveSettings.mutate({ profileVisible: visibility.profileVisible })}
+                onClick={() =>
+                  saveSettings.mutate({
+                    profileVisible: visibility.profileVisible,
+                  })
+                }
                 disabled={saveSettings.isPending}
                 className="text-white hover:opacity-90"
                 style={{ backgroundColor: roleColors.primary }}
@@ -238,7 +239,10 @@ export function TalentSettings() {
                   description="Get notified when employers view or respond to your applications"
                   checked={notifications.emailApplications}
                   onChange={(v) =>
-                    setNotifications((prev) => ({ ...prev, emailApplications: v }))
+                    setNotifications((prev) => ({
+                      ...prev,
+                      emailApplications: v,
+                    }))
                   }
                 />
                 <ToggleSetting
@@ -246,7 +250,10 @@ export function TalentSettings() {
                   description="Get notified when you're invited for an interview"
                   checked={notifications.emailInterviews}
                   onChange={(v) =>
-                    setNotifications((prev) => ({ ...prev, emailInterviews: v }))
+                    setNotifications((prev) => ({
+                      ...prev,
+                      emailInterviews: v,
+                    }))
                   }
                 />
                 <ToggleSetting
@@ -270,7 +277,10 @@ export function TalentSettings() {
                   label="Application Updates"
                   checked={notifications.pushApplications}
                   onChange={(v) =>
-                    setNotifications((prev) => ({ ...prev, pushApplications: v }))
+                    setNotifications((prev) => ({
+                      ...prev,
+                      pushApplications: v,
+                    }))
                   }
                 />
                 <ToggleSetting

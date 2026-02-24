@@ -1,113 +1,395 @@
 {
   "Abia": {
-    "major_cities": ["Umuahia", "Aba", "Ohafia", "Arochukwu", "Bende", "Isiala Ngwa", "Ikwuano"]
+    "major_cities": [
+      "Umuahia",
+      "Aba",
+      "Ohafia",
+      "Arochukwu",
+      "Bende",
+      "Isiala Ngwa",
+      "Ikwuano"
+    ]
   },
   "Adamawa": {
-    "major_cities": ["Yola", "Mubi", "Numan", "Jimeta", "Michika", "Mayo-Belwa", "Ganye"]
+    "major_cities": [
+      "Yola",
+      "Mubi",
+      "Numan",
+      "Jimeta",
+      "Michika",
+      "Mayo-Belwa",
+      "Ganye"
+    ]
   },
   "Akwa Ibom": {
-    "major_cities": ["Uyo", "Eket", "Ikot Ekpene", "Oron", "Abak", "Itu", "Etinan"]
+    "major_cities": [
+      "Uyo",
+      "Eket",
+      "Ikot Ekpene",
+      "Oron",
+      "Abak",
+      "Itu",
+      "Etinan"
+    ]
   },
   "Anambra": {
-    "major_cities": ["Awka", "Onitsha", "Nnewi", "Ekwulobia", "Ihiala", "Agulu", "Ogidi"]
+    "major_cities": [
+      "Awka",
+      "Onitsha",
+      "Nnewi",
+      "Ekwulobia",
+      "Ihiala",
+      "Agulu",
+      "Ogidi"
+    ]
   },
   "Bauchi": {
-    "major_cities": ["Bauchi", "Azare", "Misau", "Jama'are", "Katagum", "Dass", "Ningi"]
+    "major_cities": [
+      "Bauchi",
+      "Azare",
+      "Misau",
+      "Jama'are",
+      "Katagum",
+      "Dass",
+      "Ningi"
+    ]
   },
   "Bayelsa": {
-    "major_cities": ["Yenagoa", "Brass", "Ogbia", "Sagbama", "Ekeremor", "Nembe", "Southern Ijaw"]
+    "major_cities": [
+      "Yenagoa",
+      "Brass",
+      "Ogbia",
+      "Sagbama",
+      "Ekeremor",
+      "Nembe",
+      "Southern Ijaw"
+    ]
   },
   "Benue": {
-    "major_cities": ["Makurdi", "Gboko", "Otukpo", "Katsina-Ala", "Adikpo", "Vandeikya", "Ushongo"]
+    "major_cities": [
+      "Makurdi",
+      "Gboko",
+      "Otukpo",
+      "Katsina-Ala",
+      "Adikpo",
+      "Vandeikya",
+      "Ushongo"
+    ]
   },
   "Borno": {
-    "major_cities": ["Maiduguri", "Biu", "Monguno", "Dikwa", "Gwoza", "Ngala", "Bama"]
+    "major_cities": [
+      "Maiduguri",
+      "Biu",
+      "Monguno",
+      "Dikwa",
+      "Gwoza",
+      "Ngala",
+      "Bama"
+    ]
   },
   "Cross River": {
-    "major_cities": ["Calabar", "Ikom", "Ogoja", "Obudu", "Akamkpa", "Ugep", "Yakurr"]
+    "major_cities": [
+      "Calabar",
+      "Ikom",
+      "Ogoja",
+      "Obudu",
+      "Akamkpa",
+      "Ugep",
+      "Yakurr"
+    ]
   },
   "Delta": {
-    "major_cities": ["Asaba", "Warri", "Sapele", "Ughelli", "Agbor", "Abraka", "Kwale"]
+    "major_cities": [
+      "Asaba",
+      "Warri",
+      "Sapele",
+      "Ughelli",
+      "Agbor",
+      "Abraka",
+      "Kwale"
+    ]
   },
   "Ebonyi": {
     "major_cities": ["Abakaliki", "Afikpo", "Onueke", "Ezza", "Ikwo", "Ishiagu"]
   },
   "Edo": {
-    "major_cities": ["Benin City", "Ekpoma", "Auchi", "Irrua", "Igarra", "Okada", "Uromi"]
+    "major_cities": [
+      "Benin City",
+      "Ekpoma",
+      "Auchi",
+      "Irrua",
+      "Igarra",
+      "Okada",
+      "Uromi"
+    ]
   },
   "Ekiti": {
-    "major_cities": ["Ado-Ekiti", "Ikere-Ekiti", "Ilawe-Ekiti", "Ikole", "Ijero", "Omuo"]
+    "major_cities": [
+      "Ado-Ekiti",
+      "Ikere-Ekiti",
+      "Ilawe-Ekiti",
+      "Ikole",
+      "Ijero",
+      "Omuo"
+    ]
   },
   "Enugu": {
-    "major_cities": ["Enugu", "Nsukka", "Oji River", "Awgu", "Udi", "Oji", "Agbani"]
+    "major_cities": [
+      "Enugu",
+      "Nsukka",
+      "Oji River",
+      "Awgu",
+      "Udi",
+      "Oji",
+      "Agbani"
+    ]
   },
   "Gombe": {
-    "major_cities": ["Gombe", "Kumo", "Dukku", "Billiri", "Bajoga", "Nafada", "Yamaltu"]
+    "major_cities": [
+      "Gombe",
+      "Kumo",
+      "Dukku",
+      "Billiri",
+      "Bajoga",
+      "Nafada",
+      "Yamaltu"
+    ]
   },
   "Imo": {
     "major_cities": ["Owerri", "Orlu", "Okigwe", "Mbaise", "Oguta", "Nkwerre"]
   },
   "Jigawa": {
-    "major_cities": ["Dutse", "Hadejia", "Kazaure", "Gumel", "Babura", "Birnin Kudu", "Ringim"]
+    "major_cities": [
+      "Dutse",
+      "Hadejia",
+      "Kazaure",
+      "Gumel",
+      "Babura",
+      "Birnin Kudu",
+      "Ringim"
+    ]
   },
   "Kaduna": {
-    "major_cities": ["Kaduna", "Zaria", "Kafanchan", "Soba", "Jere", "Kachia", "Samaru"]
+    "major_cities": [
+      "Kaduna",
+      "Zaria",
+      "Kafanchan",
+      "Soba",
+      "Jere",
+      "Kachia",
+      "Samaru"
+    ]
   },
   "Kano": {
-    "major_cities": ["Kano", "Wudil", "Gaya", "Bichi", "Danbatta", "Gwarzo", "Karaye"]
+    "major_cities": [
+      "Kano",
+      "Wudil",
+      "Gaya",
+      "Bichi",
+      "Danbatta",
+      "Gwarzo",
+      "Karaye"
+    ]
   },
   "Katsina": {
-    "major_cities": ["Katsina", "Daura", "Funtua", "Malumfashi", "Mani", "Jibia", "Kankia"]
+    "major_cities": [
+      "Katsina",
+      "Daura",
+      "Funtua",
+      "Malumfashi",
+      "Mani",
+      "Jibia",
+      "Kankia"
+    ]
   },
   "Kebbi": {
-    "major_cities": ["Birnin Kebbi", "Argungu", "Yauri", "Zuru", "Jega", "Bagudo", "Bunza"]
+    "major_cities": [
+      "Birnin Kebbi",
+      "Argungu",
+      "Yauri",
+      "Zuru",
+      "Jega",
+      "Bagudo",
+      "Bunza"
+    ]
   },
   "Kogi": {
-    "major_cities": ["Lokoja", "Okene", "Idah", "Kabba", "Anyigba", "Egbe", "Ankpa"]
+    "major_cities": [
+      "Lokoja",
+      "Okene",
+      "Idah",
+      "Kabba",
+      "Anyigba",
+      "Egbe",
+      "Ankpa"
+    ]
   },
   "Kwara": {
-    "major_cities": ["Ilorin", "Offa", "Omu-Aran", "Jebba", "Lafiagi", "Kaiama", "Patigi"]
+    "major_cities": [
+      "Ilorin",
+      "Offa",
+      "Omu-Aran",
+      "Jebba",
+      "Lafiagi",
+      "Kaiama",
+      "Patigi"
+    ]
   },
   "Lagos": {
-    "major_cities": ["Ikeja", "Lagos Island", "Badagry", "Epe", "Ikorodu", "Lekki", "Ajah", "Surulere", "Yaba", "Mushin"]
+    "major_cities": [
+      "Ikeja",
+      "Lagos Island",
+      "Badagry",
+      "Epe",
+      "Ikorodu",
+      "Lekki",
+      "Ajah",
+      "Surulere",
+      "Yaba",
+      "Mushin"
+    ]
   },
   "Nasarawa": {
-    "major_cities": ["Lafia", "Keffi", "Akwanga", "Nasarawa", "Karu", "Wamba", "Toto"]
+    "major_cities": [
+      "Lafia",
+      "Keffi",
+      "Akwanga",
+      "Nasarawa",
+      "Karu",
+      "Wamba",
+      "Toto"
+    ]
   },
   "Niger": {
-    "major_cities": ["Minna", "Suleja", "Kontagora", "Bida", "Lapai", "Mokwa", "Agaie"]
+    "major_cities": [
+      "Minna",
+      "Suleja",
+      "Kontagora",
+      "Bida",
+      "Lapai",
+      "Mokwa",
+      "Agaie"
+    ]
   },
   "Ogun": {
-    "major_cities": ["Abeokuta", "Ijebu-Ode", "Sagamu", "Ota", "Ilaro", "Ifo", "Shagamu"]
+    "major_cities": [
+      "Abeokuta",
+      "Ijebu-Ode",
+      "Sagamu",
+      "Ota",
+      "Ilaro",
+      "Ifo",
+      "Shagamu"
+    ]
   },
   "Ondo": {
-    "major_cities": ["Akure", "Ondo", "Owo", "Ikare", "Okitipupa", "Ile-Oluji", "Ore"]
+    "major_cities": [
+      "Akure",
+      "Ondo",
+      "Owo",
+      "Ikare",
+      "Okitipupa",
+      "Ile-Oluji",
+      "Ore"
+    ]
   },
   "Osun": {
-    "major_cities": ["Osogbo", "Ife", "Ilesa", "Iwo", "Ejigbo", "Ikirun", "Modakeke"]
+    "major_cities": [
+      "Osogbo",
+      "Ife",
+      "Ilesa",
+      "Iwo",
+      "Ejigbo",
+      "Ikirun",
+      "Modakeke"
+    ]
   },
   "Oyo": {
-    "major_cities": ["Ibadan", "Ogbomosho", "Oyo", "Iseyin", "Okeho", "Saki", "Eruwa"]
+    "major_cities": [
+      "Ibadan",
+      "Ogbomosho",
+      "Oyo",
+      "Iseyin",
+      "Okeho",
+      "Saki",
+      "Eruwa"
+    ]
   },
   "Plateau": {
-    "major_cities": ["Jos", "Barkin Ladi", "Pankshin", "Shendam", "Mangu", "Bokkos", "Langtang"]
+    "major_cities": [
+      "Jos",
+      "Barkin Ladi",
+      "Pankshin",
+      "Shendam",
+      "Mangu",
+      "Bokkos",
+      "Langtang"
+    ]
   },
   "Rivers": {
-    "major_cities": ["Port Harcourt", "Bonny", "Ahoada", "Omoku", "Eleme", "Oyigbo", "Degema"]
+    "major_cities": [
+      "Port Harcourt",
+      "Bonny",
+      "Ahoada",
+      "Omoku",
+      "Eleme",
+      "Oyigbo",
+      "Degema"
+    ]
   },
   "Sokoto": {
-    "major_cities": ["Sokoto", "Tambuwal", "Wurno", "Illela", "Gwadabawa", "Bodinga", "Shagari"]
+    "major_cities": [
+      "Sokoto",
+      "Tambuwal",
+      "Wurno",
+      "Illela",
+      "Gwadabawa",
+      "Bodinga",
+      "Shagari"
+    ]
   },
   "Taraba": {
-    "major_cities": ["Jalingo", "Wukari", "Serti", "Bali", "Gembu", "Mutum Biyu", "Suntai"]
+    "major_cities": [
+      "Jalingo",
+      "Wukari",
+      "Serti",
+      "Bali",
+      "Gembu",
+      "Mutum Biyu",
+      "Suntai"
+    ]
   },
   "Yobe": {
-    "major_cities": ["Damaturu", "Potiskum", "Gashua", "Nguru", "Geidam", "Jakusko", "Machina"]
+    "major_cities": [
+      "Damaturu",
+      "Potiskum",
+      "Gashua",
+      "Nguru",
+      "Geidam",
+      "Jakusko",
+      "Machina"
+    ]
   },
   "Zamfara": {
-    "major_cities": ["Gusau", "Kaura Namoda", "Talata Mafara", "Tsafe", "Shinkafi", "Maru", "Bakura"]
+    "major_cities": [
+      "Gusau",
+      "Kaura Namoda",
+      "Talata Mafara",
+      "Tsafe",
+      "Shinkafi",
+      "Maru",
+      "Bakura"
+    ]
   },
   "FCT Abuja": {
-    "major_cities": ["Abuja", "Gwagwalada", "Kuje", "Bwari", "Area 1", "Karu", "Nyanya"]
+    "major_cities": [
+      "Abuja",
+      "Gwagwalada",
+      "Kuje",
+      "Bwari",
+      "Area 1",
+      "Karu",
+      "Nyanya"
+    ]
   }
 }

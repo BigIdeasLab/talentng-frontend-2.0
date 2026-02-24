@@ -19,10 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
-import {
-  getMentorSettings,
-  updateMentorSettings,
-} from "@/lib/api/mentor";
+import { getMentorSettings, updateMentorSettings } from "@/lib/api/mentor";
 import { getCurrentUser } from "@/lib/api/users";
 import { logoutAllDevices } from "@/lib/api/auth";
 import type { MentorSettings as MentorSettingsType } from "@/lib/api/mentor/types";
@@ -124,8 +121,6 @@ export function MentorSettings() {
     pushNewRequests: true,
     pushSessionReminders: true,
   });
-
-
 
   // Sync local state when API data arrives
   useEffect(() => {
@@ -392,8 +387,6 @@ export function MentorSettings() {
               </Button>
             </div>
           </SettingsSection>
-
-
 
           {/* Notification Preferences */}
           <SettingsSection
