@@ -35,8 +35,6 @@ const OnboardingPage = () => {
   >();
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [completedRoles, setCompletedRoles] = useState<string[]>([]);
-  const [isLoadingRoles, setIsLoadingRoles] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
@@ -45,66 +43,29 @@ const OnboardingPage = () => {
   const completeOnboardingMutation = useCompleteOnboarding();
   const { ensureValidTokenBeforeOperation } = useTokenRefresh();
 
-  // OAuth callback is handled by middleware
-  // Backend sets cookies directly, frontend receives redirect to onboarding
-  // No need to extract tokens from URL
-
   // Check if we're in "add role" mode
   const isAddingRole = searchParams.get("mode") === "add-role";
 
-  // Fetch completed profile statuses when in add-role mode
-  useEffect(() => {
-    if (isAddingRole) {
-      const fetchCompletedRoles = async () => {
-        setIsLoadingRoles(true);
-        const completed: string[] = [];
-
-        try {
-          const talentResponse = await getServerCurrentProfile();
-          if (talentResponse?.isProfileCreated) {
-            completed.push("talent");
-          }
-        } catch {
-          // Profile doesn't exist or error occurred
-        }
-
-        try {
-          const recruiterResponse = await getServerCurrentRecruiterProfile();
-          if (recruiterResponse?.isProfileCreated) {
-            completed.push("recruiter");
-          }
-        } catch {
-          // Profile doesn't exist or error occurred
-        }
-
-        try {
-          const mentorResponse = await getServerCurrentMentorProfile();
-          if (mentorResponse?.isProfileCreated) {
-            completed.push("mentor");
-          }
-        } catch {
-          // Profile doesn't exist or error occurred
-        }
-
-        setCompletedRoles(completed);
-        setIsLoadingRoles(false);
-      };
-
-      fetchCompletedRoles();
-    }
-  }, [isAddingRole]);
-
-  // Get existing roles from query params (passed from ProfileSwitcher) or user data
-  // These are just the roles the user has permission to use
+  // Get existing roles from query params or user data
   const rolesFromParams = searchParams.get("roles");
-  const userRoles = rolesFromParams
-    ? rolesFromParams.split(",").map((role) => role.toLowerCase())
-    : (user?.roles || []).map((role) => role.toLowerCase());
+  const userRoles = (
+    rolesFromParams
+      ? rolesFromParams.split(",").map((role) => role.toLowerCase())
+      : (user?.roles || []).map((role) => role.toLowerCase())
+  ).filter((role) => role && role !== "");
 
-  // Only show completed roles (those with isProfileCreated: true)
-  // This should be updated based on profile data from useProfileData
-  // For now, just use userRoles as fallback
-  const existingRoles = userRoles;
+  const [completedRoles, setCompletedRoles] = useState<string[]>(userRoles);
+  const [isLoadingRoles, setIsLoadingRoles] = useState(false);
+
+  // Sync completedRoles if userRoles or isAddingRole changes
+  useEffect(() => {
+    if (userRoles.length > 0) {
+      setCompletedRoles(userRoles);
+    }
+  }, [userRoles.join(","), isAddingRole]);
+
+  // Unified list of existing roles for the role selection step
+  const existingRoles = Array.from(new Set([...userRoles, ...completedRoles]));
 
   const handleRoleSelect = (role: Role) => {
     setSelectedRole(role);

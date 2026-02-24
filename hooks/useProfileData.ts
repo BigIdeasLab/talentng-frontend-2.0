@@ -6,6 +6,7 @@ import { getServerCurrentRecruiterProfile } from "@/lib/api/recruiter/server";
 import { getServerCurrentMentorProfile } from "@/lib/api/mentor/server";
 import { mapAPIToUI } from "@/lib/profileMapper";
 import { useProfile } from "./useProfile";
+import { useAuth } from "./useAuth";
 import { getAccessToken, decodeToken } from "@/lib/auth";
 import type { TalentProfile } from "@/lib/api/talent/types";
 import type { RecruiterProfile } from "@/lib/api/recruiter/types";
@@ -14,12 +15,10 @@ import type { MentorProfile } from "@/lib/api/mentor/types";
 /**
  * Hook to fetch profile data client-side after user is authenticated.
  *
- * The JWT is the SINGLE source of truth for:
- *   - `roles`  → all roles the user possesses  (JWT claim `roles`)
- *   - `act`    → the currently active role       (JWT claim `act`)
- *
- * localStorage / cookies are kept in sync as a cache for SSR & middleware,
- * but they are never trusted over the JWT.
+ * Strategy (Unified Identity):
+ *   - Use `user` object roles/profiles from /users/me as the authoritative source.
+ *   - Only fetch the FULL profile for the currently active role (avoids 403).
+ *   - Fall back to JWT claims, then localStorage for role detection.
  */
 export function useProfileData() {
   const {
@@ -31,8 +30,14 @@ export function useProfileData() {
     setUserRoles,
   } = useProfile();
 
+  const { user } = useAuth();
+
+  // Use refs to read current values inside the callback without causing re-renders
   const activeRoleRef = useRef(activeRole);
   activeRoleRef.current = activeRole;
+
+  const userRef = useRef(user);
+  userRef.current = user;
 
   const fetchProfiles = useCallback(async () => {
     // Check if user is authenticated
@@ -43,15 +48,14 @@ export function useProfileData() {
     }
 
     try {
-      // ── Step 1: Decode JWT — the SINGLE source of truth ─────────────────
+      const currentUser = userRef.current;
+
+      // ── Step 1: Decode JWT ───────────────────────────────────────────────
       const decoded = decodeToken(accessToken);
 
-      // All roles the user has (from the JWT `roles` array)
       const jwtRoles: string[] = (decoded?.roles || []).map((r: string) =>
         r.trim().toLowerCase(),
       );
-
-      // The currently active role (from the JWT `act` claim)
       const jwtActiveRole: string | null =
         decoded?.act || decoded?.activeRole || decoded?.active_role || null;
 
@@ -59,10 +63,16 @@ export function useProfileData() {
         `[useProfileData] JWT → act: ${jwtActiveRole}, roles: [${jwtRoles.join(", ")}]`,
       );
 
-      // ── Step 2: Sync roles to context + localStorage cache ──────────────
-      // If we have roles from the JWT, always use those (authoritative).
-      // Fall back to localStorage only if the JWT didn't include a roles array.
-      let userRoles = jwtRoles;
+      // ── Step 2: Determine user roles ─────────────────────────────────────
+      // PRIORITY:
+      // 1. User object roles (freshest after onboarding - queryClient.setQueryData is immediate)
+      // 2. JWT roles
+      // 3. localStorage fallback
+      let userRoles = (
+        (currentUser?.roles && currentUser.roles.length > 0)
+          ? currentUser.roles
+          : jwtRoles
+      ).map((r: string) => r.trim().toLowerCase());
 
       if (userRoles.length === 0) {
         const stored = localStorage.getItem("userRoles");
@@ -79,7 +89,6 @@ export function useProfileData() {
       // ── Step 3: Determine the active role ───────────────────────────────
       let currentActiveRole: string | null = jwtActiveRole;
 
-      // If JWT has no `act` claim, fall back to context → localStorage → cookie → first role
       if (!currentActiveRole) {
         currentActiveRole =
           activeRoleRef.current || localStorage.getItem("activeRole") || null;
@@ -116,82 +125,72 @@ export function useProfileData() {
         return;
       }
 
-      // ── Step 4: Fetch the profile for the active role ───────────────────
-      console.log(
-        `[useProfileData] Fetching profile for role: ${currentActiveRole}`,
-      );
-
-      let talentProfile = null;
-      let recruiterProfile = null;
-      let mentorProfile = null;
-
-      // Guard with the roles we derived above (JWT first, then localStorage)
-      const rolesGuard = userRoles.length > 0 ? userRoles : [currentActiveRole];
-
-      if (currentActiveRole === "talent" && rolesGuard.includes("talent")) {
-        talentProfile = await getServerCurrentProfile().catch((e) => {
-          console.error(
-            "[useProfileData] talent profile fetch failed:",
-            e?.message,
-          );
-          return null;
-        });
-      } else if (
-        currentActiveRole === "recruiter" &&
-        rolesGuard.includes("recruiter")
-      ) {
-        recruiterProfile = await getServerCurrentRecruiterProfile().catch(
-          (e) => {
-            console.error(
-              "[useProfileData] recruiter profile fetch failed:",
-              e?.message,
-            );
-            return null;
-          },
-        );
-      } else if (
-        currentActiveRole === "mentor" &&
-        rolesGuard.includes("mentor")
-      ) {
-        mentorProfile = await getServerCurrentMentorProfile().catch((e) => {
-          console.error(
-            "[useProfileData] mentor profile fetch failed:",
-            e?.message,
-          );
-          return null;
-        });
-      }
-
-      // ── Step 5: Build and set profile state ─────────────────────────────
+      // ── Step 4: Populate basic info from User object (Unified Identity) ──
+      // Read from user object directly — avoids stale closure issues.
+      // This provides name/avatar for ALL roles in the switcher without 403s.
       const profiles: Record<
         string,
         TalentProfile | RecruiterProfile | MentorProfile | null
       > = {};
       const profilesUI: Record<string, any> = {};
-      const availableRoles: string[] = [];
 
-      if (talentProfile?.isProfileCreated && talentProfile?.profile) {
-        profiles.talent = talentProfile.profile;
-        profilesUI.talent = mapAPIToUI(talentProfile.profile);
-        availableRoles.push("talent");
+      if (currentUser) {
+        if (currentUser.talentProfile) {
+          profiles.talent = currentUser.talentProfile;
+          profilesUI.talent = mapAPIToUI(currentUser.talentProfile);
+        }
+        if (currentUser.recruiterProfile) {
+          profiles.recruiter = currentUser.recruiterProfile;
+          profilesUI.recruiter = mapAPIToUI(currentUser.recruiterProfile);
+        }
+        if (currentUser.mentorProfile) {
+          profiles.mentor = currentUser.mentorProfile;
+          profilesUI.mentor = mapAPIToUI(currentUser.mentorProfile);
+        }
       }
 
-      if (recruiterProfile?.isProfileCreated && recruiterProfile?.profile) {
-        profiles.recruiter = recruiterProfile.profile;
-        profilesUI.recruiter = mapAPIToUI(recruiterProfile.profile);
-        availableRoles.push("recruiter");
+      // ── Step 5: Fetch FULL profile for the active role ───────────────────
+      // This enriches the active profile with data not included in /users/me.
+      console.log(
+        `[useProfileData] Fetching full profile for active role: ${currentActiveRole}`,
+      );
+
+      let activeProfileData = null;
+      if (currentActiveRole === "talent") {
+        activeProfileData = await getServerCurrentProfile().catch((e) => {
+          console.error("[useProfileData] talent fetch failed:", e?.message);
+          return null;
+        });
+      } else if (currentActiveRole === "recruiter") {
+        activeProfileData = await getServerCurrentRecruiterProfile().catch(
+          (e) => {
+            console.error("[useProfileData] recruiter fetch failed:", e?.message);
+            return null;
+          },
+        );
+      } else if (currentActiveRole === "mentor") {
+        activeProfileData = await getServerCurrentMentorProfile().catch((e) => {
+          console.error("[useProfileData] mentor fetch failed:", e?.message);
+          return null;
+        });
       }
 
-      if (mentorProfile?.isProfileCreated && mentorProfile?.profile) {
-        profiles.mentor = mentorProfile.profile;
-        profilesUI.mentor = mapAPIToUI(mentorProfile.profile);
-        availableRoles.push("mentor");
+      // Override the session-level data with the full profile for the active role
+      if (activeProfileData?.isProfileCreated && activeProfileData?.profile) {
+        profiles[currentActiveRole] = activeProfileData.profile;
+        profilesUI[currentActiveRole] = mapAPIToUI(activeProfileData.profile);
       }
 
+      // ── Step 6: Set final profile state ──────────────────────────────────
       setProfiles(profiles);
       setProfilesUI(profilesUI);
 
       // Only override activeRole if the current one's profile wasn't found
+      const availableRoles = Object.keys(profiles).filter((role) => {
+        const p = profiles[role] as any;
+        return !!p && typeof p === "object" && ("id" in p || "username" in p);
+      });
+
       if (
         availableRoles.length > 0 &&
         !availableRoles.includes(currentActiveRole)
@@ -204,11 +203,29 @@ export function useProfileData() {
       setIsLoading(false);
     }
   }, [setProfiles, setProfilesUI, setActiveRole, setIsLoading, setUserRoles]);
+  // NOTE: We intentionally exclude `user` and `activeRole` from deps here.
+  // We read them via refs (userRef, activeRoleRef) to avoid infinite re-render loops.
+  // Instead, we set up a separate effect below that re-runs fetchProfiles when user changes.
 
-  // Fetch profiles on mount
+  // Re-run whenever user changes (e.g., after onboarding sets queryClient data)
+  const prevUserRef = useRef<string | null>(null);
   useEffect(() => {
-    fetchProfiles();
-  }, [fetchProfiles]);
+    const currentId = user?.id ?? null;
+    const currentRoles = user?.roles?.join(",") ?? null;
+    const key = `${currentId}:${currentRoles}`;
+
+    if (key !== prevUserRef.current) {
+      prevUserRef.current = key;
+      fetchProfiles();
+    }
+  }, [user, fetchProfiles]);
+
+  // Also fetch on mount if user is not yet available
+  useEffect(() => {
+    if (!user) {
+      fetchProfiles();
+    }
+  }, [fetchProfiles]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return { fetchProfiles };
 }

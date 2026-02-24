@@ -36,15 +36,22 @@ export interface ProfileContextType {
     TalentProfile | RecruiterProfile | MentorProfile | null
   >;
   setProfiles: (
-    profiles: Record<
-      string,
-      TalentProfile | RecruiterProfile | MentorProfile | null
-    >,
+    profiles:
+      | Record<string, TalentProfile | RecruiterProfile | MentorProfile | null>
+      | ((
+          prev: Record<string, TalentProfile | RecruiterProfile | MentorProfile | null>,
+        ) => Record<string, TalentProfile | RecruiterProfile | MentorProfile | null>),
   ) => void;
 
   // Mapped UI data by role
   profilesUI: Record<string, UIProfileData | null>;
-  setProfilesUI: (profilesUI: Record<string, UIProfileData | null>) => void;
+  setProfilesUI: (
+    profilesUI:
+      | Record<string, UIProfileData | null>
+      | ((
+          prev: Record<string, UIProfileData | null>,
+        ) => Record<string, UIProfileData | null>),
+  ) => void;
 
   // Stats by role
   stats: Record<string, DashboardStats | any>;
