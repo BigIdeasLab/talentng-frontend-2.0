@@ -111,7 +111,13 @@ export function DiscoverTalentClient({
   };
 
   const handleNextPage = () => {
-    fetchTalents(searchQuery, selectedCategory, filters, offset + LIMIT, sortBy);
+    fetchTalents(
+      searchQuery,
+      selectedCategory,
+      filters,
+      offset + LIMIT,
+      sortBy,
+    );
   };
 
   const handlePreviousPage = () => {
