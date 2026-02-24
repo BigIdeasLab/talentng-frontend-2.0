@@ -34,12 +34,6 @@ export function OpportunityCard({
     | "mentor";
   const hasAppliedAsCurrentRole =
     opportunity.appliedAs?.includes(currentProfileType) ?? false;
-  console.log("[OpportunityCard]", {
-    opportunityId: opportunity.id,
-    appliedAs: opportunity.appliedAs,
-    currentProfileType,
-    hasAppliedAsCurrentRole,
-  });
   const [isApplied, setIsApplied] = useState(hasAppliedAsCurrentRole);
   const [isSaved, setIsSaved] = useState(opportunity.saved ?? false);
 

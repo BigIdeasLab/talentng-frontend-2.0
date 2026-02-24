@@ -61,18 +61,29 @@ export function OpportunitiesClient({
   const [error, setError] = useState<string | null>(initialError);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialLoadRef = useRef(true);
+  const fetchIdRef = useRef(0);
 
   useEffect(() => {
     fetchOpportunitiesWithFilters(0);
   }, []);
 
   const fetchOpportunitiesWithFilters = useCallback(
-    async (pageOffset: number = 0, filterType?: FilterType) => {
+    async (
+      pageOffset: number = 0,
+      filterType?: FilterType,
+      overrideSearchQuery?: string,
+      overrideFilters?: OpportunitiesFilterState | null,
+    ) => {
+      const currentFetchId = ++fetchIdRef.current;
+
       // Only show loading skeleton on initial load, not on filter changes
       if (isInitialLoadRef.current) {
         setIsLoading(true);
       }
       setError(null);
+
+      const query = overrideSearchQuery ?? searchQuery;
+      const filters = overrideFilters !== undefined ? overrideFilters : appliedFilters;
       const filter = filterType ?? activeFilter;
 
       try {
@@ -82,14 +93,18 @@ export function OpportunitiesClient({
           pagination: newPagination,
           error: fetchError,
         } = await getOpportunitiesData({
-          searchQuery,
+          searchQuery: query,
           limit: LIMIT,
           offset: pageOffset,
           type: filter === "all" || filter === "applied" ? undefined : filter,
-          category: appliedFilters?.categories?.join(","),
-          skills: appliedFilters?.skills?.join(","),
-          location: appliedFilters?.location,
+          category: filters?.categories?.join(","),
+          tags: filters?.skills?.join(","),
+          location: filters?.location,
+          experienceLevel: filters?.experienceLevels?.join(","),
         });
+
+        // Discard stale responses (e.g. from React Strict Mode double-mount)
+        if (currentFetchId !== fetchIdRef.current) return;
 
         // Filter by "applied" status if that's the active filter (based on current profile type)
         const filtered =
@@ -112,7 +127,7 @@ export function OpportunitiesClient({
         setIsLoading(false);
       }
     },
-    [searchQuery, activeFilter],
+    [searchQuery, activeFilter, appliedFilters, currentProfileType],
   );
 
   const handleSearch = async (query: string) => {
@@ -123,8 +138,11 @@ export function OpportunitiesClient({
     }
 
     searchTimeoutRef.current = setTimeout(() => {
-      fetchOpportunitiesWithFilters(0);
-    }, 300);
+      // Only trigger search API with min 2 characters (or empty to clear)
+      if (query.length >= 2 || query.length === 0) {
+        fetchOpportunitiesWithFilters(0, undefined, query);
+      }
+    }, 400);
   };
 
   const handleFilterChange = (filter: FilterType) => {
@@ -194,7 +212,7 @@ export function OpportunitiesClient({
             onApply={(filters) => {
               setAppliedFilters(filters);
               setIsFilterOpen(false);
-              fetchOpportunitiesWithFilters(0);
+              fetchOpportunitiesWithFilters(0, undefined, undefined, filters);
             }}
             availableSkills={[]}
             initialFilters={appliedFilters || undefined}

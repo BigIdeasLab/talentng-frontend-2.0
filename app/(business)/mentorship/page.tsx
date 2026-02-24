@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { Search, SlidersHorizontal, Loader2 } from "lucide-react";
 import { MentorGridSkeleton } from "@/components/talent/mentorship/MentorCardSkeleton";
 import { MentorshipHeader } from "@/components/talent/mentorship/MentorshipHeader";
@@ -9,6 +9,10 @@ import {
   MenteeSessionCard,
   MenteeSessionStatus,
 } from "@/components/talent/mentorship/MenteeSessionCard";
+import {
+  MentorFilterModal,
+  type MentorFilterState,
+} from "@/components/talent/mentorship/MentorFilterModal";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import {
   listMentors,
@@ -149,27 +153,65 @@ export default function MentorshipPage() {
     null,
   );
   const [cancellingSession, setCancellingSession] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [appliedFilters, setAppliedFilters] =
+    useState<MentorFilterState | null>(null);
 
   const hasAccess = useRequireRole(["talent"]);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const fetchIdRef = useRef(0);
 
-  useEffect(() => {
-    if (!hasAccess) return;
-    async function fetchMentors() {
+  const fetchMentors = useCallback(
+    async (query?: string, category?: string, filtersOverride?: MentorFilterState | null) => {
+      if (!hasAccess) return;
+      const currentFetchId = ++fetchIdRef.current;
+
       try {
         setMentorsLoading(true);
-        const data = await listMentors();
+        const searchQ = query !== undefined ? query : searchQuery;
+        const filters = filtersOverride !== undefined ? filtersOverride : appliedFilters;
+        
+        // Category chips override/update the expertise filter
+        const expertise = category !== undefined 
+          ? (category ? [category] : []) 
+          : filters?.expertise;
+
+        const data = await listMentors({
+          ...(searchQ && searchQ.length >= 2 && { q: searchQ }),
+          ...(expertise && expertise.length > 0 && { expertise: expertise.join(",") }),
+          ...(filters?.industries && filters.industries.length > 0 && { industries: filters.industries.join(",") }),
+          ...(filters?.stack && filters.stack.length > 0 && { stack: filters.stack.join(",") }),
+          ...(filters?.location && { location: filters.location }),
+          ...(filters?.sortBy && { sortBy: filters.sortBy }),
+          limit: 20,
+          offset: 0,
+        });
+
+        // Discard stale responses
+        if (currentFetchId !== fetchIdRef.current) return;
+
+        // Handle both paginated and array response formats
         const raw = data as unknown;
-        const mentorsArray = (Array.isArray(raw) ? raw : []) as Record<
-          string,
-          unknown
-        >[];
+        let mentorsArray: Record<string, unknown>[];
+        if (Array.isArray(raw)) {
+          mentorsArray = raw;
+        } else if (raw && typeof raw === "object" && "data" in raw) {
+          mentorsArray = (raw as any).data || [];
+        } else {
+          mentorsArray = [];
+        }
         setMentors(mentorsArray.map(mapApiMentorToDisplay));
       } catch (error) {
+        if (currentFetchId !== fetchIdRef.current) return;
         console.error("Failed to load mentors:", error);
       } finally {
         setMentorsLoading(false);
       }
-    }
+    },
+    [hasAccess, searchQuery, appliedFilters, activeCategory],
+  );
+
+  useEffect(() => {
     fetchMentors();
   }, [hasAccess]);
 
@@ -192,26 +234,40 @@ export default function MentorshipPage() {
     fetchSessions();
   }, [hasAccess]);
 
-  const filteredMentors = useMemo(() => {
-    let filtered = mentors;
+  const handleMentorSearch = (query: string) => {
+    setSearchQuery(query);
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+    searchTimeoutRef.current = setTimeout(() => {
+      if (query.length >= 2 || query.length === 0) {
+        fetchMentors(query);
+      }
+    }, 400);
+  };
 
-    if (activeCategory) {
-      filtered = filtered.filter((mentor) =>
-        mentor.expertise.includes(activeCategory),
-      );
+  const handleCategoryChange = (category: string) => {
+    const newCategory = category === "All" ? "" : category;
+    setActiveCategory(newCategory);
+    
+    // Also update applied filters for consistency
+    const updatedFilters = {
+      ...(appliedFilters || { industries: [], stack: [], expertise: [] }),
+      expertise: newCategory ? [newCategory] : []
+    };
+    setAppliedFilters(updatedFilters);
+    
+    fetchMentors(undefined, undefined, updatedFilters);
+  };
+
+  const handleApplyFilters = (filters: MentorFilterState) => {
+    setAppliedFilters(filters);
+    // Sync active category if only one expertise is selected
+    if (filters.expertise.length === 1) {
+      setActiveCategory(filters.expertise[0]);
+    } else {
+      setActiveCategory("");
     }
-
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (mentor) =>
-          mentor.name.toLowerCase().includes(query) ||
-          mentor.title.toLowerCase().includes(query),
-      );
-    }
-
-    return filtered;
-  }, [mentors, searchQuery, activeCategory]);
+    fetchMentors(undefined, undefined, filters);
+  };
 
   const filteredSessions = useMemo(() => {
     let filtered = sessions;
@@ -360,19 +416,28 @@ export default function MentorshipPage() {
               type="text"
               placeholder="Search mentors, topics..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => handleMentorSearch(e.target.value)}
               className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
             />
           </div>
 
           <button
-            onClick={() => toast("Advanced filters are coming soon!")}
-            className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] flex-shrink-0 hover:bg-gray-100 transition-colors"
+            onClick={() => setIsFilterOpen(true)}
+            className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
+              appliedFilters && (appliedFilters.expertise.length > 0 || appliedFilters.industries.length > 0 || appliedFilters.stack.length > 0 || appliedFilters.location || appliedFilters.sortBy)
+                ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
+                : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
+            }`}
           >
-            <SlidersHorizontal className="w-[15px] h-[15px] text-black" />
-            <span className="text-[13px] font-normal text-black font-inter-tight">
+            <SlidersHorizontal className="w-[15px] h-[15px]" />
+            <span className="text-[13px] font-normal font-inter-tight">
               Filter
             </span>
+            {appliedFilters && (appliedFilters.expertise.length + appliedFilters.industries.length + appliedFilters.stack.length + (appliedFilters.location ? 1 : 0) + (appliedFilters.sortBy ? 1 : 0)) > 0 && (
+              <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                {appliedFilters.expertise.length + appliedFilters.industries.length + appliedFilters.stack.length + (appliedFilters.location ? 1 : 0) + (appliedFilters.sortBy ? 1 : 0)}
+              </span>
+            )}
           </button>
         </div>
 
@@ -382,7 +447,7 @@ export default function MentorshipPage() {
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
-                onClick={() => setActiveCategory(cat === "All" ? "" : cat)}
+                onClick={() => handleCategoryChange(cat === "All" ? "" : cat)}
                 className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors font-inter-tight text-[13px] ${
                   (activeCategory === "" && cat === "All") ||
                   activeCategory === cat
@@ -429,13 +494,13 @@ export default function MentorshipPage() {
         {/* Find Mentors Tab Content */}
         {activeTab === "Find Mentors" && (
           <div className="flex flex-col gap-5">
-            <MentorshipHeader />
+            {/* <MentorshipHeader /> */}
 
             {mentorsLoading ? (
               <MentorGridSkeleton />
             ) : (
               <div id="mentors">
-                <MentorGrid mentors={filteredMentors} />
+                <MentorGrid mentors={mentors} />
               </div>
             )}
           </div>
@@ -481,7 +546,6 @@ export default function MentorshipPage() {
         )}
       </div>
 
-      {/* Cancel Session Modal */}
       <ConfirmationModal
         isOpen={cancelModalOpen}
         onClose={() => setCancelModalOpen(false)}
@@ -490,6 +554,13 @@ export default function MentorshipPage() {
         description="Are you sure you want to cancel this session? This action cannot be undone."
         confirmText="Yes, Cancel"
         type="danger"
+      />
+
+      <MentorFilterModal
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        onApply={handleApplyFilters}
+        initialFilters={appliedFilters || undefined}
       />
     </div>
   );

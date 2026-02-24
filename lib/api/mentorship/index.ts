@@ -40,12 +40,34 @@ import type { MentorDashboardResponse } from "./dashboard-types";
 
 // ============ Discovery (Public) - /mentors ============
 
+export interface ListMentorsParams {
+  q?: string;
+  expertise?: string;
+  industries?: string;
+  location?: string;
+  stack?: string;
+  isFeatured?: boolean;
+  sortBy?: string;
+  limit?: number;
+  offset?: number;
+}
+
 /**
- * List all available mentors
- * GET /mentors
+ * List all available mentors (talent browsing)
+ * GET /talent/mentors
  */
-export async function listMentors(): Promise<PublicMentor[]> {
-  return apiClient<PublicMentor[]>("/mentors");
+export async function listMentors(params?: ListMentorsParams): Promise<PaginatedResponse<PublicMentor> | PublicMentor[]> {
+  const query = new URLSearchParams();
+  if (params) {
+    for (const [key, value] of Object.entries(params)) {
+      if (value !== undefined && value !== null) {
+        query.append(key, String(value));
+      }
+    }
+  }
+  const queryString = query.toString();
+  const endpoint = `/talent/mentors${queryString ? `?${queryString}` : ""}`;
+  return apiClient<PaginatedResponse<PublicMentor> | PublicMentor[]>(endpoint);
 }
 
 /**

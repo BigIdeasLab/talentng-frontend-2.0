@@ -43,22 +43,24 @@ export function SearchBar({
       </div>
 
       {/* Filter Button */}
-      <div className="relative">
-        <button
-          onClick={onFilterClick}
-          className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] flex-shrink-0 relative hover:bg-gray-100 transition-colors"
-        >
-          <SlidersHorizontal className="w-[15px] h-[15px] text-black" />
-          <span className="text-[13px] font-normal text-black font-inter-tight">
-            Filter
+      <button
+        onClick={onFilterClick}
+        className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
+          filterCount > 0
+            ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
+            : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
+        }`}
+      >
+        <SlidersHorizontal className="w-[15px] h-[15px]" />
+        <span className="text-[13px] font-normal font-inter-tight">
+          Filter
+        </span>
+        {filterCount > 0 && (
+          <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+            {filterCount}
           </span>
-          {filterCount > 0 && (
-            <div className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold">
-              {filterCount}
-            </div>
-          )}
-        </button>
-      </div>
+        )}
+      </button>
     </div>
   );
 }

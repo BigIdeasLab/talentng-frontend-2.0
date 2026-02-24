@@ -1,4 +1,4 @@
-import { getOpportunities } from "@/lib/api/opportunities";
+import { getTalentOpportunities } from "@/lib/api/opportunities";
 import type { DisplayOpportunity } from "@/components/talent/opportunities/types";
 
 export type OpportunityData = DisplayOpportunity;
@@ -42,22 +42,35 @@ export async function getOpportunitiesData(params?: {
   offset?: number;
   type?: string;
   category?: string;
-  skills?: string;
+  tags?: string;
   location?: string;
+  experienceLevel?: string;
 }): Promise<OpportunitiesResponse> {
   try {
-    const response = await getOpportunities({
+    const response = await getTalentOpportunities({
       status: "active",
       limit: params?.limit || 20,
       offset: params?.offset || 0,
       ...(params?.searchQuery && { q: params.searchQuery }),
       ...(params?.type && { type: params.type }),
       ...(params?.category && { category: params.category }),
-      ...(params?.skills && { skills: params.skills }),
+      ...(params?.tags && { tags: params.tags }),
       ...(params?.location && { location: params.location }),
+      ...(params?.experienceLevel && { experienceLevel: params.experienceLevel }),
     });
 
-    const opportunities: OpportunityData[] = (response.data || []).map(
+    console.log("[Opportunities] API response:", JSON.stringify({
+      dataLength: response?.data?.length,
+      pagination: response?.pagination,
+      rawKeys: Object.keys(response || {}),
+    }));
+
+    // Handle different response structures (object with .data or raw array)
+    const rawData = Array.isArray(response)
+      ? response
+      : response?.data || (response as any)?.opportunities || [];
+
+    const opportunities: OpportunityData[] = rawData.map(
       (opp: any) => ({
         id: opp.id || "",
         companyName:
@@ -84,7 +97,7 @@ export async function getOpportunitiesData(params?: {
 
     return {
       opportunities,
-      pagination: response.pagination || {
+      pagination: (!Array.isArray(response) && response.pagination) || {
         currentPage: 1,
         totalPages: 1,
         hasNextPage: false,
