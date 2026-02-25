@@ -2,6 +2,7 @@
 
 import { useCallback } from "react";
 import { usePageData, PageLoadingState } from "@/lib/page-utils";
+import { useSearchParams } from "next/navigation";
 import { useProfile } from "@/hooks/useProfile";
 import { mapAPIToUI } from "@/lib/profileMapper";
 import { fetchProfileByRole } from "@/lib/api/profile-service";
@@ -12,6 +13,8 @@ import { MentorProfile } from "@/components/mentor/profile/MentorProfile";
 
 export default function ProfilePage() {
   const { activeRole } = useProfile();
+  const searchParams = useSearchParams();
+  const initialTab = searchParams.get("tab") || "works";
   const role = activeRole || "talent";
 
   const transform = useCallback(
@@ -115,6 +118,7 @@ export default function ProfilePage() {
           profileCompleteness={talentCompleteness}
           views={talentViews}
           visibility={talentVisibility}
+          initialTab={initialTab}
         />
       );
     }

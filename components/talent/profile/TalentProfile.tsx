@@ -31,6 +31,7 @@ interface TalentProfileProps {
   profileCompleteness?: number;
   views?: number;
   visibility?: "public" | "private";
+  initialTab?: string;
 }
 
 const DEFAULT_PROFILE_DATA: UIProfileData = {
@@ -79,9 +80,10 @@ export function TalentProfile({
   profileCompleteness = 0,
   views = 0,
   visibility = "public",
+  initialTab = "works",
 }: TalentProfileProps) {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState("works");
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [currentVisibility, setCurrentVisibility] = useState(visibility);
   const [profileData, setProfileData] = useState<UIProfileData>(
     initialProfileData || DEFAULT_PROFILE_DATA,

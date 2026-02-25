@@ -29,7 +29,7 @@ export interface TalentDashboardStats {
   };
   timesHired: {
     value: number;
-    totalEarned: number;
+    savedOpportunities: number;
   };
   profileScore: {
     value: number;
@@ -100,7 +100,7 @@ export type AchievementKey =
   | "rising_star"
   | "first_hire"
   | "team_player"
-  | "top_earner";
+  | "top_collector";
 
 export interface Achievement {
   id: string;

@@ -1,4 +1,4 @@
-import { Eye, Briefcase, CheckCircle, Target } from "lucide-react";
+import { Eye, Briefcase, Bookmark, Target } from "lucide-react";
 import Link from "next/link";
 import type { TalentDashboardStats } from "@/lib/api/talent";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
@@ -156,14 +156,14 @@ export function StatCards({ stats }: StatCardsProps) {
     {
       title: "Times Hired",
       value: stats.timesHired.value.toString(),
-      subtitle: `${formatCurrency(stats.timesHired.totalEarned)} earned`,
-      icon: <CheckCircle className="w-5 h-5" />,
+      subtitle: `${stats.timesHired.savedOpportunities} saved opportunities`,
+      icon: <Bookmark className="w-5 h-5" />,
       gradientStyle: {
         background: `linear-gradient(to bottom right, ${ROLE_COLORS.talent.dark}14, white)`,
       },
       iconBg: "bg-[#DBE9FE]",
       iconColorStyle: { color: ROLE_COLORS.talent.dark },
-      href: "/my-applications",
+      href: "/profile?tab=opportunities",
     },
     {
       title: "Profile Score",

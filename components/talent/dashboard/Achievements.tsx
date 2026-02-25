@@ -1,4 +1,4 @@
-import { Award, Star, CheckCircle, Users } from "lucide-react";
+import { Award, Star, Bookmark, Users, CheckCircle } from "lucide-react";
 import type { Achievement, AchievementKey } from "@/lib/api/talent";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { cardHover } from "@/lib/theme/effects";
@@ -80,9 +80,9 @@ const achievementConfig: Record<
     bgColorStyle: ROLE_COLORS.talent.light,
     iconBgColor: ROLE_COLORS.talent.dark,
   },
-  top_earner: {
-    icon: <Award className="w-3.5 h-3.5 text-white" />,
-    iconLocked: <Award className="w-3.5 h-3.5 text-[#B5B8BE]" />,
+  top_collector: {
+    icon: <Bookmark className="w-3.5 h-3.5 text-white" />,
+    iconLocked: <Bookmark className="w-3.5 h-3.5 text-[#B5B8BE]" />,
     bgColor: "bg-[#FCFCFB]",
     iconBg: "bg-[#F6BC3F]",
   },
