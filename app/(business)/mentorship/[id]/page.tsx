@@ -96,6 +96,7 @@ export default function MentorDetailPage() {
           stack: (raw.stack as string[]) || [],
           links: (raw.links as Record<string, string>) || null,
           company: (raw.company as string) || null,
+          category: (raw.category as string) || null,
           sessionDuration: (raw.sessionDuration as number) || 60,
           bufferTime: (raw.bufferTime as number) || 15,
           timezone: (raw.timezone as string) || "WAT",
@@ -728,6 +729,10 @@ export default function MentorDetailPage() {
                       {
                         label: "Location",
                         values: mentor.location ? [mentor.location] : [],
+                      },
+                      {
+                        label: "Category",
+                        values: mentor.category ? [mentor.category] : [],
                       },
                       { label: "Expertise", values: mentor.expertise || [] },
                       { label: "Industries", values: mentor.industries || [] },

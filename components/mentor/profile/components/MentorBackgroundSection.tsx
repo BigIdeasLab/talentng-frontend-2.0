@@ -11,6 +11,7 @@ interface MentorBackgroundSectionProps {
   expertise?: string[];
   industries?: string[];
   languages?: string[];
+  category?: string;
 }
 
 export function MentorBackgroundSection({
@@ -19,6 +20,7 @@ export function MentorBackgroundSection({
   expertise = [],
   industries = [],
   languages = [],
+  category = "",
 }: MentorBackgroundSectionProps) {
   const fields: BackgroundField[] = [
     {
@@ -28,6 +30,10 @@ export function MentorBackgroundSection({
     {
       label: "Location",
       values: location ? [location] : [],
+    },
+    {
+      label: "Category",
+      values: category ? [category] : [],
     },
     {
       label: "Expertise",

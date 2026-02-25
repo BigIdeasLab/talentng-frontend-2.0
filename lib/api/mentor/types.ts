@@ -9,6 +9,7 @@ export interface MentorProfile {
   userId: string;
   username: string;
   fullName: string | null;
+  category: string | null;
   headline: string | null;
   expertise: string[];
   industries: string[];
@@ -55,6 +56,7 @@ export interface MentorProfile {
 
 export interface UpdateMentorProfileInput {
   fullName?: string;
+  category?: string;
   headline?: string;
   expertise?: string[];
   mentorshipTopics?: string[];

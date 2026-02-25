@@ -45,6 +45,7 @@ export interface ListMentorsParams {
   expertise?: string;
   industries?: string;
   location?: string;
+  category?: string;
   stack?: string;
   isFeatured?: boolean;
   sortBy?: string;
@@ -56,7 +57,9 @@ export interface ListMentorsParams {
  * List all available mentors (talent browsing)
  * GET /talent/mentors
  */
-export async function listMentors(params?: ListMentorsParams): Promise<PaginatedResponse<PublicMentor> | PublicMentor[]> {
+export async function listMentors(
+  params?: ListMentorsParams,
+): Promise<PaginatedResponse<PublicMentor> | PublicMentor[]> {
   const query = new URLSearchParams();
   if (params) {
     for (const [key, value] of Object.entries(params)) {

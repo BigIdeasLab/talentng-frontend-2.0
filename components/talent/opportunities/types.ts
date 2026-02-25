@@ -27,6 +27,8 @@ export interface DisplayOpportunity {
   maxBudget?: string | number;
   price?: string | number;
   paymentType?: "hourly" | "weekly" | "monthly";
+  location?: string;
+  experienceLevel?: string;
   duration?: string;
 }
 

@@ -266,6 +266,7 @@ export interface PublicMentor {
   links: Record<string, string> | null;
   sessionDuration: number;
   rating: number;
+  category?: string | null;
   totalReviews: number;
   totalSessions: number;
 }

@@ -11,6 +11,7 @@ type MentorExpertiseFormData = {
   expertise: string[];
   stack: string[];
   languages: string[];
+  category: string;
 };
 
 const industriesOptions = [
@@ -81,12 +82,14 @@ export const MentorExpertiseStep = ({
   isLoading,
   profileData,
   profileImage,
+  availableCategories = [],
 }: {
   onNext: (data: MentorExpertiseFormData) => void;
   onBack: () => void;
   isLoading?: boolean;
   profileData?: { firstName?: string; lastName?: string };
   profileImage?: File;
+  availableCategories?: string[];
 }) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -105,6 +108,7 @@ export const MentorExpertiseStep = ({
     expertise: [],
     stack: [],
     languages: [],
+    category: "",
   });
 
   const [errors, setErrors] = useState<{
@@ -113,6 +117,7 @@ export const MentorExpertiseStep = ({
     expertise?: string;
     stack?: string;
     languages?: string;
+    category?: string;
   }>({});
 
   const handleAddItem = (
@@ -163,6 +168,9 @@ export const MentorExpertiseStep = ({
     }
     if (formData.languages.length === 0) {
       newErrors.languages = "Select at least one language";
+    }
+    if (!formData.category) {
+      newErrors.category = "Select a category";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -276,6 +284,37 @@ export const MentorExpertiseStep = ({
                 {errors.industries && (
                   <span className="text-xs text-red-600">
                     {errors.industries}
+                  </span>
+                )}
+              </div>
+
+              {/* Category */}
+              <div className="flex flex-col gap-[13px]">
+                <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
+                  Category
+                </label>
+                <select
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      category: e.target.value,
+                    }))
+                  }
+                  value={formData.category}
+                  className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight] text-[#99A0AE] focus:ring-2 focus:ring-purple-600 focus:outline-none ${
+                    errors.category ? "ring-2 ring-red-500" : ""
+                  }`}
+                >
+                  <option value="">Select Category</option>
+                  {availableCategories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+                {errors.category && (
+                  <span className="text-xs text-red-600">
+                    {errors.category}
                   </span>
                 )}
               </div>

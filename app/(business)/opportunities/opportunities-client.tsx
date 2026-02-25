@@ -83,7 +83,8 @@ export function OpportunitiesClient({
       setError(null);
 
       const query = overrideSearchQuery ?? searchQuery;
-      const filters = overrideFilters !== undefined ? overrideFilters : appliedFilters;
+      const filters =
+        overrideFilters !== undefined ? overrideFilters : appliedFilters;
       const filter = filterType ?? activeFilter;
 
       try {
@@ -204,18 +205,24 @@ export function OpportunitiesClient({
             filterCount={getFilterCount()}
             activeFilter={activeFilter}
             onFilterChange={handleFilterChange}
-          />
-
-          <OpportunitiesFilterModal
-            isOpen={isFilterOpen}
-            onClose={() => setIsFilterOpen(false)}
-            onApply={(filters) => {
-              setAppliedFilters(filters);
-              setIsFilterOpen(false);
-              fetchOpportunitiesWithFilters(0, undefined, undefined, filters);
-            }}
-            availableSkills={[]}
-            initialFilters={appliedFilters || undefined}
+            filterModal={
+              <OpportunitiesFilterModal
+                isOpen={isFilterOpen}
+                onClose={() => setIsFilterOpen(false)}
+                onApply={(filters) => {
+                  setAppliedFilters(filters);
+                  setIsFilterOpen(false);
+                  fetchOpportunitiesWithFilters(
+                    0,
+                    undefined,
+                    undefined,
+                    filters,
+                  );
+                }}
+                availableSkills={[]}
+                initialFilters={appliedFilters || undefined}
+              />
+            }
           />
         </div>
 

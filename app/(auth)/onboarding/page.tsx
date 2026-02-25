@@ -20,6 +20,7 @@ import { getServerCurrentProfile } from "@/lib/api/talent/server";
 import { getServerCurrentRecruiterProfile } from "@/lib/api/recruiter/server";
 import { getServerCurrentMentorProfile } from "@/lib/api/mentor/server";
 import { TokenStorage } from "./token-storage";
+import categoriesData from "@/lib/data/categories.json";
 
 const OnboardingPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -119,6 +120,7 @@ const OnboardingPage = () => {
       };
 
       const detailsData = {
+        category: data.category,
         industries: data.industries,
         headline: data.headline,
         expertise: Array.isArray(data.expertise)
@@ -574,6 +576,7 @@ const OnboardingPage = () => {
                 isLoading={isLoading}
                 profileData={mentorData}
                 profileImage={profileImage as File | undefined}
+                availableCategories={categoriesData}
               />
             ) : (
               renderStepThree()

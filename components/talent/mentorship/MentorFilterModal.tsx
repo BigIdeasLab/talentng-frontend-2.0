@@ -210,14 +210,26 @@ export function MentorFilterModal({
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen, onClose, isExpertiseOpen, isIndustryOpen, isStackOpen, isLocationOpen, isSortOpen]);
+  }, [
+    isOpen,
+    onClose,
+    isExpertiseOpen,
+    isIndustryOpen,
+    isStackOpen,
+    isLocationOpen,
+    isSortOpen,
+  ]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-40" onClick={onClose}>
+    <>
+      {/* Backdrop */}
+      <div className="fixed inset-0 z-40 bg-black/5" onClick={onClose} />
+      
+      {/* Modal Content */}
       <div
-        className="absolute top-[60px] right-[25px] z-50 w-[245px]"
+        className="absolute top-full right-0 z-50 mt-2 w-[245px]"
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
       >
@@ -560,7 +572,8 @@ export function MentorFilterModal({
                 <div className="flex flex-wrap gap-[4px]">
                   <div className="flex items-center gap-[5px] px-[7px] py-[8px] bg-[#F5F5F5] rounded-[25px]">
                     <span className="text-[10px] font-normal text-black font-inter-tight">
-                      {SORT_OPTIONS.find((o) => o.value === filters.sortBy)?.display || filters.sortBy}
+                      {SORT_OPTIONS.find((o) => o.value === filters.sortBy)
+                        ?.display || filters.sortBy}
                     </span>
                     <button onClick={() => selectSort(filters.sortBy!)}>
                       <X className="w-[10px] h-[10px] text-[#606060]" />
@@ -592,6 +605,6 @@ export function MentorFilterModal({
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

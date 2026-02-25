@@ -17,6 +17,7 @@ import type {
   UpdateMentorProfileInput,
   MentorProfile,
 } from "@/lib/api/mentor/types";
+import categoriesData from "@/lib/data/categories.json";
 
 interface MentorFormData {
   personal: {
@@ -32,6 +33,7 @@ interface MentorFormData {
     industries: string[];
     languages: string[];
     stack: string[];
+    category: string;
   };
   social: {
     linkedin: string;
@@ -56,6 +58,7 @@ const DEFAULT_MENTOR_DATA: MentorFormData = {
     industries: [],
     languages: [],
     stack: [],
+    category: "",
   },
   social: {
     linkedin: "",
@@ -393,7 +396,7 @@ function PersonalDetailsSection({
   );
 }
 
-function ProfessionalDetailsSection({
+export function ProfessionalDetailsSection({
   isOpen,
   onToggle,
   formData,
@@ -408,6 +411,7 @@ function ProfessionalDetailsSection({
   onRemoveStack,
   sectionRef,
   onNext,
+  availableCategories,
 }: {
   isOpen: boolean;
   onToggle: () => void;
@@ -423,9 +427,11 @@ function ProfessionalDetailsSection({
   onRemoveStack: (index: number) => void;
   sectionRef: (el: HTMLDivElement | null) => void;
   onNext: () => void;
+  availableCategories: string[];
 }) {
   const [expertiseDropdownOpen, setExpertiseDropdownOpen] = useState(false);
   const [industriesDropdownOpen, setIndustriesDropdownOpen] = useState(false);
+  const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
   const [languagesDropdownOpen, setLanguagesDropdownOpen] = useState(false);
   const [stackDropdownOpen, setStackDropdownOpen] = useState(false);
 
@@ -456,6 +462,39 @@ function ProfessionalDetailsSection({
                 placeholder="e.g., Senior Product Designer at Google"
                 className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
               />
+            </div>
+
+            {/* Category */}
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-[13px] font-normal text-black font-inter-tight">
+                Primary Category
+              </label>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
+                  className="w-full px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight text-left focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                >
+                  {formData.category || "Select a category"}
+                </button>
+                {categoryDropdownOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#E1E4EA] rounded-[8px] shadow-lg z-10 max-h-[200px] overflow-y-auto">
+                    {availableCategories.map((cat) => (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => {
+                          onInputChange("category", cat);
+                          setCategoryDropdownOpen(false);
+                        }}
+                        className="w-full px-4 py-2 text-left text-[13px] hover:bg-[#F0F7FF] font-inter-tight"
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Expertise */}
@@ -865,6 +904,7 @@ export function MentorEditProfile() {
             industries: profile.industries || [],
             languages: profile.languages || [],
             stack: profile.stack || [],
+            category: profile.category || "",
           },
           social: {
             linkedin: profile.links?.linkedIn || profile.links?.linkedin || "",
@@ -1075,6 +1115,7 @@ export function MentorEditProfile() {
         headline: formData.professional.headline,
         bio: formData.personal.bio,
         location: formData.personal.location,
+        category: formData.professional.category,
         expertise: formData.professional.expertise,
         links: {
           linkedin: formData.social.linkedin,
@@ -1158,6 +1199,7 @@ export function MentorEditProfile() {
                 if (el) sectionRefs.current["professional"] = el;
               }}
               onNext={() => toggleSection("social")}
+              availableCategories={categoriesData}
             />
 
             <SocialLinksSection

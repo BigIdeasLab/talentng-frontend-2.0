@@ -24,7 +24,7 @@ export function TalentCard({ talent }: TalentCardProps) {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-[8px]">
               <Image
-                src={talent.avatar || "/default-avatar.jpg"}
+                src={talent.avatar || "/default.png"}
                 alt={talent.fullName}
                 width={34}
                 height={34}

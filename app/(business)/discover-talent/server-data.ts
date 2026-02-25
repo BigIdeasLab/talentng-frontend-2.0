@@ -52,7 +52,7 @@ const mapTalentToUI = (profile: TalentProfile, index: number): TalentData => {
     location: profile.location || "Not specified",
     timesHired: profile.stats?.hired || 0,
     earnings: parseInt(profile.stats?.earnings || "0"),
-    avatar: profile.profileImageUrl || "/default-avatar.jpg",
+    avatar: profile.profileImageUrl || "/default.png",
     gallery,
     skills: profile.skills || [],
     stack:

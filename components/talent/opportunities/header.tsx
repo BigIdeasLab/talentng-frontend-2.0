@@ -10,6 +10,7 @@ interface TalentOpportunitiesHeaderProps {
   filterCount?: number;
   activeFilter: FilterType;
   onFilterChange: (filter: FilterType) => void;
+  filterModal?: React.ReactNode;
 }
 
 export function TalentOpportunitiesHeader({
@@ -20,6 +21,7 @@ export function TalentOpportunitiesHeader({
   filterCount = 0,
   activeFilter,
   onFilterChange,
+  filterModal,
 }: TalentOpportunitiesHeaderProps) {
   return (
     <div className="flex-shrink-0">
@@ -35,6 +37,7 @@ export function TalentOpportunitiesHeader({
         onFilterClick={onFilterClick}
         isLoading={isLoading}
         filterCount={filterCount}
+        filterModal={filterModal}
       />
 
       {/* Filter Tabs */}

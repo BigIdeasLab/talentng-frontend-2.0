@@ -56,44 +56,49 @@ export async function getOpportunitiesData(params?: {
       ...(params?.category && { category: params.category }),
       ...(params?.tags && { tags: params.tags }),
       ...(params?.location && { location: params.location }),
-      ...(params?.experienceLevel && { experienceLevel: params.experienceLevel }),
+      ...(params?.experienceLevel && {
+        experienceLevel: params.experienceLevel,
+      }),
     });
 
-    console.log("[Opportunities] API response:", JSON.stringify({
-      dataLength: response?.data?.length,
-      pagination: response?.pagination,
-      rawKeys: Object.keys(response || {}),
-    }));
+    console.log(
+      "[Opportunities] API response:",
+      JSON.stringify({
+        dataLength: response?.data?.length,
+        pagination: response?.pagination,
+        rawKeys: Object.keys(response || {}),
+      }),
+    );
 
     // Handle different response structures (object with .data or raw array)
     const rawData = Array.isArray(response)
       ? response
       : response?.data || (response as any)?.opportunities || [];
 
-    const opportunities: OpportunityData[] = rawData.map(
-      (opp: any) => ({
-        id: opp.id || "",
-        companyName:
-          opp.postedBy?.recruiterProfile?.company || opp.company || "Company",
-        companyLogo:
-          opp.postedBy?.recruiterProfile?.profileImageUrl || opp.logo || "",
-        date: formatDate(opp.createdAt),
-        type: opp.type || "Job",
-        title: opp.title || "",
-        category: opp.category,
-        skills: opp.tags || [],
-        rate: `₦${Math.round(parseFloat(opp.minBudget) || 0).toLocaleString()} - ₦${Math.round(parseFloat(opp.maxBudget) || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`,
-        status: (opp.status || "draft") as "active" | "closed" | "draft",
-        appliedAs: opp.appliedAs || [],
-        saved: opp.saved || opp.userHasSaved || false,
-        priceMode: opp.priceMode,
-        minBudget: opp.minBudget,
-        maxBudget: opp.maxBudget,
-        price: opp.price,
-        paymentType: opp.paymentType,
-        duration: opp.duration,
-      }),
-    );
+    const opportunities: OpportunityData[] = rawData.map((opp: any) => ({
+      id: opp.id || "",
+      companyName:
+        opp.postedBy?.recruiterProfile?.company || opp.company || "Company",
+      companyLogo:
+        opp.postedBy?.recruiterProfile?.profileImageUrl || opp.logo || "",
+      date: formatDate(opp.createdAt),
+      type: opp.type || "Job",
+      title: opp.title || "",
+      category: opp.category,
+      skills: opp.tags || [],
+      rate: `₦${Math.round(parseFloat(opp.minBudget) || 0).toLocaleString()} - ₦${Math.round(parseFloat(opp.maxBudget) || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`,
+      status: (opp.status || "draft") as "active" | "closed" | "draft",
+      appliedAs: opp.appliedAs || [],
+      saved: opp.saved || opp.userHasSaved || false,
+      priceMode: opp.priceMode,
+      minBudget: opp.minBudget,
+      maxBudget: opp.maxBudget,
+      price: opp.price,
+      paymentType: opp.paymentType,
+      location: opp.location,
+      experienceLevel: opp.experienceLevel,
+      duration: opp.duration,
+    }));
 
     return {
       opportunities,

@@ -121,6 +121,7 @@ export function MentorProfile({
                   expertise={expertise}
                   industries={industries}
                   languages={languages}
+                  category={profileData.category || ""}
                 />
               </>
             )}

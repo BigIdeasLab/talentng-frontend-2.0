@@ -6,6 +6,7 @@ interface SearchBarProps {
   onFilterClick: () => void;
   isLoading?: boolean;
   filterCount?: number;
+  filterModal?: React.ReactNode;
 }
 
 export function SearchBar({
@@ -14,6 +15,7 @@ export function SearchBar({
   onFilterClick,
   isLoading = false,
   filterCount = 0,
+  filterModal,
 }: SearchBarProps) {
   return (
     <div className="flex items-center gap-[8px] mb-[19px]">
@@ -43,24 +45,25 @@ export function SearchBar({
       </div>
 
       {/* Filter Button */}
-      <button
-        onClick={onFilterClick}
-        className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
-          filterCount > 0
-            ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
-            : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
-        }`}
-      >
-        <SlidersHorizontal className="w-[15px] h-[15px]" />
-        <span className="text-[13px] font-normal font-inter-tight">
-          Filter
-        </span>
-        {filterCount > 0 && (
-          <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-            {filterCount}
-          </span>
-        )}
-      </button>
+      <div className="relative">
+        <button
+          onClick={onFilterClick}
+          className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
+            filterCount > 0
+              ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
+              : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
+          }`}
+        >
+          <SlidersHorizontal className="w-[15px] h-[15px]" />
+          <span className="text-[13px] font-normal font-inter-tight">Filter</span>
+          {filterCount > 0 && (
+            <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+              {filterCount}
+            </span>
+          )}
+        </button>
+        {filterModal}
+      </div>
     </div>
   );
 }

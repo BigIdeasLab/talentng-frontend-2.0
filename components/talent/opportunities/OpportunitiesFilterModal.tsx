@@ -222,14 +222,26 @@ export function OpportunitiesFilterModal({
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen, onClose, isTypeOpen, isSkillOpen, isCategoryOpen, isExperienceOpen, isLocationOpen]);
+  }, [
+    isOpen,
+    onClose,
+    isTypeOpen,
+    isSkillOpen,
+    isCategoryOpen,
+    isExperienceOpen,
+    isLocationOpen,
+  ]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-40" onClick={onClose}>
+    <>
+      {/* Backdrop */}
+      <div className="fixed inset-0 z-40 bg-black/5" onClick={onClose} />
+
+      {/* Modal Content */}
       <div
-        className="absolute top-[60px] right-[25px] z-50 w-[245px]"
+        className="absolute top-full right-0 z-50 mt-2 w-[245px]"
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
       >
@@ -486,7 +498,9 @@ export function OpportunitiesFilterModal({
               {isExperienceOpen && (
                 <div className="flex flex-col gap-[6px]">
                   {EXPERIENCE_LEVELS.map((level) => {
-                    const isSelected = (filters.experienceLevels || []).includes(level.value);
+                    const isSelected = (
+                      filters.experienceLevels || []
+                    ).includes(level.value);
                     return (
                       <button
                         key={level.value}
@@ -513,28 +527,30 @@ export function OpportunitiesFilterModal({
                 </div>
               )}
               {/* Selected Experience Levels (when collapsed) */}
-              {!isExperienceOpen && filters.experienceLevels && filters.experienceLevels.length > 0 && (
-                <div className="flex flex-wrap gap-[4px]">
-                  {filters.experienceLevels.map((level) => {
-                    const levelObj = EXPERIENCE_LEVELS.find(
-                      (l) => l.value === level,
-                    );
-                    return (
-                      <div
-                        key={level}
-                        className="flex items-center gap-[5px] px-[7px] py-[8px] bg-[#F5F5F5] rounded-[25px]"
-                      >
-                        <span className="text-[10px] font-normal text-black font-inter-tight">
-                          {levelObj?.display || level}
-                        </span>
-                        <button onClick={() => toggleExperienceLevel(level)}>
-                          <X className="w-[10px] h-[10px] text-[#606060]" />
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
+              {!isExperienceOpen &&
+                filters.experienceLevels &&
+                filters.experienceLevels.length > 0 && (
+                  <div className="flex flex-wrap gap-[4px]">
+                    {filters.experienceLevels.map((level) => {
+                      const levelObj = EXPERIENCE_LEVELS.find(
+                        (l) => l.value === level,
+                      );
+                      return (
+                        <div
+                          key={level}
+                          className="flex items-center gap-[5px] px-[7px] py-[8px] bg-[#F5F5F5] rounded-[25px]"
+                        >
+                          <span className="text-[10px] font-normal text-black font-inter-tight">
+                            {levelObj?.display || level}
+                          </span>
+                          <button onClick={() => toggleExperienceLevel(level)}>
+                            <X className="w-[10px] h-[10px] text-[#606060]" />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
             </div>
 
             {/* Location (State) Dropdown */}
@@ -637,6 +653,6 @@ export function OpportunitiesFilterModal({
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

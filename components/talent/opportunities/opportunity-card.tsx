@@ -75,81 +75,85 @@ export function OpportunityCard({
     <div className="relative">
       <div
         onClick={handleCardClick}
-        className="flex flex-col items-center gap-4 pt-3 border border-[#E1E4EA] rounded-[16px] bg-white hover:shadow-md transition-shadow cursor-pointer"
+        className="flex flex-col items-start gap-4 pt-4 pb-1 border border-[#E1E4EA] rounded-[16px] bg-white transition-all cursor-pointer hover:shadow-[0_4px_20px_0_rgba(0,0,0,0.05)] h-full"
       >
         {/* Card Content */}
-        <div className="flex flex-col items-start gap-3.5 w-full px-2.5 md:px-5">
+        <div className="flex flex-col items-start gap-3.5 w-full px-4 md:px-5 flex-1">
           {/* Header Section */}
-          <div className="flex flex-col items-start gap-1.5 w-full">
-            {/* Profile and Type Badge */}
-            <div className="flex items-center justify-between w-full">
-              {/* Profile */}
-              <div className="flex items-center gap-2">
-                {opportunity.companyLogo ? (
-                  <div
-                    className="w-8 h-8 rounded-full bg-cover bg-center flex-shrink-0"
-                    style={{
-                      backgroundImage: `url(${opportunity.companyLogo})`,
-                    }}
-                  />
-                ) : (
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-orange-500 flex-shrink-0" />
-                )}
-                <div className="flex flex-col items-start gap-1.5">
-                  <div className="text-[13px] font-medium font-inter-tight text-black text-center">
-                    {opportunity.companyName}
-                  </div>
-                  <div className="text-[12px] font-light font-inter-tight text-[#525866]">
-                    {opportunity.date}
-                  </div>
+          <div className="flex items-center justify-between w-full">
+            {/* Profile */}
+            <div className="flex items-center gap-2">
+              {opportunity.companyLogo ? (
+                <div
+                  className="w-8 h-8 rounded-full bg-cover bg-center flex-shrink-0 border border-black/5"
+                  style={{
+                    backgroundImage: `url(${opportunity.companyLogo})`,
+                  }}
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#8463FF] to-[#5C30FF] flex-shrink-0" />
+              )}
+              <div className="flex flex-col items-start">
+                <div className="text-[13px] font-semibold font-inter-tight text-black">
+                  {opportunity.companyName}
+                </div>
+                <div className="text-[11px] font-normal font-inter-tight text-black/30">
+                  {opportunity.date}
                 </div>
               </div>
+            </div>
 
-              {/* Type Badge */}
+            {/* Type Badge */}
+            <div
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full"
+              style={{ backgroundColor: `${config.dotColor}1A` }} // 10% opacity version of dot color for bg
+            >
               <div
-                className="flex items-center gap-1.5 px-2.5 py-2 rounded-md"
-                style={{ backgroundColor: config.bgColor }}
+                className="w-1.5 h-1.5 rounded-full"
+                style={{ backgroundColor: config.dotColor }}
+              />
+              <span
+                className="text-[10px] font-medium font-inter-tight uppercase tracking-wider"
+                style={{ color: config.dotColor }}
               >
-                <div
-                  className="w-1.5 h-1.5 rounded-full"
-                  style={{ backgroundColor: config.dotColor }}
-                />
-                <span
-                  className="text-[11px] font-normal font-inter-tight text-center"
-                  style={{ color: config.textColor }}
-                >
-                  {config.label}
-                </span>
-              </div>
+                {config.label}
+              </span>
             </div>
           </div>
 
-          {/* Job Title */}
-          <div className="text-[15px] font-medium font-inter-tight text-black text-center">
-            {opportunity.title}
+          {/* Job Title & Subtext */}
+          <div className="flex flex-col gap-1 w-full mt-1">
+            <h3 className="text-[16px] font-semibold font-inter-tight text-black group-hover:text-black/60 transition-colors line-clamp-1">
+              {opportunity.title}
+            </h3>
+            {(opportunity.location || opportunity.experienceLevel || opportunity.category) && (
+              <p className="text-[12px] font-normal text-black/40 font-inter-tight line-clamp-1">
+                {[
+                  opportunity.location,
+                  opportunity.experienceLevel,
+                  opportunity.category
+                ].filter(Boolean).join(" • ")}
+              </p>
+            )}
           </div>
-
-          {/* Category */}
-          {opportunity.category && (
-            <div className="text-[12px] font-normal text-[#525866]">
-              {opportunity.category}
-            </div>
-          )}
 
           {/* Skills */}
-          <div className="flex flex-col items-start gap-2.5 w-full">
-            <div className="flex items-start content-start gap-x-1 gap-y-1.5 flex-wrap w-full min-h-[28px]">
-              {opportunity.skills.map((skill, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-center gap-2 px-3 py-2 rounded-[24px] bg-[#F5F5F5]"
-                >
-                  <span className="text-[12px] font-normal font-inter-tight text-black text-center leading-[12.6px]">
-                    {skill}
-                  </span>
-                </div>
-              ))}
-            </div>
+          <div className="flex items-center content-start gap-1.5 flex-wrap w-full mt-0.5">
+            {opportunity.skills.slice(0, 3).map((skill, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-center px-2.5 py-1 rounded-full bg-[#8463FF0D] border border-[#8463FF1A]"
+              >
+                <span className="text-[11px] font-medium font-inter-tight text-[#8463FF] capitalize">
+                  {skill}
+                </span>
+              </div>
+            ))}
+            {opportunity.skills.length > 3 && (
+              <span className="text-[11px] text-black/30 font-medium">
+                +{opportunity.skills.length - 3}
+              </span>
+            )}
           </div>
         </div>
 

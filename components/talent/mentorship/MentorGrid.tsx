@@ -7,8 +7,11 @@ interface Mentor {
   name: string;
   title: string;
   imageUrl: string;
-  pricePerSession: number;
-  sessionsCompleted: number;
+  rating?: number;
+  totalReviews?: number;
+  expertise?: string[];
+  company?: string;
+  location?: string;
 }
 
 interface MentorGridProps {
@@ -27,7 +30,7 @@ export function MentorGrid({ mentors }: MentorGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1.5 md:gap-2">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4">
       {mentors.map((mentor) => (
         <MentorCard key={mentor.id} {...mentor} />
       ))}

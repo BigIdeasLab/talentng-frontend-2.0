@@ -27,20 +27,9 @@ import { toast } from "sonner";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
 
-const CATEGORIES = [
-  "All",
-  "Design",
-  "Innovation",
-  "Art",
-  "Collaboration",
-  "Strategy",
-  "Creativity",
-  "Research",
-  "Accessibility",
-  "Testing",
-  "Implementation",
-  "Wireframing",
-];
+import categoriesData from "@/lib/data/categories.json";
+
+const CATEGORIES = ["All", ...categoriesData];
 
 interface MenteeSession {
   id: string;
@@ -63,9 +52,12 @@ interface MentorDisplay {
   name: string;
   title: string;
   imageUrl: string;
-  pricePerSession: number;
-  sessionsCompleted: number;
+  rating: number;
+  totalReviews: number;
   expertise: string[];
+  company?: string;
+  location?: string;
+  category?: string;
 }
 
 function formatSessionDate(scheduledAt: string): string {
@@ -127,10 +119,13 @@ function mapApiMentorToDisplay(mentor: Record<string, unknown>): MentorDisplay {
     imageUrl:
       (mentor.profileImageUrl as string) ||
       (mentor.avatar as string) ||
-      "/placeholder-avatar.png",
-    pricePerSession: (mentor.sessionRate as number) || 0,
-    sessionsCompleted: (mentor.totalSessions as number) || 0,
+      "/default.png",
+    rating: Number(mentor.avgRating || mentor.rating || 0),
+    totalReviews: (mentor.totalReviews as number) || 0,
     expertise: (mentor.expertise as string[]) || [],
+    company: (mentor.company as string) || undefined,
+    location: (mentor.location as string) || undefined,
+    category: (mentor.category as string) || undefined,
   };
 }
 
@@ -162,25 +157,36 @@ export default function MentorshipPage() {
   const fetchIdRef = useRef(0);
 
   const fetchMentors = useCallback(
-    async (query?: string, category?: string, filtersOverride?: MentorFilterState | null) => {
+    async (
+      query?: string,
+      category?: string,
+      filtersOverride?: MentorFilterState | null,
+    ) => {
       if (!hasAccess) return;
       const currentFetchId = ++fetchIdRef.current;
 
       try {
         setMentorsLoading(true);
         const searchQ = query !== undefined ? query : searchQuery;
-        const filters = filtersOverride !== undefined ? filtersOverride : appliedFilters;
-        
-        // Category chips override/update the expertise filter
-        const expertise = category !== undefined 
-          ? (category ? [category] : []) 
-          : filters?.expertise;
+        const filters =
+          filtersOverride !== undefined ? filtersOverride : appliedFilters;
+        const currentCategory =
+          category !== undefined ? category : activeCategory;
 
         const data = await listMentors({
           ...(searchQ && searchQ.length >= 2 && { q: searchQ }),
-          ...(expertise && expertise.length > 0 && { expertise: expertise.join(",") }),
-          ...(filters?.industries && filters.industries.length > 0 && { industries: filters.industries.join(",") }),
-          ...(filters?.stack && filters.stack.length > 0 && { stack: filters.stack.join(",") }),
+          ...(currentCategory &&
+            currentCategory !== "All" && { category: currentCategory }),
+          ...(filters?.expertise &&
+            filters.expertise.length > 0 && {
+              expertise: filters.expertise.join(","),
+            }),
+          ...(filters?.industries &&
+            filters.industries.length > 0 && {
+              industries: filters.industries.join(","),
+            }),
+          ...(filters?.stack &&
+            filters.stack.length > 0 && { stack: filters.stack.join(",") }),
           ...(filters?.location && { location: filters.location }),
           ...(filters?.sortBy && { sortBy: filters.sortBy }),
           limit: 20,
@@ -247,25 +253,11 @@ export default function MentorshipPage() {
   const handleCategoryChange = (category: string) => {
     const newCategory = category === "All" ? "" : category;
     setActiveCategory(newCategory);
-    
-    // Also update applied filters for consistency
-    const updatedFilters = {
-      ...(appliedFilters || { industries: [], stack: [], expertise: [] }),
-      expertise: newCategory ? [newCategory] : []
-    };
-    setAppliedFilters(updatedFilters);
-    
-    fetchMentors(undefined, undefined, updatedFilters);
+    fetchMentors(undefined, newCategory);
   };
 
   const handleApplyFilters = (filters: MentorFilterState) => {
     setAppliedFilters(filters);
-    // Sync active category if only one expertise is selected
-    if (filters.expertise.length === 1) {
-      setActiveCategory(filters.expertise[0]);
-    } else {
-      setActiveCategory("");
-    }
     fetchMentors(undefined, undefined, filters);
   };
 
@@ -421,24 +413,48 @@ export default function MentorshipPage() {
             />
           </div>
 
-          <button
-            onClick={() => setIsFilterOpen(true)}
-            className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
-              appliedFilters && (appliedFilters.expertise.length > 0 || appliedFilters.industries.length > 0 || appliedFilters.stack.length > 0 || appliedFilters.location || appliedFilters.sortBy)
-                ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
-                : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
-            }`}
-          >
-            <SlidersHorizontal className="w-[15px] h-[15px]" />
-            <span className="text-[13px] font-normal font-inter-tight">
-              Filter
-            </span>
-            {appliedFilters && (appliedFilters.expertise.length + appliedFilters.industries.length + appliedFilters.stack.length + (appliedFilters.location ? 1 : 0) + (appliedFilters.sortBy ? 1 : 0)) > 0 && (
-              <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-                {appliedFilters.expertise.length + appliedFilters.industries.length + appliedFilters.stack.length + (appliedFilters.location ? 1 : 0) + (appliedFilters.sortBy ? 1 : 0)}
+          <div className="relative">
+            <button
+              onClick={() => setIsFilterOpen(true)}
+              className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
+                appliedFilters &&
+                (appliedFilters.expertise.length > 0 ||
+                  appliedFilters.industries.length > 0 ||
+                  appliedFilters.stack.length > 0 ||
+                  appliedFilters.location ||
+                  appliedFilters.sortBy)
+                  ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
+                  : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
+              }`}
+            >
+              <SlidersHorizontal className="w-[15px] h-[15px]" />
+              <span className="text-[13px] font-normal font-inter-tight">
+                Filter
               </span>
-            )}
-          </button>
+              {appliedFilters &&
+                appliedFilters.expertise.length +
+                  appliedFilters.industries.length +
+                  appliedFilters.stack.length +
+                  (appliedFilters.location ? 1 : 0) +
+                  (appliedFilters.sortBy ? 1 : 0) >
+                  0 && (
+                  <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                    {appliedFilters.expertise.length +
+                      appliedFilters.industries.length +
+                      appliedFilters.stack.length +
+                      (appliedFilters.location ? 1 : 0) +
+                      (appliedFilters.sortBy ? 1 : 0)}
+                  </span>
+                )}
+            </button>
+
+            <MentorFilterModal
+              isOpen={isFilterOpen}
+              onClose={() => setIsFilterOpen(false)}
+              onApply={handleApplyFilters}
+              initialFilters={appliedFilters || undefined}
+            />
+          </div>
         </div>
 
         {/* Category Tabs (Find Mentors) / Session Filter Tabs (My Session) */}
@@ -556,12 +572,6 @@ export default function MentorshipPage() {
         type="danger"
       />
 
-      <MentorFilterModal
-        isOpen={isFilterOpen}
-        onClose={() => setIsFilterOpen(false)}
-        onApply={handleApplyFilters}
-        initialFilters={appliedFilters || undefined}
-      />
     </div>
   );
 }

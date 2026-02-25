@@ -9,8 +9,12 @@ interface MentorCardProps {
   name: string;
   title: string;
   imageUrl: string;
-  pricePerSession: number;
-  sessionsCompleted: number;
+  rating?: number;
+  totalReviews?: number;
+  expertise?: string[];
+  company?: string;
+  location?: string;
+  category?: string;
 }
 
 export function MentorCard({
@@ -18,11 +22,15 @@ export function MentorCard({
   name,
   title,
   imageUrl,
-  pricePerSession,
-  sessionsCompleted,
+  rating = 0,
+  totalReviews = 0,
+  expertise = [],
+  company,
+  location,
+  category,
 }: MentorCardProps) {
   return (
-    <div className="flex flex-col gap-2.5 p-1.5 rounded-xl bg-[#F5F5F5] group cursor-pointer">
+    <div className="flex flex-col gap-2.5 p-1.5 rounded-[16px] border border-[#E1E4EA] bg-white group cursor-pointer h-full transition-all shadow-sm hover:shadow-[0_4px_20px_0_rgba(0,0,0,0.05)]">
       {/* Thumbnail */}
       <Link
         href={`/mentorship/${id}`}
@@ -33,50 +41,69 @@ export function MentorCard({
           alt={name}
           fill
           unoptimized
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
         />
+        {/* Rating Badge */}
+        {rating > 0 && (
+          <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
+            <span className="text-[#FFB800] text-[11px]">★</span>
+            <span className="font-inter-tight text-[11px] font-medium text-black">
+              {Number(rating || 0).toFixed(1)}
+            </span>
+            {totalReviews > 0 && (
+              <span className="font-inter-tight text-[10px] text-black/40">
+                ({totalReviews})
+              </span>
+            )}
+          </div>
+        )}
       </Link>
 
       {/* Info Container */}
-      <div className="flex flex-col gap-3.5">
+      <div className="flex flex-col gap-1.5 flex-1 px-1 pb-2">
         {/* Profile Info */}
         <div className="flex flex-col gap-2.5">
-          <Link href={`/mentorship/${id}`} className="flex flex-col gap-2">
-            <h3 className="font-inter-tight text-[13px] font-medium leading-normal text-black group-hover:text-[#5C30FF] transition-colors">
+          <Link href={`/mentorship/${id}`} className="flex flex-col gap-1.5">
+            <h3 className="font-inter-tight text-[15px] font-semibold leading-tight text-black group-hover:text-black/60 transition-colors line-clamp-1">
               {name}
             </h3>
-            <p className="font-inter-tight text-[12px] font-normal leading-normal text-black/30">
+            <p className="font-inter-tight text-[13px] font-medium leading-normal text-black/60 line-clamp-1">
               {title}
             </p>
+            {(company || location) && (
+              <p className="font-inter-tight text-[11px] font-normal leading-normal text-black/40 line-clamp-1">
+                {[company, location].filter(Boolean).join(" • ")}
+              </p>
+            )}
           </Link>
 
-          {/* Stats */}
-          <div className="flex flex-col gap-1.5">
-            {/* Price */}
-            <div className="flex items-center gap-1.5">
-              <DollarCircleIcon className="w-4 h-4 text-[#525866]" />
-              <span className="font-inter-tight text-[12px] font-normal leading-normal text-[#525866]">
-                ${pricePerSession} / Session
-              </span>
+          {/* Expertise Tags */}
+          {expertise.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mt-1">
+              {expertise.slice(0, 2).map((skill, idx) => (
+                <span
+                  key={idx}
+                  className="px-2.5 py-1 rounded-full bg-[#8463FF0D] border border-[#8463FF1A] text-[11px] font-medium text-[#8463FF] capitalize"
+                >
+                  {skill}
+                </span>
+              ))}
+              {expertise.length > 2 && (
+                <span className="text-[11px] text-black/30 font-medium">
+                  +{expertise.length - 2}
+                </span>
+              )}
             </div>
-
-            {/* Sessions Completed */}
-            <div className="flex items-center gap-1.5">
-              <CheckDoubleIcon className="w-4 h-4 text-[#525866]" />
-              <span className="font-inter-tight text-[12px] font-normal leading-normal text-[#525866]">
-                {sessionsCompleted} Sessions Completed
-              </span>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-start gap-1">
+        <div className="flex items-center gap-1.5 pt-2">
           {/* Book Session Button */}
           <Link
             href={`/mentorship/${id}?book=true`}
-            className="flex-1 flex items-center justify-center gap-1 h-[40px] px-4 py-3 rounded-full bg-[#181B25] text-white font-inter-tight text-[12px] font-medium hover:bg-[#252831] transition-colors"
+            className="flex-1 flex items-center justify-center h-[42px] rounded-full bg-[#181B25] text-white font-inter-tight text-[13px] font-medium hover:bg-[#252831] transition-all"
           >
             Book Session
           </Link>
@@ -84,9 +111,9 @@ export function MentorCard({
           {/* External Link Button */}
           <Link
             href={`/mentorship/${id}`}
-            className="flex items-center justify-center h-[40px] w-[40px] rounded-full border border-[#B2B2B2] bg-[#F5F5F5] hover:bg-[#E1E4EA] transition-colors"
+            className="flex items-center justify-center h-[42px] w-[42px] rounded-full border border-[#E1E4EA] bg-white hover:bg-[#F5F5F5] transition-all"
           >
-            <ArrowUpRight className="w-4 h-4 text-black" strokeWidth={1.125} />
+            <ArrowUpRight className="w-5 h-5 text-black" strokeWidth={1.5} />
           </Link>
         </div>
       </div>
