@@ -183,11 +183,18 @@ const apiClient = async <T>(
         errorData.error ||
         "An error occurred during the API request.";
 
-      // Strip generic backend prefix
-      errorMessage = errorMessage.replace(
-        /^An unexpected error occurred:\s*/i,
-        "",
-      );
+      // Handle NestJS validation errors which are often arrays (Phase 6.2 fix)
+      if (Array.isArray(errorMessage)) {
+        errorMessage = errorMessage.join(", ");
+      }
+
+      // Strip generic backend prefix if it's a string
+      if (typeof errorMessage === "string") {
+        errorMessage = errorMessage.replace(
+          /^An unexpected error occurred:\s*/i,
+          "",
+        );
+      }
 
       // Handle specific error types with user-friendly messages
       if (

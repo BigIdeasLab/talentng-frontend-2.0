@@ -10,6 +10,7 @@ import type {
   ApplicationSubmission,
   ApplicationResponse,
   InvitationResponse,
+  RescheduleInterviewInput,
 } from "./types";
 
 /**
@@ -18,26 +19,11 @@ import type {
  * Handles FormData for file uploads
  */
 export const submitApplication = async (
-  submission: ApplicationSubmission & { files?: File[] },
+  submission: ApplicationSubmission,
 ): Promise<ApplicationResponse> => {
-  // Create FormData for multipart upload
-  const formData = new FormData();
-  formData.append("opportunityId", submission.opportunityId);
-
-  if (submission.note) {
-    formData.append("note", submission.note);
-  }
-
-  // Add files if provided
-  if (submission.files && submission.files.length > 0) {
-    submission.files.forEach((file) => {
-      formData.append("attachments", file, file.name);
-    });
-  }
-
   return apiClient<ApplicationResponse>("/talent/applications", {
     method: "POST",
-    body: formData,
+    body: submission,
   });
 };
 
@@ -141,7 +127,7 @@ export const updateApplicationStatus = async (
   applicationId: string,
   status: "shortlisted" | "rejected" | "hired",
 ): Promise<Application> => {
-  return apiClient<Application>(`/applications/${applicationId}`, {
+  return apiClient<Application>(`/recruiter/applications/${applicationId}`, {
     method: "PATCH",
     body: { status },
   });
@@ -160,7 +146,7 @@ export const scheduleInterview = async (
   },
 ): Promise<Application> => {
   return apiClient<Application>(
-    `/applications/${applicationId}/schedule-interview`,
+    `/recruiter/applications/${applicationId}/schedule-interview`,
     {
       method: "POST",
       body: input,
@@ -175,13 +161,10 @@ export const scheduleInterview = async (
 export const rescheduleInterview = async (
   applicationId: string,
   interviewId: string,
-  input: {
-    newDate: string;
-    message?: string;
-  },
+  input: RescheduleInterviewInput,
 ): Promise<Application> => {
   return apiClient<Application>(
-    `/applications/${applicationId}/interviews/${interviewId}/reschedule`,
+    `/recruiter/applications/${applicationId}/interviews/${interviewId}/reschedule`,
     {
       method: "POST",
       body: input,
@@ -199,10 +182,10 @@ export const cancelInterview = async (
   reason?: string,
 ): Promise<Application> => {
   return apiClient<Application>(
-    `/applications/${applicationId}/interviews/${interviewId}`,
+    `/recruiter/applications/${applicationId}/interviews/${interviewId}/cancel`,
     {
-      method: "DELETE",
-      body: reason ? { reason } : undefined,
+      method: "POST",
+      body: { reason },
     },
   );
 };
@@ -221,7 +204,7 @@ export const completeInterview = async (
   },
 ): Promise<Application> => {
   return apiClient<Application>(
-    `/applications/${applicationId}/interviews/${interviewId}/complete`,
+    `/recruiter/applications/${applicationId}/interviews/${interviewId}/complete`,
     {
       method: "POST",
       body: input,
@@ -272,7 +255,7 @@ export const leaveRecommendation = async (
     rating?: number;
   },
 ): Promise<any> => {
-  return apiClient(`/applications/${applicationId}/recommendation`, {
+  return apiClient(`/recruiter/applications/${applicationId}/recommendation`, {
     method: "POST",
     body: input,
   });

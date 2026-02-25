@@ -183,8 +183,9 @@ export default function ApplicantProposalPage() {
         applicationId,
         interviewId,
         input: {
-          newDate: scheduledDate,
+          scheduledDate,
           message,
+          meetingLink,
         },
       });
       toast({
@@ -307,11 +308,21 @@ export default function ApplicantProposalPage() {
     );
   }
 
-  const projects = applicant.user.talentProfile.gallery || [];
+  const allProjects = applicant.user.talentProfile.gallery || [];
+  const galleryIds = applicant.galleryIds || [];
+
+  // Filter projects to only show those that were attached to the application
+  const attachedProjects = allProjects.filter((p: any) =>
+    galleryIds.includes(p.id),
+  );
 
   // Get the latest interview status if application is shortlisted
   const latestInterview = applicant.interviews?.[0];
   const interviewStatus = latestInterview?.status;
+
+  // Check if there's an active interview (scheduled or rescheduled)
+  const hasActiveInterview =
+    interviewStatus === "scheduled" || interviewStatus === "rescheduled";
 
   // Determine which status to display
   let statusDisplay =
@@ -874,24 +885,31 @@ export default function ApplicantProposalPage() {
             </div>
 
             {/* Attached Projects Section */}
-            {projects.length > 0 && (
+            {attachedProjects.length > 0 && (
               <div className="flex flex-col gap-[18px] p-[18px] pt-[23px] rounded-[10px] border border-[#E1E4EA] bg-white">
                 <h2 className="font-inter-tight text-[15px] font-semibold text-black leading-normal">
-                  Attach Projects ({projects.length})
+                  Attached Projects ({attachedProjects.length})
                 </h2>
-                <div className="flex items-center gap-[4px]">
-                  {projects.map((project, index) => (
-                    <div
-                      key={index}
-                      className="w-[210px] h-[160px] flex-shrink-0"
-                    >
-                      <img
-                        src={project.url}
-                        alt={project.title || `Project ${index + 1}`}
-                        className="w-full h-full rounded-[12px] object-cover"
-                      />
-                    </div>
-                  ))}
+                <div className="flex items-center gap-[10px] overflow-x-auto pb-2">
+                  {attachedProjects.map((project: any, index: number) => {
+                    const imageUrl =
+                      project.images && project.images.length > 0
+                        ? project.images[0]
+                        : project.url;
+
+                    return (
+                      <div
+                        key={project.id || index}
+                        className="w-[210px] h-[160px] flex-shrink-0"
+                      >
+                        <img
+                          src={imageUrl}
+                          alt={project.title || `Project ${index + 1}`}
+                          className="w-full h-full rounded-[12px] object-cover"
+                        />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -905,7 +923,7 @@ export default function ApplicantProposalPage() {
                 {/* Hire Talent Button */}
                 <button
                   onClick={() => setIsHireModalOpen(true)}
-                  disabled={applicant.status === "hired"}
+                  disabled={applicant.status === "hired" || applicant.status === "rejected"}
                   className="flex items-center gap-[5px] h-8 px-3 rounded-[8px] border border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4a26cc] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg
@@ -945,7 +963,12 @@ export default function ApplicantProposalPage() {
                 {/* Schedule Interview Button */}
                 <button
                   onClick={() => setIsScheduleModalOpen(true)}
-                  className="flex items-center gap-1 h-8 px-[14px_20px_14px_14px] py-[12px] rounded-[8px] border border-[#E6E7EA] bg-white hover:bg-gray-50 transition-colors"
+                  disabled={
+                    applicant.status === "hired" ||
+                    applicant.status === "rejected" ||
+                    hasActiveInterview
+                  }
+                  className="flex items-center gap-1 h-8 px-[14px_20px_14px_14px] py-[12px] rounded-[8px] border border-[#E6E7EA] bg-white hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg
                     width="13"
@@ -991,7 +1014,8 @@ export default function ApplicantProposalPage() {
                 {/* Decline Button */}
                 <button
                   onClick={() => setIsDeclineModalOpen(true)}
-                  className="flex items-center justify-center gap-1 h-8 px-3 py-[12px] rounded-[8px] border border-[#E6E7EA] bg-white hover:bg-gray-50 transition-colors"
+                  disabled={applicant.status === "hired" || applicant.status === "rejected"}
+                  className="flex items-center justify-center gap-1 h-8 px-3 py-[12px] rounded-[8px] border border-[#E6E7EA] bg-white hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg
                     width="15"

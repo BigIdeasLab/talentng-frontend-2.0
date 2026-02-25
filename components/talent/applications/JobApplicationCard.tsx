@@ -32,7 +32,7 @@ export function JobApplicationCard({ application }: JobApplicationCardProps) {
 
   return (
     <Link
-      href={`/opportunities/${opportunity.id}`}
+      href={`/opportunities/${opportunity.id}${application.status === "invited" ? `?appId=${application.id}` : ""}`}
       className="flex flex-col border border-[#E1E4EA] rounded-[16px] bg-white hover:shadow-md hover:border-[#C8CCd4] transition-all cursor-pointer"
     >
       <div className="flex flex-col gap-3 p-4">

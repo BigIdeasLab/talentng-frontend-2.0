@@ -49,8 +49,8 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
       setError(null);
 
       // Combine date and time into ISO 8601 format
-      if (!date || !time) {
-        setError("Please select both date and time");
+      if (!date || !time || !meetingLink.trim()) {
+        setError("Please provide date, time, and a meeting link");
         return;
       }
 
@@ -74,7 +74,7 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
     }
   };
 
-  const isFormValid = date && time;
+  const isFormValid = date && time && meetingLink.trim();
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -198,7 +198,7 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-4">
                 <label className="font-inter-tight text-sm text-black">
-                  Meeting Link (optional)
+                  Meeting Link
                 </label>
                 <div className="relative">
                   <input

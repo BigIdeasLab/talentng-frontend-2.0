@@ -68,9 +68,9 @@ export interface Application {
 export interface ApplicationSubmission {
   opportunityId: string;
   profileType: "talent" | "mentor";
-  note?: string;
-  attachments?: File[];
-  galleryIds?: string[];
+  note: string;
+  attachments: any[];
+  galleryIds: string[];
 }
 
 export interface ApplicationResponse {
@@ -97,8 +97,9 @@ export interface CompleteInterviewInput {
 }
 
 export interface RescheduleInterviewInput {
-  newDate: string; // ISO timestamp
+  scheduledDate: string; // ISO timestamp
   message?: string;
+  meetingLink?: string;
 }
 
 export interface CreateRecommendationInput {

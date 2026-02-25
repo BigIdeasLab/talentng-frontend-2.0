@@ -65,9 +65,9 @@ export function ApplicationModal({
       await submitMutation.mutateAsync({
         opportunityId: opportunity.id,
         profileType,
-        note: proposal.trim() || undefined,
-        galleryIds: selectedProjects.map((p) => p.id),
-        files: [],
+        note: proposal.trim(),
+        galleryIds: selectedProjects.map((p) => p.id) || [],
+        attachments: [],
       });
 
       toast({

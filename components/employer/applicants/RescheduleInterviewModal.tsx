@@ -54,8 +54,8 @@ export const RescheduleInterviewModal: React.FC<
       setIsLoading(true);
       setError(null);
 
-      if (!date || !time) {
-        setError("Please select both date and time");
+      if (!date || !time || !meetingLink.trim()) {
+        setError("Please provide date, time, and a meeting link");
         return;
       }
 
@@ -79,7 +79,7 @@ export const RescheduleInterviewModal: React.FC<
     }
   };
 
-  const isFormValid = date && time;
+  const isFormValid = date && time && meetingLink.trim();
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -203,7 +203,7 @@ export const RescheduleInterviewModal: React.FC<
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-4">
                 <label className="font-inter-tight text-sm text-black">
-                  Meeting Link (optional)
+                  Meeting Link
                 </label>
                 <div className="relative">
                   <input
