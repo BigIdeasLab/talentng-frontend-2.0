@@ -275,6 +275,7 @@ export function TalentSettings() {
               <div className="space-y-1 pl-5">
                 <ToggleSetting
                   label="Application Updates"
+                  description="Receive push alerts when employers view or respond to your applications"
                   checked={notifications.pushApplications}
                   onChange={(v) =>
                     setNotifications((prev) => ({
@@ -285,6 +286,7 @@ export function TalentSettings() {
                 />
                 <ToggleSetting
                   label="Interview Invitations"
+                  description="Receive push alerts when you're invited for an interview"
                   checked={notifications.pushInterviews}
                   onChange={(v) =>
                     setNotifications((prev) => ({ ...prev, pushInterviews: v }))
@@ -308,7 +310,8 @@ export function TalentSettings() {
             </div>
           </SettingsSection>
 
-          {/* Security */}
+          {/* Security — only show for email/password users */}
+          {userData?.hasPassword !== false && (
           <SettingsSection
             title="Security"
             description="Manage your password and account security"
@@ -381,6 +384,7 @@ export function TalentSettings() {
               </Button>
             </div>
           </SettingsSection>
+          )}
 
           {/* Account */}
           <SettingsSection

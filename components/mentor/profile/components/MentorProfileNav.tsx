@@ -11,8 +11,9 @@ export function MentorProfileNav({
 }: MentorProfileNavProps) {
   const tabs = [
     { id: "overview", label: "Overview" },
-    { id: "session", label: "Session" },
-    { id: "reviews", label: "Reviews" },
+    // TODO: Re-enable when real data is available
+    // { id: "session", label: "Session" },
+    // { id: "reviews", label: "Reviews" },
   ] as const;
 
   return (

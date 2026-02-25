@@ -9,10 +9,12 @@ import { EmployerNotificationsSkeleton } from "@/components/skeletons/Notificati
 
 interface EmployerNotificationsProps {
   onActionClick?: () => void;
+  onNotificationRead?: () => void;
 }
 
 export function EmployerNotifications({
   onActionClick,
+  onNotificationRead,
 }: EmployerNotificationsProps) {
   const router = useRouter();
   const [allNotifications, setAllNotifications] = useState<any[]>([]);
@@ -183,6 +185,7 @@ export function EmployerNotifications({
     isActionButton: boolean = false,
   ) => {
     await markAsRead(notificationId);
+    onNotificationRead?.();
     if (action?.route) {
       router.push(action.route);
     }

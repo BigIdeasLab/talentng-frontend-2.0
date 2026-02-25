@@ -9,11 +9,13 @@ import { MentorNotifications } from "@/components/mentor/notification/MentorNoti
 interface NotificationsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onNotificationRead?: () => void;
 }
 
 export function NotificationsModal({
   isOpen,
   onClose,
+  onNotificationRead,
 }: NotificationsModalProps) {
   const { activeRole } = useProfile();
 
@@ -26,12 +28,12 @@ export function NotificationsModal({
   const renderNotifications = () => {
     switch (activeRole) {
       case "recruiter":
-        return <EmployerNotifications onActionClick={handleActionClick} />;
+        return <EmployerNotifications onActionClick={handleActionClick} onNotificationRead={onNotificationRead} />;
       case "mentor":
-        return <MentorNotifications onActionClick={handleActionClick} />;
+        return <MentorNotifications onActionClick={handleActionClick} onNotificationRead={onNotificationRead} />;
       case "talent":
       default:
-        return <TalentNotifications onActionClick={handleActionClick} />;
+        return <TalentNotifications onActionClick={handleActionClick} onNotificationRead={onNotificationRead} />;
     }
   };
 

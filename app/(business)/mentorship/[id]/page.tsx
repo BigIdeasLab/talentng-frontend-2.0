@@ -685,7 +685,8 @@ export default function MentorDetailPage() {
           {/* Tabs */}
           <div className="flex-shrink-0 border-b border-[#E1E4EA] bg-white px-6 pt-4">
             <div className="flex items-center gap-6">
-              {(["Overview", "Reviews", "Session"] as TabType[]).map((tab) => (
+              {/* TODO: Re-enable "Reviews" and "Session" tabs when real data is available */}
+              {(["Overview"] as TabType[]).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}

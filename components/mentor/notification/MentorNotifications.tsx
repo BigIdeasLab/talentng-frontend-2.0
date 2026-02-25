@@ -9,10 +9,12 @@ import { MentorNotificationsSkeleton } from "@/components/skeletons/Notification
 
 interface MentorNotificationsProps {
   onActionClick?: () => void;
+  onNotificationRead?: () => void;
 }
 
 export function MentorNotifications({
   onActionClick,
+  onNotificationRead,
 }: MentorNotificationsProps) {
   const router = useRouter();
   const [allNotifications, setAllNotifications] = useState<any[]>([]);
@@ -183,6 +185,7 @@ export function MentorNotifications({
     isActionButton: boolean = false,
   ) => {
     await markAsRead(notificationId);
+    onNotificationRead?.();
     if (action?.route) {
       router.push(action.route);
     }

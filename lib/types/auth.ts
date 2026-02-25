@@ -14,6 +14,7 @@ export type User = {
   oneSignalPlayerId: string | null;
   status: string;
   verificationLevel: string;
+  hasPassword?: boolean;
   talentProfile?: any;
   recruiterProfile?: any;
   mentorProfile?: any;

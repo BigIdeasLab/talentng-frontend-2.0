@@ -140,8 +140,10 @@ export default function HiredTalentsPage() {
     }
   };
 
-  const fetchHiredTalents = async () => {
-    // No longer needed directly, handled by useQuery and useEffect
+  const refreshRecommendations = async () => {
+    if (rawApplications.length > 0) {
+      await fetchRecommendationsForTalents(rawApplications);
+    }
   };
 
   const handleRecommendationSubmit = async (data: {
@@ -175,7 +177,7 @@ export default function HiredTalentsPage() {
           description: "Recommendation added successfully",
         });
       }
-      await fetchHiredTalents();
+      await refreshRecommendations();
       setIsRecommendationModalOpen(false);
       setEditingRecommendation(null);
     } catch (error) {
@@ -204,7 +206,7 @@ export default function HiredTalentsPage() {
   const handleDeleteRecommendation = async (recId: string) => {
     try {
       await deleteRecommendation(recId);
-      await fetchHiredTalents();
+      await refreshRecommendations();
       setOpenMenuId(null);
       toast?.({
         title: "Success",

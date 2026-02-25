@@ -479,7 +479,8 @@ export function MentorSettings() {
             </div>
           </SettingsSection>
 
-          {/* Security */}
+          {/* Security — only show for email/password users */}
+          {userData?.hasPassword !== false && (
           <SettingsSection
             title="Security"
             description="Manage your password and account security"
@@ -552,6 +553,7 @@ export function MentorSettings() {
               </Button>
             </div>
           </SettingsSection>
+          )}
 
           {/* Account */}
           <SettingsSection title="Account" description="Manage your account">

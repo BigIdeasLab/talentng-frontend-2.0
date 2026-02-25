@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useProfile } from "@/hooks/useProfile";
 import { useProfileData } from "@/hooks/useProfileData";
@@ -63,6 +63,12 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
     },
     enabled: !!activeRole,
   });
+
+  // Refresh layout's notification counts when a notification is read in the modal
+  const handleNotificationRead = useCallback(() => {
+    refreshRoleNotifications();
+    refreshGeneralNotifications();
+  }, [refreshRoleNotifications, refreshGeneralNotifications]);
 
   // Combine counts for sidebar display
   useEffect(() => {
@@ -148,6 +154,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
       <NotificationsModal
         isOpen={isNotificationsOpen}
         onClose={() => setIsNotificationsOpen(false)}
+        onNotificationRead={handleNotificationRead}
       />
 
       {/* Role Switch Modal (Phase 6) */}

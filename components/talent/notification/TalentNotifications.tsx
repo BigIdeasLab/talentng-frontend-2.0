@@ -9,10 +9,12 @@ import { TalentNotificationsSkeleton } from "@/components/skeletons/Notification
 
 interface TalentNotificationsProps {
   onActionClick?: () => void;
+  onNotificationRead?: () => void;
 }
 
 export function TalentNotifications({
   onActionClick,
+  onNotificationRead,
 }: TalentNotificationsProps) {
   const router = useRouter();
   const [allNotifications, setAllNotifications] = useState<any[]>([]);
@@ -187,6 +189,7 @@ export function TalentNotifications({
     isActionButton: boolean = false,
   ) => {
     await markAsRead(notificationId);
+    onNotificationRead?.();
 
     if (action?.route) {
       router.push(action.route);
