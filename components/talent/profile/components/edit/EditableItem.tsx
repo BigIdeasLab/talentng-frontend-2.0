@@ -1,11 +1,13 @@
 import { SmoothCollapse } from "@/components/SmoothCollapse";
 import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 export interface EditableItemProps {
   index: number;
   isEditing: boolean;
   onEdit: () => void;
   onDone: () => void;
+  onDelete?: (index: number) => void;
   title: string;
   subtitle?: string;
   metadata?: string[];
@@ -14,9 +16,11 @@ export interface EditableItemProps {
 }
 
 export function EditableItem({
+  index,
   isEditing,
   onEdit,
   onDone,
+  onDelete,
   title,
   subtitle,
   metadata,
@@ -29,8 +33,20 @@ export function EditableItem({
         <div className="flex flex-col gap-[16px] px-[16px] py-[16px]">
           {editingContent}
 
-          {/* Done Button */}
-          <div className="flex justify-end gap-[10px]">
+          {/* Action Buttons */}
+          <div className="flex justify-between items-center mt-2">
+            <div>
+              {onDelete && (
+                <Button
+                  onClick={() => onDelete(index)}
+                  variant="outline"
+                  className="h-[40px] px-[16px] rounded-full border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600 hover:border-red-300 gap-2 font-inter-tight text-[12px]"
+                >
+                  <Trash2 size={14} />
+                  Delete
+                </Button>
+              )}
+            </div>
             <Button
               onClick={onDone}
               className="h-[40px] px-[24px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[12px] font-normal"

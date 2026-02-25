@@ -20,6 +20,7 @@ import {
 import { useProfile } from "@/hooks/useProfile";
 import { updateServerTalentProfile } from "@/lib/api/talent/server";
 import { fetchProfileByRole } from "@/lib/api/profile-service";
+import { TalentEditProfileSkeleton } from "@/components/skeletons/EditProfileSkeleton";
 
 const availableSkills = [
   "Website Design",
@@ -316,6 +317,22 @@ export function TalentEditProfile() {
     setEditingEducationIndex(formData.education.length);
   };
 
+  const handleExperienceDelete = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      experience: prev.experience.filter((_, i) => i !== index),
+    }));
+    setEditingExperienceIndex(null);
+  };
+
+  const handleEducationDelete = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      education: prev.education.filter((_, i) => i !== index),
+    }));
+    setEditingEducationIndex(null);
+  };
+
   const handleSocialInputChange = (platform: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -349,6 +366,10 @@ export function TalentEditProfile() {
       setIsSaving(false);
     }
   };
+
+  if (isLoading || !profileData) {
+    return <TalentEditProfileSkeleton />;
+  }
 
   return (
     <div className="flex h-screen bg-white">
@@ -399,6 +420,7 @@ export function TalentEditProfile() {
               editingIndex={editingExperienceIndex}
               onEditingChange={setEditingExperienceIndex}
               onUpdate={handleExperienceUpdate}
+              onDelete={handleExperienceDelete}
               onAdd={handleAddExperience}
               sectionRef={(el) => {
                 if (el) sectionRefs.current["experience"] = el;
@@ -413,6 +435,7 @@ export function TalentEditProfile() {
               editingIndex={editingEducationIndex}
               onEditingChange={setEditingEducationIndex}
               onUpdate={handleEducationUpdate}
+              onDelete={handleEducationDelete}
               onAdd={handleAddEducation}
               sectionRef={(el) => {
                 if (el) sectionRefs.current["education"] = el;

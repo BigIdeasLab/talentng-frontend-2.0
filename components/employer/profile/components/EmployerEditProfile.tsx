@@ -15,6 +15,7 @@ import {
 } from "@/lib/api/recruiter";
 import { fetchProfileByRole } from "@/lib/api/profile-service";
 import statesCities from "@/lib/data/states-cities.json";
+import { EmployerEditProfileSkeleton } from "@/components/skeletons/EditProfileSkeleton";
 
 interface EmployerFormData {
   personal: {
@@ -832,6 +833,10 @@ export function EmployerEditProfile() {
       setIsSaving(false);
     }
   };
+
+  if (_isLoading || !profileData) {
+    return <EmployerEditProfileSkeleton />;
+  }
 
   return (
     <div className="flex h-screen bg-white">

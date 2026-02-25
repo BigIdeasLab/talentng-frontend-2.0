@@ -59,6 +59,10 @@ export function WorksGrid({
     }
   }, [refreshTrigger]);
 
+  useEffect(() => {
+    console.log("[WorksGrid] displayItems changed:", displayItems);
+  }, [displayItems]);
+
   const handleDelete = async (itemId: string) => {
     setError(null);
     setOpenMenuId(null);
@@ -139,6 +143,11 @@ export function WorksGrid({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[10px] gap-y-[20px]">
           {displayItems.map((item) => {
             const imageUrl = item.images?.[0] || (item as any).url;
+            console.log("[WorksGrid] rendering item:", item.id, {
+              title: item.title,
+              imageUrl,
+              item,
+            });
             if (!imageUrl) return null;
 
             return (

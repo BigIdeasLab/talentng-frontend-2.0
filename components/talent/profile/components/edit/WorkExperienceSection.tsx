@@ -21,6 +21,7 @@ interface WorkExperienceSectionProps {
   editingIndex: number | null;
   onEditingChange: (index: number | null) => void;
   onUpdate: (index: number, field: string, value: string | boolean) => void;
+  onDelete: (index: number) => void;
   onAdd: () => void;
   sectionRef: (el: HTMLDivElement | null) => void;
   onNext: () => void;
@@ -33,6 +34,7 @@ export function WorkExperienceSection({
   editingIndex,
   onEditingChange,
   onUpdate,
+  onDelete,
   onAdd,
   sectionRef,
   onNext,
@@ -59,6 +61,7 @@ export function WorkExperienceSection({
                 isEditing={editingIndex === index}
                 onEdit={() => onEditingChange(index)}
                 onDone={() => onEditingChange(null)}
+                onDelete={onDelete}
                 title={exp.position}
                 subtitle={exp.company}
                 metadata={[

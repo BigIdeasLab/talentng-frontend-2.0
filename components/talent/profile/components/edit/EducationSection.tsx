@@ -20,6 +20,7 @@ interface EducationSectionProps {
   editingIndex: number | null;
   onEditingChange: (index: number | null) => void;
   onUpdate: (index: number, field: string, value: string) => void;
+  onDelete: (index: number) => void;
   onAdd: () => void;
   sectionRef: (el: HTMLDivElement | null) => void;
   onNext: () => void;
@@ -32,6 +33,7 @@ export function EducationSection({
   editingIndex,
   onEditingChange,
   onUpdate,
+  onDelete,
   onAdd,
   sectionRef,
   onNext,
@@ -54,6 +56,7 @@ export function EducationSection({
                 isEditing={editingIndex === index}
                 onEdit={() => onEditingChange(index)}
                 onDone={() => onEditingChange(null)}
+                onDelete={onDelete}
                 title={edu.degree}
                 subtitle={edu.school}
                 metadata={[

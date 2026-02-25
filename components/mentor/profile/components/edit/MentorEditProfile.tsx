@@ -18,6 +18,7 @@ import type {
   MentorProfile,
 } from "@/lib/api/mentor/types";
 import categoriesData from "@/lib/data/categories.json";
+import { MentorEditProfileSkeleton } from "@/components/skeletons/EditProfileSkeleton";
 
 interface MentorFormData {
   personal: {
@@ -1143,13 +1144,7 @@ export function MentorEditProfile() {
   };
 
   if (isFetching) {
-    return (
-      <div className="flex h-screen bg-white items-center justify-center">
-        <div className="text-[14px] text-gray-500 font-inter-tight">
-          Loading...
-        </div>
-      </div>
-    );
+    return <MentorEditProfileSkeleton />;
   }
 
   return (

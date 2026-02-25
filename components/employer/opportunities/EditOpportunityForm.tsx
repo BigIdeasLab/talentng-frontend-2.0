@@ -15,6 +15,7 @@ import { Loader2 } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import { EditOpportunityFormSkeleton } from "@/components/skeletons/EditProfileSkeleton";
 
 type FormSection =
   | "basic-info"
@@ -345,14 +346,7 @@ export function EditOpportunityForm({
   };
 
   if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-white">
-        <div className="flex items-center gap-2">
-          <Loader2 className="animate-spin" size={24} />
-          <p className="text-gray-600">Loading opportunity...</p>
-        </div>
-      </div>
-    );
+    return <EditOpportunityFormSkeleton />;
   }
 
   return (

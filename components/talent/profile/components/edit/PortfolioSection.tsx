@@ -56,6 +56,7 @@ export function PortfolioSection({
                 isEditing={editingIndex === index}
                 onEdit={() => onEditingChange(index)}
                 onDone={() => onEditingChange(null)}
+                onDelete={onRemovePortfolioItem}
                 title={item.title || "Untitled Project"}
                 subtitle={item.url}
                 metadata={[item.description]}
@@ -130,15 +131,6 @@ export function PortfolioSection({
                         placeholder="https://example.com/image.jpg"
                         className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                       />
-                    </div>
-
-                    <div className="flex justify-between">
-                      <button
-                        onClick={() => onRemovePortfolioItem?.(index)}
-                        className="text-[12px] font-normal text-red-500 hover:text-red-700 transition-colors"
-                      >
-                        Remove Item
-                      </button>
                     </div>
                   </div>
                 }
