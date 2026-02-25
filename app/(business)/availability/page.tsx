@@ -85,7 +85,6 @@ export default function AvailabilityPage() {
   const [savedSlots, setSavedSlots] = useState<Set<string>>(new Set()); // Track what's saved in backend
   const [sessionDuration, setSessionDuration] = useState("60");
   const [bufferTime, setBufferTime] = useState("15");
-  const [timezone, setTimezone] = useState("WAT");
   const [defaultMeetingLink, setDefaultMeetingLink] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -109,9 +108,6 @@ export default function AvailabilityPage() {
 
       if (response.sessionDuration) {
         setSessionDuration(response.sessionDuration.toString());
-      }
-      if (response.timezone) {
-        setTimezone(response.timezone);
       }
 
       const slots = new Set<string>();
@@ -345,7 +341,6 @@ export default function AvailabilityPage() {
       await setMyAvailability({
         sessionDuration: parseInt(sessionDuration, 10),
         bufferTime: parseInt(bufferTime, 10),
-        timezone,
         defaultMeetingLink: defaultMeetingLink || undefined,
         slots: slotsArray,
       });
@@ -536,28 +531,6 @@ export default function AvailabilityPage() {
               </Select>
             </div>
 
-            <div className="flex items-center gap-2">
-              <label className="text-xs font-medium text-[#525866]">
-                Timezone
-              </label>
-              <Select
-                value={timezone}
-                onValueChange={(v) => {
-                  setTimezone(v);
-                  setHasChanges(true);
-                }}
-              >
-                <SelectTrigger className="h-8 w-28 border-[#E1E4EA] bg-white text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="WAT">WAT (UTC+1)</SelectItem>
-                  <SelectItem value="GMT">GMT (UTC+0)</SelectItem>
-                  <SelectItem value="EST">EST (UTC-5)</SelectItem>
-                  <SelectItem value="PST">PST (UTC-8)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
 
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">

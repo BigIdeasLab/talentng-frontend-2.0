@@ -350,6 +350,7 @@ export function TalentEditProfile() {
       setIsSaving(true);
       // Convert UI-friendly format to API format
       const apiData = mapUIToAPI(formData as UIProfileData);
+      console.log("[TalentEditProfile] Saving profile with payload:", apiData);
 
       // Send to API
       await updateServerTalentProfile(apiData);

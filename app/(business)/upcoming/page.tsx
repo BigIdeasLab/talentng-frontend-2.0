@@ -22,8 +22,8 @@ import { TalentInterviewCard } from "@/components/talent/applications/TalentInte
 import { TalentSessionCard } from "@/components/talent/applications/TalentSessionCard";
 import { EmptyState } from "@/components/ui/empty-state";
 import { RecruiterUpcoming } from "@/components/employer/upcoming/RecruiterUpcoming";
-import { MentorUpcoming } from "@/components/mentor/upcoming/MentorUpcoming";
 import { LoadingScreen } from "@/components/layouts/LoadingScreen";
+import { useRouter } from "next/navigation";
 
 interface UpcomingItem {
   type: "interview" | "session";
@@ -43,17 +43,20 @@ const FILTER_TABS = [
 
 export default function UpcomingPage() {
   const { activeRole, isLoading: roleLoading } = useProfile();
+  const router = useRouter();
 
-  if (roleLoading || !activeRole) {
+  useEffect(() => {
+    if (!roleLoading && activeRole === "mentor") {
+      router.replace("/sessions");
+    }
+  }, [activeRole, roleLoading, router]);
+
+  if (roleLoading || !activeRole || activeRole === "mentor") {
     return <LoadingScreen />;
   }
 
   if (activeRole === "recruiter") {
     return <RecruiterUpcoming />;
-  }
-
-  if (activeRole === "mentor") {
-    return <MentorUpcoming />;
   }
 
   return <TalentUpcoming />;
