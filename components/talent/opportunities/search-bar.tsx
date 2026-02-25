@@ -55,7 +55,9 @@ export function SearchBar({
           }`}
         >
           <SlidersHorizontal className="w-[15px] h-[15px]" />
-          <span className="text-[13px] font-normal font-inter-tight">Filter</span>
+          <span className="text-[13px] font-normal font-inter-tight">
+            Filter
+          </span>
           {filterCount > 0 && (
             <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
               {filterCount}

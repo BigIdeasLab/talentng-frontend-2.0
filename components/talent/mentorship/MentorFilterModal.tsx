@@ -226,7 +226,7 @@ export function MentorFilterModal({
     <>
       {/* Backdrop */}
       <div className="fixed inset-0 z-40 bg-black/5" onClick={onClose} />
-      
+
       {/* Modal Content */}
       <div
         className="absolute top-full right-0 z-50 mt-2 w-[245px]"

@@ -126,13 +126,17 @@ export function OpportunityCard({
             <h3 className="text-[16px] font-semibold font-inter-tight text-black group-hover:text-black/60 transition-colors line-clamp-1">
               {opportunity.title}
             </h3>
-            {(opportunity.location || opportunity.experienceLevel || opportunity.category) && (
+            {(opportunity.location ||
+              opportunity.experienceLevel ||
+              opportunity.category) && (
               <p className="text-[12px] font-normal text-black/40 font-inter-tight line-clamp-1">
                 {[
                   opportunity.location,
                   opportunity.experienceLevel,
-                  opportunity.category
-                ].filter(Boolean).join(" • ")}
+                  opportunity.category,
+                ]
+                  .filter(Boolean)
+                  .join(" • ")}
               </p>
             )}
           </div>

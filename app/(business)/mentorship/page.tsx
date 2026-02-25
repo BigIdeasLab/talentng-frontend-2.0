@@ -571,7 +571,6 @@ export default function MentorshipPage() {
         confirmText="Yes, Cancel"
         type="danger"
       />
-
     </div>
   );
 }
