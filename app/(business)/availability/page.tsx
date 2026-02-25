@@ -531,7 +531,6 @@ export default function AvailabilityPage() {
               </Select>
             </div>
 
-
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <label className="text-xs font-medium text-[#525866]">

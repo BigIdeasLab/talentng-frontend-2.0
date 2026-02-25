@@ -4,6 +4,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { PageLoadingState } from "@/lib/page-utils";
 import { OpportunityDetails as EmployerOpportunityDetails } from "@/components/employer/opportunities/OpportunityDetails";
 import { OpportunityDetails as TalentOpportunityDetails } from "@/components/talent/opportunities/OpportunityDetails";
+import { useRequireRole } from "@/hooks/useRequireRole";
 import { useParams, useSearchParams } from "next/navigation";
 import { RoleColorProvider } from "@/lib/theme/RoleColorContext";
 
@@ -14,7 +15,10 @@ export default function OpportunityPage() {
   const applicationId = searchParams.get("appId") || undefined;
   const { activeRole, userRoles, isLoading: profileLoading } = useProfile();
 
-  if (profileLoading) {
+  // Block mentors from accessing this page
+  const hasAccess = useRequireRole(["talent", "recruiter"]);
+
+  if (profileLoading || !hasAccess) {
     return <PageLoadingState message="Loading opportunity details..." />;
   }
 
@@ -24,7 +28,6 @@ export default function OpportunityPage() {
     case "recruiter":
       return <EmployerOpportunityDetails opportunityId={id} />;
     case "talent":
-    case "mentor":
     default:
       return (
         <RoleColorProvider role={role}>

@@ -119,6 +119,8 @@ export function EmployerOpportunities() {
       return 0;
     });
 
+  console.log(opportunitiesRaw);
+
   if (isLoading || isPending || !opportunitiesRaw) {
     return <OpportunitiesSkeleton />;
   }
