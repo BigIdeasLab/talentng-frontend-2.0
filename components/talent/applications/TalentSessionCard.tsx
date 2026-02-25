@@ -176,15 +176,14 @@ export function TalentSessionCard({ session }: TalentSessionCardProps) {
               </span>
             </div>
           )}
-          {session.location &&
-            !/^https?:\/\//i.test(session.location) && (
-              <div className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#F5F5F5]">
-                <MapPin className="w-3 h-3 text-[#525866]" />
-                <span className="text-[12px] font-normal font-inter-tight text-black leading-[12.6px]">
-                  {session.location}
-                </span>
-              </div>
-            )}
+          {session.location && !/^https?:\/\//i.test(session.location) && (
+            <div className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#F5F5F5]">
+              <MapPin className="w-3 h-3 text-[#525866]" />
+              <span className="text-[12px] font-normal font-inter-tight text-black leading-[12.6px]">
+                {session.location}
+              </span>
+            </div>
+          )}
           {meetingLink && (
             <a
               href={meetingLink}
