@@ -923,7 +923,10 @@ export default function ApplicantProposalPage() {
                 {/* Hire Talent Button */}
                 <button
                   onClick={() => setIsHireModalOpen(true)}
-                  disabled={applicant.status === "hired" || applicant.status === "rejected"}
+                  disabled={
+                    applicant.status === "hired" ||
+                    applicant.status === "rejected"
+                  }
                   className="flex items-center gap-[5px] h-8 px-3 rounded-[8px] border border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4a26cc] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg
@@ -1014,7 +1017,10 @@ export default function ApplicantProposalPage() {
                 {/* Decline Button */}
                 <button
                   onClick={() => setIsDeclineModalOpen(true)}
-                  disabled={applicant.status === "hired" || applicant.status === "rejected"}
+                  disabled={
+                    applicant.status === "hired" ||
+                    applicant.status === "rejected"
+                  }
                   className="flex items-center justify-center gap-1 h-8 px-3 py-[12px] rounded-[8px] border border-[#E6E7EA] bg-white hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg

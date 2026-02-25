@@ -33,8 +33,7 @@ export function useTalentApplicationsQuery() {
 export function useSubmitApplication() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: ApplicationSubmission) =>
-      submitApplication(data),
+    mutationFn: (data: ApplicationSubmission) => submitApplication(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["applications", "talent"] });
     },
