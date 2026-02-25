@@ -5,13 +5,7 @@ import { ROLE_COLORS } from "@/lib/theme/role-colors";
 // ---------------------------------------------------------------------------
 // Primitive skeleton block
 // ---------------------------------------------------------------------------
-function Sk({
-  className,
-  color,
-}: {
-  className?: string;
-  color: string;
-}) {
+function Sk({ className, color }: { className?: string; color: string }) {
   return (
     <div
       className={`animate-pulse rounded ${className ?? ""}`}
@@ -39,7 +33,11 @@ function SidebarSkeleton({
       {/* Nav items */}
       <div className="flex flex-col items-start gap-[22px] w-full">
         {Array.from({ length: sections }).map((_, i) => (
-          <Sk key={i} className={`h-[14px] ${i === 0 ? "w-[130px]" : "w-[110px]"}`} color={color} />
+          <Sk
+            key={i}
+            className={`h-[14px] ${i === 0 ? "w-[130px]" : "w-[110px]"}`}
+            color={color}
+          />
         ))}
       </div>
     </div>
@@ -119,11 +117,7 @@ export function TalentEditProfileSkeleton() {
         <div className="flex-1 overflow-y-auto px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
             {/* Personal — expanded with avatar + fields */}
-            <AccordionSectionSkeleton
-              color={color}
-              expanded
-              fieldCount={3}
-            />
+            <AccordionSectionSkeleton color={color} expanded fieldCount={3} />
             {/* Professional */}
             <AccordionSectionSkeleton color={color} />
             {/* Work Experience */}
@@ -154,11 +148,7 @@ export function EmployerEditProfileSkeleton() {
 
         <div className="flex-1 overflow-y-auto px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
-            <AccordionSectionSkeleton
-              color={color}
-              expanded
-              fieldCount={3}
-            />
+            <AccordionSectionSkeleton color={color} expanded fieldCount={3} />
             <AccordionSectionSkeleton color={color} />
             <AccordionSectionSkeleton color={color} />
           </div>
@@ -183,11 +173,7 @@ export function MentorEditProfileSkeleton() {
 
         <div className="flex-1 overflow-y-auto px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
-            <AccordionSectionSkeleton
-              color={color}
-              expanded
-              fieldCount={3}
-            />
+            <AccordionSectionSkeleton color={color} expanded fieldCount={3} />
             <AccordionSectionSkeleton color={color} />
             <AccordionSectionSkeleton color={color} />
           </div>
