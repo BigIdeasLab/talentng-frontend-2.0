@@ -28,12 +28,27 @@ export function NotificationsModal({
   const renderNotifications = () => {
     switch (activeRole) {
       case "recruiter":
-        return <EmployerNotifications onActionClick={handleActionClick} onNotificationRead={onNotificationRead} />;
+        return (
+          <EmployerNotifications
+            onActionClick={handleActionClick}
+            onNotificationRead={onNotificationRead}
+          />
+        );
       case "mentor":
-        return <MentorNotifications onActionClick={handleActionClick} onNotificationRead={onNotificationRead} />;
+        return (
+          <MentorNotifications
+            onActionClick={handleActionClick}
+            onNotificationRead={onNotificationRead}
+          />
+        );
       case "talent":
       default:
-        return <TalentNotifications onActionClick={handleActionClick} onNotificationRead={onNotificationRead} />;
+        return (
+          <TalentNotifications
+            onActionClick={handleActionClick}
+            onNotificationRead={onNotificationRead}
+          />
+        );
     }
   };
 

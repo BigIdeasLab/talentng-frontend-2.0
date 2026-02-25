@@ -312,78 +312,78 @@ export function TalentSettings() {
 
           {/* Security — only show for email/password users */}
           {userData?.hasPassword !== false && (
-          <SettingsSection
-            title="Security"
-            description="Manage your password and account security"
-          >
-            <div className="space-y-4 max-w-md">
-              <div>
-                <Label
-                  htmlFor="current-password"
-                  className="text-[12px] font-medium font-inter-tight text-[#525866]"
+            <SettingsSection
+              title="Security"
+              description="Manage your password and account security"
+            >
+              <div className="space-y-4 max-w-md">
+                <div>
+                  <Label
+                    htmlFor="current-password"
+                    className="text-[12px] font-medium font-inter-tight text-[#525866]"
+                  >
+                    Current Password
+                  </Label>
+                  <Input
+                    id="current-password"
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    className="mt-1"
+                    placeholder="Enter current password"
+                  />
+                </div>
+                <div>
+                  <Label
+                    htmlFor="new-password"
+                    className="text-[12px] font-medium font-inter-tight text-[#525866]"
+                  >
+                    New Password
+                  </Label>
+                  <Input
+                    id="new-password"
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="mt-1"
+                    placeholder="Enter new password"
+                  />
+                </div>
+                <div>
+                  <Label
+                    htmlFor="confirm-password"
+                    className="text-[12px] font-medium font-inter-tight text-[#525866]"
+                  >
+                    Confirm New Password
+                  </Label>
+                  <Input
+                    id="confirm-password"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="mt-1"
+                    placeholder="Confirm new password"
+                  />
+                </div>
+                <Button
+                  onClick={() => changePassword.mutate()}
+                  disabled={
+                    changePassword.isPending ||
+                    !currentPassword ||
+                    !newPassword ||
+                    !confirmPassword
+                  }
+                  className="text-white hover:opacity-90"
+                  style={{ backgroundColor: roleColors.primary }}
                 >
-                  Current Password
-                </Label>
-                <Input
-                  id="current-password"
-                  type="password"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="mt-1"
-                  placeholder="Enter current password"
-                />
+                  {changePassword.isPending && (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  )}
+                  <Shield className="w-4 h-4 mr-2" />
+                  Change Password
+                </Button>
               </div>
-              <div>
-                <Label
-                  htmlFor="new-password"
-                  className="text-[12px] font-medium font-inter-tight text-[#525866]"
-                >
-                  New Password
-                </Label>
-                <Input
-                  id="new-password"
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  className="mt-1"
-                  placeholder="Enter new password"
-                />
-              </div>
-              <div>
-                <Label
-                  htmlFor="confirm-password"
-                  className="text-[12px] font-medium font-inter-tight text-[#525866]"
-                >
-                  Confirm New Password
-                </Label>
-                <Input
-                  id="confirm-password"
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="mt-1"
-                  placeholder="Confirm new password"
-                />
-              </div>
-              <Button
-                onClick={() => changePassword.mutate()}
-                disabled={
-                  changePassword.isPending ||
-                  !currentPassword ||
-                  !newPassword ||
-                  !confirmPassword
-                }
-                className="text-white hover:opacity-90"
-                style={{ backgroundColor: roleColors.primary }}
-              >
-                {changePassword.isPending && (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                )}
-                <Shield className="w-4 h-4 mr-2" />
-                Change Password
-              </Button>
-            </div>
-          </SettingsSection>
+            </SettingsSection>
           )}
 
           {/* Account */}

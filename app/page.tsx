@@ -613,17 +613,9 @@ function TalentCard({ talent }: { talent: (typeof talents)[0] }) {
   );
 }
 
-function PlatformMockup({
-  images,
-  bg,
-}: {
-  images: string[];
-  bg: string;
-}) {
+function PlatformMockup({ images, bg }: { images: string[]; bg: string }) {
   return (
-    <div
-      className={`relative rounded-2xl overflow-hidden shadow-xl ${bg} p-3`}
-    >
+    <div className={`relative rounded-2xl overflow-hidden shadow-xl ${bg} p-3`}>
       {/* Browser chrome */}
       <div className="bg-white rounded-lg overflow-hidden shadow-sm">
         <div className="flex items-center gap-1.5 px-3 py-2 bg-[#F5F5F5] border-b border-[#E8E8E8]">
@@ -666,7 +658,7 @@ function PlatformMockup({
 export default function LandingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<"People" | "Opportunities">(
-    "People"
+    "People",
   );
   const [activeCategory, setActiveCategory] = useState("All");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -835,7 +827,10 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
             {painPoints.map((point) => (
-              <div key={point.title} className="flex flex-col items-center text-center gap-4 md:items-start md:text-left">
+              <div
+                key={point.title}
+                className="flex flex-col items-center text-center gap-4 md:items-start md:text-left"
+              >
                 <div
                   className={`w-14 h-14 rounded-2xl flex items-center justify-center ${point.iconBg}`}
                 >
@@ -923,7 +918,10 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
             {howItWorksSteps.map((step) => (
-              <div key={step.step} className="flex flex-col items-center text-center gap-4">
+              <div
+                key={step.step}
+                className="flex flex-col items-center text-center gap-4"
+              >
                 <div className="w-16 h-16 rounded-full bg-[#E8F7EE] flex items-center justify-center">
                   {step.icon}
                 </div>
@@ -943,7 +941,10 @@ export default function LandingPage() {
       </section>
 
       {/* ── Discover Talent ──────────────────────────────────────────────────── */}
-      <section id="discover" className="bg-white py-16 md:py-20 border-t border-[#F0F0F0]">
+      <section
+        id="discover"
+        className="bg-white py-16 md:py-20 border-t border-[#F0F0F0]"
+      >
         <div className="max-w-[1280px] mx-auto px-4 sm:px-8">
           <div className="text-center mb-8">
             <h2 className="text-3xl sm:text-[40px] font-bold text-black">
@@ -1012,7 +1013,9 @@ export default function LandingPage() {
                   <button
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
                     className={`w-full flex items-center justify-between py-5 text-left ${
-                      i === 0 ? "border-t border-b border-[#E1E4EA]" : "border-b border-[#E1E4EA]"
+                      i === 0
+                        ? "border-t border-b border-[#E1E4EA]"
+                        : "border-b border-[#E1E4EA]"
                     }`}
                   >
                     <span className="text-xl sm:text-2xl font-medium text-black">
@@ -1083,7 +1086,10 @@ export default function LandingPage() {
             {/* Links */}
             <div className="flex flex-1 flex-wrap gap-8 sm:gap-12">
               {Object.entries(footerLinks).map(([heading, links]) => (
-                <div key={heading} className="flex flex-col gap-4 min-w-[100px]">
+                <div
+                  key={heading}
+                  className="flex flex-col gap-4 min-w-[100px]"
+                >
                   <h4 className="text-black font-semibold text-base">
                     {heading}
                   </h4>
