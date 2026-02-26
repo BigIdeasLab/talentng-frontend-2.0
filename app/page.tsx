@@ -613,6 +613,32 @@ function TalentCard({ talent }: { talent: (typeof talents)[0] }) {
   );
 }
 
+function HeroMockup() {
+  return (
+    <div className="relative w-full rounded-xl overflow-hidden bg-white shadow-xl aspect-[642/483]">
+      {/* Decorative circles */}
+      <div
+        className="absolute rounded-full bg-[#1CBB41] pointer-events-none"
+        style={{ width: "75.9%", paddingBottom: "75.9%", left: "-30.2%", top: "-41.6%" }}
+      />
+      <div
+        className="absolute rounded-full bg-[#FEF32B] pointer-events-none"
+        style={{ width: "48.4%", paddingBottom: "48.4%", right: "-24.3%", top: "-13.9%" }}
+      />
+      <div
+        className="absolute rounded-full bg-[#5C30FF] pointer-events-none"
+        style={{ width: "48.4%", paddingBottom: "48.4%", left: "-16.5%", bottom: "-26.5%" }}
+      />
+      {/* Platform screenshot */}
+      <img
+        src="https://api.builder.io/api/v1/image/assets/TEMP/d694f83bf298a860b64aa722c354b702b33f2bcc?width=1614"
+        alt="Talent.ng platform screenshot"
+        className="absolute inset-0 w-full h-full object-cover object-left-top"
+      />
+    </div>
+  );
+}
+
 function PlatformMockup({ images, bg }: { images: string[]; bg: string }) {
   return (
     <div className={`relative rounded-2xl overflow-hidden shadow-xl ${bg} p-3`}>
@@ -796,17 +822,7 @@ export default function LandingPage() {
 
           {/* Right mockup */}
           <div className="flex-1 min-w-0 max-w-[580px] w-full">
-            <PlatformMockup
-              images={[
-                "https://api.builder.io/api/v1/image/assets/TEMP/d7a73bf68c36125971c3bb78d8c11455bc32bc8d?width=490",
-                "https://api.builder.io/api/v1/image/assets/TEMP/298eb50fb8577b41f6d5b1a3cbb571ec8ca50903?width=488",
-                "https://api.builder.io/api/v1/image/assets/TEMP/abafb32ec62d33c6dc1db2acdfdb79d6322daeb8?width=490",
-                "https://api.builder.io/api/v1/image/assets/TEMP/4b5ccf771678a302123ebfcfa1c5244ab0d6b3f7?width=488",
-                "https://api.builder.io/api/v1/image/assets/TEMP/fc364c1b170e8ee75899e80f32697affc980bc5b?width=490",
-                "https://api.builder.io/api/v1/image/assets/TEMP/f2bcc167c0b44303cd48ca8e3d28e540c4d2a77d?width=490",
-              ]}
-              bg="bg-gradient-to-br from-[#E0E4FF] to-[#C8CFFF]"
-            />
+            <HeroMockup />
           </div>
         </div>
       </section>
