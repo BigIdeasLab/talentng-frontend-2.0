@@ -10,9 +10,11 @@ import { DEFAULT_PROFILE_DATA } from "@/lib/data/default-profile";
 import { TalentProfile } from "@/components/talent/profile/TalentProfile";
 import { EmployerProfile } from "@/components/employer/profile/EmployerProfile";
 import { MentorProfile } from "@/components/mentor/profile/MentorProfile";
+import { useRequireRole } from "@/hooks/useRequireRole";
 
 export default function ProfilePage() {
   const { activeRole } = useProfile();
+  const hasAccess = useRequireRole(["talent", "recruiter", "mentor"]);
   const searchParams = useSearchParams();
   const initialTab = searchParams.get("tab") || "works";
   const role = activeRole || "talent";
@@ -36,7 +38,7 @@ export default function ProfilePage() {
     defaultData: { raw: {}, mapped: DEFAULT_PROFILE_DATA },
   });
 
-  if (isLoading) {
+  if (isLoading || !hasAccess) {
     return <PageLoadingState message="Loading profile..." />;
   }
 

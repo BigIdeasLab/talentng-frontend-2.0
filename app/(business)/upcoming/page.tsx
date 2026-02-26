@@ -41,9 +41,12 @@ const FILTER_TABS = [
   { id: "sessions", label: "Sessions", icon: Users },
 ];
 
+import { useRequireRole } from "@/hooks/useRequireRole";
+
 export default function UpcomingPage() {
   const { activeRole, isLoading: roleLoading } = useProfile();
   const router = useRouter();
+  const hasAccess = useRequireRole(["talent", "recruiter", "mentor"]);
 
   useEffect(() => {
     if (!roleLoading && activeRole === "mentor") {
@@ -51,7 +54,7 @@ export default function UpcomingPage() {
     }
   }, [activeRole, roleLoading, router]);
 
-  if (roleLoading || !activeRole || activeRole === "mentor") {
+  if (roleLoading || !activeRole || !hasAccess || activeRole === "mentor") {
     return <LoadingScreen />;
   }
 

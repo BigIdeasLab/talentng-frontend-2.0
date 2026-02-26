@@ -7,6 +7,7 @@ import { TalentDashboard } from "@/components/talent/dashboard/TalentDashboard";
 import { EmployerDashboard } from "@/components/employer/dashboard/EmployerDashboard";
 import MentorDashboard from "@/components/mentor/dashboard/MentorDashboard";
 
+import { useRequireRole } from "@/hooks/useRequireRole";
 import { LoadingScreen } from "@/components/layouts/LoadingScreen";
 
 export default function DashboardPage() {
@@ -14,6 +15,7 @@ export default function DashboardPage() {
   useSwitchRoleParam();
 
   const { activeRole, isLoading, setActiveRole } = useProfile();
+  const hasAccess = useRequireRole(["talent", "recruiter", "mentor"]);
 
   // Safeguard: Ensure the frontend role matches the token's role
   useEffect(() => {
@@ -36,7 +38,7 @@ export default function DashboardPage() {
     }
   }, [activeRole, setActiveRole]);
 
-  if (isLoading || !activeRole) {
+  if (isLoading || !activeRole || !hasAccess) {
     return <LoadingScreen />;
   }
 

@@ -712,9 +712,9 @@ export default function LandingPage() {
           {/* Logo */}
           <Link href="/" className="flex-shrink-0">
             <img
-              src="https://api.builder.io/api/v1/image/assets/TEMP/346cc6e9e3f47688689c0436ec2cd4a7839d719b?width=84"
+              src="/landing-page-logo.png"
               alt="Talent.ng"
-              className="h-8 w-auto"
+              className="h-[70px] w-auto object-contain"
             />
           </Link>
 
@@ -860,7 +860,7 @@ export default function LandingPage() {
             {painPoints.map((point) => (
               <div
                 key={point.title}
-                className="flex flex-col items-center text-center gap-4 md:items-start md:text-left"
+                className="flex flex-col items-center text-center gap-4"
               >
                 <div
                   className={`w-14 h-14 rounded-2xl flex items-center justify-center ${point.iconBg}`}
@@ -1075,9 +1075,9 @@ export default function LandingPage() {
         <div className="max-w-[1280px] mx-auto px-4 sm:px-8">
           <div className="flex flex-col items-center text-center gap-5">
             <img
-              src="https://api.builder.io/api/v1/image/assets/TEMP/8d96c7a7b6652ec04c8110d58549b6eff81087bc?width=252"
-              alt="Talent.ng App"
-              className="w-24 h-auto rounded-[22px] shadow-lg"
+              src="/landing-page-logo.png"
+              alt="Talent.ng Logo"
+              className="h-[200px] w-auto object-contain"
             />
             <div className="flex flex-col gap-4">
               <h2 className="text-4xl sm:text-[56px] md:text-[60px] font-normal text-black leading-[1.05]">
@@ -1104,9 +1104,9 @@ export default function LandingPage() {
             {/* Brand */}
             <div className="md:w-[320px] flex-shrink-0 flex flex-col gap-6">
               <img
-                src="https://api.builder.io/api/v1/image/assets/TEMP/346cc6e9e3f47688689c0436ec2cd4a7839d719b?width=84"
+                src="/landing-page-logo.png"
                 alt="Talent.ng"
-                className="h-8 w-auto"
+                className="h-[70px] w-auto object-contain self-start"
               />
               <p className="text-[#525866] text-base leading-6 max-w-xs">
                 Nigeria&rsquo;s centralized platform connecting talents,
