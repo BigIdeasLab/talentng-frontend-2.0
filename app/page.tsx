@@ -619,15 +619,30 @@ function HeroMockup() {
       {/* Decorative circles */}
       <div
         className="absolute rounded-full bg-[#1CBB41] pointer-events-none"
-        style={{ width: "75.9%", paddingBottom: "75.9%", left: "-30.2%", top: "-41.6%" }}
+        style={{
+          width: "75.9%",
+          paddingBottom: "75.9%",
+          left: "-30.2%",
+          top: "-41.6%",
+        }}
       />
       <div
         className="absolute rounded-full bg-[#FEF32B] pointer-events-none"
-        style={{ width: "48.4%", paddingBottom: "48.4%", right: "-24.3%", top: "-13.9%" }}
+        style={{
+          width: "48.4%",
+          paddingBottom: "48.4%",
+          right: "-24.3%",
+          top: "-13.9%",
+        }}
       />
       <div
         className="absolute rounded-full bg-[#5C30FF] pointer-events-none"
-        style={{ width: "48.4%", paddingBottom: "48.4%", left: "-16.5%", bottom: "-26.5%" }}
+        style={{
+          width: "48.4%",
+          paddingBottom: "48.4%",
+          left: "-16.5%",
+          bottom: "-26.5%",
+        }}
       />
       {/* Platform screenshot */}
       <img
