@@ -4,6 +4,7 @@ import React, { useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import statesCitiesData from "@/lib/data/states-cities.json";
+import { useToast } from "@/hooks";
 
 type CompanyFormData = {
   companyName: string;
@@ -55,6 +56,8 @@ export const CompanyProfileStep = ({
   isAddingRole?: boolean;
   currentUsername?: string;
 }) => {
+  const { toast } = useToast();
+
   const parseLocation = (location: string) => {
     if (!location) return { state: "", city: "" };
     const parts = location.split(", ");
@@ -159,7 +162,7 @@ export const CompanyProfileStep = ({
       setProfileLogo(file);
       setLogoPreview(URL.createObjectURL(file));
     } else {
-      alert("Please select a valid image file.");
+      toast({ title: "Invalid file", description: "Please select a valid image file.", variant: "destructive" });
     }
   };
 

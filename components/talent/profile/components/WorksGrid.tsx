@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { MoreVertical, Loader } from "lucide-react";
 import { useToast } from "@/hooks";
 import { EmptyState } from "./EmptyState";
+import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { WorkDetailView } from "./WorkDetailView";
 import { deleteGalleryItem, getGalleryItems } from "@/lib/api/talent";
 import type { GalleryItem } from "@/lib/api/talent";
@@ -35,6 +36,7 @@ export function WorksGrid({
   const [error, setError] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const fetchGallery = async (showLoading = true) => {
     if (showLoading) setLoading(true);
@@ -63,13 +65,16 @@ export function WorksGrid({
     console.log("[WorksGrid] displayItems changed:", displayItems);
   }, [displayItems]);
 
-  const handleDelete = async (itemId: string) => {
+  const handleDelete = (itemId: string) => {
     setError(null);
     setOpenMenuId(null);
+    setDeleteConfirmId(itemId);
+  };
 
-    if (!confirm("Are you sure you want to delete this work?")) {
-      return;
-    }
+  const confirmDelete = async () => {
+    if (!deleteConfirmId) return;
+    const itemId = deleteConfirmId;
+    setDeleteConfirmId(null);
 
     setDeletingId(itemId);
     try {
@@ -245,6 +250,16 @@ export function WorksGrid({
           onClose={() => setSelectedItem(null)}
         />
       )}
+
+      <ConfirmationModal
+        isOpen={!!deleteConfirmId}
+        onClose={() => setDeleteConfirmId(null)}
+        onConfirm={confirmDelete}
+        title="Delete Work?"
+        description="Are you sure you want to delete this work item? This action cannot be undone."
+        type="danger"
+        confirmText="Yes, delete"
+      />
     </>
   );
 }

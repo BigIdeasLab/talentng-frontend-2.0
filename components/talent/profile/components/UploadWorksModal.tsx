@@ -2,8 +2,13 @@
 
 import { useState, useRef, useEffect } from "react";
 import { X, Loader } from "lucide-react";
-import { uploadGalleryImages, updateGalleryItem } from "@/lib/api/talent";
+import {
+  uploadGalleryImages,
+  updateGalleryItem,
+  deleteGalleryItem,
+} from "@/lib/api/talent";
 import type { TalentProfile } from "@/lib/api/talent";
+import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 
 interface UploadWorksModalProps {
   isOpen: boolean;
@@ -33,6 +38,7 @@ export function UploadWorksModal({
     description: "",
   });
   const [existingImages, setExistingImages] = useState<string[]>([]);
+  const [showDeleteWarning, setShowDeleteWarning] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -126,12 +132,14 @@ export function UploadWorksModal({
 
     // Warn if all images would be removed during edit
     if (editItem && existingImages.length === 0 && selectedFiles.length === 0) {
-      const confirmed = confirm(
-        "Removing all images will delete this work. Do you want to continue?",
-      );
-      if (!confirmed) return;
+      setShowDeleteWarning(true);
+      return;
     }
 
+    await executeSubmit();
+  };
+
+  const executeSubmit = async () => {
     setIsLoading(true);
     try {
       let result: TalentProfile;
@@ -139,17 +147,30 @@ export function UploadWorksModal({
       if (editItem) {
         if (existingImages.length === 0 && selectedFiles.length === 0) {
           // User confirmed deletion — delete the gallery item
-          const { deleteGalleryItem } = await import("@/lib/api/talent");
           await deleteGalleryItem(editItem.id);
           onClose();
           onSuccess?.("Work deleted successfully.", []);
           return;
         }
 
+        let newImageUrls: string[] = [];
+        if (selectedFiles.length > 0) {
+          // Upload new files first via POST to get their URLs
+          const uploadResult = await uploadGalleryImages(selectedFiles);
+          const newGallery = uploadResult.gallery || [];
+          const tempItem = newGallery[newGallery.length - 1];
+          newImageUrls = tempItem?.images || [];
+
+          // Delete the temporary gallery entry (keeps images in storage)
+          if (tempItem?.id) {
+            await deleteGalleryItem(tempItem.id);
+          }
+        }
+
         result = await updateGalleryItem(editItem.id, {
           title: formData.title,
           description: formData.description,
-          images: existingImages,
+          images: [...existingImages, ...newImageUrls],
         });
       } else {
         result = await uploadGalleryImages(
@@ -494,6 +515,19 @@ export function UploadWorksModal({
           </div>
         </div>
       </div>
+
+      <ConfirmationModal
+        isOpen={showDeleteWarning}
+        onClose={() => setShowDeleteWarning(false)}
+        onConfirm={() => {
+          setShowDeleteWarning(false);
+          executeSubmit();
+        }}
+        title="Delete Work?"
+        description="Removing all images will delete this work item from your portfolio. Do you want to continue?"
+        type="danger"
+        confirmText="Yes, delete it"
+      />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Briefcase, Star, MoreVertical, Loader } from "lucide-react";
 import { useToast } from "@/hooks";
 import { EmptyState } from "./EmptyState";
+import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { useMyServices } from "@/hooks/useTalentApi";
 import { deleteService } from "@/lib/api/talent";
 import type { Service } from "@/lib/api/talent";
@@ -48,13 +49,17 @@ export function ServicesGrid({
   const [error, setError] = useState<string | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
-  const handleDelete = async (serviceId: string) => {
+  const handleDelete = (serviceId: string) => {
     setOpenMenuId(null);
+    setDeleteConfirmId(serviceId);
+  };
 
-    if (!confirm("Are you sure you want to delete this service?")) {
-      return;
-    }
+  const confirmDelete = async () => {
+    if (!deleteConfirmId) return;
+    const serviceId = deleteConfirmId;
+    setDeleteConfirmId(null);
 
     setDeletingId(serviceId);
     try {
@@ -299,6 +304,16 @@ export function ServicesGrid({
           </div>
         ))}
       </div>
+
+      <ConfirmationModal
+        isOpen={!!deleteConfirmId}
+        onClose={() => setDeleteConfirmId(null)}
+        onConfirm={confirmDelete}
+        title="Delete Service?"
+        description="Are you sure you want to delete this service? This action cannot be undone."
+        type="danger"
+        confirmText="Yes, delete"
+      />
     </div>
   );
 }

@@ -10,7 +10,7 @@ import {
 } from "@/hooks/useTalentOpportunities";
 import { useAuth } from "@/hooks/useAuth";
 import { useRoleColors } from "@/lib/theme/RoleColorContext";
-import { useProfile } from "@/hooks";
+import { useProfile, useToast } from "@/hooks";
 import { ApplicationModal } from "@/components/talent/opportunities/application-modal";
 import { SimilarOpportunitiesSection } from "./SimilarOpportunitiesSection";
 import type { DisplayOpportunity } from "@/components/talent/opportunities/types";
@@ -63,6 +63,7 @@ export function OpportunityDetails({
   const { primary } = useRoleColors();
   const { user } = useAuth();
   const { activeRole } = useProfile();
+  const { toast } = useToast();
   const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as
     | "talent"
     | "mentor";
@@ -129,7 +130,7 @@ export function OpportunityDetails({
 
     // Prevent double responses
     if (invitationResponse !== null) {
-      alert("You already responded to this invitation.");
+      toast({ title: "Error", description: "You already responded to this invitation.", variant: "destructive" });
       return;
     }
 
@@ -150,11 +151,11 @@ export function OpportunityDetails({
       if (errorMsg.includes("already responded")) {
         // User already responded - refresh to get the actual state
         await fetchOpportunityDetails();
-        alert("You already responded to this invitation.");
+        toast({ title: "Error", description: "You already responded to this invitation.", variant: "destructive" });
       } else {
         // Reset state on other errors to allow retry
         setInvitationResponse(null);
-        alert("Failed to respond to invitation. Please try again.");
+        toast({ title: "Error", description: "Failed to respond to invitation. Please try again.", variant: "destructive" });
       }
     } finally {
       setIsRespondingToInvitation(false);

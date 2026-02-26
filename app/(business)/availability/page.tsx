@@ -21,6 +21,7 @@ import {
 } from "@/lib/api/mentorship";
 import { Check, Clock, Zap } from "lucide-react";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 
 // ============ Constants ============
 
@@ -91,6 +92,7 @@ export default function AvailabilityPage() {
   const [isSaved, setIsSaved] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [meetingLinkError, setMeetingLinkError] = useState(false);
+  const [pendingDuration, setPendingDuration] = useState<string | null>(null);
 
   // Grid-specific state
   const [isDragging, setIsDragging] = useState(false);
@@ -488,11 +490,8 @@ export default function AvailabilityPage() {
                 value={sessionDuration}
                 onValueChange={(v) => {
                   if (selectedSlots.size > 0) {
-                    const confirmed = window.confirm(
-                      "Changing the session duration will clear all your current availability slots. Are you sure?",
-                    );
-                    if (!confirmed) return;
-                    setSelectedSlots(new Set());
+                    setPendingDuration(v);
+                    return;
                   }
                   setSessionDuration(v);
                   setHasChanges(true);
@@ -779,6 +778,22 @@ export default function AvailabilityPage() {
           </p>
         </div>
       </div>
+
+      <ConfirmationModal
+        isOpen={!!pendingDuration}
+        onClose={() => setPendingDuration(null)}
+        onConfirm={() => {
+          if (pendingDuration) {
+            setSessionDuration(pendingDuration);
+            setSelectedSlots(new Set());
+            setHasChanges(true);
+          }
+        }}
+        title="Change duration?"
+        description="Changing the session duration will clear all your current availability slots. Are you sure?"
+        type="danger"
+        confirmText="Change Duration"
+      />
     </div>
   );
 }

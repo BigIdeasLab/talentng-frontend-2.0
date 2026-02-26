@@ -6,6 +6,7 @@ import { ProfileData } from "@/lib/types/onboarding";
 import { useCheckUsernameAvailability } from "@/hooks/useUserApi";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import statesCitiesData from "@/lib/data/states-cities.json";
+import { useToast } from "@/hooks";
 
 type UsernameStatus = "idle" | "checking" | "available" | "taken" | "invalid";
 
@@ -24,6 +25,8 @@ export const CreateProfileStep = ({
   isAddingRole?: boolean;
   currentUsername?: string;
 }) => {
+  const { toast } = useToast();
+
   // Parse location into state and city if provided
   const parseLocation = (location: string) => {
     if (!location) return { state: "", city: "" };
@@ -124,7 +127,7 @@ export const CreateProfileStep = ({
       };
       reader.readAsDataURL(file);
     } else {
-      alert("Please select a valid image file.");
+      toast({ title: "Invalid file", description: "Please select a valid image file.", variant: "destructive" });
     }
   };
 

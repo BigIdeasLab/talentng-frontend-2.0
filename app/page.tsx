@@ -207,15 +207,10 @@ const roles = [
     desc: "Create a professional profile showcasing your skills, tools, and portfolio. Discover and apply for opportunities, track your applications, book mentorship sessions, and access learning resources — all from one dashboard.",
     cta: "Join as Talent",
     ctaStyle: "bg-black text-white",
-    cardBg: "bg-[#F7F8FC]",
-    mockupBg: "bg-gradient-to-br from-white to-[#F0F0FF]",
+    cardBg: "bg-[#F5F6F9]",
+    mockupBg: "bg-[#F5F6F9]",
     images: [
-      "https://api.builder.io/api/v1/image/assets/TEMP/d7a73bf68c36125971c3bb78d8c11455bc32bc8d?width=490",
-      "https://api.builder.io/api/v1/image/assets/TEMP/298eb50fb8577b41f6d5b1a3cbb571ec8ca50903?width=488",
-      "https://api.builder.io/api/v1/image/assets/TEMP/abafb32ec62d33c6dc1db2acdfdb79d6322daeb8?width=490",
-      "https://api.builder.io/api/v1/image/assets/TEMP/4b5ccf771678a302123ebfcfa1c5244ab0d6b3f7?width=488",
-      "https://api.builder.io/api/v1/image/assets/TEMP/fc364c1b170e8ee75899e80f32697affc980bc5b?width=490",
-      "https://api.builder.io/api/v1/image/assets/TEMP/f2bcc167c0b44303cd48ca8e3d28e540c4d2a77d?width=490",
+      "https://cdn.builder.io/api/v1/image/assets%2F76c72be1ed81454697472b6c9506a7ce%2Fe0804f84f46e458baf55d4e0894a1000?width=800",
     ],
     reversed: false,
   },
@@ -226,14 +221,9 @@ const roles = [
     cta: "Hire Talents",
     ctaStyle: "bg-[#1A6B3C] text-white",
     cardBg: "bg-[#F2FAF5]",
-    mockupBg: "bg-gradient-to-br from-[#E8F7EE] to-[#D0F0DC]",
+    mockupBg: "bg-[#F2FAF5]",
     images: [
-      "https://api.builder.io/api/v1/image/assets/TEMP/fc364c1b170e8ee75899e80f32697affc980bc5b?width=490",
-      "https://api.builder.io/api/v1/image/assets/TEMP/abafb32ec62d33c6dc1db2acdfdb79d6322daeb8?width=490",
-      "https://api.builder.io/api/v1/image/assets/TEMP/4c62644e1b187e2323da216c7c651406c5624fe4?width=490",
-      "https://api.builder.io/api/v1/image/assets/TEMP/2799e8adb32e8bdd5314241b333ed775c0f0a244?width=488",
-      "https://api.builder.io/api/v1/image/assets/TEMP/d7a73bf68c36125971c3bb78d8c11455bc32bc8d?width=490",
-      "https://api.builder.io/api/v1/image/assets/TEMP/f2bcc167c0b44303cd48ca8e3d28e540c4d2a77d?width=490",
+      "https://cdn.builder.io/api/v1/image/assets%2F76c72be1ed81454697472b6c9506a7ce%2Fed1fb488aced4f2887e59242feceb568?width=800",
     ],
     reversed: true,
   },
@@ -244,14 +234,9 @@ const roles = [
     cta: "Become a Mentor",
     ctaStyle: "bg-black text-white",
     cardBg: "bg-[#F5F3FF]",
-    mockupBg: "bg-gradient-to-br from-[#EDE9FF] to-[#D8CFFF]",
+    mockupBg: "bg-[#F5F3FF]",
     images: [
-      "https://api.builder.io/api/v1/image/assets/TEMP/d7a73bf68c36125971c3bb78d8c11455bc32bc8d?width=490",
-      "https://api.builder.io/api/v1/image/assets/TEMP/2455ab581201c60a7e0e008456711c94d958cb07?width=488",
-      "https://api.builder.io/api/v1/image/assets/TEMP/abafb32ec62d33c6dc1db2acdfdb79d6322daeb8?width=490",
-      "https://api.builder.io/api/v1/image/assets/TEMP/4b5ccf771678a302123ebfcfa1c5244ab0d6b3f7?width=488",
-      "https://api.builder.io/api/v1/image/assets/TEMP/fc364c1b170e8ee75899e80f32697affc980bc5b?width=490",
-      "https://api.builder.io/api/v1/image/assets/TEMP/f2bcc167c0b44303cd48ca8e3d28e540c4d2a77d?width=490",
+      "https://cdn.builder.io/api/v1/image/assets%2F76c72be1ed81454697472b6c9506a7ce%2Fd71502ffb1094839b3d72a443e588697?width=800",
     ],
     reversed: false,
   },
@@ -656,40 +641,13 @@ function HeroMockup() {
 
 function PlatformMockup({ images, bg }: { images: string[]; bg: string }) {
   return (
-    <div className={`relative rounded-2xl overflow-hidden shadow-xl ${bg} p-3`}>
-      {/* Browser chrome */}
-      <div className="bg-white rounded-lg overflow-hidden shadow-sm">
-        <div className="flex items-center gap-1.5 px-3 py-2 bg-[#F5F5F5] border-b border-[#E8E8E8]">
-          <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
-          <span className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E]" />
-          <span className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
-          <div className="flex-1 bg-white rounded mx-2 h-4 text-[9px] flex items-center px-2 text-[#999]">
-            app.talent.ng
-          </div>
-        </div>
-        <div className="flex">
-          {/* Sidebar */}
-          <div className="w-14 bg-[#FAFAFA] border-r border-[#F0F0F0] p-2 flex flex-col gap-2 min-h-[200px]">
-            {[...Array(6)].map((_, i) => (
-              <div
-                key={i}
-                className={`h-2 rounded ${i === 2 ? "bg-[#5C30FF] w-8" : "bg-[#E8E8E8] w-full"}`}
-              />
-            ))}
-          </div>
-          {/* Content grid */}
-          <div className="flex-1 grid grid-cols-3 gap-1.5 p-2">
-            {images.slice(0, 6).map((src, i) => (
-              <img
-                key={i}
-                src={src}
-                alt=""
-                className="w-full aspect-square object-cover rounded"
-              />
-            ))}
-          </div>
-        </div>
-      </div>
+    <div className={`relative rounded-3xl overflow-hidden shadow-2xl`} style={{ backgroundColor: bg }}>
+      {/* Full mockup image */}
+      <img
+        src={images[0]}
+        alt="Platform mockup"
+        className="w-full h-auto object-contain"
+      />
     </div>
   );
 }
