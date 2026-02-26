@@ -66,14 +66,20 @@ export function TalentCard({ talent }: TalentCardProps) {
         {/* Stats */}
         <div className="flex items-center gap-[18px] text-[12px]">
           <div className="flex items-center gap-[5px] flex-shrink-0">
-            <MapPin className="w-[15px] h-[15px] text-[#525866]" strokeWidth={1.5} />
+            <MapPin
+              className="w-[15px] h-[15px] text-[#525866]"
+              strokeWidth={1.5}
+            />
             <span className="font-normal text-[#525866] font-inter-tight leading-[16px]">
               {talent.location}
             </span>
           </div>
           {talent.timesHired > 0 && (
             <div className="flex items-center gap-[5px] flex-shrink-0">
-              <Briefcase className="w-[15px] h-[15px] text-[#525866]" strokeWidth={1.5} />
+              <Briefcase
+                className="w-[15px] h-[15px] text-[#525866]"
+                strokeWidth={1.5}
+              />
               <span className="font-normal text-[#525866] font-inter-tight leading-[16px]">
                 {talent.timesHired}X Hired
               </span>
@@ -81,7 +87,9 @@ export function TalentCard({ talent }: TalentCardProps) {
           )}
           {talent.availability && (
             <div className="flex items-center gap-[5px] flex-shrink-0">
-              <div className={`w-[6px] h-[6px] rounded-full ${talent.availability.toLowerCase() === "available" ? "bg-green-500" : talent.availability.toLowerCase() === "not available" ? "bg-red-400" : "bg-yellow-500"}`} />
+              <div
+                className={`w-[6px] h-[6px] rounded-full ${talent.availability.toLowerCase() === "available" ? "bg-green-500" : talent.availability.toLowerCase() === "not available" ? "bg-red-400" : "bg-yellow-500"}`}
+              />
               <span className="font-normal text-[#525866] font-inter-tight leading-[16px]">
                 {talent.availability}
               </span>

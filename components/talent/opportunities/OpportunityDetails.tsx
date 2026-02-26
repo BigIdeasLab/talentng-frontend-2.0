@@ -130,7 +130,11 @@ export function OpportunityDetails({
 
     // Prevent double responses
     if (invitationResponse !== null) {
-      toast({ title: "Error", description: "You already responded to this invitation.", variant: "destructive" });
+      toast({
+        title: "Error",
+        description: "You already responded to this invitation.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -151,11 +155,19 @@ export function OpportunityDetails({
       if (errorMsg.includes("already responded")) {
         // User already responded - refresh to get the actual state
         await fetchOpportunityDetails();
-        toast({ title: "Error", description: "You already responded to this invitation.", variant: "destructive" });
+        toast({
+          title: "Error",
+          description: "You already responded to this invitation.",
+          variant: "destructive",
+        });
       } else {
         // Reset state on other errors to allow retry
         setInvitationResponse(null);
-        toast({ title: "Error", description: "Failed to respond to invitation. Please try again.", variant: "destructive" });
+        toast({
+          title: "Error",
+          description: "Failed to respond to invitation. Please try again.",
+          variant: "destructive",
+        });
       }
     } finally {
       setIsRespondingToInvitation(false);

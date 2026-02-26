@@ -641,7 +641,10 @@ function HeroMockup() {
 
 function PlatformMockup({ images, bg }: { images: string[]; bg: string }) {
   return (
-    <div className={`relative rounded-3xl overflow-hidden shadow-2xl`} style={{ backgroundColor: bg }}>
+    <div
+      className={`relative rounded-3xl overflow-hidden shadow-2xl`}
+      style={{ backgroundColor: bg }}
+    >
       {/* Full mockup image */}
       <img
         src={images[0]}

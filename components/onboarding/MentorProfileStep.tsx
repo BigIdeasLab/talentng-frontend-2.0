@@ -130,7 +130,11 @@ export const MentorProfileStep = ({
       setProfileLogo(file);
       setLogoPreview(URL.createObjectURL(file));
     } else {
-      toast({ title: "Invalid file", description: "Please select a valid image file.", variant: "destructive" });
+      toast({
+        title: "Invalid file",
+        description: "Please select a valid image file.",
+        variant: "destructive",
+      });
     }
   };
 
