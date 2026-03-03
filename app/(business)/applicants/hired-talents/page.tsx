@@ -101,7 +101,6 @@ export default function HiredTalentsPage() {
     ...(searchQuery ? { searchQuery } : {}),
   });
 
-
   useEffect(() => {
     if (rawApplications.length > 0) {
       fetchRecommendationsForTalents(rawApplications);

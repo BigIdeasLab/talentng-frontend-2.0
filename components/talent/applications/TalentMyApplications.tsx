@@ -66,12 +66,15 @@ export function TalentMyApplications() {
         ...(searchQuery ? { searchQuery } : {}),
         ...(jobStatusFilter !== "all" ? { status: jobStatusFilter } : {}),
         ...(appliedFilters?.dateRange && appliedFilters.dateRange !== "all"
-          ? { dateRange: appliedFilters.dateRange as "today" | "week" | "month" }
+          ? {
+              dateRange: appliedFilters.dateRange as "today" | "week" | "month",
+            }
           : {}),
       });
-      const dataArray = Array.isArray(data) ? data : ((data as any)?.data ?? []);
+      const dataArray = Array.isArray(data)
+        ? data
+        : ((data as any)?.data ?? []);
       setJobApplications(dataArray);
-
     } catch (error) {
       console.error("Failed to load job applications:", error);
       setJobApplications([]);
@@ -89,10 +92,14 @@ export function TalentMyApplications() {
     try {
       setIsLoading(true);
       const response = await getTalentMentorshipRequests({
-        ...(mentorshipStatusFilter !== "all" ? { status: mentorshipStatusFilter as any } : {}),
+        ...(mentorshipStatusFilter !== "all"
+          ? { status: mentorshipStatusFilter as any }
+          : {}),
         ...(searchQuery ? { searchQuery } : {}),
         ...(appliedFilters?.dateRange && appliedFilters.dateRange !== "all"
-          ? { dateRange: appliedFilters.dateRange as "today" | "week" | "month" }
+          ? {
+              dateRange: appliedFilters.dateRange as "today" | "week" | "month",
+            }
           : {}),
       });
       const data = Array.isArray(response) ? response : response?.data || [];

@@ -35,19 +35,33 @@ export function EmployerOpportunities() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<any>(null);
 
-  const STATUS_MAP: Record<TabType, string> = { open: "active", closed: "closed", draft: "draft" };
-  const SORT_MAP: Record<SortType, { sortBy: "createdAt" | "applicationCount" | "title" | "minBudget"; sortOrder: "asc" | "desc" }> = {
-    newest:   { sortBy: "createdAt", sortOrder: "desc" },
-    oldest:   { sortBy: "createdAt", sortOrder: "asc" },
+  const STATUS_MAP: Record<TabType, string> = {
+    open: "active",
+    closed: "closed",
+    draft: "draft",
+  };
+  const SORT_MAP: Record<
+    SortType,
+    {
+      sortBy: "createdAt" | "applicationCount" | "title" | "minBudget";
+      sortOrder: "asc" | "desc";
+    }
+  > = {
+    newest: { sortBy: "createdAt", sortOrder: "desc" },
+    oldest: { sortBy: "createdAt", sortOrder: "asc" },
     "rate-high": { sortBy: "minBudget", sortOrder: "desc" },
-    "rate-low":  { sortBy: "minBudget", sortOrder: "asc" },
+    "rate-low": { sortBy: "minBudget", sortOrder: "asc" },
   };
 
   const queryParams = {
     status: STATUS_MAP[activeTab],
     ...(searchQuery ? { q: searchQuery } : {}),
-    ...(appliedFilters?.types?.length ? { type: appliedFilters.types.join(",") } : {}),
-    ...(appliedFilters?.skills?.length ? { tags: appliedFilters.skills.join(",") } : {}),
+    ...(appliedFilters?.types?.length
+      ? { type: appliedFilters.types.join(",") }
+      : {}),
+    ...(appliedFilters?.skills?.length
+      ? { tags: appliedFilters.skills.join(",") }
+      : {}),
     ...SORT_MAP[sortBy],
   };
 

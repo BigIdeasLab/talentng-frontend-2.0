@@ -39,7 +39,10 @@ interface MenuItem {
   href?: string;
 }
 
-const getMenuItems = (notificationCount?: number, upcomingCount?: number): MenuItem[] => [
+const getMenuItems = (
+  notificationCount?: number,
+  upcomingCount?: number,
+): MenuItem[] => [
   {
     id: "dashboard",
     label: "Dashboard",

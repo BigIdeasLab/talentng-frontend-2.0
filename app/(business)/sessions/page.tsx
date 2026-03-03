@@ -149,7 +149,9 @@ export default function SessionsPage() {
         ...(activeTab !== "all" ? { status: activeTab as any } : {}),
         ...(searchQuery ? { searchQuery } : {}),
         ...(appliedFilters?.dateRange && appliedFilters.dateRange !== "all"
-          ? { dateRange: appliedFilters.dateRange as "today" | "week" | "month" }
+          ? {
+              dateRange: appliedFilters.dateRange as "today" | "week" | "month",
+            }
           : {}),
       });
       const sessionsArray = Array.isArray(response)

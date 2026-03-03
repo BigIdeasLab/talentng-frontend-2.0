@@ -110,7 +110,12 @@ export default function ApplicationsPage() {
           ...(filter !== "all" ? { status: filter as RequestStatus } : {}),
           ...(searchQuery ? { searchQuery } : {}),
           ...(appliedFilters?.dateRange && appliedFilters.dateRange !== "all"
-            ? { dateRange: appliedFilters.dateRange as "today" | "week" | "month" }
+            ? {
+                dateRange: appliedFilters.dateRange as
+                  | "today"
+                  | "week"
+                  | "month",
+              }
             : {}),
         }),
         getPendingRequestsCount(),

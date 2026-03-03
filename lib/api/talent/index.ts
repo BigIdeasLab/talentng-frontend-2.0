@@ -529,7 +529,9 @@ export async function getTalentUpcoming(params?: {
     });
   }
   const query = queryParams.toString();
-  return apiClient<any>(query ? `/talent/upcoming?${query}` : "/talent/upcoming");
+  return apiClient<any>(
+    query ? `/talent/upcoming?${query}` : "/talent/upcoming",
+  );
 }
 
 /**

@@ -158,7 +158,10 @@ export function OpportunitiesFilterModal({
     }));
   };
 
-  const handleBudgetChange = (field: "minBudget" | "maxBudget", value: string) => {
+  const handleBudgetChange = (
+    field: "minBudget" | "maxBudget",
+    value: string,
+  ) => {
     const numValue = parseInt(value) || 0;
     setFilters((prev) => ({
       ...prev,
@@ -180,13 +183,21 @@ export function OpportunitiesFilterModal({
       const refs = [
         { open: isSkillOpen, ref: skillRef, set: setIsSkillOpen },
         { open: isCategoryOpen, ref: categoryRef, set: setIsCategoryOpen },
-        { open: isExperienceOpen, ref: experienceRef, set: setIsExperienceOpen },
+        {
+          open: isExperienceOpen,
+          ref: experienceRef,
+          set: setIsExperienceOpen,
+        },
         { open: isLocationOpen, ref: locationRef, set: setIsLocationOpen },
         { open: isBudgetOpen, ref: budgetRef, set: setIsBudgetOpen },
       ];
 
       refs.forEach(({ open, ref, set }) => {
-        if (open && ref.current && !ref.current.contains(event.target as Node)) {
+        if (
+          open &&
+          ref.current &&
+          !ref.current.contains(event.target as Node)
+        ) {
           set(false);
         }
       });
@@ -233,7 +244,10 @@ export function OpportunitiesFilterModal({
   return (
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 z-40 bg-black/5" onClick={handleApplyFilter} />
+      <div
+        className="fixed inset-0 z-40 bg-black/5"
+        onClick={handleApplyFilter}
+      />
 
       {/* Modal Content */}
       <div
@@ -422,9 +436,7 @@ export function OpportunitiesFilterModal({
                 <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
                   Experience Level
                 </span>
-                <button
-                  onClick={() => setIsExperienceOpen(!isExperienceOpen)}
-                >
+                <button onClick={() => setIsExperienceOpen(!isExperienceOpen)}>
                   <ChevronDown className="w-3 h-3 text-[#B2B2B2]" />
                 </button>
               </div>
@@ -570,22 +582,30 @@ export function OpportunitiesFilterModal({
               {isBudgetOpen && (
                 <div className="grid grid-cols-2 gap-[8px]">
                   <div className="flex flex-col gap-[4px]">
-                    <span className="text-[9px] text-[#B2B2B2] font-inter-tight">Min Budget</span>
+                    <span className="text-[9px] text-[#B2B2B2] font-inter-tight">
+                      Min Budget
+                    </span>
                     <input
                       type="number"
                       placeholder="0"
                       value={filters.minBudget || ""}
-                      onChange={(e) => handleBudgetChange("minBudget", e.target.value)}
+                      onChange={(e) =>
+                        handleBudgetChange("minBudget", e.target.value)
+                      }
                       className="w-full px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] text-[11px] font-normal font-inter-tight focus:outline-none"
                     />
                   </div>
                   <div className="flex flex-col gap-[4px]">
-                    <span className="text-[9px] text-[#B2B2B2] font-inter-tight">Max Budget</span>
+                    <span className="text-[9px] text-[#B2B2B2] font-inter-tight">
+                      Max Budget
+                    </span>
                     <input
                       type="number"
                       placeholder="Any"
                       value={filters.maxBudget || ""}
-                      onChange={(e) => handleBudgetChange("maxBudget", e.target.value)}
+                      onChange={(e) =>
+                        handleBudgetChange("maxBudget", e.target.value)
+                      }
                       className="w-full px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] text-[11px] font-normal font-inter-tight focus:outline-none"
                     />
                   </div>

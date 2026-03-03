@@ -110,7 +110,9 @@ interface UpcomingInterviewsProps {
   interviews: UpcomingInterview[];
 }
 
-export function UpcomingInterviews({ interviews: legacyInterviews }: UpcomingInterviewsProps) {
+export function UpcomingInterviews({
+  interviews: legacyInterviews,
+}: UpcomingInterviewsProps) {
   const [items, setItems] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 

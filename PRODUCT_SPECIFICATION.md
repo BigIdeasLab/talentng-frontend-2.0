@@ -1,4 +1,4 @@
- TalentNG Product Specification Document
+TalentNG Product Specification Document
 
 ## Document Information
 

@@ -51,15 +51,24 @@ export default function ApplicantsPage() {
   });
 
   // Build server-side params from all active filters
-  const queryParams = useMemo(() => ({
-    ...(searchQuery ? { searchQuery } : {}),
-    ...(activeTab !== "all" ? { status: activeTab } : {}),
-    ...(filters.status.length === 1 ? { status: filters.status[0] } : {}),
-    ...(filters.location ? { location: filters.location } : {}),
-    ...(filters.skills.length > 0 ? { skills: filters.skills.join(",") } : {}),
-    ...(filters.dateRange !== "all" ? { dateRange: filters.dateRange as "today" | "week" | "month" } : {}),
-    ...(sortBy !== "newest" ? { sortBy: sortBy as "newest" | "oldest" | "name-asc" | "name-desc" } : { sortBy: "newest" as const }),
-  }), [searchQuery, activeTab, filters, sortBy]);
+  const queryParams = useMemo(
+    () => ({
+      ...(searchQuery ? { searchQuery } : {}),
+      ...(activeTab !== "all" ? { status: activeTab } : {}),
+      ...(filters.status.length === 1 ? { status: filters.status[0] } : {}),
+      ...(filters.location ? { location: filters.location } : {}),
+      ...(filters.skills.length > 0
+        ? { skills: filters.skills.join(",") }
+        : {}),
+      ...(filters.dateRange !== "all"
+        ? { dateRange: filters.dateRange as "today" | "week" | "month" }
+        : {}),
+      ...(sortBy !== "newest"
+        ? { sortBy: sortBy as "newest" | "oldest" | "name-asc" | "name-desc" }
+        : { sortBy: "newest" as const }),
+    }),
+    [searchQuery, activeTab, filters, sortBy],
+  );
 
   const {
     data: rawApplicants,
@@ -109,7 +118,6 @@ export default function ApplicantsPage() {
     () => [...new Set(applicants.flatMap((a) => a.skills || []))],
     [applicants],
   );
-
 
   const TABS = [
     { id: "all", label: "All" },

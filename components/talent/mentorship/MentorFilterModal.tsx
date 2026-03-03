@@ -226,7 +226,10 @@ export function MentorFilterModal({
   return (
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 z-40 bg-black/5" onClick={handleApplyFilter} />
+      <div
+        className="fixed inset-0 z-40 bg-black/5"
+        onClick={handleApplyFilter}
+      />
 
       {/* Modal Content */}
       <div

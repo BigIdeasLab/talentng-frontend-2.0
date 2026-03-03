@@ -58,7 +58,9 @@ export const getTalentApplications = async (params?: {
   if (params?.limit) query.append("limit", String(params.limit));
   if (params?.offset) query.append("offset", String(params.offset));
   const queryString = query.toString();
-  return apiClient<Application[]>(`/talent/applications${queryString ? `?${queryString}` : ""}`);
+  return apiClient<Application[]>(
+    `/talent/applications${queryString ? `?${queryString}` : ""}`,
+  );
 };
 
 /**

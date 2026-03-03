@@ -242,7 +242,8 @@ export async function getTalentMentorshipRequests(
 ): Promise<PaginatedResponse<MentorshipRequest>> {
   const queryParams = new URLSearchParams();
   if (params?.status) queryParams.append("status", params.status);
-  if (params?.searchQuery) queryParams.append("searchQuery", params.searchQuery);
+  if (params?.searchQuery)
+    queryParams.append("searchQuery", params.searchQuery);
   if (params?.dateRange) queryParams.append("dateRange", params.dateRange);
   if (params?.page) queryParams.append("page", params.page.toString());
   if (params?.limit) queryParams.append("limit", params.limit.toString());
@@ -262,7 +263,8 @@ export async function getMentorMentorshipRequests(
 ): Promise<PaginatedResponse<MentorshipRequest>> {
   const queryParams = new URLSearchParams();
   if (params?.status) queryParams.append("status", params.status);
-  if (params?.searchQuery) queryParams.append("searchQuery", params.searchQuery);
+  if (params?.searchQuery)
+    queryParams.append("searchQuery", params.searchQuery);
   if (params?.dateRange) queryParams.append("dateRange", params.dateRange);
   if (params?.page) queryParams.append("page", params.page.toString());
   if (params?.limit) queryParams.append("limit", params.limit.toString());
@@ -283,7 +285,8 @@ export async function getRequests(
   const queryParams = new URLSearchParams();
   if (params?.role) queryParams.append("role", params.role);
   if (params?.status) queryParams.append("status", params.status);
-  if (params?.searchQuery) queryParams.append("searchQuery", params.searchQuery);
+  if (params?.searchQuery)
+    queryParams.append("searchQuery", params.searchQuery);
   if (params?.dateRange) queryParams.append("dateRange", params.dateRange);
   if (params?.page) queryParams.append("page", params.page.toString());
   if (params?.limit) queryParams.append("limit", params.limit.toString());
@@ -374,7 +377,8 @@ export async function getSessions(
   if (params?.status) queryParams.append("status", params.status);
   if (params?.upcoming) queryParams.append("upcoming", "true");
   if (params?.past) queryParams.append("past", "true");
-  if (params?.searchQuery) queryParams.append("searchQuery", params.searchQuery);
+  if (params?.searchQuery)
+    queryParams.append("searchQuery", params.searchQuery);
   if (params?.dateRange) queryParams.append("dateRange", params.dateRange);
   if (params?.page) queryParams.append("page", params.page.toString());
   if (params?.limit) queryParams.append("limit", params.limit.toString());
@@ -411,7 +415,8 @@ export async function getMentorSessions(
 ): Promise<{ data: any[]; pagination: any }> {
   const queryParams = new URLSearchParams();
   if (params?.status) queryParams.append("status", params.status);
-  if (params?.searchQuery) queryParams.append("searchQuery", params.searchQuery);
+  if (params?.searchQuery)
+    queryParams.append("searchQuery", params.searchQuery);
   if (params?.dateRange) queryParams.append("dateRange", params.dateRange);
   if (params?.page) queryParams.append("page", params.page.toString());
   if (params?.limit) queryParams.append("limit", params.limit.toString());

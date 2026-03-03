@@ -45,11 +45,15 @@ export function ApplicantsView({
     ...(searchQuery ? { searchQuery } : {}),
     sortBy: sortBy as "newest" | "oldest" | "name-asc" | "name-desc",
     ...(appliedFilters?.location ? { location: appliedFilters.location } : {}),
-    ...(appliedFilters?.skills?.length ? { skills: appliedFilters.skills.join(",") } : {}),
+    ...(appliedFilters?.skills?.length
+      ? { skills: appliedFilters.skills.join(",") }
+      : {}),
     ...(appliedFilters?.dateRange && appliedFilters.dateRange !== "all"
       ? { dateRange: appliedFilters.dateRange as "today" | "week" | "month" }
       : {}),
-    ...(appliedFilters?.status?.length === 1 ? { status: appliedFilters.status[0] } : {}),
+    ...(appliedFilters?.status?.length === 1
+      ? { status: appliedFilters.status[0] }
+      : {}),
   };
 
   const {
