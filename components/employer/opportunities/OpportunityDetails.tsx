@@ -10,16 +10,66 @@ const typeConfig: Record<
   string,
   { label: string; bgColor: string; textColor: string; dotColor: string }
 > = {
-  fulltime: { label: "Full-time", bgColor: "rgba(92, 48, 255, 0.10)", textColor: ROLE_COLORS.recruiter.primary, dotColor: ROLE_COLORS.recruiter.primary },
-  parttime: { label: "Part-time", bgColor: "rgba(92, 48, 255, 0.10)", textColor: ROLE_COLORS.recruiter.primary, dotColor: ROLE_COLORS.recruiter.primary },
-  contract: { label: "Contract", bgColor: "rgba(0, 139, 71, 0.09)", textColor: "#008B47", dotColor: "#008B47" },
-  internship: { label: "Internship", bgColor: "rgba(0, 139, 71, 0.09)", textColor: "#008B47", dotColor: "#008B47" },
-  volunteer: { label: "Volunteer", bgColor: "rgba(246, 188, 63, 0.10)", textColor: "#D99400", dotColor: "#D99400" },
-  freelance: { label: "Freelance", bgColor: "rgba(246, 188, 63, 0.10)", textColor: "#D99400", dotColor: "#D99400" },
-  remote: { label: "Remote", bgColor: "rgba(0, 183, 148, 0.10)", textColor: "#00B794", dotColor: "#00B794" },
-  hybrid: { label: "Hybrid", bgColor: "rgba(0, 183, 148, 0.10)", textColor: "#00B794", dotColor: "#00B794" },
-  onsite: { label: "On-Site", bgColor: "rgba(92, 48, 255, 0.10)", textColor: ROLE_COLORS.recruiter.primary, dotColor: ROLE_COLORS.recruiter.primary },
-  job: { label: "Job Listing", bgColor: "rgba(92, 48, 255, 0.10)", textColor: ROLE_COLORS.recruiter.primary, dotColor: ROLE_COLORS.recruiter.primary },
+  fulltime: {
+    label: "Full-time",
+    bgColor: "rgba(92, 48, 255, 0.10)",
+    textColor: ROLE_COLORS.recruiter.primary,
+    dotColor: ROLE_COLORS.recruiter.primary,
+  },
+  parttime: {
+    label: "Part-time",
+    bgColor: "rgba(92, 48, 255, 0.10)",
+    textColor: ROLE_COLORS.recruiter.primary,
+    dotColor: ROLE_COLORS.recruiter.primary,
+  },
+  contract: {
+    label: "Contract",
+    bgColor: "rgba(0, 139, 71, 0.09)",
+    textColor: "#008B47",
+    dotColor: "#008B47",
+  },
+  internship: {
+    label: "Internship",
+    bgColor: "rgba(0, 139, 71, 0.09)",
+    textColor: "#008B47",
+    dotColor: "#008B47",
+  },
+  volunteer: {
+    label: "Volunteer",
+    bgColor: "rgba(246, 188, 63, 0.10)",
+    textColor: "#D99400",
+    dotColor: "#D99400",
+  },
+  freelance: {
+    label: "Freelance",
+    bgColor: "rgba(246, 188, 63, 0.10)",
+    textColor: "#D99400",
+    dotColor: "#D99400",
+  },
+  remote: {
+    label: "Remote",
+    bgColor: "rgba(0, 183, 148, 0.10)",
+    textColor: "#00B794",
+    dotColor: "#00B794",
+  },
+  hybrid: {
+    label: "Hybrid",
+    bgColor: "rgba(0, 183, 148, 0.10)",
+    textColor: "#00B794",
+    dotColor: "#00B794",
+  },
+  onsite: {
+    label: "On-Site",
+    bgColor: "rgba(92, 48, 255, 0.10)",
+    textColor: ROLE_COLORS.recruiter.primary,
+    dotColor: ROLE_COLORS.recruiter.primary,
+  },
+  job: {
+    label: "Job Listing",
+    bgColor: "rgba(92, 48, 255, 0.10)",
+    textColor: ROLE_COLORS.recruiter.primary,
+    dotColor: ROLE_COLORS.recruiter.primary,
+  },
 };
 
 interface OpportunityDetailsProps {
@@ -367,10 +417,34 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                 {opportunity.type && (
                   <div className="flex items-center gap-2">
                     <div className="w-[28px] h-[28px] rounded-full bg-[#F5F5F5] flex items-center justify-center flex-shrink-0">
-                      <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1.6665 11.6663C1.6665 9.32559 1.6665 8.15518 2.22827 7.31444C2.47147 6.95047 2.78397 6.63797 3.14794 6.39477C3.98868 5.83301 5.15907 5.83301 7.49984 5.83301H12.4998C14.8406 5.83301 16.011 5.83301 16.8518 6.39477C17.2157 6.63797 17.5282 6.95047 17.7714 7.31444C18.3332 8.15518 18.3332 9.32559 18.3332 11.6663C18.3332 14.0071 18.3332 15.1775 17.7714 16.0183C17.5282 16.3822 17.2157 16.6947 16.8518 16.9379C16.011 17.4997 14.8406 17.4997 12.4998 17.4997H7.49984C5.15907 17.4997 3.98868 17.4997 3.14794 16.9379C2.78397 16.6947 2.47147 16.3822 2.22827 16.0183C1.6665 15.1775 1.6665 14.0071 1.6665 11.6663Z" stroke="#606060" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M13.3334 5.83333C13.3334 4.26198 13.3334 3.47631 12.8452 2.98816C12.3571 2.5 11.5714 2.5 10.0001 2.5C8.42875 2.5 7.64306 2.5 7.15491 2.98816C6.66675 3.47631 6.66675 4.26198 6.66675 5.83333" stroke="#606060" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M5 9.16699L5.54331 9.33533C8.40425 10.222 11.5957 10.222 14.4567 9.33533L15 9.16699M10 10.0003V11.667" stroke="#606060" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M1.6665 11.6663C1.6665 9.32559 1.6665 8.15518 2.22827 7.31444C2.47147 6.95047 2.78397 6.63797 3.14794 6.39477C3.98868 5.83301 5.15907 5.83301 7.49984 5.83301H12.4998C14.8406 5.83301 16.011 5.83301 16.8518 6.39477C17.2157 6.63797 17.5282 6.95047 17.7714 7.31444C18.3332 8.15518 18.3332 9.32559 18.3332 11.6663C18.3332 14.0071 18.3332 15.1775 17.7714 16.0183C17.5282 16.3822 17.2157 16.6947 16.8518 16.9379C16.011 17.4997 14.8406 17.4997 12.4998 17.4997H7.49984C5.15907 17.4997 3.98868 17.4997 3.14794 16.9379C2.78397 16.6947 2.47147 16.3822 2.22827 16.0183C1.6665 15.1775 1.6665 14.0071 1.6665 11.6663Z"
+                          stroke="#606060"
+                          strokeWidth="1.25"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M13.3334 5.83333C13.3334 4.26198 13.3334 3.47631 12.8452 2.98816C12.3571 2.5 11.5714 2.5 10.0001 2.5C8.42875 2.5 7.64306 2.5 7.15491 2.98816C6.66675 3.47631 6.66675 4.26198 6.66675 5.83333"
+                          stroke="#606060"
+                          strokeWidth="1.25"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M5 9.16699L5.54331 9.33533C8.40425 10.222 11.5957 10.222 14.4567 9.33533L15 9.16699M10 10.0003V11.667"
+                          stroke="#606060"
+                          strokeWidth="1.25"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
                       </svg>
                     </div>
                     <div className="flex flex-col gap-1">

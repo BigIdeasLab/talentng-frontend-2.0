@@ -38,8 +38,7 @@ export function OpportunitiesClient({
   const { activeRole, isLoading: isRoleLoading } = useProfile();
   // This page serves talent + mentor roles. Recruiters who navigate here
   // should not call the talent-only endpoint.
-  const isTalentOrMentor =
-    activeRole === "talent" || activeRole === "mentor";
+  const isTalentOrMentor = activeRole === "talent" || activeRole === "mentor";
   const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as
     | "talent"
     | "mentor";
