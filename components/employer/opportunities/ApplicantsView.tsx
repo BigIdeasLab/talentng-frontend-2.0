@@ -7,6 +7,10 @@ import { useRecruiterOpportunityQuery } from "@/hooks/useRecruiterOpportunities"
 import { useToast } from "@/hooks";
 import { ApplicantsTable } from "./ApplicantsTable";
 import { ApplicantsHeader } from "./ApplicantsHeader";
+import {
+  ApplicantFilterModal,
+  type ApplicantFilterState,
+} from "@/components/employer/applicants/ApplicantFilterModal";
 import type { Application } from "@/lib/api/applications";
 
 interface ApplicantsViewProps {
@@ -39,7 +43,32 @@ export function ApplicantsView({
   const error = oppError || appsError ? "Failed to load" : null;
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [appliedFilters, setAppliedFilters] =
+    useState<ApplicantFilterState | null>(null);
+
   const opportunityTitle = opportunity?.title || "";
+
+  // Extract available locations and skills for the filter modal
+  const availableLocations = Array.from(
+    new Set(
+      applicants
+        .map((app) => (app as any).user?.talentProfile?.location)
+        .filter(Boolean),
+    ),
+  ) as string[];
+
+  const availableSkills = Array.from(
+    new Set(
+      applicants.flatMap(
+        (app) => (app as any).user?.talentProfile?.skills || [],
+      ),
+    ),
+  ) as string[];
+
+  const availableStatuses = Array.from(
+    new Set(applicants.map((app) => app.status)),
+  ) as string[];
 
   const fetchOpportunityAndApplicants = async () => {
     // Handled by useQuery
@@ -155,6 +184,29 @@ export function ApplicantsView({
           setSearchQuery={setSearchQuery}
           sortBy={sortBy}
           setSortBy={setSortBy}
+          onFilterClick={() => setIsFilterOpen(true)}
+          filterCount={
+            appliedFilters
+              ? (appliedFilters.status.length > 0 ? 1 : 0) +
+                (appliedFilters.location ? 1 : 0) +
+                (appliedFilters.skills.length > 0 ? 1 : 0) +
+                (appliedFilters.dateRange !== "all" ? 1 : 0)
+              : 0
+          }
+          filterModal={
+            <ApplicantFilterModal
+              isOpen={isFilterOpen}
+              onClose={() => setIsFilterOpen(false)}
+              onApply={(filters) => {
+                setAppliedFilters(filters);
+                setIsFilterOpen(false);
+              }}
+              initialFilters={appliedFilters || undefined}
+              availableStatuses={availableStatuses}
+              availableLocations={availableLocations}
+              availableSkills={availableSkills}
+            />
+          }
         />
 
         {/* Applicants Table */}
@@ -171,8 +223,9 @@ export function ApplicantsView({
             <ApplicantsTable
               searchQuery={searchQuery}
               sortBy={sortBy}
-              applicants={applicants}
+              applicants={applicants as any}
               opportunityTitle={opportunityTitle}
+              appliedFilters={appliedFilters}
             />
           )}
         </div>

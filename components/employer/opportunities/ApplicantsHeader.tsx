@@ -1,12 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface ApplicantsHeaderProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   sortBy: string;
   setSortBy: (sort: string) => void;
+  onFilterClick: () => void;
+  filterCount?: number;
+  filterModal?: React.ReactNode;
 }
 
 export function ApplicantsHeader({
@@ -14,8 +22,10 @@ export function ApplicantsHeader({
   setSearchQuery,
   sortBy,
   setSortBy,
+  onFilterClick,
+  filterCount = 0,
+  filterModal,
 }: ApplicantsHeaderProps) {
-  const [showFilters, setShowFilters] = useState(false);
 
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
@@ -54,11 +64,15 @@ export function ApplicantsHeader({
         </div>
       </div>
 
-      {/* Filter Button */}
-      <button
-        onClick={() => setShowFilters(!showFilters)}
-        className="flex items-center gap-1 px-2 py-2 hover:bg-gray-50 rounded-[8px] transition-colors"
-      >
+      <div className="relative">
+        <button
+          onClick={onFilterClick}
+          className={`flex items-center gap-1 px-2 py-2 rounded-[8px] transition-colors ${
+            filterCount > 0
+              ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
+              : "hover:bg-gray-50 border border-transparent text-black"
+          }`}
+        >
         <svg
           width="15"
           height="15"
@@ -105,15 +119,23 @@ export function ApplicantsHeader({
             strokeWidth="1.125"
           />
         </svg>
-        <span className="font-inter-tight text-[13px] font-normal text-black">
+        <span className="font-inter-tight text-[13px] font-normal">
           Filter
         </span>
+        {filterCount > 0 && (
+          <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+            {filterCount}
+          </span>
+        )}
       </button>
+      {filterModal}
+    </div>
 
-      {/* Sort Dropdown */}
-      <div className="relative">
-        <button className="flex items-center gap-1 px-2 py-2 hover:bg-gray-50 rounded-[8px] transition-colors">
-          <span className="font-inter-tight text-[13px] font-normal text-black">
+    {/* Sort Dropdown */}
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="flex items-center gap-1 px-2 py-2 hover:bg-gray-50 rounded-[8px] transition-colors shrink-0">
+          <span className="font-inter-tight text-[13px] font-normal text-black capitalize">
             {sortBy === "newest" ? "Newest" : "Oldest"}
           </span>
           <svg
@@ -129,7 +151,16 @@ export function ApplicantsHeader({
             />
           </svg>
         </button>
-      </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="z-[101]">
+        <DropdownMenuItem onClick={() => setSortBy("newest")}>
+          Newest
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setSortBy("oldest")}>
+          Oldest
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
     </div>
   );
 }

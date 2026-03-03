@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Search, SlidersHorizontal, MapPin, Mail, Calendar } from "lucide-react";
+import { HireFilterModal, type HireFilterState } from "./HireFilterModal";
 import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
 import { type Application } from "@/lib/api/applications/types";
 
@@ -13,6 +14,9 @@ interface PastHire {
   primarySkill: string;
   location: string;
   dateHired: string;
+  // Added for filtering logic
+  role: string;
+  skills: string[];
 }
 
 const transformApplicationToHire = (app: Application): PastHire => {
@@ -24,35 +28,53 @@ const transformApplicationToHire = (app: Application): PastHire => {
       })
     : "Date not available";
 
+  const primarySkill = app.user?.talentProfile?.headline || "Not specified";
+  const skills = primarySkill === "Not specified" ? [] : [primarySkill]; // Assuming primarySkill can be treated as a single skill for now
+
   return {
     id: app.id,
     userId: app.userId,
     name: app.user?.talentProfile?.fullName || "Unknown",
     avatar: app.user?.talentProfile?.profileImageUrl || "",
-    primarySkill: app.user?.talentProfile?.headline || "Not specified",
+    primarySkill: primarySkill,
     location: app.user?.talentProfile?.location || "Location not available",
     dateHired: hiredDate,
+    role: primarySkill, // Using primarySkill as role for now
+    skills: skills,
   };
 };
 
 export function PastHiresTab() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [appliedFilters, setAppliedFilters] = useState<HireFilterState | null>(null);
   const { data: applicationsRaw = [], isLoading } =
     useRecruiterApplicationsQuery({ status: "hired" });
 
   const pastHires: PastHire[] = applicationsRaw.map(transformApplicationToHire);
 
   const filteredHires =
-    searchQuery.trim() === ""
+    searchQuery.trim() === "" && !appliedFilters
       ? pastHires
-      : pastHires.filter(
-          (hire) =>
-            hire.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            hire.primarySkill
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase()) ||
-            hire.location.toLowerCase().includes(searchQuery.toLowerCase()),
-        );
+      : pastHires.filter((hire) => {
+         const matchesSearch =
+      hire.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      hire.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      hire.skills.some((skill) =>
+        skill.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+
+    const matchesFilter =
+      !appliedFilters ||
+      ((appliedFilters.skills.length === 0 ||
+        appliedFilters.skills.some((skill) => hire.skills.includes(skill))) &&
+        (!appliedFilters.location || hire.location === appliedFilters.location));
+
+    return matchesSearch && matchesFilter;
+  });
+
+  const availableLocations = Array.from(new Set(pastHires.map(h => h.location)));
+  const availableSkills = Array.from(new Set(pastHires.flatMap(h => h.skills)));
 
   if (isLoading) {
     return (
@@ -91,12 +113,37 @@ export function PastHiresTab() {
           </div>
 
           {/* Filter Button */}
-          <button className="h-[38px] px-2.5 flex items-center gap-1 rounded-[8px] flex-shrink-0 hover:bg-gray-50 transition-colors">
-            <SlidersHorizontal className="w-4 h-4 text-black" />
-            <span className="text-[13px] font-normal text-black font-inter-tight hidden sm:inline">
-              Filter
-            </span>
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className={`h-[38px] px-2.5 flex items-center gap-1 rounded-[8px] flex-shrink-0 transition-colors ${
+                appliedFilters && (appliedFilters.skills.length > 0 || appliedFilters.location)
+                  ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
+                  : "bg-transparent hover:bg-gray-50 text-black border border-transparent"
+              }`}
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+              <span className="text-[13px] font-normal font-inter-tight hidden sm:inline">
+                Filter
+              </span>
+              {appliedFilters && (appliedFilters.skills.length > 0 || appliedFilters.location) && (
+                <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                  {(appliedFilters.skills.length > 0 ? 1 : 0) + (appliedFilters.location ? 1 : 0)}
+                </span>
+              )}
+            </button>
+            <HireFilterModal
+                isOpen={isFilterOpen}
+                onClose={() => setIsFilterOpen(false)}
+                onApply={(filters) => {
+                    setAppliedFilters(filters);
+                    setIsFilterOpen(false);
+                }}
+                initialFilters={appliedFilters || undefined}
+                availableLocations={availableLocations}
+                availableSkills={availableSkills}
+            />
+          </div>
         </div>
 
         {/* Talent List Table */}

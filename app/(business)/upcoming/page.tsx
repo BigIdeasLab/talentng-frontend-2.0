@@ -20,6 +20,10 @@ import type {
 import type { MentorshipSession } from "@/lib/api/mentorship/types";
 import { TalentInterviewCard } from "@/components/talent/applications/TalentInterviewCard";
 import { TalentSessionCard } from "@/components/talent/applications/TalentSessionCard";
+import {
+  ApplicationFilterModal,
+  type ApplicationFilterState,
+} from "@/components/talent/applications";
 import { EmptyState } from "@/components/ui/empty-state";
 import { RecruiterUpcoming } from "@/components/employer/upcoming/RecruiterUpcoming";
 import { LoadingScreen } from "@/components/layouts/LoadingScreen";
@@ -73,6 +77,9 @@ function TalentUpcoming() {
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [appliedFilters, setAppliedFilters] =
+    useState<ApplicationFilterState | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
@@ -137,19 +144,52 @@ function TalentUpcoming() {
       const q = searchQuery.toLowerCase();
       if (item.type === "interview" && item.interview) {
         const { application } = item.interview;
-        return (
-          application.opportunity.title.toLowerCase().includes(q) ||
-          application.opportunity.company.toLowerCase().includes(q)
-        );
+        if (
+          !application.opportunity.title.toLowerCase().includes(q) &&
+          !application.opportunity.company.toLowerCase().includes(q)
+        )
+          return false;
       }
       if (item.type === "session" && item.session) {
         const mentor = item.session.mentor;
-        return (
-          item.session.topic.toLowerCase().includes(q) ||
-          (mentor.fullName || mentor.name || "").toLowerCase().includes(q)
-        );
+        if (
+          !item.session.topic.toLowerCase().includes(q) &&
+          !(mentor.fullName || mentor.name || "").toLowerCase().includes(q)
+        )
+          return false;
       }
     }
+
+    if (appliedFilters) {
+      // Date Range Filter
+      if (appliedFilters.dateRange !== "all") {
+        const now = new Date();
+        const diffDays = Math.floor(
+          (item.date.getTime() - now.getTime()) / (1000 * 3600 * 24),
+        );
+        if (appliedFilters.dateRange === "today") {
+          const isToday = item.date.toDateString() === now.toDateString();
+          if (!isToday) return false;
+        } else if (appliedFilters.dateRange === "week" && diffDays > 7) {
+          return false;
+        } else if (appliedFilters.dateRange === "month" && diffDays > 30) {
+          return false;
+        }
+      }
+
+      // Type Filter (only for interviews)
+      if (
+        item.type === "interview" &&
+        appliedFilters.type &&
+        appliedFilters.type.length > 0 &&
+        item.interview
+      ) {
+        if (!appliedFilters.type.includes(item.interview.application.opportunity.type)) {
+          return false;
+        }
+      }
+    }
+
     return true;
   });
 
@@ -182,12 +222,50 @@ function TalentUpcoming() {
             )}
           </div>
 
-          <button className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] flex-shrink-0 hover:bg-gray-100 transition-colors">
-            <SlidersHorizontal className="w-[15px] h-[15px] text-black" />
-            <span className="text-[13px] font-normal text-black font-inter-tight">
-              Filter
-            </span>
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
+                appliedFilters &&
+                (appliedFilters.dateRange !== "all" ||
+                  (appliedFilters.type && appliedFilters.type.length > 0))
+                  ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
+                  : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
+              }`}
+            >
+              <SlidersHorizontal className="w-[15px] h-[15px]" />
+              <span className="text-[13px] font-normal font-inter-tight">
+                Filter
+              </span>
+              {appliedFilters &&
+                (appliedFilters.dateRange !== "all" ||
+                  (appliedFilters.type && appliedFilters.type.length > 0)) && (
+                  <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                    {(appliedFilters.dateRange !== "all" ? 1 : 0) +
+                      (appliedFilters.type?.length || 0)}
+                  </span>
+                )}
+            </button>
+            <ApplicationFilterModal
+              isOpen={isFilterOpen}
+              onClose={() => setIsFilterOpen(false)}
+              onApply={(filters: ApplicationFilterState) => {
+                setAppliedFilters(filters);
+                setIsFilterOpen(false);
+              }}
+              initialFilters={appliedFilters || undefined}
+              availableTypes={
+                filter !== "sessions"
+                  ? [
+                      { label: "Job Listing", value: "Job" },
+                      { label: "Internship", value: "Internship" },
+                      { label: "Volunteer", value: "Volunteer" },
+                      { label: "Part-time", value: "PartTime" },
+                    ]
+                  : []
+              }
+            />
+          </div>
         </div>
 
         {/* Filter Tabs */}

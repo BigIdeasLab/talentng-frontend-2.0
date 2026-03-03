@@ -5,6 +5,10 @@ import { Calendar, Users, Search, X, SlidersHorizontal } from "lucide-react";
 import { getSessions } from "@/lib/api/mentorship";
 import type { MentorshipSession } from "@/lib/api/mentorship/types";
 import { MentorSessionCard } from "./MentorSessionCard";
+import {
+  ApplicationFilterModal,
+  type ApplicationFilterState,
+} from "@/components/talent/applications";
 import { EmptyState } from "@/components/ui/empty-state";
 
 interface UpcomingItem {
@@ -17,6 +21,9 @@ export function MentorUpcoming() {
   const [sessions, setSessions] = useState<MentorshipSession[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [appliedFilters, setAppliedFilters] =
+    useState<ApplicationFilterState | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
@@ -56,16 +63,36 @@ export function MentorUpcoming() {
 
   upcomingItems.sort((a, b) => a.date.getTime() - b.date.getTime());
 
-  // Apply search filter
+  // Apply filters
   const filteredItems = upcomingItems.filter((item) => {
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       const mentee = item.session.mentee;
-      return (
-        item.session.topic.toLowerCase().includes(q) ||
-        (mentee.fullName || mentee.name || "").toLowerCase().includes(q)
-      );
+      if (
+        !item.session.topic.toLowerCase().includes(q) &&
+        !(mentee.fullName || mentee.name || "").toLowerCase().includes(q)
+      )
+        return false;
     }
+
+    if (appliedFilters) {
+      // Date Range Filter
+      if (appliedFilters.dateRange !== "all") {
+        const now = new Date();
+        const diffDays = Math.floor(
+          (item.date.getTime() - now.getTime()) / (1000 * 3600 * 24),
+        );
+        if (appliedFilters.dateRange === "today") {
+          const isToday = item.date.toDateString() === now.toDateString();
+          if (!isToday) return false;
+        } else if (appliedFilters.dateRange === "week" && diffDays > 7) {
+          return false;
+        } else if (appliedFilters.dateRange === "month" && diffDays > 30) {
+          return false;
+        }
+      }
+    }
+
     return true;
   });
 
@@ -98,12 +125,35 @@ export function MentorUpcoming() {
             )}
           </div>
 
-          <button className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] flex-shrink-0 hover:bg-gray-100 transition-colors">
-            <SlidersHorizontal className="w-[15px] h-[15px] text-black" />
-            <span className="text-[13px] font-normal text-black font-inter-tight">
-              Filter
-            </span>
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
+                appliedFilters && appliedFilters.dateRange !== "all"
+                  ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
+                  : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
+              }`}
+            >
+              <SlidersHorizontal className="w-[15px] h-[15px]" />
+              <span className="text-[13px] font-normal font-inter-tight">
+                Filter
+              </span>
+              {appliedFilters && appliedFilters.dateRange !== "all" && (
+                <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                  1
+                </span>
+              )}
+            </button>
+            <ApplicationFilterModal
+              isOpen={isFilterOpen}
+              onClose={() => setIsFilterOpen(false)}
+              onApply={(filters: ApplicationFilterState) => {
+                setAppliedFilters(filters);
+                setIsFilterOpen(false);
+              }}
+              initialFilters={appliedFilters || undefined}
+            />
+          </div>
         </div>
 
         {/* Filter Tab */}

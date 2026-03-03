@@ -25,6 +25,10 @@ import {
 import type { MentorshipRequest as ApiMentorshipRequest } from "@/lib/api/mentorship";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { ApplicationsSkeleton } from "@/components/mentor/applications/ApplicationsSkeleton";
+import {
+  ApplicationFilterModal,
+  type ApplicationFilterState,
+} from "@/components/talent/applications";
 
 interface MentorshipRequest {
   id: string;
@@ -81,6 +85,9 @@ export default function ApplicationsPage() {
   const [isActionLoading, setIsActionLoading] = useState(false);
   const [filter, setFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [appliedFilters, setAppliedFilters] =
+    useState<ApplicationFilterState | null>(null);
 
   // Modal states
   const [acceptModalOpen, setAcceptModalOpen] = useState(false);
@@ -132,7 +139,24 @@ export default function ApplicationsPage() {
       searchQuery === "" ||
       req.mentee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       req.topic.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch;
+
+    if (!matchesFilter || !matchesSearch) return false;
+
+    if (appliedFilters) {
+      // Date Range Filter
+      if (appliedFilters.dateRange !== "all") {
+        const date = new Date(req.requestedAt);
+        const now = new Date();
+        const diffDays = Math.floor(
+          (now.getTime() - date.getTime()) / (1000 * 3600 * 24),
+        );
+        if (appliedFilters.dateRange === "today" && diffDays > 0) return false;
+        if (appliedFilters.dateRange === "week" && diffDays > 7) return false;
+        if (appliedFilters.dateRange === "month" && diffDays > 30) return false;
+      }
+    }
+
+    return true;
   });
 
   const handleAccept = (id: string) => {
@@ -231,17 +255,35 @@ export default function ApplicationsPage() {
             )}
           </div>
 
-          <button
-            onClick={() =>
-              toast({ description: "Advanced filters are coming soon!" })
-            }
-            className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] flex-shrink-0 hover:bg-gray-100 transition-colors"
-          >
-            <SlidersHorizontal className="w-[15px] h-[15px] text-black" />
-            <span className="text-[13px] font-normal text-black font-inter-tight">
-              Filter
-            </span>
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
+                appliedFilters && appliedFilters.dateRange !== "all"
+                  ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
+                  : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
+              }`}
+            >
+              <SlidersHorizontal className="w-[15px] h-[15px]" />
+              <span className="text-[13px] font-normal font-inter-tight">
+                Filter
+              </span>
+              {appliedFilters && appliedFilters.dateRange !== "all" && (
+                <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                  1
+                </span>
+              )}
+            </button>
+            <ApplicationFilterModal
+              isOpen={isFilterOpen}
+              onClose={() => setIsFilterOpen(false)}
+              onApply={(filters: ApplicationFilterState) => {
+                setAppliedFilters(filters);
+                setIsFilterOpen(false);
+              }}
+              initialFilters={appliedFilters || undefined}
+            />
+          </div>
         </div>
 
         {/* Filter Tabs */}

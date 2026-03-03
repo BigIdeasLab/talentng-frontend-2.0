@@ -11,6 +11,8 @@ import {
   JobApplicationCard,
   MentorshipRequestCard,
   MyApplicationsSkeleton,
+  ApplicationFilterModal,
+  type ApplicationFilterState,
 } from "@/components/talent/applications";
 import { EmptyState } from "@/components/ui/empty-state";
 
@@ -47,6 +49,9 @@ export function TalentMyApplications() {
   const [jobStatusFilter, setJobStatusFilter] = useState("all");
   const [mentorshipStatusFilter, setMentorshipStatusFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [appliedFilters, setAppliedFilters] =
+    useState<ApplicationFilterState | null>(null);
 
   const [jobApplications, setJobApplications] = useState<Application[]>([]);
   const [mentorshipRequests, setMentorshipRequests] = useState<
@@ -109,7 +114,21 @@ export function TalentMyApplications() {
       searchQuery === "" ||
       app.opportunity.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       app.opportunity.company.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesStatus && matchesSearch;
+
+    const matchesFilter =
+      !appliedFilters ||
+      (appliedFilters.dateRange === "all" || (() => {
+        const createdAt = new Date(app.createdAt);
+        const now = new Date();
+        const diffDays = Math.floor((now.getTime() - createdAt.getTime()) / (1000 * 3600 * 24));
+        if (appliedFilters.dateRange === "today" && diffDays > 0) return false;
+        if (appliedFilters.dateRange === "week" && diffDays > 7) return false;
+        if (appliedFilters.dateRange === "month" && diffDays > 30) return false;
+        return true;
+      })()) &&
+      (!appliedFilters.type || appliedFilters.type.length === 0 || appliedFilters.type.includes(app.opportunity.type));
+
+    return matchesStatus && matchesSearch && matchesFilter;
   });
 
   const filteredMentorshipRequests = mentorshipRequests.filter((req) => {
@@ -121,7 +140,20 @@ export function TalentMyApplications() {
       (req.mentor.fullName || req.mentor.name || "")
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
-    return matchesStatus && matchesSearch;
+
+    const matchesFilter =
+      !appliedFilters ||
+      (appliedFilters.dateRange === "all" || (() => {
+        const createdAt = new Date(req.createdAt);
+        const now = new Date();
+        const diffDays = Math.floor((now.getTime() - createdAt.getTime()) / (1000 * 3600 * 24));
+        if (appliedFilters.dateRange === "today" && diffDays > 0) return false;
+        if (appliedFilters.dateRange === "week" && diffDays > 7) return false;
+        if (appliedFilters.dateRange === "month" && diffDays > 30) return false;
+        return true;
+      })());
+
+    return matchesStatus && matchesSearch && matchesFilter;
   });
 
   const statusTabs =
@@ -190,12 +222,41 @@ export function TalentMyApplications() {
             )}
           </div>
 
-          <button className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] flex-shrink-0 hover:bg-gray-100 transition-colors">
-            <SlidersHorizontal className="w-[15px] h-[15px] text-black" />
-            <span className="text-[13px] font-normal text-black font-inter-tight">
-              Filter
-            </span>
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
+                appliedFilters && (appliedFilters.dateRange !== "all" || (appliedFilters.type && appliedFilters.type.length > 0))
+                  ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
+                  : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
+              }`}
+            >
+              <SlidersHorizontal className="w-[15px] h-[15px]" />
+              <span className="text-[13px] font-normal font-inter-tight">
+                Filter
+              </span>
+              {appliedFilters && (appliedFilters.dateRange !== "all" || (appliedFilters.type && appliedFilters.type.length > 0)) && (
+                <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                  {(appliedFilters.dateRange !== "all" ? 1 : 0) + (appliedFilters.type?.length || 0)}
+                </span>
+              )}
+            </button>
+            <ApplicationFilterModal
+              isOpen={isFilterOpen}
+              onClose={() => setIsFilterOpen(false)}
+              onApply={(filters: ApplicationFilterState) => {
+                setAppliedFilters(filters);
+                setIsFilterOpen(false);
+              }}
+              initialFilters={appliedFilters || undefined}
+              availableTypes={activeTab === "jobs" ? [
+                { label: "Job Listing", value: "Job" },
+                { label: "Internship", value: "Internship" },
+                { label: "Volunteer", value: "Volunteer" },
+                { label: "Part-time", value: "PartTime" },
+              ] : []}
+            />
+          </div>
         </div>
 
         {/* Status Filter Tabs */}

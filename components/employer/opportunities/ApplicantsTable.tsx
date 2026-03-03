@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useToast } from "@/hooks";
+import type { ApplicantFilterState } from "@/components/employer/applicants/ApplicantFilterModal";
 import {
   updateApplicationStatus,
   scheduleInterview,
@@ -44,12 +45,15 @@ interface ApplicantsTableProps {
   sortBy: string;
   applicants: Applicant[];
   opportunityTitle?: string;
+  appliedFilters?: ApplicantFilterState | null;
 }
 
 export function ApplicantsTable({
   searchQuery,
+  sortBy,
   applicants,
   opportunityTitle,
+  appliedFilters,
 }: ApplicantsTableProps) {
   const { toast } = useToast();
   const [selectedApplicant, setSelectedApplicant] = useState<Applicant | null>(
@@ -68,11 +72,77 @@ export function ApplicantsTable({
     });
   };
 
-  const filteredApplicants = (applicants || []).filter((applicant) =>
-    applicant.user?.talentProfile?.fullName
-      ?.toLowerCase()
-      .includes(searchQuery.toLowerCase()),
-  );
+  const filteredAndSortedApplicants = useMemo(() => {
+    let result = (applicants || []).filter((applicant) => {
+      // Search filter
+      const matchesSearch =
+        !searchQuery ||
+        applicant.user?.talentProfile?.fullName
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        applicant.user?.username
+          ?.toLowerCase()
+          .includes(searchQuery.toLowerCase());
+
+      if (!matchesSearch) return false;
+
+      // Applied filters
+      if (appliedFilters) {
+        if (
+          appliedFilters.status.length > 0 &&
+          !appliedFilters.status.includes(applicant.status)
+        ) {
+          return false;
+        }
+        if (
+          appliedFilters.location &&
+          applicant.user?.talentProfile?.location !== appliedFilters.location
+        ) {
+          return false;
+        }
+        if (
+          appliedFilters.skills.length > 0 &&
+          !appliedFilters.skills.some((skill) =>
+            applicant.user?.talentProfile?.skills?.includes(skill),
+          )
+        ) {
+          return false;
+        }
+
+        if (appliedFilters.dateRange && appliedFilters.dateRange !== "all") {
+          const createdAt = new Date(applicant.createdAt);
+          const now = new Date();
+          const diffDays = Math.floor(
+            (now.getTime() - createdAt.getTime()) / (1000 * 3600 * 24),
+          );
+
+          if (appliedFilters.dateRange === "today" && diffDays > 0) return false;
+          if (appliedFilters.dateRange === "week" && diffDays > 7) return false;
+          if (appliedFilters.dateRange === "month" && diffDays > 30)
+            return false;
+        }
+      }
+
+      return true;
+    });
+
+    // Sorting
+    result.sort((a, b) => {
+      if (sortBy === "newest") {
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      }
+      if (sortBy === "oldest") {
+        return (
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
+      }
+      return 0;
+    });
+
+    return result;
+  }, [applicants, searchQuery, appliedFilters, sortBy]);
 
   const handleHireClick = (applicant: Applicant) => {
     setSelectedApplicant(applicant);
@@ -130,9 +200,8 @@ export function ApplicantsTable({
         </div>
       </div>
 
-      {/* Table Body */}
       <div className="divide-y divide-[#E1E4EA]">
-        {filteredApplicants.map((applicant, index) => (
+        {filteredAndSortedApplicants.map((applicant, index) => (
           <div
             key={applicant.id}
             className="px-3 py-4 hover:bg-gray-50/50 transition-colors"
@@ -286,7 +355,7 @@ export function ApplicantsTable({
         ))}
       </div>
 
-      {filteredApplicants.length === 0 && (
+      {filteredAndSortedApplicants.length === 0 && (
         <div className="px-3 py-9 text-center">
           <p className="font-inter-tight text-[13px] text-gray-500">
             No applicants found

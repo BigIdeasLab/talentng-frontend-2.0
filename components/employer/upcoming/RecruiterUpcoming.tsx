@@ -7,7 +7,14 @@ import {
   Search,
   X,
   SlidersHorizontal,
+  Clock,
+  MapPin,
 } from "lucide-react";
+import {
+  ApplicationFilterModal,
+  type ApplicationFilterState,
+} from "@/components/talent/applications";
+import { useRecruiterOpportunitiesQuery } from "@/hooks";
 import { getRecruiterApplications } from "@/lib/api/applications/index";
 import type {
   Application,
@@ -29,6 +36,9 @@ export function RecruiterUpcoming() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [appliedFilters, setAppliedFilters] =
+    useState<ApplicationFilterState | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
@@ -67,18 +77,44 @@ export function RecruiterUpcoming() {
 
   // Apply search filter
   const filteredItems = upcomingItems.filter((item) => {
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      const { application } = item.interview;
-      const talent = application.user?.talentProfile;
-      const candidateName =
-        talent?.fullName || application.user?.username || "";
-      return (
-        application.opportunity.title.toLowerCase().includes(q) ||
-        candidateName.toLowerCase().includes(q)
-      );
-    }
-    return true;
+    const { interview, application } = item.interview;
+    const talent = application.user?.talentProfile;
+    const candidateName =
+      talent?.fullName || application.user?.username || "";
+
+    const matchesSearch =
+      (searchQuery === "" ||
+        candidateName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        application.opportunity.title
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()));
+
+    const matchesFilter =
+      !appliedFilters ||
+      (appliedFilters.dateRange === "all" || (() => {
+        const date = new Date(interview.scheduledDate);
+        const now = new Date();
+        const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 3600 * 24));
+
+        const isUpcoming = date.getTime() > now.getTime();
+        if (!isUpcoming) return false; // Only show future interviews
+
+        if (appliedFilters.dateRange === "today") {
+            const isToday = date.toDateString() === now.toDateString();
+            return isToday;
+        }
+        if (appliedFilters.dateRange === "week") {
+          const oneWeekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+          return date.getTime() <= oneWeekFromNow.getTime();
+        }
+        if (appliedFilters.dateRange === "month") {
+          const oneMonthFromNow = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
+          return date.getTime() <= oneMonthFromNow.getTime();
+        }
+        return false;
+      })());
+
+    return matchesSearch && matchesFilter;
   });
 
   return (
@@ -110,12 +146,35 @@ export function RecruiterUpcoming() {
             )}
           </div>
 
-          <button className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] flex-shrink-0 hover:bg-gray-100 transition-colors">
-            <SlidersHorizontal className="w-[15px] h-[15px] text-black" />
-            <span className="text-[13px] font-normal text-black font-inter-tight">
-              Filter
-            </span>
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
+                appliedFilters && appliedFilters.dateRange !== "all"
+                  ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
+                  : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
+              }`}
+            >
+              <SlidersHorizontal className="w-[15px] h-[15px]" />
+              <span className="text-[13px] font-normal font-inter-tight">
+                Filter
+              </span>
+              {appliedFilters && appliedFilters.dateRange !== "all" && (
+                <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                  1
+                </span>
+              )}
+            </button>
+            <ApplicationFilterModal
+              isOpen={isFilterOpen}
+              onClose={() => setIsFilterOpen(false)}
+              onApply={(filters: ApplicationFilterState) => {
+                setAppliedFilters(filters);
+                setIsFilterOpen(false);
+              }}
+              initialFilters={appliedFilters || undefined}
+            />
+          </div>
         </div>
 
         {/* Filter Tab */}
