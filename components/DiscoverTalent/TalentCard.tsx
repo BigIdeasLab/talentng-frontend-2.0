@@ -85,13 +85,34 @@ export function TalentCard({ talent }: TalentCardProps) {
               </span>
             </div>
           )}
-          {talent.availability && (
+          {talent.availability && talent.availability.length > 0 && (
             <div className="flex items-center gap-[5px] flex-shrink-0">
               <div
-                className={`w-[6px] h-[6px] rounded-full ${talent.availability.toLowerCase() === "available" ? "bg-green-500" : talent.availability.toLowerCase() === "not available" ? "bg-red-400" : "bg-yellow-500"}`}
+                className={`w-[6px] h-[6px] rounded-full ${
+                  talent.availability.some((a) =>
+                    [
+                      "Available",
+                      "Full-time",
+                      "Freelance",
+                      "Contract",
+                    ].includes(a),
+                  )
+                    ? "bg-green-500"
+                    : talent.availability.includes("unavailable")
+                      ? "bg-red-400"
+                      : "bg-yellow-500"
+                }`}
               />
               <span className="font-normal text-[#525866] font-inter-tight leading-[16px]">
-                {talent.availability}
+                {talent.availability
+                  .map((a) => {
+                    if (a === "full_time") return "Full-time";
+                    if (a === "part_time") return "Part-time";
+                    if (a === "freelance") return "Freelance";
+                    if (a === "contract") return "Contract";
+                    return a;
+                  })
+                  .join(", ")}
               </span>
             </div>
           )}

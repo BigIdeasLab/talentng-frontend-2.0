@@ -107,6 +107,7 @@ export function EmployerSettings() {
     emailNewApplications: true,
     emailMarketing: false,
     pushNewApplications: true,
+    profileVisible: true,
   });
 
   const [visibility, setVisibility] = useState({
@@ -205,7 +206,11 @@ export function EmployerSettings() {
               <Button
                 className="text-white hover:opacity-90"
                 style={{ backgroundColor: roleColors.primary }}
-                onClick={() => saveSettings.mutate({ profileVisible: visibility.profileVisible })}
+                onClick={() =>
+                  saveSettings.mutate({
+                    profileVisible: visibility.profileVisible,
+                  })
+                }
                 disabled={saveSettings.isPending}
               >
                 {saveSettings.isPending && (

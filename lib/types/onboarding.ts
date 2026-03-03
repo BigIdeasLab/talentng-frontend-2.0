@@ -13,7 +13,7 @@ export interface SkillsData {
   headline: string;
   skills: string[];
   stack: string[];
-  portfolioLink: string;
+  availability: string[];
 }
 
 export interface CompanyProfileData {

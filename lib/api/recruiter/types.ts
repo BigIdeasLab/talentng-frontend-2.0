@@ -112,6 +112,7 @@ export interface RecruiterSettings {
   emailNewApplications: boolean;
   emailMarketing: boolean;
   pushNewApplications: boolean;
+  profileVisible: boolean;
 }
 
 export type UpdateRecruiterSettingsInput = Partial<RecruiterSettings>;

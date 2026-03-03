@@ -6,6 +6,7 @@ import {
   updateApplicationStatus,
   scheduleInterview,
 } from "@/lib/api/applications";
+import { SuccessModal } from "@/components/ui/success-modal";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { HireApplicationModal } from "@/components/employer/applicants/HireApplicationModal";
 
@@ -55,6 +56,7 @@ export function ApplicantsTable({
     null,
   );
   const [isHireModalOpen, setIsHireModalOpen] = useState(false);
+  const [showHireSuccess, setShowHireSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const formatDate = (isoDate: string) => {
@@ -86,10 +88,8 @@ export function ApplicantsTable({
       // Update application status to "hired"
       await updateApplicationStatus(applicationId, "hired");
 
-      toast({
-        title: "Success",
-        description: `${selectedApplicant?.user?.talentProfile?.fullName} has been hired successfully!`,
-      });
+      setIsHireModalOpen(false);
+      setShowHireSuccess(true);
     } catch (error) {
       console.error("Error hiring applicant:", error);
       throw error;
@@ -311,6 +311,17 @@ export function ApplicantsTable({
           onHire={handleHire}
         />
       )}
+
+      <SuccessModal
+        isOpen={showHireSuccess}
+        onClose={() => {
+          setShowHireSuccess(false);
+          setSelectedApplicant(null);
+        }}
+        title="Hired Successfully!"
+        description={`${selectedApplicant?.user?.talentProfile?.fullName} has been hired for the ${opportunityTitle} position.`}
+        accentColor={ROLE_COLORS.recruiter.primary}
+      />
     </div>
   );
 }

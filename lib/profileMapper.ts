@@ -14,7 +14,7 @@ export interface UIProfileData {
     category: string;
     skills: string[];
     stack: { name: string; icon: string }[];
-    availability: string;
+    availability: string[];
     industry?: string;
     companySize?: string;
     companyStage?: string;
@@ -129,7 +129,7 @@ export interface APIProfileData {
   };
   company?: string | null;
   category?: string | null;
-  availability?: string | null;
+  availability?: string[];
   description?: string | null;
   visibility?: "public" | "private";
   socialLinks?: Record<string, any>;
@@ -237,7 +237,11 @@ export function mapAPIToUI(
         icon: getIconForTool(name),
       };
     }),
-    availability: data.availability || "",
+    availability: Array.isArray(data.availability)
+      ? data.availability
+      : data.availability
+        ? [data.availability]
+        : [],
     industry: data.industry || "",
     companySize: data.companySize || "",
     companyStage: data.companyStage || "",
@@ -304,7 +308,10 @@ export function mapAPIToUI(
       github: data.links?.github || data.socialLinks?.github || "",
       portfolio: data.links?.portfolio || data.socialLinks?.portfolio || "",
       website: data.links?.website || data.socialLinks?.website || "",
-      customLinks: Object.entries({ ...(data.socialLinks || {}), ...(data.links || {}) })
+      customLinks: Object.entries({
+        ...(data.socialLinks || {}),
+        ...(data.links || {}),
+      })
         .filter(
           ([key, value]) =>
             ![

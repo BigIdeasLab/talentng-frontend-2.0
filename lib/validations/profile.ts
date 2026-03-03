@@ -24,7 +24,7 @@ export const profileSchema = z.object({
   duration: z.string().optional().or(z.literal("")),
   description: z.string().optional().or(z.literal("")),
   availability: z
-    .enum(["full_time", "part_time", "freelance", "unavailable"]) // "contract" is "freelance" in my-profile
+    .array(z.enum(["full_time", "part_time", "freelance", "unavailable"]))
     .optional(),
   location: z.string().optional().or(z.literal("")),
   links: z

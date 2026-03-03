@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useRoleColors } from "@/lib/theme/RoleColorContext";
 import { useSubmitApplication } from "@/hooks/useTalentApplications";
 import { useToast, useProfile } from "@/hooks";
+import { SuccessModal } from "@/components/ui/success-modal";
 import type { DisplayOpportunity } from "./types";
 import { ProjectSelectionModal } from "./project-selection-modal";
 
@@ -38,6 +39,7 @@ export function ApplicationModal({
   const [selectedProjects, setSelectedProjects] = useState<Project[]>([]);
   const [showProjectSelection, setShowProjectSelection] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   if (!opportunity) return null;
 
@@ -70,19 +72,7 @@ export function ApplicationModal({
         attachments: [],
       });
 
-      toast({
-        title: "Success",
-        description: "Application submitted successfully",
-      });
-
-      // Reset form after success
-      setTimeout(() => {
-        setProposal("");
-        setSelectedProjects([]);
-        setError(null);
-        onSubmit?.();
-        onClose();
-      }, 1500);
+      setShowSuccess(true);
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to submit application";
@@ -241,6 +231,22 @@ export function ApplicationModal({
         onClose={() => setShowProjectSelection(false)}
         selectedProjects={selectedProjects}
         onProjectsSelected={handleProjectsSelected}
+      />
+
+      {/* Success Modal */}
+      <SuccessModal
+        isOpen={showSuccess}
+        onClose={() => {
+          setShowSuccess(false);
+          setProposal("");
+          setSelectedProjects([]);
+          setError(null);
+          onSubmit?.();
+          onClose();
+        }}
+        title="Application Submitted!"
+        description="Your application has been sent successfully. You'll be notified once the recruiter reviews it."
+        accentColor={primary}
       />
     </>
   );

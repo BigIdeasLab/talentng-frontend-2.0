@@ -6,13 +6,17 @@ import categoriesData from "@/lib/data/categories.json";
 import skillsData from "@/lib/data/skills.json";
 import statesCitiesData from "@/lib/data/states-cities.json";
 
-type AvailabilityType = "All" | "Contract" | "Part Time" | "Full Time";
+export type AvailabilityType =
+  | "Contract"
+  | "Part Time"
+  | "Full Time"
+  | "Freelance";
 
-interface FilterState {
+export interface FilterState {
   categories: string[];
   skills: string[];
   location: string;
-  availability: AvailabilityType;
+  availability: string[];
 }
 
 interface FilterModalProps {
@@ -44,7 +48,7 @@ export function FilterModal({
       categories: [],
       skills: [],
       location: "",
-      availability: "All",
+      availability: [],
     },
   );
 
@@ -82,7 +86,7 @@ export function FilterModal({
       categories: [],
       skills: [],
       location: "",
-      availability: "All",
+      availability: [],
     };
     setFilters(emptyFilters);
     setCategorySearch("");
@@ -375,26 +379,31 @@ export function FilterModal({
               Availability
             </span>
             <div className="flex flex-col gap-[10px] p-[8px] border border-[#E1E4EA] rounded-[8px] bg-white">
-              {(["All", "Contract", "Part Time", "Full Time"] as const).map(
-                (option) => (
-                  <button
-                    key={option}
-                    onClick={() =>
-                      setFilters((prev) => ({ ...prev, availability: option }))
-                    }
-                    className="flex items-center gap-[4px]"
-                  >
-                    <div className="w-3 h-3 rounded-full border flex items-center justify-center">
-                      {filters.availability === option && (
-                        <div className="w-[9px] h-[9px] rounded-full bg-[#5C30FF]" />
-                      )}
-                    </div>
-                    <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
-                      {option}
-                    </span>
-                  </button>
-                ),
-              )}
+              {(
+                ["Contract", "Part Time", "Full Time", "Freelance"] as const
+              ).map((option) => (
+                <button
+                  key={option}
+                  onClick={() =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      availability: prev.availability.includes(option)
+                        ? prev.availability.filter((a) => a !== option)
+                        : [...prev.availability, option],
+                    }))
+                  }
+                  className="flex items-center gap-[4px]"
+                >
+                  <div className="w-3 h-3 rounded flex items-center justify-center border border-[#E1E4EA]">
+                    {filters.availability.includes(option) && (
+                      <div className="w-[8px] h-[8px] rounded-sm bg-[#5C30FF]" />
+                    )}
+                  </div>
+                  <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
+                    {option}
+                  </span>
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -422,5 +431,3 @@ export function FilterModal({
     </div>
   );
 }
-
-export type { FilterState, AvailabilityType };

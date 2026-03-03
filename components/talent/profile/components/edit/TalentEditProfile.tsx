@@ -23,6 +23,8 @@ import { useProfile } from "@/hooks/useProfile";
 import { updateServerTalentProfile } from "@/lib/api/talent/server";
 import { fetchProfileByRole } from "@/lib/api/profile-service";
 import { TalentEditProfileSkeleton } from "@/components/skeletons/EditProfileSkeleton";
+import { SuccessModal } from "@/components/ui/success-modal";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 const availableSkills = [
   "Website Design",
@@ -65,7 +67,7 @@ const DEFAULT_PROFILE_DATA: UIProfileData = {
     category: "",
     skills: [],
     stack: [],
-    availability: "",
+    availability: [],
   },
   gallery: [],
   experience: [],
@@ -106,19 +108,19 @@ export function TalentEditProfile() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showDiscardModal, setShowDiscardModal] = useState(false);
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const skillsSelectRef = useRef<HTMLSelectElement | null>(null);
   const stackSelectRef = useRef<HTMLSelectElement | null>(null);
-  const [linkErrors, setLinkErrors] = useState<Record<number, { name?: string; url?: string }>>({});
+  const [linkErrors, setLinkErrors] = useState<
+    Record<number, { name?: string; url?: string }>
+  >({});
   const queryClient = useQueryClient();
 
   // Fetch talent profile data with caching
-  const {
-    data: queryData,
-    isLoading: isQueryLoading,
-  } = useQuery({
+  const { data: queryData, isLoading: isQueryLoading } = useQuery({
     queryKey: ["profile", "talent"],
     queryFn: async () => {
       const response = await fetchProfileByRole("talent");
@@ -200,7 +202,10 @@ export function TalentEditProfile() {
     }));
   };
 
-  const handleProfessionalInputChange = (field: string, value: string) => {
+  const handleProfessionalInputChange = (
+    field: string,
+    value: string | string[],
+  ) => {
     setFormData((prev) => ({
       ...prev,
       professional: {
@@ -383,10 +388,16 @@ export function TalentEditProfile() {
         const hasUrl = link.url.trim() !== "";
 
         if (hasUrl && !hasName) {
-          newErrors[index] = { ...newErrors[index], name: "Please provide a name" };
+          newErrors[index] = {
+            ...newErrors[index],
+            name: "Please provide a name",
+          };
         }
         if (hasName && !hasUrl) {
-          newErrors[index] = { ...newErrors[index], url: "Please provide a URL" };
+          newErrors[index] = {
+            ...newErrors[index],
+            url: "Please provide a URL",
+          };
         }
       });
 
@@ -407,7 +418,7 @@ export function TalentEditProfile() {
 
       setModalMessage("Profile saved successfully!");
       setIsSuccess(true);
-      setModalOpen(true);
+      setShowSuccessModal(true);
       setHasUnsavedChanges(false);
     } catch (error) {
       console.error("Error saving profile:", error);
@@ -431,7 +442,12 @@ export function TalentEditProfile() {
       />
 
       <div className="flex-1 flex flex-col">
-        <EditProfileActionBar onSave={handleSaveProfile} isLoading={isSaving} hasUnsavedChanges={hasUnsavedChanges} onDiscard={handleDiscard} />
+        <EditProfileActionBar
+          onSave={handleSaveProfile}
+          isLoading={isSaving}
+          hasUnsavedChanges={hasUnsavedChanges}
+          onDiscard={handleDiscard}
+        />
 
         <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
@@ -520,6 +536,14 @@ export function TalentEditProfile() {
         confirmText="Leave"
         cancelText="Stay"
         type="default"
+      />
+
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        title="Profile Updated!"
+        description="Your profile changes have been saved successfully."
+        accentColor={ROLE_COLORS.talent.primary}
       />
 
       <Modal

@@ -304,7 +304,7 @@ export const CompanyProfileStep = ({
               {/* Company Name */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Company Name
+                  Company Name <span className="text-red-500">*</span>
                 </label>
                 <Input
                   name="companyName"
@@ -325,7 +325,7 @@ export const CompanyProfileStep = ({
               {/* Industry Dropdown */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Industry
+                  Industry <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="industry"
@@ -353,7 +353,7 @@ export const CompanyProfileStep = ({
               {!isAddingRole && (
                 <div className="flex flex-col gap-[13px]">
                   <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                    Username
+                    Username <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <Input
@@ -435,7 +435,7 @@ export const CompanyProfileStep = ({
               <div className="flex gap-[13px]">
                 <div className="flex-1 flex flex-col gap-[13px]">
                   <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                    State
+                    State <span className="text-red-500">*</span>
                   </label>
                   <select
                     value={formData.state || ""}
@@ -459,7 +459,7 @@ export const CompanyProfileStep = ({
 
                 <div className="flex-1 flex flex-col gap-[13px]">
                   <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                    City
+                    City <span className="text-red-500">*</span>
                   </label>
                   <select
                     value={formData.city || ""}

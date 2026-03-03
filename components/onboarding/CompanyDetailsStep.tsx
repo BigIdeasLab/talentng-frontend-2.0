@@ -145,7 +145,7 @@ export const CompanyDetailsStep = ({
               {/* Company Size */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Company Size
+                  Company Size <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="companySize"
@@ -172,7 +172,7 @@ export const CompanyDetailsStep = ({
               {/* Company Stage */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Company Stage
+                  Company Stage <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="companyStage"
@@ -199,7 +199,7 @@ export const CompanyDetailsStep = ({
               {/* Operating Model */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Operating Model
+                  Operating Model <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="operatingModel"

@@ -6,9 +6,11 @@ import { Briefcase, Star, MoreVertical, Loader } from "lucide-react";
 import { useToast } from "@/hooks";
 import { EmptyState } from "./EmptyState";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
+import { SuccessModal } from "@/components/ui/success-modal";
 import { useMyServices } from "@/hooks/useTalentApi";
 import { deleteService } from "@/lib/api/talent";
 import type { Service } from "@/lib/api/talent";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface ServicesGridProps {
   onServiceClick?: (service: Service) => void;
@@ -50,6 +52,7 @@ export function ServicesGrid({
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
 
   const handleDelete = (serviceId: string) => {
     setOpenMenuId(null);
@@ -65,10 +68,7 @@ export function ServicesGrid({
     try {
       await deleteService(serviceId);
       setServices((prev) => prev.filter((s) => s.id !== serviceId));
-      toast({
-        title: "Service deleted",
-        description: "The service has been removed.",
-      });
+      setShowDeleteSuccess(true);
       onServiceDeleted?.();
     } catch (err) {
       toast({
@@ -313,6 +313,14 @@ export function ServicesGrid({
         description="Are you sure you want to delete this service? This action cannot be undone."
         type="danger"
         confirmText="Yes, delete"
+      />
+
+      <SuccessModal
+        isOpen={showDeleteSuccess}
+        onClose={() => setShowDeleteSuccess(false)}
+        title="Service Deleted"
+        description="Your service has been removed successfully."
+        accentColor={ROLE_COLORS.talent.primary}
       />
     </div>
   );

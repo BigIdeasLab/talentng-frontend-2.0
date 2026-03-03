@@ -22,6 +22,7 @@ import {
 import { Check, Clock, Zap } from "lucide-react";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
+import { SuccessModal } from "@/components/ui/success-modal";
 
 // ============ Constants ============
 
@@ -93,6 +94,7 @@ export default function AvailabilityPage() {
   const [hasChanges, setHasChanges] = useState(false);
   const [meetingLinkError, setMeetingLinkError] = useState(false);
   const [pendingDuration, setPendingDuration] = useState<string | null>(null);
+  const [showSaveSuccess, setShowSaveSuccess] = useState(false);
 
   // Grid-specific state
   const [isDragging, setIsDragging] = useState(false);
@@ -350,10 +352,9 @@ export default function AvailabilityPage() {
       setSavedSlots(new Set(selectedSlots));
       setIsSaved(true);
       setHasChanges(false);
-      toast({
-        title: "Availability saved",
-        description: "Your weekly schedule has been updated.",
-      });
+      setIsSaved(true);
+      setHasChanges(false);
+      setShowSaveSuccess(true);
     } catch (error) {
       toast({
         title: "Error",
@@ -793,6 +794,14 @@ export default function AvailabilityPage() {
         description="Changing the session duration will clear all your current availability slots. Are you sure?"
         type="danger"
         confirmText="Change Duration"
+      />
+
+      <SuccessModal
+        isOpen={showSaveSuccess}
+        onClose={() => setShowSaveSuccess(false)}
+        title="Availability Saved!"
+        description="Your weekly schedule has been updated successfully."
+        accentColor={ROLE_COLORS.mentor.primary}
       />
     </div>
   );

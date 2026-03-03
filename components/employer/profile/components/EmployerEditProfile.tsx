@@ -18,6 +18,8 @@ import {
 import { fetchProfileByRole } from "@/lib/api/profile-service";
 import statesCities from "@/lib/data/states-cities.json";
 import { EmployerEditProfileSkeleton } from "@/components/skeletons/EditProfileSkeleton";
+import { SuccessModal } from "@/components/ui/success-modal";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface EmployerFormData {
   personal: {
@@ -628,7 +630,10 @@ function SocialLinksSection({
                     value={link.name}
                     onChange={(e) => {
                       const updated = [...(formData.customLinks || [])];
-                      updated[index] = { ...updated[index], name: e.target.value };
+                      updated[index] = {
+                        ...updated[index],
+                        name: e.target.value,
+                      };
                       onCustomLinksChange?.(updated);
                     }}
                     className="text-[13px] font-normal text-black font-inter-tight bg-transparent border-none focus:outline-none placeholder:text-black/30 w-full"
@@ -641,7 +646,9 @@ function SocialLinksSection({
                   <button
                     type="button"
                     onClick={() => {
-                      const updated = (formData.customLinks || []).filter((_, i) => i !== index);
+                      const updated = (formData.customLinks || []).filter(
+                        (_, i) => i !== index,
+                      );
                       onCustomLinksChange?.(updated);
                     }}
                     className="text-[#525866] hover:text-red-500 transition-colors"
@@ -652,8 +659,18 @@ function SocialLinksSection({
                 <div className="flex flex-col gap-[4px]">
                   <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M6.66699 8.66699C6.95329 9.04972 7.31856 9.36642 7.73803 9.59559C8.15751 9.82476 8.62133 9.96105 9.09804 9.99512C9.57475 10.0292 10.0533 9.96029 10.501 9.79319C10.9488 9.62609 11.3555 9.36474 11.6937 9.02699L13.6937 7.02699C14.3009 6.3981 14.6369 5.55606 14.6293 4.68099C14.6216 3.80592 14.2709 2.96966 13.6527 2.35148C13.0345 1.73331 12.1983 1.38257 11.3232 1.37492C10.4481 1.36727 9.60607 1.7033 8.97699 2.31033L7.83366 3.44699" stroke="#525866" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M9.33347 7.33347C9.04717 6.95074 8.6819 6.63403 8.26243 6.40487C7.84295 6.1757 7.37913 6.0394 6.90242 6.00534C6.42571 5.97127 5.94716 6.04017 5.49943 6.20727C5.05169 6.37437 4.64497 6.63572 4.3068 6.97347L2.3068 8.97347C1.69977 9.60236 1.36374 10.4444 1.37139 11.3195C1.37904 12.1945 1.72977 13.0308 2.34795 13.649C2.96613 14.2671 3.80239 14.6179 4.67746 14.6255C5.55253 14.6332 6.39457 14.2971 7.02347 13.6901L8.16014 12.5535" stroke="#525866" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path
+                        d="M6.66699 8.66699C6.95329 9.04972 7.31856 9.36642 7.73803 9.59559C8.15751 9.82476 8.62133 9.96105 9.09804 9.99512C9.57475 10.0292 10.0533 9.96029 10.501 9.79319C10.9488 9.62609 11.3555 9.36474 11.6937 9.02699L13.6937 7.02699C14.3009 6.3981 14.6369 5.55606 14.6293 4.68099C14.6216 3.80592 14.2709 2.96966 13.6527 2.35148C13.0345 1.73331 12.1983 1.38257 11.3232 1.37492C10.4481 1.36727 9.60607 1.7033 8.97699 2.31033L7.83366 3.44699"
+                        stroke="#525866"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M9.33347 7.33347C9.04717 6.95074 8.6819 6.63403 8.26243 6.40487C7.84295 6.1757 7.37913 6.0394 6.90242 6.00534C6.42571 5.97127 5.94716 6.04017 5.49943 6.20727C5.05169 6.37437 4.64497 6.63572 4.3068 6.97347L2.3068 8.97347C1.69977 9.60236 1.36374 10.4444 1.37139 11.3195C1.37904 12.1945 1.72977 13.0308 2.34795 13.649C2.96613 14.2671 3.80239 14.6179 4.67746 14.6255C5.55253 14.6332 6.39457 14.2971 7.02347 13.6901L8.16014 12.5535"
+                        stroke="#525866"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                     <input
                       type="text"
@@ -661,7 +678,10 @@ function SocialLinksSection({
                       value={link.url}
                       onChange={(e) => {
                         const updated = [...(formData.customLinks || [])];
-                        updated[index] = { ...updated[index], url: e.target.value };
+                        updated[index] = {
+                          ...updated[index],
+                          url: e.target.value,
+                        };
                         onCustomLinksChange?.(updated);
                       }}
                       className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
@@ -680,7 +700,10 @@ function SocialLinksSection({
             <button
               type="button"
               onClick={() => {
-                const updated = [...(formData.customLinks || []), { name: "", url: "" }];
+                const updated = [
+                  ...(formData.customLinks || []),
+                  { name: "", url: "" },
+                ];
                 onCustomLinksChange?.(updated);
               }}
               className="flex items-center gap-2 text-[13px] font-normal text-[#5C30FF] font-inter-tight hover:opacity-80 transition-opacity"
@@ -717,13 +740,16 @@ export function EmployerEditProfile() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showDiscardModal, setShowDiscardModal] = useState(false);
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [linkErrors, setLinkErrors] = useState<Record<number, { name?: string; url?: string }>>({});
+  const [linkErrors, setLinkErrors] = useState<
+    Record<number, { name?: string; url?: string }>
+  >({});
   const queryClient = useQueryClient();
 
   // Fetch recruiter profile data with caching
@@ -752,10 +778,16 @@ export function EmployerEditProfile() {
   useEffect(() => {
     if (profileData) {
       const links = profileData.links || {};
-      const knownKeys = ['twitter', 'instagram', 'website', 'linkedin', 'linkedIn'];
+      const knownKeys = [
+        "twitter",
+        "instagram",
+        "website",
+        "linkedin",
+        "linkedIn",
+      ];
       const customLinks = Object.entries(links)
         .filter(([key]) => !knownKeys.includes(key))
-        .map(([key, value]) => ({ name: key, url: (value as string) || '' }));
+        .map(([key, value]) => ({ name: key, url: (value as string) || "" }));
       setFormData({
         personal: {
           profileImageUrl: profileData.profileImageUrl || "",
@@ -914,10 +946,16 @@ export function EmployerEditProfile() {
         const hasUrl = link.url.trim() !== "";
 
         if (hasUrl && !hasName) {
-          newErrors[index] = { ...newErrors[index], name: "Please provide a name" };
+          newErrors[index] = {
+            ...newErrors[index],
+            name: "Please provide a name",
+          };
         }
         if (hasName && !hasUrl) {
-          newErrors[index] = { ...newErrors[index], url: "Please provide a URL" };
+          newErrors[index] = {
+            ...newErrors[index],
+            url: "Please provide a URL",
+          };
         }
       });
 
@@ -941,7 +979,7 @@ export function EmployerEditProfile() {
       // Add custom links
       formData.social.customLinks?.forEach((link) => {
         if (link.name && link.url) {
-          links[link.name.toLowerCase().replace(/\s+/g, '_')] = link.url;
+          links[link.name.toLowerCase().replace(/\s+/g, "_")] = link.url;
         }
       });
 
@@ -959,7 +997,7 @@ export function EmployerEditProfile() {
       queryClient.invalidateQueries({ queryKey: ["profile", "recruiter"] });
       setModalMessage("Profile saved successfully!");
       setIsSuccess(true);
-      setModalOpen(true);
+      setShowSuccessModal(true);
       setHasUnsavedChanges(false);
     } catch (error) {
       console.error("Error saving profile:", error);
@@ -983,7 +1021,12 @@ export function EmployerEditProfile() {
       />
 
       <div className="flex-1 flex flex-col">
-        <EditProfileActionBar onSave={handleSaveProfile} isLoading={isSaving} hasUnsavedChanges={hasUnsavedChanges} onDiscard={handleDiscard} />
+        <EditProfileActionBar
+          onSave={handleSaveProfile}
+          isLoading={isSaving}
+          hasUnsavedChanges={hasUnsavedChanges}
+          onDiscard={handleDiscard}
+        />
 
         <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
@@ -1038,6 +1081,14 @@ export function EmployerEditProfile() {
         confirmText="Leave"
         cancelText="Stay"
         type="default"
+      />
+
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        title="Profile Updated!"
+        description="Your company profile has been saved successfully."
+        accentColor={ROLE_COLORS.recruiter.primary}
       />
 
       <Modal

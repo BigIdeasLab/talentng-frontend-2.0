@@ -64,7 +64,9 @@ export function DiscoverTalentClient({
             : category,
         skills: appliedFilters?.skills || [],
         location: appliedFilters?.location,
-        availability: appliedFilters?.availability,
+        availability: Array.isArray(appliedFilters?.availability)
+          ? appliedFilters.availability.join(",")
+          : undefined,
         sort,
         limit: LIMIT,
         offset: pageOffset,

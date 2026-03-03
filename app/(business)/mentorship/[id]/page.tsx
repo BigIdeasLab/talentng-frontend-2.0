@@ -20,6 +20,8 @@ import type {
 } from "@/lib/api/mentorship/types";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
+import { SuccessModal } from "@/components/ui/success-modal";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface AvailabilitySlot {
   date: string;
@@ -1213,7 +1215,6 @@ export default function MentorDetailPage() {
                         setSelectedTopic("");
                         setMessage("");
                         setShowSuccess(true);
-                        setTimeout(() => setShowSuccess(false), 3000);
                         getMyRequestsForMentor(mentorId)
                           .then((data) =>
                             setBookedSlots(data.bookedSlots || []),
@@ -1237,29 +1238,13 @@ export default function MentorDetailPage() {
         </div>
       )}
 
-      {/* Success Toast */}
-      {showSuccess && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-4 bg-[#00A859] text-white rounded-xl shadow-lg animate-in slide-in-from-bottom-5">
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M16.6667 5L7.50001 14.1667L3.33334 10"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span className="font-inter-tight text-[14px] font-medium">
-            Request sent successfully!
-          </span>
-        </div>
-      )}
+      <SuccessModal
+        isOpen={showSuccess}
+        onClose={() => setShowSuccess(false)}
+        title="Request Sent Successfully!"
+        description="Your mentorship booking request has been sent to the mentor. You'll be notified once they accept it."
+        accentColor={ROLE_COLORS.talent.primary}
+      />
     </div>
   );
 }

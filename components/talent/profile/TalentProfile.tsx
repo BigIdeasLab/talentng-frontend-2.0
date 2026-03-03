@@ -49,7 +49,7 @@ const DEFAULT_PROFILE_DATA: UIProfileData = {
     category: "",
     skills: [],
     stack: [],
-    availability: "",
+    availability: [],
   },
   gallery: [],
   experience: [],

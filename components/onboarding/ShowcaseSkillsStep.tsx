@@ -6,6 +6,79 @@ import { Input } from "@/components/ui/input";
 import { ProfileData, SkillsData } from "@/lib/types/onboarding";
 import categories from "@/lib/data/categories.json";
 
+const ALL_SKILLS = [
+  "UI Design",
+  "UX Design",
+  "Website Design",
+  "Interface Design",
+  "Interaction Design",
+  "Presentation Design",
+  "Graphic Design",
+  "Brand Identity",
+  "Illustration",
+  "Motion Graphics",
+  "Copywriting",
+  "Content Strategy",
+  "SEO",
+  "Social Media Management",
+  "Frontend Development",
+  "Backend Development",
+  "Fullstack Development",
+  "Mobile Development",
+  "iOS Development",
+  "Android Development",
+  "Cloud Computing",
+  "Data Science",
+  "Product Management",
+  "Project Management",
+  "Digital Marketing",
+  "Video Editing",
+  "3D Modeling",
+  "Animation",
+  "User Research",
+  "Usability Testing",
+];
+
+const ALL_STACK = [
+  "Figma",
+  "Rive",
+  "Webflow",
+  "Lottie",
+  "Framer",
+  "Adobe Photoshop",
+  "Adobe Illustrator",
+  "Adobe After Effects",
+  "Adobe Premiere Pro",
+  "Sketch",
+  "InVision",
+  "Zeplin",
+  "WordPress",
+  "Shopify",
+  "React",
+  "Next.js",
+  "Vue.js",
+  "Angular",
+  "Node.js",
+  "TypeScript",
+  "JavaScript",
+  "Python",
+  "Java",
+  "C++",
+  "C#",
+  "Swift",
+  "Kotlin",
+  "Flutter",
+  "React Native",
+  "AWS",
+  "Azure",
+  "Google Cloud",
+  "Jira",
+  "Slack",
+  "Trello",
+  "Docker",
+  "Kubernetes",
+];
+
 export const ShowcaseSkillsStep = ({
   onNext,
   onBack,
@@ -24,11 +97,14 @@ export const ShowcaseSkillsStep = ({
     headline: "",
     skills: [],
     stack: [],
-    portfolioLink: "",
+    availability: [],
   });
 
   const [skillInput, setSkillInput] = useState("");
   const [stackInput, setStackInput] = useState("");
+  const [showSkillSuggestions, setShowSkillSuggestions] = useState(false);
+  const [showStackSuggestions, setShowStackSuggestions] = useState(false);
+  const [availabilityInput, setAvailabilityInput] = useState("");
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [errors, setErrors] = useState<{
     category?: string;
@@ -51,9 +127,65 @@ export const ShowcaseSkillsStep = ({
     setFormData((prev) => ({ ...prev, category: e.target.value }));
   };
 
-  const handlePortfolioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({ ...prev, portfolioLink: e.target.value }));
+  const handleAddSkill = (skill: string) => {
+    const trimmedSkill = skill.trim();
+    if (
+      trimmedSkill &&
+      !formData.skills.includes(trimmedSkill) &&
+      formData.skills.length < 10
+    ) {
+      setFormData((prev) => ({
+        ...prev,
+        skills: [...prev.skills, trimmedSkill],
+      }));
+      setSkillInput("");
+      setShowSkillSuggestions(false);
+      setErrors((prev) => ({ ...prev, skills: "" }));
+    }
   };
+
+  const handleAddStack = (tool: string) => {
+    const trimmedTool = tool.trim();
+    if (
+      trimmedTool &&
+      !formData.stack.includes(trimmedTool) &&
+      formData.stack.length < 10
+    ) {
+      setFormData((prev) => ({
+        ...prev,
+        stack: [...prev.stack, trimmedTool],
+      }));
+      setStackInput("");
+      setShowStackSuggestions(false);
+      setErrors((prev) => ({ ...prev, stack: "" }));
+    }
+  };
+
+  const handleSkillKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddSkill(skillInput);
+    }
+  };
+
+  const handleStackKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddStack(stackInput);
+    }
+  };
+
+  const filteredSkills = ALL_SKILLS.filter(
+    (skill) =>
+      skill.toLowerCase().includes(skillInput.toLowerCase()) &&
+      !formData.skills.includes(skill),
+  );
+
+  const filteredStack = ALL_STACK.filter(
+    (tool) =>
+      tool.toLowerCase().includes(stackInput.toLowerCase()) &&
+      !formData.stack.includes(tool),
+  );
 
   const removeSkill = (index: number) => {
     setFormData((prev) => ({
@@ -66,6 +198,13 @@ export const ShowcaseSkillsStep = ({
     setFormData((prev) => ({
       ...prev,
       stack: prev.stack.filter((_, i) => i !== index),
+    }));
+  };
+
+  const removeAvailability = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      availability: prev.availability.filter((_, i) => i !== index),
     }));
   };
 
@@ -88,6 +227,10 @@ export const ShowcaseSkillsStep = ({
 
     if (formData.stack.length === 0) {
       newErrors.stack = "At least one tool/stack is required";
+    }
+
+    if (formData.availability.length === 0) {
+      (newErrors as any).availability = "At least one availability is required";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -161,7 +304,7 @@ export const ShowcaseSkillsStep = ({
               {/* Category Dropdown */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Choose a Category?
+                  Choose a Category? <span className="text-red-500">*</span>
                 </label>
                 <select
                   value={formData.category}
@@ -193,7 +336,7 @@ export const ShowcaseSkillsStep = ({
               {/* Headline */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  What do you do?
+                  What do you do? <span className="text-red-500">*</span>
                 </label>
                 <Input
                   type="text"
@@ -215,121 +358,121 @@ export const ShowcaseSkillsStep = ({
                 )}
               </div>
 
-              {/* Skills */}
+              {/* Availability */}
               <div className="flex flex-col gap-[13px]">
-                <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Your Skills
+                <label className="text-[15px] font-normal text-black font-[Inter_Tight] flex items-center gap-2">
+                  Availability <span className="text-red-500">*</span>
+                  <span className="text-[11px] text-[#99A0AE] font-light">
+                    (select multiple)
+                  </span>
                 </label>
                 <select
-                  value={skillInput}
+                  value={availabilityInput}
                   onChange={(e) => {
                     const value = e.target.value;
-                    if (
-                      value &&
-                      formData.skills.length < 5 &&
-                      !formData.skills.includes(value)
-                    ) {
+                    if (value && !formData.availability.includes(value)) {
                       setFormData((prev) => ({
                         ...prev,
-                        skills: [...prev.skills, value],
+                        availability: [...prev.availability, value],
                       }));
-                      setSkillInput("");
-                      setErrors((prev) => ({ ...prev, skills: "" }));
+                      setAvailabilityInput("");
+                      setErrors(
+                        (prev) => ({ ...prev, availability: "" }) as any,
+                      );
                     }
                   }}
-                  disabled={formData.skills.length >= 5}
-                  className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight]  text-[#99A0AE] focus:ring-2 focus:ring-purple-600 focus:outline-none ${
-                    errors.skills ? "ring-2 ring-red-500" : ""
-                  } ${formData.skills.length >= 5 ? "opacity-50 cursor-not-allowed disabled:opacity-50" : ""}`}
+                  className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight] text-[#99A0AE] focus:ring-2 focus:ring-purple-600 focus:outline-none ${
+                    (errors as any).availability ? "ring-2 ring-red-500" : ""
+                  }`}
                 >
                   <option value="" className="text-[#99A0AE]">
-                    Choose Skills
+                    Select one or more options...
                   </option>
-                  <option
-                    value="UI Design"
-                    disabled={formData.skills.includes("UI Design")}
-                    style={
-                      formData.skills.includes("UI Design")
-                        ? { color: "#999999" }
-                        : {}
-                    }
-                    className="text-black"
-                  >
-                    {formData.skills.includes("UI Design")
-                      ? "✓ UI Design"
-                      : "UI Design"}
-                  </option>
-                  <option
-                    value="UX Design"
-                    disabled={formData.skills.includes("UX Design")}
-                    style={
-                      formData.skills.includes("UX Design")
-                        ? { color: "#999999" }
-                        : {}
-                    }
-                    className="text-black"
-                  >
-                    {formData.skills.includes("UX Design")
-                      ? "✓ UX Design"
-                      : "UX Design"}
-                  </option>
-                  <option
-                    value="Website Design"
-                    disabled={formData.skills.includes("Website Design")}
-                    style={
-                      formData.skills.includes("Website Design")
-                        ? { color: "#999999" }
-                        : {}
-                    }
-                    className="text-black"
-                  >
-                    {formData.skills.includes("Website Design")
-                      ? "✓ Website Design"
-                      : "Website Design"}
-                  </option>
-                  <option
-                    value="Interface Design"
-                    disabled={formData.skills.includes("Interface Design")}
-                    style={
-                      formData.skills.includes("Interface Design")
-                        ? { color: "#999999" }
-                        : {}
-                    }
-                    className="text-black"
-                  >
-                    {formData.skills.includes("Interface Design")
-                      ? "✓ Interface Design"
-                      : "Interface Design"}
-                  </option>
-                  <option
-                    value="Interaction Design"
-                    disabled={formData.skills.includes("Interaction Design")}
-                    style={
-                      formData.skills.includes("Interaction Design")
-                        ? { color: "#999999" }
-                        : {}
-                    }
-                    className="text-black"
-                  >
-                    {formData.skills.includes("Interaction Design")
-                      ? "✓ Interaction Design"
-                      : "Interaction Design"}
-                  </option>
-                  <option
-                    value="Presentation Design"
-                    disabled={formData.skills.includes("Presentation Design")}
-                    style={
-                      formData.skills.includes("Presentation Design")
-                        ? { color: "#999999" }
-                        : {}
-                    }
-                    className="text-black"
-                  >
-                    {formData.skills.includes("Presentation Design")
-                      ? "✓ Presentation Design"
-                      : "Presentation Design"}
-                  </option>
+                  {["Full-time", "Part-time", "Contract", "Freelance"].map(
+                    (opt) => (
+                      <option
+                        key={opt}
+                        value={opt}
+                        disabled={formData.availability.includes(opt)}
+                        className="text-black"
+                      >
+                        {formData.availability.includes(opt) ? `✓ ${opt}` : opt}
+                      </option>
+                    ),
+                  )}
                 </select>
+                {/* Selected Availability */}
+                {formData.availability.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {formData.availability.map((opt, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 bg-[#F5F5F5] px-3 py-2 rounded-full text-sm font-[Inter_Tight]"
+                      >
+                        <span>{opt}</span>
+                        <button
+                          type="button"
+                          onClick={() => removeAvailability(index)}
+                          className="text-gray-500 hover:text-gray-700"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {(errors as any).availability && (
+                  <span className="text-xs text-red-600">
+                    {(errors as any).availability}
+                  </span>
+                )}
+              </div>
+
+              {/* Skills */}
+              <div className="flex flex-col gap-[13px]">
+                <label className="text-[15px] font-normal text-black font-[Inter_Tight] flex items-center gap-2">
+                  Your Skills <span className="text-red-500">*</span>
+                  <span className="text-[11px] text-[#99A0AE] font-light">
+                    (select multiple)
+                  </span>
+                </label>
+                <div className="relative">
+                  <Input
+                    type="text"
+                    value={skillInput}
+                    onChange={(e) => {
+                      setSkillInput(e.target.value);
+                      setShowSkillSuggestions(e.target.value.length > 0);
+                    }}
+                    onFocus={() =>
+                      setShowSkillSuggestions(skillInput.length > 0)
+                    }
+                    onBlur={() =>
+                      setTimeout(() => setShowSkillSuggestions(false), 200)
+                    }
+                    onKeyDown={handleSkillKeyDown}
+                    placeholder="Type a skill and press Enter..."
+                    disabled={formData.skills.length >= 10}
+                    className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] ${
+                      errors.skills ? "ring-2 ring-red-500" : ""
+                    } ${formData.skills.length >= 10 ? "opacity-50 cursor-not-allowed" : ""}`}
+                  />
+                  {showSkillSuggestions && filteredSkills.length > 0 && (
+                    <div className="absolute z-10 top-full left-0 right-0 mt-1 bg-white border border-[#E1E4EA] rounded-[10px] shadow-lg max-h-[200px] overflow-y-auto scrollbar-hidden">
+                      {filteredSkills.map((skill) => (
+                        <button
+                          key={skill}
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => handleAddSkill(skill)}
+                          className="w-full text-left px-[15px] py-[12px] text-[15px] font-[Inter_Tight] text-black hover:bg-[#F5F5F5] transition-colors"
+                        >
+                          {skill}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 {/* Selected Skills */}
                 {formData.skills.length > 0 && (
                   <div className="flex flex-wrap gap-2">
@@ -357,97 +500,49 @@ export const ShowcaseSkillsStep = ({
 
               {/* Tech Stack */}
               <div className="flex flex-col gap-[13px]">
-                <label className="text-[15px] font-normal  text-black font-[Inter_Tight]">
-                  Your Stack
+                <label className="text-[15px] font-normal text-black font-[Inter_Tight] flex items-center gap-2">
+                  Your Stack <span className="text-red-500">*</span>
+                  <span className="text-[11px] text-[#99A0AE] font-light">
+                    (select multiple)
+                  </span>
                 </label>
-                <select
-                  value={stackInput}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (
-                      value &&
-                      formData.stack.length < 6 &&
-                      !formData.stack.includes(value)
-                    ) {
-                      setFormData((prev) => ({
-                        ...prev,
-                        stack: [...prev.stack, value],
-                      }));
-                      setStackInput("");
-                      setErrors((prev) => ({ ...prev, stack: "" }));
+                <div className="relative">
+                  <Input
+                    type="text"
+                    value={stackInput}
+                    onChange={(e) => {
+                      setStackInput(e.target.value);
+                      setShowStackSuggestions(e.target.value.length > 0);
+                    }}
+                    onFocus={() =>
+                      setShowStackSuggestions(stackInput.length > 0)
                     }
-                  }}
-                  disabled={formData.stack.length >= 6}
-                  className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight]  text-[#99A0AE] focus:ring-2 focus:ring-purple-600 focus:outline-none ${
-                    errors.stack ? "ring-2 ring-red-500" : ""
-                  } ${formData.stack.length >= 6 ? "opacity-50 cursor-not-allowed disabled:opacity-50" : ""}`}
-                >
-                  <option value="" className="text-[#99A0AE]">
-                    Choose Tools
-                  </option>
-                  <option
-                    value="Figma"
-                    disabled={formData.stack.includes("Figma")}
-                    style={
-                      formData.stack.includes("Figma")
-                        ? { color: "#999999" }
-                        : {}
+                    onBlur={() =>
+                      setTimeout(() => setShowStackSuggestions(false), 200)
                     }
-                    className="text-black"
-                  >
-                    {formData.stack.includes("Figma") ? "✓ Figma" : "Figma"}
-                  </option>
-                  <option
-                    value="Rive"
-                    disabled={formData.stack.includes("Rive")}
-                    style={
-                      formData.stack.includes("Rive")
-                        ? { color: "#999999" }
-                        : {}
-                    }
-                    className="text-black"
-                  >
-                    {formData.stack.includes("Rive") ? "✓ Rive" : "Rive"}
-                  </option>
-                  <option
-                    value="Webflow"
-                    disabled={formData.stack.includes("Webflow")}
-                    style={
-                      formData.stack.includes("Webflow")
-                        ? { color: "#999999" }
-                        : {}
-                    }
-                    className="text-black"
-                  >
-                    {formData.stack.includes("Webflow")
-                      ? "✓ Webflow"
-                      : "Webflow"}
-                  </option>
-                  <option
-                    value="Lottie"
-                    disabled={formData.stack.includes("Lottie")}
-                    style={
-                      formData.stack.includes("Lottie")
-                        ? { color: "#999999" }
-                        : {}
-                    }
-                    className="text-black"
-                  >
-                    {formData.stack.includes("Lottie") ? "✓ Lottie" : "Lottie"}
-                  </option>
-                  <option
-                    value="Framer"
-                    disabled={formData.stack.includes("Framer")}
-                    style={
-                      formData.stack.includes("Framer")
-                        ? { color: "#999999" }
-                        : {}
-                    }
-                    className="text-black"
-                  >
-                    {formData.stack.includes("Framer") ? "✓ Framer" : "Framer"}
-                  </option>
-                </select>
+                    onKeyDown={handleStackKeyDown}
+                    placeholder="Type a tool name and press Enter..."
+                    disabled={formData.stack.length >= 10}
+                    className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] ${
+                      errors.stack ? "ring-2 ring-red-500" : ""
+                    } ${formData.stack.length >= 10 ? "opacity-50 cursor-not-allowed" : ""}`}
+                  />
+                  {showStackSuggestions && filteredStack.length > 0 && (
+                    <div className="absolute z-10 top-full left-0 right-0 mt-1 bg-white border border-[#E1E4EA] rounded-[10px] shadow-lg max-h-[200px] overflow-y-auto scrollbar-hidden">
+                      {filteredStack.map((tool) => (
+                        <button
+                          key={tool}
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => handleAddStack(tool)}
+                          className="w-full text-left px-[15px] py-[12px] text-[15px] font-[Inter_Tight] text-black hover:bg-[#F5F5F5] transition-colors"
+                        >
+                          {tool}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 {/* Selected Stack */}
                 {formData.stack.length > 0 && (
                   <div className="flex flex-wrap gap-2">
@@ -471,20 +566,6 @@ export const ShowcaseSkillsStep = ({
                 {errors.stack && (
                   <span className="text-xs text-red-600">{errors.stack}</span>
                 )}
-              </div>
-
-              {/* Portfolio Link */}
-              <div className="flex flex-col gap-[13px]">
-                <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Portfolio Link
-                </label>
-                <Input
-                  type="url"
-                  value={formData.portfolioLink}
-                  onChange={handlePortfolioChange}
-                  placeholder="Paste your website link"
-                  className="h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px]"
-                />
               </div>
             </form>
           </div>

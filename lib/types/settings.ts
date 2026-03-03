@@ -8,7 +8,7 @@ export interface ProfileSettings {
   visibility: "public" | "private";
   location: string;
   category: string;
-  availability: "full-time" | "part-time" | "contract";
+  availability: ("full-time" | "part-time" | "contract")[];
 }
 
 export interface NotificationSettings {

@@ -71,7 +71,10 @@ export function MentorProfile({
     "telegram",
   ];
   const customLinks = Object.entries(profileData.links || {})
-    .filter(([key]) => !standardKeys.map((k) => k.toLowerCase()).includes(key.toLowerCase()))
+    .filter(
+      ([key]) =>
+        !standardKeys.map((k) => k.toLowerCase()).includes(key.toLowerCase()),
+    )
     .map(([key, value]) => ({
       name: key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
       url: value as string,

@@ -29,7 +29,7 @@ export interface TalentFilterParams {
   category?: string;
   skills?: string;
   location?: string;
-  availability?: string;
+  availability?: string; // comma-separated for multi-value filter
   limit?: number;
   offset?: number;
 }
@@ -65,7 +65,7 @@ export interface TalentProfile {
   skills: string[];
   stack: StackItem[] | string[];
   location: string | null;
-  availability: string | null;
+  availability: string[];
   phoneNumber: string | null;
   category: string | null;
   company: string | null;
@@ -170,7 +170,7 @@ export interface APIProfileData {
   };
   company?: string;
   category?: string;
-  availability?: string;
+  availability?: string[];
   description?: string;
   visibility?: "public" | "private";
   isFeatured?: boolean;

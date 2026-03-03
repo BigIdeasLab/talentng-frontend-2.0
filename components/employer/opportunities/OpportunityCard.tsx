@@ -11,6 +11,7 @@ import {
 } from "@/hooks/useRecruiterOpportunities";
 import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
 import { useToast } from "@/hooks";
+import { SuccessModal } from "@/components/ui/success-modal";
 import { type Application } from "@/lib/api/applications/types";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
@@ -34,6 +35,11 @@ export function OpportunityCard({
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showReopenModal, setShowReopenModal] = useState(false);
+  const [showSuccess, setShowSuccess] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+  }>({ isOpen: false, title: "", description: "" });
 
   const deleteMutation = useDeleteOpportunity();
   const updateMutation = useUpdateOpportunity();
@@ -68,9 +74,11 @@ export function OpportunityCard({
     try {
       await postMutation.mutateAsync(opportunity.id);
       setShowModal(false);
-      toast({
-        title: "Success",
-        description: "Opportunity posted successfully",
+      setShowSuccess({
+        isOpen: true,
+        title: "Opportunity Posted!",
+        description:
+          "Your opportunity is now live and talents can start applying.",
       });
       onMutationSuccess?.();
     } catch (error) {
@@ -89,9 +97,10 @@ export function OpportunityCard({
     try {
       await deleteMutation.mutateAsync(opportunity.id);
       setShowDeleteModal(false);
-      toast({
-        title: "Success",
-        description: "Opportunity deleted successfully",
+      setShowSuccess({
+        isOpen: true,
+        title: "Opportunity Deleted",
+        description: "The opportunity has been permanently deleted.",
       });
       onMutationSuccess?.();
     } catch (error) {
@@ -112,9 +121,12 @@ export function OpportunityCard({
     try {
       const response = await reopenMutation.mutateAsync(opportunity.id);
       setShowReopenModal(false);
-      toast({
-        title: "Success",
-        description: response.message || "Opportunity reopened successfully",
+      setShowSuccess({
+        isOpen: true,
+        title: "Opportunity Reopened!",
+        description:
+          response.message ||
+          "Your opportunity is now accepting new applications.",
       });
       onMutationSuccess?.();
       if (hadCap) {
@@ -249,9 +261,11 @@ export function OpportunityCard({
           id: opportunity.id,
           data: { status: "closed" },
         });
-        toast({
-          title: "Success",
-          description: "Opportunity marked as filled",
+        setShowSuccess({
+          isOpen: true,
+          title: "Marked as Filled!",
+          description:
+            "This opportunity is now closed and no longer accepting applications.",
         });
         onMutationSuccess?.();
       } catch (error) {
@@ -702,6 +716,15 @@ export function OpportunityCard({
           }
         />
       )}
+
+      {/* Success Modal */}
+      <SuccessModal
+        isOpen={showSuccess.isOpen}
+        onClose={() => setShowSuccess((s) => ({ ...s, isOpen: false }))}
+        title={showSuccess.title}
+        description={showSuccess.description}
+        accentColor={ROLE_COLORS.recruiter.primary}
+      />
     </div>
   );
 }

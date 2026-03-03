@@ -100,7 +100,7 @@ export function DiscoverTalentHeader({
       count += appliedFilters.categories.length;
     if (appliedFilters.skills.length > 0) count += appliedFilters.skills.length;
     if (appliedFilters.location) count += 1;
-    if (appliedFilters.availability !== "All") count += 1;
+    if (appliedFilters.availability.length > 0) count += 1;
     return count;
   };
 

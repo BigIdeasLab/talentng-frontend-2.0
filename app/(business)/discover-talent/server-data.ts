@@ -23,7 +23,7 @@ export interface TalentData {
   gallery: string[];
   skills: string[];
   stack: string[];
-  availability: string;
+  availability: string[];
   category: string;
   createdAt: string;
 }
@@ -59,7 +59,11 @@ const mapTalentToUI = (profile: TalentProfile, index: number): TalentData => {
     skills: profile.skills || [],
     stack:
       profile.stack?.map((s) => (typeof s === "string" ? s : s.name)) || [],
-    availability: profile.availability || "",
+    availability: Array.isArray(profile.availability)
+      ? profile.availability
+      : profile.availability
+        ? [profile.availability]
+        : [],
     category: profile.category || "",
     createdAt: profile.createdAt || new Date().toISOString(),
   };

@@ -110,7 +110,7 @@ export const dummyAPIProfileData: APIProfileData = {
   },
   company: "Innovate Design Studio",
   category: "Lead Product Designer",
-  availability: "Available - Freelance/Contract",
+  availability: ["Freelance", "Contract"],
   description:
     "Senior UI/UX Designer with expertise in designing scalable design systems and leading cross-functional teams. Passionate about accessibility, user research, and creating products that users love. I've led design initiatives from concept to launch, resulting in improved user engagement and retention metrics.",
 };

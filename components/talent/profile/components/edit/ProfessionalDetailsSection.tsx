@@ -19,14 +19,14 @@ interface ProfessionalData {
   category: string;
   skills: string[];
   stack: StackTool[];
-  availability: string;
+  availability: string[];
 }
 
 interface ProfessionalDetailsSectionProps {
   isOpen: boolean;
   onToggle: () => void;
   formData: ProfessionalData;
-  onInputChange: (field: string, value: string) => void;
+  onInputChange: (field: string, value: string | string[]) => void;
   onAddSkill: (skill: string) => void;
   onRemoveSkill: (index: number) => void;
   onAddStack: (tool: StackTool) => void;
@@ -53,8 +53,11 @@ export function ProfessionalDetailsSection({
 }: ProfessionalDetailsSectionProps) {
   const [skillsInput, setSkillsInput] = useState("");
   const [stackInput, setStackInput] = useState("");
+  const [availabilityInput, setAvailabilityInput] = useState("");
   const [showSkillsDropdown, setShowSkillsDropdown] = useState(false);
   const [showStackDropdown, setShowStackDropdown] = useState(false);
+  const [showAvailabilityDropdown, setShowAvailabilityDropdown] =
+    useState(false);
 
   const handleAddSkill = (skill: string) => {
     const trimmedSkill = skill.trim();
@@ -102,6 +105,18 @@ export function ProfessionalDetailsSection({
       tool.name.toLowerCase().includes(stackInput.toLowerCase()) &&
       !formData.stack.some((s) => s.name === tool.name),
   );
+
+  const availabilityOptions = [
+    "Full-time",
+    "Part-time",
+    "Contract",
+    "Freelance",
+  ];
+  const filteredAvailability = availabilityOptions.filter(
+    (option) =>
+      option.toLowerCase().includes(availabilityInput.toLowerCase()) &&
+      !formData.availability.includes(option),
+  );
   return (
     <div
       ref={sectionRef}
@@ -120,7 +135,7 @@ export function ProfessionalDetailsSection({
             {/* Headline */}
             <div className="flex flex-col gap-[10px]">
               <label className="text-[13px] font-normal text-black font-inter-tight">
-                Headline
+                Headline <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -134,7 +149,7 @@ export function ProfessionalDetailsSection({
             {/* Category */}
             <div className="flex flex-col gap-[10px]">
               <label className="text-[13px] font-normal text-black font-inter-tight">
-                Category
+                Category <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -147,22 +162,76 @@ export function ProfessionalDetailsSection({
 
             {/* Availability */}
             <div className="flex flex-col gap-[10px]">
-              <label className="text-[13px] font-normal text-black font-inter-tight">
-                Availability
+              <label className="text-[13px] font-normal text-black font-inter-tight flex items-center gap-2">
+                Availability <span className="text-red-500">*</span>
+                <span className="text-[10px] text-[#99A0AE] font-light">
+                  (select multiple)
+                </span>
               </label>
-              <input
-                type="text"
-                value={formData.availability}
-                onChange={(e) => onInputChange("availability", e.target.value)}
-                placeholder="e.g., Available - Freelance/Contract"
-                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  value={availabilityInput}
+                  onChange={(e) => {
+                    setAvailabilityInput(e.target.value);
+                    setShowAvailabilityDropdown(e.target.value.length > 0);
+                  }}
+                  onFocus={() => setShowAvailabilityDropdown(true)}
+                  onBlur={() =>
+                    setTimeout(() => setShowAvailabilityDropdown(false), 200)
+                  }
+                  placeholder="Select availability..."
+                  className="w-full px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                />
+                {showAvailabilityDropdown &&
+                  filteredAvailability.length > 0 && (
+                    <div className="absolute z-10 top-full left-0 right-0 mt-1 bg-white border border-[#E1E4EA] rounded-[8px] shadow-lg max-h-[200px] overflow-y-auto">
+                      {filteredAvailability.map((option) => (
+                        <button
+                          key={option}
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => {
+                            onInputChange("availability", [
+                              ...formData.availability,
+                              option,
+                            ]);
+                            setAvailabilityInput("");
+                            setShowAvailabilityDropdown(false);
+                          }}
+                          className="w-full text-left px-3 py-2 text-[13px] font-inter-tight text-black hover:bg-[#F5F5F5] transition-colors"
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+              </div>
+              {formData.availability.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {formData.availability.map((option, index) => (
+                    <SkillTag
+                      key={option}
+                      skill={option}
+                      onRemove={() => {
+                        const updated = formData.availability.filter(
+                          (_, i) => i !== index,
+                        );
+                        onInputChange("availability", updated);
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Skills */}
             <div className="flex flex-col gap-[10px]">
-              <label className="text-[13px] font-normal text-black font-inter-tight">
-                Skills
+              <label className="text-[13px] font-normal text-black font-inter-tight flex items-center gap-2">
+                Skills <span className="text-red-500">*</span>
+                <span className="text-[10px] text-[#99A0AE] font-light">
+                  (select multiple)
+                </span>
               </label>
               <div className="relative">
                 <input
@@ -211,8 +280,11 @@ export function ProfessionalDetailsSection({
 
             {/* Stack / Tools */}
             <div className="flex flex-col gap-[10px]">
-              <label className="text-[13px] font-normal text-black font-inter-tight">
-                Stack / Tools
+              <label className="text-[13px] font-normal text-black font-inter-tight flex items-center gap-2">
+                Stack / Tools <span className="text-red-500">*</span>
+                <span className="text-[10px] text-[#99A0AE] font-light">
+                  (select multiple)
+                </span>
               </label>
               <div className="relative">
                 <input

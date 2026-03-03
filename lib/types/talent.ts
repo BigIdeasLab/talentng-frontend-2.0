@@ -27,7 +27,7 @@ export interface Talent {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
-  availability: string | null;
+  availability: string[];
   category: string | null;
   phoneNumber: string | null;
   user: {

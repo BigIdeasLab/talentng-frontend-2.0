@@ -277,7 +277,7 @@ export const CreateProfileStep = ({
               {/* First Name */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  First Name
+                  First Name <span className="text-red-500">*</span>
                 </label>
                 <Input
                   name="firstName"
@@ -298,7 +298,7 @@ export const CreateProfileStep = ({
               {/* Last Name */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Last Name
+                  Last Name <span className="text-red-500">*</span>
                 </label>
                 <Input
                   name="lastName"
@@ -320,7 +320,7 @@ export const CreateProfileStep = ({
               {!isAddingRole && (
                 <div className="flex flex-col gap-[13px]">
                   <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                    Username
+                    Username <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <Input
@@ -402,7 +402,7 @@ export const CreateProfileStep = ({
               <div className="flex gap-[13px]">
                 <div className="flex-1 flex flex-col gap-[13px]">
                   <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                    State
+                    State <span className="text-red-500">*</span>
                   </label>
                   <select
                     value={formData.state}
@@ -426,7 +426,7 @@ export const CreateProfileStep = ({
 
                 <div className="flex-1 flex flex-col gap-[13px]">
                   <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                    City
+                    City <span className="text-red-500">*</span>
                   </label>
                   <select
                     value={formData.city}

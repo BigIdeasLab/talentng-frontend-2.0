@@ -36,7 +36,7 @@ export type TalentProfile = {
   duration: string | null;
   description: string | null;
 
-  availability: string | null;
+  availability: string[];
   location: string | null;
 
   links: {

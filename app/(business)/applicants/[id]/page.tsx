@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
 import { useToast } from "@/hooks";
+import { SuccessModal } from "@/components/ui/success-modal";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { ScheduleInterviewModal } from "@/components/employer/applicants/ScheduleInterviewModal";
 import { DeclineApplicationModal } from "@/components/employer/applicants/DeclineApplicationModal";
 import { HireApplicationModal } from "@/components/employer/applicants/HireApplicationModal";
@@ -54,6 +56,16 @@ export default function ApplicantProposalPage() {
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [selectedInterview, setSelectedInterview] =
     useState<ApplicationInterview | null>(null);
+  const [successModal, setSuccessModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+    onClose?: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    description: "",
+  });
   const {
     data: applicantData,
     isLoading,
@@ -84,12 +96,12 @@ export default function ApplicantProposalPage() {
         applicationId,
         status: "hired",
       });
-      toast({
-        title: "Success",
-        description: "Talent has been hired successfully",
-        variant: "default",
+      setSuccessModal({
+        isOpen: true,
+        title: "Hired Successfully!",
+        description: `${applicant?.user.talentProfile.fullName} has been hired successfully.`,
+        onClose: () => router.push("/applicants"),
       });
-      router.push("/applicants");
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to hire talent";
@@ -111,12 +123,12 @@ export default function ApplicantProposalPage() {
         applicationId,
         status: "rejected",
       });
-      toast({
-        title: "Success",
-        description: "Application has been declined",
-        variant: "default",
+      setSuccessModal({
+        isOpen: true,
+        title: "Application Declined",
+        description: "The application has been declined successfully.",
+        onClose: () => router.push("/applicants"),
       });
-      router.push("/applicants");
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to decline application";
@@ -146,10 +158,11 @@ export default function ApplicantProposalPage() {
         },
       });
 
-      toast({
-        title: "Success",
-        description: "Interview has been scheduled",
-        variant: "default",
+      setSuccessModal({
+        isOpen: true,
+        title: "Interview Scheduled",
+        description: `An interview has been scheduled with ${applicant?.user.talentProfile.fullName}.`,
+        onClose: () => setIsScheduleModalOpen(false),
       });
     } catch (err) {
       let errorMessage =
@@ -188,10 +201,11 @@ export default function ApplicantProposalPage() {
           meetingLink,
         },
       });
-      toast({
-        title: "Success",
-        description: "Interview has been rescheduled",
-        variant: "default",
+      setSuccessModal({
+        isOpen: true,
+        title: "Interview Rescheduled",
+        description: "The interview has been rescheduled successfully.",
+        onClose: () => setIsRescheduleModalOpen(false),
       });
     } catch (err) {
       let errorMessage =
@@ -224,10 +238,12 @@ export default function ApplicantProposalPage() {
         interviewId,
         reason,
       });
-      toast({
-        title: "Success",
-        description: "Interview has been cancelled and talent notified",
-        variant: "default",
+      setSuccessModal({
+        isOpen: true,
+        title: "Interview Cancelled",
+        description:
+          "The interview has been cancelled and the talent notified.",
+        onClose: () => setIsCancelModalOpen(false),
       });
     } catch (err) {
       let errorMessage =
@@ -259,10 +275,10 @@ export default function ApplicantProposalPage() {
         interviewId,
         input: {},
       });
-      toast({
-        title: "Success",
-        description: "Interview marked as completed",
-        variant: "default",
+      setSuccessModal({
+        isOpen: true,
+        title: "Interview Completed",
+        description: "The interview has been marked as completed.",
       });
     } catch (err) {
       let errorMessage =
@@ -1127,6 +1143,16 @@ export default function ApplicantProposalPage() {
           )}
         </>
       )}
+      <SuccessModal
+        isOpen={successModal.isOpen}
+        onClose={() => {
+          setSuccessModal((prev) => ({ ...prev, isOpen: false }));
+          successModal.onClose?.();
+        }}
+        title={successModal.title}
+        description={successModal.description}
+        accentColor={ROLE_COLORS.recruiter.primary}
+      />
     </div>
   );
 }

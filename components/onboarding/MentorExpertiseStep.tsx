@@ -43,6 +43,20 @@ const expertiseOptions = [
   "Technical Writing",
   "Cloud Architecture",
   "Database Design",
+  "Emotional Intelligence",
+  "Career Development",
+  "Public Speaking",
+  "Conflict Resolution",
+  "Remote Team Management",
+  "Diversity & Inclusion",
+  "Mental Health",
+  "Financial Literacy",
+  "Entrepreneurship",
+  "Sales Strategy",
+  "Marketing Analytics",
+  "System Architecture",
+  "DevOps",
+  "Cybersecurity",
 ];
 
 const stackOptions = [
@@ -60,6 +74,33 @@ const stackOptions = [
   "PostgreSQL",
   "TypeScript",
   "Next.js",
+  "Rive",
+  "Webflow",
+  "Lottie",
+  "Framer",
+  "Adobe Photoshop",
+  "Adobe Illustrator",
+  "Adobe After Effects",
+  "Adobe Premiere Pro",
+  "Sketch",
+  "InVision",
+  "Zeplin",
+  "WordPress",
+  "Shopify",
+  "Vue.js",
+  "Angular",
+  "Java",
+  "C++",
+  "C#",
+  "Swift",
+  "Kotlin",
+  "Flutter",
+  "React Native",
+  "Azure",
+  "Google Cloud",
+  "Jira",
+  "Slack",
+  "Trello",
 ];
 
 const languagesOptions = [
@@ -111,6 +152,12 @@ export const MentorExpertiseStep = ({
     category: "",
   });
 
+  const [expertiseInput, setExpertiseInput] = useState("");
+  const [stackInput, setStackInput] = useState("");
+  const [showExpertiseSuggestions, setShowExpertiseSuggestions] =
+    useState(false);
+  const [showStackSuggestions, setShowStackSuggestions] = useState(false);
+
   const [errors, setErrors] = useState<{
     industries?: string;
     headline?: string;
@@ -148,6 +195,66 @@ export const MentorExpertiseStep = ({
     setFormData((prev) => ({ ...prev, headline: e.target.value }));
     setErrors((prev) => ({ ...prev, headline: "" }));
   };
+
+  const handleAddExpertise = (val: string) => {
+    const trimmed = val.trim();
+    if (
+      trimmed &&
+      !formData.expertise.includes(trimmed) &&
+      formData.expertise.length < 10
+    ) {
+      setFormData((prev) => ({
+        ...prev,
+        expertise: [...prev.expertise, trimmed],
+      }));
+      setExpertiseInput("");
+      setShowExpertiseSuggestions(false);
+      setErrors((prev) => ({ ...prev, expertise: "" }));
+    }
+  };
+
+  const handleAddStack = (val: string) => {
+    const trimmed = val.trim();
+    if (
+      trimmed &&
+      !formData.stack.includes(trimmed) &&
+      formData.stack.length < 10
+    ) {
+      setFormData((prev) => ({
+        ...prev,
+        stack: [...prev.stack, trimmed],
+      }));
+      setStackInput("");
+      setShowStackSuggestions(false);
+      setErrors((prev) => ({ ...prev, stack: "" }));
+    }
+  };
+
+  const handleExpertiseKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddExpertise(expertiseInput);
+    }
+  };
+
+  const handleStackKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddStack(stackInput);
+    }
+  };
+
+  const filteredExpertise = expertiseOptions.filter(
+    (exp) =>
+      exp.toLowerCase().includes(expertiseInput.toLowerCase()) &&
+      !formData.expertise.includes(exp),
+  );
+
+  const filteredStack = stackOptions.filter(
+    (tool) =>
+      tool.toLowerCase().includes(stackInput.toLowerCase()) &&
+      !formData.stack.includes(tool),
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -242,7 +349,7 @@ export const MentorExpertiseStep = ({
               {/* Industries */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Industries
+                  Industries <span className="text-red-500">*</span>
                 </label>
                 <select
                   onChange={(e) => handleAddItem("industries", e.target.value)}
@@ -291,7 +398,7 @@ export const MentorExpertiseStep = ({
               {/* Category */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Category
+                  Category <span className="text-red-500">*</span>
                 </label>
                 <select
                   onChange={(e) =>
@@ -322,7 +429,7 @@ export const MentorExpertiseStep = ({
               {/* Professional Headline */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Professional Headline
+                  Professional Headline <span className="text-red-500">*</span>
                 </label>
                 <Input
                   type="text"
@@ -343,26 +450,45 @@ export const MentorExpertiseStep = ({
               {/* Expertise/Skills */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Areas of Expertise
+                  Areas of Expertise <span className="text-red-500">*</span>
                 </label>
-                <select
-                  onChange={(e) => handleAddItem("expertise", e.target.value)}
-                  value=""
-                  className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight] text-[#99A0AE] focus:ring-2 focus:ring-purple-600 focus:outline-none ${
-                    errors.expertise ? "ring-2 ring-red-500" : ""
-                  }`}
-                >
-                  <option value="">Select Expertise</option>
-                  {expertiseOptions.map((exp) => (
-                    <option
-                      key={exp}
-                      value={exp}
-                      disabled={formData.expertise.includes(exp)}
-                    >
-                      {exp}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <Input
+                    type="text"
+                    value={expertiseInput}
+                    onChange={(e) => {
+                      setExpertiseInput(e.target.value);
+                      setShowExpertiseSuggestions(e.target.value.length > 0);
+                    }}
+                    onFocus={() =>
+                      setShowExpertiseSuggestions(expertiseInput.length > 0)
+                    }
+                    onBlur={() =>
+                      setTimeout(() => setShowExpertiseSuggestions(false), 200)
+                    }
+                    onKeyDown={handleExpertiseKeyDown}
+                    placeholder="Type an expertise and press Enter..."
+                    disabled={formData.expertise.length >= 10}
+                    className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] ${
+                      errors.expertise ? "ring-2 ring-red-500" : ""
+                    } ${formData.expertise.length >= 10 ? "opacity-50 cursor-not-allowed" : ""}`}
+                  />
+                  {showExpertiseSuggestions && filteredExpertise.length > 0 && (
+                    <div className="absolute z-10 top-full left-0 right-0 mt-1 bg-white border border-[#E1E4EA] rounded-[10px] shadow-lg max-h-[200px] overflow-y-auto scrollbar-hidden">
+                      {filteredExpertise.map((exp) => (
+                        <button
+                          key={exp}
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => handleAddExpertise(exp)}
+                          className="w-full text-left px-[15px] py-[12px] text-[15px] font-[Inter_Tight] text-black hover:bg-[#F5F5F5] transition-colors"
+                        >
+                          {exp}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 {formData.expertise.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {formData.expertise.map((exp, index) => (
@@ -392,26 +518,45 @@ export const MentorExpertiseStep = ({
               {/* Tech Stack */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Technology Stack
+                  Technology Stack <span className="text-red-500">*</span>
                 </label>
-                <select
-                  onChange={(e) => handleAddItem("stack", e.target.value)}
-                  value=""
-                  className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] px-[15px] text-[15px] font-[Inter_Tight] text-[#99A0AE] focus:ring-2 focus:ring-purple-600 focus:outline-none ${
-                    errors.stack ? "ring-2 ring-red-500" : ""
-                  }`}
-                >
-                  <option value="">Select Technology</option>
-                  {stackOptions.map((tech) => (
-                    <option
-                      key={tech}
-                      value={tech}
-                      disabled={formData.stack.includes(tech)}
-                    >
-                      {tech}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <Input
+                    type="text"
+                    value={stackInput}
+                    onChange={(e) => {
+                      setStackInput(e.target.value);
+                      setShowStackSuggestions(e.target.value.length > 0);
+                    }}
+                    onFocus={() =>
+                      setShowStackSuggestions(stackInput.length > 0)
+                    }
+                    onBlur={() =>
+                      setTimeout(() => setShowStackSuggestions(false), 200)
+                    }
+                    onKeyDown={handleStackKeyDown}
+                    placeholder="Type a tool name and press Enter..."
+                    disabled={formData.stack.length >= 10}
+                    className={`h-[53px] rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] ${
+                      errors.stack ? "ring-2 ring-red-500" : ""
+                    } ${formData.stack.length >= 10 ? "opacity-50 cursor-not-allowed" : ""}`}
+                  />
+                  {showStackSuggestions && filteredStack.length > 0 && (
+                    <div className="absolute z-10 top-full left-0 right-0 mt-1 bg-white border border-[#E1E4EA] rounded-[10px] shadow-lg max-h-[200px] overflow-y-auto scrollbar-hidden">
+                      {filteredStack.map((tool) => (
+                        <button
+                          key={tool}
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => handleAddStack(tool)}
+                          className="w-full text-left px-[15px] py-[12px] text-[15px] font-[Inter_Tight] text-black hover:bg-[#F5F5F5] transition-colors"
+                        >
+                          {tool}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 {formData.stack.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {formData.stack.map((tech, index) => (
@@ -439,7 +584,7 @@ export const MentorExpertiseStep = ({
               {/* Languages */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
-                  Languages
+                  Languages <span className="text-red-500">*</span>
                 </label>
                 <select
                   onChange={(e) => handleAddItem("languages", e.target.value)}

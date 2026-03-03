@@ -13,6 +13,7 @@ import {
 } from "@/hooks/useTalentOpportunities";
 import { useProfile } from "@/hooks";
 import { useRoleColors } from "@/lib/theme/RoleColorContext";
+import { SuccessModal } from "@/components/ui/success-modal";
 
 interface OpportunityCardProps {
   opportunity: DisplayOpportunity;
@@ -36,6 +37,7 @@ export function OpportunityCard({
     opportunity.appliedAs?.includes(currentProfileType) ?? false;
   const [isApplied, setIsApplied] = useState(hasAppliedAsCurrentRole);
   const [isSaved, setIsSaved] = useState(opportunity.saved ?? false);
+  const [showSaveSuccess, setShowSaveSuccess] = useState(false);
 
   const saveMutation = useSaveOpportunity();
   const unsaveMutation = useUnsaveOpportunity();
@@ -64,6 +66,7 @@ export function OpportunityCard({
       } else {
         await saveMutation.mutateAsync(opportunity.id);
         setIsSaved(true);
+        setShowSaveSuccess(true);
       }
       onSaveToggle?.(opportunity.id, !isSaved);
     } catch (error) {
@@ -274,6 +277,15 @@ export function OpportunityCard({
           setIsApplied(true);
           onApplicationSubmitted?.(opportunity.id);
         }}
+      />
+
+      {/* Save Success Modal */}
+      <SuccessModal
+        isOpen={showSaveSuccess}
+        onClose={() => setShowSaveSuccess(false)}
+        title="Opportunity Saved!"
+        description={`"${opportunity.title}" has been added to your saved opportunities.`}
+        accentColor={primary}
       />
     </div>
   );

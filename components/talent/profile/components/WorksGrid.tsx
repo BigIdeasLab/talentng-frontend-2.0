@@ -6,9 +6,11 @@ import { MoreVertical, Loader } from "lucide-react";
 import { useToast } from "@/hooks";
 import { EmptyState } from "./EmptyState";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
+import { SuccessModal } from "@/components/ui/success-modal";
 import { WorkDetailView } from "./WorkDetailView";
 import { deleteGalleryItem, getGalleryItems } from "@/lib/api/talent";
 import type { GalleryItem } from "@/lib/api/talent";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface WorksGridProps {
   onItemClick?: (item: GalleryItem) => void;
@@ -37,6 +39,7 @@ export function WorksGrid({
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
 
   const fetchGallery = async (showLoading = true) => {
     if (showLoading) setLoading(true);
@@ -80,10 +83,7 @@ export function WorksGrid({
     try {
       await deleteGalleryItem(itemId);
       await fetchGallery();
-      toast({
-        title: "Success",
-        description: "Work deleted successfully",
-      });
+      setShowDeleteSuccess(true);
       onItemDeleted?.();
     } catch (err) {
       const errorMessage =
@@ -259,6 +259,14 @@ export function WorksGrid({
         description="Are you sure you want to delete this work item? This action cannot be undone."
         type="danger"
         confirmText="Yes, delete"
+      />
+
+      <SuccessModal
+        isOpen={showDeleteSuccess}
+        onClose={() => setShowDeleteSuccess(false)}
+        title="Work Deleted"
+        description="Your portfolio item has been removed successfully."
+        accentColor={ROLE_COLORS.talent.primary}
       />
     </>
   );

@@ -15,6 +15,7 @@ import { Loader2 } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import { SuccessModal } from "@/components/ui/success-modal";
 import { EditOpportunityFormSkeleton } from "@/components/skeletons/EditProfileSkeleton";
 
 type FormSection =
@@ -38,6 +39,7 @@ export function EditOpportunityForm({
     initialSection || "basic-info",
   );
   const [showExitModal, setShowExitModal] = useState(false);
+  const [showSaveSuccess, setShowSaveSuccess] = useState(false);
   const [titleError, setTitleError] = useState<string>("");
   const [pendingNavigation, setPendingNavigation] = useState<
     (() => void) | null
@@ -248,11 +250,7 @@ export function EditOpportunityForm({
         id: opportunityId,
         data: updateData,
       });
-      toast({
-        title: "Success",
-        description: "Opportunity updated successfully",
-      });
-      router.push("/opportunities");
+      setShowSaveSuccess(true);
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Failed to update opportunity";
@@ -728,6 +726,20 @@ export function EditOpportunityForm({
             </Button>
           </>
         }
+      />
+
+      {/* Save Success Modal */}
+      <SuccessModal
+        isOpen={showSaveSuccess}
+        onClose={() => {
+          setShowSaveSuccess(false);
+          router.push("/opportunities");
+        }}
+        title="Opportunity Saved!"
+        description="Your changes have been saved successfully."
+        accentColor={ROLE_COLORS.recruiter.primary}
+        ctaLabel="View Opportunities"
+        onCta={() => router.push("/opportunities")}
       />
     </div>
   );
