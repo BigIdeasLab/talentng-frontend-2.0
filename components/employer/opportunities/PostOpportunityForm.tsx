@@ -23,7 +23,6 @@ const DEFAULT_FORM_DATA = {
   tags: [] as string[],
   tools: [] as string[],
   category: "",
-  workType: "",
   location: "",
   paymentType: "" as "weekly" | "monthly" | "hourly" | "",
   priceMode: "range" as "range" | "fixed",
@@ -33,7 +32,6 @@ const DEFAULT_FORM_DATA = {
   duration: "",
   startDate: "",
   experienceLevel: "",
-  employmentType: "",
   status: "active" as const,
   applicationCap: "",
   closingDate: "",
@@ -63,7 +61,6 @@ export function PostOpportunityForm() {
         return {
           ...DEFAULT_FORM_DATA,
           ...parsed,
-          workType: (parsed.workType || "").toLowerCase() || "",
           experienceLevel: (() => {
             const level = parsed.experienceLevel || "";
             const normalized = level.toLowerCase();
@@ -115,9 +112,7 @@ export function PostOpportunityForm() {
       formData.title.trim().length < 5 ||
       !formData.type ||
       !formData.category ||
-      !formData.workType ||
-      !formData.location ||
-      !formData.employmentType
+      !formData.location
     ) {
       return "basic-info";
     }
@@ -430,9 +425,7 @@ export function PostOpportunityForm() {
                   type: formData.type,
                   title: formData.title,
                   category: formData.category,
-                  workType: formData.workType,
                   location: formData.location,
-                  employmentType: formData.employmentType,
                 }}
                 updateFormData={(data) => {
                   updateFormData(data);

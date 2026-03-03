@@ -8,10 +8,15 @@ export type SortType = "newest" | "oldest" | "rate-high" | "rate-low";
 
 // Opportunity types
 export type OpportunityType =
-  | "job-listing"
-  | "internship"
-  | "volunteer"
-  | "part-time";
+  | "FullTime"
+  | "PartTime"
+  | "Contract"
+  | "Internship"
+  | "Volunteer"
+  | "Freelance"
+  | "Remote"
+  | "Hybrid"
+  | "OnSite";
 export type OpportunityStatus = "active" | "closed" | "draft";
 
 // Card display interface (for UI rendering)
@@ -20,7 +25,7 @@ export interface OpportunityCard {
   companyName: string;
   companyLogo: string;
   date: string;
-  type: OpportunityType;
+  type: OpportunityType | string;
   title: string;
   category?: string;
   skills: string[];
@@ -37,7 +42,6 @@ export interface OpportunityCard {
   closingDate?: string;
   appliedAs?: ("talent" | "mentor")[];
   saved?: boolean;
-  workType?: string;
   createdAt?: string;
 }
 
@@ -56,12 +60,23 @@ export interface TypeConfig {
 }
 
 export const TYPE_CONFIG: Record<string, TypeConfig> = {
-  // API format types
-  Job: {
-    label: "Job Listing",
+  FullTime: {
+    label: "Full-time",
     bgColor: "rgba(92, 48, 255, 0.10)",
     textColor: "#5C30FF",
     dotColor: "#5C30FF",
+  },
+  PartTime: {
+    label: "Part-time",
+    bgColor: "rgba(92, 48, 255, 0.10)",
+    textColor: "#5C30FF",
+    dotColor: "#5C30FF",
+  },
+  Contract: {
+    label: "Contract",
+    bgColor: "rgba(0, 139, 71, 0.09)",
+    textColor: "#008B47",
+    dotColor: "#008B47",
   },
   Internship: {
     label: "Internship",
@@ -75,33 +90,26 @@ export const TYPE_CONFIG: Record<string, TypeConfig> = {
     textColor: "#D99400",
     dotColor: "#D99400",
   },
-  PartTime: {
-    label: "Part-time",
-    bgColor: "rgba(92, 48, 255, 0.10)",
-    textColor: "#5C30FF",
-    dotColor: "#5C30FF",
-  },
-  // Legacy format types (for backward compatibility)
-  internship: {
-    label: "Internship",
-    bgColor: "rgba(0, 139, 71, 0.09)",
-    textColor: "#008B47",
-    dotColor: "#008B47",
-  },
-  "job-listing": {
-    label: "Job Listing",
-    bgColor: "rgba(92, 48, 255, 0.10)",
-    textColor: "#5C30FF",
-    dotColor: "#5C30FF",
-  },
-  volunteer: {
-    label: "Volunteer",
+  Freelance: {
+    label: "Freelance",
     bgColor: "rgba(246, 188, 63, 0.10)",
     textColor: "#D99400",
     dotColor: "#D99400",
   },
-  "part-time": {
-    label: "Part-time",
+  Remote: {
+    label: "Remote",
+    bgColor: "rgba(0, 183, 148, 0.10)",
+    textColor: "#00B794",
+    dotColor: "#00B794",
+  },
+  Hybrid: {
+    label: "Hybrid",
+    bgColor: "rgba(0, 183, 148, 0.10)",
+    textColor: "#00B794",
+    dotColor: "#00B794",
+  },
+  OnSite: {
+    label: "On-Site",
     bgColor: "rgba(92, 48, 255, 0.10)",
     textColor: "#5C30FF",
     dotColor: "#5C30FF",

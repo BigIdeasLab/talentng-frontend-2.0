@@ -23,9 +23,21 @@ export interface ApplicationForOpportunity {
   updatedAt?: string;
 }
 
+export type OpportunityType =
+  | "FullTime"
+  | "PartTime"
+  | "Contract"
+  | "Internship"
+  | "Volunteer"
+  | "Freelance"
+  | "Remote"
+  | "Hybrid"
+  | "OnSite"
+  | string;
+
 export interface Opportunity {
   id: string;
-  type: "Job" | "Internship" | "Mentorship" | string;
+  type: OpportunityType;
   title: string;
   description: string;
   requirements: string[];
@@ -33,12 +45,10 @@ export interface Opportunity {
   companyWebsite?: string;
   logo: string;
   keyResponsibilities: string[];
-  employmentType: "Full-Time" | "Part-Time" | "Contract" | string;
   location: string;
   compensation: string;
   tags: string[];
   category: string;
-  workType: string;
   compensationType: "Fixed" | "Hourly" | "Project-based" | string;
   experienceLevel: "Junior" | "Mid" | "Senior" | string;
   minBudget: number;

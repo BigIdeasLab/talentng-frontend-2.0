@@ -56,7 +56,7 @@ export function OpportunitiesFilterModal({
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isExperienceOpen, setIsExperienceOpen] = useState(false);
   const [isLocationOpen, setIsLocationOpen] = useState(false);
-  const [isBudgetOpen, setIsBudgetOpen] = useState(false);
+  const [isBudgetOpen, setIsBudgetOpen] = useState(true);
 
   const [filters, setFilters] = useState<OpportunitiesFilterState>(
     initialFilters || {
@@ -162,11 +162,17 @@ export function OpportunitiesFilterModal({
     field: "minBudget" | "maxBudget",
     value: string,
   ) => {
-    const numValue = parseInt(value) || 0;
+    // Strip commas before parsing
+    const numValue = parseInt(value.replace(/,/g, "")) || 0;
     setFilters((prev) => ({
       ...prev,
       [field]: numValue,
     }));
+  };
+
+  const formatBudget = (value: number | undefined): string => {
+    if (!value) return "";
+    return value.toLocaleString();
   };
 
   useEffect(() => {
@@ -256,7 +262,7 @@ export function OpportunitiesFilterModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex flex-col gap-[12px] rounded-[12px] bg-white shadow-[0_0_15px_0_rgba(0,0,0,0.15)] p-[12px_8px] max-h-[90vh]">
-          <div className="flex flex-col gap-[12px] overflow-y-auto max-h-[420px] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="flex flex-col gap-[12px] overflow-y-auto max-h-[70vh] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {/* Category Dropdown */}
             <div className="flex flex-col gap-[8px] w-full" ref={categoryRef}>
               <div className="flex justify-between items-center">
@@ -569,48 +575,43 @@ export function OpportunitiesFilterModal({
               )}
             </div>
 
-            {/* Budget Range Section */}
+            {/* Budget Range Section - always open */}
             <div className="flex flex-col gap-[8px] w-full" ref={budgetRef}>
-              <div className="flex justify-between items-center">
-                <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
-                  Budget Range (NGN)
-                </span>
-                <button onClick={() => setIsBudgetOpen(!isBudgetOpen)}>
-                  <ChevronDown className="w-3 h-3 text-[#B2B2B2]" />
-                </button>
-              </div>
-              {isBudgetOpen && (
-                <div className="grid grid-cols-2 gap-[8px]">
-                  <div className="flex flex-col gap-[4px]">
-                    <span className="text-[9px] text-[#B2B2B2] font-inter-tight">
-                      Min Budget
-                    </span>
-                    <input
-                      type="number"
-                      placeholder="0"
-                      value={filters.minBudget || ""}
-                      onChange={(e) =>
-                        handleBudgetChange("minBudget", e.target.value)
-                      }
-                      className="w-full px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] text-[11px] font-normal font-inter-tight focus:outline-none"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-[4px]">
-                    <span className="text-[9px] text-[#B2B2B2] font-inter-tight">
-                      Max Budget
-                    </span>
-                    <input
-                      type="number"
-                      placeholder="Any"
-                      value={filters.maxBudget || ""}
-                      onChange={(e) =>
-                        handleBudgetChange("maxBudget", e.target.value)
-                      }
-                      className="w-full px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] text-[11px] font-normal font-inter-tight focus:outline-none"
-                    />
-                  </div>
+              <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
+                Budget Range (NGN)
+              </span>
+              <div className="grid grid-cols-2 gap-[8px]">
+                <div className="flex flex-col gap-[4px]">
+                  <span className="text-[9px] text-[#B2B2B2] font-inter-tight">
+                    Min Budget
+                  </span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="0"
+                    value={formatBudget(filters.minBudget)}
+                    onChange={(e) =>
+                      handleBudgetChange("minBudget", e.target.value)
+                    }
+                    className="w-full px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] text-[11px] font-normal font-inter-tight focus:outline-none"
+                  />
                 </div>
-              )}
+                <div className="flex flex-col gap-[4px]">
+                  <span className="text-[9px] text-[#B2B2B2] font-inter-tight">
+                    Max Budget
+                  </span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="Any"
+                    value={formatBudget(filters.maxBudget)}
+                    onChange={(e) =>
+                      handleBudgetChange("maxBudget", e.target.value)
+                    }
+                    className="w-full px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] text-[11px] font-normal font-inter-tight focus:outline-none"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 

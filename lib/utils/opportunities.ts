@@ -24,12 +24,17 @@ export const getPaymentTypeAbbr = (paymentType: string): string => {
 };
 
 export const mapOpportunityType = (type: string): OpportunityCard["type"] => {
-  const lowerType = (type || "").toLowerCase();
-  if (lowerType === "job") return "job-listing";
-  if (lowerType === "internship") return "internship";
-  if (lowerType === "volunteer") return "volunteer";
-  if (lowerType === "parttime" || lowerType === "part-time") return "part-time";
-  return "job-listing"; // default
+  // The backend now returns consolidated PascalCase types directly
+  // Normalize to the expected OpportunityType values
+  const normalized = type || "FullTime";
+  const legacyMap: Record<string, string> = {
+    Job: "FullTime",
+    job: "FullTime",
+    "job-listing": "FullTime",
+    "part-time": "PartTime",
+    parttime: "PartTime",
+  };
+  return (legacyMap[normalized] || normalized) as OpportunityCard["type"];
 };
 
 /**
@@ -71,7 +76,6 @@ export const transformOpportunityToCard = (
     closingDate: opp.closingDate,
     appliedAs: opp.appliedAs || [],
     saved: opp.saved ?? false,
-    workType: opp.workType,
     createdAt: opp.createdAt,
   };
   return result;

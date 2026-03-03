@@ -84,7 +84,9 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
 
   // Fetch initial upcoming counts based on active role
   useEffect(() => {
-    if (!activeRole) return;
+    // Wait until role is fully resolved from JWT — prevents 403s from
+    // a stale 'talent' role firing before the JWT sync settles.
+    if (isLoading || !activeRole) return;
 
     if (activeRole === "talent") {
       getTalentUpcomingCount()
@@ -99,7 +101,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
         .then((res) => setMentorUpcomingCount(res.count))
         .catch(console.error);
     }
-  }, [activeRole]);
+  }, [activeRole, isLoading]);
 
   // Refresh layout's notification counts when a notification is read in the modal
   const handleNotificationRead = useCallback(() => {

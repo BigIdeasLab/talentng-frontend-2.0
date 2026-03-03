@@ -7,7 +7,6 @@ export interface Opportunity {
   company: string;
   logo: string;
   keyResponsibilities: string[];
-  employmentType: string | null;
   location: string;
   compensation: string;
   priceMode?: "range" | "fixed";
@@ -38,7 +37,6 @@ export interface JobCardProps {
   title: string;
   location: string;
   type?: string;
-  employmentType: string | null;
   talent: {
     name: string;
     avatar: string;

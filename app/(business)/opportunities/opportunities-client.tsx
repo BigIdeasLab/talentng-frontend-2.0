@@ -24,18 +24,9 @@ interface OpportunitiesClientProps {
 }
 
 const convertFilterTypesToAPI = (types: string[]): string[] => {
-  return types.map((type) => {
-    if (["Job", "Internship", "Volunteer", "PartTime"].includes(type)) {
-      return type;
-    }
-    const typeMap: Record<string, string> = {
-      "job-listing": "Job",
-      internship: "Internship",
-      volunteer: "Volunteer",
-      "part-time": "PartTime",
-    };
-    return typeMap[type.toLowerCase()] || type;
-  });
+  // The new consolidated enum values are already in the correct format (PascalCase)
+  // Just pass them through directly
+  return types;
 };
 
 export function OpportunitiesClient({
@@ -44,7 +35,11 @@ export function OpportunitiesClient({
   initialPagination,
 }: OpportunitiesClientProps) {
   const LIMIT = 20;
-  const { activeRole } = useProfile();
+  const { activeRole, isLoading: isRoleLoading } = useProfile();
+  // This page serves talent + mentor roles. Recruiters who navigate here
+  // should not call the talent-only endpoint.
+  const isTalentOrMentor =
+    activeRole === "talent" || activeRole === "mentor";
   const currentProfileType = (activeRole === "mentor" ? "mentor" : "talent") as
     | "talent"
     | "mentor";
@@ -64,8 +59,11 @@ export function OpportunitiesClient({
   const fetchIdRef = useRef(0);
 
   useEffect(() => {
+    // Wait for role to be resolved and only fetch for talent/mentor
+    if (isRoleLoading || !activeRole) return;
+    if (!isTalentOrMentor) return;
     fetchOpportunitiesWithFilters(0);
-  }, []);
+  }, [activeRole, isRoleLoading]);
 
   const fetchOpportunitiesWithFilters = useCallback(
     async (

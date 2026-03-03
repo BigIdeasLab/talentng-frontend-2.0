@@ -65,7 +65,6 @@ export function EditOpportunityForm({
     tags: string[];
     tools: string[];
     category: string;
-    workType: string;
     location: string;
     paymentType: "weekly" | "monthly" | "hourly" | "";
     priceMode: "range" | "fixed";
@@ -75,7 +74,6 @@ export function EditOpportunityForm({
     duration: string;
     startDate: string;
     experienceLevel: string;
-    employmentType: string;
     status: "active" | "closed" | "draft";
     applicationCap: string;
     closingDate: string;
@@ -88,7 +86,6 @@ export function EditOpportunityForm({
     tags: [],
     tools: [],
     category: "",
-    workType: "",
     location: "",
     paymentType: "",
     priceMode: "range",
@@ -98,7 +95,6 @@ export function EditOpportunityForm({
     duration: "",
     startDate: "",
     experienceLevel: "",
-    employmentType: "",
     status: "draft",
     applicationCap: "",
     closingDate: "",
@@ -124,7 +120,6 @@ export function EditOpportunityForm({
         tags: opportunity.tags || [],
         tools: opportunity.tools || [],
         category: opportunity.category || "",
-        workType: (opportunity.workType || "").toLowerCase() || "",
         location: opportunity.location || "",
         paymentType,
         priceMode: (opportunity.priceMode || "range") as "range" | "fixed",
@@ -145,7 +140,6 @@ export function EditOpportunityForm({
           if (normalized === "expert") return "Expert";
           return level;
         })(),
-        employmentType: opportunity.employmentType || "",
         status: (opportunity.status || "draft") as any,
         applicationCap: opportunity.applicationCap
           ? String(opportunity.applicationCap)
@@ -489,9 +483,7 @@ export function EditOpportunityForm({
                         type: formData.type,
                         title: formData.title,
                         category: formData.category,
-                        workType: formData.workType,
                         location: formData.location,
-                        employmentType: formData.employmentType,
                       }}
                       updateFormData={(data) => {
                         updateFormData(data);

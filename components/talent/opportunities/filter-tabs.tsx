@@ -8,10 +8,15 @@ interface FilterTabsProps {
 
 const FILTERS = [
   { id: "all", label: "All" },
-  { id: "Job", label: "Job Listing" },
-  { id: "Internship", label: "Internship" },
+  { id: "FullTime", label: "Full-time" },
   { id: "PartTime", label: "Part-time" },
+  { id: "Contract", label: "Contract" },
+  { id: "Internship", label: "Internship" },
   { id: "Volunteer", label: "Volunteer" },
+  { id: "Freelance", label: "Freelance" },
+  { id: "Remote", label: "Remote" },
+  { id: "Hybrid", label: "Hybrid" },
+  { id: "OnSite", label: "On-Site" },
   { id: "applied", label: "Applied" },
 ];
 
