@@ -116,7 +116,8 @@ export function ApplicantsTable({
             (now.getTime() - createdAt.getTime()) / (1000 * 3600 * 24),
           );
 
-          if (appliedFilters.dateRange === "today" && diffDays > 0) return false;
+          if (appliedFilters.dateRange === "today" && diffDays > 0)
+            return false;
           if (appliedFilters.dateRange === "week" && diffDays > 7) return false;
           if (appliedFilters.dateRange === "month" && diffDays > 30)
             return false;

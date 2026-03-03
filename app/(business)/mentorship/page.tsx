@@ -53,6 +53,7 @@ export default function MentorshipPage() {
 
   const [mentors, setMentors] = useState<MentorDisplay[]>([]);
   const [mentorsLoading, setMentorsLoading] = useState(true);
+  const [hasInitialLoaded, setHasInitialLoaded] = useState(false);
 
   const [offset, setOffset] = useState(0);
   const [pagination, setPagination] = useState<{
@@ -138,6 +139,7 @@ export default function MentorshipPage() {
 
         setMentors(mentorsArray.map(mapApiMentorToDisplay));
         setOffset(pageOffset);
+        setHasInitialLoaded(true);
       } catch (error) {
         if (currentFetchId !== fetchIdRef.current) return;
         console.error("Failed to load mentors:", error);
@@ -287,10 +289,15 @@ export default function MentorshipPage() {
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-hidden flex flex-col">
         <div className="flex-1 flex flex-col overflow-hidden">
-          {mentorsLoading ? (
+          {mentorsLoading && !hasInitialLoaded ? (
             <MentorGridSkeleton />
           ) : (
-            <div id="mentors" className="flex-1 flex flex-col overflow-hidden">
+            <div
+              id="mentors"
+              className={`flex-1 flex flex-col overflow-hidden transition-opacity duration-200 ${
+                mentorsLoading ? "opacity-50" : "opacity-100"
+              }`}
+            >
               <MentorGrid
                 mentors={mentors}
                 onNextPage={handleNextPage}

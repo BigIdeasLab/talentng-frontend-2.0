@@ -14,8 +14,9 @@ import {
   ApplicationFilterModal,
   type ApplicationFilterState,
 } from "@/components/talent/applications";
-import { useRecruiterOpportunitiesQuery } from "@/hooks";
-import { getRecruiterApplications } from "@/lib/api/applications/index";
+import { useToast } from "@/hooks";
+import { getRecruiterInterviews } from "@/lib/api/applications/index";
+import { useNotificationSocket } from "@/hooks/useNotificationSocket";
 import type {
   Application,
   ApplicationInterview,
@@ -33,89 +34,84 @@ interface UpcomingItem {
 }
 
 export function RecruiterUpcoming() {
-  const [applications, setApplications] = useState<Application[]>([]);
+  const { toast } = useToast();
+  const [items, setItems] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] =
     useState<ApplicationFilterState | null>(null);
 
-  const fetchData = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const appsData = await getRecruiterApplications({}).catch(() => []);
-      setApplications(appsData || []);
-    } catch (error) {
-      console.error("Failed to load upcoming data:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const fetchData = useCallback(
+    async (showLoading = true) => {
+      try {
+        if (showLoading) setIsLoading(true);
+        const res = await getRecruiterInterviews({
+          q: searchQuery || undefined,
+          dateRange:
+            appliedFilters?.dateRange && appliedFilters.dateRange !== "all"
+              ? (appliedFilters.dateRange as any)
+              : undefined,
+          limit: 100,
+        });
+        setItems(res.data || []);
+      } catch (error) {
+        console.error("Failed to load recruiter upcoming data:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load upcoming interviews",
+          variant: "destructive",
+        });
+      } finally {
+        if (showLoading) setIsLoading(false);
+      }
+    },
+    [searchQuery, appliedFilters, toast],
+  );
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  // Build unified list of upcoming interviews
-  const upcomingItems: UpcomingItem[] = [];
-
-  applications.forEach((app) => {
-    if (app.interviews && app.interviews.length > 0) {
-      app.interviews.forEach((interview) => {
-        if (interview.status !== "cancelled") {
-          upcomingItems.push({
-            type: "interview",
-            date: new Date(interview.scheduledDate),
-            interview: { interview, application: app },
-          });
-        }
-      });
-    }
+  // Subscribe to real-time updates for the feed
+  useNotificationSocket({
+    recipientRole: "recruiter",
+    onRecruiterUpdate: () => {
+      fetchData(false); // Refresh without full loading state
+    },
+    enabled: true,
   });
+
+  // Map API items to component-friendly shapes
+  const upcomingItems: UpcomingItem[] = items.map((item) => ({
+    type: "interview",
+    date: new Date(item.startTime || item.date),
+    interview: {
+      interview: {
+        id: item.id,
+        status: item.status,
+        scheduledDate: item.startTime,
+        meetingLink: item.meetingLink,
+        message: item.message,
+      } as any,
+      application: {
+        opportunityId: item.metadata?.opportunityId,
+        opportunity: {
+          title: item.subtitle || "Job Position",
+          company: "Your Company",
+        },
+        user: {
+          username: item.title,
+          talentProfile: {
+            fullName: item.title,
+            profileImageUrl: item.image,
+          },
+        },
+      } as any,
+    },
+  }));
 
   upcomingItems.sort((a, b) => a.date.getTime() - b.date.getTime());
-
-  // Apply search filter
-  const filteredItems = upcomingItems.filter((item) => {
-    const { interview, application } = item.interview;
-    const talent = application.user?.talentProfile;
-    const candidateName =
-      talent?.fullName || application.user?.username || "";
-
-    const matchesSearch =
-      (searchQuery === "" ||
-        candidateName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        application.opportunity.title
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()));
-
-    const matchesFilter =
-      !appliedFilters ||
-      (appliedFilters.dateRange === "all" || (() => {
-        const date = new Date(interview.scheduledDate);
-        const now = new Date();
-        const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 3600 * 24));
-
-        const isUpcoming = date.getTime() > now.getTime();
-        if (!isUpcoming) return false; // Only show future interviews
-
-        if (appliedFilters.dateRange === "today") {
-            const isToday = date.toDateString() === now.toDateString();
-            return isToday;
-        }
-        if (appliedFilters.dateRange === "week") {
-          const oneWeekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-          return date.getTime() <= oneWeekFromNow.getTime();
-        }
-        if (appliedFilters.dateRange === "month") {
-          const oneMonthFromNow = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
-          return date.getTime() <= oneMonthFromNow.getTime();
-        }
-        return false;
-      })());
-
-    return matchesSearch && matchesFilter;
-  });
 
   return (
     <div className="h-screen overflow-x-hidden bg-white flex flex-col">
@@ -131,7 +127,7 @@ export function RecruiterUpcoming() {
             <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
             <input
               type="text"
-              placeholder="Search interviews by candidate or position..."
+              placeholder="Search interviews by candidate name or position..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
@@ -203,7 +199,7 @@ export function RecruiterUpcoming() {
                 />
               ))}
             </div>
-          ) : filteredItems.length === 0 ? (
+          ) : upcomingItems.length === 0 ? (
             <EmptyState
               icon={Calendar}
               title="No upcoming interviews"
@@ -211,7 +207,7 @@ export function RecruiterUpcoming() {
             />
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
-              {filteredItems.map((item) => (
+              {upcomingItems.map((item) => (
                 <RecruiterInterviewCard
                   key={`int-${item.interview.interview.id}`}
                   interview={item.interview.interview}

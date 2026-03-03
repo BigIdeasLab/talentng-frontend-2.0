@@ -49,6 +49,7 @@ export interface ListMentorsParams {
   stack?: string;
   isFeatured?: boolean;
   sortBy?: string;
+  sortOrder?: "asc" | "desc";
   limit?: number;
   offset?: number;
 }
@@ -241,8 +242,11 @@ export async function getTalentMentorshipRequests(
 ): Promise<PaginatedResponse<MentorshipRequest>> {
   const queryParams = new URLSearchParams();
   if (params?.status) queryParams.append("status", params.status);
+  if (params?.searchQuery) queryParams.append("searchQuery", params.searchQuery);
+  if (params?.dateRange) queryParams.append("dateRange", params.dateRange);
   if (params?.page) queryParams.append("page", params.page.toString());
   if (params?.limit) queryParams.append("limit", params.limit.toString());
+  if (params?.offset) queryParams.append("offset", params.offset!.toString());
 
   const queryString = queryParams.toString();
   const endpoint = `/talent/mentorship-requests${queryString ? `?${queryString}` : ""}`;
@@ -258,8 +262,11 @@ export async function getMentorMentorshipRequests(
 ): Promise<PaginatedResponse<MentorshipRequest>> {
   const queryParams = new URLSearchParams();
   if (params?.status) queryParams.append("status", params.status);
+  if (params?.searchQuery) queryParams.append("searchQuery", params.searchQuery);
+  if (params?.dateRange) queryParams.append("dateRange", params.dateRange);
   if (params?.page) queryParams.append("page", params.page.toString());
   if (params?.limit) queryParams.append("limit", params.limit.toString());
+  if (params?.offset) queryParams.append("offset", params.offset!.toString());
 
   const queryString = queryParams.toString();
   const endpoint = `/mentor/mentorship-requests${queryString ? `?${queryString}` : ""}`;
@@ -276,8 +283,11 @@ export async function getRequests(
   const queryParams = new URLSearchParams();
   if (params?.role) queryParams.append("role", params.role);
   if (params?.status) queryParams.append("status", params.status);
+  if (params?.searchQuery) queryParams.append("searchQuery", params.searchQuery);
+  if (params?.dateRange) queryParams.append("dateRange", params.dateRange);
   if (params?.page) queryParams.append("page", params.page.toString());
   if (params?.limit) queryParams.append("limit", params.limit.toString());
+  if (params?.offset) queryParams.append("offset", params.offset!.toString());
 
   const queryString = queryParams.toString();
   const endpoint = `/requests${queryString ? `?${queryString}` : ""}`;
@@ -364,8 +374,11 @@ export async function getSessions(
   if (params?.status) queryParams.append("status", params.status);
   if (params?.upcoming) queryParams.append("upcoming", "true");
   if (params?.past) queryParams.append("past", "true");
+  if (params?.searchQuery) queryParams.append("searchQuery", params.searchQuery);
+  if (params?.dateRange) queryParams.append("dateRange", params.dateRange);
   if (params?.page) queryParams.append("page", params.page.toString());
   if (params?.limit) queryParams.append("limit", params.limit.toString());
+  if (params?.offset) queryParams.append("offset", params.offset!.toString());
 
   const queryString = queryParams.toString();
   const endpoint = `/sessions${queryString ? `?${queryString}` : ""}`;
@@ -380,6 +393,32 @@ export async function getSession(
   sessionId: string,
 ): Promise<MentorshipSession> {
   return apiClient<MentorshipSession>(`/sessions/${sessionId}`);
+}
+
+/**
+ * Get mentor session count for badges
+ * GET /mentor/sessions/count
+ */
+export async function getMentorSessionsCount(): Promise<{ count: number }> {
+  return apiClient<{ count: number }>("/mentor/sessions/count");
+}
+/**
+ * Get mentor sessions
+ * GET /mentor/sessions
+ */
+export async function getMentorSessions(
+  params?: SessionsQueryParams,
+): Promise<{ data: any[]; pagination: any }> {
+  const queryParams = new URLSearchParams();
+  if (params?.status) queryParams.append("status", params.status);
+  if (params?.searchQuery) queryParams.append("searchQuery", params.searchQuery);
+  if (params?.dateRange) queryParams.append("dateRange", params.dateRange);
+  if (params?.page) queryParams.append("page", params.page.toString());
+  if (params?.limit) queryParams.append("limit", params.limit.toString());
+
+  const queryString = queryParams.toString();
+  const endpoint = `/mentor/sessions${queryString ? `?${queryString}` : ""}`;
+  return apiClient<{ data: any[]; pagination: any }>(endpoint);
 }
 
 /**

@@ -10,8 +10,8 @@ import type {
   Application,
   ApplicationInterview,
 } from "@/lib/api/applications/types";
-import { getSessions } from "@/lib/api/mentorship";
-import { getTalentApplications } from "@/lib/api/applications/index";
+import { getTalentUpcoming } from "@/lib/api/talent";
+import { useNotificationSocket } from "@/hooks/useNotificationSocket";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { cardHover } from "@/lib/theme/effects";
 
@@ -110,46 +110,19 @@ interface UpcomingInterviewsProps {
   interviews: UpcomingInterview[];
 }
 
-export function UpcomingInterviews({ interviews }: UpcomingInterviewsProps) {
-  const [sessions, setSessions] = useState<MentorshipSession[]>([]);
-  const [appInterviews, setAppInterviews] = useState<
-    { interview: ApplicationInterview; app: Application }[]
-  >([]);
+export function UpcomingInterviews({ interviews: legacyInterviews }: UpcomingInterviewsProps) {
+  const [items, setItems] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (showLoading = true) => {
     try {
-      const [sessionsRes, appsData] = await Promise.all([
-        getSessions({ role: "mentee" }).catch(() => []),
-        getTalentApplications().catch(() => []),
-      ]);
-
-      // Sessions
-      const sessArr = Array.isArray(sessionsRes)
-        ? sessionsRes
-        : (sessionsRes?.data ?? []);
-      setSessions(
-        sessArr.filter(
-          (s: MentorshipSession) =>
-            s.status !== "cancelled" && s.status !== "completed",
-        ),
-      );
-
-      // Extract interviews from applications
-      const extracted: { interview: ApplicationInterview; app: Application }[] =
-        [];
-      (appsData || []).forEach((app: Application) => {
-        if (app.interviews && app.interviews.length > 0) {
-          app.interviews.forEach((interview) => {
-            if (interview.status !== "cancelled") {
-              extracted.push({ interview, app });
-            }
-          });
-        }
-      });
-      setAppInterviews(extracted);
-    } catch {
-      setSessions([]);
-      setAppInterviews([]);
+      if (showLoading) setIsLoading(true);
+      const res = await getTalentUpcoming({ limit: 5 });
+      setItems(res.data || []);
+    } catch (err) {
+      console.error("Failed to fetch dashboard upcoming items:", err);
+    } finally {
+      if (showLoading) setIsLoading(false);
     }
   }, []);
 
@@ -157,54 +130,30 @@ export function UpcomingInterviews({ interviews }: UpcomingInterviewsProps) {
     fetchData();
   }, [fetchData]);
 
+  // Real-time refresh for dashboard view
+  useNotificationSocket({
+    recipientRole: "talent",
+    onUpcomingUpdate: () => {
+      fetchData(false);
+    },
+    enabled: true,
+  });
+
   // Build unified event list
   type EventItem = EventCardProps & { sortDate: Date };
-  const events: EventItem[] = [];
+  const events: EventItem[] = items.map((item) => ({
+    type: item.type,
+    title: item.title,
+    subtitle: item.subtitle,
+    date: format(new Date(item.startTime || item.date), "MMM d, yyyy"),
+    time: format(new Date(item.startTime || item.date), "h:mm a"),
+    opportunityId: item.metadata?.opportunityId,
+    sortDate: new Date(item.startTime || item.date),
+  }));
 
-  // Add job interviews from dashboard API
-  interviews.forEach((interview) => {
-    const scheduledDate = new Date(interview.scheduledAt);
-    events.push({
-      type: "interview",
-      title: interview.company,
-      subtitle: interview.position,
-      date: format(scheduledDate, "MMM d, yyyy"),
-      time: format(scheduledDate, "h:mm a"),
-      opportunityId: interview.opportunityId,
-      sortDate: scheduledDate,
-    });
-  });
-
-  // Add job interviews extracted from applications
-  appInterviews.forEach(({ interview, app }) => {
-    const scheduledDate = new Date(interview.scheduledDate);
-    events.push({
-      type: "interview",
-      title: app.opportunity.company,
-      subtitle: app.opportunity.title,
-      date: format(scheduledDate, "MMM d, yyyy"),
-      time: format(scheduledDate, "h:mm a"),
-      opportunityId: app.opportunityId || app.opportunity?.id,
-      sortDate: scheduledDate,
-    });
-  });
-
-  // Add mentorship sessions
-  sessions.forEach((session) => {
-    const rawDate =
-      session.startTime || session.scheduledAt || session.createdAt;
-    const scheduledDate = new Date(rawDate);
-    const mentor = session.mentor;
-    const mentorName = mentor.fullName || mentor.name || "Mentor";
-    events.push({
-      type: "session",
-      title: mentorName,
-      subtitle: session.topic,
-      date: format(scheduledDate, "MMM d, yyyy"),
-      time: format(scheduledDate, "h:mm a"),
-      sortDate: scheduledDate,
-    });
-  });
+  // Also include the legacy interviews passed from the dashboard API as fallback/merge if needed,
+  // but the new endpoint should ideally cover everything.
+  // For now, let's stick to the new endpoint as the primary source.
 
   // Sort by date, nearest first
   events.sort((a, b) => a.sortDate.getTime() - b.sortDate.getTime());

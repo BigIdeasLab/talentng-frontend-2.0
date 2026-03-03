@@ -24,6 +24,7 @@ import type {
 } from "@/lib/api/mentorship";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { SessionsSkeleton } from "@/components/mentor/sessions/SessionsSkeleton";
+import { useNotificationSocket } from "@/hooks/useNotificationSocket";
 import {
   ApplicationFilterModal,
   type ApplicationFilterState,
@@ -143,7 +144,14 @@ export default function SessionsPage() {
   const fetchSessions = useCallback(async () => {
     try {
       setIsLoading(true);
-      const response = await getSessions({ role: "mentor" });
+      const response = await getSessions({
+        role: "mentor",
+        ...(activeTab !== "all" ? { status: activeTab as any } : {}),
+        ...(searchQuery ? { searchQuery } : {}),
+        ...(appliedFilters?.dateRange && appliedFilters.dateRange !== "all"
+          ? { dateRange: appliedFilters.dateRange as "today" | "week" | "month" }
+          : {}),
+      });
       const sessionsArray = Array.isArray(response)
         ? response
         : (response?.data ?? []);
@@ -157,7 +165,16 @@ export default function SessionsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [activeTab, searchQuery, appliedFilters]);
+
+  // Subscribe to real-time updates
+  useNotificationSocket({
+    recipientRole: "mentor" as any,
+    onMentorUpdate: () => {
+      fetchSessions(); // Refresh without showing full loading state handles it
+    },
+    enabled: hasAccess,
+  });
 
   useEffect(() => {
     if (hasAccess) {
@@ -165,35 +182,8 @@ export default function SessionsPage() {
     }
   }, [hasAccess, fetchSessions]);
 
-  const filteredSessions = sessions.filter((session) => {
-    const matchesTab = activeTab === "all" || session.status === activeTab;
-    const matchesSearch =
-      session.mentee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      session.topic.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (session.message?.toLowerCase().includes(searchQuery.toLowerCase()) ??
-        false);
-
-    if (!matchesTab || !matchesSearch) return false;
-
-    if (appliedFilters) {
-      // Date Range Filter
-      if (appliedFilters.dateRange !== "all") {
-        const date = new Date(session.date);
-        const now = new Date();
-        const diffDays = Math.floor(
-          (now.getTime() - date.getTime()) / (1000 * 3600 * 24),
-        );
-        if (appliedFilters.dateRange === "today" && Math.abs(diffDays) > 0)
-          return false;
-        if (appliedFilters.dateRange === "week" && Math.abs(diffDays) > 7)
-          return false;
-        if (appliedFilters.dateRange === "month" && Math.abs(diffDays) > 30)
-          return false;
-      }
-    }
-
-    return true;
-  });
+  // Server handles all filtering — render results directly
+  const filteredSessions = sessions;
 
   const handleReschedule = (id: string) => {
     const session = sessions.find((s) => s.id === id);

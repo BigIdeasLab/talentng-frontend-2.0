@@ -33,23 +33,37 @@ export function ApplicantsView({
     error: oppError,
   } = useRecruiterOpportunityQuery(opportunityId);
 
-  const {
-    data: applicants = [],
-    isLoading: isAppsLoading,
-    error: appsError,
-  } = useRecruiterApplicationsQuery({ opportunityId });
-
-  const isLoading = isOppLoading || isAppsLoading;
-  const error = oppError || appsError ? "Failed to load" : null;
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] =
     useState<ApplicantFilterState | null>(null);
 
+  // Build server-side query params from local filter state
+  const queryParams = {
+    opportunityId,
+    ...(searchQuery ? { searchQuery } : {}),
+    sortBy: sortBy as "newest" | "oldest" | "name-asc" | "name-desc",
+    ...(appliedFilters?.location ? { location: appliedFilters.location } : {}),
+    ...(appliedFilters?.skills?.length ? { skills: appliedFilters.skills.join(",") } : {}),
+    ...(appliedFilters?.dateRange && appliedFilters.dateRange !== "all"
+      ? { dateRange: appliedFilters.dateRange as "today" | "week" | "month" }
+      : {}),
+    ...(appliedFilters?.status?.length === 1 ? { status: appliedFilters.status[0] } : {}),
+  };
+
+  const {
+    data: applicants = [],
+    isLoading: isAppsLoading,
+    error: appsError,
+  } = useRecruiterApplicationsQuery(queryParams);
+
+  const isLoading = isOppLoading || isAppsLoading;
+  const error = oppError || appsError ? "Failed to load" : null;
+
   const opportunityTitle = opportunity?.title || "";
 
-  // Extract available locations and skills for the filter modal
+  // These are only used to populate the filter modal dropdowns
   const availableLocations = Array.from(
     new Set(
       applicants
@@ -69,10 +83,6 @@ export function ApplicantsView({
   const availableStatuses = Array.from(
     new Set(applicants.map((app) => app.status)),
   ) as string[];
-
-  const fetchOpportunityAndApplicants = async () => {
-    // Handled by useQuery
-  };
 
   const getProgressPercentage = () => {
     if (!applicationCap || applicationCap === 0) return 0;

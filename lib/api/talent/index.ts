@@ -511,6 +511,35 @@ export async function updateTalentSettings(
   });
 }
 
+/**
+ * Get Unified Upcoming Feed
+ * GET /talent/upcoming
+ */
+export async function getTalentUpcoming(params?: {
+  q?: string;
+  dateRange?: "today" | "week" | "month";
+  type?: "interview" | "session";
+  limit?: number;
+  offset?: number;
+}): Promise<any> {
+  const queryParams = new URLSearchParams();
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined) queryParams.append(key, String(value));
+    });
+  }
+  const query = queryParams.toString();
+  return apiClient<any>(query ? `/talent/upcoming?${query}` : "/talent/upcoming");
+}
+
+/**
+ * Get Upcoming Feed Count
+ * GET /talent/upcoming/count
+ */
+export async function getTalentUpcomingCount(): Promise<{ count: number }> {
+  return apiClient<{ count: number }>("/talent/upcoming/count");
+}
+
 export type {
   TalentDashboardResponse,
   TalentDashboardUser,

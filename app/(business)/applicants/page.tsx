@@ -41,7 +41,6 @@ export default function ApplicantsPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<string>("all");
-  const [applicants, setApplicants] = useState<MappedApplicant[]>([]);
   const [sortBy, setSortBy] = useState("newest");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState<ApplicantFilterState>({
@@ -50,12 +49,24 @@ export default function ApplicantsPage() {
     skills: [],
     dateRange: "all",
   });
+
+  // Build server-side params from all active filters
+  const queryParams = useMemo(() => ({
+    ...(searchQuery ? { searchQuery } : {}),
+    ...(activeTab !== "all" ? { status: activeTab } : {}),
+    ...(filters.status.length === 1 ? { status: filters.status[0] } : {}),
+    ...(filters.location ? { location: filters.location } : {}),
+    ...(filters.skills.length > 0 ? { skills: filters.skills.join(",") } : {}),
+    ...(filters.dateRange !== "all" ? { dateRange: filters.dateRange as "today" | "week" | "month" } : {}),
+    ...(sortBy !== "newest" ? { sortBy: sortBy as "newest" | "oldest" | "name-asc" | "name-desc" } : { sortBy: "newest" as const }),
+  }), [searchQuery, activeTab, filters, sortBy]);
+
   const {
     data: rawApplicants,
     isLoading,
     isPending,
     error: queryError,
-  } = useRecruiterApplicationsQuery({});
+  } = useRecruiterApplicationsQuery(queryParams);
   const hasAccess = useRequireRole(["recruiter"]);
   const error =
     queryError instanceof Error
@@ -64,27 +75,11 @@ export default function ApplicantsPage() {
         ? "Failed to load"
         : null;
 
-  useEffect(() => {
-    if (rawApplicants) {
-      setApplicants(mapApplicationsToUI(rawApplicants));
-    }
-  }, [rawApplicants]);
-
-  const fetchApplicants = async () => {
-    // No longer needed as useQuery handles it
-  };
-
-  const availableStatuses = useMemo(() => {
-    return [...new Set(applicants.map((a) => a.status))];
-  }, [applicants]);
-
-  const availableLocations = useMemo(() => {
-    return [...new Set(applicants.map((a) => a.location).filter(Boolean))];
-  }, [applicants]);
-
-  const availableSkills = useMemo(() => {
-    return [...new Set(applicants.flatMap((a) => a.skills || []))];
-  }, [applicants]);
+  // Map raw API data to UI format
+  const applicants: MappedApplicant[] = useMemo(
+    () => (rawApplicants ? mapApplicationsToUI(rawApplicants) : []),
+    [rawApplicants],
+  );
 
   const getFilterCount = () => {
     let count = 0;
@@ -95,10 +90,26 @@ export default function ApplicantsPage() {
     return count;
   };
 
+  // Hired count — only available if tab is "all" or "hired"
   const hiredCount = useMemo(
     () => applicants.filter((a) => a.status === "hired").length,
     [applicants],
   );
+
+  // Option lists for filter modal dropdowns (derived from current result set)
+  const availableStatuses = useMemo(
+    () => [...new Set(applicants.map((a) => a.status))],
+    [applicants],
+  );
+  const availableLocations = useMemo(
+    () => [...new Set(applicants.map((a) => a.location).filter(Boolean))],
+    [applicants],
+  );
+  const availableSkills = useMemo(
+    () => [...new Set(applicants.flatMap((a) => a.skills || []))],
+    [applicants],
+  );
+
 
   const TABS = [
     { id: "all", label: "All" },
@@ -108,88 +119,8 @@ export default function ApplicantsPage() {
     { id: "rejected", label: "Rejected" },
   ];
 
-  const filteredApplicants = useMemo(() => {
-    let result = applicants;
-
-    // Search filter
-    if (searchQuery) {
-      result = result.filter(
-        (applicant) =>
-          applicant.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          applicant.role.toLowerCase().includes(searchQuery.toLowerCase()),
-      );
-    }
-
-    // Tab filter
-    if (activeTab !== "all") {
-      result = result.filter((applicant) => applicant.status === activeTab);
-    }
-
-    // Modal status filter
-    if (filters.status.length > 0) {
-      result = result.filter((applicant) =>
-        filters.status.includes(applicant.status),
-      );
-    }
-
-    // Location filter
-    if (filters.location) {
-      result = result.filter(
-        (applicant) =>
-          applicant.location.toLowerCase() === filters.location.toLowerCase(),
-      );
-    }
-
-    // Skills filter
-    if (filters.skills.length > 0) {
-      result = result.filter((applicant) =>
-        filters.skills.some((skill) =>
-          applicant.skills?.some(
-            (s) => s.toLowerCase() === skill.toLowerCase(),
-          ),
-        ),
-      );
-    }
-
-    // Date filter
-    if (filters.dateRange !== "all") {
-      const now = new Date();
-      result = result.filter((applicant) => {
-        const created = new Date(applicant.createdAt);
-        if (filters.dateRange === "today") {
-          return created.toDateString() === now.toDateString();
-        }
-        if (filters.dateRange === "week") {
-          const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-          return created >= weekAgo;
-        }
-        if (filters.dateRange === "month") {
-          const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-          return created >= monthAgo;
-        }
-        return true;
-      });
-    }
-
-    // Sort
-    if (sortBy === "newest") {
-      result = [...result].sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      );
-    } else if (sortBy === "oldest") {
-      result = [...result].sort(
-        (a, b) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-      );
-    } else if (sortBy === "name-asc") {
-      result = [...result].sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortBy === "name-desc") {
-      result = [...result].sort((a, b) => b.name.localeCompare(a.name));
-    }
-
-    return result;
-  }, [applicants, searchQuery, activeTab, filters, sortBy]);
+  // Server already handles all filtering — use results directly
+  const filteredApplicants = applicants;
 
   if (!hasAccess) {
     return <PageLoadingState message="Checking access..." />;

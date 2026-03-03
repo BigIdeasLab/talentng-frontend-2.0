@@ -13,6 +13,8 @@ export interface OpportunitiesFilterState {
   categories?: string[];
   experienceLevels?: string[];
   location?: string;
+  minBudget?: number;
+  maxBudget?: number;
 }
 
 interface OpportunitiesFilterModalProps {
@@ -22,13 +24,6 @@ interface OpportunitiesFilterModalProps {
   initialFilters?: OpportunitiesFilterState;
   availableSkills: string[];
 }
-
-const OPPORTUNITY_TYPES = [
-  { display: "Job Listing", value: "Job" },
-  { display: "Internship", value: "Internship" },
-  { display: "Volunteer", value: "Volunteer" },
-  { display: "Part-time", value: "PartTime" },
-];
 
 const EXPERIENCE_LEVELS = [
   { display: "Entry Level", value: "Entry" },
@@ -48,20 +43,20 @@ export function OpportunitiesFilterModal({
 }: OpportunitiesFilterModalProps) {
   const { primary } = useRoleColors();
   const modalRef = useRef<HTMLDivElement>(null);
-  const typeRef = useRef<HTMLDivElement>(null);
   const skillRef = useRef<HTMLDivElement>(null);
   const categoryRef = useRef<HTMLDivElement>(null);
   const experienceRef = useRef<HTMLDivElement>(null);
   const locationRef = useRef<HTMLDivElement>(null);
-  const [typeSearch, setTypeSearch] = useState("");
+  const budgetRef = useRef<HTMLDivElement>(null);
   const [skillSearch, setSkillSearch] = useState("");
   const [categorySearch, setCategorySearch] = useState("");
+  const [experienceSearch, setExperienceSearch] = useState("");
   const [locationSearch, setLocationSearch] = useState("");
-  const [isTypeOpen, setIsTypeOpen] = useState(false);
   const [isSkillOpen, setIsSkillOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isExperienceOpen, setIsExperienceOpen] = useState(false);
   const [isLocationOpen, setIsLocationOpen] = useState(false);
+  const [isBudgetOpen, setIsBudgetOpen] = useState(false);
 
   const [filters, setFilters] = useState<OpportunitiesFilterState>(
     initialFilters || {
@@ -70,16 +65,10 @@ export function OpportunitiesFilterModal({
       categories: [],
       experienceLevels: [],
       location: "",
+      minBudget: 0,
+      maxBudget: 0,
     },
   );
-
-  const filteredTypes = useMemo(() => {
-    return OPPORTUNITY_TYPES.filter(
-      (type) =>
-        type.display.toLowerCase().includes(typeSearch.toLowerCase()) ||
-        type.value.toLowerCase().includes(typeSearch.toLowerCase()),
-    );
-  }, [typeSearch]);
 
   const filteredSkills = useMemo(() => {
     return skillsData.filter(
@@ -97,6 +86,14 @@ export function OpportunitiesFilterModal({
     );
   }, [categorySearch, filters.categories]);
 
+  const filteredExperienceLevels = useMemo(() => {
+    return EXPERIENCE_LEVELS.filter(
+      (level) =>
+        level.display.toLowerCase().includes(experienceSearch.toLowerCase()) ||
+        level.value.toLowerCase().includes(experienceSearch.toLowerCase()),
+    );
+  }, [experienceSearch]);
+
   const filteredLocations = useMemo(() => {
     return STATES.filter((state) =>
       state.toLowerCase().includes(locationSearch.toLowerCase()),
@@ -110,11 +107,13 @@ export function OpportunitiesFilterModal({
       categories: [],
       experienceLevels: [],
       location: "",
+      minBudget: 0,
+      maxBudget: 0,
     };
     setFilters(emptyFilters);
-    setTypeSearch("");
     setSkillSearch("");
     setCategorySearch("");
+    setExperienceSearch("");
     setLocationSearch("");
     onApply(emptyFilters);
     onClose();
@@ -123,15 +122,6 @@ export function OpportunitiesFilterModal({
   const handleApplyFilter = () => {
     onApply(filters);
     onClose();
-  };
-
-  const toggleType = (type: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      types: prev.types.includes(type)
-        ? prev.types.filter((t) => t !== type)
-        : [...prev.types, type],
-    }));
   };
 
   const toggleSkill = (skill: string) => {
@@ -168,6 +158,14 @@ export function OpportunitiesFilterModal({
     }));
   };
 
+  const handleBudgetChange = (field: "minBudget" | "maxBudget", value: string) => {
+    const numValue = parseInt(value) || 0;
+    setFilters((prev) => ({
+      ...prev,
+      [field]: numValue,
+    }));
+  };
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -176,48 +174,22 @@ export function OpportunitiesFilterModal({
         modalRef.current &&
         !modalRef.current.contains(event.target as Node)
       ) {
-        onClose();
+        handleApplyFilter();
       }
 
-      if (
-        isTypeOpen &&
-        typeRef.current &&
-        !typeRef.current.contains(event.target as Node)
-      ) {
-        setIsTypeOpen(false);
-      }
+      const refs = [
+        { open: isSkillOpen, ref: skillRef, set: setIsSkillOpen },
+        { open: isCategoryOpen, ref: categoryRef, set: setIsCategoryOpen },
+        { open: isExperienceOpen, ref: experienceRef, set: setIsExperienceOpen },
+        { open: isLocationOpen, ref: locationRef, set: setIsLocationOpen },
+        { open: isBudgetOpen, ref: budgetRef, set: setIsBudgetOpen },
+      ];
 
-      if (
-        isSkillOpen &&
-        skillRef.current &&
-        !skillRef.current.contains(event.target as Node)
-      ) {
-        setIsSkillOpen(false);
-      }
-
-      if (
-        isCategoryOpen &&
-        categoryRef.current &&
-        !categoryRef.current.contains(event.target as Node)
-      ) {
-        setIsCategoryOpen(false);
-      }
-
-      if (
-        isExperienceOpen &&
-        experienceRef.current &&
-        !experienceRef.current.contains(event.target as Node)
-      ) {
-        setIsExperienceOpen(false);
-      }
-
-      if (
-        isLocationOpen &&
-        locationRef.current &&
-        !locationRef.current.contains(event.target as Node)
-      ) {
-        setIsLocationOpen(false);
-      }
+      refs.forEach(({ open, ref, set }) => {
+        if (open && ref.current && !ref.current.contains(event.target as Node)) {
+          set(false);
+        }
+      });
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -225,11 +197,35 @@ export function OpportunitiesFilterModal({
   }, [
     isOpen,
     onClose,
-    isTypeOpen,
+    handleApplyFilter,
     isSkillOpen,
     isCategoryOpen,
     isExperienceOpen,
     isLocationOpen,
+    isBudgetOpen,
+  ]);
+
+  useEffect(() => {
+    const scrollSection = (ref: React.RefObject<HTMLDivElement>) => {
+      setTimeout(() => {
+        ref.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 150);
+    };
+
+    if (isCategoryOpen) scrollSection(categoryRef);
+    if (isSkillOpen) scrollSection(skillRef);
+    if (isExperienceOpen) scrollSection(experienceRef);
+    if (isLocationOpen) scrollSection(locationRef);
+    if (isBudgetOpen) scrollSection(budgetRef);
+  }, [
+    isCategoryOpen,
+    isSkillOpen,
+    isExperienceOpen,
+    isLocationOpen,
+    isBudgetOpen,
   ]);
 
   if (!isOpen) return null;
@@ -237,7 +233,7 @@ export function OpportunitiesFilterModal({
   return (
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 z-40 bg-black/5" onClick={onClose} />
+      <div className="fixed inset-0 z-40 bg-black/5" onClick={handleApplyFilter} />
 
       {/* Modal Content */}
       <div
@@ -247,71 +243,6 @@ export function OpportunitiesFilterModal({
       >
         <div className="flex flex-col gap-[12px] rounded-[12px] bg-white shadow-[0_0_15px_0_rgba(0,0,0,0.15)] p-[12px_8px] max-h-[90vh]">
           <div className="flex flex-col gap-[12px] overflow-y-auto max-h-[420px] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            {/* Type Dropdown */}
-            <div className="flex flex-col gap-[8px] w-full" ref={typeRef}>
-              <div className="flex justify-between items-center">
-                <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
-                  Opportunity Type
-                </span>
-                <button onClick={() => setIsTypeOpen(!isTypeOpen)}>
-                  <ChevronDown className="w-3 h-3 text-[#B2B2B2]" />
-                </button>
-              </div>
-              <div className="relative">
-                <div className="flex items-center gap-[4px] px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] bg-white">
-                  <Search className="w-[12px] h-[12px] text-[#B2B2B2]" />
-                  <input
-                    type="text"
-                    placeholder="Search Type"
-                    value={typeSearch}
-                    onChange={(e) => setTypeSearch(e.target.value)}
-                    onFocus={() => setIsTypeOpen(true)}
-                    className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
-                  />
-                </div>
-                {isTypeOpen && filteredTypes.length > 0 && (
-                  <div className="absolute top-full mt-2 w-full max-h-[160px] overflow-y-auto bg-white rounded-[8px] shadow-[0_2px_20px_2px_rgba(0,0,0,0.15)] p-[8px] flex flex-col gap-[10px] z-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                    {filteredTypes.map((type) => (
-                      <button
-                        key={type.value}
-                        onClick={() => {
-                          toggleType(type.value);
-                          setIsTypeOpen(false);
-                          setTypeSearch("");
-                        }}
-                        className="text-left px-[2px] py-[2px] text-[11px] font-normal text-black font-inter-tight capitalize hover:bg-gray-50 rounded"
-                      >
-                        {type.display}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              {/* Selected Types */}
-              {filters.types.length > 0 && (
-                <div className="flex flex-wrap gap-[4px] mt-1">
-                  {filters.types.map((type) => {
-                    const typeObj = OPPORTUNITY_TYPES.find(
-                      (t) => t.value === type,
-                    );
-                    return (
-                      <div
-                        key={type}
-                        className="flex items-center gap-[5px] px-[7px] py-[8px] bg-[#F5F5F5] rounded-[25px]"
-                      >
-                        <span className="text-[10px] font-normal text-black font-inter-tight">
-                          {typeObj?.display || type}
-                        </span>
-                        <button onClick={() => toggleType(type)}>
-                          <X className="w-[10px] h-[10px] text-[#606060]" />
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
             {/* Category Dropdown */}
             <div className="flex flex-col gap-[8px] w-full" ref={categoryRef}>
               <div className="flex justify-between items-center">
@@ -491,46 +422,46 @@ export function OpportunitiesFilterModal({
                 <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
                   Experience Level
                 </span>
-                <button onClick={() => setIsExperienceOpen(!isExperienceOpen)}>
+                <button
+                  onClick={() => setIsExperienceOpen(!isExperienceOpen)}
+                >
                   <ChevronDown className="w-3 h-3 text-[#B2B2B2]" />
                 </button>
               </div>
-              {isExperienceOpen && (
-                <div className="flex flex-col gap-[6px]">
-                  {EXPERIENCE_LEVELS.map((level) => {
-                    const isSelected = (
-                      filters.experienceLevels || []
-                    ).includes(level.value);
-                    return (
+              <div className="relative">
+                <div className="flex items-center gap-[4px] px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] bg-white">
+                  <Search className="w-[12px] h-[12px] text-[#B2B2B2]" />
+                  <input
+                    type="text"
+                    placeholder="Search Experience"
+                    value={experienceSearch}
+                    onChange={(e) => setExperienceSearch(e.target.value)}
+                    onFocus={() => setIsExperienceOpen(true)}
+                    className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
+                  />
+                </div>
+                {isExperienceOpen && filteredExperienceLevels.length > 0 && (
+                  <div className="absolute top-full mt-2 w-full max-h-[160px] overflow-y-auto bg-white rounded-[8px] shadow-[0_2px_20px_2px_rgba(0,0,0,0.15)] p-[8px] flex flex-col gap-[10px] z-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                    {filteredExperienceLevels.map((level) => (
                       <button
                         key={level.value}
-                        onClick={() => toggleExperienceLevel(level.value)}
-                        className={`text-left px-[8px] py-[8px] text-[11px] font-normal font-inter-tight rounded-[6px] transition-colors ${
-                          isSelected
-                            ? "text-black"
-                            : "text-black/70 hover:bg-gray-50"
-                        }`}
-                        style={
-                          isSelected
-                            ? {
-                                borderWidth: 1,
-                                borderColor: primary,
-                                backgroundColor: `${primary}0D`,
-                              }
-                            : { borderWidth: 1, borderColor: "#E1E4EA" }
-                        }
+                        onClick={() => {
+                          toggleExperienceLevel(level.value);
+                          setIsExperienceOpen(false);
+                          setExperienceSearch("");
+                        }}
+                        className="text-left px-[2px] py-[2px] text-[11px] font-normal text-black font-inter-tight capitalize hover:bg-gray-50 rounded"
                       >
                         {level.display}
                       </button>
-                    );
-                  })}
-                </div>
-              )}
-              {/* Selected Experience Levels (when collapsed) */}
-              {!isExperienceOpen &&
-                filters.experienceLevels &&
+                    ))}
+                  </div>
+                )}
+              </div>
+              {/* Selected Experience Levels */}
+              {filters.experienceLevels &&
                 filters.experienceLevels.length > 0 && (
-                  <div className="flex flex-wrap gap-[4px]">
+                  <div className="flex flex-wrap gap-[4px] mt-1">
                     {filters.experienceLevels.map((level) => {
                       const levelObj = EXPERIENCE_LEVELS.find(
                         (l) => l.value === level,
@@ -621,6 +552,42 @@ export function OpportunitiesFilterModal({
                     <button onClick={() => selectLocation(filters.location!)}>
                       <X className="w-[10px] h-[10px] text-[#606060]" />
                     </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Budget Range Section */}
+            <div className="flex flex-col gap-[8px] w-full" ref={budgetRef}>
+              <div className="flex justify-between items-center">
+                <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
+                  Budget Range (NGN)
+                </span>
+                <button onClick={() => setIsBudgetOpen(!isBudgetOpen)}>
+                  <ChevronDown className="w-3 h-3 text-[#B2B2B2]" />
+                </button>
+              </div>
+              {isBudgetOpen && (
+                <div className="grid grid-cols-2 gap-[8px]">
+                  <div className="flex flex-col gap-[4px]">
+                    <span className="text-[9px] text-[#B2B2B2] font-inter-tight">Min Budget</span>
+                    <input
+                      type="number"
+                      placeholder="0"
+                      value={filters.minBudget || ""}
+                      onChange={(e) => handleBudgetChange("minBudget", e.target.value)}
+                      className="w-full px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] text-[11px] font-normal font-inter-tight focus:outline-none"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-[4px]">
+                    <span className="text-[9px] text-[#B2B2B2] font-inter-tight">Max Budget</span>
+                    <input
+                      type="number"
+                      placeholder="Any"
+                      value={filters.maxBudget || ""}
+                      onChange={(e) => handleBudgetChange("maxBudget", e.target.value)}
+                      className="w-full px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] text-[11px] font-normal font-inter-tight focus:outline-none"
+                    />
                   </div>
                 </div>
               )}

@@ -45,6 +45,8 @@ export async function getOpportunitiesData(params?: {
   tags?: string;
   location?: string;
   experienceLevel?: string;
+  minBudget?: number;
+  maxBudget?: number;
 }): Promise<OpportunitiesResponse> {
   try {
     const response = await getTalentOpportunities({
@@ -59,6 +61,8 @@ export async function getOpportunitiesData(params?: {
       ...(params?.experienceLevel && {
         experienceLevel: params.experienceLevel,
       }),
+      ...(params?.minBudget && { minBudget: params.minBudget }),
+      ...(params?.maxBudget && { maxBudget: params.maxBudget }),
     });
 
     console.log(

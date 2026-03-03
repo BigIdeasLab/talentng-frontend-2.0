@@ -164,7 +164,7 @@ export function MentorFilterModal({
         modalRef.current &&
         !modalRef.current.contains(event.target as Node)
       ) {
-        onClose();
+        handleApplyFilter();
       }
 
       if (
@@ -213,6 +213,7 @@ export function MentorFilterModal({
   }, [
     isOpen,
     onClose,
+    handleApplyFilter,
     isExpertiseOpen,
     isIndustryOpen,
     isStackOpen,
@@ -225,7 +226,7 @@ export function MentorFilterModal({
   return (
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 z-40 bg-black/5" onClick={onClose} />
+      <div className="fixed inset-0 z-40 bg-black/5" onClick={handleApplyFilter} />
 
       {/* Modal Content */}
       <div

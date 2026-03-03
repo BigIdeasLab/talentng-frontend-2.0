@@ -30,6 +30,8 @@ export interface TalentFilterParams {
   skills?: string;
   location?: string;
   availability?: string; // comma-separated for multi-value filter
+  sort?: "newest" | "oldest";
+  sortOrder?: "asc" | "desc";
   limit?: number;
   offset?: number;
 }

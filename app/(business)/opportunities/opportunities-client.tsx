@@ -87,6 +87,14 @@ export function OpportunitiesClient({
         overrideFilters !== undefined ? overrideFilters : appliedFilters;
       const filter = filterType ?? activeFilter;
 
+      // Prioritize explicit types from modal filters, otherwise fallback to the active tab filter
+      const typeParam =
+        filters?.types && filters.types.length > 0
+          ? filters.types.join(",")
+          : filter === "all" || filter === "applied"
+            ? undefined
+            : filter;
+
       try {
         // Fetch results with the applied filters
         const {
@@ -97,11 +105,13 @@ export function OpportunitiesClient({
           searchQuery: query,
           limit: LIMIT,
           offset: pageOffset,
-          type: filter === "all" || filter === "applied" ? undefined : filter,
+          type: typeParam,
           category: filters?.categories?.join(","),
           tags: filters?.skills?.join(","),
           location: filters?.location,
           experienceLevel: filters?.experienceLevels?.join(","),
+          minBudget: filters?.minBudget,
+          maxBudget: filters?.maxBudget,
         });
 
         // Discard stale responses (e.g. from React Strict Mode double-mount)
@@ -149,7 +159,34 @@ export function OpportunitiesClient({
   const handleFilterChange = (filter: FilterType) => {
     setActiveFilter(filter);
     setOffset(0);
-    fetchOpportunitiesWithFilters(0, filter);
+
+    // Sync modal filter types when changing tabs
+    if (filter === "all" || filter === "applied") {
+      setAppliedFilters((prev) => (prev ? { ...prev, types: [] } : null));
+      fetchOpportunitiesWithFilters(0, filter, undefined, {
+        ...(appliedFilters || {
+          types: [],
+          skills: [],
+          categories: [],
+          experienceLevels: [],
+          location: "",
+        }),
+        types: [],
+      });
+    } else {
+      const newFilters = {
+        ...(appliedFilters || {
+          types: [],
+          skills: [],
+          categories: [],
+          experienceLevels: [],
+          location: "",
+        }),
+        types: [filter],
+      };
+      setAppliedFilters(newFilters);
+      fetchOpportunitiesWithFilters(0, filter, undefined, newFilters);
+    }
   };
 
   const handleNextPage = () => {
@@ -182,13 +219,16 @@ export function OpportunitiesClient({
   const getFilterCount = (): number => {
     if (!appliedFilters) return 0;
     let count = 0;
-    if (appliedFilters.types.length > 0) count += appliedFilters.types.length;
+    // We exclude types from the count because they are controlled by the tabs
+    // and the user doesn't want the badge count to change when switching tabs.
     if (appliedFilters.skills.length > 0) count += appliedFilters.skills.length;
     if (appliedFilters.categories?.length)
       count += appliedFilters.categories.length;
     if (appliedFilters.experienceLevels?.length)
       count += appliedFilters.experienceLevels.length;
     if (appliedFilters.location) count += 1;
+    if (appliedFilters.minBudget && appliedFilters.minBudget > 0) count += 1;
+    if (appliedFilters.maxBudget && appliedFilters.maxBudget > 0) count += 1;
     return count;
   };
 

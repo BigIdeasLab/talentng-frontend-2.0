@@ -44,8 +44,21 @@ export const applyToOpportunity = async (
  * Get all applications for current talent
  * GET /talent/applications
  */
-export const getTalentApplications = async (): Promise<Application[]> => {
-  return apiClient<Application[]>("/talent/applications");
+export const getTalentApplications = async (params?: {
+  searchQuery?: string;
+  status?: string;
+  dateRange?: "today" | "week" | "month";
+  limit?: number;
+  offset?: number;
+}): Promise<Application[]> => {
+  const query = new URLSearchParams();
+  if (params?.searchQuery) query.append("searchQuery", params.searchQuery);
+  if (params?.status) query.append("status", params.status);
+  if (params?.dateRange) query.append("dateRange", params.dateRange);
+  if (params?.limit) query.append("limit", String(params.limit));
+  if (params?.offset) query.append("offset", String(params.offset));
+  const queryString = query.toString();
+  return apiClient<Application[]>(`/talent/applications${queryString ? `?${queryString}` : ""}`);
 };
 
 /**
@@ -55,12 +68,22 @@ export const getTalentApplications = async (): Promise<Application[]> => {
 export const getRecruiterApplications = async (params: {
   status?: string;
   opportunityId?: string;
+  searchQuery?: string;
+  location?: string;
+  skills?: string;
+  dateRange?: "today" | "week" | "month";
+  sortBy?: "newest" | "oldest" | "name-asc" | "name-desc";
   limit?: number;
   offset?: number;
 }): Promise<Application[]> => {
   const query = new URLSearchParams();
   if (params.status) query.append("status", params.status);
   if (params.opportunityId) query.append("opportunityId", params.opportunityId);
+  if (params.searchQuery) query.append("searchQuery", params.searchQuery);
+  if (params.location) query.append("location", params.location);
+  if (params.skills) query.append("skills", params.skills);
+  if (params.dateRange) query.append("dateRange", params.dateRange);
+  if (params.sortBy) query.append("sortBy", params.sortBy);
   if (params.limit) query.append("limit", String(params.limit));
   if (params.offset) query.append("offset", String(params.offset));
 
@@ -93,12 +116,22 @@ export const getApplicationById = async (
 export const getApplicationsWithFilters = async (params: {
   status?: string;
   opportunityId?: string;
+  searchQuery?: string;
+  location?: string;
+  skills?: string;
+  dateRange?: "today" | "week" | "month";
+  sortBy?: "newest" | "oldest" | "name-asc" | "name-desc";
   limit?: number;
   offset?: number;
 }): Promise<Application[]> => {
   const query = new URLSearchParams();
   if (params.status) query.append("status", params.status);
   if (params.opportunityId) query.append("opportunityId", params.opportunityId);
+  if (params.searchQuery) query.append("searchQuery", params.searchQuery);
+  if (params.location) query.append("location", params.location);
+  if (params.skills) query.append("skills", params.skills);
+  if (params.dateRange) query.append("dateRange", params.dateRange);
+  if (params.sortBy) query.append("sortBy", params.sortBy);
   if (params.limit) query.append("limit", String(params.limit));
   if (params.offset) query.append("offset", String(params.offset));
 
@@ -259,6 +292,40 @@ export const leaveRecommendation = async (
     method: "POST",
     body: input,
   });
+};
+
+/**
+ * Get unified recruiter interview feed
+ * GET /recruiter/interviews
+ */
+export const getRecruiterInterviews = async (params?: {
+  q?: string;
+  dateRange?: "today" | "week" | "month";
+  limit?: number;
+  offset?: number;
+}): Promise<{
+  data: any[];
+  pagination: any;
+}> => {
+  const query = new URLSearchParams();
+  if (params?.q) query.append("q", params.q);
+  if (params?.dateRange) query.append("dateRange", params.dateRange);
+  if (params?.limit) query.append("limit", String(params.limit));
+  if (params?.offset) query.append("offset", String(params.offset));
+  const queryString = query.toString();
+  return apiClient<{ data: any[]; pagination: any }>(
+    `/recruiter/interviews${queryString ? `?${queryString}` : ""}`,
+  );
+};
+
+/**
+ * Get recruiter interview count for badges
+ * GET /recruiter/interviews/count
+ */
+export const getRecruiterInterviewsCount = async (): Promise<{
+  count: number;
+}> => {
+  return apiClient<{ count: number }>("/recruiter/interviews/count");
 };
 
 // Export types

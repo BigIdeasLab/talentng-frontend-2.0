@@ -19,6 +19,7 @@ interface SidebarProps {
   onItemSelect?: (item: string) => void;
   onNotificationClick?: () => void;
   notificationCount?: number;
+  upcomingCount?: number;
 }
 
 interface MenuItem {
@@ -201,7 +202,10 @@ const otherItems: Omit<MenuItem, "badge">[] = [
   },
 ];
 
-const getMenuItems = (notificationCount?: number): MenuItem[] => [
+const getMenuItems = (
+  notificationCount?: number,
+  upcomingCount?: number,
+): MenuItem[] => [
   {
     id: "dashboard",
     label: "Dashboard",
@@ -231,6 +235,7 @@ const getMenuItems = (notificationCount?: number): MenuItem[] => [
     label: "Upcoming",
     icon: <WorkIcon />,
     href: "/upcoming",
+    badge: upcomingCount,
   },
   {
     id: "notification",
@@ -245,10 +250,11 @@ export function RecruiterSidebar({
   onItemSelect,
   onNotificationClick,
   notificationCount = 0,
+  upcomingCount = 0,
 }: SidebarProps) {
   const pathname = usePathname();
   const { currentProfile, currentProfileUI } = useProfile();
-  const menuItems = getMenuItems(notificationCount);
+  const menuItems = getMenuItems(notificationCount, upcomingCount);
 
   const handleNotificationClick = (e: React.MouseEvent) => {
     e.preventDefault();

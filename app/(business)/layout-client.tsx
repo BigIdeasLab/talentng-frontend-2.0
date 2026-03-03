@@ -9,6 +9,9 @@ import { useNotificationSocket } from "@/hooks/useNotificationSocket";
 import { TalentSidebar } from "@/components/layouts/sidebars/TalentSidebar";
 import { RecruiterSidebar } from "@/components/layouts/sidebars/RecruiterSidebar";
 import { MentorSidebar } from "@/components/layouts/sidebars/MentorSidebar";
+import { getTalentUpcomingCount } from "@/lib/api/talent";
+import { getRecruiterInterviewsCount } from "@/lib/api/applications";
+import { getMentorSessionsCount } from "@/lib/api/mentorship";
 import { MobileSidebar } from "@/components/talent/profile/components/MobileSidebar";
 import { LoadingScreen } from "@/components/layouts/LoadingScreen";
 import { NotificationsModal } from "@/components/layouts/modals/NotificationsModal";
@@ -20,6 +23,9 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   const [activeNavItem, setActiveNavItem] = useState("dashboard");
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [totalUnreadCount, setTotalUnreadCount] = useState(0);
+  const [talentUpcomingCount, setTalentUpcomingCount] = useState(0);
+  const [recruiterUpcomingCount, setRecruiterUpcomingCount] = useState(0);
+  const [mentorUpcomingCount, setMentorUpcomingCount] = useState(0);
   const { activeRole, isLoading, roleSwitchRequired, triggerRoleSwitch } =
     useProfile();
 
@@ -61,8 +67,39 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
       refreshRoleNotifications();
       refreshGeneralNotifications();
     },
+    onUpcomingUpdate: (count) => {
+      // Update talent upcoming badge count from SSE
+      setTalentUpcomingCount(count);
+    },
+    onRecruiterUpdate: (count) => {
+      // Update recruiter upcoming badge count from SSE
+      setRecruiterUpcomingCount(count);
+    },
+    onMentorUpdate: (count) => {
+      // Update mentor upcoming badge count from SSE
+      setMentorUpcomingCount(count);
+    },
     enabled: !!activeRole,
   });
+
+  // Fetch initial upcoming counts based on active role
+  useEffect(() => {
+    if (!activeRole) return;
+
+    if (activeRole === "talent") {
+      getTalentUpcomingCount()
+        .then((res) => setTalentUpcomingCount(res.count))
+        .catch(console.error);
+    } else if (activeRole === "recruiter") {
+      getRecruiterInterviewsCount()
+        .then((res) => setRecruiterUpcomingCount(res.count))
+        .catch(console.error);
+    } else if (activeRole === "mentor") {
+      getMentorSessionsCount()
+        .then((res) => setMentorUpcomingCount(res.count))
+        .catch(console.error);
+    }
+  }, [activeRole]);
 
   // Refresh layout's notification counts when a notification is read in the modal
   const handleNotificationRead = useCallback(() => {
@@ -97,6 +134,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
             onItemSelect={setActiveNavItem}
             onNotificationClick={() => setIsNotificationsOpen(true)}
             notificationCount={totalUnreadCount}
+            upcomingCount={recruiterUpcomingCount}
           />
         );
       case "mentor":
@@ -106,6 +144,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
             onItemSelect={setActiveNavItem}
             onNotificationClick={() => setIsNotificationsOpen(true)}
             notificationCount={totalUnreadCount}
+            upcomingCount={mentorUpcomingCount}
           />
         );
       case "talent":
@@ -116,6 +155,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
             onItemSelect={setActiveNavItem}
             onNotificationClick={() => setIsNotificationsOpen(true)}
             notificationCount={totalUnreadCount}
+            upcomingCount={talentUpcomingCount}
           />
         );
     }

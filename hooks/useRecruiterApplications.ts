@@ -25,6 +25,11 @@ import {
 interface RecruiterApplicationsParams {
   opportunityId?: string;
   status?: string;
+  searchQuery?: string;
+  location?: string;
+  skills?: string;
+  dateRange?: "today" | "week" | "month";
+  sortBy?: "newest" | "oldest" | "name-asc" | "name-desc";
   limit?: number;
   offset?: number;
 }

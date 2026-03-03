@@ -65,8 +65,11 @@ export interface MyRequestsResponse {
 export interface RequestsQueryParams {
   role?: "sent" | "received";
   status?: RequestStatus;
+  searchQuery?: string;
+  dateRange?: "today" | "week" | "month";
   page?: number;
   limit?: number;
+  offset?: number;
 }
 
 export interface PendingCountResponse {
@@ -139,8 +142,11 @@ export interface SessionsQueryParams {
   status?: SessionStatus;
   upcoming?: boolean;
   past?: boolean;
+  searchQuery?: string;
+  dateRange?: "today" | "week" | "month";
   page?: number;
   limit?: number;
+  offset?: number;
 }
 
 export interface SessionsMetaResponse {

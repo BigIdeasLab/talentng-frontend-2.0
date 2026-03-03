@@ -16,6 +16,7 @@ interface SidebarProps {
   onItemSelect?: (item: string) => void;
   onNotificationClick?: () => void;
   notificationCount?: number;
+  upcomingCount?: number;
 }
 
 interface MenuItem {
@@ -360,7 +361,10 @@ const otherItems: Omit<MenuItem, "badge">[] = [
   },
 ];
 
-const getMenuItems = (notificationCount?: number): MenuItem[] => {
+const getMenuItems = (
+  notificationCount?: number,
+  upcomingCount?: number,
+): MenuItem[] => {
   const items = [
     {
       id: "dashboard",
@@ -386,6 +390,7 @@ const getMenuItems = (notificationCount?: number): MenuItem[] => {
       label: "Sessions",
       icon: <FileIcon />,
       href: "/sessions",
+      badge: upcomingCount,
     },
     // {
     //   id: "opportunities",
@@ -408,9 +413,10 @@ export function MentorSidebar({
   onItemSelect,
   onNotificationClick,
   notificationCount = 0,
+  upcomingCount = 0,
 }: SidebarProps) {
   const pathname = usePathname();
-  const menuItems = getMenuItems(notificationCount);
+  const menuItems = getMenuItems(notificationCount, upcomingCount);
 
   const handleNotificationClick = (e: React.MouseEvent) => {
     e.preventDefault();

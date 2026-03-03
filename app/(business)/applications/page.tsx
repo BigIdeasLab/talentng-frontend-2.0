@@ -22,7 +22,11 @@ import {
   acceptRequest,
   rejectRequest,
 } from "@/lib/api/mentorship";
-import type { MentorshipRequest as ApiMentorshipRequest } from "@/lib/api/mentorship";
+import type {
+  MentorshipRequest as ApiMentorshipRequest,
+  RequestStatus,
+} from "@/lib/api/mentorship";
+
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { ApplicationsSkeleton } from "@/components/mentor/applications/ApplicationsSkeleton";
 import {
@@ -102,7 +106,13 @@ export default function ApplicationsPage() {
     try {
       setIsLoading(true);
       const [requestsResponse, countResponse] = await Promise.all([
-        getMentorMentorshipRequests({}),
+        getMentorMentorshipRequests({
+          ...(filter !== "all" ? { status: filter as RequestStatus } : {}),
+          ...(searchQuery ? { searchQuery } : {}),
+          ...(appliedFilters?.dateRange && appliedFilters.dateRange !== "all"
+            ? { dateRange: appliedFilters.dateRange as "today" | "week" | "month" }
+            : {}),
+        }),
         getPendingRequestsCount(),
       ]);
       // Handle both { data: [...] } and direct array responses
@@ -118,7 +128,7 @@ export default function ApplicationsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [filter, searchQuery, appliedFilters]);
 
   useEffect(() => {
     if (hasAccess) {
@@ -133,31 +143,8 @@ export default function ApplicationsPage() {
     { id: "rejected", label: "Rejected" },
   ];
 
-  const filteredRequests = requests.filter((req) => {
-    const matchesFilter = filter === "all" || req.status === filter;
-    const matchesSearch =
-      searchQuery === "" ||
-      req.mentee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      req.topic.toLowerCase().includes(searchQuery.toLowerCase());
-
-    if (!matchesFilter || !matchesSearch) return false;
-
-    if (appliedFilters) {
-      // Date Range Filter
-      if (appliedFilters.dateRange !== "all") {
-        const date = new Date(req.requestedAt);
-        const now = new Date();
-        const diffDays = Math.floor(
-          (now.getTime() - date.getTime()) / (1000 * 3600 * 24),
-        );
-        if (appliedFilters.dateRange === "today" && diffDays > 0) return false;
-        if (appliedFilters.dateRange === "week" && diffDays > 7) return false;
-        if (appliedFilters.dateRange === "month" && diffDays > 30) return false;
-      }
-    }
-
-    return true;
-  });
+  // Server handles filtering — show all returned results directly
+  const filteredRequests = requests;
 
   const handleAccept = (id: string) => {
     setSelectedRequestId(id);

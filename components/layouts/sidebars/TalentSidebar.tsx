@@ -28,6 +28,7 @@ interface SidebarProps {
   onMobileClose?: () => void;
   onNotificationClick?: () => void;
   notificationCount?: number;
+  upcomingCount?: number;
 }
 
 interface MenuItem {
@@ -38,7 +39,7 @@ interface MenuItem {
   href?: string;
 }
 
-const getMenuItems = (notificationCount?: number): MenuItem[] => [
+const getMenuItems = (notificationCount?: number, upcomingCount?: number): MenuItem[] => [
   {
     id: "dashboard",
     label: "Dashboard",
@@ -68,6 +69,7 @@ const getMenuItems = (notificationCount?: number): MenuItem[] => [
     id: "upcoming",
     label: "Upcoming",
     icon: Calendar,
+    badge: upcomingCount,
     href: "/upcoming",
   },
 
@@ -90,9 +92,10 @@ export function TalentSidebar({
   onItemSelect,
   onNotificationClick,
   notificationCount = 0,
+  upcomingCount = 0,
 }: SidebarProps) {
   const pathname = usePathname();
-  const menuItems = getMenuItems(notificationCount);
+  const menuItems = getMenuItems(notificationCount, upcomingCount);
 
   const handleNotificationClick = (e: React.MouseEvent) => {
     e.preventDefault();

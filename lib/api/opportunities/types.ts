@@ -98,9 +98,11 @@ export interface GetOpportunitiesParams {
   experienceLevel?: string;
   isFeatured?: boolean;
   postedById?: string;
+  minBudget?: number;
+  maxBudget?: number;
   limit?: number;
   offset?: number;
-  sortBy?: "createdAt" | "applicationCount" | "title";
+  sortBy?: "createdAt" | "applicationCount" | "title" | "price" | "minBudget";
   sortOrder?: "asc" | "desc";
 }
 

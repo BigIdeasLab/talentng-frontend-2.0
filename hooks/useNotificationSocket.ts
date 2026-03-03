@@ -12,7 +12,13 @@ const isEventSourceAvailable = (): boolean => {
 interface NotificationStreamEvent {
   type: string;
   data: {
-    event: "count_updated" | "notification_created" | "notification_read";
+    event:
+      | "count_updated"
+      | "notification_created"
+      | "notification_read"
+      | "upcoming_updated"
+      | "recruiter_interviews_updated"
+      | "mentor_sessions_updated";
     count?: number;
     unread?: number;
     notificationId?: string;
@@ -25,6 +31,9 @@ interface UseNotificationSocketProps {
   onCountUpdate?: (unread: number, total: number) => void;
   onNotificationCreated?: (notificationId: string) => void;
   onNotificationRead?: (notificationId: string) => void;
+  onUpcomingUpdate?: (count: number) => void;
+  onRecruiterUpdate?: (count: number) => void;
+  onMentorUpdate?: (count: number) => void;
   enabled?: boolean;
 }
 
@@ -46,6 +55,9 @@ export function useNotificationSocket({
   onCountUpdate,
   onNotificationCreated,
   onNotificationRead,
+  onUpcomingUpdate,
+  onRecruiterUpdate,
+  onMentorUpdate,
   enabled = true,
 }: UseNotificationSocketProps) {
   const { user, loading } = useAuth();
@@ -119,6 +131,22 @@ export function useNotificationSocket({
                   onCountUpdate?.(unread, count);
                 }
                 break;
+
+              case "upcoming_updated":
+                if (count !== undefined) {
+                  onUpcomingUpdate?.(count);
+                }
+                break;
+              case "recruiter_interviews_updated":
+                if (count !== undefined) {
+                  onRecruiterUpdate?.(count);
+                }
+                break;
+              case "mentor_sessions_updated":
+                if (count !== undefined) {
+                  onMentorUpdate?.(count);
+                }
+                break;
             }
           }
         } catch (error) {
@@ -163,6 +191,9 @@ export function useNotificationSocket({
     onCountUpdate,
     onNotificationCreated,
     onNotificationRead,
+    onUpcomingUpdate,
+    onRecruiterUpdate,
+    onMentorUpdate,
   ]);
 
   /**
@@ -185,10 +216,12 @@ export function useNotificationSocket({
   // Connect on mount and when dependencies change
   useEffect(() => {
     // Only connect when user is authenticated and auth is done loading
-    // DISABLED: Backend /api/v1/notifications/stream endpoint returns 404
     if (enabled && user && !loading && isEventSourceAvailable()) {
-      // Re-enabled when endpoint is ready
-      // connect();
+      // Role-specific connection check - all core roles now support SSE
+      const supportedRoles = ["talent", "recruiter", "mentor", "general"];
+      if (supportedRoles.includes(recipientRole)) {
+        connect();
+      }
     }
 
     return () => {

@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Calendar, Users, Search, X, SlidersHorizontal } from "lucide-react";
-import { getSessions } from "@/lib/api/mentorship";
+import { useToast } from "@/hooks";
+import { getMentorSessions } from "@/lib/api/mentorship";
+import { useNotificationSocket } from "@/hooks/useNotificationSocket";
 import type { MentorshipSession } from "@/lib/api/mentorship/types";
 import { MentorSessionCard } from "./MentorSessionCard";
 import {
@@ -18,83 +20,72 @@ interface UpcomingItem {
 }
 
 export function MentorUpcoming() {
-  const [sessions, setSessions] = useState<MentorshipSession[]>([]);
+  const { toast } = useToast();
+  const [items, setItems] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] =
     useState<ApplicationFilterState | null>(null);
 
-  const fetchData = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const sessionsResponse = await getSessions({ role: "mentor" }).catch(
-        () => [],
-      );
-      const sessionsArray = Array.isArray(sessionsResponse)
-        ? sessionsResponse
-        : (sessionsResponse?.data ?? []);
-      setSessions(sessionsArray);
-    } catch (error) {
-      console.error("Failed to load upcoming data:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const fetchData = useCallback(
+    async (showLoading = true) => {
+      try {
+        if (showLoading) setIsLoading(true);
+        const res = await getMentorSessions({
+          searchQuery: searchQuery || undefined,
+          dateRange:
+            appliedFilters?.dateRange && appliedFilters.dateRange !== "all"
+              ? (appliedFilters.dateRange as any)
+              : undefined,
+          limit: 100,
+        });
+        setItems(res.data || []);
+      } catch (error) {
+        console.error("Failed to load mentor upcoming data:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load upcoming sessions",
+          variant: "destructive",
+        });
+      } finally {
+        if (showLoading) setIsLoading(false);
+      }
+    },
+    [searchQuery, appliedFilters, toast],
+  );
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  // Build list of upcoming sessions
-  const upcomingItems: UpcomingItem[] = [];
-
-  sessions.forEach((session) => {
-    if (session.status !== "cancelled" && session.status !== "completed") {
-      const rawDate =
-        session.startTime || session.scheduledAt || session.createdAt;
-      upcomingItems.push({
-        type: "session",
-        date: new Date(rawDate),
-        session,
-      });
-    }
+  // Subscribe to real-time updates for the feed
+  useNotificationSocket({
+    recipientRole: "mentor" as any,
+    onMentorUpdate: () => {
+      fetchData(false); // Refresh without full loading state
+    },
+    enabled: true,
   });
+
+  // Map API items to component-friendly shapes
+  const upcomingItems: UpcomingItem[] = items.map((item) => ({
+    type: "session",
+    date: new Date(item.startTime || item.date),
+    session: {
+      id: item.id,
+      status: item.status,
+      startTime: item.startTime,
+      topic: item.title,
+      mentee: {
+        id: item.metadata?.menteeId,
+        fullName: item.subtitle,
+        profileImageUrl: item.image,
+      },
+    } as any,
+  }));
 
   upcomingItems.sort((a, b) => a.date.getTime() - b.date.getTime());
-
-  // Apply filters
-  const filteredItems = upcomingItems.filter((item) => {
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      const mentee = item.session.mentee;
-      if (
-        !item.session.topic.toLowerCase().includes(q) &&
-        !(mentee.fullName || mentee.name || "").toLowerCase().includes(q)
-      )
-        return false;
-    }
-
-    if (appliedFilters) {
-      // Date Range Filter
-      if (appliedFilters.dateRange !== "all") {
-        const now = new Date();
-        const diffDays = Math.floor(
-          (item.date.getTime() - now.getTime()) / (1000 * 3600 * 24),
-        );
-        if (appliedFilters.dateRange === "today") {
-          const isToday = item.date.toDateString() === now.toDateString();
-          if (!isToday) return false;
-        } else if (appliedFilters.dateRange === "week" && diffDays > 7) {
-          return false;
-        } else if (appliedFilters.dateRange === "month" && diffDays > 30) {
-          return false;
-        }
-      }
-    }
-
-    return true;
-  });
 
   return (
     <div className="h-screen overflow-x-hidden bg-white flex flex-col">
@@ -110,7 +101,7 @@ export function MentorUpcoming() {
             <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
             <input
               type="text"
-              placeholder="Search sessions by topic or mentee..."
+              placeholder="Search sessions by topic or mentee name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
@@ -182,7 +173,7 @@ export function MentorUpcoming() {
                 />
               ))}
             </div>
-          ) : filteredItems.length === 0 ? (
+          ) : upcomingItems.length === 0 ? (
             <EmptyState
               icon={Calendar}
               title="No upcoming sessions"
@@ -190,7 +181,7 @@ export function MentorUpcoming() {
             />
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
-              {filteredItems.map((item) => (
+              {upcomingItems.map((item) => (
                 <MentorSessionCard
                   key={`sess-${item.session.id}`}
                   session={item.session}

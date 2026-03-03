@@ -11,8 +11,8 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks";
 import { useProfile } from "@/hooks/useProfile";
-import { getTalentApplications } from "@/lib/api/applications/index";
-import { getSessions } from "@/lib/api/mentorship";
+import { getTalentUpcoming } from "@/lib/api/talent";
+import { useNotificationSocket } from "@/hooks/useNotificationSocket";
 import type {
   Application,
   ApplicationInterview,
@@ -28,6 +28,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { RecruiterUpcoming } from "@/components/employer/upcoming/RecruiterUpcoming";
 import { LoadingScreen } from "@/components/layouts/LoadingScreen";
 import { useRouter } from "next/navigation";
+import { useRequireRole } from "@/hooks/useRequireRole";
 
 interface UpcomingItem {
   type: "interview" | "session";
@@ -44,8 +45,6 @@ const FILTER_TABS = [
   { id: "interviews", label: "Interviews", icon: Briefcase },
   { id: "sessions", label: "Sessions", icon: Users },
 ];
-
-import { useRequireRole } from "@/hooks/useRequireRole";
 
 export default function UpcomingPage() {
   const { activeRole, isLoading: roleLoading } = useProfile();
@@ -72,8 +71,7 @@ export default function UpcomingPage() {
 function TalentUpcoming() {
   const { toast } = useToast();
 
-  const [jobApplications, setJobApplications] = useState<Application[]>([]);
-  const [sessions, setSessions] = useState<MentorshipSession[]>([]);
+  const [items, setItems] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -81,127 +79,101 @@ function TalentUpcoming() {
   const [appliedFilters, setAppliedFilters] =
     useState<ApplicationFilterState | null>(null);
 
-  const fetchData = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const [appsData, sessionsResponse] = await Promise.all([
-        getTalentApplications().catch(() => []),
-        getSessions({ role: "mentee" }).catch(() => []),
-      ]);
-      setJobApplications(appsData || []);
-      const sessionsArray = Array.isArray(sessionsResponse)
-        ? sessionsResponse
-        : (sessionsResponse?.data ?? []);
-      setSessions(sessionsArray);
-    } catch (error) {
-      console.error("Failed to load upcoming data:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const fetchData = useCallback(
+    async (showLoading = true) => {
+      try {
+        if (showLoading) setIsLoading(true);
+        const res = await getTalentUpcoming({
+          q: searchQuery,
+          dateRange:
+            appliedFilters?.dateRange && appliedFilters.dateRange !== "all"
+              ? (appliedFilters.dateRange as any)
+              : undefined,
+          limit: 100,
+        });
+
+        setItems(res.data || []);
+      } catch (error) {
+        console.error("Failed to load upcoming data:", error);
+        toast({
+          title: "Error",
+          description: "Failed to refresh upcoming events",
+          variant: "destructive",
+        });
+      } finally {
+        if (showLoading) setIsLoading(false);
+      }
+    },
+    [searchQuery, appliedFilters, toast],
+  );
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  // Build unified list
-  const upcomingItems: UpcomingItem[] = [];
+  // Subscribe to real-time updates for the feed
+  useNotificationSocket({
+    recipientRole: "talent",
+    onUpcomingUpdate: () => {
+      fetchData(false);
+    },
+    enabled: true,
+  });
 
-  jobApplications.forEach((app) => {
-    if (app.interviews && app.interviews.length > 0) {
-      app.interviews.forEach((interview) => {
-        if (interview.status !== "cancelled") {
-          upcomingItems.push({
-            type: "interview",
-            date: new Date(interview.scheduledDate),
-            interview: { interview, application: app },
-          });
+  // Build unified list compatible with local filtering
+  const upcomingItems: UpcomingItem[] = items.map((item) => ({
+    type: item.type,
+    date: new Date(item.startTime || item.date),
+    ...(item.type === "interview"
+      ? {
+          interview: {
+            interview: {
+              id: item.id,
+              status: item.status,
+              scheduledDate: item.startTime,
+              meetingLink: item.meetingLink,
+              message: item.message,
+            } as any,
+            application: {
+              opportunityId: item.metadata?.opportunityId,
+              opportunity: {
+                title: item.title,
+                company: item.subtitle,
+                logo: item.image,
+              },
+            } as any,
+          },
         }
-      });
-    }
-  });
-
-  sessions.forEach((session) => {
-    if (session.status !== "cancelled" && session.status !== "completed") {
-      const rawDate =
-        session.startTime || session.scheduledAt || session.createdAt;
-      upcomingItems.push({
-        type: "session",
-        date: new Date(rawDate),
-        session,
-      });
-    }
-  });
+      : {
+          session: {
+            id: item.id,
+            status: item.status,
+            startTime: item.startTime,
+            topic: item.title,
+            mentor: {
+              id: item.metadata?.mentorId,
+              fullName: item.subtitle,
+              profileImageUrl: item.image,
+            },
+          } as any,
+        }),
+  }));
 
   upcomingItems.sort((a, b) => a.date.getTime() - b.date.getTime());
 
-  // Apply filters
   const filteredItems = upcomingItems.filter((item) => {
     if (filter === "interviews" && item.type !== "interview") return false;
     if (filter === "sessions" && item.type !== "session") return false;
-
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      if (item.type === "interview" && item.interview) {
-        const { application } = item.interview;
-        if (
-          !application.opportunity.title.toLowerCase().includes(q) &&
-          !application.opportunity.company.toLowerCase().includes(q)
-        )
-          return false;
-      }
-      if (item.type === "session" && item.session) {
-        const mentor = item.session.mentor;
-        if (
-          !item.session.topic.toLowerCase().includes(q) &&
-          !(mentor.fullName || mentor.name || "").toLowerCase().includes(q)
-        )
-          return false;
-      }
-    }
-
-    if (appliedFilters) {
-      // Date Range Filter
-      if (appliedFilters.dateRange !== "all") {
-        const now = new Date();
-        const diffDays = Math.floor(
-          (item.date.getTime() - now.getTime()) / (1000 * 3600 * 24),
-        );
-        if (appliedFilters.dateRange === "today") {
-          const isToday = item.date.toDateString() === now.toDateString();
-          if (!isToday) return false;
-        } else if (appliedFilters.dateRange === "week" && diffDays > 7) {
-          return false;
-        } else if (appliedFilters.dateRange === "month" && diffDays > 30) {
-          return false;
-        }
-      }
-
-      // Type Filter (only for interviews)
-      if (
-        item.type === "interview" &&
-        appliedFilters.type &&
-        appliedFilters.type.length > 0 &&
-        item.interview
-      ) {
-        if (!appliedFilters.type.includes(item.interview.application.opportunity.type)) {
-          return false;
-        }
-      }
-    }
-
     return true;
   });
 
   return (
     <div className="h-screen overflow-x-hidden bg-white flex flex-col">
-      {/* Header */}
       <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
         <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px] mb-[19px]">
           Upcoming
         </h1>
 
-        {/* Search Bar */}
         <div className="flex items-center gap-[8px] mb-[19px]">
           <div className="flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border border-[#E1E4EA] rounded-[8px]">
             <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
@@ -268,7 +240,6 @@ function TalentUpcoming() {
           </div>
         </div>
 
-        {/* Filter Tabs */}
         <div className="flex items-center gap-2">
           {FILTER_TABS.map((tab) => {
             const Icon = tab.icon;
@@ -307,7 +278,6 @@ function TalentUpcoming() {
         </div>
       </div>
 
-      {/* Content */}
       <div className="flex-1 overflow-hidden">
         <div className="h-full overflow-y-auto p-4 md:p-6">
           {isLoading ? (

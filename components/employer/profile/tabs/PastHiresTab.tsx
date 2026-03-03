@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, SlidersHorizontal, MapPin, Mail, Calendar } from "lucide-react";
+import {
+  Search,
+  SlidersHorizontal,
+  MapPin,
+  Mail,
+  Calendar,
+} from "lucide-react";
 import { HireFilterModal, type HireFilterState } from "./HireFilterModal";
 import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
 import { type Application } from "@/lib/api/applications/types";
@@ -47,34 +53,35 @@ const transformApplicationToHire = (app: Application): PastHire => {
 export function PastHiresTab() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [appliedFilters, setAppliedFilters] = useState<HireFilterState | null>(null);
+  const [appliedFilters, setAppliedFilters] = useState<HireFilterState | null>(
+    null,
+  );
+
+  // Build server-side query params
+  const queryParams = {
+    status: "hired" as const,
+    ...(searchQuery ? { searchQuery } : {}),
+    ...(appliedFilters?.location ? { location: appliedFilters.location } : {}),
+    ...(appliedFilters?.skills?.length
+      ? { skills: appliedFilters.skills.join(",") }
+      : {}),
+  };
+
   const { data: applicationsRaw = [], isLoading } =
-    useRecruiterApplicationsQuery({ status: "hired" });
+    useRecruiterApplicationsQuery(queryParams);
 
   const pastHires: PastHire[] = applicationsRaw.map(transformApplicationToHire);
 
-  const filteredHires =
-    searchQuery.trim() === "" && !appliedFilters
-      ? pastHires
-      : pastHires.filter((hire) => {
-         const matchesSearch =
-      hire.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      hire.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      hire.skills.some((skill) =>
-        skill.toLowerCase().includes(searchQuery.toLowerCase()),
-      );
+  // Server handles all filtering — render results directly
+  const filteredHires = pastHires;
 
-    const matchesFilter =
-      !appliedFilters ||
-      ((appliedFilters.skills.length === 0 ||
-        appliedFilters.skills.some((skill) => hire.skills.includes(skill))) &&
-        (!appliedFilters.location || hire.location === appliedFilters.location));
-
-    return matchesSearch && matchesFilter;
-  });
-
-  const availableLocations = Array.from(new Set(pastHires.map(h => h.location)));
-  const availableSkills = Array.from(new Set(pastHires.flatMap(h => h.skills)));
+  // Option lists for filter modal dropdowns
+  const availableLocations = Array.from(
+    new Set(pastHires.map((h) => h.location)),
+  );
+  const availableSkills = Array.from(
+    new Set(pastHires.flatMap((h) => h.skills)),
+  );
 
   if (isLoading) {
     return (
@@ -117,7 +124,8 @@ export function PastHiresTab() {
             <button
               onClick={() => setIsFilterOpen(!isFilterOpen)}
               className={`h-[38px] px-2.5 flex items-center gap-1 rounded-[8px] flex-shrink-0 transition-colors ${
-                appliedFilters && (appliedFilters.skills.length > 0 || appliedFilters.location)
+                appliedFilters &&
+                (appliedFilters.skills.length > 0 || appliedFilters.location)
                   ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
                   : "bg-transparent hover:bg-gray-50 text-black border border-transparent"
               }`}
@@ -126,22 +134,25 @@ export function PastHiresTab() {
               <span className="text-[13px] font-normal font-inter-tight hidden sm:inline">
                 Filter
               </span>
-              {appliedFilters && (appliedFilters.skills.length > 0 || appliedFilters.location) && (
-                <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-                  {(appliedFilters.skills.length > 0 ? 1 : 0) + (appliedFilters.location ? 1 : 0)}
-                </span>
-              )}
+              {appliedFilters &&
+                (appliedFilters.skills.length > 0 ||
+                  appliedFilters.location) && (
+                  <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                    {(appliedFilters.skills.length > 0 ? 1 : 0) +
+                      (appliedFilters.location ? 1 : 0)}
+                  </span>
+                )}
             </button>
             <HireFilterModal
-                isOpen={isFilterOpen}
-                onClose={() => setIsFilterOpen(false)}
-                onApply={(filters) => {
-                    setAppliedFilters(filters);
-                    setIsFilterOpen(false);
-                }}
-                initialFilters={appliedFilters || undefined}
-                availableLocations={availableLocations}
-                availableSkills={availableSkills}
+              isOpen={isFilterOpen}
+              onClose={() => setIsFilterOpen(false)}
+              onApply={(filters) => {
+                setAppliedFilters(filters);
+                setIsFilterOpen(false);
+              }}
+              initialFilters={appliedFilters || undefined}
+              availableLocations={availableLocations}
+              availableSkills={availableSkills}
             />
           </div>
         </div>

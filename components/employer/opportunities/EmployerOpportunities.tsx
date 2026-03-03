@@ -35,15 +35,31 @@ export function EmployerOpportunities() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<any>(null);
 
+  const STATUS_MAP: Record<TabType, string> = { open: "active", closed: "closed", draft: "draft" };
+  const SORT_MAP: Record<SortType, { sortBy: "createdAt" | "applicationCount" | "title" | "minBudget"; sortOrder: "asc" | "desc" }> = {
+    newest:   { sortBy: "createdAt", sortOrder: "desc" },
+    oldest:   { sortBy: "createdAt", sortOrder: "asc" },
+    "rate-high": { sortBy: "minBudget", sortOrder: "desc" },
+    "rate-low":  { sortBy: "minBudget", sortOrder: "asc" },
+  };
+
+  const queryParams = {
+    status: STATUS_MAP[activeTab],
+    ...(searchQuery ? { q: searchQuery } : {}),
+    ...(appliedFilters?.types?.length ? { type: appliedFilters.types.join(",") } : {}),
+    ...(appliedFilters?.skills?.length ? { tags: appliedFilters.skills.join(",") } : {}),
+    ...SORT_MAP[sortBy],
+  };
+
   const {
     data: opportunitiesRaw,
     isLoading,
     isPending,
     refetch: fetchOpportunities,
-  } = useRecruiterOpportunitiesQuery();
+  } = useRecruiterOpportunitiesQuery(queryParams);
 
-  // Transform API response to card format
-  const opportunities: OpportunityCard[] = (opportunitiesRaw?.data || []).map(
+  // Server handles all filtering and sorting — render results directly
+  const filteredOpportunities = (opportunitiesRaw?.data || []).map(
     transformOpportunityToCard,
   );
 
@@ -55,71 +71,9 @@ export function EmployerOpportunities() {
     }
   }, [searchParams]);
 
-  // fetchOpportunities handled by useQuery hook
-
   const handlePostClick = () => {
     router.push("/opportunities/post");
   };
-
-  const getOpportunitiesByTab = () => {
-    // Filter by status based on tab
-    const statusMap: Record<TabType, string> = {
-      open: "active",
-      closed: "closed",
-      draft: "draft",
-    };
-
-    const targetStatus = statusMap[activeTab];
-    return opportunities.filter((opp) => opp.status === targetStatus);
-  };
-
-  const filteredOpportunities = getOpportunitiesByTab()
-    .filter((opp) => {
-      const matchesSearch =
-        searchQuery === "" ||
-        opp.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        opp.skills.some((skill) =>
-          skill.toLowerCase().includes(searchQuery.toLowerCase()),
-        );
-
-      const matchesFilters =
-        !appliedFilters ||
-        ((appliedFilters.types.length === 0 ||
-          appliedFilters.types.includes(opp.type)) &&
-          (appliedFilters.skills.length === 0 ||
-            appliedFilters.skills.some((skill: string) =>
-              opp.skills.includes(skill),
-            )));
-
-      return matchesSearch && matchesFilters;
-    })
-    .sort((a, b) => {
-      if (sortBy === "newest") {
-        return (
-          new Date(b.createdAt || 0).getTime() -
-          new Date(a.createdAt || 0).getTime()
-        );
-      }
-      if (sortBy === "oldest") {
-        return (
-          new Date(a.createdAt || 0).getTime() -
-          new Date(b.createdAt || 0).getTime()
-        );
-      }
-      if (sortBy === "rate-high") {
-        const rateA = a.minBudget || a.price || 0;
-        const rateB = b.minBudget || b.price || 0;
-        return rateB - rateA;
-      }
-      if (sortBy === "rate-low") {
-        const rateA = a.minBudget || a.price || 0;
-        const rateB = b.minBudget || b.price || 0;
-        return rateA - rateB;
-      }
-      return 0;
-    });
-
-  console.log(opportunitiesRaw);
 
   if (isLoading || isPending || !opportunitiesRaw) {
     return <OpportunitiesSkeleton />;

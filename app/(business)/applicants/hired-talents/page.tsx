@@ -96,7 +96,11 @@ export default function HiredTalentsPage() {
     data: rawApplications = [],
     isLoading: isAppsLoading,
     error: appsError,
-  } = useRecruiterApplicationsQuery({ status: "hired" });
+  } = useRecruiterApplicationsQuery({
+    status: "hired",
+    ...(searchQuery ? { searchQuery } : {}),
+  });
+
 
   useEffect(() => {
     if (rawApplications.length > 0) {
@@ -230,14 +234,8 @@ export default function HiredTalentsPage() {
     }
   };
 
-  const filteredTalents = hiredTalents.filter(
-    (talent) =>
-      talent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      talent.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      talent.opportunities.some((opp) =>
-        opp.title.toLowerCase().includes(searchQuery.toLowerCase()),
-      ),
-  );
+  // Server handles search filtering — render results directly
+  const filteredTalents = hiredTalents;
 
   if (!hasAccess) {
     return <PageLoadingState message="Checking access..." />;
