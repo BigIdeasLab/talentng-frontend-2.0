@@ -2,10 +2,14 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchProfileByRole } from "@/lib/api/profile-service";
+import { Plus, X as XIcon } from "lucide-react";
 import { SmoothCollapse } from "@/components/SmoothCollapse";
 import { SectionHeader } from "@/components/talent/profile/components/edit/SectionHeader";
 import { Button } from "@/components/ui/button";
+import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { Modal } from "@/components/ui/modal";
 import { cn } from "@/lib/utils";
 import {
@@ -18,6 +22,7 @@ import type {
   MentorProfile,
 } from "@/lib/api/mentor/types";
 import categoriesData from "@/lib/data/categories.json";
+import statesCities from "@/lib/data/states-cities.json";
 import { MentorEditProfileSkeleton } from "@/components/skeletons/EditProfileSkeleton";
 
 interface MentorFormData {
@@ -26,7 +31,8 @@ interface MentorFormData {
     lastName: string;
     bio: string;
     profileImageUrl: string;
-    location: string;
+    state: string;
+    city: string;
   };
   professional: {
     headline: string;
@@ -42,6 +48,7 @@ interface MentorFormData {
     telegram: string;
     instagram: string;
     website: string;
+    customLinks?: { name: string; url: string }[];
   };
 }
 
@@ -51,7 +58,8 @@ const DEFAULT_MENTOR_DATA: MentorFormData = {
     lastName: "",
     bio: "",
     profileImageUrl: "",
-    location: "",
+    state: "",
+    city: "",
   },
   professional: {
     headline: "",
@@ -67,6 +75,7 @@ const DEFAULT_MENTOR_DATA: MentorFormData = {
     telegram: "",
     instagram: "",
     website: "",
+    customLinks: [],
   },
 };
 
@@ -171,24 +180,27 @@ function EditProfileSidebar({
 function EditProfileActionBar({
   onSave,
   isLoading,
+  hasUnsavedChanges,
+  onDiscard,
 }: {
   onSave: () => void;
   isLoading: boolean;
+  hasUnsavedChanges: boolean;
+  onDiscard: () => void;
 }) {
   return (
     <div className="h-[56px] border-b border-[#E1E4EA] flex items-center justify-end px-[80px] gap-2 bg-white">
-      <Link href="/mentor/profile">
-        <Button
-          variant="outline"
-          disabled={isLoading}
-          className="h-[40px] px-[24px] rounded-full border border-[#F5F5F5] bg-[#F5F5F5] text-black hover:bg-[#e5e5e5] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-normal"
-        >
-          Discard
-        </Button>
-      </Link>
+      <Button
+        variant="outline"
+        onClick={onDiscard}
+        disabled={isLoading}
+        className="h-[40px] px-[24px] rounded-full border border-[#F5F5F5] bg-[#F5F5F5] text-black hover:bg-[#e5e5e5] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-normal"
+      >
+        Discard
+      </Button>
       <Button
         onClick={onSave}
-        disabled={isLoading}
+        disabled={isLoading || !hasUnsavedChanges}
         className="h-[40px] px-[24px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-normal"
       >
         {isLoading ? "Saving..." : "Save Changes"}
@@ -354,18 +366,47 @@ function PersonalDetailsSection({
               </div>
             </div>
 
-            {/* Location */}
-            <div className="flex flex-col gap-[10px]">
-              <label className="text-[13px] font-normal text-black font-inter-tight">
-                Location
-              </label>
-              <input
-                type="text"
-                value={formData.location}
-                onChange={(e) => onInputChange("location", e.target.value)}
-                placeholder="e.g., Lagos, Nigeria"
-                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
-              />
+            {/* State and City */}
+            <div className="flex gap-[10px]">
+              <div className="flex-1 flex flex-col gap-[10px]">
+                <label className="text-[13px] font-normal text-black font-inter-tight">
+                  State
+                </label>
+                <select
+                  value={formData.state}
+                  onChange={(e) => {
+                    onInputChange("state", e.target.value);
+                    onInputChange("city", "");
+                  }}
+                  className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                >
+                  <option value="">Select State</option>
+                  {Object.keys(statesCities).map((state) => (
+                    <option key={state} value={state}>
+                      {state}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex-1 flex flex-col gap-[10px]">
+                <label className="text-[13px] font-normal text-black font-inter-tight">
+                  City
+                </label>
+                <select
+                  value={formData.city}
+                  onChange={(e) => onInputChange("city", e.target.value)}
+                  className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                >
+                  <option value="">Select City</option>
+                  {formData.state &&
+                    (statesCities as Record<string, { major_cities: string[] }>)[formData.state]?.major_cities?.map((city: string) => (
+                      <option key={city} value={city}>
+                        {city}
+                      </option>
+                    ))}
+                </select>
+              </div>
             </div>
 
             {/* Bio */}
@@ -727,13 +768,17 @@ function SocialLinksSection({
   onInputChange,
   sectionRef,
   onSave,
+  onCustomLinksChange,
+  errors,
 }: {
   isOpen: boolean;
   onToggle: () => void;
   formData: MentorFormData["social"];
-  onInputChange: (platform: string, value: string) => void;
+  onInputChange: (field: string, value: string) => void;
   sectionRef: (el: HTMLDivElement | null) => void;
   onSave: () => void;
+  onCustomLinksChange?: (links: { name: string; url: string }[]) => void;
+  errors?: Record<number, { name?: string; url?: string }>;
 }) {
   const socialFields = [
     {
@@ -835,7 +880,7 @@ function SocialLinksSection({
                   {field.icon}
                   <input
                     type="text"
-                    value={formData[field.id as keyof typeof formData]}
+                    value={formData[field.id as keyof Omit<MentorFormData["social"], 'customLinks'>]}
                     onChange={(e) => onInputChange(field.id, e.target.value)}
                     placeholder={field.placeholder}
                     className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
@@ -843,6 +888,78 @@ function SocialLinksSection({
                 </div>
               </div>
             ))}
+
+            {/* Custom Links */}
+            {(formData.customLinks || []).map((link, index) => (
+              <div key={index} className="flex flex-col gap-[10px]">
+                <div className="flex items-center justify-between">
+                  <input
+                    type="text"
+                    placeholder="Link Name (e.g. Behance)"
+                    value={link.name}
+                    onChange={(e) => {
+                      const updated = [...(formData.customLinks || [])];
+                      updated[index] = { ...updated[index], name: e.target.value };
+                      onCustomLinksChange?.(updated);
+                    }}
+                    className="text-[13px] font-normal text-black font-inter-tight bg-transparent border-none focus:outline-none placeholder:text-black/30 w-full"
+                  />
+                  {errors?.[index]?.name && (
+                    <span className="text-[11px] text-red-500 font-inter-tight mt-[-6px] mb-[2px]">
+                      {errors[index].name}
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = (formData.customLinks || []).filter((_, i) => i !== index);
+                      onCustomLinksChange?.(updated);
+                    }}
+                    className="text-[#525866] hover:text-red-500 transition-colors"
+                  >
+                    <XIcon className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="flex flex-col gap-[4px]">
+                  <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M6.66699 8.66699C6.95329 9.04972 7.31856 9.36642 7.73803 9.59559C8.15751 9.82476 8.62133 9.96105 9.09804 9.99512C9.57475 10.0292 10.0533 9.96029 10.501 9.79319C10.9488 9.62609 11.3555 9.36474 11.6937 9.02699L13.6937 7.02699C14.3009 6.3981 14.6369 5.55606 14.6293 4.68099C14.6216 3.80592 14.2709 2.96966 13.6527 2.35148C13.0345 1.73331 12.1983 1.38257 11.3232 1.37492C10.4481 1.36727 9.60607 1.7033 8.97699 2.31033L7.83366 3.44699" stroke="#525866" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M9.33347 7.33347C9.04717 6.95074 8.6819 6.63403 8.26243 6.40487C7.84295 6.1757 7.37913 6.0394 6.90242 6.00534C6.42571 5.97127 5.94716 6.04017 5.49943 6.20727C5.05169 6.37437 4.64497 6.63572 4.3068 6.97347L2.3068 8.97347C1.69977 9.60236 1.36374 10.4444 1.37139 11.3195C1.37904 12.1945 1.72977 13.0308 2.34795 13.649C2.96613 14.2671 3.80239 14.6179 4.67746 14.6255C5.55253 14.6332 6.39457 14.2971 7.02347 13.6901L8.16014 12.5535" stroke="#525866" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <input
+                      type="text"
+                      placeholder="Paste Link Here"
+                      value={link.url}
+                      onChange={(e) => {
+                        const updated = [...(formData.customLinks || [])];
+                        updated[index] = { ...updated[index], url: e.target.value };
+                        onCustomLinksChange?.(updated);
+                      }}
+                      className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+                    />
+                  </div>
+                  {errors?.[index]?.url && (
+                    <span className="text-[11px] text-red-500 font-inter-tight px-1">
+                      {errors[index].url}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            {/* Add Link Button */}
+            <button
+              type="button"
+              onClick={() => {
+                const updated = [...(formData.customLinks || []), { name: "", url: "" }];
+                onCustomLinksChange?.(updated);
+              }}
+              className="flex items-center gap-2 text-[13px] font-normal text-[#5C30FF] font-inter-tight hover:opacity-80 transition-opacity"
+            >
+              <Plus className="w-4 h-4" />
+              Add Link
+            </button>
+
             <div className="flex justify-end">
               <Button
                 type="button"
@@ -860,6 +977,7 @@ function SocialLinksSection({
 }
 
 export function MentorEditProfile() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [expandedSection, setExpandedSection] = useState<string>(
     searchParams.get("section") || "personal",
@@ -872,61 +990,79 @@ export function MentorEditProfile() {
   const [isFetching, setIsFetching] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showDiscardModal, setShowDiscardModal] = useState(false);
   const [profileCompleteness, setProfileCompleteness] = useState(0);
+  const [linkErrors, setLinkErrors] = useState<Record<number, { name?: string; url?: string }>>({});
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  const queryClient = useQueryClient();
+
+  // Fetch mentor profile data with caching
+  const {
+    data: queryData,
+    isLoading: isQueryLoading,
+  } = useQuery({
+    queryKey: ["profile", "mentor"],
+    queryFn: async () => {
+      const response = await fetchProfileByRole("mentor");
+      const data = response as any;
+      return {
+        profile: data.profile ?? response,
+        profileCompleteness: data.profileCompleteness ?? 0,
+      };
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const profileData = queryData?.profile;
+
   useEffect(() => {
-    const fetchMentorProfile = async () => {
-      setIsFetching(true);
-      try {
-        const response = await getCurrentMentorProfile();
-        // API returns { profile: {...}, isProfileCreated: true } or direct profile
-        const profile =
-          (response as unknown as { profile?: MentorProfile }).profile ??
-          response;
-        const completenessValue = (response as any)?.profileCompleteness ?? 0;
+    if (profileData) {
+      const completenessValue = queryData?.profileCompleteness ?? 0;
 
-        const nameParts = (profile.fullName || "").split(" ");
-        const firstName = nameParts[0] || "";
-        const lastName = nameParts.slice(1).join(" ") || "";
+      const nameParts = (profileData.fullName || "").split(" ");
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || "";
 
-        setFormData({
-          personal: {
-            firstName,
-            lastName,
-            bio: profile.bio || "",
-            profileImageUrl: profile.profileImageUrl || "",
-            location: profile.location || "",
-          },
-          professional: {
-            headline: profile.headline || "",
-            expertise: profile.expertise || [],
-            industries: profile.industries || [],
-            languages: profile.languages || [],
-            stack: profile.stack || [],
-            category: profile.category || "",
-          },
-          social: {
-            linkedin: profile.links?.linkedIn || profile.links?.linkedin || "",
-            twitter: profile.links?.twitter || "",
-            telegram: profile.links?.telegram || "",
-            instagram: profile.links?.instagram || "",
-            website: profile.links?.website || "",
-          },
-        });
-        setHasUnsavedChanges(false);
-        setProfileCompleteness(completenessValue);
-      } catch (error) {
-        console.error("Failed to fetch mentor profile:", error);
-      } finally {
-        setIsFetching(false);
-      }
-    };
+      const locationParts = (profileData.location || "").split(", ");
+      setFormData({
+        personal: {
+          firstName,
+          lastName,
+          bio: profileData.bio || "",
+          profileImageUrl: profileData.profileImageUrl || "",
+          state: locationParts[1] || locationParts[0] || "",
+          city: locationParts.length > 1 ? locationParts[0] : "",
+        },
+        professional: {
+          headline: profileData.headline || "",
+          expertise: profileData.expertise || [],
+          industries: profileData.industries || [],
+          languages: profileData.languages || [],
+          stack: profileData.stack || [],
+          category: profileData.category || "",
+        },
+        social: {
+          linkedin: profileData.links?.linkedIn || profileData.links?.linkedin || "",
+          twitter: profileData.links?.twitter || "",
+          telegram: profileData.links?.telegram || "",
+          instagram: profileData.links?.instagram || "",
+          website: profileData.links?.website || "",
+          customLinks: (() => {
+            const knownKeys = ['linkedin', 'linkedIn', 'twitter', 'telegram', 'instagram', 'website'];
+            return Object.entries(profileData.links || {})
+              .filter(([key, value]) => !knownKeys.includes(key) && value)
+              .map(([key, value]) => ({ name: key, url: (value as string) || '' }));
+          })(),
+        },
+      });
+      setHasUnsavedChanges(false);
+      setProfileCompleteness(completenessValue);
+    }
+  }, [profileData]);
 
-    fetchMentorProfile();
-  }, []);
-
+  // Warn on page leave
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (hasUnsavedChanges) {
@@ -1084,6 +1220,17 @@ export function MentorEditProfile() {
     setHasUnsavedChanges(true);
   };
 
+  const handleCustomLinksChange = (links: { name: string; url: string }[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      social: {
+        ...prev.social,
+        customLinks: links,
+      },
+    }));
+    setHasUnsavedChanges(true);
+  };
+
   const handleProfileImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -1095,6 +1242,7 @@ export function MentorEditProfile() {
       const response = await updateMentorProfileImage(file);
       if (response.profileImageUrl) {
         handlePersonalInputChange("profileImageUrl", response.profileImageUrl);
+        queryClient.invalidateQueries({ queryKey: ["profile", "mentor"] });
       }
     } catch (error) {
       console.error("Failed to upload profile image:", error);
@@ -1106,16 +1254,57 @@ export function MentorEditProfile() {
     }
   };
 
+  const handleDiscard = () => {
+    if (hasUnsavedChanges) {
+      setShowDiscardModal(true);
+    } else {
+      router.push("/profile");
+    }
+  };
+
   const handleSaveProfile = async () => {
     try {
       setIsLoading(true);
+      setLinkErrors({});
+
+      // Validate custom links
+      const newErrors: Record<number, { name?: string; url?: string }> = {};
+      formData.social.customLinks?.forEach((link, index) => {
+        const hasName = link.name.trim() !== "";
+        const hasUrl = link.url.trim() !== "";
+
+        if (hasUrl && !hasName) {
+          newErrors[index] = { ...newErrors[index], name: "Please provide a name" };
+        }
+        if (hasName && !hasUrl) {
+          newErrors[index] = { ...newErrors[index], url: "Please provide a URL" };
+        }
+      });
+
+      if (Object.keys(newErrors).length > 0) {
+        setLinkErrors(newErrors);
+        setIsLoading(false);
+        return;
+      }
+
+      const location =
+        formData.personal.city && formData.personal.state
+          ? `${formData.personal.city}, ${formData.personal.state}`
+          : formData.personal.state || formData.personal.city || "";
+
+      const customLinksObj: Record<string, string> = {};
+      formData.social.customLinks?.forEach((link) => {
+        if (link.name && link.url) {
+          customLinksObj[link.name.toLowerCase().replace(/\s+/g, '_')] = link.url;
+        }
+      });
 
       const apiData: UpdateMentorProfileInput = {
         fullName:
           `${formData.personal.firstName} ${formData.personal.lastName}`.trim(),
         headline: formData.professional.headline,
         bio: formData.personal.bio,
-        location: formData.personal.location,
+        location,
         category: formData.professional.category,
         expertise: formData.professional.expertise,
         links: {
@@ -1124,10 +1313,13 @@ export function MentorEditProfile() {
           telegram: formData.social.telegram,
           instagram: formData.social.instagram,
           website: formData.social.website,
+          ...customLinksObj,
         },
       };
 
       await updateMentorProfile(apiData);
+
+      queryClient.invalidateQueries({ queryKey: ["profile", "mentor"] });
 
       setModalMessage("Profile saved successfully!");
       setIsSuccess(true);
@@ -1143,7 +1335,7 @@ export function MentorEditProfile() {
     }
   };
 
-  if (isFetching) {
+  if (isQueryLoading || !profileData) {
     return <MentorEditProfileSkeleton />;
   }
 
@@ -1158,6 +1350,8 @@ export function MentorEditProfile() {
         <EditProfileActionBar
           onSave={handleSaveProfile}
           isLoading={isLoading}
+          hasUnsavedChanges={hasUnsavedChanges}
+          onDiscard={handleDiscard}
         />
 
         <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
@@ -1206,10 +1400,23 @@ export function MentorEditProfile() {
                 if (el) sectionRefs.current["social"] = el;
               }}
               onSave={handleSaveProfile}
+              onCustomLinksChange={handleCustomLinksChange}
+              errors={linkErrors}
             />
           </div>
         </div>
       </div>
+
+      <ConfirmationModal
+        isOpen={showDiscardModal}
+        onClose={() => setShowDiscardModal(false)}
+        onConfirm={() => router.push("/profile")}
+        title="Unsaved Changes"
+        description="You have unsaved changes. Are you sure you want to leave? Your changes will be lost."
+        confirmText="Leave"
+        cancelText="Stay"
+        type="default"
+      />
 
       <Modal
         isOpen={modalOpen}

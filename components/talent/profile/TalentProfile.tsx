@@ -67,6 +67,7 @@ const DEFAULT_PROFILE_DATA: UIProfileData = {
     github: "",
     portfolio: "",
     website: "",
+    customLinks: [],
   },
 };
 
@@ -263,6 +264,7 @@ export function TalentProfile({
             instagram: profileData?.social?.instagram || "",
             linkedin: profileData?.social?.linkedin || "",
             website: profileData?.social?.website || "",
+            customLinks: profileData?.social?.customLinks || [],
           }}
           completionPercentage={profileCompleteness}
           views={views}

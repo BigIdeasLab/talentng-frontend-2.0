@@ -67,6 +67,7 @@ export interface UIProfileData {
     github?: string;
     portfolio?: string;
     website: string;
+    customLinks?: { name: string; url: string }[];
   };
 }
 
@@ -131,6 +132,7 @@ export interface APIProfileData {
   availability?: string | null;
   description?: string | null;
   visibility?: "public" | "private";
+  socialLinks?: Record<string, any>;
 }
 
 /**
@@ -175,6 +177,25 @@ export function mapUIToAPI(uiData: UIProfileData): APIProfileData {
       linkedin: uiData.social.linkedin || undefined,
       github: uiData.social.github || undefined,
       portfolio: uiData.social.portfolio || undefined,
+      ...Object.fromEntries(
+        (uiData.social.customLinks || [])
+          .filter((l) => l.name && l.url)
+          .map((l) => [l.name.toLowerCase().replace(/\s+/g, "_"), l.url]),
+      ),
+    },
+    socialLinks: {
+      dribbble: uiData.social.dribbble || undefined,
+      telegram: uiData.social.telegram || undefined,
+      twitter: uiData.social.twitter || undefined,
+      instagram: uiData.social.instagram || undefined,
+      linkedin: uiData.social.linkedin || undefined,
+      github: uiData.social.github || undefined,
+      portfolio: uiData.social.portfolio || undefined,
+      ...Object.fromEntries(
+        (uiData.social.customLinks || [])
+          .filter((l) => l.name && l.url)
+          .map((l) => [l.name.toLowerCase().replace(/\s+/g, "_"), l.url]),
+      ),
     },
     category: uiData.professional.category,
     availability: uiData.professional.availability,
@@ -283,6 +304,22 @@ export function mapAPIToUI(
       github: data.links?.github || data.socialLinks?.github || "",
       portfolio: data.links?.portfolio || data.socialLinks?.portfolio || "",
       website: data.links?.website || data.socialLinks?.website || "",
+      customLinks: Object.entries({ ...(data.socialLinks || {}), ...(data.links || {}) })
+        .filter(
+          ([key, value]) =>
+            ![
+              "dribbble",
+              "telegram",
+              "twitter",
+              "instagram",
+              "linkedin",
+              "linkedIn",
+              "github",
+              "portfolio",
+              "website",
+            ].includes(key) && value,
+        )
+        .map(([key, value]) => ({ name: key, url: (value as string) || "" })),
     },
   };
 }

@@ -43,7 +43,7 @@ import {
  */
 export function useCurrentProfile() {
   return useQuery({
-    queryKey: ["current-profile"],
+    queryKey: ["profile", "talent"],
     queryFn: getCurrentProfile,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });

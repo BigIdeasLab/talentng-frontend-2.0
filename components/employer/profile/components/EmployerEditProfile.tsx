@@ -8,6 +8,8 @@ import { SmoothCollapse } from "@/components/SmoothCollapse";
 import { SectionHeader } from "@/components/talent/profile/components/edit/SectionHeader";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
+import { ConfirmationModal } from "@/components/ui/confirmation-modal";
+import { Plus, X as XIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   updateRecruiterProfile,
@@ -36,6 +38,7 @@ interface EmployerFormData {
     instagram: string;
     website: string;
     linkedin: string;
+    customLinks?: { name: string; url: string }[];
   };
 }
 
@@ -58,6 +61,7 @@ const DEFAULT_EMPLOYER_DATA: EmployerFormData = {
     instagram: "",
     website: "",
     linkedin: "",
+    customLinks: [],
   },
 };
 
@@ -104,24 +108,27 @@ function EditProfileSidebar({
 function EditProfileActionBar({
   onSave,
   isLoading,
+  hasUnsavedChanges,
+  onDiscard,
 }: {
   onSave: () => void;
   isLoading: boolean;
+  hasUnsavedChanges: boolean;
+  onDiscard: () => void;
 }) {
   return (
     <div className="h-[56px] border-b border-[#E1E4EA] flex items-center justify-end px-[80px] gap-2 bg-white">
-      <Link href="/profile">
-        <Button
-          variant="outline"
-          disabled={isLoading}
-          className="h-[40px] px-[24px] rounded-full border border-[#F5F5F5] bg-[#F5F5F5] text-black hover:bg-[#e5e5e5] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-normal"
-        >
-          Discard
-        </Button>
-      </Link>
+      <Button
+        variant="outline"
+        onClick={onDiscard}
+        disabled={isLoading}
+        className="h-[40px] px-[24px] rounded-full border border-[#F5F5F5] bg-[#F5F5F5] text-black hover:bg-[#e5e5e5] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-normal"
+      >
+        Discard
+      </Button>
       <Button
         onClick={onSave}
-        disabled={isLoading}
+        disabled={isLoading || !hasUnsavedChanges}
         className="h-[40px] px-[24px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-normal"
       >
         {isLoading ? "Saving..." : "Save Changes"}
@@ -420,10 +427,11 @@ function CompanyDetailsSection({
                 >
                   <option value="">Select stage</option>
                   <option value="Seed">Seed</option>
-                  <option value="Series A">Series A</option>
-                  <option value="Series B">Series B</option>
-                  <option value="Series C">Series C</option>
-                  <option value="Established">Established</option>
+                  <option value="Startup">Startup</option>
+                  <option value="Early Stage">Early Stage</option>
+                  <option value="Growth Stage">Growth Stage</option>
+                  <option value="Mature">Mature</option>
+                  <option value="Public">Public</option>
                 </select>
               </div>
             </div>
@@ -470,6 +478,8 @@ function SocialLinksSection({
   onInputChange,
   sectionRef,
   onSave,
+  onCustomLinksChange,
+  errors,
 }: {
   isOpen: boolean;
   onToggle: () => void;
@@ -477,6 +487,8 @@ function SocialLinksSection({
   onInputChange: (field: string, value: string) => void;
   sectionRef: (el: HTMLDivElement | null) => void;
   onSave: () => void;
+  onCustomLinksChange?: (links: { name: string; url: string }[]) => void;
+  errors?: Record<number, { name?: string; url?: string }>;
 }) {
   return (
     <div
@@ -606,6 +618,77 @@ function SocialLinksSection({
               </div>
             </div>
 
+            {/* Custom Links */}
+            {(formData.customLinks || []).map((link, index) => (
+              <div key={index} className="flex flex-col gap-[10px]">
+                <div className="flex items-center justify-between">
+                  <input
+                    type="text"
+                    placeholder="Link Name (e.g. Behance)"
+                    value={link.name}
+                    onChange={(e) => {
+                      const updated = [...(formData.customLinks || [])];
+                      updated[index] = { ...updated[index], name: e.target.value };
+                      onCustomLinksChange?.(updated);
+                    }}
+                    className="text-[13px] font-normal text-black font-inter-tight bg-transparent border-none focus:outline-none placeholder:text-black/30 w-full"
+                  />
+                  {errors?.[index]?.name && (
+                    <span className="text-[11px] text-red-500 font-inter-tight mt-[-6px] mb-[2px]">
+                      {errors[index].name}
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = (formData.customLinks || []).filter((_, i) => i !== index);
+                      onCustomLinksChange?.(updated);
+                    }}
+                    className="text-[#525866] hover:text-red-500 transition-colors"
+                  >
+                    <XIcon className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="flex flex-col gap-[4px]">
+                  <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M6.66699 8.66699C6.95329 9.04972 7.31856 9.36642 7.73803 9.59559C8.15751 9.82476 8.62133 9.96105 9.09804 9.99512C9.57475 10.0292 10.0533 9.96029 10.501 9.79319C10.9488 9.62609 11.3555 9.36474 11.6937 9.02699L13.6937 7.02699C14.3009 6.3981 14.6369 5.55606 14.6293 4.68099C14.6216 3.80592 14.2709 2.96966 13.6527 2.35148C13.0345 1.73331 12.1983 1.38257 11.3232 1.37492C10.4481 1.36727 9.60607 1.7033 8.97699 2.31033L7.83366 3.44699" stroke="#525866" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M9.33347 7.33347C9.04717 6.95074 8.6819 6.63403 8.26243 6.40487C7.84295 6.1757 7.37913 6.0394 6.90242 6.00534C6.42571 5.97127 5.94716 6.04017 5.49943 6.20727C5.05169 6.37437 4.64497 6.63572 4.3068 6.97347L2.3068 8.97347C1.69977 9.60236 1.36374 10.4444 1.37139 11.3195C1.37904 12.1945 1.72977 13.0308 2.34795 13.649C2.96613 14.2671 3.80239 14.6179 4.67746 14.6255C5.55253 14.6332 6.39457 14.2971 7.02347 13.6901L8.16014 12.5535" stroke="#525866" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <input
+                      type="text"
+                      placeholder="Paste Link Here"
+                      value={link.url}
+                      onChange={(e) => {
+                        const updated = [...(formData.customLinks || [])];
+                        updated[index] = { ...updated[index], url: e.target.value };
+                        onCustomLinksChange?.(updated);
+                      }}
+                      className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+                    />
+                  </div>
+                  {errors?.[index]?.url && (
+                    <span className="text-[11px] text-red-500 font-inter-tight px-1">
+                      {errors[index].url}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            {/* Add Link Button */}
+            <button
+              type="button"
+              onClick={() => {
+                const updated = [...(formData.customLinks || []), { name: "", url: "" }];
+                onCustomLinksChange?.(updated);
+              }}
+              className="flex items-center gap-2 text-[13px] font-normal text-[#5C30FF] font-inter-tight hover:opacity-80 transition-opacity"
+            >
+              <Plus className="w-4 h-4" />
+              Add Link
+            </button>
+
             <div className="flex justify-end">
               <Button
                 type="button"
@@ -637,8 +720,10 @@ export function EmployerEditProfile() {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showDiscardModal, setShowDiscardModal] = useState(false);
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [linkErrors, setLinkErrors] = useState<Record<number, { name?: string; url?: string }>>({});
   const queryClient = useQueryClient();
 
   // Fetch recruiter profile data with caching
@@ -648,7 +733,7 @@ export function EmployerEditProfile() {
     refetch: _refetch,
     error: _error,
   } = useQuery({
-    queryKey: ["recruiter-profile"],
+    queryKey: ["profile", "recruiter"],
     queryFn: async () => {
       const response = await fetchProfileByRole("recruiter");
       const data = response as any;
@@ -667,6 +752,10 @@ export function EmployerEditProfile() {
   useEffect(() => {
     if (profileData) {
       const links = profileData.links || {};
+      const knownKeys = ['twitter', 'instagram', 'website', 'linkedin', 'linkedIn'];
+      const customLinks = Object.entries(links)
+        .filter(([key]) => !knownKeys.includes(key))
+        .map(([key, value]) => ({ name: key, url: (value as string) || '' }));
       setFormData({
         personal: {
           profileImageUrl: profileData.profileImageUrl || "",
@@ -686,6 +775,7 @@ export function EmployerEditProfile() {
           instagram: links.instagram || "",
           website: links.website || "",
           linkedin: links.linkedin || "",
+          customLinks,
         },
       });
       setHasUnsavedChanges(false);
@@ -758,7 +848,7 @@ export function EmployerEditProfile() {
             profileImageUrl: profile.profileImageUrl,
           },
         }));
-        queryClient.invalidateQueries({ queryKey: ["recruiter-profile"] });
+        queryClient.invalidateQueries({ queryKey: ["profile", "recruiter"] });
         setHasUnsavedChanges(true);
       }
     } catch (error) {
@@ -793,9 +883,49 @@ export function EmployerEditProfile() {
     setHasUnsavedChanges(true);
   };
 
+  const handleCustomLinksChange = (links: { name: string; url: string }[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      social: {
+        ...prev.social,
+        customLinks: links,
+      },
+    }));
+    setHasUnsavedChanges(true);
+  };
+
+  const handleDiscard = () => {
+    if (hasUnsavedChanges) {
+      setShowDiscardModal(true);
+    } else {
+      _router.push("/profile");
+    }
+  };
+
   const handleSaveProfile = async () => {
     try {
       setIsSaving(true);
+      setLinkErrors({});
+
+      // Validate custom links
+      const newErrors: Record<number, { name?: string; url?: string }> = {};
+      formData.social.customLinks?.forEach((link, index) => {
+        const hasName = link.name.trim() !== "";
+        const hasUrl = link.url.trim() !== "";
+
+        if (hasUrl && !hasName) {
+          newErrors[index] = { ...newErrors[index], name: "Please provide a name" };
+        }
+        if (hasName && !hasUrl) {
+          newErrors[index] = { ...newErrors[index], url: "Please provide a URL" };
+        }
+      });
+
+      if (Object.keys(newErrors).length > 0) {
+        setLinkErrors(newErrors);
+        setIsSaving(false);
+        return;
+      }
 
       const location = [formData.personal.state, formData.personal.city]
         .filter(Boolean)
@@ -808,6 +938,13 @@ export function EmployerEditProfile() {
       if (formData.social.website) links.website = formData.social.website;
       if (formData.social.linkedin) links.linkedin = formData.social.linkedin;
 
+      // Add custom links
+      formData.social.customLinks?.forEach((link) => {
+        if (link.name && link.url) {
+          links[link.name.toLowerCase().replace(/\s+/g, '_')] = link.url;
+        }
+      });
+
       await updateRecruiterProfile({
         company: formData.personal.company,
         bio: formData.personal.bio,
@@ -819,7 +956,7 @@ export function EmployerEditProfile() {
         links: Object.keys(links).length > 0 ? links : undefined,
       });
 
-      queryClient.invalidateQueries({ queryKey: ["recruiter-profile"] });
+      queryClient.invalidateQueries({ queryKey: ["profile", "recruiter"] });
       setModalMessage("Profile saved successfully!");
       setIsSuccess(true);
       setModalOpen(true);
@@ -846,7 +983,7 @@ export function EmployerEditProfile() {
       />
 
       <div className="flex-1 flex flex-col">
-        <EditProfileActionBar onSave={handleSaveProfile} isLoading={isSaving} />
+        <EditProfileActionBar onSave={handleSaveProfile} isLoading={isSaving} hasUnsavedChanges={hasUnsavedChanges} onDiscard={handleDiscard} />
 
         <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
@@ -882,6 +1019,8 @@ export function EmployerEditProfile() {
               formData={formData.social}
               onInputChange={handleSocialInputChange}
               onSave={handleSaveProfile}
+              onCustomLinksChange={handleCustomLinksChange}
+              errors={linkErrors}
               sectionRef={(el) => {
                 if (el) sectionRefs.current["social"] = el;
               }}
@@ -889,6 +1028,17 @@ export function EmployerEditProfile() {
           </div>
         </div>
       </div>
+
+      <ConfirmationModal
+        isOpen={showDiscardModal}
+        onClose={() => setShowDiscardModal(false)}
+        onConfirm={() => _router.push("/profile")}
+        title="Unsaved Changes"
+        description="You have unsaved changes. Are you sure you want to leave? Your changes will be lost."
+        confirmText="Leave"
+        cancelText="Stay"
+        type="default"
+      />
 
       <Modal
         isOpen={modalOpen}

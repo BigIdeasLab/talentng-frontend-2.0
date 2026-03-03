@@ -60,11 +60,29 @@ export function MentorProfile({
       (profileData.totalSessions ?? 0) * (profileData.sessionDuration ?? 60),
   };
 
+  const standardKeys = [
+    "twitter",
+    "instagram",
+    "linkedIn",
+    "website",
+    "github",
+    "portfolio",
+    "dribbble",
+    "telegram",
+  ];
+  const customLinks = Object.entries(profileData.links || {})
+    .filter(([key]) => !standardKeys.map((k) => k.toLowerCase()).includes(key.toLowerCase()))
+    .map(([key, value]) => ({
+      name: key.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()),
+      url: value as string,
+    }));
+
   const socialLinks = {
     twitter: profileData.links?.twitter || "",
     instagram: profileData.links?.instagram || "",
     linkedin: profileData.links?.linkedIn || "",
     website: profileData.links?.website || "",
+    customLinks,
   };
 
   const bio = profileData.bio || "";

@@ -205,8 +205,13 @@ export function EmployerSettings() {
               <Button
                 className="text-white hover:opacity-90"
                 style={{ backgroundColor: roleColors.primary }}
+                onClick={() => saveSettings.mutate({ profileVisible: visibility.profileVisible })}
+                disabled={saveSettings.isPending}
               >
-                Save Visibility
+                {saveSettings.isPending && (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                )}
+                Save Changes
               </Button>
             </div>
           </SettingsSection>

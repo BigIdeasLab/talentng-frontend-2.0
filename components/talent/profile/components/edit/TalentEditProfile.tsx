@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { EditProfileSidebar } from "@/components/talent/profile/components/edit/Sidebar";
 import { EditProfileActionBar } from "@/components/talent/profile/components/edit/ActionBar";
 import { PersonalDetailsSection } from "@/components/talent/profile/components/edit/PersonalDetailsSection";
@@ -11,6 +12,7 @@ import { EducationSection } from "@/components/talent/profile/components/edit/Ed
 
 import { SocialLinksSection } from "@/components/talent/profile/components/edit/SocialLinksSection";
 import { Modal } from "@/components/ui/modal";
+import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import statesCities from "@/lib/data/states-cities.json";
 import {
   mapUIToAPI,
@@ -78,7 +80,10 @@ const DEFAULT_PROFILE_DATA: UIProfileData = {
     twitter: "",
     instagram: "",
     linkedin: "",
+    github: "",
+    portfolio: "",
     website: "",
+    customLinks: [],
   },
 };
 
@@ -102,29 +107,32 @@ export function TalentEditProfile() {
   const [modalMessage, setModalMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showDiscardModal, setShowDiscardModal] = useState(false);
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const skillsSelectRef = useRef<HTMLSelectElement | null>(null);
   const stackSelectRef = useRef<HTMLSelectElement | null>(null);
+  const [linkErrors, setLinkErrors] = useState<Record<number, { name?: string; url?: string }>>({});
+  const queryClient = useQueryClient();
 
-  // Get current profile from context
-  const { currentProfile, isLoading } = useProfile();
-  const profileData = currentProfile;
-  const [profileCompleteness, setProfileCompleteness] = useState(0);
+  // Fetch talent profile data with caching
+  const {
+    data: queryData,
+    isLoading: isQueryLoading,
+  } = useQuery({
+    queryKey: ["profile", "talent"],
+    queryFn: async () => {
+      const response = await fetchProfileByRole("talent");
+      const data = response as any;
+      return {
+        profile: data.profile ?? response,
+        profileCompleteness: data.profileCompleteness ?? 0,
+      };
+    },
+    staleTime: 5 * 60 * 1000,
+  });
 
-  // Fetch profile completeness from API (context doesn't include it)
-  useEffect(() => {
-    let cancelled = false;
-    fetchProfileByRole("talent")
-      .then((res: any) => {
-        if (!cancelled) {
-          setProfileCompleteness(res?.profileCompleteness ?? 0);
-        }
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const profileData = queryData?.profile;
+  const profileCompleteness = queryData?.profileCompleteness ?? 0;
 
   // Load profile data when it becomes available
   useEffect(() => {
@@ -343,11 +351,51 @@ export function TalentEditProfile() {
     }));
   };
 
+  const handleCustomLinksChange = (links: { name: string; url: string }[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      social: {
+        ...prev.social,
+        customLinks: links,
+      },
+    }));
+  };
+
   const [isSaving, setIsSaving] = useState(false);
+
+  const handleDiscard = () => {
+    if (hasUnsavedChanges) {
+      setShowDiscardModal(true);
+    } else {
+      router.push("/profile");
+    }
+  };
 
   const handleSaveProfile = async () => {
     try {
       setIsSaving(true);
+      setLinkErrors({});
+
+      // Validate custom links
+      const newErrors: Record<number, { name?: string; url?: string }> = {};
+      formData.social.customLinks?.forEach((link, index) => {
+        const hasName = link.name.trim() !== "";
+        const hasUrl = link.url.trim() !== "";
+
+        if (hasUrl && !hasName) {
+          newErrors[index] = { ...newErrors[index], name: "Please provide a name" };
+        }
+        if (hasName && !hasUrl) {
+          newErrors[index] = { ...newErrors[index], url: "Please provide a URL" };
+        }
+      });
+
+      if (Object.keys(newErrors).length > 0) {
+        setLinkErrors(newErrors);
+        setIsSaving(false);
+        return;
+      }
+
       // Convert UI-friendly format to API format
       const apiData = mapUIToAPI(formData as UIProfileData);
       console.log("[TalentEditProfile] Saving profile with payload:", apiData);
@@ -355,9 +403,12 @@ export function TalentEditProfile() {
       // Send to API
       await updateServerTalentProfile(apiData);
 
+      queryClient.invalidateQueries({ queryKey: ["profile", "talent"] });
+
       setModalMessage("Profile saved successfully!");
       setIsSuccess(true);
       setModalOpen(true);
+      setHasUnsavedChanges(false);
     } catch (error) {
       console.error("Error saving profile:", error);
       setModalMessage("Failed to save profile. Please try again.");
@@ -368,7 +419,7 @@ export function TalentEditProfile() {
     }
   };
 
-  if (isLoading || !profileData) {
+  if (isQueryLoading || !profileData) {
     return <TalentEditProfileSkeleton />;
   }
 
@@ -380,7 +431,7 @@ export function TalentEditProfile() {
       />
 
       <div className="flex-1 flex flex-col">
-        <EditProfileActionBar onSave={handleSaveProfile} isLoading={isSaving} />
+        <EditProfileActionBar onSave={handleSaveProfile} isLoading={isSaving} hasUnsavedChanges={hasUnsavedChanges} onDiscard={handleDiscard} />
 
         <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
@@ -449,14 +500,27 @@ export function TalentEditProfile() {
               onToggle={() => toggleSection("social")}
               socialData={formData.social}
               onInputChange={handleSocialInputChange}
+              onCustomLinksChange={handleCustomLinksChange}
               sectionRef={(el) => {
                 if (el) sectionRefs.current["social"] = el;
               }}
               onNext={handleSaveProfile}
+              errors={linkErrors}
             />
           </div>
         </div>
       </div>
+
+      <ConfirmationModal
+        isOpen={showDiscardModal}
+        onClose={() => setShowDiscardModal(false)}
+        onConfirm={() => router.push("/profile")}
+        title="Unsaved Changes"
+        description="You have unsaved changes. Are you sure you want to leave? Your changes will be lost."
+        confirmText="Leave"
+        cancelText="Stay"
+        type="default"
+      />
 
       <Modal
         isOpen={modalOpen}

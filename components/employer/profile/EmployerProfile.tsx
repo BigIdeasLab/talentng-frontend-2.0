@@ -27,6 +27,7 @@ interface EmployerProfileProps {
     instagram?: string;
     linkedin?: string;
     website?: string;
+    customLinks?: Array<{ name: string; url: string }>;
   };
   completionPercentage?: number;
   aboutData?: {

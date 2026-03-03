@@ -1,7 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
-import { usePageData, PageLoadingState } from "@/lib/page-utils";
+import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useProfile } from "@/hooks/useProfile";
 import { mapAPIToUI } from "@/lib/profileMapper";
@@ -11,6 +10,7 @@ import { TalentProfile } from "@/components/talent/profile/TalentProfile";
 import { EmployerProfile } from "@/components/employer/profile/EmployerProfile";
 import { MentorProfile } from "@/components/mentor/profile/MentorProfile";
 import { useRequireRole } from "@/hooks/useRequireRole";
+import { PageLoadingState } from "@/lib/page-utils";
 
 export default function ProfilePage() {
   const { activeRole } = useProfile();
@@ -19,23 +19,19 @@ export default function ProfilePage() {
   const initialTab = searchParams.get("tab") || "works";
   const role = activeRole || "talent";
 
-  const transform = useCallback(
-    (result: any) => ({
-      raw: result?.profile ?? result,
-      mapped: mapAPIToUI(result),
-      profileCompleteness: result?.profileCompleteness ?? null,
-    }),
-    [],
-  );
-
   const {
     data: profileData,
     isLoading,
     error,
-  } = usePageData({
-    fetchFn: fetchProfileByRole,
-    transform,
-    defaultData: { raw: {}, mapped: DEFAULT_PROFILE_DATA },
+  } = useQuery({
+    queryKey: ["profile", role],
+    queryFn: () => fetchProfileByRole(role),
+    select: (result: any) => ({
+      raw: result?.profile ?? result,
+      mapped: mapAPIToUI(result),
+      profileCompleteness: result?.profileCompleteness ?? null,
+    }),
+    enabled: !!role,
   });
 
   if (isLoading || !hasAccess) {
@@ -56,10 +52,14 @@ export default function ProfilePage() {
       return (
         <EmployerProfile
           companyData={{
-            name: displayProfile?.professional?.company || "Company Name",
+            name: displayProfile?.company || "Company Name",
             logo: displayProfile?.personal?.profileImageUrl,
-            location: displayProfile?.personal?.state || "—",
-            tagline: displayProfile?.professional?.description || "Employer",
+            location:
+              (displayProfile?.personal?.city && displayProfile?.personal?.state
+                ? `${displayProfile.personal.city}, ${displayProfile.personal.state}`
+                : displayProfile?.personal?.city ||
+                  displayProfile?.personal?.state) || "—",
+            tagline: displayProfile?.professional?.headline || "Employer",
           }}
           stats={{
             jobsPosted: 0,
@@ -97,7 +97,7 @@ export default function ProfilePage() {
           initialStats={null}
           initialRecommendations={[]}
           initialServices={[]}
-          initialError={error}
+          initialError={error ? (error as Error).message : null}
         />
       );
     }
@@ -116,7 +116,7 @@ export default function ProfilePage() {
           initialStats={null}
           initialRecommendations={[]}
           initialServices={[]}
-          initialError={error}
+          initialError={error ? (error as Error).message : null}
           profileCompleteness={talentCompleteness}
           views={talentViews}
           visibility={talentVisibility}

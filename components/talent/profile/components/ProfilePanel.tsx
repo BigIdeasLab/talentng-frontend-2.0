@@ -25,6 +25,7 @@ interface ProfilePanelProps {
     instagram?: string;
     linkedin?: string;
     website?: string;
+    customLinks?: Array<{ name: string; url: string }>;
   };
   completionPercentage?: number;
   views?: number;
@@ -391,6 +392,27 @@ export function ProfilePanel({
                   </svg>
                 ),
               },
+              ...(socialLinks?.customLinks?.map((link: { name: string; url: string }) => ({
+                name: link.name,
+                url: link.url,
+                icon: (
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M6.66667 9.33333L9.33333 6.66667M5.33333 7.33333C4.22876 8.4379 4.22876 10.2288 5.33333 11.3333C6.4379 12.4379 8.22876 12.4379 9.33333 11.3333L10.6667 10C11.7712 8.89543 11.7712 7.10457 10.6667 6M5.33333 10L4.66667 10.6667C3.5621 11.7712 3.5621 13.5621 4.66667 14.6667C5.77124 15.7712 7.56209 15.7712 8.66667 14.6667L10 13.3333"
+                      stroke="#525866"
+                      strokeWidth="1.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                ),
+              })) || []),
             ].map((social, idx) => (
               <div
                 key={idx}
