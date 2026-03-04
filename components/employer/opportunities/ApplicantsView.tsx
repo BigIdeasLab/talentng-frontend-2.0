@@ -64,7 +64,11 @@ export function ApplicantsView({
 
   const applicants = Array.isArray(rawApplicants)
     ? rawApplicants
-    : (rawApplicants as any)?.data || (rawApplicants as any)?.applications || (rawApplicants as any)?.results || (rawApplicants as any)?.items || [];
+    : (rawApplicants as any)?.data ||
+      (rawApplicants as any)?.applications ||
+      (rawApplicants as any)?.results ||
+      (rawApplicants as any)?.items ||
+      [];
 
   const isLoading = isOppLoading || isAppsLoading;
   const error = oppError || appsError ? "Failed to load" : null;

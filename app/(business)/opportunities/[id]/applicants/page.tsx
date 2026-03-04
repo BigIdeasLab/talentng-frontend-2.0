@@ -74,7 +74,11 @@ export default function OpportunityApplicantsPage() {
 
   const rawApplicants = Array.isArray(rawApplicantsData)
     ? rawApplicantsData
-    : (rawApplicantsData as any)?.data || (rawApplicantsData as any)?.applications || (rawApplicantsData as any)?.results || (rawApplicantsData as any)?.items || [];
+    : (rawApplicantsData as any)?.data ||
+      (rawApplicantsData as any)?.applications ||
+      (rawApplicantsData as any)?.results ||
+      (rawApplicantsData as any)?.items ||
+      [];
 
   const isLoading = isOppLoading || isAppsLoading;
   const error = oppError || appsError ? "Failed to load" : null;

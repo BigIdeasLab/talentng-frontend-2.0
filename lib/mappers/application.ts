@@ -31,8 +31,12 @@ export function mapApplicationToUI(app: any): MappedApplicant {
     skills: [],
   };
 
-  const talentProfile = app.user?.talentProfile || app.applicantProfile || defaultProfile;
-  const opportunity = app.opportunity || { title: "Unknown Opportunity", type: "" };
+  const talentProfile =
+    app.user?.talentProfile || app.applicantProfile || defaultProfile;
+  const opportunity = app.opportunity || {
+    title: "Unknown Opportunity",
+    type: "",
+  };
 
   // Get the latest interview status if application is shortlisted
   const latestInterview = app.interviews?.[0];
@@ -51,7 +55,7 @@ export function mapApplicationToUI(app: any): MappedApplicant {
       type: opportunity.type,
     },
     location: talentProfile.location || "Unknown",
-    dateApplied: app.createdAt 
+    dateApplied: app.createdAt
       ? new Date(app.createdAt).toLocaleDateString("en-US", {
           year: "numeric",
           month: "short",
@@ -65,17 +69,15 @@ export function mapApplicationToUI(app: any): MappedApplicant {
   };
 }
 
-export function mapApplicationsToUI(
-  apps: any,
-): MappedApplicant[] {
+export function mapApplicationsToUI(apps: any): MappedApplicant[] {
   if (!apps) return [];
-  
-  const applicantsArray = Array.isArray(apps) 
-    ? apps 
-    : (apps?.data || apps?.applications || apps?.results || apps?.items || []);
-    
+
+  const applicantsArray = Array.isArray(apps)
+    ? apps
+    : apps?.data || apps?.applications || apps?.results || apps?.items || [];
+
   if (!Array.isArray(applicantsArray)) return [];
-  
+
   return applicantsArray
     .map((app: any) => {
       try {

@@ -72,7 +72,11 @@ export function PastHiresTab() {
 
   const applicationsRaw = Array.isArray(rawApplicantsData)
     ? rawApplicantsData
-    : (rawApplicantsData as any)?.data || (rawApplicantsData as any)?.applications || (rawApplicantsData as any)?.results || (rawApplicantsData as any)?.items || [];
+    : (rawApplicantsData as any)?.data ||
+      (rawApplicantsData as any)?.applications ||
+      (rawApplicantsData as any)?.results ||
+      (rawApplicantsData as any)?.items ||
+      [];
 
   const pastHires: PastHire[] = Array.isArray(applicationsRaw)
     ? applicationsRaw.map(transformApplicationToHire)

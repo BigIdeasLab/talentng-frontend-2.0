@@ -185,7 +185,8 @@ export function OpportunityCard({
                 {/* Budget */}
                 <div className="flex items-center gap-1.5 flex-wrap">
                   <span className="text-[15px] font-medium font-inter-tight text-black">
-                    {opportunity.priceMode === "fixed" || (!!opportunity.price && !opportunity.minBudget) ? (
+                    {opportunity.priceMode === "fixed" ||
+                    (!!opportunity.price && !opportunity.minBudget) ? (
                       <>₦{Number(opportunity.price || "0").toLocaleString()}</>
                     ) : (
                       <>
