@@ -79,6 +79,11 @@ export async function getOpportunitiesData(params?: {
       ? response
       : response?.data || (response as any)?.opportunities || [];
 
+    // 🔍 DEBUG: log raw budget fields from the API for the first 5 opps
+    rawData.slice(0, 20).forEach((opp: any) => {
+      console.log(`[Budget Debug] "${opp.title}" → priceMode=${JSON.stringify(opp.priceMode)}, price=${JSON.stringify(opp.price)}, minBudget=${JSON.stringify(opp.minBudget)}, maxBudget=${JSON.stringify(opp.maxBudget)}`);
+    });
+
     const opportunities: OpportunityData[] = rawData.map((opp: any) => ({
       id: opp.id || "",
       companyName:
@@ -90,7 +95,10 @@ export async function getOpportunitiesData(params?: {
       title: opp.title || "",
       category: opp.category,
       skills: opp.tags || [],
-      rate: `₦${Math.round(parseFloat(opp.minBudget) || 0).toLocaleString()} - ₦${Math.round(parseFloat(opp.maxBudget) || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`,
+      rate:
+        opp.priceMode === "fixed" && opp.price
+          ? `₦${Math.round(parseFloat(opp.price) || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`
+          : `₦${Math.round(parseFloat(opp.minBudget) || 0).toLocaleString()} - ₦${Math.round(parseFloat(opp.maxBudget) || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`,
       status: (opp.status || "draft") as "active" | "closed" | "draft",
       appliedAs: opp.appliedAs || [],
       saved: opp.saved || opp.userHasSaved || false,

@@ -57,10 +57,14 @@ export function ApplicantsView({
   };
 
   const {
-    data: applicants = [],
+    data: rawApplicants,
     isLoading: isAppsLoading,
     error: appsError,
   } = useRecruiterApplicationsQuery(queryParams);
+
+  const applicants = Array.isArray(rawApplicants)
+    ? rawApplicants
+    : (rawApplicants as any)?.data || (rawApplicants as any)?.applications || (rawApplicants as any)?.results || (rawApplicants as any)?.items || [];
 
   const isLoading = isOppLoading || isAppsLoading;
   const error = oppError || appsError ? "Failed to load" : null;
@@ -71,7 +75,7 @@ export function ApplicantsView({
   const availableLocations = Array.from(
     new Set(
       applicants
-        .map((app) => (app as any).user?.talentProfile?.location)
+        .map((app: Application) => (app as any).user?.talentProfile?.location)
         .filter(Boolean),
     ),
   ) as string[];
@@ -79,13 +83,13 @@ export function ApplicantsView({
   const availableSkills = Array.from(
     new Set(
       applicants.flatMap(
-        (app) => (app as any).user?.talentProfile?.skills || [],
+        (app: Application) => (app as any).user?.talentProfile?.skills || [],
       ),
     ),
   ) as string[];
 
   const availableStatuses = Array.from(
-    new Set(applicants.map((app) => app.status)),
+    new Set(applicants.map((app: Application) => app.status)),
   ) as string[];
 
   const getProgressPercentage = () => {

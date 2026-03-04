@@ -20,7 +20,20 @@ export interface MappedApplicant {
   interviewStatus?: "scheduled" | "rescheduled" | "completed" | "cancelled";
 }
 
-export function mapApplicationToUI(app: Application): MappedApplicant {
+export function mapApplicationToUI(app: any): MappedApplicant {
+  // Default values for missing data
+  const defaultProfile = {
+    fullName: "Unknown Talent",
+    headline: "No headline",
+    profileImageUrl: "",
+    hiredCount: 0,
+    location: "Unknown",
+    skills: [],
+  };
+
+  const talentProfile = app.user?.talentProfile || app.applicantProfile || defaultProfile;
+  const opportunity = app.opportunity || { title: "Unknown Opportunity", type: "" };
+
   // Get the latest interview status if application is shortlisted
   const latestInterview = app.interviews?.[0];
   const interviewStatus = latestInterview?.status;
@@ -28,28 +41,49 @@ export function mapApplicationToUI(app: Application): MappedApplicant {
   return {
     id: app.id,
     userId: app.userId,
-    name: app.user.talentProfile.fullName,
-    role: app.user.talentProfile.headline,
-    avatar: app.user.talentProfile.profileImageUrl,
-    hires: `${app.user.talentProfile.hiredCount}x`,
-    earned: `₦${Number(app.user.talentProfile.earnings || "0").toLocaleString()}`,
+    name: talentProfile.fullName || "Unknown Talent",
+    role: talentProfile.headline || "No headline",
+    avatar: talentProfile.profileImageUrl || "",
+    hires: `${talentProfile.hiredCount || 0}x`,
+    earned: `₦${Number(talentProfile.earnings || talentProfile.stats?.earnings || "0").toLocaleString()}`,
     opportunity: {
-      title: app.opportunity.title,
-      type: app.opportunity.type,
+      title: opportunity.title,
+      type: opportunity.type,
     },
-    location: app.user.talentProfile.location,
-    dateApplied: new Date(app.createdAt).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    }),
-    createdAt: app.createdAt,
-    skills: app.user.talentProfile.skills || [],
-    status: app.status,
+    location: talentProfile.location || "Unknown",
+    dateApplied: app.createdAt 
+      ? new Date(app.createdAt).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })
+      : "Unknown Date",
+    createdAt: app.createdAt || "",
+    skills: talentProfile.skills || [],
+    status: app.status || "applied",
     interviewStatus,
   };
 }
 
-export function mapApplicationsToUI(apps: Application[]): MappedApplicant[] {
-  return apps.map(mapApplicationToUI);
+export function mapApplicationsToUI(
+  apps: any,
+): MappedApplicant[] {
+  if (!apps) return [];
+  
+  const applicantsArray = Array.isArray(apps) 
+    ? apps 
+    : (apps?.data || apps?.applications || apps?.results || apps?.items || []);
+    
+  if (!Array.isArray(applicantsArray)) return [];
+  
+  return applicantsArray
+    .map((app: any) => {
+      try {
+        return mapApplicationToUI(app);
+      } catch (e) {
+        console.error("Mapping error for app:", app, e);
+        return null;
+      }
+    })
+    .filter((a): a is MappedApplicant => a !== null);
 }

@@ -65,7 +65,7 @@ export default function ApplicantsPage() {
         : {}),
       ...(sortBy !== "newest"
         ? { sortBy: sortBy as "newest" | "oldest" | "name-asc" | "name-desc" }
-        : { sortBy: "newest" as const }),
+        : {}),
     }),
     [searchQuery, activeTab, filters, sortBy],
   );

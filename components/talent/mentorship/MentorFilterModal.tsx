@@ -7,11 +7,10 @@ import categoriesData from "@/lib/data/categories.json";
 import statesCitiesData from "@/lib/data/states-cities.json";
 
 export interface MentorFilterState {
+  headlines: string[];
   expertise: string[];
-  industries: string[];
-  stack: string[];
+  languages: string[];
   location?: string;
-  sortBy?: string;
 }
 
 interface MentorFilterModalProps {
@@ -20,12 +19,6 @@ interface MentorFilterModalProps {
   onApply: (filters: MentorFilterState) => void;
   initialFilters?: MentorFilterState;
 }
-
-const SORT_OPTIONS = [
-  { display: "Newest", value: "createdAt" },
-  { display: "Highest Rated", value: "avgRating" },
-  { display: "Most Sessions", value: "totalSessions" },
-];
 
 const STATES = Object.keys(statesCitiesData);
 
@@ -36,30 +29,27 @@ export function MentorFilterModal({
   initialFilters,
 }: MentorFilterModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
+  const headlineRef = useRef<HTMLDivElement>(null);
   const expertiseRef = useRef<HTMLDivElement>(null);
-  const industryRef = useRef<HTMLDivElement>(null);
-  const stackRef = useRef<HTMLDivElement>(null);
   const locationRef = useRef<HTMLDivElement>(null);
-  const sortRef = useRef<HTMLDivElement>(null);
+  const languageRef = useRef<HTMLDivElement>(null);
 
+  const [headlineSearch, setHeadlineSearch] = useState("");
   const [expertiseSearch, setExpertiseSearch] = useState("");
-  const [industrySearch, setIndustrySearch] = useState("");
-  const [stackSearch, setStackSearch] = useState("");
   const [locationSearch, setLocationSearch] = useState("");
+  const [languageSearch, setLanguageSearch] = useState("");
 
+  const [isHeadlineOpen, setIsHeadlineOpen] = useState(false);
   const [isExpertiseOpen, setIsExpertiseOpen] = useState(false);
-  const [isIndustryOpen, setIsIndustryOpen] = useState(false);
-  const [isStackOpen, setIsStackOpen] = useState(false);
   const [isLocationOpen, setIsLocationOpen] = useState(false);
-  const [isSortOpen, setIsSortOpen] = useState(false);
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
 
   const [filters, setFilters] = useState<MentorFilterState>(
     initialFilters || {
+      headlines: [],
       expertise: [],
-      industries: [],
-      stack: [],
+      languages: [],
       location: "",
-      sortBy: "",
     },
   );
 
@@ -71,22 +61,6 @@ export function MentorFilterModal({
     );
   }, [expertiseSearch, filters.expertise]);
 
-  const filteredIndustries = useMemo(() => {
-    return categoriesData.filter(
-      (cat) =>
-        cat.toLowerCase().includes(industrySearch.toLowerCase()) &&
-        !filters.industries.includes(cat),
-    );
-  }, [industrySearch, filters.industries]);
-
-  const filteredStack = useMemo(() => {
-    return skillsData.filter(
-      (skill) =>
-        skill.toLowerCase().includes(stackSearch.toLowerCase()) &&
-        !filters.stack.includes(skill),
-    );
-  }, [stackSearch, filters.stack]);
-
   const filteredLocations = useMemo(() => {
     return STATES.filter((state) =>
       state.toLowerCase().includes(locationSearch.toLowerCase()),
@@ -95,17 +69,16 @@ export function MentorFilterModal({
 
   const handleClearFilter = () => {
     const emptyFilters: MentorFilterState = {
+      headlines: [],
       expertise: [],
-      industries: [],
-      stack: [],
+      languages: [],
       location: "",
-      sortBy: "",
     };
     setFilters(emptyFilters);
+    setHeadlineSearch("");
     setExpertiseSearch("");
-    setIndustrySearch("");
-    setStackSearch("");
     setLocationSearch("");
+    setLanguageSearch("");
     onApply(emptyFilters);
     onClose();
   };
@@ -113,6 +86,15 @@ export function MentorFilterModal({
   const handleApplyFilter = () => {
     onApply(filters);
     onClose();
+  };
+
+  const toggleHeadline = (item: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      headlines: prev.headlines.includes(item)
+        ? prev.headlines.filter((h) => h !== item)
+        : [...prev.headlines, item],
+    }));
   };
 
   const toggleExpertise = (item: string) => {
@@ -124,21 +106,12 @@ export function MentorFilterModal({
     }));
   };
 
-  const toggleIndustry = (item: string) => {
+  const toggleLanguage = (item: string) => {
     setFilters((prev) => ({
       ...prev,
-      industries: prev.industries.includes(item)
-        ? prev.industries.filter((i) => i !== item)
-        : [...prev.industries, item],
-    }));
-  };
-
-  const toggleStack = (item: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      stack: prev.stack.includes(item)
-        ? prev.stack.filter((s) => s !== item)
-        : [...prev.stack, item],
+      languages: prev.languages.includes(item)
+        ? prev.languages.filter((l) => l !== item)
+        : [...prev.languages, item],
     }));
   };
 
@@ -149,12 +122,14 @@ export function MentorFilterModal({
     }));
   };
 
-  const selectSort = (value: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      sortBy: prev.sortBy === value ? "" : value,
-    }));
-  };
+  useEffect(() => {
+    if (isLocationOpen && locationRef.current) {
+      locationRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [isLocationOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -168,27 +143,19 @@ export function MentorFilterModal({
       }
 
       if (
+        isHeadlineOpen &&
+        headlineRef.current &&
+        !headlineRef.current.contains(event.target as Node)
+      ) {
+        setIsHeadlineOpen(false);
+      }
+
+      if (
         isExpertiseOpen &&
         expertiseRef.current &&
         !expertiseRef.current.contains(event.target as Node)
       ) {
         setIsExpertiseOpen(false);
-      }
-
-      if (
-        isIndustryOpen &&
-        industryRef.current &&
-        !industryRef.current.contains(event.target as Node)
-      ) {
-        setIsIndustryOpen(false);
-      }
-
-      if (
-        isStackOpen &&
-        stackRef.current &&
-        !stackRef.current.contains(event.target as Node)
-      ) {
-        setIsStackOpen(false);
       }
 
       if (
@@ -200,11 +167,11 @@ export function MentorFilterModal({
       }
 
       if (
-        isSortOpen &&
-        sortRef.current &&
-        !sortRef.current.contains(event.target as Node)
+        isLanguageOpen &&
+        languageRef.current &&
+        !languageRef.current.contains(event.target as Node)
       ) {
-        setIsSortOpen(false);
+        setIsLanguageOpen(false);
       }
     };
 
@@ -214,11 +181,10 @@ export function MentorFilterModal({
     isOpen,
     onClose,
     handleApplyFilter,
+    isHeadlineOpen,
     isExpertiseOpen,
-    isIndustryOpen,
-    isStackOpen,
     isLocationOpen,
-    isSortOpen,
+    isLanguageOpen,
   ]);
 
   if (!isOpen) return null;
@@ -239,6 +205,78 @@ export function MentorFilterModal({
       >
         <div className="flex flex-col gap-[12px] rounded-[12px] bg-white shadow-[0_0_15px_0_rgba(0,0,0,0.15)] p-[12px_8px] max-h-[90vh]">
           <div className="flex flex-col gap-[12px] overflow-y-auto max-h-[420px] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            {/* Headlines Dropdown */}
+            <div className="flex flex-col gap-[8px] w-full" ref={headlineRef}>
+              <div className="flex justify-between items-center">
+                <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
+                  Headline
+                </span>
+                <button onClick={() => setIsHeadlineOpen(!isHeadlineOpen)}>
+                  <ChevronDown className="w-3 h-3 text-[#B2B2B2]" />
+                </button>
+              </div>
+              <div className="relative">
+                <div className="flex items-center gap-[4px] px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] bg-white">
+                  <Search className="w-[12px] h-[12px] text-[#B2B2B2]" />
+                  <input
+                    type="text"
+                    placeholder="Search/Add Headlines"
+                    value={headlineSearch}
+                    onChange={(e) => {
+                      setHeadlineSearch(e.target.value);
+                      setIsHeadlineOpen(true);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        if (
+                          headlineSearch.trim() &&
+                          !filters.headlines.includes(headlineSearch)
+                        ) {
+                          toggleHeadline(headlineSearch);
+                          setHeadlineSearch("");
+                          setIsHeadlineOpen(false);
+                        }
+                      }
+                    }}
+                    onFocus={() => setIsHeadlineOpen(true)}
+                    className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
+                  />
+                </div>
+                {isHeadlineOpen && headlineSearch && (
+                  <div className="absolute top-full mt-2 w-full max-h-[160px] overflow-y-auto bg-white rounded-[8px] shadow-[0_2px_20px_2px_rgba(0,0,0,0.15)] p-[8px] flex flex-col gap-[10px] z-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                    <button
+                      onClick={() => {
+                        toggleHeadline(headlineSearch);
+                        setHeadlineSearch("");
+                        setIsHeadlineOpen(false);
+                      }}
+                      className="text-left px-[2px] py-[2px] text-[11px] font-normal rounded hover:opacity-80 text-[#8463FF] bg-[#8463FF0D]"
+                    >
+                      + Add &quot;{headlineSearch}&quot;
+                    </button>
+                  </div>
+                )}
+              </div>
+              {filters.headlines.length > 0 && (
+                <div className="flex flex-wrap gap-[4px] mt-1">
+                  {filters.headlines.map((item) => (
+                    <div
+                      key={item}
+                      className="flex items-center gap-[5px] px-[7px] py-[4px] bg-[#F5F5F5] rounded-[25px]"
+                    >
+                      <span className="text-[10px] font-normal text-black font-inter-tight">
+                        {item}
+                      </span>
+                      <button onClick={() => toggleHeadline(item)}>
+                        <X className="w-[10px] h-[10px] text-[#606060]" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* Expertise Dropdown */}
             <div className="flex flex-col gap-[8px] w-full" ref={expertiseRef}>
               <div className="flex justify-between items-center">
@@ -260,6 +298,19 @@ export function MentorFilterModal({
                       setExpertiseSearch(e.target.value);
                       setIsExpertiseOpen(true);
                     }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        if (
+                          expertiseSearch.trim() &&
+                          !filters.expertise.includes(expertiseSearch)
+                        ) {
+                          toggleExpertise(expertiseSearch);
+                          setExpertiseSearch("");
+                          setIsExpertiseOpen(false);
+                        }
+                      }
+                    }}
                     onFocus={() => setIsExpertiseOpen(true)}
                     className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
                   />
@@ -267,19 +318,45 @@ export function MentorFilterModal({
                 {isExpertiseOpen && expertiseSearch && (
                   <div className="absolute top-full mt-2 w-full max-h-[160px] overflow-y-auto bg-white rounded-[8px] shadow-[0_2px_20px_2px_rgba(0,0,0,0.15)] p-[8px] flex flex-col gap-[10px] z-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                     {filteredExpertise.length > 0 ? (
-                      filteredExpertise.map((item) => (
-                        <button
-                          key={item}
-                          onClick={() => {
-                            toggleExpertise(item);
-                            setIsExpertiseOpen(false);
-                            setExpertiseSearch("");
-                          }}
-                          className="text-left px-[2px] py-[2px] text-[11px] font-normal text-black font-inter-tight capitalize hover:bg-gray-50 rounded"
-                        >
-                          {item}
-                        </button>
-                      ))
+                      <>
+                        {filteredExpertise.map((item) => (
+                          <button
+                            key={item}
+                            onClick={() => {
+                              toggleExpertise(item);
+                              setIsExpertiseOpen(false);
+                              setExpertiseSearch("");
+                            }}
+                            className="text-left px-[2px] py-[2px] text-[11px] font-normal text-black font-inter-tight capitalize hover:bg-gray-50 rounded"
+                          >
+                            {item}
+                          </button>
+                        ))}
+                        {expertiseSearch.trim() &&
+                          !categoriesData.includes(expertiseSearch) && (
+                            <button
+                              onClick={() => {
+                                toggleExpertise(expertiseSearch);
+                                setExpertiseSearch("");
+                                setIsExpertiseOpen(false);
+                              }}
+                              className="text-left px-[2px] py-[2px] text-[11px] font-normal rounded border-t border-[#E1E4EA] hover:opacity-80 text-[#8463FF] bg-[#8463FF0D]"
+                            >
+                              + Add &quot;{expertiseSearch}&quot;
+                            </button>
+                          )}
+                      </>
+                    ) : expertiseSearch.trim() ? (
+                      <button
+                        onClick={() => {
+                          toggleExpertise(expertiseSearch);
+                          setExpertiseSearch("");
+                          setIsExpertiseOpen(false);
+                        }}
+                        className="text-left px-[2px] py-[2px] text-[11px] font-normal rounded hover:opacity-80 text-[#8463FF] bg-[#8463FF0D]"
+                      >
+                        + Add &quot;{expertiseSearch}&quot;
+                      </button>
                     ) : (
                       <span className="text-[11px] text-black/40 px-[2px] py-[2px]">
                         No results
@@ -293,7 +370,7 @@ export function MentorFilterModal({
                   {filters.expertise.map((item) => (
                     <div
                       key={item}
-                      className="flex items-center gap-[5px] px-[7px] py-[8px] bg-[#F5F5F5] rounded-[25px]"
+                      className="flex items-center gap-[5px] px-[7px] py-[4px] bg-[#F5F5F5] rounded-[25px]"
                     >
                       <span className="text-[10px] font-normal text-black font-inter-tight">
                         {item}
@@ -307,13 +384,13 @@ export function MentorFilterModal({
               )}
             </div>
 
-            {/* Industries Dropdown */}
-            <div className="flex flex-col gap-[8px] w-full" ref={industryRef}>
+            {/* Language Dropdown */}
+            <div className="flex flex-col gap-[8px] w-full" ref={languageRef}>
               <div className="flex justify-between items-center">
                 <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
-                  Industries
+                  Language
                 </span>
-                <button onClick={() => setIsIndustryOpen(!isIndustryOpen)}>
+                <button onClick={() => setIsLanguageOpen(!isLanguageOpen)}>
                   <ChevronDown className="w-3 h-3 text-[#B2B2B2]" />
                 </button>
               </div>
@@ -322,151 +399,55 @@ export function MentorFilterModal({
                   <Search className="w-[12px] h-[12px] text-[#B2B2B2]" />
                   <input
                     type="text"
-                    placeholder="Search Industries"
-                    value={industrySearch}
+                    placeholder="Search/Add Languages"
+                    value={languageSearch}
                     onChange={(e) => {
-                      setIndustrySearch(e.target.value);
-                      setIsIndustryOpen(true);
+                      setLanguageSearch(e.target.value);
+                      setIsLanguageOpen(true);
                     }}
-                    onFocus={() => setIsIndustryOpen(true)}
-                    className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
-                  />
-                </div>
-                {isIndustryOpen && industrySearch && (
-                  <div className="absolute top-full mt-2 w-full max-h-[160px] overflow-y-auto bg-white rounded-[8px] shadow-[0_2px_20px_2px_rgba(0,0,0,0.15)] p-[8px] flex flex-col gap-[10px] z-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                    {filteredIndustries.length > 0 ? (
-                      filteredIndustries.map((item) => (
-                        <button
-                          key={item}
-                          onClick={() => {
-                            toggleIndustry(item);
-                            setIsIndustryOpen(false);
-                            setIndustrySearch("");
-                          }}
-                          className="text-left px-[2px] py-[2px] text-[11px] font-normal text-black font-inter-tight capitalize hover:bg-gray-50 rounded"
-                        >
-                          {item}
-                        </button>
-                      ))
-                    ) : (
-                      <span className="text-[11px] text-black/40 px-[2px] py-[2px]">
-                        No results
-                      </span>
-                    )}
-                  </div>
-                )}
-              </div>
-              {filters.industries.length > 0 && (
-                <div className="flex flex-wrap gap-[4px] mt-1">
-                  {filters.industries.map((item) => (
-                    <div
-                      key={item}
-                      className="flex items-center gap-[5px] px-[7px] py-[8px] bg-[#F5F5F5] rounded-[25px]"
-                    >
-                      <span className="text-[10px] font-normal text-black font-inter-tight">
-                        {item}
-                      </span>
-                      <button onClick={() => toggleIndustry(item)}>
-                        <X className="w-[10px] h-[10px] text-[#606060]" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Stack/Tech Dropdown */}
-            <div className="flex flex-col gap-[8px] w-full" ref={stackRef}>
-              <div className="flex justify-between items-center">
-                <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
-                  Tech Stack
-                </span>
-                <button onClick={() => setIsStackOpen(!isStackOpen)}>
-                  <ChevronDown className="w-3 h-3 text-[#B2B2B2]" />
-                </button>
-              </div>
-              <div className="relative">
-                <div className="flex items-center gap-[4px] px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] bg-white">
-                  <Search className="w-[12px] h-[12px] text-[#B2B2B2]" />
-                  <input
-                    type="text"
-                    placeholder="Search Stack"
-                    value={stackSearch}
-                    onChange={(e) => setStackSearch(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
                         if (
-                          stackSearch.trim() &&
-                          !filters.stack.includes(stackSearch)
+                          languageSearch.trim() &&
+                          !filters.languages.includes(languageSearch)
                         ) {
-                          toggleStack(stackSearch);
-                          setStackSearch("");
-                          setIsStackOpen(false);
+                          toggleLanguage(languageSearch);
+                          setLanguageSearch("");
+                          setIsLanguageOpen(false);
                         }
                       }
                     }}
-                    onFocus={() => setIsStackOpen(true)}
+                    onFocus={() => setIsLanguageOpen(true)}
                     className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
                   />
                 </div>
-                {isStackOpen && stackSearch && (
+                {isLanguageOpen && languageSearch && (
                   <div className="absolute top-full mt-2 w-full max-h-[160px] overflow-y-auto bg-white rounded-[8px] shadow-[0_2px_20px_2px_rgba(0,0,0,0.15)] p-[8px] flex flex-col gap-[10px] z-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                    {filteredStack.length > 0 ? (
-                      <>
-                        {filteredStack.map((skill) => (
-                          <button
-                            key={skill}
-                            onClick={() => {
-                              toggleStack(skill);
-                              setIsStackOpen(false);
-                              setStackSearch("");
-                            }}
-                            className="text-left px-[2px] py-[2px] text-[11px] font-normal text-black font-inter-tight capitalize hover:bg-gray-50 rounded"
-                          >
-                            {skill}
-                          </button>
-                        ))}
-                        {stackSearch.trim() &&
-                          !skillsData.includes(stackSearch) && (
-                            <button
-                              onClick={() => {
-                                toggleStack(stackSearch);
-                                setStackSearch("");
-                                setIsStackOpen(false);
-                              }}
-                              className="text-left px-[2px] py-[2px] text-[11px] font-normal rounded border-t border-[#E1E4EA] hover:opacity-80 text-[#8463FF] bg-[#8463FF0D]"
-                            >
-                              + Add &quot;{stackSearch}&quot;
-                            </button>
-                          )}
-                      </>
-                    ) : stackSearch.trim() ? (
-                      <button
-                        onClick={() => {
-                          toggleStack(stackSearch);
-                          setStackSearch("");
-                          setIsStackOpen(false);
-                        }}
-                        className="text-left px-[2px] py-[2px] text-[11px] font-normal rounded hover:opacity-80 text-[#8463FF] bg-[#8463FF0D]"
-                      >
-                        + Add &quot;{stackSearch}&quot;
-                      </button>
-                    ) : null}
+                    <button
+                      onClick={() => {
+                        toggleLanguage(languageSearch);
+                        setLanguageSearch("");
+                        setIsLanguageOpen(false);
+                      }}
+                      className="text-left px-[2px] py-[2px] text-[11px] font-normal rounded hover:opacity-80 text-[#8463FF] bg-[#8463FF0D]"
+                    >
+                      + Add &quot;{languageSearch}&quot;
+                    </button>
                   </div>
                 )}
               </div>
-              {filters.stack.length > 0 && (
+              {filters.languages.length > 0 && (
                 <div className="flex flex-wrap gap-[4px] mt-1">
-                  {filters.stack.map((item) => (
+                  {filters.languages.map((item) => (
                     <div
                       key={item}
-                      className="flex items-center gap-[5px] px-[7px] py-[8px] bg-[#F5F5F5] rounded-[25px]"
+                      className="flex items-center gap-[5px] px-[7px] py-[4px] bg-[#F5F5F5] rounded-[25px]"
                     >
                       <span className="text-[10px] font-normal text-black font-inter-tight">
                         {item}
                       </span>
-                      <button onClick={() => toggleStack(item)}>
+                      <button onClick={() => toggleLanguage(item)}>
                         <X className="w-[10px] h-[10px] text-[#606060]" />
                       </button>
                     </div>
@@ -530,7 +511,7 @@ export function MentorFilterModal({
               </div>
               {filters.location && (
                 <div className="flex flex-wrap gap-[4px]">
-                  <div className="flex items-center gap-[5px] px-[7px] py-[8px] bg-[#F5F5F5] rounded-[25px]">
+                  <div className="flex items-center gap-[5px] px-[7px] py-[4px] bg-[#F5F5F5] rounded-[25px]">
                     <span className="text-[10px] font-normal text-black font-inter-tight">
                       {filters.location}
                     </span>
@@ -541,53 +522,7 @@ export function MentorFilterModal({
                 </div>
               )}
             </div>
-
-            {/* Sort By Dropdown */}
-            <div className="flex flex-col gap-[8px] w-full" ref={sortRef}>
-              <div className="flex justify-between items-center">
-                <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
-                  Sort By
-                </span>
-                <button onClick={() => setIsSortOpen(!isSortOpen)}>
-                  <ChevronDown className="w-3 h-3 text-[#B2B2B2]" />
-                </button>
-              </div>
-              {isSortOpen && (
-                <div className="flex flex-col gap-[6px]">
-                  {SORT_OPTIONS.map((option) => {
-                    const isSelected = filters.sortBy === option.value;
-                    return (
-                      <button
-                        key={option.value}
-                        onClick={() => selectSort(option.value)}
-                        className={`text-left px-[8px] py-[8px] text-[11px] font-normal font-inter-tight rounded-[6px] transition-colors ${
-                          isSelected
-                            ? "text-black border border-[#8463FF] bg-[#8463FF0D]"
-                            : "text-black/70 border border-[#E1E4EA] hover:bg-gray-50"
-                        }`}
-                      >
-                        {option.display}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-              {!isSortOpen && filters.sortBy && (
-                <div className="flex flex-wrap gap-[4px]">
-                  <div className="flex items-center gap-[5px] px-[7px] py-[8px] bg-[#F5F5F5] rounded-[25px]">
-                    <span className="text-[10px] font-normal text-black font-inter-tight">
-                      {SORT_OPTIONS.find((o) => o.value === filters.sortBy)
-                        ?.display || filters.sortBy}
-                    </span>
-                    <button onClick={() => selectSort(filters.sortBy!)}>
-                      <X className="w-[10px] h-[10px] text-[#606060]" />
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
-
           {/* Action Buttons */}
           <div className="flex items-center gap-[4px]">
             <button

@@ -67,10 +67,14 @@ export default function OpportunityApplicantsPage() {
   } = useRecruiterOpportunityQuery(opportunityId);
 
   const {
-    data: rawApplicants = [],
+    data: rawApplicantsData,
     isLoading: isAppsLoading,
     error: appsError,
   } = useRecruiterApplicationsQuery({ opportunityId });
+
+  const rawApplicants = Array.isArray(rawApplicantsData)
+    ? rawApplicantsData
+    : (rawApplicantsData as any)?.data || (rawApplicantsData as any)?.applications || (rawApplicantsData as any)?.results || (rawApplicantsData as any)?.items || [];
 
   const isLoading = isOppLoading || isAppsLoading;
   const error = oppError || appsError ? "Failed to load" : null;

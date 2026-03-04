@@ -57,8 +57,10 @@ export function OpportunityCard({
       opportunityId: opportunity.id,
     });
 
-  const applicants: Application[] = applicantsRaw || [];
-  const displayApplicants = applicants.slice(0, 3);
+  const applicants: Application[] = Array.isArray(applicantsRaw)
+    ? applicantsRaw
+    : (applicantsRaw as any)?.data || (applicantsRaw as any)?.applications || (applicantsRaw as any)?.results || (applicantsRaw as any)?.items || [];
+  const displayApplicants = Array.isArray(applicants) ? applicants.slice(0, 3) : [];
   const isLoading = isMutationLoading; // Mapping for compatibility with existing UI disabled states
 
   const handleCardClick = (e: React.MouseEvent) => {

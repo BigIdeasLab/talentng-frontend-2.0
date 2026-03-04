@@ -92,22 +92,34 @@ export default function MentorshipPage() {
         const currentCategory =
           category !== undefined ? category : activeCategory;
 
+        // Combine search query and headline/language filters for the API 'q' parameter
+        let finalQuery = searchQ;
+        const extraKeywords: string[] = [];
+
+        if (filters?.headlines && filters.headlines.length > 0) {
+          extraKeywords.push(...filters.headlines);
+        }
+
+        if (filters?.languages && filters.languages.length > 0) {
+          extraKeywords.push(...filters.languages);
+        }
+
+        if (extraKeywords.length > 0) {
+          const keywordsStr = extraKeywords.join(" ");
+          finalQuery = finalQuery
+            ? `${finalQuery} ${keywordsStr}`
+            : keywordsStr;
+        }
+
         const data = await listMentors({
-          ...(searchQ && searchQ.length >= 2 && { q: searchQ }),
+          ...(finalQuery && finalQuery.length >= 2 && { q: finalQuery }),
           ...(currentCategory &&
             currentCategory !== "All" && { category: currentCategory }),
           ...(filters?.expertise &&
             filters.expertise.length > 0 && {
               expertise: filters.expertise.join(","),
             }),
-          ...(filters?.industries &&
-            filters.industries.length > 0 && {
-              industries: filters.industries.join(","),
-            }),
-          ...(filters?.stack &&
-            filters.stack.length > 0 && { stack: filters.stack.join(",") }),
           ...(filters?.location && { location: filters.location }),
-          ...(filters?.sortBy && { sortBy: filters.sortBy }),
           limit: LIMIT,
           offset: pageOffset,
         });
@@ -228,11 +240,10 @@ export default function MentorshipPage() {
               onClick={() => setIsFilterOpen(true)}
               className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
                 appliedFilters &&
-                (appliedFilters.expertise.length > 0 ||
-                  appliedFilters.industries.length > 0 ||
-                  appliedFilters.stack.length > 0 ||
-                  appliedFilters.location ||
-                  appliedFilters.sortBy)
+                (appliedFilters.headlines.length > 0 ||
+                  appliedFilters.expertise.length > 0 ||
+                  appliedFilters.languages.length > 0 ||
+                  appliedFilters.location)
                   ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
                   : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
               }`}
@@ -242,18 +253,16 @@ export default function MentorshipPage() {
                 Filter
               </span>
               {appliedFilters &&
-                appliedFilters.expertise.length +
-                  appliedFilters.industries.length +
-                  appliedFilters.stack.length +
-                  (appliedFilters.location ? 1 : 0) +
-                  (appliedFilters.sortBy ? 1 : 0) >
+                appliedFilters.headlines.length +
+                  appliedFilters.expertise.length +
+                  appliedFilters.languages.length +
+                  (appliedFilters.location ? 1 : 0) >
                   0 && (
                   <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-                    {appliedFilters.expertise.length +
-                      appliedFilters.industries.length +
-                      appliedFilters.stack.length +
-                      (appliedFilters.location ? 1 : 0) +
-                      (appliedFilters.sortBy ? 1 : 0)}
+                    {appliedFilters.headlines.length +
+                      appliedFilters.expertise.length +
+                      appliedFilters.languages.length +
+                      (appliedFilters.location ? 1 : 0)}
                   </span>
                 )}
             </button>

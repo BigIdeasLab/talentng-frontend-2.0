@@ -67,10 +67,16 @@ export function PastHiresTab() {
       : {}),
   };
 
-  const { data: applicationsRaw = [], isLoading } =
+  const { data: rawApplicantsData, isLoading } =
     useRecruiterApplicationsQuery(queryParams);
 
-  const pastHires: PastHire[] = applicationsRaw.map(transformApplicationToHire);
+  const applicationsRaw = Array.isArray(rawApplicantsData)
+    ? rawApplicantsData
+    : (rawApplicantsData as any)?.data || (rawApplicantsData as any)?.applications || (rawApplicantsData as any)?.results || (rawApplicantsData as any)?.items || [];
+
+  const pastHires: PastHire[] = Array.isArray(applicationsRaw)
+    ? applicationsRaw.map(transformApplicationToHire)
+    : [];
 
   // Server handles all filtering — render results directly
   const filteredHires = pastHires;
