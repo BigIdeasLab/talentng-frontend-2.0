@@ -1,22 +1,40 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { X, Search, ChevronDown } from "lucide-react";
-import categoriesData from "@/lib/data/categories.json";
 import skillsData from "@/lib/data/skills.json";
+import toolsData from "@/lib/data/tools.json";
 import statesCitiesData from "@/lib/data/states-cities.json";
 
 export type AvailabilityType =
-  | "Contract"
-  | "Part Time"
   | "Full Time"
-  | "Freelance";
+  | "Part Time"
+  | "Contract"
+  | "Internship"
+  | "Volunteer"
+  | "Freelance"
+  | "Remote"
+  | "Hybrid"
+  | "On Site";
+
+const AVAILABILITY_OPTIONS: AvailabilityType[] = [
+  "Full Time",
+  "Part Time",
+  "Contract",
+  "Internship",
+  "Volunteer",
+  "Freelance",
+  "Remote",
+  "Hybrid",
+  "On Site",
+];
 
 export interface FilterState {
-  categories: string[];
   skills: string[];
+  stack: string[];
   location: string;
   availability: string[];
+  headline: string;
 }
 
 interface FilterModalProps {
@@ -33,30 +51,28 @@ export function FilterModal({
   initialFilters,
 }: FilterModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
-  const categoryRef = useRef<HTMLDivElement>(null);
   const skillRef = useRef<HTMLDivElement>(null);
+  const stackRef = useRef<HTMLDivElement>(null);
   const locationRef = useRef<HTMLDivElement>(null);
-  const [categorySearch, setCategorySearch] = useState("");
+  const availabilityRef = useRef<HTMLDivElement>(null);
   const [skillSearch, setSkillSearch] = useState("");
+  const [stackSearch, setStackSearch] = useState("");
   const [locationSearch, setLocationSearch] = useState("");
-  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [availabilitySearch, setAvailabilitySearch] = useState("");
   const [isSkillOpen, setIsSkillOpen] = useState(false);
+  const [isStackOpen, setIsStackOpen] = useState(false);
   const [isLocationOpen, setIsLocationOpen] = useState(false);
+  const [isAvailabilityOpen, setIsAvailabilityOpen] = useState(false);
 
   const [filters, setFilters] = useState<FilterState>(
     initialFilters || {
-      categories: [],
       skills: [],
+      stack: [],
       location: "",
       availability: [],
+      headline: "",
     },
   );
-
-  const filteredCategories = useMemo(() => {
-    return categoriesData.filter((category) =>
-      category.toLowerCase().includes(categorySearch.toLowerCase()),
-    );
-  }, [categorySearch]);
 
   const filteredSkills = useMemo(() => {
     return skillsData.filter((skill) =>
@@ -64,51 +80,48 @@ export function FilterModal({
     );
   }, [skillSearch]);
 
-  const filteredLocations = useMemo(() => {
-    const locations: string[] = [];
-    const searchLower = locationSearch.toLowerCase();
+  const filteredStack = useMemo(() => {
+    return toolsData
+      .filter((tool) =>
+        tool.name.toLowerCase().includes(stackSearch.toLowerCase()),
+      )
+      .map((tool) => tool.name);
+  }, [stackSearch]);
 
-    Object.entries(statesCitiesData).forEach(([state, data]) => {
-      if (state.toLowerCase().includes(searchLower)) {
-        locations.push(state);
-      }
-      (data.major_cities || []).forEach((city) => {
-        if (city.toLowerCase().includes(searchLower)) {
-          locations.push(`${city}, ${state}`);
-        }
-      });
-    });
-    return locations;
+  const filteredAvailability = useMemo(() => {
+    return AVAILABILITY_OPTIONS.filter((option) =>
+      option.toLowerCase().includes(availabilitySearch.toLowerCase()),
+    );
+  }, [availabilitySearch]);
+
+  const filteredLocations = useMemo(() => {
+    const searchLower = locationSearch.toLowerCase();
+    return Object.keys(statesCitiesData).filter((state) =>
+      state.toLowerCase().includes(searchLower),
+    );
   }, [locationSearch]);
 
   const handleClearFilter = () => {
     const emptyFilters: FilterState = {
-      categories: [],
       skills: [],
+      stack: [],
       location: "",
       availability: [],
+      headline: "",
     };
     setFilters(emptyFilters);
-    setCategorySearch("");
     setSkillSearch("");
+    setStackSearch("");
     setLocationSearch("");
+    setAvailabilitySearch("");
     onApply(emptyFilters);
     onClose();
   };
 
-  const handleApplyFilter = () => {
+  const handleApplyFilter = useCallback(() => {
     onApply(filters);
     onClose();
-  };
-
-  const toggleCategory = (category: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      categories: prev.categories.includes(category)
-        ? prev.categories.filter((c) => c !== category)
-        : [...prev.categories, category],
-    }));
-  };
+  }, [filters, onApply, onClose]);
 
   const toggleSkill = (skill: string) => {
     setFilters((prev) => ({
@@ -116,6 +129,24 @@ export function FilterModal({
       skills: prev.skills.includes(skill)
         ? prev.skills.filter((s) => s !== skill)
         : [...prev.skills, skill],
+    }));
+  };
+
+  const toggleStack = (tool: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      stack: prev.stack.includes(tool)
+        ? prev.stack.filter((t) => t !== tool)
+        : [...prev.stack, tool],
+    }));
+  };
+
+  const toggleAvailability = (option: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      availability: prev.availability.includes(option)
+        ? prev.availability.filter((a) => a !== option)
+        : [...prev.availability, option],
     }));
   };
 
@@ -130,15 +161,6 @@ export function FilterModal({
         handleApplyFilter();
       }
 
-      // Close category dropdown if clicking outside of it
-      if (
-        isCategoryOpen &&
-        categoryRef.current &&
-        !categoryRef.current.contains(event.target as Node)
-      ) {
-        setIsCategoryOpen(false);
-      }
-
       // Close skill dropdown if clicking outside of it
       if (
         isSkillOpen &&
@@ -146,6 +168,15 @@ export function FilterModal({
         !skillRef.current.contains(event.target as Node)
       ) {
         setIsSkillOpen(false);
+      }
+
+      // Close stack dropdown if clicking outside of it
+      if (
+        isStackOpen &&
+        stackRef.current &&
+        !stackRef.current.contains(event.target as Node)
+      ) {
+        setIsStackOpen(false);
       }
 
       // Close location dropdown if clicking outside of it
@@ -156,11 +187,36 @@ export function FilterModal({
       ) {
         setIsLocationOpen(false);
       }
+
+      // Close availability dropdown if clicking outside of it
+      if (
+        isAvailabilityOpen &&
+        availabilityRef.current &&
+        !availabilityRef.current.contains(event.target as Node)
+      ) {
+        setIsAvailabilityOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isCategoryOpen, isSkillOpen, isLocationOpen]); // Removed isOpen, onClose, handleApplyFilter as backdrop handles closing
+  }, [isSkillOpen, isStackOpen, isLocationOpen, isAvailabilityOpen, handleApplyFilter]);
+
+  useEffect(() => {
+    const scrollSection = (ref: React.RefObject<HTMLDivElement>) => {
+      setTimeout(() => {
+        ref.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 150);
+    };
+
+    if (isSkillOpen) scrollSection(skillRef);
+    if (isStackOpen) scrollSection(stackRef);
+    if (isLocationOpen) scrollSection(locationRef);
+    if (isAvailabilityOpen) scrollSection(availabilityRef);
+  }, [isSkillOpen, isStackOpen, isLocationOpen, isAvailabilityOpen]);
 
   if (!isOpen) return null;
 
@@ -175,64 +231,22 @@ export function FilterModal({
       <div className="absolute top-[100%] right-0 mt-2 z-50" ref={modalRef}>
         <div className="w-[245px] flex flex-col gap-[12px] rounded-[12px] bg-white shadow-[0_0_15px_0_rgba(0,0,0,0.15)] p-[12px_8px] max-h-[90vh]">
           <div className="flex flex-col gap-[12px] overflow-y-auto max-h-[420px] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            {/* Category Dropdown */}
-            <div className="flex flex-col gap-[8px] w-full" ref={categoryRef}>
-              <div className="flex justify-between items-center">
-                <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
-                  Select Category
-                </span>
-                <button onClick={() => setIsCategoryOpen(!isCategoryOpen)}>
-                  <ChevronDown className="w-3 h-3 text-[#B2B2B2]" />
-                </button>
+            {/* Headline Input */}
+            <div className="flex flex-col gap-[8px] w-full">
+              <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
+                Headline
+              </span>
+              <div className="flex items-center gap-[4px] px-[6px] py-[10px] h-[33px] border border-[#E1E4EA] rounded-[8px] bg-white">
+                <input
+                  type="text"
+                  placeholder="Enter Headline"
+                  value={filters.headline}
+                  onChange={(e) =>
+                    setFilters((prev) => ({ ...prev, headline: e.target.value }))
+                  }
+                  className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
+                />
               </div>
-              <div className="relative">
-                <div className="flex items-center gap-[4px] px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] bg-white">
-                  <Search className="w-[12px] h-[12px] text-[#B2B2B2]" />
-                  <input
-                    type="text"
-                    placeholder="Search Category"
-                    value={categorySearch}
-                    onChange={(e) => setCategorySearch(e.target.value)}
-                    onFocus={() => setIsCategoryOpen(true)}
-                    className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
-                  />
-                </div>
-                {isCategoryOpen && filteredCategories.length > 0 && (
-                  <div className="absolute top-full mt-2 w-full max-h-[160px] overflow-y-auto bg-white rounded-[8px] shadow-[0_2px_20px_2px_rgba(0,0,0,0.15)] p-[8px] flex flex-col gap-[10px] z-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                    {filteredCategories.map((category) => (
-                      <button
-                        key={category}
-                        onClick={() => {
-                          toggleCategory(category);
-                          setIsCategoryOpen(false);
-                          setCategorySearch("");
-                        }}
-                        className="text-left px-[2px] py-[2px] text-[11px] font-normal text-black font-inter-tight capitalize hover:bg-gray-50 rounded"
-                      >
-                        {category}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              {/* Selected Categories */}
-              {filters.categories.length > 0 && (
-                <div className="flex flex-wrap gap-[4px] mt-1">
-                  {filters.categories.map((category) => (
-                    <div
-                      key={category}
-                      className="flex items-center gap-[5px] px-[7px] py-[8px] bg-[#F5F5F5] rounded-[25px]"
-                    >
-                      <span className="text-[10px] font-normal text-black font-inter-tight">
-                        {category}
-                      </span>
-                      <button onClick={() => toggleCategory(category)}>
-                        <X className="w-[10px] h-[10px] text-[#606060]" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
 
             {/* Skills Dropdown */}
@@ -336,6 +350,107 @@ export function FilterModal({
               )}
             </div>
 
+            {/* Stack Dropdown */}
+            <div className="flex flex-col gap-[8px] w-full" ref={stackRef}>
+              <div className="flex justify-between items-center">
+                <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
+                  Select Stack
+                </span>
+                <button onClick={() => setIsStackOpen(!isStackOpen)}>
+                  <ChevronDown className="w-3 h-3 text-[#B2B2B2]" />
+                </button>
+              </div>
+              <div className="relative">
+                <div className="flex items-center gap-[4px] px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] bg-white">
+                  <Search className="w-[12px] h-[12px] text-[#B2B2B2]" />
+                  <input
+                    type="text"
+                    placeholder="Search Stack"
+                    value={stackSearch}
+                    onChange={(e) => setStackSearch(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        if (
+                          stackSearch.trim() &&
+                          !filters.stack.includes(stackSearch)
+                        ) {
+                          toggleStack(stackSearch);
+                          setStackSearch("");
+                          setIsStackOpen(false);
+                        }
+                      }
+                    }}
+                    onFocus={() => setIsStackOpen(true)}
+                    className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
+                  />
+                </div>
+                {isStackOpen && stackSearch && (
+                  <div className="absolute top-full mt-2 w-full max-h-[160px] overflow-y-auto bg-white rounded-[8px] shadow-[0_2px_20px_2px_rgba(0,0,0,0.15)] p-[8px] flex flex-col gap-[10px] z-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                    {filteredStack.length > 0 ? (
+                      <>
+                        {filteredStack.map((tool) => (
+                          <button
+                            key={tool}
+                            onClick={() => {
+                              toggleStack(tool);
+                              setIsStackOpen(false);
+                              setStackSearch("");
+                            }}
+                            className="text-left px-[2px] py-[2px] text-[11px] font-normal text-black font-inter-tight capitalize hover:bg-gray-50 rounded"
+                          >
+                            {tool}
+                          </button>
+                        ))}
+                        {stackSearch.trim() &&
+                          !filteredStack.includes(stackSearch) && (
+                            <button
+                              onClick={() => {
+                                toggleStack(stackSearch);
+                                setStackSearch("");
+                                setIsStackOpen(false);
+                              }}
+                              className="text-left px-[2px] py-[2px] text-[11px] font-normal text-[#5C30FF] bg-[#5C30FF]/5 hover:bg-[#5C30FF]/10 rounded border-t border-[#E1E4EA]"
+                            >
+                              + Add "{stackSearch}" as custom tool
+                            </button>
+                          )}
+                      </>
+                    ) : stackSearch.trim() ? (
+                      <button
+                        onClick={() => {
+                          toggleStack(stackSearch);
+                          setStackSearch("");
+                          setIsStackOpen(false);
+                        }}
+                        className="text-left px-[2px] py-[2px] text-[11px] font-normal text-[#5C30FF] bg-[#5C30FF]/5 hover:bg-[#5C30FF]/10 rounded"
+                      >
+                        + Add "{stackSearch}" as custom tool
+                      </button>
+                    ) : null}
+                  </div>
+                )}
+              </div>
+              {/* Selected Stack */}
+              {filters.stack.length > 0 && (
+                <div className="flex flex-wrap gap-[4px] mt-1">
+                  {filters.stack.map((tool) => (
+                    <div
+                      key={tool}
+                      className="flex items-center gap-[5px] px-[7px] py-[8px] bg-[#F5F5F5] rounded-[25px]"
+                    >
+                      <span className="text-[10px] font-normal text-black font-inter-tight">
+                        {tool}
+                      </span>
+                      <button onClick={() => toggleStack(tool)}>
+                        <X className="w-[10px] h-[10px] text-[#606060]" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             {/* Location Dropdown */}
             <div className="flex flex-col gap-[8px] w-full" ref={locationRef}>
               <div className="flex justify-between items-center">
@@ -380,38 +495,70 @@ export function FilterModal({
               </div>
             </div>
 
-            {/* Availability */}
-            <div className="flex flex-col gap-[8px] w-full">
-              <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
-                Availability
-              </span>
-              <div className="flex flex-col gap-[10px] p-[8px] border border-[#E1E4EA] rounded-[8px] bg-white">
-                {(
-                  ["Contract", "Part Time", "Full Time", "Freelance"] as const
-                ).map((option) => (
-                  <button
-                    key={option}
-                    onClick={() =>
-                      setFilters((prev) => ({
-                        ...prev,
-                        availability: prev.availability.includes(option)
-                          ? prev.availability.filter((a) => a !== option)
-                          : [...prev.availability, option],
-                      }))
-                    }
-                    className="flex items-center gap-[4px]"
-                  >
-                    <div className="w-3 h-3 rounded flex items-center justify-center border border-[#E1E4EA]">
-                      {filters.availability.includes(option) && (
-                        <div className="w-[8px] h-[8px] rounded-sm bg-[#5C30FF]" />
-                      )}
-                    </div>
-                    <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
-                      {option}
-                    </span>
-                  </button>
-                ))}
+            {/* Availability Dropdown */}
+            <div className="flex flex-col gap-[8px] w-full" ref={availabilityRef}>
+              <div className="flex justify-between items-center">
+                <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
+                  Availability
+                </span>
+                <button onClick={() => setIsAvailabilityOpen(!isAvailabilityOpen)}>
+                  <ChevronDown className="w-3 h-3 text-[#B2B2B2]" />
+                </button>
               </div>
+              <div className="relative">
+                <div className="flex items-center gap-[4px] px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] bg-white">
+                  <Search className="w-[12px] h-[12px] text-[#B2B2B2]" />
+                  <input
+                    type="text"
+                    placeholder="Search Availability"
+                    value={availabilitySearch}
+                    onChange={(e) => setAvailabilitySearch(e.target.value)}
+                    onFocus={() => setIsAvailabilityOpen(true)}
+                    className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
+                  />
+                </div>
+                {isAvailabilityOpen && (
+                  <div className="absolute top-full mt-2 w-full max-h-[160px] overflow-y-auto bg-white rounded-[8px] shadow-[0_2px_20px_2px_rgba(0,0,0,0.15)] p-[8px] flex flex-col gap-[10px] z-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                    {filteredAvailability.length > 0 ? (
+                      filteredAvailability.map((option) => (
+                        <button
+                          key={option}
+                          onClick={() => {
+                            toggleAvailability(option);
+                            setAvailabilitySearch("");
+                            setIsAvailabilityOpen(false);
+                          }}
+                          className="text-left px-[2px] py-[2px] text-[11px] font-normal text-black font-inter-tight capitalize hover:bg-gray-50 rounded"
+                        >
+                          {option}
+                        </button>
+                      ))
+                    ) : (
+                      <span className="text-[11px] text-black/40 px-[2px] py-[2px]">
+                        No options found
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+              {/* Selected Availability */}
+              {filters.availability.length > 0 && (
+                <div className="flex flex-wrap gap-[4px] mt-1">
+                  {filters.availability.map((option) => (
+                    <div
+                      key={option}
+                      className="flex items-center gap-[5px] px-[7px] py-[8px] bg-[#F5F5F5] rounded-[25px]"
+                    >
+                      <span className="text-[10px] font-normal text-black font-inter-tight">
+                        {option}
+                      </span>
+                      <button onClick={() => toggleAvailability(option)}>
+                        <X className="w-[10px] h-[10px] text-[#606060]" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 

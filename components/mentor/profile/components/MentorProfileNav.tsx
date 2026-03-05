@@ -1,8 +1,8 @@
 "use client";
 
 interface MentorProfileNavProps {
-  activeTab: "overview" | "session" | "reviews";
-  onTabChange: (tab: "overview" | "session" | "reviews") => void;
+  activeTab: "about" | "sessions" | "reviews";
+  onTabChange: (tab: "about" | "sessions" | "reviews") => void;
 }
 
 export function MentorProfileNav({
@@ -10,10 +10,9 @@ export function MentorProfileNav({
   onTabChange,
 }: MentorProfileNavProps) {
   const tabs = [
-    { id: "overview", label: "Overview" },
-    // TODO: Re-enable when real data is available
-    // { id: "session", label: "Session" },
-    // { id: "reviews", label: "Reviews" },
+    { id: "about", label: "About" },
+    { id: "sessions", label: "Sessions" },
+    { id: "reviews", label: "Reviews" },
   ] as const;
 
   return (

@@ -107,6 +107,11 @@ const apiClient = async <T>(
         // No refresh token, user must log in again
         clearTokens();
         if (typeof window !== "undefined") {
+          // Clear all auth-related state
+          localStorage.removeItem("activeRole");
+          localStorage.removeItem("userRoles");
+          document.cookie =
+            "activeRole=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
           window.location.href = "/login";
         }
         throw new Error("Session expired - please log in again");
@@ -117,9 +122,9 @@ const apiClient = async <T>(
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${refreshToken}`,
         },
-        body: JSON.stringify({}),
+        credentials: "include",
+        body: JSON.stringify({ refreshToken }),
       });
 
       try {
@@ -137,6 +142,17 @@ const apiClient = async <T>(
               refreshToken: data.refreshToken,
               userId: data.userId || "",
             });
+
+            // Preserve activeRole if it exists in localStorage
+            // The refresh endpoint should maintain the same active role
+            const currentActiveRole =
+              typeof window !== "undefined"
+                ? localStorage.getItem("activeRole")
+                : null;
+            if (currentActiveRole && typeof window !== "undefined") {
+              localStorage.setItem("activeRole", currentActiveRole);
+              document.cookie = `activeRole=${currentActiveRole}; path=/; max-age=31536000; SameSite=Lax`;
+            }
           }
 
           // Update config with new token and retry original request
@@ -152,6 +168,11 @@ const apiClient = async <T>(
           processQueue(false, new Error("Token refresh failed"));
           clearTokens();
           if (typeof window !== "undefined") {
+            // Clear all auth-related state
+            localStorage.removeItem("activeRole");
+            localStorage.removeItem("userRoles");
+            document.cookie =
+              "activeRole=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
             window.location.href = "/login";
           }
           throw new Error("Session expired - please log in again");
@@ -162,6 +183,11 @@ const apiClient = async <T>(
         refreshPromise = null;
         clearTokens();
         if (typeof window !== "undefined") {
+          // Clear all auth-related state
+          localStorage.removeItem("activeRole");
+          localStorage.removeItem("userRoles");
+          document.cookie =
+            "activeRole=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
           window.location.href = "/login";
         }
         throw error;

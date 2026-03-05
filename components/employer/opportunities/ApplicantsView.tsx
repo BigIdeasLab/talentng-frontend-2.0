@@ -45,9 +45,6 @@ export function ApplicantsView({
     ...(searchQuery ? { searchQuery } : {}),
     sortBy: sortBy as "newest" | "oldest" | "name-asc" | "name-desc",
     ...(appliedFilters?.location ? { location: appliedFilters.location } : {}),
-    ...(appliedFilters?.skills?.length
-      ? { skills: appliedFilters.skills.join(",") }
-      : {}),
     ...(appliedFilters?.dateRange && appliedFilters.dateRange !== "all"
       ? { dateRange: appliedFilters.dateRange as "today" | "week" | "month" }
       : {}),
@@ -57,18 +54,12 @@ export function ApplicantsView({
   };
 
   const {
-    data: rawApplicants,
+    data: response,
     isLoading: isAppsLoading,
     error: appsError,
   } = useRecruiterApplicationsQuery(queryParams);
 
-  const applicants = Array.isArray(rawApplicants)
-    ? rawApplicants
-    : (rawApplicants as any)?.data ||
-      (rawApplicants as any)?.applications ||
-      (rawApplicants as any)?.results ||
-      (rawApplicants as any)?.items ||
-      [];
+  const applicants = response?.data || [];
 
   const isLoading = isOppLoading || isAppsLoading;
   const error = oppError || appsError ? "Failed to load" : null;
@@ -211,7 +202,6 @@ export function ApplicantsView({
             appliedFilters
               ? (appliedFilters.status.length > 0 ? 1 : 0) +
                 (appliedFilters.location ? 1 : 0) +
-                (appliedFilters.skills.length > 0 ? 1 : 0) +
                 (appliedFilters.dateRange !== "all" ? 1 : 0)
               : 0
           }
@@ -226,7 +216,6 @@ export function ApplicantsView({
               initialFilters={appliedFilters || undefined}
               availableStatuses={availableStatuses}
               availableLocations={availableLocations}
-              availableSkills={availableSkills}
             />
           }
         />

@@ -46,7 +46,13 @@ const getMenuItems = (
   {
     id: "dashboard",
     label: "Dashboard",
-    icon: LayoutDashboard,
+    icon: (
+      <LayoutDashboard
+        className="w-5 h-5"
+        strokeWidth={1.25}
+        stroke="#525866"
+      />
+    ),
     href: "/dashboard",
   },
   // {
@@ -58,36 +64,53 @@ const getMenuItems = (
   {
     id: "opportunities",
     label: "Opportunities",
-    icon: Briefcase,
+    icon: <Briefcase className="w-5 h-5" strokeWidth={1.25} stroke="#525866" />,
     href: "/opportunities",
   },
-  { id: "mentorship", label: "Mentorship", icon: Users, href: "/mentorship" },
+  {
+    id: "mentorship",
+    label: "Mentorship",
+    icon: <Users className="w-5 h-5" strokeWidth={1.25} stroke="#525866" />,
+    href: "/mentorship",
+  },
   {
     id: "my-applications",
     label: "My Applications",
-    icon: FileText,
+    icon: <FileText className="w-5 h-5" strokeWidth={1.25} stroke="#525866" />,
     href: "/my-applications",
   },
   {
-    id: "upcoming",
-    label: "Upcoming",
-    icon: Calendar,
+    id: "calendar",
+    label: "Calendar",
+    icon: <Calendar className="w-5 h-5" strokeWidth={1.25} stroke="#525866" />,
     badge: upcomingCount,
-    href: "/upcoming",
+    href: "/calendar",
   },
 
   {
     id: "notification",
     label: "Notification",
-    icon: Bell,
+    icon: <Bell className="w-5 h-5" strokeWidth={1.25} stroke="#525866" />,
     badge: notificationCount,
     href: "/notifications",
   },
 ];
 
 const otherItems: Omit<MenuItem, "badge">[] = [
-  { id: "support", label: "Support", icon: Headphones, href: "/support" },
-  { id: "settings", label: "Settings", icon: Settings, href: "/settings" },
+  {
+    id: "support",
+    label: "Support",
+    icon: (
+      <Headphones className="w-5 h-5" strokeWidth={1.25} stroke="#525866" />
+    ),
+    href: "/support",
+  },
+  {
+    id: "settings",
+    label: "Settings",
+    icon: <Settings className="w-5 h-5" strokeWidth={1.25} stroke="#525866" />,
+    href: "/settings",
+  },
 ];
 
 export function TalentSidebar({
@@ -131,7 +154,6 @@ export function TalentSidebar({
         {/* Main Navigation Items */}
         <div className="flex flex-col gap-[6px]">
           {menuItems.map((item) => {
-            const Icon = item.icon;
             const isActive = pathname === item.href;
             const isNotification = item.id === "notification";
             const MenuComponent = isNotification ? "button" : "a";
@@ -160,7 +182,7 @@ export function TalentSidebar({
                     : undefined
                 }
               >
-                <Icon className="w-4 h-4 flex-shrink-0" />
+                {item.icon}
                 <span className="text-[13px] font-inter-tight text-left flex-1">
                   {item.label}
                 </span>
@@ -186,7 +208,6 @@ export function TalentSidebar({
         </div>
         <div className="flex flex-col gap-[6px]">
           {otherItems.map((item) => {
-            const Icon = item.icon;
             const isActive = pathname === item.href;
             const MenuComponent = item.href ? Link : "button";
             return (
@@ -207,7 +228,7 @@ export function TalentSidebar({
                     : undefined
                 }
               >
-                <Icon className="w-4 h-4 flex-shrink-0" />
+                {item.icon}
                 <span className="text-[13px] font-inter-tight text-left flex-1">
                   {item.label}
                 </span>

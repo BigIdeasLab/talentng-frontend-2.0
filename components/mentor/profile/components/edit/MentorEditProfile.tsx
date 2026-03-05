@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useUnsavedChangesWarning } from "@/hooks/useUnsavedChangesWarning";
 import { fetchProfileByRole } from "@/lib/api/profile-service";
 import { Plus, X as XIcon } from "lucide-react";
 import { SmoothCollapse } from "@/components/SmoothCollapse";
@@ -1105,19 +1106,10 @@ export function MentorEditProfile() {
     }
   }, [profileData]);
 
-  // Warn on page leave
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (hasUnsavedChanges) {
-        e.preventDefault();
-        e.returnValue = "";
-        return "";
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [hasUnsavedChanges]);
+  // Warn on page leave (browser and client-side navigation)
+  const { navigateWithConfirmation } = useUnsavedChangesWarning(
+    hasUnsavedChanges,
+  );
 
   useEffect(() => {
     const section = searchParams.get("section");
@@ -1298,11 +1290,7 @@ export function MentorEditProfile() {
   };
 
   const handleDiscard = () => {
-    if (hasUnsavedChanges) {
-      setShowDiscardModal(true);
-    } else {
-      router.push("/profile");
-    }
+    navigateWithConfirmation("/profile");
   };
 
   const handleSaveProfile = async () => {

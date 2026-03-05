@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useUnsavedChangesWarning } from "@/hooks/useUnsavedChangesWarning";
 import { EditProfileSidebar } from "@/components/talent/profile/components/edit/Sidebar";
 import { EditProfileActionBar } from "@/components/talent/profile/components/edit/ActionBar";
 import { PersonalDetailsSection } from "@/components/talent/profile/components/edit/PersonalDetailsSection";
@@ -155,19 +156,10 @@ export function TalentEditProfile() {
     }
   }, [formData, profileData]);
 
-  // Warn on page leave
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (hasUnsavedChanges) {
-        e.preventDefault();
-        e.returnValue = "";
-        return "";
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [hasUnsavedChanges]);
+  // Warn on page leave (browser and client-side navigation)
+  const { navigateWithConfirmation } = useUnsavedChangesWarning(
+    hasUnsavedChanges,
+  );
 
   useEffect(() => {
     const section = searchParams.get("section");
@@ -369,11 +361,7 @@ export function TalentEditProfile() {
   const [isSaving, setIsSaving] = useState(false);
 
   const handleDiscard = () => {
-    if (hasUnsavedChanges) {
-      setShowDiscardModal(true);
-    } else {
-      router.push("/profile");
-    }
+    navigateWithConfirmation("/profile");
   };
 
   const handleSaveProfile = async () => {

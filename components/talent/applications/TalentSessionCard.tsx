@@ -1,65 +1,87 @@
 "use client";
 
+import { useState } from "react";
 import { format } from "date-fns";
-import { Calendar, Clock, Video, MapPin, ExternalLink } from "lucide-react";
+import { Calendar, Clock, Video, MapPin, ExternalLink, Copy, Check, X, CheckCircle, Star } from "lucide-react";
 import Link from "next/link";
 import type { MentorshipSession } from "@/lib/api/mentorship/types";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface TalentSessionCardProps {
   session: MentorshipSession;
+  onCancel?: (id: string) => void;
+  onReschedule?: (id: string) => void;
+  onConfirmCompletion?: (id: string) => void;
+  onLeaveReview?: (id: string) => void;
 }
 
 const STATUS_CONFIG: Record<
   string,
   { bg: string; dot: string; text: string; label: string }
 > = {
-  pending: { bg: "#FFF4E5", dot: "#F59E0B", text: "#F59E0B", label: "Pending" },
-  confirmed: {
-    bg: "#EFF6FF",
-    dot: "#2563EB",
-    text: "#2563EB",
-    label: "Confirmed",
+  // Needs immediate attention - Urgent (Amber/Orange tones)
+  pending: { 
+    bg: "#FEF3C7", 
+    dot: "#F59E0B", 
+    text: "#D97706", 
+    label: "Pending Confirmation" 
   },
+  pending_completion: {
+    bg: "#FEF2F2",
+    dot: "#EF4444",
+    text: "#DC2626",
+    label: "Action Required",
+  },
+  
+  // Rescheduled - Needs attention (Amber)
   rescheduled: {
-    bg: "#FFF4E5",
+    bg: "#FEF3C7",
     dot: "#F59E0B",
-    text: "#F59E0B",
+    text: "#D97706",
     label: "Rescheduled",
   },
+  
+  // Active/In Progress - Blue (attention but not urgent)
   in_progress: {
-    bg: "#EFF6FF",
-    dot: "#2563EB",
+    bg: "#DBEAFE",
+    dot: "#3B82F6",
     text: "#2563EB",
     label: "In Progress",
   },
-  pending_completion: {
-    bg: "#F3E8FF",
-    dot: "#7C3AED",
-    text: "#7C3AED",
-    label: "Pending Review",
+  
+  // Confirmed - Neutral Blue
+  confirmed: {
+    bg: "#EFF6FF",
+    dot: "#60A5FA",
+    text: "#3B82F6",
+    label: "Confirmed",
   },
-  disputed: {
-    bg: "#FEF2F2",
-    dot: "#EF4444",
-    text: "#EF4444",
-    label: "Disputed",
-  },
+  
+  // Completed - Green
   completed: {
     bg: "#ECFDF3",
     dot: "#10B981",
-    text: "#10B981",
+    text: "#059669",
     label: "Completed",
+  },
+  
+  // Problem states - Red
+  disputed: {
+    bg: "#FEF2F2",
+    dot: "#DC2626",
+    text: "#B91C1C",
+    label: "Disputed",
   },
   cancelled: {
     bg: "#FEF2F2",
     dot: "#EF4444",
-    text: "#EF4444",
+    text: "#DC2626",
     label: "Cancelled",
   },
 };
 
-export function TalentSessionCard({ session }: TalentSessionCardProps) {
+export function TalentSessionCard({ session, onCancel, onReschedule, onConfirmCompletion, onLeaveReview }: TalentSessionCardProps) {
+  const [copied, setCopied] = useState(false);
   const status = STATUS_CONFIG[session.status] || STATUS_CONFIG.pending;
   const mentor = session.mentor;
   const mentorName = mentor.fullName || mentor.name || "Unknown Mentor";
@@ -67,6 +89,13 @@ export function TalentSessionCard({ session }: TalentSessionCardProps) {
 
   const rawDate = session.startTime || session.scheduledAt || session.createdAt;
   const scheduledDate = new Date(rawDate);
+  
+  // Handle invalid dates
+  const isValidDate = !isNaN(scheduledDate.getTime());
+  if (!isValidDate) {
+    console.error('Invalid session date:', rawDate);
+    return null;
+  }
 
   // Resolve meeting link: try meetingLink, then location, then mentor's default
   const meetingLink =
@@ -87,6 +116,20 @@ export function TalentSessionCard({ session }: TalentSessionCardProps) {
             60000,
         )
       : (session.mentor as any).sessionDuration || 0);
+
+  const handleCopyLink = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (meetingLink) {
+      try {
+        await navigator.clipboard.writeText(meetingLink);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error('Failed to copy link:', err);
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col border border-[#E1E4EA] rounded-[16px] bg-white hover:shadow-md transition-shadow">
@@ -185,23 +228,137 @@ export function TalentSessionCard({ session }: TalentSessionCardProps) {
             </div>
           )}
           {meetingLink && (
-            <a
-              href={meetingLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#EFF6FF] hover:bg-[#DBEAFE] transition-colors"
-            >
-              <Video className="w-3 h-3 text-[#2563EB]" />
-              <span className="text-[12px] font-medium font-inter-tight text-[#2563EB] leading-[12.6px]">
-                Join Meeting
-              </span>
-            </a>
+            <div className="flex items-center gap-1">
+              <a
+                href={meetingLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#EFF6FF] hover:bg-[#DBEAFE] transition-colors"
+              >
+                <Video className="w-3 h-3 text-[#2563EB]" />
+                <span className="text-[12px] font-medium font-inter-tight text-[#2563EB] leading-[12.6px]">
+                  Join Meeting
+                </span>
+              </a>
+              <button
+                onClick={handleCopyLink}
+                className="flex items-center justify-center w-8 h-8 rounded-[24px] bg-[#EFF6FF] hover:bg-[#DBEAFE] transition-colors"
+                title="Copy meeting link"
+              >
+                {copied ? (
+                  <Check className="w-3 h-3 text-[#10B981]" />
+                ) : (
+                  <Copy className="w-3 h-3 text-[#2563EB]" />
+                )}
+              </button>
+            </div>
           )}
         </div>
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-end px-4 py-2.5 border-t border-[#E1E4EA]">
+      <div className="flex items-center justify-between px-4 py-2.5 border-t border-[#E1E4EA]">
+        <div className="flex items-center gap-1">
+          {/* Pending - Show Cancel button */}
+          {session.status === "pending" && (
+            <>
+              <span className="text-[12px] font-inter-tight text-[#D97706]">
+                Waiting for mentor confirmation
+              </span>
+              <button
+                onClick={() => onCancel?.(session.id)}
+                className="flex items-center gap-1 px-4 py-2 h-8 border border-[#E1E4EA] rounded-[40px] hover:border-[#EF4444] hover:bg-[#FEF2F2] hover:text-[#EF4444] transition-colors"
+              >
+                <X className="w-4 h-4" />
+                <span className="text-[12px] font-medium font-inter-tight">
+                  Cancel
+                </span>
+              </button>
+            </>
+          )}
+
+          {/* Confirmed/Rescheduled - Show Reschedule + Cancel buttons */}
+          {(session.status === "confirmed" || session.status === "rescheduled") && (
+            <>
+              <button
+                onClick={() => onReschedule?.(session.id)}
+                className="flex items-center gap-1 px-4 py-2 h-8 bg-[#181B25] hover:bg-[#2a2d39] rounded-[40px] transition-colors"
+              >
+                <Clock className="w-4 h-4 text-white" />
+                <span className="text-[12px] font-medium font-inter-tight text-white">
+                  Reschedule
+                </span>
+              </button>
+              <button
+                onClick={() => onCancel?.(session.id)}
+                className="flex items-center gap-1 px-4 py-2 h-8 border border-[#E1E4EA] rounded-[40px] hover:border-[#EF4444] hover:bg-[#FEF2F2] hover:text-[#EF4444] transition-colors"
+              >
+                <X className="w-4 h-4" />
+                <span className="text-[12px] font-medium font-inter-tight">
+                  Cancel
+                </span>
+              </button>
+            </>
+          )}
+
+          {/* In Progress - No action buttons */}
+          {session.status === "in_progress" && (
+            <span className="text-[12px] font-inter-tight text-[#2563EB]">
+              Session in progress
+            </span>
+          )}
+
+          {/* Pending Completion - Show Confirm Completion button */}
+          {session.status === "pending_completion" && (
+            <button
+              onClick={() => onConfirmCompletion?.(session.id)}
+              className="flex items-center gap-1 px-4 py-2 h-8 hover:opacity-80 rounded-[40px] transition-colors"
+              style={{ backgroundColor: ROLE_COLORS.talent.dark }}
+            >
+              <CheckCircle className="w-4 h-4 text-white" />
+              <span className="text-[12px] font-medium font-inter-tight text-white">
+                Confirm Completion
+              </span>
+            </button>
+          )}
+
+          {/* Completed - Show Leave Review button if not reviewed */}
+          {session.status === "completed" && (
+            <>
+              {!(session as any).hasReview ? (
+                <button
+                  onClick={() => onLeaveReview?.(session.id)}
+                  className="flex items-center gap-1 px-4 py-2 h-8 hover:opacity-80 rounded-[40px] transition-colors"
+                  style={{ backgroundColor: ROLE_COLORS.talent.dark }}
+                >
+                  <Star className="w-4 h-4 text-white" />
+                  <span className="text-[12px] font-medium font-inter-tight text-white">
+                    Leave Review
+                  </span>
+                </button>
+              ) : (
+                <span className="text-[12px] font-inter-tight text-[#059669]">
+                  Review submitted
+                </span>
+              )}
+            </>
+          )}
+
+          {/* Cancelled */}
+          {session.status === "cancelled" && (
+            <span className="text-[12px] font-inter-tight text-[#EF4444]">
+              Session cancelled
+            </span>
+          )}
+
+          {/* Disputed */}
+          {session.status === "disputed" && (
+            <span className="text-[12px] font-inter-tight text-[#B91C1C]">
+              Session disputed - Contact support
+            </span>
+          )}
+        </div>
+
         <Link
           href={`/mentorship/${mentor.id}`}
           className="flex items-center gap-1 text-[12px] font-medium font-inter-tight text-[#525866] hover:text-black transition-colors"

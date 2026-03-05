@@ -114,6 +114,14 @@ export default function AvailabilityPage() {
         setSessionDuration(response.sessionDuration.toString());
       }
 
+      if (response.bufferTime !== undefined) {
+        setBufferTime(response.bufferTime.toString());
+      }
+
+      if (response.defaultMeetingLink) {
+        setDefaultMeetingLink(response.defaultMeetingLink);
+      }
+
       const slots = new Set<string>();
 
       response.slots?.forEach(
@@ -133,7 +141,8 @@ export default function AvailabilityPage() {
       setSelectedSlots(slots);
       setSavedSlots(new Set(slots));
       setIsSaved(true);
-    } catch {
+    } catch (error) {
+      console.error("Error fetching availability:", error);
       // No existing availability
     } finally {
       setIsLoading(false);

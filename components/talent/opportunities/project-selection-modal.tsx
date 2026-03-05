@@ -11,7 +11,7 @@ interface ProjectSelectionModalProps {
   isOpen: boolean;
   onClose: () => void;
   selectedProjects: Project[];
-  onProjectsSelected: (projects: Project[]) => void;
+  onProjectsSelected: (projects: Project[], fullGalleryItems?: any[]) => void;
   onWorkUploaded?: (newWork: GalleryItem) => void;
 }
 
@@ -30,8 +30,8 @@ export function ProjectSelectionModal({
   const [isUploading, setIsUploading] = useState(false);
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [uploadData, setUploadData] = useState({ title: "", description: "" });
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [uploadPreview, setUploadPreview] = useState<string | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [uploadPreviews, setUploadPreviews] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -84,24 +84,32 @@ export function ProjectSelectionModal({
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files) return;
+    if (!files || files.length === 0) return;
 
-    const file = files[0];
-    if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
-      setError("Please select an image or video file");
-      return;
+    const fileArray = Array.from(files);
+    const validFiles: File[] = [];
+    const previews: string[] = [];
+
+    for (const file of fileArray) {
+      if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
+        setError("Please select only image or video files");
+        continue;
+      }
+      validFiles.push(file);
+      previews.push(URL.createObjectURL(file));
     }
 
-    setSelectedFile(file);
-    const preview = URL.createObjectURL(file);
-    setUploadPreview(preview);
-    setError(null);
+    if (validFiles.length > 0) {
+      setSelectedFiles(validFiles);
+      setUploadPreviews(previews);
+      setError(null);
+    }
   };
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedFile || !uploadData.title.trim()) {
-      setError("Please provide a title and select a file");
+    if (selectedFiles.length === 0 || !uploadData.title.trim()) {
+      setError("Please provide a title and select at least one file");
       return;
     }
 
@@ -109,34 +117,36 @@ export function ProjectSelectionModal({
     setError(null);
     try {
       const result = await uploadGalleryImages(
-        [selectedFile],
+        selectedFiles,
         uploadData.title,
         uploadData.description,
       );
 
-      // Add the newly uploaded item to projects and select it
+      // Add the newly uploaded gallery item (ONE item with multiple images)
       if (result.gallery && result.gallery.length > 0) {
-        const newItem = result.gallery[result.gallery.length - 1];
+        const newItem = result.gallery[result.gallery.length - 1]; // Get the last item (newly created)
         setProjects((prev) => [...prev, newItem]);
 
-        // Notify parent that work was uploaded
+        // Notify parent about uploaded work
         onWorkUploaded?.(newItem);
 
-        // Auto-select the uploaded work
+        // Auto-select the uploaded work (if space available)
         const newProject: Project = {
           id: newItem.id,
           title: newItem.title,
-          image: newItem.images?.[0] || (newItem as any).url || "",
+          image: newItem.images?.[0] || "", // Use first image as thumbnail
           tags: newItem.description ? [newItem.description] : [],
         };
+
         if (tempSelected.length < 3) {
-          setTempSelected([...tempSelected, newProject]);
+          setTempSelected((prev) => [...prev, newProject]);
         }
       }
 
       // Reset upload form
-      setSelectedFile(null);
-      setUploadPreview(null);
+      setSelectedFiles([]);
+      uploadPreviews.forEach((preview) => URL.revokeObjectURL(preview));
+      setUploadPreviews([]);
       setUploadData({ title: "", description: "" });
       setShowUploadForm(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -150,15 +160,15 @@ export function ProjectSelectionModal({
   };
 
   const handleConfirm = () => {
-    onProjectsSelected(tempSelected);
+    onProjectsSelected(tempSelected, projects);
   };
 
   const handleClose = () => {
     setTempSelected(selectedProjects); // Reset to original selection
     setShowUploadForm(false);
-    setSelectedFile(null);
-    setUploadPreview(null);
-    if (uploadPreview) URL.revokeObjectURL(uploadPreview);
+    setSelectedFiles([]);
+    uploadPreviews.forEach((preview) => URL.revokeObjectURL(preview));
+    setUploadPreviews([]);
     onClose();
   };
 
@@ -198,14 +208,19 @@ export function ProjectSelectionModal({
               />
             </svg>
           </button>
-          <h2 className="text-black text-center font-inter-tight text-[15px] font-medium leading-[15px] capitalize">
-            Select Up to 3 Project
-          </h2>
+          <div className="flex flex-col items-center gap-[4px]">
+            <h2 className="text-black text-center font-inter-tight text-[15px] font-medium leading-[15px] capitalize">
+              Select Up to 3 Projects
+            </h2>
+            <p className="text-[#99A0AE] text-center font-inter-tight text-[11px] font-normal">
+              Upload more works here if needed
+            </p>
+          </div>
           <div className="w-[20px]" /> {/* Spacer for centering */}
         </div>
 
         {/* Upload Section */}
-        {!showUploadForm && projects.length === 0 && (
+        {!showUploadForm && (
           <div className="px-[16px] pt-[16px] pb-[16px] flex-shrink-0">
             <button
               onClick={() => setShowUploadForm(true)}
@@ -218,7 +233,7 @@ export function ProjectSelectionModal({
                 className="font-inter-tight text-[13px] font-medium"
                 style={{ color: primary }}
               >
-                Upload Work
+                {projects.length === 0 ? 'Upload Work' : 'Upload More Works'}
               </span>
             </button>
           </div>
@@ -230,19 +245,59 @@ export function ProjectSelectionModal({
             className="px-[16px] pt-[16px] pb-[16px] flex-shrink-0 border-b border-[#E1E4EA]"
           >
             <div className="flex flex-col gap-[18px]">
-              {uploadPreview && (
-                <div className="w-full h-[100px] rounded-[8px] overflow-hidden bg-gray-200">
-                  <img
-                    src={uploadPreview}
-                    alt="preview"
-                    className="w-full h-full object-cover"
-                  />
+              {uploadPreviews.length > 0 && (
+                <div className="w-full flex gap-[8px] overflow-x-auto">
+                  {uploadPreviews.map((preview, index) => (
+                    <div
+                      key={index}
+                      className="relative w-[100px] h-[100px] flex-shrink-0 rounded-[8px] overflow-hidden bg-gray-200"
+                    >
+                      <img
+                        src={preview}
+                        alt={`preview ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newFiles = selectedFiles.filter(
+                            (_, i) => i !== index,
+                          );
+                          const newPreviews = uploadPreviews.filter(
+                            (_, i) => i !== index,
+                          );
+                          URL.revokeObjectURL(uploadPreviews[index]);
+                          setSelectedFiles(newFiles);
+                          setUploadPreviews(newPreviews);
+                        }}
+                        disabled={isUploading}
+                        className="absolute top-1 right-1 w-[20px] h-[20px] bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50"
+                      >
+                        <svg
+                          width="10"
+                          height="10"
+                          viewBox="0 0 15 15"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M10.7213 3.57324L3.5747 10.7198M10.7208 10.7203L3.57422 3.57375"
+                            stroke="#525866"
+                            strokeWidth="1.90588"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
                 </div>
               )}
               <input
                 ref={fileInputRef}
                 type="file"
                 accept="image/*,video/*"
+                multiple
                 onChange={handleFileSelect}
                 disabled={isUploading}
                 className="hidden"
@@ -253,7 +308,9 @@ export function ProjectSelectionModal({
                 disabled={isUploading}
                 className="w-full px-[12px] py-[16px] border border-[#E1E4EA] rounded-[8px] text-[14px] text-[#525866] hover:opacity-80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {selectedFile ? selectedFile.name : "Select File"}
+                {selectedFiles.length > 0
+                  ? `${selectedFiles.length} file${selectedFiles.length > 1 ? "s" : ""} selected`
+                  : "Select Files"}
               </button>
               <div className="flex flex-col gap-[10px]">
                 <label className="text-[#525866] font-inter-tight text-[14px] font-normal">
@@ -262,7 +319,7 @@ export function ProjectSelectionModal({
                 <input
                   type="text"
                   name="title"
-                  placeholder="Enter work title"
+                  placeholder="Enter work title (applies to all selected files)"
                   value={uploadData.title}
                   onChange={(e) =>
                     setUploadData((prev) => ({
@@ -304,7 +361,7 @@ export function ProjectSelectionModal({
               <div className="flex gap-[12px]">
                 <button
                   type="submit"
-                  disabled={isUploading || !selectedFile}
+                  disabled={isUploading || selectedFiles.length === 0}
                   className="flex-1 py-[16px] text-white rounded-[20px] font-inter-tight text-[13px] font-normal hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-[6px]"
                   style={{ backgroundColor: primary }}
                 >
@@ -314,16 +371,18 @@ export function ProjectSelectionModal({
                       Uploading...
                     </>
                   ) : (
-                    "Upload"
+                    `Upload as 1 Work ${selectedFiles.length > 1 ? `(${selectedFiles.length} files)` : ""}`
                   )}
                 </button>
                 <button
                   type="button"
                   onClick={() => {
                     setShowUploadForm(false);
-                    setSelectedFile(null);
-                    setUploadPreview(null);
-                    if (uploadPreview) URL.revokeObjectURL(uploadPreview);
+                    setSelectedFiles([]);
+                    uploadPreviews.forEach((preview) =>
+                      URL.revokeObjectURL(preview),
+                    );
+                    setUploadPreviews([]);
                     if (fileInputRef.current) fileInputRef.current.value = "";
                   }}
                   disabled={isUploading}
@@ -365,6 +424,8 @@ export function ProjectSelectionModal({
                 const isSelected = tempSelected.some(
                   (p) => p.id === galleryItem.id,
                 );
+                const displayImages = galleryItem.images?.slice(0, 3) || [];
+                const hasMoreImages = (galleryItem.images?.length || 0) > 3;
 
                 return (
                   <button
@@ -382,17 +443,49 @@ export function ProjectSelectionModal({
                         : undefined
                     }
                   >
-                    <div className="flex items-center gap-[12px]">
-                      {/* Project Image */}
-                      <img
-                        src={
-                          galleryItem.images?.[0] ||
-                          (galleryItem as any).url ||
-                          ""
-                        }
-                        alt={galleryItem.title}
-                        className="w-[124px] h-[93px] object-cover rounded-[7px] flex-shrink-0"
-                      />
+                    <div className="flex items-start gap-[12px]">
+                      {/* Project Images */}
+                      <div className="flex-shrink-0">
+                        {displayImages.length === 1 ? (
+                          // Single image - show larger
+                          <img
+                            src={displayImages[0]}
+                            alt={galleryItem.title}
+                            className="w-[124px] h-[93px] object-cover rounded-[7px]"
+                          />
+                        ) : (
+                          // Multiple images - show grid
+                          <div className="w-[124px] h-[93px] grid grid-cols-2 gap-[2px]">
+                            {displayImages.map((img, idx) => (
+                              <div
+                                key={idx}
+                                className={`relative overflow-hidden rounded-[4px] ${
+                                  displayImages.length === 2
+                                    ? "col-span-1"
+                                    : idx === 0
+                                      ? "col-span-2"
+                                      : "col-span-1"
+                                }`}
+                              >
+                                <img
+                                  src={img}
+                                  alt={`${galleryItem.title} ${idx + 1}`}
+                                  className="w-full h-full object-cover"
+                                />
+                                {/* Show count badge on last image if more exist */}
+                                {idx === displayImages.length - 1 &&
+                                  hasMoreImages && (
+                                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                      <span className="text-white font-inter-tight text-[11px] font-semibold">
+                                        +{galleryItem.images!.length - 3}
+                                      </span>
+                                    </div>
+                                  )}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
 
                       {/* Project Details */}
                       <div className="flex-1 flex flex-col items-start gap-[12px] min-w-0">
@@ -408,6 +501,44 @@ export function ProjectSelectionModal({
                                 {galleryItem.description}
                               </span>
                             </div>
+                          </div>
+                        )}
+
+                        {/* Image count indicator */}
+                        {(galleryItem.images?.length || 0) > 1 && (
+                          <div className="flex items-center gap-[4px]">
+                            <svg
+                              width="12"
+                              height="12"
+                              viewBox="0 0 12 12"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M10.5 3.75V8.25C10.5 9.075 9.825 9.75 9 9.75H3C2.175 9.75 1.5 9.075 1.5 8.25V3.75C1.5 2.925 2.175 2.25 3 2.25H9C9.825 2.25 10.5 2.925 10.5 3.75Z"
+                                stroke="#99A0AE"
+                                strokeWidth="0.75"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                              <path
+                                d="M4.125 5.25C4.53921 5.25 4.875 4.91421 4.875 4.5C4.875 4.08579 4.53921 3.75 4.125 3.75C3.71079 3.75 3.375 4.08579 3.375 4.5C3.375 4.91421 3.71079 5.25 4.125 5.25Z"
+                                fill="#99A0AE"
+                              />
+                              <path
+                                d="M10.5 6.75L8.25 4.5L3 9.75"
+                                stroke="#99A0AE"
+                                strokeWidth="0.75"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                            <span className="text-[#99A0AE] font-inter-tight text-[11px]">
+                              {galleryItem.images?.length || 0} image
+                              {(galleryItem.images?.length || 0) !== 1
+                                ? "s"
+                                : ""}
+                            </span>
                           </div>
                         )}
                       </div>

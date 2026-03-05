@@ -42,8 +42,10 @@ export function RescheduleModal({
     async function fetchSlots() {
       setIsFetching(true);
       try {
-        const startDate = format(new Date(), "yyyy-MM-dd");
-        const endDate = format(addDays(new Date(), 14), "yyyy-MM-dd");
+        const now = new Date();
+        const startDate = format(now, "yyyy-MM-dd");
+        const endDate = format(addDays(now, 14), "yyyy-MM-dd");
+        
         const data = await getMentorBookingSlots(mentorId, {
           startDate,
           endDate,
@@ -58,12 +60,15 @@ export function RescheduleModal({
           }[]
         ).filter((s) => s.date);
 
-        const now = new Date();
         const todayStr = format(now, "yyyy-MM-dd");
 
+        // Filter to only include future slots (including today's future slots)
         const futureSlots = flatSlots.filter((s) => {
-          if (s.date < todayStr) return false;
+          if (s.date < todayStr) {
+            return false;
+          }
           if (s.date === todayStr) {
+            // For today, only include slots that haven't started yet
             const slotTime = new Date(`${s.date}T${s.startTime}`);
             return slotTime > now;
           }
@@ -88,8 +93,10 @@ export function RescheduleModal({
           fullDate: dateStr,
           slots,
         }));
+        
         setAvailability(transformed);
-      } catch {
+      } catch (error) {
+        console.error("Error fetching slots:", error);
         setAvailability([]);
       } finally {
         setIsFetching(false);

@@ -10,7 +10,7 @@ import { TalentProfile } from "@/components/talent/profile/TalentProfile";
 import { EmployerProfile } from "@/components/employer/profile/EmployerProfile";
 import { MentorProfile } from "@/components/mentor/profile/MentorProfile";
 import { useRequireRole } from "@/hooks/useRequireRole";
-import { PageLoadingState } from "@/lib/page-utils";
+import { ProfileSkeleton } from "@/components/skeletons/ProfileSkeleton";
 
 export default function ProfilePage() {
   const { activeRole } = useProfile();
@@ -32,14 +32,17 @@ export default function ProfilePage() {
       profileCompleteness: result?.profileCompleteness ?? null,
     }),
     enabled: !!role,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
   });
 
-  if (isLoading || !hasAccess) {
-    return <PageLoadingState message="Loading profile..." />;
+  // Show loading state if we don't have data yet or if we're loading
+  if (isLoading || !profileData || !hasAccess) {
+    return <ProfileSkeleton role={role as "talent" | "recruiter" | "mentor"} />;
   }
 
-  const displayProfile = profileData?.mapped || DEFAULT_PROFILE_DATA;
-  const rawProfile = profileData?.raw || {};
+  const displayProfile = profileData.mapped;
+  const rawProfile = profileData.raw;
 
   switch (role) {
     case "recruiter": {
@@ -62,9 +65,9 @@ export default function ProfilePage() {
             tagline: displayProfile?.professional?.headline || "Employer",
           }}
           stats={{
-            jobsPosted: 0,
-            talentsHired: 0,
-            responseTime: "—",
+            jobsPosted: recruiterData?.stats?.jobsPosted ?? recruiterData?.jobsPosted ?? 0,
+            talentsHired: recruiterData?.stats?.talentsHired ?? recruiterData?.talentsHired ?? 0,
+            responseTime: recruiterData?.stats?.responseTime ?? recruiterData?.responseTime ?? "—",
           }}
           socialLinks={{
             twitter: recruiterData?.links?.twitter || "",
@@ -105,15 +108,25 @@ export default function ProfilePage() {
     default: {
       const talentData = rawProfile as any;
       const talentCompleteness = profileData?.profileCompleteness ?? 0;
-      const talentViews = talentData?.stats?.views ?? 0;
+      const talentViews = talentData?.stats?.views ?? talentData?.views ?? 0;
       const talentVisibility =
         talentData?.visibility === "private" ? "private" : "public";
+
+      // Extract stats from the API response
+      const talentStats = {
+        earnings: talentData?.stats?.earnings ?? talentData?.earnings ?? "0",
+        hired: talentData?.stats?.hired ?? talentData?.hiredCount ?? 0,
+        profileViews: talentViews,
+        profileCompletion: talentCompleteness,
+        applicationsSubmitted: talentData?.stats?.applicationsSubmitted ?? 0,
+        interviewsScheduled: talentData?.stats?.interviewsScheduled ?? 0,
+      };
 
       return (
         <TalentProfile
           initialProfileData={displayProfile}
           initialUserId=""
-          initialStats={null}
+          initialStats={talentStats}
           initialRecommendations={[]}
           initialServices={[]}
           initialError={error ? (error as Error).message : null}

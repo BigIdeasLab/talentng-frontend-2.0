@@ -33,7 +33,7 @@ export function MentorUpcoming() {
       try {
         if (showLoading) setIsLoading(true);
         const res = await getMentorSessions({
-          searchQuery: searchQuery || undefined,
+          q: searchQuery || undefined,
           dateRange:
             appliedFilters?.dateRange && appliedFilters.dateRange !== "all"
               ? (appliedFilters.dateRange as any)

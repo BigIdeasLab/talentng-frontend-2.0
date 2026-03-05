@@ -5,6 +5,7 @@ import { Loader2, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ProfileData, SkillsData } from "@/lib/types/onboarding";
 import categories from "@/lib/data/categories.json";
+import { AVAILABILITY_OPTIONS } from "@/lib/constants/availability";
 
 const ALL_SKILLS = [
   "UI Design",
@@ -388,8 +389,7 @@ export const ShowcaseSkillsStep = ({
                   <option value="" className="text-[#99A0AE]">
                     Select one or more options...
                   </option>
-                  {["Full-time", "Part-time", "Contract", "Freelance"].map(
-                    (opt) => (
+                  {AVAILABILITY_OPTIONS.map((opt) => (
                       <option
                         key={opt}
                         value={opt}

@@ -25,7 +25,7 @@ import {
 interface RecruiterApplicationsParams {
   opportunityId?: string;
   status?: string;
-  searchQuery?: string;
+  q?: string;
   location?: string;
   skills?: string;
   dateRange?: "today" | "week" | "month";

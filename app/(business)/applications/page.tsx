@@ -9,7 +9,6 @@ import {
   Calendar,
   MapPin,
   Search,
-  SlidersHorizontal,
   Video,
 } from "lucide-react";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
@@ -29,10 +28,6 @@ import type {
 
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { ApplicationsSkeleton } from "@/components/mentor/applications/ApplicationsSkeleton";
-import {
-  ApplicationFilterModal,
-  type ApplicationFilterState,
-} from "@/components/talent/applications";
 
 interface MentorshipRequest {
   id: string;
@@ -86,12 +81,13 @@ export default function ApplicationsPage() {
   const [requests, setRequests] = useState<MentorshipRequest[]>([]);
   const [pendingCount, setPendingCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [isActionLoading, setIsActionLoading] = useState(false);
   const [filter, setFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [appliedFilters, setAppliedFilters] =
-    useState<ApplicationFilterState | null>(null);
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+  const [dateRange, setDateRange] = useState<string>("all");
+  const [displayedRequests, setDisplayedRequests] = useState<MentorshipRequest[]>([]);
 
   // Modal states
   const [acceptModalOpen, setAcceptModalOpen] = useState(false);
@@ -102,16 +98,25 @@ export default function ApplicationsPage() {
 
   const hasAccess = useRequireRole(["mentor"]);
 
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   const fetchRequests = useCallback(async () => {
     try {
       setIsLoading(true);
       const [requestsResponse, countResponse] = await Promise.all([
         getMentorMentorshipRequests({
           ...(filter !== "all" ? { status: filter as RequestStatus } : {}),
-          ...(searchQuery ? { searchQuery } : {}),
-          ...(appliedFilters?.dateRange && appliedFilters.dateRange !== "all"
+          ...(debouncedSearchQuery ? { q: debouncedSearchQuery } : {}),
+          ...(dateRange && dateRange !== "all"
             ? {
-                dateRange: appliedFilters.dateRange as
+                dateRange: dateRange as
                   | "today"
                   | "week"
                   | "month",
@@ -124,16 +129,26 @@ export default function ApplicationsPage() {
       const requestsArray = Array.isArray(requestsResponse)
         ? requestsResponse
         : (requestsResponse?.data ?? []);
-      setRequests(requestsArray.map(mapApiRequest));
+      
+      // Map and update requests
+      const currentData = requestsArray.map(mapApiRequest);
+      setDisplayedRequests(currentData);
+      setRequests(currentData);
+      
       setPendingCount(countResponse?.count ?? 0);
+      
+      if (isInitialLoad) {
+        setIsInitialLoad(false);
+      }
     } catch (error) {
       console.error("Failed to load mentorship requests:", error);
       setRequests([]);
+      setDisplayedRequests([]);
       setPendingCount(0);
     } finally {
       setIsLoading(false);
     }
-  }, [filter, searchQuery, appliedFilters]);
+  }, [filter, debouncedSearchQuery, dateRange, isInitialLoad]);
 
   useEffect(() => {
     if (hasAccess) {
@@ -149,7 +164,7 @@ export default function ApplicationsPage() {
   ];
 
   // Server handles filtering — show all returned results directly
-  const filteredRequests = requests;
+  const filteredRequests = displayedRequests;
 
   const handleAccept = (id: string) => {
     setSelectedRequestId(id);
@@ -207,6 +222,26 @@ export default function ApplicationsPage() {
     return <PageLoadingState message="Checking access..." />;
   }
 
+  // Only show skeleton on initial load
+  if (isInitialLoad && isLoading) {
+    return (
+      <div className="h-screen overflow-x-hidden bg-white flex flex-col">
+        <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+          <div className="flex items-center justify-between mb-[19px]">
+            <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px]">
+              Mentorship Requests
+            </h1>
+          </div>
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <div className="h-full overflow-y-auto p-4 md:p-6">
+            <ApplicationsSkeleton />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="h-screen overflow-x-hidden bg-white flex flex-col">
       {/* Header */}
@@ -226,10 +261,14 @@ export default function ApplicationsPage() {
           )}
         </div>
 
-        {/* Search Bar and Filter */}
+        {/* Search Bar and Date Range Filters */}
         <div className="flex items-center gap-[8px] mb-[19px]">
           <div className="flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border border-[#E1E4EA] rounded-[8px]">
-            <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
+            {isLoading && !isInitialLoad ? (
+              <div className="w-[15px] h-[15px] border-2 border-[#B2B2B2] border-t-transparent rounded-full animate-spin flex-shrink-0" />
+            ) : (
+              <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
+            )}
             <input
               type="text"
               placeholder="Search mentee, topic..."
@@ -247,34 +286,26 @@ export default function ApplicationsPage() {
             )}
           </div>
 
-          <div className="relative">
-            <button
-              onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
-                appliedFilters && appliedFilters.dateRange !== "all"
-                  ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
-                  : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
-              }`}
-            >
-              <SlidersHorizontal className="w-[15px] h-[15px]" />
-              <span className="text-[13px] font-normal font-inter-tight">
-                Filter
-              </span>
-              {appliedFilters && appliedFilters.dateRange !== "all" && (
-                <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-                  1
-                </span>
-              )}
-            </button>
-            <ApplicationFilterModal
-              isOpen={isFilterOpen}
-              onClose={() => setIsFilterOpen(false)}
-              onApply={(filters: ApplicationFilterState) => {
-                setAppliedFilters(filters);
-                setIsFilterOpen(false);
-              }}
-              initialFilters={appliedFilters || undefined}
-            />
+          {/* Date Range Filter Buttons */}
+          <div className="flex items-center gap-[6px]">
+            {[
+              { value: "all", label: "All Time" },
+              { value: "today", label: "Today" },
+              { value: "week", label: "This Week" },
+              { value: "month", label: "This Month" },
+            ].map((option) => (
+              <button
+                key={option.value}
+                onClick={() => setDateRange(option.value)}
+                className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors text-[13px] font-normal font-inter-tight border ${
+                  dateRange === option.value
+                    ? "bg-[#8463FF0D] border-[#8463FF] text-[#8463FF]"
+                    : "bg-[#F5F5F5] hover:bg-gray-100 text-black border-transparent"
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -300,14 +331,205 @@ export default function ApplicationsPage() {
       <div className="flex-1 overflow-hidden">
         <div className="h-full overflow-y-auto p-4 md:p-6">
           {/* Request Cards */}
-          {isLoading ? (
-            <ApplicationsSkeleton />
+          {isLoading && !isInitialLoad ? (
+            // Show previous data with loading indicator in search bar
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
+              {filteredRequests.length === 0 ? (
+                <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
+                  <p className="font-inter-tight text-[14px] text-[#525866]">
+                    {debouncedSearchQuery.trim()
+                      ? "Try adjusting your search query"
+                      : dateRange && dateRange !== "all"
+                        ? "Try adjusting your date range"
+                        : filter === "pending"
+                          ? "No pending requests"
+                          : filter === "accepted"
+                            ? "No accepted requests"
+                            : filter === "rejected"
+                              ? "No rejected requests"
+                              : "No requests found"}
+                  </p>
+                </div>
+              ) : (
+                filteredRequests.map((request) => (
+                  <div
+                    key={request.id}
+                    className="flex flex-col border border-[#E1E4EA] rounded-[16px] bg-white hover:shadow-md transition-shadow"
+                  >
+                    {/* Card Content - Same as before */}
+                    <div className="flex flex-col gap-3.5 px-4 pt-4 pb-3">
+                      {/* Header - Avatar + Info + Status Badge */}
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center gap-2">
+                          {request.mentee.avatar ? (
+                            <img
+                              src={request.mentee.avatar}
+                              alt={request.mentee.name}
+                              className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                            />
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-[#FDF2F8] flex items-center justify-center flex-shrink-0">
+                              <span
+                                className="text-[12px] font-semibold font-inter-tight"
+                                style={{ color: ROLE_COLORS.mentor.dark }}
+                              >
+                                {request.mentee.name
+                                  .split(" ")
+                                  .map((n) => n[0])
+                                  .join("")}
+                              </span>
+                            </div>
+                          )}
+                          <div className="flex flex-col gap-1">
+                            <span className="text-[13px] font-medium font-inter-tight text-black">
+                              {request.mentee.name}
+                            </span>
+                            <span className="text-[12px] font-light font-inter-tight text-[#525866]">
+                              {request.mentee.title} at {request.mentee.company}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Status Badge */}
+                        <div
+                          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md flex-shrink-0 ${
+                            request.status === "pending"
+                              ? "bg-[#FFF4E5]"
+                              : request.status === "accepted"
+                                ? "bg-[#ECFDF3]"
+                                : "bg-[#FEF2F2]"
+                          }`}
+                        >
+                          <div
+                            className={`w-1.5 h-1.5 rounded-full ${
+                              request.status === "pending"
+                                ? "bg-[#F59E0B]"
+                                : request.status === "accepted"
+                                  ? "bg-[#10B981]"
+                                  : "bg-[#EF4444]"
+                            }`}
+                          />
+                          <span
+                            className={`text-[11px] font-normal font-inter-tight ${
+                              request.status === "pending"
+                                ? "text-[#F59E0B]"
+                                : request.status === "accepted"
+                                  ? "text-[#10B981]"
+                                  : "text-[#EF4444]"
+                            }`}
+                          >
+                            {request.status.charAt(0).toUpperCase() +
+                              request.status.slice(1)}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Topic */}
+                      <div className="text-[15px] font-medium font-inter-tight text-black">
+                        {request.topic}
+                      </div>
+
+                      {/* Message */}
+                      <p className="text-[13px] font-normal font-inter-tight text-[#525866] leading-relaxed line-clamp-2">
+                        {request.message}
+                      </p>
+
+                      {/* Details as pills */}
+                      <div className="flex items-start content-start gap-x-1 gap-y-1.5 flex-wrap">
+                        <div className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#F5F5F5]">
+                          <Calendar className="w-3 h-3 text-[#525866]" />
+                          <span className="text-[12px] font-normal font-inter-tight text-black leading-[12.6px]">
+                            {request.scheduledDate}, {request.scheduledTime}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#F5F5F5]">
+                          <Clock className="w-3 h-3 text-[#525866]" />
+                          <span className="text-[12px] font-normal font-inter-tight text-black leading-[12.6px]">
+                            {request.duration}
+                          </span>
+                        </div>
+                        {request.location &&
+                        /^https?:\/\//i.test(request.location) ? (
+                          <a
+                            href={request.location}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#EFF6FF] hover:bg-[#DBEAFE] transition-colors"
+                          >
+                            <Video className="w-3 h-3 text-[#2563EB]" />
+                            <span className="text-[12px] font-medium font-inter-tight text-[#2563EB] leading-[12.6px]">
+                              Join Meeting
+                            </span>
+                          </a>
+                        ) : (
+                          <div className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#F5F5F5]">
+                            <MapPin className="w-3 h-3 text-[#525866]" />
+                            <span className="text-[12px] font-normal font-inter-tight text-black leading-[12.6px]">
+                              {request.location}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Footer - Actions */}
+                    <div className="flex items-center justify-end px-4 py-2.5 border-t border-[#E1E4EA]">
+                      <div className="flex items-center gap-1">
+                        {request.status === "pending" ? (
+                          <>
+                            <button
+                              onClick={() => handleAccept(request.id)}
+                              className="flex items-center gap-1 px-4 py-2 h-8 hover:opacity-80 rounded-[40px] transition-colors"
+                              style={{
+                                backgroundColor: ROLE_COLORS.mentor.dark,
+                              }}
+                            >
+                              <Check className="w-4 h-4 text-white" />
+                              <span className="text-[12px] font-medium font-inter-tight text-white">
+                                Accept
+                              </span>
+                            </button>
+                            <button
+                              onClick={() => handleReject(request.id)}
+                              className="flex items-center gap-1 px-4 py-2 h-8 border border-[#E1E4EA] rounded-[40px] hover:border-[#EF4444] hover:bg-[#FEF2F2] hover:text-[#EF4444] transition-colors"
+                            >
+                              <X className="w-4 h-4" />
+                              <span className="text-[12px] font-medium font-inter-tight">
+                                Decline
+                              </span>
+                            </button>
+                          </>
+                        ) : request.status === "accepted" ? (
+                          <span className="text-[12px] font-inter-tight text-[#10B981]">
+                            Request accepted
+                          </span>
+                        ) : (
+                          <span className="text-[12px] font-inter-tight text-[#EF4444]">
+                            Request declined
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
               {filteredRequests.length === 0 ? (
                 <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
                   <p className="font-inter-tight text-[14px] text-[#525866]">
-                    No requests found
+                    {debouncedSearchQuery.trim()
+                      ? "Try adjusting your search query"
+                      : dateRange && dateRange !== "all"
+                        ? "Try adjusting your date range"
+                        : filter === "pending"
+                          ? "No pending requests"
+                          : filter === "accepted"
+                            ? "No accepted requests"
+                            : filter === "rejected"
+                              ? "No rejected requests"
+                              : "No requests found"}
                   </p>
                 </div>
               ) : (

@@ -512,8 +512,8 @@ export async function updateTalentSettings(
 }
 
 /**
- * Get Unified Upcoming Feed
- * GET /talent/upcoming
+ * Get Unified Calendar Feed
+ * GET /talent/calendar
  */
 export async function getTalentUpcoming(params?: {
   q?: string;
@@ -530,16 +530,16 @@ export async function getTalentUpcoming(params?: {
   }
   const query = queryParams.toString();
   return apiClient<any>(
-    query ? `/talent/upcoming?${query}` : "/talent/upcoming",
+    query ? `/talent/calendar?${query}` : "/talent/calendar",
   );
 }
 
 /**
- * Get Upcoming Feed Count
- * GET /talent/upcoming/count
+ * Get Calendar Feed Count
+ * GET /talent/calendar/count
  */
 export async function getTalentUpcomingCount(): Promise<{ count: number }> {
-  return apiClient<{ count: number }>("/talent/upcoming/count");
+  return apiClient<{ count: number }>("/talent/calendar/count");
 }
 
 export type {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Users, Search, SlidersHorizontal, X } from "lucide-react";
@@ -18,60 +18,77 @@ import {
   type ApplicantFilterState,
 } from "@/components/employer/applicants/ApplicantFilterModal";
 
-// Map status to UI display
+// Map status to UI display - Recruiter View
 const statusDisplayMap = {
-  invited: { label: "Invited", bg: "#E0E7FF", text: "#4F46E5" },
-  applied: { label: "In Review", bg: "#DBE9FE", text: "#2463EB" },
-  shortlisted: { label: "Shortlisted", bg: "#FEF3C7", text: "#92400D" },
-  rejected: { label: "Rejected", bg: "#FEE2E1", text: "#991B1B" },
-  hired: { label: "Hired", bg: "#D1FAE5", text: "#076046" },
+  applied: { label: "New Application", bg: "#FEF3C7", text: "#D97706" },
+  invited: { label: "Invited", bg: "#DBEAFE", text: "#2563EB" },
+  shortlisted: { label: "Shortlisted", bg: "#F3E8FF", text: "#7C3AED" },
+  hired: { label: "Hired", bg: "#ECFDF3", text: "#059669" },
+  rejected: { label: "Rejected", bg: "#FEF2F2", text: "#DC2626" },
 };
 
 // Map interview status to UI display
 const interviewStatusDisplayMap = {
-  scheduled: { label: "Interview Scheduled", bg: "#EDE9FE", text: "#4F46E5" },
+  scheduled: { label: "Interview Scheduled", bg: "#EFF6FF", text: "#2563EB" },
   rescheduled: {
     label: "Interview Rescheduled",
     bg: "#FEF3C7",
-    text: "#92400D",
+    text: "#D97706",
   },
 };
 
 export default function ApplicantsPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<string>("all");
   const [sortBy, setSortBy] = useState("newest");
+  const [currentPage, setCurrentPage] = useState(0);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState<ApplicantFilterState>({
     status: [],
     location: "",
-    skills: [],
     dateRange: "all",
   });
+  const [displayedApplicants, setDisplayedApplicants] = useState<MappedApplicant[]>([]);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const lastProcessedDataRef = useRef<any>(null);
+
+  // Debounce search query to avoid resetting page on every keystroke
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Reset to page 1 when filters change (but not on every keystroke)
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [debouncedSearchQuery, activeTab, filters, sortBy]);
 
   // Build server-side params from all active filters
   const queryParams = useMemo(
     () => ({
-      ...(searchQuery ? { searchQuery } : {}),
+      ...(debouncedSearchQuery ? { q: debouncedSearchQuery } : {}),
       ...(activeTab !== "all" ? { status: activeTab } : {}),
       ...(filters.status.length === 1 ? { status: filters.status[0] } : {}),
       ...(filters.location ? { location: filters.location } : {}),
-      ...(filters.skills.length > 0
-        ? { skills: filters.skills.join(",") }
-        : {}),
       ...(filters.dateRange !== "all"
         ? { dateRange: filters.dateRange as "today" | "week" | "month" }
         : {}),
       ...(sortBy !== "newest"
         ? { sortBy: sortBy as "newest" | "oldest" | "name-asc" | "name-desc" }
         : {}),
+      limit: 20,
+      offset: currentPage * 20,
     }),
-    [searchQuery, activeTab, filters, sortBy],
+    [debouncedSearchQuery, activeTab, filters, sortBy, currentPage],
   );
 
   const {
-    data: rawApplicants,
+    data: response,
     isLoading,
     isPending,
     error: queryError,
@@ -84,39 +101,45 @@ export default function ApplicantsPage() {
         ? "Failed to load"
         : null;
 
-  // Map raw API data to UI format
-  const applicants: MappedApplicant[] = useMemo(
-    () => (rawApplicants ? mapApplicationsToUI(rawApplicants) : []),
-    [rawApplicants],
-  );
+  // Extract data and pagination from response
+  const rawApplicants = response?.data || [];
+  const pagination = response?.pagination;
+
+  // Map raw API data to UI format and update displayed applicants
+  useEffect(() => {
+    // Only update if response has actually changed
+    if (response && response !== lastProcessedDataRef.current) {
+      lastProcessedDataRef.current = response;
+      const mapped = mapApplicationsToUI(response.data || []);
+      setDisplayedApplicants(mapped);
+      if (isInitialLoad && !isLoading && !isPending) {
+        setIsInitialLoad(false);
+      }
+    }
+  }, [response, isLoading, isPending, isInitialLoad]);
 
   const getFilterCount = () => {
     let count = 0;
     if (filters.status.length > 0) count += filters.status.length;
     if (filters.location) count += 1;
-    if (filters.skills.length > 0) count += filters.skills.length;
     if (filters.dateRange !== "all") count += 1;
     return count;
   };
 
   // Hired count — only available if tab is "all" or "hired"
   const hiredCount = useMemo(
-    () => applicants.filter((a) => a.status === "hired").length,
-    [applicants],
+    () => displayedApplicants.filter((a) => a.status === "hired").length,
+    [displayedApplicants],
   );
 
   // Option lists for filter modal dropdowns (derived from current result set)
   const availableStatuses = useMemo(
-    () => [...new Set(applicants.map((a) => a.status))],
-    [applicants],
+    () => [...new Set(displayedApplicants.map((a) => a.status))],
+    [displayedApplicants],
   );
   const availableLocations = useMemo(
-    () => [...new Set(applicants.map((a) => a.location).filter(Boolean))],
-    [applicants],
-  );
-  const availableSkills = useMemo(
-    () => [...new Set(applicants.flatMap((a) => a.skills || []))],
-    [applicants],
+    () => [...new Set(displayedApplicants.map((a) => a.location).filter(Boolean))],
+    [displayedApplicants],
   );
 
   const TABS = [
@@ -128,13 +151,14 @@ export default function ApplicantsPage() {
   ];
 
   // Server already handles all filtering — use results directly
-  const filteredApplicants = applicants;
+  const filteredApplicants = displayedApplicants;
 
   if (!hasAccess) {
     return <PageLoadingState message="Checking access..." />;
   }
 
-  if (isLoading || isPending || !rawApplicants) {
+  // Only show skeleton on initial load
+  if (isInitialLoad && (isLoading || isPending || !response)) {
     return <ApplicantsSkeleton />;
   }
 
@@ -160,9 +184,9 @@ export default function ApplicantsPage() {
   return (
     <div className="h-screen overflow-x-hidden bg-white flex flex-col">
       {/* Header */}
-      <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+      <div className="w-full px-3 md:px-5 pt-5 md:pt-6 border-b border-[#E1E4EA] flex-shrink-0">
         {/* Title Row */}
-        <div className="flex items-center justify-between mb-[19px]">
+        <div className="flex items-center justify-between mb-4">
           <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px]">
             Applicants
           </h1>
@@ -178,7 +202,7 @@ export default function ApplicantsPage() {
         </div>
 
         {/* Search Bar and Filter */}
-        <div className="flex items-center gap-[8px] mb-[19px]">
+        <div className="flex items-center gap-[8px] mb-4">
           <div className="flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border border-[#E1E4EA] rounded-[8px]">
             <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
             <input
@@ -201,16 +225,20 @@ export default function ApplicantsPage() {
           <div className="relative flex-shrink-0">
             <button
               onClick={() => setIsFilterOpen(true)}
-              className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] hover:bg-gray-100 transition-colors relative"
+              className={`flex items-center gap-1.5 px-3 h-9 rounded-lg transition-colors flex-shrink-0 ${
+                getFilterCount() > 0
+                  ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
+                  : "hover:bg-gray-50 border border-transparent"
+              }`}
             >
-              <SlidersHorizontal className="w-[15px] h-[15px] text-black" />
-              <span className="text-[13px] font-normal text-black font-inter-tight">
+              <SlidersHorizontal className="w-[15px] h-[15px]" />
+              <span className="text-xs font-normal font-inter-tight">
                 Filter
               </span>
               {getFilterCount() > 0 && (
-                <div className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold">
+                <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
                   {getFilterCount()}
-                </div>
+                </span>
               )}
             </button>
             <ApplicantFilterModal
@@ -220,7 +248,6 @@ export default function ApplicantsPage() {
               initialFilters={filters}
               availableStatuses={availableStatuses}
               availableLocations={availableLocations}
-              availableSkills={availableSkills}
             />
           </div>
 
@@ -273,18 +300,18 @@ export default function ApplicantsPage() {
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
+        <div className="flex items-center gap-5 border-b border-transparent mb-6 overflow-x-auto scrollbar-hide">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors ${
+              className={`px-3 py-1.5 text-xs font-medium font-inter-tight whitespace-nowrap transition-colors flex-shrink-0 rounded ${
                 activeTab === tab.id
-                  ? "text-black font-medium border-b-2 border-black"
-                  : "text-black/30 font-medium hover:text-black/50"
+                  ? "text-black border-b-2 border-black"
+                  : "text-black/30"
               }`}
             >
-              <span className="text-[13px] font-inter-tight">{tab.label}</span>
+              {tab.label}
             </button>
           ))}
         </div>
@@ -298,8 +325,24 @@ export default function ApplicantsPage() {
             {filteredApplicants.length === 0 ? (
               <EmptyState
                 icon={Users}
-                title="No applicants yet"
-                description="When candidates apply to opportunities, they'll appear here"
+                title="No applicants found"
+                description={
+                  debouncedSearchQuery.trim()
+                    ? "Try adjusting your search query"
+                    : filters.status.length > 0 ||
+                        filters.location ||
+                        filters.dateRange !== "all"
+                      ? "Try adjusting your filters"
+                      : activeTab === "hired"
+                        ? "You haven't hired any talents yet"
+                        : activeTab === "rejected"
+                          ? "You haven't rejected any applicants"
+                          : activeTab === "shortlisted"
+                            ? "You haven't shortlisted any applicants yet"
+                            : activeTab === "applied"
+                              ? "No applicants are currently in review"
+                              : "When candidates apply to opportunities, they'll appear here"
+                }
               />
             ) : (
               <>
@@ -522,6 +565,39 @@ export default function ApplicantsPage() {
                   ))}
                 </div>
               </>
+            )}
+
+            {/* Pagination */}
+            {pagination && pagination.total > 0 && (
+              <div className="flex items-center justify-between px-[24px] py-[16px] border-t border-[#E1E4EA] flex-shrink-0">
+                <div className="text-[13px] text-[#525866] font-inter-tight">
+                  Showing {pagination.offset + 1} to{" "}
+                  {Math.min(
+                    pagination.offset + pagination.limit,
+                    pagination.total,
+                  )}{" "}
+                  of {pagination.total} results
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={!pagination.hasPreviousPage}
+                    className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                  >
+                    Previous
+                  </button>
+                  <span className="text-[13px] text-[#525866] font-inter-tight">
+                    Page {pagination.currentPage} of {pagination.totalPages}
+                  </span>
+                  <button
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={!pagination.hasNextPage}
+                    className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
             )}
           </div>
         </div>

@@ -73,8 +73,10 @@ export interface GetDiscoverTalentDataParams {
   searchQuery?: string;
   category?: string;
   skills?: string[];
+  stack?: string[];
   location?: string;
   availability?: string;
+  headline?: string;
   sort?: string;
   limit?: number;
   offset?: number;
@@ -102,8 +104,10 @@ export async function getDiscoverTalentData(
       searchQuery,
       category,
       skills,
+      stack,
       location,
       availability,
+      headline,
       sort,
       limit = 20,
       offset = 0,
@@ -114,9 +118,11 @@ export async function getDiscoverTalentData(
     if (searchQuery) filters.q = searchQuery;
     if (category && category !== "All") filters.category = category;
     if (skills && skills.length > 0) filters.skills = skills.join(",");
+    if (stack && stack.length > 0) filters.stack = stack.join(",");
     if (location) filters.location = location;
     if (availability && availability !== "All")
       filters.availability = availability;
+    if (headline) filters.headline = headline;
     if (sort) filters.sort = sort;
 
     filters.limit = limit;

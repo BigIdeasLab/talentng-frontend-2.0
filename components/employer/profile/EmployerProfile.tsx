@@ -60,7 +60,7 @@ export function EmployerProfile({
 }: EmployerProfileProps) {
   const router = useRouter();
   const { user: _user } = useAuth();
-  const [activeTab, setActiveTab] = useState("opportunities");
+  const [activeTab, setActiveTab] = useState("about");
   const [currentVisibility, setCurrentVisibility] = useState(visibility);
 
   const handleVisibilityChange = useCallback(

@@ -342,7 +342,9 @@ export default function MentorDetailPage() {
                         />
                       </svg>
                       <span className="text-[13px] font-normal text-black font-inter-tight">
-                        {mentor.rating > 0 ? mentor.rating.toFixed(1) : "N/A"}{" "}
+                        {mentor.rating && Number(mentor.rating) > 0 
+                          ? Number(mentor.rating).toFixed(1) 
+                          : "N/A"}{" "}
                         Rating
                       </span>
                     </div>
@@ -467,7 +469,13 @@ export default function MentorDetailPage() {
                     <h3 className="font-inter-tight text-[13px] font-medium text-black">
                       Availability
                     </h3>
-                    <button className="font-inter-tight text-[12px] font-normal text-[#5C30FF] hover:underline">
+                    <button 
+                      onClick={() => {
+                        setBookingStep("availability");
+                        setIsBookingModalOpen(true);
+                      }}
+                      className="font-inter-tight text-[12px] font-normal text-[#5C30FF] hover:underline"
+                    >
                       View All
                     </button>
                   </div>
@@ -780,7 +788,7 @@ export default function MentorDetailPage() {
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-2">
                         <span className="font-inter-tight text-[32px] font-bold text-black">
-                          {mentor.rating.toFixed(1)}
+                          {Number(mentor.rating || 0).toFixed(1)}
                         </span>
                         <div className="flex flex-col">
                           <div className="flex items-center gap-0.5">

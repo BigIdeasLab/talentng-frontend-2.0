@@ -19,27 +19,27 @@ const STATUS_CONFIG: Record<
   { bg: string; dot: string; text: string; label: string }
 > = {
   scheduled: {
-    bg: "#ECFDF5",
-    dot: "#047857",
-    text: "#047857",
+    bg: "#EFF6FF",
+    dot: "#2563EB",
+    text: "#2563EB",
     label: "Scheduled",
   },
   rescheduled: {
-    bg: "#FFF4E5",
+    bg: "#FEF3C7",
     dot: "#F59E0B",
-    text: "#F59E0B",
+    text: "#D97706",
     label: "Rescheduled",
   },
   completed: {
     bg: "#ECFDF3",
     dot: "#10B981",
-    text: "#10B981",
+    text: "#059669",
     label: "Completed",
   },
   cancelled: {
     bg: "#FEF2F2",
     dot: "#EF4444",
-    text: "#EF4444",
+    text: "#DC2626",
     label: "Cancelled",
   },
 };
@@ -153,10 +153,10 @@ export function RecruiterInterviewCard({
       {/* Footer */}
       <div className="flex items-center justify-end px-4 py-2.5 border-t border-[#E1E4EA]">
         <Link
-          href={`/applicants?opportunityId=${application.opportunityId}`}
+          href={`/applicants/${application.id}`}
           className="flex items-center gap-1 text-[12px] font-medium font-inter-tight text-[#525866] hover:text-black transition-colors"
         >
-          View Applicants
+          View Application
           <ExternalLink className="w-3 h-3" />
         </Link>
       </div>

@@ -60,23 +60,17 @@ export function PastHiresTab() {
   // Build server-side query params
   const queryParams = {
     status: "hired" as const,
-    ...(searchQuery ? { searchQuery } : {}),
+    ...(searchQuery ? { q: searchQuery } : {}),
     ...(appliedFilters?.location ? { location: appliedFilters.location } : {}),
     ...(appliedFilters?.skills?.length
       ? { skills: appliedFilters.skills.join(",") }
       : {}),
   };
 
-  const { data: rawApplicantsData, isLoading } =
+  const { data: response, isLoading } =
     useRecruiterApplicationsQuery(queryParams);
 
-  const applicationsRaw = Array.isArray(rawApplicantsData)
-    ? rawApplicantsData
-    : (rawApplicantsData as any)?.data ||
-      (rawApplicantsData as any)?.applications ||
-      (rawApplicantsData as any)?.results ||
-      (rawApplicantsData as any)?.items ||
-      [];
+  const applicationsRaw = response?.data || [];
 
   const pastHires: PastHire[] = Array.isArray(applicationsRaw)
     ? applicationsRaw.map(transformApplicationToHire)

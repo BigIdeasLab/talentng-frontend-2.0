@@ -56,7 +56,6 @@ export default function OpportunityApplicantsPage() {
   const [filters, setFilters] = useState<ApplicantFilterState>({
     status: [],
     location: "",
-    skills: [],
     dateRange: "all",
   });
   const [applicants, setApplicants] = useState<MappedApplicant[]>([]);
@@ -67,18 +66,12 @@ export default function OpportunityApplicantsPage() {
   } = useRecruiterOpportunityQuery(opportunityId);
 
   const {
-    data: rawApplicantsData,
+    data: response,
     isLoading: isAppsLoading,
     error: appsError,
   } = useRecruiterApplicationsQuery({ opportunityId });
 
-  const rawApplicants = Array.isArray(rawApplicantsData)
-    ? rawApplicantsData
-    : (rawApplicantsData as any)?.data ||
-      (rawApplicantsData as any)?.applications ||
-      (rawApplicantsData as any)?.results ||
-      (rawApplicantsData as any)?.items ||
-      [];
+  const rawApplicants = response?.data || [];
 
   const isLoading = isOppLoading || isAppsLoading;
   const error = oppError || appsError ? "Failed to load" : null;
@@ -138,7 +131,6 @@ export default function OpportunityApplicantsPage() {
     let count = 0;
     if (filters.status.length > 0) count += filters.status.length;
     if (filters.location) count += 1;
-    if (filters.skills.length > 0) count += filters.skills.length;
     if (filters.dateRange !== "all") count += 1;
     return count;
   };
@@ -165,17 +157,6 @@ export default function OpportunityApplicantsPage() {
       result = result.filter(
         (applicant) =>
           applicant.location.toLowerCase() === filters.location.toLowerCase(),
-      );
-    }
-
-    // Skills filter
-    if (filters.skills.length > 0) {
-      result = result.filter((applicant) =>
-        filters.skills.some((skill) =>
-          applicant.skills?.some(
-            (s) => s.toLowerCase() === skill.toLowerCase(),
-          ),
-        ),
       );
     }
 
@@ -392,7 +373,6 @@ export default function OpportunityApplicantsPage() {
               initialFilters={filters}
               availableStatuses={availableStatuses}
               availableLocations={availableLocations}
-              availableSkills={availableSkills}
             />
           </div>
 

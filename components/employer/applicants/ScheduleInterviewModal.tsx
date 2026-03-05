@@ -35,6 +35,9 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Get today's date in YYYY-MM-DD format for min attribute
+  const today = new Date().toISOString().split('T')[0];
+
   if (!isOpen) return null;
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -55,11 +58,18 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
       }
 
       // Create a proper ISO 8601 datetime string
-      const scheduledDateTime = new Date(`${date}T${time}:00`).toISOString();
+      const scheduledDateTime = new Date(`${date}T${time}:00`);
+      
+      // Validate that the selected date/time is in the future
+      const now = new Date();
+      if (scheduledDateTime <= now) {
+        setError("Interview date and time must be in the future");
+        return;
+      }
 
       await onSchedule(
         applicationId,
-        scheduledDateTime,
+        scheduledDateTime.toISOString(),
         message,
         meetingLink || undefined,
       );
@@ -171,6 +181,7 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                         type="date"
                         value={date}
                         onChange={(e) => setDate(e.target.value)}
+                        min={today}
                         className="w-full h-10 px-3.5 pr-3 rounded-[10px] border border-[#E1E4EA] font-inter-tight text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                       />
                     </div>

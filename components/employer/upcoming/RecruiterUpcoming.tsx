@@ -37,24 +37,36 @@ export function RecruiterUpcoming() {
   const { toast } = useToast();
   const [items, setItems] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] =
     useState<ApplicationFilterState | null>(null);
 
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   const fetchData = useCallback(
     async (showLoading = true) => {
       try {
-        if (showLoading) setIsLoading(true);
+        // Only show loading skeleton on initial load
+        if (showLoading && isInitialLoad) setIsLoading(true);
         const res = await getRecruiterInterviews({
-          q: searchQuery || undefined,
+          q: debouncedSearchQuery || undefined,
           dateRange:
             appliedFilters?.dateRange && appliedFilters.dateRange !== "all"
               ? (appliedFilters.dateRange as any)
               : undefined,
           limit: 100,
         });
-        setItems(res.data || []);
+        setItems(Array.isArray(res) ? res : res.data || []);
+        if (isInitialLoad) setIsInitialLoad(false);
       } catch (error) {
         console.error("Failed to load recruiter upcoming data:", error);
         toast({
@@ -63,10 +75,10 @@ export function RecruiterUpcoming() {
           variant: "destructive",
         });
       } finally {
-        if (showLoading) setIsLoading(false);
+        if (showLoading && isInitialLoad) setIsLoading(false);
       }
     },
-    [searchQuery, appliedFilters, toast],
+    [debouncedSearchQuery, appliedFilters, toast, isInitialLoad],
   );
 
   useEffect(() => {
@@ -85,26 +97,29 @@ export function RecruiterUpcoming() {
   // Map API items to component-friendly shapes
   const upcomingItems: UpcomingItem[] = items.map((item) => ({
     type: "interview",
-    date: new Date(item.startTime || item.date),
+    date: new Date(item.scheduledDate),
     interview: {
       interview: {
         id: item.id,
         status: item.status,
-        scheduledDate: item.startTime,
+        scheduledDate: item.scheduledDate,
         meetingLink: item.meetingLink,
         message: item.message,
       } as any,
       application: {
-        opportunityId: item.metadata?.opportunityId,
+        id: item.application.id,
+        opportunityId: item.application.opportunity.id,
         opportunity: {
-          title: item.subtitle || "Job Position",
-          company: "Your Company",
+          title: item.application.opportunity.title,
+          company: item.application.opportunity.company,
         },
         user: {
-          username: item.title,
+          id: item.application.user.id,
+          username: item.application.user.username,
           talentProfile: {
-            fullName: item.title,
-            profileImageUrl: item.image,
+            fullName: item.application.user.talentProfile.fullName,
+            profileImageUrl:
+              item.application.user.talentProfile.profileImageUrl,
           },
         },
       } as any,
@@ -145,14 +160,14 @@ export function RecruiterUpcoming() {
           <div className="relative">
             <button
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
+              className={`flex items-center gap-1.5 px-3 h-9 rounded-lg transition-colors flex-shrink-0 ${
                 appliedFilters && appliedFilters.dateRange !== "all"
                   ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
-                  : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
+                  : "hover:bg-gray-50 border border-transparent"
               }`}
             >
               <SlidersHorizontal className="w-[15px] h-[15px]" />
-              <span className="text-[13px] font-normal font-inter-tight">
+              <span className="text-xs font-normal font-inter-tight">
                 Filter
               </span>
               {appliedFilters && appliedFilters.dateRange !== "all" && (
@@ -203,7 +218,13 @@ export function RecruiterUpcoming() {
             <EmptyState
               icon={Calendar}
               title="No upcoming interviews"
-              description="You have no upcoming interviews scheduled with candidates"
+              description={
+                debouncedSearchQuery.trim()
+                  ? "Try adjusting your search query"
+                  : appliedFilters && appliedFilters.dateRange !== "all"
+                    ? "Try adjusting your filters"
+                    : "You have no upcoming interviews scheduled with candidates"
+              }
             />
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">

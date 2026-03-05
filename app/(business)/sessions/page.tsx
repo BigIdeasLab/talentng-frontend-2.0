@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import {
   SessionCard,
   type SessionStatus as CardSessionStatus,
@@ -17,6 +17,7 @@ import {
   completeSession,
   cancelSession,
   rescheduleSession,
+  disputeSession,
 } from "@/lib/api/mentorship";
 import type {
   MentorshipSession,
@@ -25,10 +26,6 @@ import type {
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { SessionsSkeleton } from "@/components/mentor/sessions/SessionsSkeleton";
 import { useNotificationSocket } from "@/hooks/useNotificationSocket";
-import {
-  ApplicationFilterModal,
-  type ApplicationFilterState,
-} from "@/components/talent/applications";
 
 interface SessionView {
   id: string;
@@ -122,18 +119,20 @@ export default function SessionsPage() {
     cancelled: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [isActionLoading, setIsActionLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<
     "upcoming" | "completed" | "cancelled" | "all"
   >("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [appliedFilters, setAppliedFilters] =
-    useState<ApplicationFilterState | null>(null);
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+  const [dateRange, setDateRange] = useState<string>("all");
+  const [displayedSessions, setDisplayedSessions] = useState<SessionView[]>([]);
 
   const [completeModalOpen, setCompleteModalOpen] = useState(false);
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false);
+  const [disputeModalOpen, setDisputeModalOpen] = useState(false);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
     null,
   );
@@ -141,33 +140,76 @@ export default function SessionsPage() {
 
   const hasAccess = useRequireRole(["mentor"]);
 
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   const fetchSessions = useCallback(async () => {
     try {
       setIsLoading(true);
-      const response = await getSessions({
-        role: "mentor",
-        ...(activeTab !== "all" ? { status: activeTab as any } : {}),
-        ...(searchQuery ? { searchQuery } : {}),
-        ...(appliedFilters?.dateRange && appliedFilters.dateRange !== "all"
+      
+      // Map frontend tabs to backend status values
+      let statusParam: any = undefined;
+      if (activeTab === "upcoming") {
+        // Upcoming sessions include: pending, confirmed, rescheduled, in_progress
+        // Don't send status param, filter client-side instead
+        statusParam = undefined;
+      } else if (activeTab !== "all") {
+        statusParam = activeTab;
+      }
+      
+      const apiParams = {
+        role: "mentor" as const,
+        ...(statusParam ? { status: statusParam } : {}),
+        ...(debouncedSearchQuery ? { q: debouncedSearchQuery } : {}),
+        ...(dateRange && dateRange !== "all"
           ? {
-              dateRange: appliedFilters.dateRange as "today" | "week" | "month",
+              dateRange: dateRange as "today" | "week" | "month",
             }
           : {}),
-      });
+      };
+
+      const response = await getSessions(apiParams);
+
       const sessionsArray = Array.isArray(response)
         ? response
         : (response?.data ?? []);
-      setSessions(sessionsArray.map(mapSession));
+      
+      // Map sessions
+      let currentData = sessionsArray.map(mapSession);
+      
+      // Client-side filter for "upcoming" tab
+      if (activeTab === "upcoming") {
+        currentData = currentData.filter(session => 
+          session.status === "upcoming" || 
+          session.status === "in_progress" ||
+          session.status === "pending_completion"
+        );
+      }
+      
+      setDisplayedSessions(currentData);
+      setSessions(currentData);
+      
       if (response?.meta) {
         setMeta(response.meta);
+      }
+      
+      if (isInitialLoad) {
+        setIsInitialLoad(false);
       }
     } catch (error) {
       console.error("Failed to load sessions:", error);
       setSessions([]);
+      setDisplayedSessions([]);
     } finally {
       setIsLoading(false);
     }
-  }, [activeTab, searchQuery, appliedFilters]);
+  }, [activeTab, debouncedSearchQuery, dateRange, isInitialLoad]);
 
   // Subscribe to real-time updates
   useNotificationSocket({
@@ -185,7 +227,7 @@ export default function SessionsPage() {
   }, [hasAccess, fetchSessions]);
 
   // Server handles all filtering — render results directly
-  const filteredSessions = sessions;
+  const filteredSessions = displayedSessions;
 
   const handleReschedule = (id: string) => {
     const session = sessions.find((s) => s.id === id);
@@ -202,6 +244,11 @@ export default function SessionsPage() {
   const handleComplete = (id: string) => {
     setSelectedSessionId(id);
     setCompleteModalOpen(true);
+  };
+
+  const handleDispute = (id: string) => {
+    setSelectedSessionId(id);
+    setDisputeModalOpen(true);
   };
 
   const confirmComplete = async () => {
@@ -273,6 +320,27 @@ export default function SessionsPage() {
     }
   };
 
+  const confirmDispute = async () => {
+    if (!selectedSessionId) return;
+    try {
+      setIsActionLoading(true);
+      await disputeSession(selectedSessionId);
+      toast({
+        title: "Session disputed",
+        description: "The session has been marked as disputed",
+      });
+      await fetchSessions();
+    } catch {
+      toast({
+        title: "Error",
+        description: "Failed to dispute session",
+        variant: "destructive",
+      });
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
   const TABS = [
     { id: "all", label: "All" },
     { id: "upcoming", label: "Upcoming" },
@@ -284,6 +352,24 @@ export default function SessionsPage() {
     return <PageLoadingState message="Checking access..." />;
   }
 
+  // Only show skeleton on initial load
+  if (isInitialLoad && isLoading) {
+    return (
+      <div className="h-screen overflow-x-hidden bg-white flex flex-col">
+        <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+          <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px] mb-[19px]">
+            Sessions
+          </h1>
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <div className="h-full overflow-y-auto p-4 md:p-6">
+            <SessionsSkeleton />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="h-screen overflow-x-hidden bg-white flex flex-col">
       {/* Header */}
@@ -293,10 +379,14 @@ export default function SessionsPage() {
           Sessions
         </h1>
 
-        {/* Search Bar and Filter */}
+        {/* Search Bar and Date Range Filters */}
         <div className="flex items-center gap-[8px] mb-[19px]">
           <div className="flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border border-[#E1E4EA] rounded-[8px]">
-            <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
+            {isLoading && !isInitialLoad ? (
+              <div className="w-[15px] h-[15px] border-2 border-[#B2B2B2] border-t-transparent rounded-full animate-spin flex-shrink-0" />
+            ) : (
+              <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
+            )}
             <input
               type="text"
               placeholder="Search mentee, topic..."
@@ -314,34 +404,26 @@ export default function SessionsPage() {
             )}
           </div>
 
-          <div className="relative">
-            <button
-              onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
-                appliedFilters && appliedFilters.dateRange !== "all"
-                  ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
-                  : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
-              }`}
-            >
-              <SlidersHorizontal className="w-[15px] h-[15px]" />
-              <span className="text-[13px] font-normal font-inter-tight">
-                Filter
-              </span>
-              {appliedFilters && appliedFilters.dateRange !== "all" && (
-                <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-                  1
-                </span>
-              )}
-            </button>
-            <ApplicationFilterModal
-              isOpen={isFilterOpen}
-              onClose={() => setIsFilterOpen(false)}
-              onApply={(filters: ApplicationFilterState) => {
-                setAppliedFilters(filters);
-                setIsFilterOpen(false);
-              }}
-              initialFilters={appliedFilters || undefined}
-            />
+          {/* Date Range Filter Buttons */}
+          <div className="flex items-center gap-[6px]">
+            {[
+              { value: "all", label: "All Time" },
+              { value: "today", label: "Today" },
+              { value: "week", label: "This Week" },
+              { value: "month", label: "This Month" },
+            ].map((option) => (
+              <button
+                key={option.value}
+                onClick={() => setDateRange(option.value)}
+                className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors text-[13px] font-normal font-inter-tight border ${
+                  dateRange === option.value
+                    ? "bg-[#8463FF0D] border-[#8463FF] text-[#8463FF]"
+                    : "bg-[#F5F5F5] hover:bg-gray-100 text-black border-transparent"
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -366,14 +448,23 @@ export default function SessionsPage() {
       {/* Content */}
       <div className="flex-1 overflow-hidden">
         <div className="h-full overflow-y-auto p-4 md:p-6">
-          {isLoading ? (
-            <SessionsSkeleton />
-          ) : (
+          {isLoading && !isInitialLoad ? (
+            // Show previous data with loading indicator in search bar
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
               {filteredSessions.length === 0 ? (
                 <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
                   <p className="font-inter-tight text-[14px] text-[#525866]">
-                    No sessions found
+                    {debouncedSearchQuery.trim()
+                      ? "Try adjusting your search query"
+                      : dateRange && dateRange !== "all"
+                        ? "Try adjusting your date range"
+                        : activeTab === "completed"
+                          ? "No completed sessions yet"
+                          : activeTab === "cancelled"
+                            ? "No cancelled sessions"
+                            : activeTab === "upcoming"
+                              ? "No upcoming sessions"
+                              : "No sessions found"}
                   </p>
                 </div>
               ) : (
@@ -384,6 +475,38 @@ export default function SessionsPage() {
                     onReschedule={handleReschedule}
                     onCancel={handleCancel}
                     onComplete={handleComplete}
+                    onDispute={handleDispute}
+                  />
+                ))
+              )}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
+              {filteredSessions.length === 0 ? (
+                <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
+                  <p className="font-inter-tight text-[14px] text-[#525866]">
+                    {debouncedSearchQuery.trim()
+                      ? "Try adjusting your search query"
+                      : dateRange && dateRange !== "all"
+                        ? "Try adjusting your date range"
+                        : activeTab === "completed"
+                          ? "No completed sessions yet"
+                          : activeTab === "cancelled"
+                            ? "No cancelled sessions"
+                            : activeTab === "upcoming"
+                              ? "No upcoming sessions"
+                              : "No sessions found"}
+                  </p>
+                </div>
+              ) : (
+                filteredSessions.map((session) => (
+                  <SessionCard
+                    key={session.id}
+                    {...session}
+                    onReschedule={handleReschedule}
+                    onCancel={handleCancel}
+                    onComplete={handleComplete}
+                    onDispute={handleDispute}
                   />
                 ))
               )}
@@ -422,6 +545,18 @@ export default function SessionsPage() {
         onConfirm={confirmReschedule}
         mentorId={selectedMentorId}
         accentColor={ROLE_COLORS.mentor.dark}
+      />
+
+      <ConfirmationModal
+        isOpen={disputeModalOpen}
+        onClose={() => setDisputeModalOpen(false)}
+        onConfirm={confirmDispute}
+        title="Dispute Session"
+        description="Are you sure you want to dispute this session? This will require admin review."
+        confirmText="Yes, Dispute"
+        type="danger"
+        isLoading={isActionLoading}
+        confirmColor={ROLE_COLORS.mentor.dark}
       />
     </div>
   );

@@ -24,6 +24,31 @@ import {
 import type { OpportunityCardProps } from "@/lib/types";
 import { TYPE_CONFIG } from "@/types/opportunities";
 
+// Opportunity Status Color Configuration
+const OPPORTUNITY_STATUS_CONFIG: Record<
+  string,
+  { bg: string; dot: string; text: string; label: string }
+> = {
+  draft: {
+    bg: "#F5F5F5",
+    dot: "#606060",
+    text: "#606060",
+    label: "Draft",
+  },
+  active: {
+    bg: "#ECFDF5",
+    dot: "#047857",
+    text: "#047857",
+    label: "Active",
+  },
+  closed: {
+    bg: "#FEF2F2",
+    dot: "#DC2626",
+    text: "#DC2626",
+    label: "Closed",
+  },
+};
+
 export function OpportunityCard({
   opportunity,
   activeTab,
@@ -52,21 +77,13 @@ export function OpportunityCard({
     postMutation.isPending ||
     reopenMutation.isPending;
 
-  const { data: applicantsRaw, isLoading: loadingApplicants } =
+  const { data: response, isLoading: loadingApplicants } =
     useRecruiterApplicationsQuery({
       opportunityId: opportunity.id,
     });
 
-  const applicants: Application[] = Array.isArray(applicantsRaw)
-    ? applicantsRaw
-    : (applicantsRaw as any)?.data ||
-      (applicantsRaw as any)?.applications ||
-      (applicantsRaw as any)?.results ||
-      (applicantsRaw as any)?.items ||
-      [];
-  const displayApplicants = Array.isArray(applicants)
-    ? applicants.slice(0, 3)
-    : [];
+  const applicants: Application[] = response?.data || [];
+  const displayApplicants = applicants.slice(0, 3);
   const isLoading = isMutationLoading; // Mapping for compatibility with existing UI disabled states
 
   const handleCardClick = (e: React.MouseEvent) => {
@@ -409,25 +426,37 @@ export function OpportunityCard({
               <div className="text-xs font-medium font-inter-tight text-black">
                 {opportunity.companyName}
               </div>
-              <div className="text-[11px] font-light font-inter-tight text-[#525866]">
-                {opportunity.date}
+              <div className="flex items-center gap-1.5 text-[11px] font-light font-inter-tight text-[#525866]">
+                <span>{opportunity.date}</span>
+                {opportunity.category && (
+                  <>
+                    <span className="text-gray-300">•</span>
+                    <span>{opportunity.category}</span>
+                  </>
+                )}
+                {opportunity.location && (
+                  <>
+                    <span className="text-gray-300">•</span>
+                    <span>{opportunity.location}</span>
+                  </>
+                )}
               </div>
             </div>
           </div>
 
           <div
-            className="flex items-center gap-1 px-2 py-1.5 rounded-md flex-shrink-0"
-            style={{ backgroundColor: config.bgColor }}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md flex-shrink-0"
+            style={{ backgroundColor: OPPORTUNITY_STATUS_CONFIG[opportunity.status]?.bg || config.bgColor }}
           >
             <div
               className="w-1.5 h-1.5 rounded-full"
-              style={{ backgroundColor: config.dotColor }}
+              style={{ backgroundColor: OPPORTUNITY_STATUS_CONFIG[opportunity.status]?.dot || config.dotColor }}
             />
             <span
-              className="text-[10px] font-normal font-inter-tight"
-              style={{ color: config.textColor }}
+              className="text-[11px] font-normal font-inter-tight"
+              style={{ color: OPPORTUNITY_STATUS_CONFIG[opportunity.status]?.text || config.textColor }}
             >
-              {config.label}
+              {OPPORTUNITY_STATUS_CONFIG[opportunity.status]?.label || config.label}
             </span>
           </div>
         </div>
@@ -442,12 +471,9 @@ export function OpportunityCard({
           {opportunity.skills.map((skill, index) => (
             <span
               key={index}
-              className="text-[12px] font-normal font-inter-tight text-black"
+              className="px-2.5 py-1 bg-[#F5F5F5] text-[#525866] text-[11px] font-normal font-inter-tight rounded-full"
             >
               {skill}
-              {index < opportunity.skills.length - 1 && (
-                <span className="ml-1.5 text-gray-300">•</span>
-              )}
             </span>
           ))}
         </div>

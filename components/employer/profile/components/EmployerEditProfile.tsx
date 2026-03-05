@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useUnsavedChangesWarning } from "@/hooks/useUnsavedChangesWarning";
 import Link from "next/link";
 import { SmoothCollapse } from "@/components/SmoothCollapse";
 import { SectionHeader } from "@/components/talent/profile/components/edit/SectionHeader";
@@ -788,13 +789,19 @@ export function EmployerEditProfile() {
       const customLinks = Object.entries(links)
         .filter(([key]) => !knownKeys.includes(key))
         .map(([key, value]) => ({ name: key, url: (value as string) || "" }));
+      
+      // Parse location - format is "State, City"
+      const locationParts = (profileData.location || "").split(",").map((s: string) => s.trim());
+      const state = locationParts[0] || "";
+      const city = locationParts[1] || "";
+      
       setFormData({
         personal: {
           profileImageUrl: profileData.profileImageUrl || "",
           company: profileData.company || "",
           bio: profileData.bio || "",
-          state: profileData.location?.split(",")[0]?.trim() || "",
-          city: profileData.location?.split(",")[1]?.trim() || "",
+          state: state,
+          city: city,
         },
         professional: {
           industry: profileData.industry || "",
@@ -814,19 +821,10 @@ export function EmployerEditProfile() {
     }
   }, [profileData]);
 
-  // Warn on page leave
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (hasUnsavedChanges) {
-        e.preventDefault();
-        e.returnValue = "";
-        return "";
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [hasUnsavedChanges]);
+  // Warn on page leave (browser and client-side navigation)
+  const { navigateWithConfirmation } = useUnsavedChangesWarning(
+    hasUnsavedChanges,
+  );
 
   useEffect(() => {
     const section = searchParams.get("section");
@@ -927,11 +925,7 @@ export function EmployerEditProfile() {
   };
 
   const handleDiscard = () => {
-    if (hasUnsavedChanges) {
-      setShowDiscardModal(true);
-    } else {
-      _router.push("/profile");
-    }
+    navigateWithConfirmation("/profile");
   };
 
   const handleSaveProfile = async () => {

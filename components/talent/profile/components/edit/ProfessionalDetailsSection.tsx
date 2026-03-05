@@ -7,6 +7,7 @@ import { SkillTag } from "./SkillTag";
 import { StackTag } from "./StackTag";
 import { Button } from "@/components/ui/button";
 import { getToolInfo } from "@/lib/utils/tools";
+import { AVAILABILITY_OPTIONS } from "@/lib/constants/availability";
 
 interface StackTool {
   name: string;
@@ -106,13 +107,7 @@ export function ProfessionalDetailsSection({
       !formData.stack.some((s) => s.name === tool.name),
   );
 
-  const availabilityOptions = [
-    "Full-time",
-    "Part-time",
-    "Contract",
-    "Freelance",
-  ];
-  const filteredAvailability = availabilityOptions.filter(
+  const filteredAvailability = AVAILABILITY_OPTIONS.filter(
     (option) =>
       option.toLowerCase().includes(availabilityInput.toLowerCase()) &&
       !formData.availability.includes(option),

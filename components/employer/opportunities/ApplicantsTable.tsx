@@ -100,14 +100,6 @@ export function ApplicantsTable({
         ) {
           return false;
         }
-        if (
-          appliedFilters.skills.length > 0 &&
-          !appliedFilters.skills.some((skill) =>
-            applicant.user?.talentProfile?.skills?.includes(skill),
-          )
-        ) {
-          return false;
-        }
 
         if (appliedFilters.dateRange && appliedFilters.dateRange !== "all") {
           const createdAt = new Date(applicant.createdAt);

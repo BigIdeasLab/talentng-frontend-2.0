@@ -6,6 +6,7 @@ import { useSavedOpportunitiesQuery } from "@/hooks/useTalentOpportunities";
 import { updateProfile } from "@/lib/api/talent";
 import { ProfilePanel } from "@/components/talent/profile/components/ProfilePanel";
 import { ProfileNav } from "@/components/talent/profile/components/ProfileNav";
+import { AboutTab } from "@/components/talent/profile/tabs/AboutTab";
 import { WorksGrid } from "@/components/talent/profile/components/WorksGrid";
 import { ServicesGrid } from "@/components/talent/profile/components/ServicesGrid";
 import { RecommendationsGrid } from "@/components/talent/profile/components/RecommendationsGrid";
@@ -81,7 +82,7 @@ export function TalentProfile({
   profileCompleteness = 0,
   views = 0,
   visibility = "public",
-  initialTab = "works",
+  initialTab = "about",
 }: TalentProfileProps) {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState(initialTab);
@@ -285,6 +286,31 @@ export function TalentProfile({
 
         {/* Content Section */}
         <div className="flex-1 overflow-y-auto scrollbar-styled">
+          {/* About Tab */}
+          {activeTab === "about" && (
+            <AboutTab
+              fullName={
+                profileData?.personal?.firstName &&
+                profileData?.personal?.lastName
+                  ? `${profileData.personal.firstName} ${profileData.personal.lastName}`.trim()
+                  : user?.fullName || "User"
+              }
+              bio={profileData?.personal?.bio}
+              headline={profileData?.professional?.headline}
+              category={profileData?.professional?.category}
+              location={
+                profileData?.personal?.city && profileData?.personal?.state
+                  ? `${profileData.personal.city}, ${profileData.personal.state}`
+                  : profileData?.personal?.city ||
+                    profileData?.personal?.state ||
+                    "—"
+              }
+              availability={profileData?.professional?.availability}
+              experience={profileData?.experience}
+              education={profileData?.education}
+            />
+          )}
+
           {/* My Works Tab */}
           {activeTab === "works" && (
             <WorksGrid

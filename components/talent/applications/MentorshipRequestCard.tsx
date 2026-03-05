@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { format } from "date-fns";
-import { Calendar, Clock, MapPin } from "lucide-react";
+import { Calendar, Clock, MapPin, Video, Copy, Check } from "lucide-react";
 import Link from "next/link";
 import type { MentorshipRequest } from "@/lib/api/mentorship/types";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
@@ -41,11 +42,29 @@ const STATUS_CONFIG: Record<
 };
 
 export function MentorshipRequestCard({ request }: MentorshipRequestCardProps) {
+  const [copied, setCopied] = useState(false);
   const status = STATUS_CONFIG[request.status] || STATUS_CONFIG.pending;
   const mentor = request.mentor;
 
   const datePart = request.scheduledDate.split("T")[0];
   const scheduledDate = new Date(`${datePart}T${request.scheduledTime}:00`);
+
+  // Check if location is a URL (meeting link)
+  const isLocationUrl = request.location && /^https?:\/\//i.test(request.location);
+
+  const handleCopyLink = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (request.location && isLocationUrl) {
+      try {
+        await navigator.clipboard.writeText(request.location);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error('Failed to copy link:', err);
+      }
+    }
+  };
 
   return (
     <Link
@@ -133,12 +152,40 @@ export function MentorshipRequestCard({ request }: MentorshipRequestCardProps) {
             </span>
           </div>
           {request.location && (
-            <div className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#F5F5F5]">
-              <MapPin className="w-3 h-3 text-[#525866]" />
-              <span className="text-[12px] font-normal font-inter-tight text-black leading-[12.6px]">
-                {request.location}
-              </span>
-            </div>
+            isLocationUrl ? (
+              <div className="flex items-center gap-1">
+                <a
+                  href={request.location}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#EFF6FF] hover:bg-[#DBEAFE] transition-colors"
+                >
+                  <Video className="w-3 h-3 text-[#2563EB]" />
+                  <span className="text-[12px] font-medium font-inter-tight text-[#2563EB] leading-[12.6px]">
+                    Join Meeting
+                  </span>
+                </a>
+                <button
+                  onClick={handleCopyLink}
+                  className="flex items-center justify-center w-8 h-8 rounded-[24px] bg-[#EFF6FF] hover:bg-[#DBEAFE] transition-colors"
+                  title="Copy meeting link"
+                >
+                  {copied ? (
+                    <Check className="w-3 h-3 text-[#10B981]" />
+                  ) : (
+                    <Copy className="w-3 h-3 text-[#2563EB]" />
+                  )}
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#F5F5F5]">
+                <MapPin className="w-3 h-3 text-[#525866]" />
+                <span className="text-[12px] font-normal font-inter-tight text-black leading-[12.6px]">
+                  {request.location}
+                </span>
+              </div>
+            )
           )}
         </div>
       </div>

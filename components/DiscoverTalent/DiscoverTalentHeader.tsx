@@ -96,11 +96,11 @@ export function DiscoverTalentHeader({
   const getFilterCount = (): number => {
     if (!appliedFilters) return 0;
     let count = 0;
-    if (appliedFilters.categories.length > 0)
-      count += appliedFilters.categories.length;
-    if (appliedFilters.skills.length > 0) count += appliedFilters.skills.length;
+    if (appliedFilters.skills?.length > 0) count += appliedFilters.skills.length;
+    if (appliedFilters.stack?.length > 0) count += appliedFilters.stack.length;
     if (appliedFilters.location) count += 1;
-    if (appliedFilters.availability.length > 0) count += 1;
+    if (appliedFilters.availability?.length > 0) count += appliedFilters.availability.length;
+    if (appliedFilters.headline) count += 1;
     return count;
   };
 
@@ -157,20 +157,21 @@ export function DiscoverTalentHeader({
             <button
               onClick={() => setIsFilterOpen(true)}
               disabled={isLoading}
-              className={cn(
-                "h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 relative transition-opacity disabled:opacity-60 disabled:cursor-not-allowed",
-                isLoading ? "bg-gray-100" : "bg-[#F5F5F5]",
-              )}
+              className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${
+                getFilterCount() > 0
+                  ? "bg-[#5C30FF0D] border border-[#5C30FF] text-[#5C30FF]"
+                  : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
+              }`}
               aria-label="Filter results"
             >
-              <SlidersHorizontal className="w-[15px] h-[15px] text-black" />
-              <span className="text-[13px] font-normal text-black font-inter-tight">
+              <SlidersHorizontal className="w-[15px] h-[15px]" />
+              <span className="text-[13px] font-normal font-inter-tight">
                 Filter
               </span>
               {getFilterCount() > 0 && (
-                <div className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold">
+                <span className="ml-1 bg-[#5C30FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
                   {getFilterCount()}
-                </div>
+                </span>
               )}
             </button>
 

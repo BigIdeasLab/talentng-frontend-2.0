@@ -33,8 +33,8 @@ export function MentorProfile({
 }: MentorProfileProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<
-    "overview" | "session" | "reviews"
-  >("overview");
+    "about" | "sessions" | "reviews"
+  >("about");
 
   const [profileData, setProfileData] = useState(
     initialProfileData as MentorProfileType,
@@ -128,12 +128,16 @@ export function MentorProfile({
         <MentorProfileNav activeTab={activeTab} onTabChange={setActiveTab} />
 
         {/* Content Area with scroll */}
-        <div className="flex-1 overflow-y-auto px-4 lg:px-4 py-5 lg:py-12 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
-          <div className="max-w-full lg:max-w-[560px] flex flex-col gap-6 lg:gap-7">
-            {activeTab === "overview" && (
+        <div className="flex-1 overflow-y-auto px-4 lg:px-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+          <div className={`max-w-full lg:max-w-[560px] flex flex-col gap-6 lg:gap-7 ${activeTab === "about" ? "pt-5 lg:pt-8 pb-5 lg:pb-12" : "py-5 lg:py-12"}`}>
+            {activeTab === "about" && (
               <>
                 {/* About Section */}
-                <MentorAboutSection bio={bio} onEditBio={handleEditBio} />
+                <MentorAboutSection 
+                  bio={bio} 
+                  mentorName={profileData.fullName || "Mentor"}
+                  onEditBio={handleEditBio} 
+                />
 
                 {/* Background Section */}
                 <MentorBackgroundSection
@@ -147,7 +151,7 @@ export function MentorProfile({
               </>
             )}
 
-            {activeTab === "session" && <MentorSessionSection />}
+            {activeTab === "sessions" && <MentorSessionSection />}
 
             {activeTab === "reviews" && <MentorReviewsSection />}
           </div>

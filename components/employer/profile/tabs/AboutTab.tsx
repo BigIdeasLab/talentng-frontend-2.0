@@ -7,6 +7,7 @@ interface AboutTabProps {
   companySize?: string;
   companyStage?: string;
   operatingModel?: string;
+  location?: string;
 }
 
 export function AboutTab({
@@ -16,6 +17,7 @@ export function AboutTab({
   companySize = "—",
   companyStage = "—",
   operatingModel = "—",
+  location = "—",
 }: AboutTabProps) {
   return (
     <div className="flex flex-col gap-7 p-3 md:p-4 lg:p-5 w-full max-w-[700px]">

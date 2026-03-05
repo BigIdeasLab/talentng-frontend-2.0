@@ -28,6 +28,7 @@ export interface OpportunityCard {
   type: OpportunityType | string;
   title: string;
   category?: string;
+  location?: string;
   skills: string[];
   rate: string;
   priceMode?: "range" | "fixed";

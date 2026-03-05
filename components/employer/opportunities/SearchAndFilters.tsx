@@ -12,105 +12,152 @@ import type { SortType } from "@/lib/types";
 interface SearchAndFiltersProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  onClearSearch: () => void;
   sortBy: SortType;
   onSortChange: (sort: SortType) => void;
   onFilterClick: () => void;
+  isSearching?: boolean;
+  filterCount?: number;
+  filterModal?: React.ReactNode;
 }
 
 export function SearchAndFilters({
   searchQuery,
   onSearchChange,
+  onClearSearch,
   sortBy,
   onSortChange,
   onFilterClick,
+  isSearching = false,
+  filterCount = 0,
+  filterModal,
 }: SearchAndFiltersProps) {
   return (
     <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
       <div className="flex-1 relative">
-        <svg
-          className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
-          width="15"
-          height="15"
-          viewBox="0 0 18 18"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M12.75 12.75L15.75 15.75"
-            stroke="#B2B2B2"
-            strokeWidth="1.125"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25Z"
-            stroke="#B2B2B2"
-            strokeWidth="1.125"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        {isSearching ? (
+          <div className="absolute left-2.5 top-1/2 -translate-y-1/2 w-[15px] h-[15px] border-2 border-[#B2B2B2] border-t-transparent rounded-full animate-spin" />
+        ) : (
+          <svg
+            className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
+            width="15"
+            height="15"
+            viewBox="0 0 18 18"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12.75 12.75L15.75 15.75"
+              stroke="#B2B2B2"
+              strokeWidth="1.125"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25Z"
+              stroke="#B2B2B2"
+              strokeWidth="1.125"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        )}
         <Input
           type="text"
           placeholder="Search role, Level or jobs"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-8 h-9 rounded-lg border-[#E1E4EA] font-inter-tight text-xs placeholder:text-black/30 placeholder:capitalize"
+          className="pl-8 pr-8 h-9 rounded-lg border-[#E1E4EA] font-inter-tight text-xs placeholder:text-black/30 placeholder:capitalize"
         />
+        {searchQuery && !isSearching && (
+          <button
+            onClick={onClearSearch}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#B2B2B2] hover:text-black transition-colors"
+            aria-label="Clear search"
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M18 6L6 18M6 6L18 18"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        )}
       </div>
 
-      <button
-        onClick={onFilterClick}
-        className="flex items-center gap-1.5 px-3 h-9 hover:bg-gray-50 rounded-lg transition-colors flex-shrink-0"
-      >
-        <svg
-          width="15"
-          height="15"
-          viewBox="0 0 18 18"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+      <div className="relative">
+        <button
+          onClick={onFilterClick}
+          className={`flex items-center gap-1.5 px-3 h-9 rounded-lg transition-colors flex-shrink-0 ${
+            filterCount > 0
+              ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
+              : "hover:bg-gray-50 border border-transparent"
+          }`}
         >
-          <path
-            d="M2.25 5.25H4.5"
-            stroke="black"
-            strokeWidth="1.125"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M2.25 12.75H6.75"
-            stroke="black"
-            strokeWidth="1.125"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M13.5 12.75H15.75"
-            stroke="black"
-            strokeWidth="1.125"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M11.25 5.25H15.75"
-            stroke="black"
-            strokeWidth="1.125"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M4.5 5.25C4.5 4.55109 4.5 4.20164 4.61418 3.92597C4.76642 3.55844 5.05844 3.26642 5.42597 3.11418C5.70164 3 6.05109 3 6.75 3C7.44891 3 7.79835 3 8.07405 3.11418C8.44155 3.26642 8.7336 3.55844 8.88585 3.92597C9 4.20164 9 4.55109 9 5.25C9 5.94891 9 6.29837 8.88585 6.57403C8.7336 6.94157 8.44155 7.23358 8.07405 7.38582C7.79835 7.5 7.44891 7.5 6.75 7.5C6.05109 7.5 5.70164 7.5 5.42597 7.38582C5.05844 7.23358 4.76642 6.94157 4.61418 6.57403C4.5 6.29837 4.5 5.94891 4.5 5.25Z"
-            stroke="black"
-            strokeWidth="1.125"
-          />
-          <path
-            d="M9 12.75C9 12.0511 9 11.7017 9.11415 11.426C9.2664 11.0585 9.55845 10.7664 9.92595 10.6141C10.2017 10.5 10.5511 10.5 11.25 10.5C11.9489 10.5 12.2983 10.5 12.574 10.6141C12.9415 10.7664 13.2336 11.0585 13.3858 11.426C13.5 11.7017 13.5 12.0511 13.5 12.75C13.5 13.4489 13.5 13.7983 13.3858 14.074C13.2336 14.4415 12.9415 14.7336 12.574 14.8858C12.2983 15 11.9489 15 11.25 15C10.5511 15 10.2017 15 9.92595 14.8858C9.55845 14.7336 9.2664 14.4415 9.11415 14.074C9 13.7983 9 13.4489 9 12.75Z"
-            stroke="black"
-            strokeWidth="1.125"
-          />
-        </svg>
-        <span className="text-xs font-normal font-inter-tight">Filter</span>
-      </button>
+          <svg
+            width="15"
+            height="15"
+            viewBox="0 0 18 18"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M2.25 5.25H4.5"
+              stroke="currentColor"
+              strokeWidth="1.125"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M2.25 12.75H6.75"
+              stroke="currentColor"
+              strokeWidth="1.125"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M13.5 12.75H15.75"
+              stroke="currentColor"
+              strokeWidth="1.125"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M11.25 5.25H15.75"
+              stroke="currentColor"
+              strokeWidth="1.125"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M4.5 5.25C4.5 4.55109 4.5 4.20164 4.61418 3.92597C4.76642 3.55844 5.05844 3.26642 5.42597 3.11418C5.70164 3 6.05109 3 6.75 3C7.44891 3 7.79835 3 8.07405 3.11418C8.44155 3.26642 8.7336 3.55844 8.88585 3.92597C9 4.20164 9 4.55109 9 5.25C9 5.94891 9 6.29837 8.88585 6.57403C8.7336 6.94157 8.44155 7.23358 8.07405 7.38582C7.79835 7.5 7.44891 7.5 6.75 7.5C6.05109 7.5 5.70164 7.5 5.42597 7.38582C5.05844 7.23358 4.76642 6.94157 4.61418 6.57403C4.5 6.29837 4.5 5.94891 4.5 5.25Z"
+              stroke="currentColor"
+              strokeWidth="1.125"
+            />
+            <path
+              d="M9 12.75C9 12.0511 9 11.7017 9.11415 11.426C9.2664 11.0585 9.55845 10.7664 9.92595 10.6141C10.2017 10.5 10.5511 10.5 11.25 10.5C11.9489 10.5 12.2983 10.5 12.574 10.6141C12.9415 10.7664 13.2336 11.0585 13.3858 11.426C13.5 11.7017 13.5 12.0511 13.5 12.75C13.5 13.4489 13.5 13.7983 13.3858 14.074C13.2336 14.4415 12.9415 14.7336 12.574 14.8858C12.2983 15 11.9489 15 11.25 15C10.5511 15 10.2017 15 9.92595 14.8858C9.55845 14.7336 9.2664 14.4415 9.11415 14.074C9 13.7983 9 13.4489 9 12.75Z"
+              stroke="currentColor"
+              strokeWidth="1.125"
+            />
+          </svg>
+          <span className="text-xs font-normal font-inter-tight">Filter</span>
+          {filterCount > 0 && (
+            <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+              {filterCount}
+            </span>
+          )}
+        </button>
+        {filterModal}
+      </div>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

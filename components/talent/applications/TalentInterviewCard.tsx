@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { format } from "date-fns";
-import { Calendar, Clock, Video, ExternalLink } from "lucide-react";
+import { Calendar, Clock, Video, ExternalLink, Copy, Check } from "lucide-react";
 import Link from "next/link";
 import type { ApplicationInterview } from "@/lib/api/applications/types";
 
@@ -11,6 +12,7 @@ interface TalentInterviewCardProps {
   company: string;
   opportunityId: string;
   companyLogo?: string | null;
+  opportunityType?: string | null;
 }
 
 const STATUS_CONFIG: Record<
@@ -24,21 +26,21 @@ const STATUS_CONFIG: Record<
     label: "Scheduled",
   },
   rescheduled: {
-    bg: "#FFF4E5",
+    bg: "#FEF3C7",
     dot: "#F59E0B",
-    text: "#F59E0B",
+    text: "#D97706",
     label: "Rescheduled",
   },
   completed: {
     bg: "#ECFDF3",
     dot: "#10B981",
-    text: "#10B981",
+    text: "#059669",
     label: "Completed",
   },
   cancelled: {
     bg: "#FEF2F2",
     dot: "#EF4444",
-    text: "#EF4444",
+    text: "#DC2626",
     label: "Cancelled",
   },
 };
@@ -49,9 +51,32 @@ export function TalentInterviewCard({
   company,
   opportunityId,
   companyLogo,
+  opportunityType,
 }: TalentInterviewCardProps) {
+  const [copied, setCopied] = useState(false);
   const status = STATUS_CONFIG[interview.status] || STATUS_CONFIG.scheduled;
   const scheduledDate = new Date(interview.scheduledDate);
+  
+  // Handle invalid dates
+  const isValidDate = !isNaN(scheduledDate.getTime());
+  if (!isValidDate) {
+    console.error('Invalid scheduledDate:', interview.scheduledDate);
+    return null;
+  }
+
+  const handleCopyLink = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (interview.meetingLink) {
+      try {
+        await navigator.clipboard.writeText(interview.meetingLink);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error('Failed to copy link:', err);
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col border border-[#E1E4EA] rounded-[16px] bg-white hover:shadow-md transition-shadow">
@@ -80,7 +105,7 @@ export function TalentInterviewCard({
                 {opportunityTitle}
               </h3>
               <p className="text-[12px] text-[#525866] font-inter-tight truncate">
-                {company} • Interview
+                {company} • {opportunityType || "Interview"}
               </p>
             </div>
           </div>
@@ -123,18 +148,31 @@ export function TalentInterviewCard({
             </span>
           </div>
           {interview.meetingLink && (
-            <a
-              href={interview.meetingLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#EFF6FF] hover:bg-[#DBEAFE] transition-colors"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Video className="w-3 h-3 text-[#2563EB]" />
-              <span className="text-[12px] font-medium font-inter-tight text-[#2563EB] leading-[12.6px]">
-                Join Meeting
-              </span>
-            </a>
+            <div className="flex items-center gap-1">
+              <a
+                href={interview.meetingLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#EFF6FF] hover:bg-[#DBEAFE] transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Video className="w-3 h-3 text-[#2563EB]" />
+                <span className="text-[12px] font-medium font-inter-tight text-[#2563EB] leading-[12.6px]">
+                  Join Meeting
+                </span>
+              </a>
+              <button
+                onClick={handleCopyLink}
+                className="flex items-center justify-center w-8 h-8 rounded-[24px] bg-[#EFF6FF] hover:bg-[#DBEAFE] transition-colors"
+                title="Copy meeting link"
+              >
+                {copied ? (
+                  <Check className="w-3 h-3 text-[#10B981]" />
+                ) : (
+                  <Copy className="w-3 h-3 text-[#2563EB]" />
+                )}
+              </button>
+            </div>
           )}
         </div>
       </div>

@@ -62,6 +62,7 @@ export const transformOpportunityToCard = (
     type: mapOpportunityType(opp.type),
     title: opp.title || "",
     category: opp.category,
+    location: opp.location,
     skills: opp.tags || [],
     rate: `₦${Math.round(opp.minBudget || 0).toLocaleString()} - ₦${Math.round(opp.maxBudget || 0).toLocaleString()} / ${getPaymentTypeAbbr(opp.paymentType)}`,
     priceMode: opp.priceMode || "range",

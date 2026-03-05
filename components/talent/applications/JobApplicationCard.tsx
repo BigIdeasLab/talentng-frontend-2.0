@@ -13,11 +13,11 @@ const STATUS_CONFIG: Record<
   string,
   { bg: string; text: string; label: string }
 > = {
-  invited: { bg: "#DBEAFE", text: "#2563EB", label: "Invited" },
   applied: { bg: "#F5F5F5", text: "#606060", label: "Applied" },
+  invited: { bg: "#DBEAFE", text: "#2563EB", label: "Invited" },
   shortlisted: { bg: "#F3E8FF", text: "#7C3AED", label: "Shortlisted" },
-  hired: { bg: "#EEFDF0", text: "#008B47", label: "Hired" },
-  rejected: { bg: "#FEE2E2", text: "#DC2626", label: "Rejected" },
+  hired: { bg: "#ECFDF3", text: "#10B981", label: "Hired" },
+  rejected: { bg: "#FEF2F2", text: "#DC2626", label: "Rejected" },
 };
 
 export function JobApplicationCard({ application }: JobApplicationCardProps) {

@@ -1,14 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useProfile } from "@/hooks/useProfile";
 import { useRecruiterOpportunitiesQuery } from "@/hooks/useRecruiterOpportunities";
 import type {
   TabType,
   SortType,
-  OpportunityCard,
-  OpportunityType,
 } from "@/lib/types";
 import { transformOpportunityToCard } from "@/lib/utils/opportunities";
 import { OpportunitiesHeader } from "./OpportunitiesHeader";
@@ -19,7 +17,6 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Briefcase } from "lucide-react";
 import {
   OpportunitiesFilterModal,
-  type OpportunitiesFilterState,
 } from "@/components/talent/opportunities/OpportunitiesFilterModal";
 import { RoleColorProvider } from "@/lib/theme/RoleColorContext";
 import { OpportunitiesSkeleton } from "./OpportunitiesSkeleton";
@@ -27,13 +24,18 @@ import { OpportunitiesSkeleton } from "./OpportunitiesSkeleton";
 export function EmployerOpportunities() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { currentProfile } = useProfile();
 
   const [activeTab, setActiveTab] = useState<TabType>("open");
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortType>("newest");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<any>(null);
+  const [offset, setOffset] = useState(0);
+  
+  const LIMIT = 20;
+  const isInitialLoadRef = useRef(true);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const STATUS_MAP: Record<TabType, string> = {
     open: "active",
@@ -55,14 +57,31 @@ export function EmployerOpportunities() {
 
   const queryParams = {
     status: STATUS_MAP[activeTab],
-    ...(searchQuery ? { q: searchQuery } : {}),
+    ...(debouncedSearchQuery ? { q: debouncedSearchQuery } : {}),
     ...(appliedFilters?.types?.length
       ? { type: appliedFilters.types.join(",") }
       : {}),
     ...(appliedFilters?.skills?.length
       ? { tags: appliedFilters.skills.join(",") }
       : {}),
+    ...(appliedFilters?.categories?.length
+      ? { category: appliedFilters.categories.join(",") }
+      : {}),
+    ...(appliedFilters?.experienceLevels?.length
+      ? { experienceLevel: appliedFilters.experienceLevels.join(",") }
+      : {}),
+    ...(appliedFilters?.location
+      ? { location: appliedFilters.location }
+      : {}),
+    ...(appliedFilters?.minBudget && appliedFilters.minBudget > 0
+      ? { minBudget: appliedFilters.minBudget }
+      : {}),
+    ...(appliedFilters?.maxBudget && appliedFilters.maxBudget > 0
+      ? { maxBudget: appliedFilters.maxBudget }
+      : {}),
     ...SORT_MAP[sortBy],
+    limit: LIMIT,
+    offset: offset,
   };
 
   const {
@@ -71,6 +90,62 @@ export function EmployerOpportunities() {
     isPending,
     refetch: fetchOpportunities,
   } = useRecruiterOpportunitiesQuery(queryParams);
+
+  // Debounced search handler
+  const handleSearchDebounced = (query: string) => {
+    setSearchQuery(query);
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    searchTimeoutRef.current = setTimeout(() => {
+      setDebouncedSearchQuery(query);
+      setOffset(0); // Reset to first page on search
+    }, 500);
+  };
+
+  // Clear search handler
+  const handleClearSearch = () => {
+    setSearchQuery("");
+    setDebouncedSearchQuery("");
+    setOffset(0); // Reset to first page
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+  };
+
+  // Filter count calculation
+  const getFilterCount = (): number => {
+    if (!appliedFilters) return 0;
+    let count = 0;
+    if (appliedFilters.skills?.length) count += appliedFilters.skills.length;
+    if (appliedFilters.types?.length) count += appliedFilters.types.length;
+    if (appliedFilters.categories?.length) count += appliedFilters.categories.length;
+    if (appliedFilters.experienceLevels?.length) count += appliedFilters.experienceLevels.length;
+    if (appliedFilters.location) count += 1;
+    if (appliedFilters.minBudget && appliedFilters.minBudget > 0) count += 1;
+    if (appliedFilters.maxBudget && appliedFilters.maxBudget > 0) count += 1;
+    return count;
+  };
+
+  // Handle filter application
+  const handleApplyFilters = (filters: any) => {
+    setAppliedFilters(filters);
+    setIsFilterOpen(false);
+    setOffset(0); // Reset to first page on filter change
+  };
+
+  // Pagination handlers
+  const handleNextPage = () => {
+    if (opportunitiesRaw?.pagination?.hasNextPage) {
+      setOffset(offset + LIMIT);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (opportunitiesRaw?.pagination?.hasPreviousPage) {
+      setOffset(Math.max(0, offset - LIMIT));
+    }
+  };
 
   // Server handles all filtering and sorting — render results directly
   const filteredOpportunities = (opportunitiesRaw?.data || []).map(
@@ -82,66 +157,154 @@ export function EmployerOpportunities() {
     const tabParam = searchParams.get("tab") as TabType | null;
     if (tabParam && ["open", "closed", "draft"].includes(tabParam)) {
       setActiveTab(tabParam);
+      setOffset(0); // Reset to first page on tab change
     }
   }, [searchParams]);
+
+  // Mark initial load as complete after first successful fetch
+  useEffect(() => {
+    if (opportunitiesRaw && isInitialLoadRef.current) {
+      isInitialLoadRef.current = false;
+    }
+  }, [opportunitiesRaw]);
 
   const handlePostClick = () => {
     router.push("/opportunities/post");
   };
 
-  if (isLoading || isPending || !opportunitiesRaw) {
+  if (isLoading && isInitialLoadRef.current && !opportunitiesRaw) {
     return <OpportunitiesSkeleton />;
   }
 
   return (
     <RoleColorProvider role="recruiter">
-      <div className="h-screen overflow-y-auto overflow-x-hidden bg-white">
-        <div className="w-full mx-auto px-3 py-5 md:px-5 md:py-6">
+      <div className="h-screen overflow-x-hidden bg-white flex flex-col">
+        {/* Fixed Header */}
+        <div className="w-full px-3 md:px-5 pt-5 md:pt-6 border-b border-[#E1E4EA] flex-shrink-0">
           {/* Header */}
-          <div className="flex flex-col gap-4 mb-6">
+          <div className="flex flex-col gap-4 mb-4">
             <OpportunitiesHeader onPostClick={handlePostClick} />
             <SearchAndFilters
               searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
+              onSearchChange={handleSearchDebounced}
+              onClearSearch={handleClearSearch}
               sortBy={sortBy}
               onSortChange={setSortBy}
               onFilterClick={() => setIsFilterOpen(true)}
+              isSearching={isPending && debouncedSearchQuery !== searchQuery}
+              filterCount={getFilterCount()}
+              filterModal={
+                <OpportunitiesFilterModal
+                  isOpen={isFilterOpen}
+                  onClose={() => setIsFilterOpen(false)}
+                  onApply={handleApplyFilters}
+                  availableSkills={[]}
+                  initialFilters={appliedFilters || undefined}
+                />
+              }
             />
           </div>
 
-          <OpportunitiesFilterModal
-            isOpen={isFilterOpen}
-            onClose={() => setIsFilterOpen(false)}
-            onApply={(filters) => {
-              setAppliedFilters(filters);
-              setIsFilterOpen(false);
-            }}
-            availableSkills={[]}
-            initialFilters={appliedFilters || undefined}
-          />
-
           {/* Tabs */}
           <OpportunitiesTabs activeTab={activeTab} onTabChange={setActiveTab} />
+        </div>
 
-          {/* Opportunities Grid or Empty State */}
-          {filteredOpportunities.length === 0 ? (
-            <EmptyState
-              icon={Briefcase}
-              title="No opportunities found"
-              description="Try adjusting your search or filters to find what you're looking for"
-            />
-          ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {filteredOpportunities.map((opportunity) => (
-                <OpportunityCardComponent
-                  key={opportunity.id}
-                  opportunity={opportunity}
-                  activeTab={activeTab}
-                  onMutationSuccess={fetchOpportunities}
-                />
-              ))}
-            </div>
-          )}
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="px-3 md:px-5 pt-5 md:pt-6">
+            {/* Opportunities Grid or Empty State */}
+            {filteredOpportunities.length === 0 ? (
+              <EmptyState
+                icon={Briefcase}
+                title="No opportunities found"
+                description={
+                  debouncedSearchQuery.trim()
+                    ? "Try adjusting your search query"
+                    : appliedFilters &&
+                        (appliedFilters.skills?.length > 0 ||
+                          appliedFilters.types?.length > 0 ||
+                          appliedFilters.categories?.length > 0 ||
+                          appliedFilters.experienceLevels?.length > 0 ||
+                          appliedFilters.location ||
+                          (appliedFilters.minBudget && appliedFilters.minBudget > 0) ||
+                          (appliedFilters.maxBudget && appliedFilters.maxBudget > 0))
+                      ? "Try adjusting your filters"
+                      : activeTab === "draft"
+                        ? "You haven't created any draft opportunities yet"
+                        : activeTab === "closed"
+                          ? "You don't have any closed opportunities"
+                          : "You haven't posted any opportunities yet"
+                }
+              />
+            ) : (
+              <>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+                  {filteredOpportunities.map((opportunity) => (
+                    <OpportunityCardComponent
+                      key={opportunity.id}
+                      opportunity={opportunity}
+                      activeTab={activeTab}
+                      onMutationSuccess={fetchOpportunities}
+                    />
+                  ))}
+                </div>
+                {/* Pagination Controls */}
+                {opportunitiesRaw?.pagination && opportunitiesRaw.pagination.totalPages > 1 && (
+                  <div className="flex items-center justify-between py-4">
+                    <button
+                      onClick={handlePreviousPage}
+                      disabled={!opportunitiesRaw.pagination.hasPreviousPage}
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#E1E4EA] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#F5F5F5] transition-colors"
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M15 18L9 12L15 6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <span className="text-sm font-normal">Previous</span>
+                    </button>
+
+                    <span className="text-sm font-normal text-gray-600">
+                      Page {opportunitiesRaw.pagination.currentPage} of {opportunitiesRaw.pagination.totalPages}
+                    </span>
+
+                    <button
+                      onClick={handleNextPage}
+                      disabled={!opportunitiesRaw.pagination.hasNextPage}
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#E1E4EA] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#F5F5F5] transition-colors"
+                    >
+                      <span className="text-sm font-normal">Next</span>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M9 18L15 12L9 6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
     </RoleColorProvider>

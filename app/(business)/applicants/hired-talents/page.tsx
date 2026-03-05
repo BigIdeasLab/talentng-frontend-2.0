@@ -93,13 +93,15 @@ export default function HiredTalentsPage() {
   const { toast } = useToast();
 
   const {
-    data: rawApplications = [],
+    data: response,
     isLoading: isAppsLoading,
     error: appsError,
   } = useRecruiterApplicationsQuery({
     status: "hired",
-    ...(searchQuery ? { searchQuery } : {}),
+    ...(searchQuery ? { q: searchQuery } : {}),
   });
+
+  const rawApplications = response?.data || [];
 
   useEffect(() => {
     if (rawApplications.length > 0) {

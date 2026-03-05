@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { Bell } from "lucide-react";
+import { Bell, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import {
@@ -231,10 +231,10 @@ const getMenuItems = (
     href: "/applicants",
   },
   {
-    id: "upcoming",
-    label: "Upcoming",
-    icon: <WorkIcon />,
-    href: "/upcoming",
+    id: "interviews",
+    label: "Interviews",
+    icon: <Calendar className="w-5 h-5" strokeWidth={1.25} stroke="#525866" />,
+    href: "/interviews",
     badge: upcomingCount,
   },
   {

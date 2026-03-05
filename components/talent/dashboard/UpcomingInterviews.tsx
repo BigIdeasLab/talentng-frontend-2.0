@@ -34,7 +34,7 @@ function EventCard({
 }: EventCardProps) {
   const isSession = type === "session";
   const href = isSession
-    ? "/upcoming"
+    ? "/calendar"
     : opportunityId
       ? `/opportunities/${opportunityId}`
       : "/opportunities";
@@ -141,17 +141,35 @@ export function UpcomingInterviews({
     enabled: true,
   });
 
-  // Build unified event list
+  // Build unified event list with proper date validation
   type EventItem = EventCardProps & { sortDate: Date };
-  const events: EventItem[] = items.map((item) => ({
-    type: item.type,
-    title: item.title,
-    subtitle: item.subtitle,
-    date: format(new Date(item.startTime || item.date), "MMM d, yyyy"),
-    time: format(new Date(item.startTime || item.date), "h:mm a"),
-    opportunityId: item.metadata?.opportunityId,
-    sortDate: new Date(item.startTime || item.date),
-  }));
+  const events: EventItem[] = items
+    .filter((item) => {
+      // Filter out items with invalid dates BEFORE mapping
+      const rawDate = item.scheduledAt || item.startTime || item.date;
+      const dateObj = new Date(rawDate);
+      const isValid = !isNaN(dateObj.getTime());
+      
+      if (!isValid) {
+        console.error('Invalid date in upcoming item, skipping:', rawDate, item);
+      }
+      
+      return isValid;
+    })
+    .map((item) => {
+      const rawDate = item.scheduledAt || item.startTime || item.date;
+      const dateObj = new Date(rawDate);
+      
+      return {
+        type: item.type,
+        title: item.position || item.topic || item.title,
+        subtitle: item.company || item.mentorName || item.subtitle,
+        date: format(dateObj, "MMM d, yyyy"),
+        time: format(dateObj, "h:mm a"),
+        opportunityId: item.opportunityId || item.metadata?.opportunityId,
+        sortDate: dateObj,
+      };
+    });
 
   // Also include the legacy interviews passed from the dashboard API as fallback/merge if needed,
   // but the new endpoint should ideally cover everything.
@@ -177,7 +195,7 @@ export function UpcomingInterviews({
         </div>
         {events.length > 3 && (
           <Link
-            href="/upcoming"
+            href="/calendar"
             className="text-[11px] font-medium font-inter-tight text-[#525866] hover:text-black transition-colors"
           >
             View all →

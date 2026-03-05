@@ -58,15 +58,14 @@ export function DiscoverTalentClient({
         error: fetchError,
       } = await getDiscoverTalentData({
         searchQuery: query,
-        category:
-          appliedFilters && appliedFilters.categories.length > 0
-            ? appliedFilters.categories.join(",")
-            : category,
+        category: category,
         skills: appliedFilters?.skills || [],
+        stack: appliedFilters?.stack || [],
         location: appliedFilters?.location,
         availability: Array.isArray(appliedFilters?.availability)
           ? appliedFilters.availability.join(",")
           : undefined,
+        headline: appliedFilters?.headline,
         sort,
         limit: LIMIT,
         offset: pageOffset,

@@ -1,4 +1,5 @@
-import { Clock, X, CheckCircle, Calendar, MapPin, Video } from "lucide-react";
+import { useState } from "react";
+import { Clock, X, CheckCircle, Calendar, MapPin, Video, Copy, Check, AlertTriangle } from "lucide-react";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface Mentee {
@@ -35,16 +36,57 @@ interface SessionCardProps {
 }
 
 const statusConfig = {
-  upcoming: { label: "Upcoming", bg: "#EEF4FF", text: "#3B82F6" },
-  in_progress: { label: "In Progress", bg: "#FEF3C7", text: "#D97706" },
-  pending_completion: {
-    label: "Pending Completion",
-    bg: "#FFF7ED",
-    text: "#EA580C",
+  // Needs immediate attention - Urgent (Red/Orange tones)
+  pending: { 
+    label: "Pending Confirmation", 
+    bg: "#FEF3C7", 
+    dot: "#F59E0B", 
+    text: "#D97706" 
   },
-  disputed: { label: "Disputed", bg: "#FEF2F2", text: "#DC2626" },
-  completed: { label: "Completed", bg: "#ECFDF3", text: "#10B981" },
-  cancelled: { label: "Cancelled", bg: "#FEF2F2", text: "#EF4444" },
+  pending_completion: {
+    label: "Needs Confirmation",
+    bg: "#FEF2F2",
+    dot: "#EF4444",
+    text: "#DC2626",
+  },
+  
+  // Active/In Progress - Blue (attention but not urgent)
+  in_progress: { 
+    label: "In Progress", 
+    bg: "#DBEAFE", 
+    dot: "#3B82F6", 
+    text: "#2563EB" 
+  },
+  
+  // Scheduled/Upcoming - Neutral Blue
+  upcoming: { 
+    label: "Upcoming", 
+    bg: "#EFF6FF", 
+    dot: "#60A5FA", 
+    text: "#3B82F6" 
+  },
+  
+  // Completed - Green
+  completed: { 
+    label: "Completed", 
+    bg: "#ECFDF3", 
+    dot: "#10B981", 
+    text: "#059669" 
+  },
+  
+  // Problem states - Red
+  disputed: { 
+    label: "Disputed", 
+    bg: "#FEF2F2", 
+    dot: "#DC2626", 
+    text: "#B91C1C" 
+  },
+  cancelled: { 
+    label: "Cancelled", 
+    bg: "#FEF2F2", 
+    dot: "#EF4444", 
+    text: "#DC2626" 
+  },
 };
 
 export function SessionCard({
@@ -60,7 +102,9 @@ export function SessionCard({
   onReschedule,
   onCancel,
   onComplete,
+  onDispute,
 }: SessionCardProps) {
+  const [copied, setCopied] = useState(false);
   const isSessionEnded = endTime ? new Date() > new Date(endTime) : false;
   const config = statusConfig[status];
 
@@ -68,6 +112,20 @@ export function SessionCard({
     .split(" ")
     .map((n) => n[0])
     .join("");
+
+  const handleCopyLink = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (location && /^https?:\/\//i.test(location)) {
+      try {
+        await navigator.clipboard.writeText(location);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error('Failed to copy link:', err);
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col border border-[#E1E4EA] rounded-[16px] bg-white hover:shadow-md transition-shadow">
@@ -151,17 +209,30 @@ export function SessionCard({
             </span>
           </div>
           {location && /^https?:\/\//i.test(location) ? (
-            <a
-              href={location}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#EFF6FF] hover:bg-[#DBEAFE] transition-colors"
-            >
-              <Video className="w-3 h-3 text-[#2563EB]" />
-              <span className="text-[12px] font-medium font-inter-tight text-[#2563EB] leading-[12.6px]">
-                Join Meeting
-              </span>
-            </a>
+            <div className="flex items-center gap-1">
+              <a
+                href={location}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#EFF6FF] hover:bg-[#DBEAFE] transition-colors"
+              >
+                <Video className="w-3 h-3 text-[#2563EB]" />
+                <span className="text-[12px] font-medium font-inter-tight text-[#2563EB] leading-[12.6px]">
+                  Join Meeting
+                </span>
+              </a>
+              <button
+                onClick={handleCopyLink}
+                className="flex items-center justify-center w-8 h-8 rounded-[24px] bg-[#EFF6FF] hover:bg-[#DBEAFE] transition-colors"
+                title="Copy meeting link"
+              >
+                {copied ? (
+                  <Check className="w-3 h-3 text-[#10B981]" />
+                ) : (
+                  <Copy className="w-3 h-3 text-[#2563EB]" />
+                )}
+              </button>
+            </div>
           ) : (
             <div className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#F5F5F5]">
               <MapPin className="w-3 h-3 text-[#525866]" />
@@ -200,7 +271,7 @@ export function SessionCard({
           )}
           {status === "in_progress" && (
             <>
-              {isSessionEnded && (
+              {isSessionEnded ? (
                 <button
                   onClick={() => onComplete?.(id)}
                   className="flex items-center gap-1 px-4 py-2 h-8 hover:opacity-80 rounded-[40px] transition-colors"
@@ -211,36 +282,28 @@ export function SessionCard({
                     Complete
                   </span>
                 </button>
-              )}
-              {!isSessionEnded && (
+              ) : (
                 <span className="text-[12px] font-inter-tight text-[#D97706]">
                   Session in progress
                 </span>
               )}
-              <button
-                onClick={() => onReschedule?.(id)}
-                className="flex items-center gap-1 px-4 py-2 h-8 bg-[#181B25] hover:bg-[#2a2d39] rounded-[40px] transition-colors"
-              >
-                <Clock className="w-4 h-4 text-white" />
-                <span className="text-[12px] font-medium font-inter-tight text-white">
-                  Reschedule
-                </span>
-              </button>
-              <button
-                onClick={() => onCancel?.(id)}
-                className="flex items-center gap-1 px-4 py-2 h-8 border border-[#E1E4EA] rounded-[40px] hover:border-[#EF4444] hover:bg-[#FEF2F2] hover:text-[#EF4444] transition-colors"
-              >
-                <X className="w-4 h-4" />
-                <span className="text-[12px] font-medium font-inter-tight">
-                  Cancel
-                </span>
-              </button>
             </>
           )}
           {status === "pending_completion" && (
-            <span className="text-[12px] font-inter-tight text-[#EA580C]">
-              Waiting for mentee confirmation
-            </span>
+            <>
+              <span className="text-[12px] font-inter-tight text-[#DC2626]">
+                Waiting for mentee confirmation
+              </span>
+              <button
+                onClick={() => onDispute?.(id)}
+                className="flex items-center gap-1 px-4 py-2 h-8 border border-[#E1E4EA] rounded-[40px] hover:border-[#DC2626] hover:bg-[#FEF2F2] hover:text-[#DC2626] transition-colors"
+              >
+                <X className="w-4 h-4" />
+                <span className="text-[12px] font-medium font-inter-tight">
+                  Dispute
+                </span>
+              </button>
+            </>
           )}
           {status === "disputed" && (
             <span className="text-[12px] font-inter-tight text-[#DC2626]">

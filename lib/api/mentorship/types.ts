@@ -65,7 +65,7 @@ export interface MyRequestsResponse {
 export interface RequestsQueryParams {
   role?: "sent" | "received";
   status?: RequestStatus;
-  searchQuery?: string;
+  q?: string; // Backend expects 'q' not 'searchQuery'
   dateRange?: "today" | "week" | "month";
   page?: number;
   limit?: number;
@@ -142,7 +142,7 @@ export interface SessionsQueryParams {
   status?: SessionStatus;
   upcoming?: boolean;
   past?: boolean;
-  searchQuery?: string;
+  q?: string; // Backend expects 'q' not 'searchQuery'
   dateRange?: "today" | "week" | "month";
   page?: number;
   limit?: number;

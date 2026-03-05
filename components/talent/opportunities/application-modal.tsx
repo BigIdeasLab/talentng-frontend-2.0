@@ -37,6 +37,7 @@ export function ApplicationModal({
   const isSubmitting = submitMutation.isPending;
   const [proposal, setProposal] = useState("");
   const [selectedProjects, setSelectedProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<any[]>([]); // Store full gallery items
   const [showProjectSelection, setShowProjectSelection] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -44,14 +45,17 @@ export function ApplicationModal({
   if (!opportunity) return null;
 
   const isFormValid =
-    proposal.trim().length >= 10 && selectedProjects.length <= 3;
+    selectedProjects.length >= 1 && selectedProjects.length <= 3;
 
   const handleRemoveProject = (projectId: string) => {
     setSelectedProjects((prev) => prev.filter((p) => p.id !== projectId));
   };
 
-  const handleProjectsSelected = (projects: Project[]) => {
+  const handleProjectsSelected = (projects: Project[], fullGalleryItems?: any[]) => {
     setSelectedProjects(projects);
+    if (fullGalleryItems) {
+      setProjects(fullGalleryItems);
+    }
     setShowProjectSelection(false);
   };
 
@@ -133,16 +137,16 @@ export function ApplicationModal({
               <div className="flex flex-col gap-[10px] flex-shrink-0">
                 <div className="flex items-center justify-between">
                   <label className="text-[#525866] font-inter-tight text-[14px] font-normal">
-                    Your Proposal
+                    Your Proposal (Optional)
                   </label>
                   <span className="text-[#99A0AE] font-inter-tight text-[12px]">
-                    {proposal.trim().length}/10 min
+                    {proposal.trim().length} characters
                   </span>
                 </div>
                 <textarea
                   value={proposal}
                   onChange={(e) => setProposal(e.target.value)}
-                  placeholder="Type here (minimum 10 characters)"
+                  placeholder="Type here (optional)"
                   disabled={isSubmitting}
                   className="w-full px-[12px] py-[18px] pb-[120px] border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[14px] text-black placeholder:text-[#99A0AE] resize-none focus:outline-none disabled:bg-gray-50"
                   style={{ "--tw-ring-color": primary } as React.CSSProperties}
@@ -157,7 +161,7 @@ export function ApplicationModal({
               <div className="flex flex-col gap-[12px] flex-shrink-0">
                 <div className="flex flex-col gap-[10px]">
                   <label className="text-[#525866] font-inter-tight text-[14px] font-normal">
-                    Attach Relevant Projects (Optional: Max 3)
+                    Attach Relevant Projects (Required: 1-3 projects)
                   </label>
                   <button
                     onClick={() => setShowProjectSelection(true)}
@@ -166,7 +170,7 @@ export function ApplicationModal({
                   >
                     <LinkIcon size={20} className="text-[#525866]" />
                     <span className="text-[#525866] font-inter-tight text-[14px] font-normal">
-                      Attach here
+                      {selectedProjects.length === 0 ? 'Select projects' : 'Change selection'}
                     </span>
                   </button>
                 </div>
@@ -174,39 +178,86 @@ export function ApplicationModal({
                 {/* Selected Projects */}
                 {selectedProjects.length > 0 && (
                   <div className="flex items-center gap-[3.5px] overflow-x-auto flex-shrink-0">
-                    {selectedProjects.map((project) => (
-                      <div
-                        key={project.id}
-                        className="relative w-[158px] h-[120px] flex-shrink-0"
-                      >
-                        <img
-                          src={project.image}
-                          alt={project.title}
-                          className="absolute left-0 top-[8px] w-[149px] h-[112px] object-cover rounded-[7px]"
-                        />
-                        <button
-                          onClick={() => handleRemoveProject(project.id)}
-                          disabled={isSubmitting}
-                          className="absolute right-0 top-0 w-[17px] h-[17px] bg-white rounded-full shadow-[0_0_15px_0_rgba(0,0,0,0.3)] flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 flex-shrink-0"
+                    {selectedProjects.map((project) => {
+                      // Find the full gallery item to get all images
+                      const galleryItem = projects.find(
+                        (p) => p.id === project.id,
+                      );
+                      const allImages = galleryItem?.images || [project.image];
+                      const hasMultipleImages = allImages.length > 1;
+
+                      return (
+                        <div
+                          key={project.id}
+                          className="relative w-[158px] h-[120px] flex-shrink-0"
                         >
-                          <svg
-                            width="13"
-                            height="13"
-                            viewBox="0 0 15 15"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                          {/* Main image */}
+                          <img
+                            src={allImages[0]}
+                            alt={project.title}
+                            className="absolute left-0 top-[8px] w-[149px] h-[112px] object-cover rounded-[7px]"
+                          />
+
+                          {/* Multiple images indicator */}
+                          {hasMultipleImages && (
+                            <div className="absolute left-[4px] bottom-[12px] px-[6px] py-[3px] bg-black/70 rounded-[4px] flex items-center gap-[3px]">
+                              <svg
+                                width="10"
+                                height="10"
+                                viewBox="0 0 12 12"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M10.5 3.75V8.25C10.5 9.075 9.825 9.75 9 9.75H3C2.175 9.75 1.5 9.075 1.5 8.25V3.75C1.5 2.925 2.175 2.25 3 2.25H9C9.825 2.25 10.5 2.925 10.5 3.75Z"
+                                  stroke="white"
+                                  strokeWidth="0.75"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                                <path
+                                  d="M4.125 5.25C4.53921 5.25 4.875 4.91421 4.875 4.5C4.875 4.08579 4.53921 3.75 4.125 3.75C3.71079 3.75 3.375 4.08579 3.375 4.5C3.375 4.91421 3.71079 5.25 4.125 5.25Z"
+                                  fill="white"
+                                />
+                                <path
+                                  d="M10.5 6.75L8.25 4.5L3 9.75"
+                                  stroke="white"
+                                  strokeWidth="0.75"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                              <span className="text-white font-inter-tight text-[9px] font-medium">
+                                {allImages.length}
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Remove button */}
+                          <button
+                            onClick={() => handleRemoveProject(project.id)}
+                            disabled={isSubmitting}
+                            className="absolute right-0 top-0 w-[17px] h-[17px] bg-white rounded-full shadow-[0_0_15px_0_rgba(0,0,0,0.3)] flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 flex-shrink-0"
                           >
-                            <path
-                              d="M10.7213 3.57324L3.5747 10.7198M10.7208 10.7203L3.57422 3.57375"
-                              stroke="#525866"
-                              strokeWidth="1.90588"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    ))}
+                            <svg
+                              width="13"
+                              height="13"
+                              viewBox="0 0 15 15"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M10.7213 3.57324L3.5747 10.7198M10.7208 10.7203L3.57422 3.57375"
+                                stroke="#525866"
+                                strokeWidth="1.90588"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>

@@ -11,6 +11,7 @@ import type {
   ApplicationResponse,
   InvitationResponse,
   RescheduleInterviewInput,
+  PaginatedApplicationsResponse,
 } from "./types";
 
 /**
@@ -45,14 +46,14 @@ export const applyToOpportunity = async (
  * GET /talent/applications
  */
 export const getTalentApplications = async (params?: {
-  searchQuery?: string;
+  q?: string;
   status?: string;
   dateRange?: "today" | "week" | "month";
   limit?: number;
   offset?: number;
 }): Promise<Application[]> => {
   const query = new URLSearchParams();
-  if (params?.searchQuery) query.append("searchQuery", params.searchQuery);
+  if (params?.q) query.append("q", params.q);
   if (params?.status) query.append("status", params.status);
   if (params?.dateRange) query.append("dateRange", params.dateRange);
   if (params?.limit) query.append("limit", String(params.limit));
@@ -70,18 +71,18 @@ export const getTalentApplications = async (params?: {
 export const getRecruiterApplications = async (params: {
   status?: string;
   opportunityId?: string;
-  searchQuery?: string;
+  q?: string;
   location?: string;
   skills?: string;
   dateRange?: "today" | "week" | "month";
   sortBy?: "newest" | "oldest" | "name-asc" | "name-desc";
   limit?: number;
   offset?: number;
-}): Promise<Application[]> => {
+}): Promise<PaginatedApplicationsResponse> => {
   const query = new URLSearchParams();
   if (params.status) query.append("status", params.status);
   if (params.opportunityId) query.append("opportunityId", params.opportunityId);
-  if (params.searchQuery) query.append("searchQuery", params.searchQuery);
+  if (params.q) query.append("q", params.q);
   if (params.location) query.append("location", params.location);
   if (params.skills) query.append("skills", params.skills);
   if (params.dateRange) query.append("dateRange", params.dateRange);
@@ -92,7 +93,7 @@ export const getRecruiterApplications = async (params: {
   const queryString = query.toString();
   const endpoint = `/recruiter/applications${queryString ? `?${queryString}` : ""}`;
 
-  return apiClient<Application[]>(endpoint);
+  return apiClient<PaginatedApplicationsResponse>(endpoint);
 };
 
 /**
@@ -343,4 +344,6 @@ export type {
   SendInvitationInput,
   RespondToInvitationInput,
   InvitationResponse,
+  PaginatedApplicationsResponse,
+  PaginationInfo,
 } from "./types";

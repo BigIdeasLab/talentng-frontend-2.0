@@ -124,3 +124,18 @@ export interface InvitationResponse {
   data?: Application;
   error?: string;
 }
+
+export interface PaginationInfo {
+  total: number;
+  limit: number;
+  offset: number;
+  currentPage: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface PaginatedApplicationsResponse {
+  data: Application[];
+  pagination: PaginationInfo;
+}
