@@ -11,6 +11,7 @@ This audit confirms that the application has standardized on using `q` for searc
 ## Search Endpoints Inventory
 
 ### 1. Talent Discovery
+
 - **Endpoint**: `GET /api/v1/talents`
 - **DTO**: `GetTalentProfilesDto`
 - **Search Parameter**: `q` ✅
@@ -18,6 +19,7 @@ This audit confirms that the application has standardized on using `q` for searc
 - **Implementation**: `talent.service.ts` - Uses Ogini search with database fallback
 
 ### 2. Mentor Discovery (Public)
+
 - **Endpoint**: `GET /api/v1/mentors`
 - **DTO**: `GetMentorsDto`
 - **Search Parameter**: `q` ✅
@@ -25,6 +27,7 @@ This audit confirms that the application has standardized on using `q` for searc
 - **Implementation**: `mentor.service.ts` - Uses raw SQL with ranking
 
 ### 3. Talent Mentorship (Talents browsing Mentors)
+
 - **Endpoint**: `GET /api/v1/talent/mentors`
 - **DTO**: `GetMentorsDto`
 - **Search Parameter**: `q` ✅
@@ -32,6 +35,7 @@ This audit confirms that the application has standardized on using `q` for searc
 - **Implementation**: `mentor.service.ts` - Uses same `findAll()` method
 
 ### 4. Opportunity Discovery
+
 - **Endpoint**: `GET /api/v1/opportunities`
 - **DTO**: `GetOpportunitiesDto`
 - **Search Parameter**: `q` ✅
@@ -39,6 +43,7 @@ This audit confirms that the application has standardized on using `q` for searc
 - **Implementation**: `opportunity.service.ts` - Uses Ogini search with prioritized database fallback
 
 ### 5. Talent Opportunities (Talents browsing opportunities)
+
 - **Endpoint**: `GET /api/v1/talent/opportunities`
 - **DTO**: `GetOpportunitiesDto`
 - **Search Parameter**: `q` ✅
@@ -46,6 +51,7 @@ This audit confirms that the application has standardized on using `q` for searc
 - **Implementation**: `opportunity.service.ts` - Uses same `findAll()` method
 
 ### 6. Talent Applications
+
 - **Endpoint**: `GET /api/v1/talent/applications`
 - **DTO**: `GetApplicationsDto`
 - **Search Parameter**: `q` ✅
@@ -53,6 +59,7 @@ This audit confirms that the application has standardized on using `q` for searc
 - **Implementation**: `application.service.ts` - Database search
 
 ### 7. Recruiter Applications
+
 - **Endpoint**: `GET /api/v1/recruiter/applications`
 - **DTO**: `GetApplicationsDto`
 - **Search Parameter**: `q` ✅
@@ -60,15 +67,17 @@ This audit confirms that the application has standardized on using `q` for searc
 - **Implementation**: `application.service.ts` - Database search
 
 ### 8. Talent Calendar (Upcoming Events)
+
 - **Endpoint**: `GET /api/v1/talent/calendar`
 - **DTO**: `GetUpcomingDto`
 - **Search Parameter**: `q` ✅
-- **Search Fields**: 
+- **Search Fields**:
   - Interviews: opportunity.title, opportunity.company
   - Sessions: mentor.fullName, session.topic
 - **Implementation**: `talent.service.ts` - Database search
 
 ### 9. Recruiter Interviews
+
 - **Endpoint**: `GET /api/v1/recruiter/interviews`
 - **DTO**: `GetRecruiterInterviewsDto`
 - **Search Parameter**: `q` ✅
@@ -76,6 +85,7 @@ This audit confirms that the application has standardized on using `q` for searc
 - **Implementation**: `recruiter.service.ts` - Database search
 
 ### 10. Mentor Sessions (Bookings)
+
 - **Endpoint**: `GET /api/v1/mentor/sessions`
 - **DTO**: `GetBookingsDto`
 - **Search Parameter**: `q` ✅
@@ -87,13 +97,16 @@ This audit confirms that the application has standardized on using `q` for searc
 ## Search Parameter Consistency
 
 ### ✅ Standardized on `q`
+
 All endpoints use `q` as the primary search parameter. No endpoints use:
+
 - ❌ `search`
 - ❌ `query`
 - ❌ `searchTerm`
 - ❌ `keyword`
 
 ### Why `q`?
+
 1. **Industry Standard**: Used by Google, GitHub, Twitter, LinkedIn
 2. **Brevity**: Short and memorable
 3. **Universal**: Recognized across different platforms
@@ -104,32 +117,41 @@ All endpoints use `q` as the primary search parameter. No endpoints use:
 ## Search Implementation Patterns
 
 ### Pattern 1: Ogini Search + Database Fallback
+
 Used by:
+
 - Talent Discovery
 - Opportunity Discovery
 
 **Flow:**
+
 1. Try Ogini search service first
 2. If results found, fetch from database with IDs
 3. If no results or Ogini not configured, fall back to database search
 
 ### Pattern 2: Raw SQL with Ranking
+
 Used by:
+
 - Mentor Discovery
 
 **Flow:**
+
 1. Use raw SQL queries with CASE statements for ranking
 2. Order results by rank, then rating, then date
 3. Fetch full records from Prisma
 
 ### Pattern 3: Prisma Query Builder
+
 Used by:
+
 - Applications
 - Calendar/Upcoming
 - Sessions/Bookings
 - Interviews
 
 **Flow:**
+
 1. Build WHERE conditions with OR clauses
 2. Use Prisma's query builder
 3. Apply filters and pagination
@@ -140,13 +162,13 @@ Used by:
 
 All major discovery endpoints now include location in search:
 
-| Endpoint | Location in Search | Status |
-|----------|-------------------|--------|
-| Talents | ✅ Yes | Added |
-| Mentors | ✅ Yes | Added |
-| Opportunities | ✅ Yes | Existing |
-| Talent Applications | ✅ Yes | Added |
-| Recruiter Applications | ✅ Yes | Existing |
+| Endpoint               | Location in Search | Status   |
+| ---------------------- | ------------------ | -------- |
+| Talents                | ✅ Yes             | Added    |
+| Mentors                | ✅ Yes             | Added    |
+| Opportunities          | ✅ Yes             | Existing |
+| Talent Applications    | ✅ Yes             | Added    |
+| Recruiter Applications | ✅ Yes             | Existing |
 
 ---
 
@@ -155,6 +177,7 @@ All major discovery endpoints now include location in search:
 Beyond `q`, endpoints support specific filters:
 
 ### Common Filters
+
 - `limit` - Pagination limit (default: 20)
 - `offset` - Pagination offset (default: 0)
 - `sort` - Sort order (newest/oldest)
@@ -162,21 +185,27 @@ Beyond `q`, endpoints support specific filters:
 ### Entity-Specific Filters
 
 **Talents:**
+
 - `category`, `headline`, `skills`, `stack`, `location`, `availability`, `isFeatured`, `visibility`
 
 **Mentors:**
+
 - `location`, `category`, `expertise`, `industries`, `languages`, `stack`, `isFeatured`
 
 **Opportunities:**
+
 - `type`, `location`, `category`, `tags`, `compensation`, `experienceLevel`, `isFeatured`, `status`
 
 **Applications:**
+
 - `status`, `dateRange`, `location`, `userId`, `opportunityId`
 
 **Calendar:**
+
 - `dateRange`, `type` (interview/session)
 
 **Sessions:**
+
 - `status`, `role` (mentor/mentee)
 
 ---
@@ -184,23 +213,28 @@ Beyond `q`, endpoints support specific filters:
 ## Best Practices Followed
 
 ### ✅ Consistency
+
 - All endpoints use `q` for search
 - All endpoints return `{ data, pagination }` format
 - All endpoints use `limit` and `offset` for pagination
 
 ### ✅ Case-Insensitive Search
+
 - All text searches use `mode: 'insensitive'` or `ILIKE`
 - Ensures better user experience
 
 ### ✅ Partial Matching
+
 - All text searches use `contains` or `ILIKE %query%`
 - Users don't need exact matches
 
 ### ✅ Multi-Field Search
+
 - Search across multiple relevant fields
 - Prioritized/ranked results where applicable
 
 ### ✅ Filter Separation
+
 - `q` for general search
 - Specific filters for precise filtering
 - Can be combined: `?q=developer&location=Lagos&category=Frontend`
@@ -210,12 +244,14 @@ Beyond `q`, endpoints support specific filters:
 ## Recommendations
 
 ### ✅ Already Implemented
+
 1. Standardized on `q` parameter
 2. Location added to all major search endpoints
 3. Consistent pagination format
 4. Case-insensitive search
 
 ### 🔄 Future Enhancements (Optional)
+
 1. **Search Highlighting**: Return which field matched the search
 2. **Search Analytics**: Track popular search terms
 3. **Search Suggestions**: Auto-complete based on popular searches
@@ -227,6 +263,7 @@ Beyond `q`, endpoints support specific filters:
 ## Testing Checklist
 
 ### Search Functionality
+
 - [ ] `?q=Lagos` finds items with Lagos in any searchable field
 - [ ] `?q=developer` finds relevant items
 - [ ] `?q=` (empty) returns all items
@@ -234,16 +271,19 @@ Beyond `q`, endpoints support specific filters:
 - [ ] Partial matches work: `Lag` finds `Lagos`
 
 ### Filter Combination
+
 - [ ] `?q=developer&location=Lagos` works
 - [ ] `?q=developer&category=Frontend` works
 - [ ] Multiple filters can be combined
 
 ### Pagination
+
 - [ ] `?limit=10` returns 10 items
 - [ ] `?offset=20` skips first 20 items
 - [ ] Pagination metadata is correct
 
 ### Edge Cases
+
 - [ ] Special characters in search don't break
 - [ ] Very long search terms are handled
 - [ ] Empty results return proper format

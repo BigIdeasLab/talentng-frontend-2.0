@@ -1,11 +1,13 @@
 # Talent "Hired" Stat Issue - Investigation Report
 
 ## Issue Description
+
 The "Hired" count displayed on the talent profile page is showing incorrect values.
 
 ## Root Cause Analysis
 
 ### API Endpoint
+
 - **Endpoint**: `GET /api/v1/talent/profile`
 - **Function**: `getCurrentProfile()` in `lib/api/talent/index.ts`
 - **Response Type**: `TalentProfile`
@@ -13,6 +15,7 @@ The "Hired" count displayed on the talent profile page is showing incorrect valu
 ### Data Flow Problem
 
 1. **Backend Response** (`TalentProfile` type):
+
    ```typescript
    {
      hiredCount: number;  // Direct field on profile
@@ -26,6 +29,7 @@ The "Hired" count displayed on the talent profile page is showing incorrect valu
    ```
 
 2. **Profile Page** (`app/(business)/profile/page.tsx`):
+
    ```typescript
    // Line 127 - Stats are hardcoded to null!
    initialStats={null}
@@ -38,6 +42,7 @@ The "Hired" count displayed on the talent profile page is showing incorrect valu
    ```
 
 ### The Problem
+
 - The profile page receives the full `TalentProfile` object from the API
 - This object contains `hiredCount` and potentially `stats.hired`
 - But the page passes `initialStats={null}` to the component
@@ -46,6 +51,7 @@ The "Hired" count displayed on the talent profile page is showing incorrect valu
 ## Solution Options
 
 ### Option 1: Use `hiredCount` from Profile (Recommended)
+
 Update `TalentProfile.tsx` to read from `profileData` instead of `stats`:
 
 ```typescript
@@ -57,6 +63,7 @@ stats={{
 ```
 
 ### Option 2: Pass Stats from API Response
+
 Update `app/(business)/profile/page.tsx` to extract and pass stats:
 
 ```typescript
@@ -76,6 +83,7 @@ return (
 ```
 
 ### Option 3: Use Backend Stats Object
+
 If the backend returns `stats.hired`, use that directly:
 
 ```typescript
@@ -83,13 +91,16 @@ initialStats={talentData.stats || null}
 ```
 
 ## Recommended Fix
+
 **Option 1** is recommended because:
+
 - It's simpler and more direct
 - Doesn't require changes to multiple files
 - Uses the primary `hiredCount` field from the profile
 - Less prone to null/undefined issues
 
 ## Files Involved
+
 - `lib/api/talent/types.ts` - Type definitions
 - `lib/api/talent/index.ts` - API call
 - `app/(business)/profile/page.tsx` - Profile page (passes null)
@@ -120,12 +131,14 @@ return (
 ```
 
 This fix:
+
 - Checks both `stats.hired` and `hiredCount` fields from the API response
 - Falls back to `0` if neither is available
 - Also extracts other stats like earnings, views, applications, and interviews
 - Ensures the component receives real data instead of null
 
 ## Testing
+
 1. Reload the talent profile page
 2. Verify the "Hired" count now shows the correct value from the backend
 3. Check that other stats (earnings, views) are also displayed correctly

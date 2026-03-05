@@ -233,7 +233,7 @@ export function ProjectSelectionModal({
                 className="font-inter-tight text-[13px] font-medium"
                 style={{ color: primary }}
               >
-                {projects.length === 0 ? 'Upload Work' : 'Upload More Works'}
+                {projects.length === 0 ? "Upload Work" : "Upload More Works"}
               </span>
             </button>
           </div>

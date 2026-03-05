@@ -149,17 +149,21 @@ export function UpcomingInterviews({
       const rawDate = item.scheduledAt || item.startTime || item.date;
       const dateObj = new Date(rawDate);
       const isValid = !isNaN(dateObj.getTime());
-      
+
       if (!isValid) {
-        console.error('Invalid date in upcoming item, skipping:', rawDate, item);
+        console.error(
+          "Invalid date in upcoming item, skipping:",
+          rawDate,
+          item,
+        );
       }
-      
+
       return isValid;
     })
     .map((item) => {
       const rawDate = item.scheduledAt || item.startTime || item.date;
       const dateObj = new Date(rawDate);
-      
+
       return {
         type: item.type,
         title: item.position || item.topic || item.title,

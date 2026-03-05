@@ -1,6 +1,7 @@
 # Frontend Guide: Recruiter API Endpoints
 
 ## Overview
+
 This guide provides complete information about the recruiter endpoints, including request parameters, response formats, and usage examples for frontend integration.
 
 ---
@@ -8,38 +9,43 @@ This guide provides complete information about the recruiter endpoints, includin
 ## 1. Get My Opportunities
 
 ### Endpoint
+
 ```
 GET /api/v1/recruiter/opportunities
 ```
 
 ### Description
+
 Fetches opportunities posted by the current recruiter with search, filters, and pagination.
 
 ### Authentication
+
 - **Required**: Yes (Bearer token)
 - **Role**: Recruiter
 
 ### Query Parameters
 
-| Parameter | Type | Required | Default | Description |
-|-----------|------|----------|---------|-------------|
-| `q` | string | No | - | Search across title, category, tags, company, description |
-| `limit` | number | No | 20 | Results per page |
-| `offset` | number | No | 0 | Results offset for pagination |
-| `type` | enum | No | - | Opportunity type: `job`, `freelance`, `contract`, `internship`, `parttime` |
-| `status` | enum | No | - | Status: `active`, `closed`, `draft` |
-| `location` | string | No | - | Filter by location (partial match, case-insensitive) |
-| `category` | string | No | - | Filter by category (comma-separated, case-insensitive) |
-| `tags` | string | No | - | Filter by tags (comma-separated, case-insensitive) |
-| `experienceLevel` | string | No | - | Filter by experience level (case-insensitive) |
-| `minBudget` | number | No | - | Minimum budget filter |
-| `maxBudget` | number | No | - | Maximum budget filter |
-| `isFeatured` | boolean | No | - | Filter featured opportunities |
-| `sortBy` | string | No | `createdAt` | Sort field: `createdAt`, `applicationCount`, `title`, `price`, `minBudget` |
-| `sortOrder` | string | No | `desc` | Sort order: `asc`, `desc` |
+| Parameter         | Type    | Required | Default     | Description                                                                |
+| ----------------- | ------- | -------- | ----------- | -------------------------------------------------------------------------- |
+| `q`               | string  | No       | -           | Search across title, category, tags, company, description                  |
+| `limit`           | number  | No       | 20          | Results per page                                                           |
+| `offset`          | number  | No       | 0           | Results offset for pagination                                              |
+| `type`            | enum    | No       | -           | Opportunity type: `job`, `freelance`, `contract`, `internship`, `parttime` |
+| `status`          | enum    | No       | -           | Status: `active`, `closed`, `draft`                                        |
+| `location`        | string  | No       | -           | Filter by location (partial match, case-insensitive)                       |
+| `category`        | string  | No       | -           | Filter by category (comma-separated, case-insensitive)                     |
+| `tags`            | string  | No       | -           | Filter by tags (comma-separated, case-insensitive)                         |
+| `experienceLevel` | string  | No       | -           | Filter by experience level (case-insensitive)                              |
+| `minBudget`       | number  | No       | -           | Minimum budget filter                                                      |
+| `maxBudget`       | number  | No       | -           | Maximum budget filter                                                      |
+| `isFeatured`      | boolean | No       | -           | Filter featured opportunities                                              |
+| `sortBy`          | string  | No       | `createdAt` | Sort field: `createdAt`, `applicationCount`, `title`, `price`, `minBudget` |
+| `sortOrder`       | string  | No       | `desc`      | Sort order: `asc`, `desc`                                                  |
 
 ### Search Priority (when using `q`)
+
 Results are ranked by relevance:
+
 1. **Title match** (highest priority)
 2. **Category match**
 3. **Tags match**
@@ -124,24 +130,36 @@ Results are ranked by relevance:
 ### Example Requests
 
 **Basic search:**
+
 ```javascript
-const response = await fetch('/api/v1/recruiter/opportunities?q=developer&limit=20&offset=0', {
-  headers: { 'Authorization': `Bearer ${token}` }
-});
+const response = await fetch(
+  "/api/v1/recruiter/opportunities?q=developer&limit=20&offset=0",
+  {
+    headers: { Authorization: `Bearer ${token}` },
+  },
+);
 ```
 
 **With filters:**
+
 ```javascript
-const response = await fetch('/api/v1/recruiter/opportunities?q=designer&location=Lagos&tags=Remote,Full Time&status=active&limit=20', {
-  headers: { 'Authorization': `Bearer ${token}` }
-});
+const response = await fetch(
+  "/api/v1/recruiter/opportunities?q=designer&location=Lagos&tags=Remote,Full Time&status=active&limit=20",
+  {
+    headers: { Authorization: `Bearer ${token}` },
+  },
+);
 ```
 
 **Pagination (page 2):**
+
 ```javascript
-const response = await fetch('/api/v1/recruiter/opportunities?limit=20&offset=20', {
-  headers: { 'Authorization': `Bearer ${token}` }
-});
+const response = await fetch(
+  "/api/v1/recruiter/opportunities?limit=20&offset=20",
+  {
+    headers: { Authorization: `Bearer ${token}` },
+  },
+);
 ```
 
 ### Frontend Implementation Example
@@ -166,27 +184,27 @@ interface OpportunityFilters {
 
 async function fetchMyOpportunities(filters: OpportunityFilters) {
   const params = new URLSearchParams();
-  
+
   Object.entries(filters).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== '') {
+    if (value !== undefined && value !== null && value !== "") {
       params.append(key, String(value));
     }
   });
-  
+
   const response = await fetch(`/api/v1/recruiter/opportunities?${params}`, {
-    headers: { 'Authorization': `Bearer ${token}` }
+    headers: { Authorization: `Bearer ${token}` },
   });
-  
+
   return response.json();
 }
 
 // Usage
 const result = await fetchMyOpportunities({
-  q: 'developer',
-  location: 'Lagos',
-  tags: 'React,Node.js',
+  q: "developer",
+  location: "Lagos",
+  tags: "React,Node.js",
   limit: 20,
-  offset: 0
+  offset: 0,
 });
 
 console.log(result.data); // Array of opportunities
@@ -198,30 +216,33 @@ console.log(result.pagination); // Pagination metadata
 ## 2. Get My Applications
 
 ### Endpoint
+
 ```
 GET /api/v1/recruiter/applications
 ```
 
 ### Description
+
 Fetches applications to opportunities posted by the current recruiter with search, filters, and pagination.
 
 ### Authentication
+
 - **Required**: Yes (Bearer token)
 - **Role**: Recruiter
 
 ### Query Parameters
 
-| Parameter | Type | Required | Default | Description |
-|-----------|------|----------|---------|-------------|
-| `q` | string | No | - | Search by applicant name, username, or opportunity title |
-| `limit` | number | No | 20 | Results per page |
-| `offset` | number | No | 0 | Results offset for pagination |
-| `opportunityId` | string | No | - | Filter by specific opportunity ID |
-| `status` | enum | No | - | Application status: `applied`, `reviewing`, `shortlisted`, `interviewing`, `offered`, `accepted`, `rejected`, `withdrawn` |
-| `location` | string | No | - | Filter by talent location (partial match, case-insensitive) |
-| `skills` | string | No | - | Filter by skills (comma-separated, case-insensitive) |
-| `dateRange` | enum | No | - | Date range: `today`, `week`, `month` |
-| `sortBy` | enum | No | `newest` | Sort order: `newest`, `oldest`, `name-asc`, `name-desc` |
+| Parameter       | Type   | Required | Default  | Description                                                                                                               |
+| --------------- | ------ | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `q`             | string | No       | -        | Search by applicant name, username, or opportunity title                                                                  |
+| `limit`         | number | No       | 20       | Results per page                                                                                                          |
+| `offset`        | number | No       | 0        | Results offset for pagination                                                                                             |
+| `opportunityId` | string | No       | -        | Filter by specific opportunity ID                                                                                         |
+| `status`        | enum   | No       | -        | Application status: `applied`, `reviewing`, `shortlisted`, `interviewing`, `offered`, `accepted`, `rejected`, `withdrawn` |
+| `location`      | string | No       | -        | Filter by talent location (partial match, case-insensitive)                                                               |
+| `skills`        | string | No       | -        | Filter by skills (comma-separated, case-insensitive)                                                                      |
+| `dateRange`     | enum   | No       | -        | Date range: `today`, `week`, `month`                                                                                      |
+| `sortBy`        | enum   | No       | `newest` | Sort order: `newest`, `oldest`, `name-asc`, `name-desc`                                                                   |
 
 ### Response Format
 
@@ -298,24 +319,36 @@ Fetches applications to opportunities posted by the current recruiter with searc
 ### Example Requests
 
 **Basic search:**
+
 ```javascript
-const response = await fetch('/api/v1/recruiter/applications?q=john&limit=20&offset=0', {
-  headers: { 'Authorization': `Bearer ${token}` }
-});
+const response = await fetch(
+  "/api/v1/recruiter/applications?q=john&limit=20&offset=0",
+  {
+    headers: { Authorization: `Bearer ${token}` },
+  },
+);
 ```
 
 **With filters:**
+
 ```javascript
-const response = await fetch('/api/v1/recruiter/applications?status=applied&skills=React,TypeScript&location=Lagos&dateRange=week&limit=20', {
-  headers: { 'Authorization': `Bearer ${token}` }
-});
+const response = await fetch(
+  "/api/v1/recruiter/applications?status=applied&skills=React,TypeScript&location=Lagos&dateRange=week&limit=20",
+  {
+    headers: { Authorization: `Bearer ${token}` },
+  },
+);
 ```
 
 **Filter by opportunity:**
+
 ```javascript
-const response = await fetch('/api/v1/recruiter/applications?opportunityId=opp-123&status=shortlisted', {
-  headers: { 'Authorization': `Bearer ${token}` }
-});
+const response = await fetch(
+  "/api/v1/recruiter/applications?opportunityId=opp-123&status=shortlisted",
+  {
+    headers: { Authorization: `Bearer ${token}` },
+  },
+);
 ```
 
 ### Frontend Implementation Example
@@ -329,34 +362,34 @@ interface ApplicationFilters {
   status?: string;
   location?: string;
   skills?: string;
-  dateRange?: 'today' | 'week' | 'month';
-  sortBy?: 'newest' | 'oldest' | 'name-asc' | 'name-desc';
+  dateRange?: "today" | "week" | "month";
+  sortBy?: "newest" | "oldest" | "name-asc" | "name-desc";
 }
 
 async function fetchMyApplications(filters: ApplicationFilters) {
   const params = new URLSearchParams();
-  
+
   Object.entries(filters).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== '') {
+    if (value !== undefined && value !== null && value !== "") {
       params.append(key, String(value));
     }
   });
-  
+
   const response = await fetch(`/api/v1/recruiter/applications?${params}`, {
-    headers: { 'Authorization': `Bearer ${token}` }
+    headers: { Authorization: `Bearer ${token}` },
   });
-  
+
   return response.json();
 }
 
 // Usage
 const result = await fetchMyApplications({
-  q: 'john',
-  status: 'applied',
-  skills: 'React,Node.js',
-  dateRange: 'week',
+  q: "john",
+  status: "applied",
+  skills: "React,Node.js",
+  dateRange: "week",
   limit: 20,
-  offset: 0
+  offset: 0,
 });
 
 console.log(result.data); // Array of applications
@@ -390,7 +423,7 @@ const pageOffset = (pageNumber - 1) * limit;
 Implement debouncing for search inputs:
 
 ```typescript
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 function useDebounce(value: string, delay: number) {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -407,7 +440,7 @@ function useDebounce(value: string, delay: number) {
 }
 
 // Usage
-const [searchTerm, setSearchTerm] = useState('');
+const [searchTerm, setSearchTerm] = useState("");
 const debouncedSearch = useDebounce(searchTerm, 500);
 
 useEffect(() => {
@@ -421,32 +454,32 @@ useEffect(() => {
 
 ```typescript
 const [filters, setFilters] = useState({
-  q: '',
+  q: "",
   limit: 20,
   offset: 0,
-  status: '',
-  location: '',
-  tags: '',
+  status: "",
+  location: "",
+  tags: "",
 });
 
 // Update single filter
 const updateFilter = (key: string, value: any) => {
-  setFilters(prev => ({
+  setFilters((prev) => ({
     ...prev,
     [key]: value,
-    offset: 0 // Reset to first page when filters change
+    offset: 0, // Reset to first page when filters change
   }));
 };
 
 // Clear all filters
 const clearFilters = () => {
   setFilters({
-    q: '',
+    q: "",
     limit: 20,
     offset: 0,
-    status: '',
-    location: '',
-    tags: '',
+    status: "",
+    location: "",
+    tags: "",
   });
 };
 ```
@@ -462,7 +495,7 @@ const [error, setError] = useState(null);
 async function loadData(filters) {
   setLoading(true);
   setError(null);
-  
+
   try {
     const result = await fetchMyOpportunities(filters);
     setData(result.data);
@@ -480,19 +513,25 @@ async function loadData(filters) {
 ## Important Notes
 
 ### Case-Insensitive Filters
+
 All text-based filters are case-insensitive. These searches will all work:
+
 - `skills=React` matches "React", "react", "REACT"
 - `skills=UX Design` matches "UX Design", "ux design", "Ux Design"
 - `location=lagos` matches "Lagos", "LAGOS", "lagos"
 
 ### Comma-Separated Filters
+
 Multiple values can be provided using commas:
+
 - `tags=Remote,Full Time,Contract`
 - `skills=React,Node.js,TypeScript`
 - `category=Design,Development`
 
 ### Pagination Metadata
+
 Use the pagination object to build UI:
+
 ```typescript
 <Pagination
   currentPage={pagination.currentPage}
@@ -507,7 +546,9 @@ Use the pagination object to build UI:
 ```
 
 ### Empty Results
+
 When no results match the filters:
+
 ```typescript
 {
   data: [],
@@ -529,13 +570,13 @@ When no results match the filters:
 
 ### Common HTTP Status Codes
 
-| Code | Meaning | Action |
-|------|---------|--------|
-| 200 | Success | Process the response |
-| 401 | Unauthorized | Redirect to login |
-| 403 | Forbidden | Show "Access denied" message |
-| 404 | Not found | Show "Resource not found" |
-| 500 | Server error | Show "Something went wrong" |
+| Code | Meaning      | Action                       |
+| ---- | ------------ | ---------------------------- |
+| 200  | Success      | Process the response         |
+| 401  | Unauthorized | Redirect to login            |
+| 403  | Forbidden    | Show "Access denied" message |
+| 404  | Not found    | Show "Resource not found"    |
+| 500  | Server error | Show "Something went wrong"  |
 
 ### Example Error Handler
 
@@ -543,21 +584,21 @@ When no results match the filters:
 async function fetchWithErrorHandling(url: string, options: RequestInit) {
   try {
     const response = await fetch(url, options);
-    
+
     if (!response.ok) {
       if (response.status === 401) {
         // Redirect to login
-        window.location.href = '/login';
+        window.location.href = "/login";
         return;
       }
-      
+
       const error = await response.json();
-      throw new Error(error.message || 'Request failed');
+      throw new Error(error.message || "Request failed");
     }
-    
+
     return response.json();
   } catch (error) {
-    console.error('API Error:', error);
+    console.error("API Error:", error);
     throw error;
   }
 }
@@ -589,20 +630,20 @@ function RecruiterOpportunities() {
 
   async function loadOpportunities() {
     setLoading(true);
-    
+
     try {
       const params = new URLSearchParams();
       Object.entries(filters).forEach(([key, value]) => {
         if (value) params.append(key, String(value));
       });
-      
+
       const response = await fetch(
         `/api/v1/recruiter/opportunities?${params}`,
         {
           headers: { 'Authorization': `Bearer ${token}` }
         }
       );
-      
+
       const result = await response.json();
       setOpportunities(result.data);
       setPagination(result.pagination);
@@ -625,13 +666,13 @@ function RecruiterOpportunities() {
   return (
     <div>
       <SearchBar onSearch={handleSearch} />
-      
+
       {loading ? (
         <Loader />
       ) : (
         <>
           <OpportunityList opportunities={opportunities} />
-          
+
           {pagination && (
             <Pagination
               currentPage={pagination.currentPage}
@@ -657,6 +698,6 @@ Both recruiter endpoints (`/opportunities` and `/applications`) follow the same 
 ✅ Return `{ data, pagination }` format  
 ✅ Support case-insensitive filters  
 ✅ Support comma-separated multi-value filters  
-✅ Include complete pagination metadata  
+✅ Include complete pagination metadata
 
 This consistency makes it easy to build reusable components for search, filtering, and pagination across your application.

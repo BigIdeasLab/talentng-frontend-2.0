@@ -14,6 +14,7 @@ This design document outlines the technical approach for implementing UI/UX impr
 ### Scope
 
 The design covers modifications to:
+
 - `components/employer/opportunities/EmployerOpportunities.tsx` - Main client component
 - `components/employer/opportunities/SearchAndFilters.tsx` - Search input component
 - `components/talent/opportunities/OpportunitiesFilterModal.tsx` - Filter modal (shared component)
@@ -38,16 +39,16 @@ The design follows a centralized state management pattern in `EmployerOpportunit
 
 ```typescript
 // Core state
-const [activeTab, setActiveTab] = useState<TabType>("open")
-const [searchQuery, setSearchQuery] = useState("")
-const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("")
-const [sortBy, setSortBy] = useState<SortType>("newest")
-const [isFilterOpen, setIsFilterOpen] = useState(false)
-const [appliedFilters, setAppliedFilters] = useState<any>(null)
+const [activeTab, setActiveTab] = useState<TabType>("open");
+const [searchQuery, setSearchQuery] = useState("");
+const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+const [sortBy, setSortBy] = useState<SortType>("newest");
+const [isFilterOpen, setIsFilterOpen] = useState(false);
+const [appliedFilters, setAppliedFilters] = useState<any>(null);
 
 // Loading optimization refs
-const isInitialLoadRef = useRef(true)
-const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+const isInitialLoadRef = useRef(true);
+const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 ```
 
 ### Data Flow
@@ -74,44 +75,47 @@ This prevents jarring UI changes when users apply filters or search.
 **Purpose**: Main orchestrator component managing all state and API interactions
 
 **New State Variables**:
+
 ```typescript
-const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("")
-const isInitialLoadRef = useRef(true)
+const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+const isInitialLoadRef = useRef(true);
 ```
 
 **New Methods**:
+
 ```typescript
 // Debounced search handler
 const handleSearchDebounced = (query: string) => {
-  setSearchQuery(query)
+  setSearchQuery(query);
   if (searchTimeoutRef.current) {
-    clearTimeout(searchTimeoutRef.current)
+    clearTimeout(searchTimeoutRef.current);
   }
   searchTimeoutRef.current = setTimeout(() => {
-    setDebouncedSearchQuery(query)
-  }, 500)
-}
+    setDebouncedSearchQuery(query);
+  }, 500);
+};
 
 // Clear search handler
 const handleClearSearch = () => {
-  setSearchQuery("")
-  setDebouncedSearchQuery("")
+  setSearchQuery("");
+  setDebouncedSearchQuery("");
   if (searchTimeoutRef.current) {
-    clearTimeout(searchTimeoutRef.current)
+    clearTimeout(searchTimeoutRef.current);
   }
-}
+};
 
 // Filter count calculation
 const getFilterCount = (): number => {
-  if (!appliedFilters) return 0
-  let count = 0
-  if (appliedFilters.skills?.length) count += appliedFilters.skills.length
-  if (appliedFilters.types?.length) count += appliedFilters.types.length
-  return count
-}
+  if (!appliedFilters) return 0;
+  let count = 0;
+  if (appliedFilters.skills?.length) count += appliedFilters.skills.length;
+  if (appliedFilters.types?.length) count += appliedFilters.types.length;
+  return count;
+};
 ```
 
 **Modified Behavior**:
+
 - Only show skeleton loader on initial load (using `isInitialLoadRef`)
 - Keep current opportunities visible during subsequent fetches
 - Use debounced search query for API calls
@@ -121,20 +125,22 @@ const getFilterCount = (): number => {
 **Purpose**: Search input with loading indicator and clear button
 
 **New Props**:
+
 ```typescript
 interface SearchAndFiltersProps {
-  searchQuery: string
-  onSearchChange: (query: string) => void
-  onClearSearch: () => void  // New
-  sortBy: SortType
-  onSortChange: (sort: SortType) => void
-  onFilterClick: () => void
-  isSearching?: boolean  // New - indicates search in progress
-  filterCount?: number  // New - for badge display
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  onClearSearch: () => void; // New
+  sortBy: SortType;
+  onSortChange: (sort: SortType) => void;
+  onFilterClick: () => void;
+  isSearching?: boolean; // New - indicates search in progress
+  filterCount?: number; // New - for badge display
 }
 ```
 
 **Key Features**:
+
 - Loading spinner replaces search icon during API calls
 - X button appears when search query is not empty
 - Filter button shows purple styling when filters are active
@@ -147,24 +153,25 @@ interface SearchAndFiltersProps {
 **Key Changes**:
 
 1. **Auto-Apply on Outside Click**:
+
 ```typescript
 useEffect(() => {
-  if (!isOpen) return
+  if (!isOpen) return;
 
   const handleClickOutside = (event: MouseEvent) => {
     if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
       // Auto-apply filters when clicking outside
-      onApply(filters)
-      onClose()
+      onApply(filters);
+      onClose();
     }
-    
+
     // Handle dropdown closes
     // ... existing dropdown logic ...
-  }
+  };
 
-  document.addEventListener("mousedown", handleClickOutside)
-  return () => document.removeEventListener("mousedown", handleClickOutside)
-}, [isOpen, filters, onApply, onClose, /* dropdown states */])
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, [isOpen, filters, onApply, onClose /* dropdown states */]);
 ```
 
 2. **Maintain Apply Button**: Keep existing "Apply Filter" button for explicit application
@@ -174,41 +181,43 @@ useEffect(() => {
 **Purpose**: Context-aware empty state messages
 
 **Props Interface**:
+
 ```typescript
 interface EmptyStateProps {
-  icon: React.ComponentType
-  title: string
-  description: string
+  icon: React.ComponentType;
+  title: string;
+  description: string;
 }
 ```
 
 **Logic**:
+
 ```typescript
 // In EmployerOpportunities component
 const getEmptyStateProps = () => {
-  const hasActiveFilters = appliedFilters && (
-    (appliedFilters.skills?.length > 0) ||
-    (appliedFilters.types?.length > 0)
-  )
-  const hasSearchQuery = searchQuery.trim().length > 0
-  
+  const hasActiveFilters =
+    appliedFilters &&
+    (appliedFilters.skills?.length > 0 || appliedFilters.types?.length > 0);
+  const hasSearchQuery = searchQuery.trim().length > 0;
+
   if (hasSearchQuery) {
     return {
       title: "No opportunities found",
-      description: "Try adjusting your search query or filters"
-    }
+      description: "Try adjusting your search query or filters",
+    };
   } else if (hasActiveFilters) {
     return {
       title: "No opportunities found",
-      description: "Try adjusting your filters"
-    }
+      description: "Try adjusting your filters",
+    };
   } else {
     return {
       title: "No opportunities found",
-      description: "Try adjusting your search or filters to find what you're looking for"
-    }
+      description:
+        "Try adjusting your search or filters to find what you're looking for",
+    };
   }
-}
+};
 ```
 
 ## Data Models
@@ -217,13 +226,13 @@ const getEmptyStateProps = () => {
 
 ```typescript
 interface OpportunitiesFilterState {
-  types: string[]              // Opportunity types (controlled by tabs)
-  skills: string[]             // Selected skills
-  categories?: string[]        // Selected categories
-  experienceLevels?: string[]  // Selected experience levels
-  location?: string            // Selected state
-  minBudget?: number          // Minimum budget filter
-  maxBudget?: number          // Maximum budget filter
+  types: string[]; // Opportunity types (controlled by tabs)
+  skills: string[]; // Selected skills
+  categories?: string[]; // Selected categories
+  experienceLevels?: string[]; // Selected experience levels
+  location?: string; // Selected state
+  minBudget?: number; // Minimum budget filter
+  maxBudget?: number; // Maximum budget filter
 }
 ```
 
@@ -231,17 +240,17 @@ interface OpportunitiesFilterState {
 
 ```typescript
 interface OpportunitiesAPIParams {
-  searchQuery?: string    // Search query (q parameter)
-  limit: number          // Results per page
-  offset: number         // Pagination offset
-  type?: string          // Comma-separated opportunity types
-  category?: string      // Comma-separated categories
-  tags?: string          // Comma-separated skills
-  location?: string      // State filter
-  experienceLevel?: string  // Comma-separated experience levels
-  minBudget?: number     // Minimum budget
-  maxBudget?: number     // Maximum budget
-  dateRange?: string     // Date range filter (today, week, month)
+  searchQuery?: string; // Search query (q parameter)
+  limit: number; // Results per page
+  offset: number; // Pagination offset
+  type?: string; // Comma-separated opportunity types
+  category?: string; // Comma-separated categories
+  tags?: string; // Comma-separated skills
+  location?: string; // State filter
+  experienceLevel?: string; // Comma-separated experience levels
+  minBudget?: number; // Minimum budget
+  maxBudget?: number; // Maximum budget
+  dateRange?: string; // Date range filter (today, week, month)
 }
 ```
 
@@ -250,89 +259,90 @@ interface OpportunitiesAPIParams {
 The filter count excludes opportunity types (controlled by tabs) to prevent badge changes when switching tabs:
 
 ```typescript
-function calculateFilterCount(filters: OpportunitiesFilterState | null): number {
-  if (!filters) return 0
-  
-  let count = 0
-  count += filters.skills.length
-  count += filters.categories?.length || 0
-  count += filters.experienceLevels?.length || 0
-  count += filters.location ? 1 : 0
-  count += (filters.minBudget && filters.minBudget > 0) ? 1 : 0
-  count += (filters.maxBudget && filters.maxBudget > 0) ? 1 : 0
-  
-  return count
+function calculateFilterCount(
+  filters: OpportunitiesFilterState | null,
+): number {
+  if (!filters) return 0;
+
+  let count = 0;
+  count += filters.skills.length;
+  count += filters.categories?.length || 0;
+  count += filters.experienceLevels?.length || 0;
+  count += filters.location ? 1 : 0;
+  count += filters.minBudget && filters.minBudget > 0 ? 1 : 0;
+  count += filters.maxBudget && filters.maxBudget > 0 ? 1 : 0;
+
+  return count;
 }
 ```
 
-
 ## Correctness Properties
 
-*A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
+_A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees._
 
 ### Property 1: Auto-Apply Filters on Outside Click
 
-*For any* filter modal state, when the modal is open and the user clicks outside the modal bounds, the system should apply the current filter selections, close the modal, and fetch new data with the applied filters.
+_For any_ filter modal state, when the modal is open and the user clicks outside the modal bounds, the system should apply the current filter selections, close the modal, and fetch new data with the applied filters.
 
 **Validates: Requirements 1.1, 1.3**
 
 ### Property 2: Filter Button Visual State
 
-*For any* filter state, when one or more filters are active, the filter button should display purple styling (background #8463FF0D, border #8463FF, text #8463FF), and when no filters are active, the button should display default gray styling.
+_For any_ filter state, when one or more filters are active, the filter button should display purple styling (background #8463FF0D, border #8463FF, text #8463FF), and when no filters are active, the button should display default gray styling.
 
 **Validates: Requirements 2.1, 2.2, 2.3, 2.4**
 
 ### Property 3: Filter Count Badge Accuracy
 
-*For any* filter state, the count badge should display the exact number of active filters, calculated as: skills.length + types.length.
+_For any_ filter state, the count badge should display the exact number of active filters, calculated as: skills.length + types.length.
 
 **Validates: Requirements 2.5, 8.1, 8.4**
 
 ### Property 4: Search Debounce Behavior
 
-*For any* sequence of search input characters, the system should wait 500 milliseconds after the last character before triggering a search API call, and any new character typed before the delay completes should reset the timer.
+_For any_ sequence of search input characters, the system should wait 500 milliseconds after the last character before triggering a search API call, and any new character typed before the delay completes should reset the timer.
 
 **Validates: Requirements 3.1, 3.2**
 
 ### Property 5: Search API Parameter Naming
 
-*For any* search query, when the search is triggered, the API call should use the `q` parameter to pass the search query string.
+_For any_ search query, when the search is triggered, the API call should use the `q` parameter to pass the search query string.
 
 **Validates: Requirements 3.3, 10.1**
 
 ### Property 6: Search Loading Indicator
 
-*For any* search query, while the search API call is in progress, the search input should display a loading spinner in place of the search icon.
+_For any_ search query, while the search API call is in progress, the search input should display a loading spinner in place of the search icon.
 
 **Validates: Requirements 3.4**
 
 ### Property 7: Clear Button Visibility
 
-*For any* search input state, the X icon clear button should be visible if and only if the search query is non-empty.
+_For any_ search input state, the X icon clear button should be visible if and only if the search query is non-empty.
 
 **Validates: Requirements 4.1, 4.4**
 
 ### Property 8: Clear Button Functionality
 
-*For any* non-empty search query, when the user clicks the X icon, the system should clear the search query and fetch opportunities without search filtering.
+_For any_ non-empty search query, when the user clicks the X icon, the system should clear the search query and fetch opportunities without search filtering.
 
 **Validates: Requirements 4.2, 4.3**
 
 ### Property 9: Loading State Optimization
 
-*For any* filter or search parameter change after the initial page load, the system should keep the current opportunity list visible (not show skeleton loader) while fetching new data.
+_For any_ filter or search parameter change after the initial page load, the system should keep the current opportunity list visible (not show skeleton loader) while fetching new data.
 
 **Validates: Requirements 5.2, 5.3**
 
 ### Property 10: Empty State with Active Filters
 
-*For any* filter state where filters are active and no opportunities match, the empty state should display "No opportunities found" as the title and "Try adjusting your filters" as the description.
+_For any_ filter state where filters are active and no opportunities match, the empty state should display "No opportunities found" as the title and "Try adjusting your filters" as the description.
 
 **Validates: Requirements 6.1, 6.2**
 
 ### Property 11: Empty State with Search Query
 
-*For any* search query where no results are found, the empty state should display "No opportunities found" as the title and "Try adjusting your search query or filters" as the description.
+_For any_ search query where no results are found, the empty state should display "No opportunities found" as the title and "Try adjusting your search query or filters" as the description.
 
 **Validates: Requirements 6.5, 6.6**
 
@@ -341,17 +351,20 @@ function calculateFilterCount(filters: OpportunitiesFilterState | null): number 
 ### API Error Handling
 
 **Network Failures**:
+
 - Display error state in the grid area
 - Show user-friendly error message: "Error loading opportunities"
 - Provide retry mechanism through filter/search changes
 - Log detailed error information to console for debugging
 
 **Timeout Handling**:
+
 - Set reasonable timeout for API calls (30 seconds)
 - Treat timeouts as network failures
 - Allow user to retry by changing filters or refreshing
 
 **Invalid Response Handling**:
+
 - Validate API response structure before processing
 - Fall back to empty array if data is malformed
 - Display appropriate empty state message
@@ -360,11 +373,13 @@ function calculateFilterCount(filters: OpportunitiesFilterState | null): number 
 ### State Management Errors
 
 **Stale State Prevention**:
+
 - Use fetch ID system to discard outdated responses
 - Prevent race conditions in concurrent API calls
 - Ensure UI always reflects the latest user intent
 
 **Filter State Validation**:
+
 - Validate filter values before API calls
 - Sanitize budget inputs (remove commas, validate numbers)
 - Handle edge cases (negative budgets, invalid date ranges)
@@ -372,11 +387,13 @@ function calculateFilterCount(filters: OpportunitiesFilterState | null): number 
 ### User Input Errors
 
 **Search Input**:
+
 - Handle special characters gracefully
 - Trim whitespace from search queries
 - Prevent XSS through proper input sanitization
 
 **Filter Input**:
+
 - Validate budget inputs are positive numbers
 - Ensure location selections are from valid state list
 - Prevent duplicate skill/category selections
@@ -384,16 +401,19 @@ function calculateFilterCount(filters: OpportunitiesFilterState | null): number 
 ### Edge Cases
 
 **Empty States**:
+
 - No opportunities in database → Show default empty state
 - No opportunities matching filters → Show filter-specific empty state
 - No opportunities matching search → Show search-specific empty state
 
 **Rapid User Actions**:
+
 - Debounce search to prevent excessive API calls
 - Use fetch ID to handle rapid filter changes
 - Prevent double-clicks on pagination buttons
 
 **Browser Compatibility**:
+
 - Ensure debounce timers are properly cleaned up
 - Handle browsers without IntersectionObserver gracefully
 - Test on major browsers (Chrome, Firefox, Safari, Edge)
@@ -476,6 +496,7 @@ Property tests should be implemented using a PBT library appropriate for the tec
 ### Test Configuration
 
 **Property Test Settings**:
+
 ```typescript
 // Example configuration for fast-check
 fc.assert(
@@ -483,25 +504,28 @@ fc.assert(
     fc.record({
       skills: fc.array(fc.string()),
       categories: fc.array(fc.string()),
-      experienceLevels: fc.array(fc.constantFrom("Entry", "Intermediate", "Senior", "Expert")),
+      experienceLevels: fc.array(
+        fc.constantFrom("Entry", "Intermediate", "Senior", "Expert"),
+      ),
       location: fc.option(fc.string()),
       minBudget: fc.nat(),
       maxBudget: fc.nat(),
     }),
     (filters) => {
       // Test property
-    }
+    },
   ),
-  { numRuns: 100 }
-)
+  { numRuns: 100 },
+);
 ```
 
 **Test Tags**:
+
 ```typescript
 // Feature: recruiter-opportunities-improvements, Property 3: Filter count badge accuracy
 test("filter count excludes types and counts all other filters", () => {
   // Property-based test implementation
-})
+});
 ```
 
 ### Testing Tools
@@ -517,4 +541,3 @@ test("filter count excludes types and counts all other filters", () => {
 - **Property Test Coverage**: All 16 correctness properties implemented
 - **Integration Test Coverage**: Critical user flows (search, filter, pagination)
 - **Edge Case Coverage**: All identified edge cases tested
-

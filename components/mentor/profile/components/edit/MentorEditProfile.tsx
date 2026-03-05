@@ -1107,9 +1107,8 @@ export function MentorEditProfile() {
   }, [profileData]);
 
   // Warn on page leave (browser and client-side navigation)
-  const { navigateWithConfirmation } = useUnsavedChangesWarning(
-    hasUnsavedChanges,
-  );
+  const { navigateWithConfirmation } =
+    useUnsavedChangesWarning(hasUnsavedChanges);
 
   useEffect(() => {
     const section = searchParams.get("section");

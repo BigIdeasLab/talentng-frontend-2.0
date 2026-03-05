@@ -50,7 +50,9 @@ export default function ApplicantsPage() {
     location: "",
     dateRange: "all",
   });
-  const [displayedApplicants, setDisplayedApplicants] = useState<MappedApplicant[]>([]);
+  const [displayedApplicants, setDisplayedApplicants] = useState<
+    MappedApplicant[]
+  >([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const lastProcessedDataRef = useRef<any>(null);
 
@@ -138,7 +140,9 @@ export default function ApplicantsPage() {
     [displayedApplicants],
   );
   const availableLocations = useMemo(
-    () => [...new Set(displayedApplicants.map((a) => a.location).filter(Boolean))],
+    () => [
+      ...new Set(displayedApplicants.map((a) => a.location).filter(Boolean)),
+    ],
     [displayedApplicants],
   );
 

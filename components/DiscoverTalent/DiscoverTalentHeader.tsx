@@ -96,10 +96,12 @@ export function DiscoverTalentHeader({
   const getFilterCount = (): number => {
     if (!appliedFilters) return 0;
     let count = 0;
-    if (appliedFilters.skills?.length > 0) count += appliedFilters.skills.length;
+    if (appliedFilters.skills?.length > 0)
+      count += appliedFilters.skills.length;
     if (appliedFilters.stack?.length > 0) count += appliedFilters.stack.length;
     if (appliedFilters.location) count += 1;
-    if (appliedFilters.availability?.length > 0) count += appliedFilters.availability.length;
+    if (appliedFilters.availability?.length > 0)
+      count += appliedFilters.availability.length;
     if (appliedFilters.headline) count += 1;
     return count;
   };

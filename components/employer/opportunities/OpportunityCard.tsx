@@ -446,17 +446,30 @@ export function OpportunityCard({
 
           <div
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md flex-shrink-0"
-            style={{ backgroundColor: OPPORTUNITY_STATUS_CONFIG[opportunity.status]?.bg || config.bgColor }}
+            style={{
+              backgroundColor:
+                OPPORTUNITY_STATUS_CONFIG[opportunity.status]?.bg ||
+                config.bgColor,
+            }}
           >
             <div
               className="w-1.5 h-1.5 rounded-full"
-              style={{ backgroundColor: OPPORTUNITY_STATUS_CONFIG[opportunity.status]?.dot || config.dotColor }}
+              style={{
+                backgroundColor:
+                  OPPORTUNITY_STATUS_CONFIG[opportunity.status]?.dot ||
+                  config.dotColor,
+              }}
             />
             <span
               className="text-[11px] font-normal font-inter-tight"
-              style={{ color: OPPORTUNITY_STATUS_CONFIG[opportunity.status]?.text || config.textColor }}
+              style={{
+                color:
+                  OPPORTUNITY_STATUS_CONFIG[opportunity.status]?.text ||
+                  config.textColor,
+              }}
             >
-              {OPPORTUNITY_STATUS_CONFIG[opportunity.status]?.label || config.label}
+              {OPPORTUNITY_STATUS_CONFIG[opportunity.status]?.label ||
+                config.label}
             </span>
           </div>
         </div>

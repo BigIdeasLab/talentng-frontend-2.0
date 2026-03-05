@@ -2,7 +2,18 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
-import { Calendar, Clock, Video, MapPin, ExternalLink, Copy, Check, X, CheckCircle, Star } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  Video,
+  MapPin,
+  ExternalLink,
+  Copy,
+  Check,
+  X,
+  CheckCircle,
+  Star,
+} from "lucide-react";
 import Link from "next/link";
 import type { MentorshipSession } from "@/lib/api/mentorship/types";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
@@ -20,11 +31,11 @@ const STATUS_CONFIG: Record<
   { bg: string; dot: string; text: string; label: string }
 > = {
   // Needs immediate attention - Urgent (Amber/Orange tones)
-  pending: { 
-    bg: "#FEF3C7", 
-    dot: "#F59E0B", 
-    text: "#D97706", 
-    label: "Pending Confirmation" 
+  pending: {
+    bg: "#FEF3C7",
+    dot: "#F59E0B",
+    text: "#D97706",
+    label: "Pending Confirmation",
   },
   pending_completion: {
     bg: "#FEF2F2",
@@ -32,7 +43,7 @@ const STATUS_CONFIG: Record<
     text: "#DC2626",
     label: "Action Required",
   },
-  
+
   // Rescheduled - Needs attention (Amber)
   rescheduled: {
     bg: "#FEF3C7",
@@ -40,7 +51,7 @@ const STATUS_CONFIG: Record<
     text: "#D97706",
     label: "Rescheduled",
   },
-  
+
   // Active/In Progress - Blue (attention but not urgent)
   in_progress: {
     bg: "#DBEAFE",
@@ -48,7 +59,7 @@ const STATUS_CONFIG: Record<
     text: "#2563EB",
     label: "In Progress",
   },
-  
+
   // Confirmed - Neutral Blue
   confirmed: {
     bg: "#EFF6FF",
@@ -56,7 +67,7 @@ const STATUS_CONFIG: Record<
     text: "#3B82F6",
     label: "Confirmed",
   },
-  
+
   // Completed - Green
   completed: {
     bg: "#ECFDF3",
@@ -64,7 +75,7 @@ const STATUS_CONFIG: Record<
     text: "#059669",
     label: "Completed",
   },
-  
+
   // Problem states - Red
   disputed: {
     bg: "#FEF2F2",
@@ -80,7 +91,13 @@ const STATUS_CONFIG: Record<
   },
 };
 
-export function TalentSessionCard({ session, onCancel, onReschedule, onConfirmCompletion, onLeaveReview }: TalentSessionCardProps) {
+export function TalentSessionCard({
+  session,
+  onCancel,
+  onReschedule,
+  onConfirmCompletion,
+  onLeaveReview,
+}: TalentSessionCardProps) {
   const [copied, setCopied] = useState(false);
   const status = STATUS_CONFIG[session.status] || STATUS_CONFIG.pending;
   const mentor = session.mentor;
@@ -89,11 +106,11 @@ export function TalentSessionCard({ session, onCancel, onReschedule, onConfirmCo
 
   const rawDate = session.startTime || session.scheduledAt || session.createdAt;
   const scheduledDate = new Date(rawDate);
-  
+
   // Handle invalid dates
   const isValidDate = !isNaN(scheduledDate.getTime());
   if (!isValidDate) {
-    console.error('Invalid session date:', rawDate);
+    console.error("Invalid session date:", rawDate);
     return null;
   }
 
@@ -126,7 +143,7 @@ export function TalentSessionCard({ session, onCancel, onReschedule, onConfirmCo
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       } catch (err) {
-        console.error('Failed to copy link:', err);
+        console.error("Failed to copy link:", err);
       }
     }
   };
@@ -278,7 +295,8 @@ export function TalentSessionCard({ session, onCancel, onReschedule, onConfirmCo
           )}
 
           {/* Confirmed/Rescheduled - Show Reschedule + Cancel buttons */}
-          {(session.status === "confirmed" || session.status === "rescheduled") && (
+          {(session.status === "confirmed" ||
+            session.status === "rescheduled") && (
             <>
               <button
                 onClick={() => onReschedule?.(session.id)}

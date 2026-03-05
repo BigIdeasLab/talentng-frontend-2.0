@@ -140,8 +140,7 @@ export function AboutTab({
                   {exp.location && ` • ${exp.location}`}
                 </div>
                 <div className="text-[12px] font-normal text-black/50 font-inter-tight">
-                  {exp.startDate} -{" "}
-                  {exp.isCurrently ? "Present" : exp.endDate}
+                  {exp.startDate} - {exp.isCurrently ? "Present" : exp.endDate}
                 </div>
                 {exp.description && (
                   <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px] mt-1">

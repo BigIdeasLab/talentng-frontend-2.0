@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
-import { Calendar, Clock, Video, ExternalLink, Copy, Check } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  Video,
+  ExternalLink,
+  Copy,
+  Check,
+} from "lucide-react";
 import Link from "next/link";
 import type { ApplicationInterview } from "@/lib/api/applications/types";
 
@@ -56,11 +63,11 @@ export function TalentInterviewCard({
   const [copied, setCopied] = useState(false);
   const status = STATUS_CONFIG[interview.status] || STATUS_CONFIG.scheduled;
   const scheduledDate = new Date(interview.scheduledDate);
-  
+
   // Handle invalid dates
   const isValidDate = !isNaN(scheduledDate.getTime());
   if (!isValidDate) {
-    console.error('Invalid scheduledDate:', interview.scheduledDate);
+    console.error("Invalid scheduledDate:", interview.scheduledDate);
     return null;
   }
 
@@ -73,7 +80,7 @@ export function TalentInterviewCard({
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       } catch (err) {
-        console.error('Failed to copy link:', err);
+        console.error("Failed to copy link:", err);
       }
     }
   };

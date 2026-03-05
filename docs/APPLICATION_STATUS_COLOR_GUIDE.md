@@ -1,6 +1,7 @@
 # Application Workflow Status Color Coding Guide
 
 ## Overview
+
 Comprehensive color-coded status system for the entire application workflow (Opportunities, Applications, and Interviews) designed to immediately communicate urgency and required user attention through visual cues.
 
 ---
@@ -8,21 +9,27 @@ Comprehensive color-coded status system for the entire application workflow (Opp
 ## Color Psychology & Hierarchy
 
 ### 🔴 Red - **URGENT/REJECTED/CANCELLED**
+
 Used for rejected applications, cancelled interviews, and critical states.
 
 ### 🟠 Amber/Orange - **NEEDS ATTENTION**
+
 Used for rescheduled interviews and states requiring awareness.
 
 ### 🔵 Blue - **IN PROGRESS/ACTIVE**
+
 Used for invited applications, scheduled interviews, and active opportunities.
 
 ### 🟢 Green - **SUCCESS/COMPLETED**
+
 Used for hired applications, completed interviews, and successful outcomes.
 
 ### ⚫ Gray - **NEUTRAL/PENDING**
+
 Used for applied applications, draft opportunities, and neutral states.
 
 ### 🟣 Purple - **SHORTLISTED/UNDER REVIEW**
+
 Used for shortlisted applications indicating review stage.
 
 ---
@@ -31,13 +38,14 @@ Used for shortlisted applications indicating review stage.
 
 ### 1. Opportunity Status (OpportunityCard.tsx)
 
-| Status | Badge Color | Dot Color | Text Color | Label | User Action |
-|--------|-------------|-----------|------------|-------|-------------|
-| `draft` | `#F5F5F5` (Light Gray) | `#606060` (Gray) | `#606060` (Gray) | "Draft" | Edit or Post |
+| Status   | Badge Color             | Dot Color         | Text Color             | Label    | User Action         |
+| -------- | ----------------------- | ----------------- | ---------------------- | -------- | ------------------- |
+| `draft`  | `#F5F5F5` (Light Gray)  | `#606060` (Gray)  | `#606060` (Gray)       | "Draft"  | Edit or Post        |
 | `active` | `#ECFDF5` (Light Green) | `#047857` (Green) | `#047857` (Dark Green) | "Active" | Manage Applications |
-| `closed` | `#FEF2F2` (Light Red) | `#DC2626` (Red) | `#DC2626` (Dark Red) | "Closed" | Reopen if needed |
+| `closed` | `#FEF2F2` (Light Red)   | `#DC2626` (Red)   | `#DC2626` (Dark Red)   | "Closed" | Reopen if needed    |
 
 **Visual Hierarchy:**
+
 - **Draft** (Gray) = Not yet published, needs action
 - **Active** (Green) = Live and accepting applications
 - **Closed** (Red) = No longer accepting applications
@@ -46,15 +54,16 @@ Used for shortlisted applications indicating review stage.
 
 ### 2. Application Status (JobApplicationCard.tsx - Talent View)
 
-| Status | Badge Color | Text Color | Label | Urgency | Meaning |
-|--------|-------------|------------|-------|---------|---------|
-| `applied` | `#F5F5F5` (Light Gray) | `#606060` (Gray) | "Applied" | LOW | Waiting for recruiter review |
-| `invited` | `#DBEAFE` (Light Blue) | `#2563EB` (Blue) | "Invited" | **HIGH** | Recruiter interested - Action needed |
-| `shortlisted` | `#F3E8FF` (Light Purple) | `#7C3AED` (Purple) | "Shortlisted" | MEDIUM | Under review for interview |
-| `hired` | `#ECFDF3` (Light Green) | `#10B981` (Green) | "Hired" | NONE | Success! |
-| `rejected` | `#FEF2F2` (Light Red) | `#DC2626` (Red) | "Rejected" | NONE | Application declined |
+| Status        | Badge Color              | Text Color         | Label         | Urgency  | Meaning                              |
+| ------------- | ------------------------ | ------------------ | ------------- | -------- | ------------------------------------ |
+| `applied`     | `#F5F5F5` (Light Gray)   | `#606060` (Gray)   | "Applied"     | LOW      | Waiting for recruiter review         |
+| `invited`     | `#DBEAFE` (Light Blue)   | `#2563EB` (Blue)   | "Invited"     | **HIGH** | Recruiter interested - Action needed |
+| `shortlisted` | `#F3E8FF` (Light Purple) | `#7C3AED` (Purple) | "Shortlisted" | MEDIUM   | Under review for interview           |
+| `hired`       | `#ECFDF3` (Light Green)  | `#10B981` (Green)  | "Hired"       | NONE     | Success!                             |
+| `rejected`    | `#FEF2F2` (Light Red)    | `#DC2626` (Red)    | "Rejected"    | NONE     | Application declined                 |
 
 **Visual Hierarchy:**
+
 - **Invited** (Blue) = HIGH priority - Recruiter wants to talk
 - **Shortlisted** (Purple) = MEDIUM - Being considered
 - **Applied** (Gray) = LOW - Waiting
@@ -65,15 +74,16 @@ Used for shortlisted applications indicating review stage.
 
 ### 3. Application Status (Recruiter View - Applicants Page)
 
-| Status | Badge Color | Dot Color | Text Color | Label | Recruiter Action |
-|--------|-------------|-----------|------------|-------|------------------|
-| `applied` | `#FEF3C7` (Light Amber) | `#F59E0B` (Amber) | `#D97706` (Dark Amber) | "New Application" | **Review needed** |
-| `invited` | `#DBEAFE` (Light Blue) | `#2563EB` (Blue) | `#2563EB` (Blue) | "Invited" | Waiting for response |
-| `shortlisted` | `#F3E8FF` (Light Purple) | `#7C3AED` (Purple) | `#7C3AED` (Purple) | "Shortlisted" | Schedule interview |
-| `hired` | `#ECFDF3` (Light Green) | `#10B981` (Green) | `#059669` (Dark Green) | "Hired" | Completed |
-| `rejected` | `#FEF2F2` (Light Red) | `#EF4444` (Red) | `#DC2626` (Dark Red) | "Rejected" | Archived |
+| Status        | Badge Color              | Dot Color          | Text Color             | Label             | Recruiter Action     |
+| ------------- | ------------------------ | ------------------ | ---------------------- | ----------------- | -------------------- |
+| `applied`     | `#FEF3C7` (Light Amber)  | `#F59E0B` (Amber)  | `#D97706` (Dark Amber) | "New Application" | **Review needed**    |
+| `invited`     | `#DBEAFE` (Light Blue)   | `#2563EB` (Blue)   | `#2563EB` (Blue)       | "Invited"         | Waiting for response |
+| `shortlisted` | `#F3E8FF` (Light Purple) | `#7C3AED` (Purple) | `#7C3AED` (Purple)     | "Shortlisted"     | Schedule interview   |
+| `hired`       | `#ECFDF3` (Light Green)  | `#10B981` (Green)  | `#059669` (Dark Green) | "Hired"           | Completed            |
+| `rejected`    | `#FEF2F2` (Light Red)    | `#EF4444` (Red)    | `#DC2626` (Dark Red)   | "Rejected"        | Archived             |
 
 **Visual Hierarchy:**
+
 - **Applied** (Amber) = **URGENT** - New applications need review
 - **Shortlisted** (Purple) = HIGH - Ready for interview
 - **Invited** (Blue) = MEDIUM - Waiting for talent response
@@ -84,14 +94,15 @@ Used for shortlisted applications indicating review stage.
 
 ### 4. Interview Status (Both Talent & Recruiter Views)
 
-| Status | Badge Color | Dot Color | Text Color | Label | Urgency | Action Required |
-|--------|-------------|-----------|------------|-------|---------|-----------------|
-| `scheduled` | `#EFF6FF` (Pale Blue) | `#2563EB` (Blue) | `#2563EB` (Blue) | "Scheduled" | MEDIUM | Prepare for interview |
-| `rescheduled` | `#FEF3C7` (Light Amber) | `#F59E0B` (Amber) | `#D97706` (Dark Amber) | "Rescheduled" | **HIGH** | Note new time |
-| `completed` | `#ECFDF3` (Light Green) | `#10B981` (Green) | `#059669` (Dark Green) | "Completed" | NONE | Await decision |
-| `cancelled` | `#FEF2F2` (Light Red) | `#EF4444` (Red) | `#DC2626` (Dark Red) | "Cancelled" | NONE | Interview cancelled |
+| Status        | Badge Color             | Dot Color         | Text Color             | Label         | Urgency  | Action Required       |
+| ------------- | ----------------------- | ----------------- | ---------------------- | ------------- | -------- | --------------------- |
+| `scheduled`   | `#EFF6FF` (Pale Blue)   | `#2563EB` (Blue)  | `#2563EB` (Blue)       | "Scheduled"   | MEDIUM   | Prepare for interview |
+| `rescheduled` | `#FEF3C7` (Light Amber) | `#F59E0B` (Amber) | `#D97706` (Dark Amber) | "Rescheduled" | **HIGH** | Note new time         |
+| `completed`   | `#ECFDF3` (Light Green) | `#10B981` (Green) | `#059669` (Dark Green) | "Completed"   | NONE     | Await decision        |
+| `cancelled`   | `#FEF2F2` (Light Red)   | `#EF4444` (Red)   | `#DC2626` (Dark Red)   | "Cancelled"   | NONE     | Interview cancelled   |
 
 **Visual Hierarchy:**
+
 - **Rescheduled** (Amber) = **HIGH** - Time changed, needs attention
 - **Scheduled** (Blue) = MEDIUM - Upcoming interview
 - **Completed** (Green) = SUCCESS - Interview done
@@ -143,24 +154,28 @@ Used for shortlisted applications indicating review stage.
 ## Workflow-Based Color Progression
 
 ### Talent Application Journey
+
 ```
 Applied (Gray) → Invited (Blue) → Shortlisted (Purple) → Hired (Green)
                                                         ↘ Rejected (Red)
 ```
 
 ### Recruiter Review Journey
+
 ```
 New Application (Amber) → Invited (Blue) → Shortlisted (Purple) → Hired (Green)
                                                                  ↘ Rejected (Red)
 ```
 
 ### Interview Journey
+
 ```
 Scheduled (Blue) → Rescheduled (Amber) → Completed (Green)
                                        ↘ Cancelled (Red)
 ```
 
 ### Opportunity Lifecycle
+
 ```
 Draft (Gray) → Active (Green) → Closed (Red) → Reopen → Active (Green)
 ```
@@ -170,6 +185,7 @@ Draft (Gray) → Active (Green) → Closed (Red) → Reopen → Active (Green)
 ## Role-Specific Color Emphasis
 
 ### Talent View
+
 - **Blue (Invited)** = Most important - Recruiter wants to talk!
 - **Purple (Shortlisted)** = Good news - Under consideration
 - **Gray (Applied)** = Neutral - Just waiting
@@ -177,6 +193,7 @@ Draft (Gray) → Active (Green) → Closed (Red) → Reopen → Active (Green)
 - **Red (Rejected)** = Move on
 
 ### Recruiter View
+
 - **Amber (Applied)** = Most urgent - New applications to review
 - **Purple (Shortlisted)** = High priority - Schedule interviews
 - **Blue (Invited)** = Medium - Waiting for talent
@@ -198,21 +215,23 @@ Draft (Gray) → Active (Green) → Closed (Red) → Reopen → Active (Green)
 ## Implementation Guidelines
 
 ### Component Structure
+
 ```typescript
 const STATUS_CONFIG: Record<
   string,
   { bg: string; dot?: string; text: string; label: string }
 > = {
   status_name: {
-    bg: "#HEX",      // Background color
-    dot: "#HEX",     // Dot indicator color (optional)
-    text: "#HEX",    // Text color
-    label: "Label"   // Display text
-  }
+    bg: "#HEX", // Background color
+    dot: "#HEX", // Dot indicator color (optional)
+    text: "#HEX", // Text color
+    label: "Label", // Display text
+  },
 };
 ```
 
 ### Badge Rendering
+
 ```tsx
 <div
   className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md"
@@ -238,12 +257,14 @@ const STATUS_CONFIG: Record<
 ## Testing Checklist
 
 ### Visual Testing
+
 - [ ] All status badges display correct colors
 - [ ] Dot indicators match badge colors (where applicable)
 - [ ] Text is readable against background (contrast check)
 - [ ] Colors are consistent across talent and recruiter views
 
 ### User Experience Testing
+
 - [ ] Users can quickly identify urgent items (amber/red)
 - [ ] Users understand which items need action
 - [ ] Positive states feel encouraging (green)
@@ -251,6 +272,7 @@ const STATUS_CONFIG: Record<
 - [ ] Neutral states don't demand attention (gray)
 
 ### Accessibility Testing
+
 - [ ] Color blind users can distinguish statuses (text labels help)
 - [ ] Screen readers announce status correctly
 - [ ] Keyboard navigation works with colored badges

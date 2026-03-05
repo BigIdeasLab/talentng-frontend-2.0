@@ -1,6 +1,7 @@
 # Talent Applications API - Frontend Implementation Guide
 
 ## Endpoint
+
 ```
 GET /api/v1/talent/applications
 ```
@@ -11,6 +12,7 @@ GET /api/v1/talent/applications
 ---
 
 ## Overview
+
 This endpoint allows talents to fetch their own job applications with comprehensive search, filtering, and pagination capabilities - **following the same pattern as other endpoints** (opportunities, upcoming, talents, mentors).
 
 ---
@@ -20,12 +22,15 @@ This endpoint allows talents to fetch their own job applications with comprehens
 ### 1. Search Parameter
 
 #### `q` (string, optional)
+
 Search across multiple fields:
+
 - Applicant name
 - Applicant username
 - Opportunity title
 
 **Example:**
+
 ```javascript
 // Search for "Frontend Developer"
 GET /api/v1/talent/applications?q=Frontend Developer
@@ -39,9 +44,11 @@ GET /api/v1/talent/applications?q=Google
 ### 2. Filter Parameters
 
 #### `status` (enum, optional)
+
 Filter by application status.
 
 **Valid values:**
+
 - `applied` - Application submitted
 - `reviewing` - Under review
 - `shortlisted` - Shortlisted for interview
@@ -52,6 +59,7 @@ Filter by application status.
 - `withdrawn` - Application withdrawn
 
 **Example:**
+
 ```javascript
 // Get all shortlisted applications
 GET /api/v1/talent/applications?status=shortlisted
@@ -61,9 +69,11 @@ GET /api/v1/talent/applications?status=hired
 ```
 
 #### `location` (string, optional)
+
 Filter by location (partial match on talent profile location).
 
 **Example:**
+
 ```javascript
 // Filter by location
 GET /api/v1/talent/applications?location=Lagos
@@ -73,9 +83,11 @@ GET /api/v1/talent/applications?location=Remote
 ```
 
 #### `skills` (string, optional)
+
 Filter by skills (comma-separated, matches talent profile skills).
 
 **Example:**
+
 ```javascript
 // Single skill
 GET /api/v1/talent/applications?skills=JavaScript
@@ -85,14 +97,17 @@ GET /api/v1/talent/applications?skills=JavaScript,React,Node.js
 ```
 
 #### `dateRange` (enum, optional)
+
 Filter applications by submission date.
 
 **Valid values:**
+
 - `today` - Applications submitted today
 - `week` - Applications from the last 7 days
 - `month` - Applications from the last 30 days
 
 **Example:**
+
 ```javascript
 // Get this week's applications
 GET /api/v1/talent/applications?dateRange=week
@@ -102,15 +117,18 @@ GET /api/v1/talent/applications?dateRange=today
 ```
 
 #### `sortBy` (enum, optional)
+
 Sort results by different criteria.
 
 **Valid values:**
+
 - `newest` - Most recent first (default)
 - `oldest` - Oldest first
 - `name-asc` - Alphabetical by username (A-Z)
 - `name-desc` - Alphabetical by username (Z-A)
 
 **Example:**
+
 ```javascript
 // Sort by oldest first
 GET /api/v1/talent/applications?sortBy=oldest
@@ -124,17 +142,21 @@ GET /api/v1/talent/applications?sortBy=name-asc
 ### 3. Pagination Parameters
 
 #### `limit` (number, optional, default: 20)
+
 Number of results per page.
 
 **Example:**
+
 ```javascript
 GET /api/v1/talent/applications?limit=50
 ```
 
 #### `offset` (number, optional, default: 0)
+
 Number of results to skip (for pagination).
 
 **Example:**
+
 ```javascript
 // Page 1 (first 20 results)
 GET /api/v1/talent/applications?limit=20&offset=0
@@ -163,6 +185,7 @@ GET /api/v1/talent/applications?limit=20&offset=20
 ```
 
 ### Application Object
+
 ```typescript
 {
   id: string;
@@ -236,7 +259,7 @@ GET /api/v1/talent/applications?limit=20&offset=20
 ### 1. Basic Fetch (React/TypeScript)
 
 ```typescript
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 interface Application {
   id: string;
@@ -286,9 +309,9 @@ function useApplications() {
     setLoading(true);
     try {
       const queryParams = new URLSearchParams();
-      
+
       Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== '') {
+        if (value !== undefined && value !== null && value !== "") {
           queryParams.append(key, String(value));
         }
       });
@@ -297,19 +320,19 @@ function useApplications() {
         `/api/v1/talent/applications?${queryParams.toString()}`,
         {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
           },
-        }
+        },
       );
 
-      if (!response.ok) throw new Error('Failed to fetch applications');
+      if (!response.ok) throw new Error("Failed to fetch applications");
 
       const data: ApplicationsResponse = await response.json();
       setApplications(data.data);
       setPagination(data.pagination);
     } catch (error) {
-      console.error('Error fetching applications:', error);
+      console.error("Error fetching applications:", error);
     } finally {
       setLoading(false);
     }
@@ -438,9 +461,9 @@ function ApplicationCard({ application }: { application: Application }) {
     <div className="application-card">
       <div className="card-header">
         {application.opportunity.logo && (
-          <img 
-            src={application.opportunity.logo} 
-            alt={application.opportunity.company} 
+          <img
+            src={application.opportunity.logo}
+            alt={application.opportunity.company}
           />
         )}
         <div>
@@ -454,7 +477,7 @@ function ApplicationCard({ application }: { application: Application }) {
         <div className="status-badge" style={{ color: getStatusColor(application.status) }}>
           {application.status}
         </div>
-        
+
         <p className="applied-date">
           Applied: {new Date(application.createdAt).toLocaleDateString()}
         </p>
@@ -612,31 +635,37 @@ function ApplicationsPage() {
 ## Common Use Cases
 
 ### 1. Get all my applications
+
 ```
 GET /api/v1/talent/applications
 ```
 
 ### 2. Get shortlisted applications
+
 ```
 GET /api/v1/talent/applications?status=shortlisted
 ```
 
 ### 3. Search for specific company
+
 ```
 GET /api/v1/talent/applications?q=Google
 ```
 
 ### 4. Get this week's applications
+
 ```
 GET /api/v1/talent/applications?dateRange=week
 ```
 
 ### 5. Get hired applications sorted by oldest
+
 ```
 GET /api/v1/talent/applications?status=hired&sortBy=oldest
 ```
 
 ### 6. Combine filters
+
 ```
 GET /api/v1/talent/applications?q=Frontend&status=shortlisted&dateRange=month&sortBy=newest&limit=50
 ```
@@ -647,14 +676,14 @@ GET /api/v1/talent/applications?q=Frontend&status=shortlisted&dateRange=month&so
 
 ```typescript
 const statusColors = {
-  applied: '#3B82F6',      // Blue
-  reviewing: '#F59E0B',    // Yellow
-  shortlisted: '#8B5CF6',  // Purple
-  interviewed: '#F97316',  // Orange
-  offered: '#10B981',      // Green
-  hired: '#059669',        // Dark Green
-  rejected: '#EF4444',     // Red
-  withdrawn: '#6B7280',    // Gray
+  applied: "#3B82F6", // Blue
+  reviewing: "#F59E0B", // Yellow
+  shortlisted: "#8B5CF6", // Purple
+  interviewed: "#F97316", // Orange
+  offered: "#10B981", // Green
+  hired: "#059669", // Dark Green
+  rejected: "#EF4444", // Red
+  withdrawn: "#6B7280", // Gray
 };
 ```
 
@@ -663,13 +692,15 @@ const statusColors = {
 ## Consistency with Other Endpoints
 
 This endpoint follows the **same pattern** as:
+
 - ✅ `/api/v1/talent/opportunities` - Browse opportunities
 - ✅ `/api/v1/talent/upcoming` - Upcoming events
-- ✅ `/api/v1/recruiter/applications` - View applications  
+- ✅ `/api/v1/recruiter/applications` - View applications
 - ✅ `/api/v1/talents` - Browse talents
 - ✅ `/api/v1/mentors` - Browse mentors
 
 **Shared patterns:**
+
 - ✅ Uses `q` for search
 - ✅ Uses `limit` and `offset` for pagination
 - ✅ Returns `{ data, pagination }` format
@@ -682,6 +713,7 @@ This endpoint follows the **same pattern** as:
 ## Error Responses
 
 ### 401 Unauthorized
+
 ```json
 {
   "statusCode": 401,
@@ -690,6 +722,7 @@ This endpoint follows the **same pattern** as:
 ```
 
 ### 403 Forbidden
+
 ```json
 {
   "statusCode": 403,
@@ -714,6 +747,7 @@ This endpoint follows the **same pattern** as:
 ## Summary
 
 The talent applications endpoint provides:
+
 - ✅ Consistent `q` search parameter
 - ✅ Comprehensive filtering (status, location, skills, dateRange)
 - ✅ Flexible sorting (newest, oldest, name-asc, name-desc)

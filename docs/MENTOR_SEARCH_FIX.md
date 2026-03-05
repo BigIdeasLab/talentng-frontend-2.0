@@ -1,6 +1,7 @@
 # Mentor Search Parameter Fix
 
 ## Issue
+
 Search functionality was not working on mentor applications and sessions pages because the API functions were looking for `searchQuery` parameter but the pages were passing `q` parameter (which is what the backend expects).
 
 ---
@@ -8,6 +9,7 @@ Search functionality was not working on mentor applications and sessions pages b
 ## Root Cause
 
 The type definitions and API functions had a mismatch:
+
 - **Frontend pages**: Passing `q` parameter (correct, matches backend)
 - **Type definitions**: Defined as `searchQuery` (incorrect)
 - **API functions**: Checking for `params.searchQuery` and converting to `q` (incorrect)
@@ -18,9 +20,11 @@ The type definitions and API functions had a mismatch:
 ## Changes Made
 
 ### 1. Updated RequestsQueryParams Type
+
 **File**: `lib/api/mentorship/types.ts`
 
 **Before:**
+
 ```typescript
 export interface RequestsQueryParams {
   role?: "sent" | "received";
@@ -34,6 +38,7 @@ export interface RequestsQueryParams {
 ```
 
 **After:**
+
 ```typescript
 export interface RequestsQueryParams {
   role?: "sent" | "received";
@@ -49,22 +54,24 @@ export interface RequestsQueryParams {
 ---
 
 ### 2. Updated getMentorMentorshipRequests Function
+
 **File**: `lib/api/mentorship/index.ts`
 
 **Before:**
+
 ```typescript
 export async function getMentorMentorshipRequests(
   params?: Omit<RequestsQueryParams, "role">,
 ): Promise<PaginatedResponse<MentorshipRequest>> {
   const queryParams = new URLSearchParams();
   if (params?.status) queryParams.append("status", params.status);
-  if (params?.searchQuery)
-    queryParams.append("q", params.searchQuery); // ❌ Checking wrong property
+  if (params?.searchQuery) queryParams.append("q", params.searchQuery); // ❌ Checking wrong property
   // ...
 }
 ```
 
 **After:**
+
 ```typescript
 export async function getMentorMentorshipRequests(
   params?: Omit<RequestsQueryParams, "role">,
@@ -79,9 +86,11 @@ export async function getMentorMentorshipRequests(
 ---
 
 ### 3. Updated SessionsQueryParams Type
+
 **File**: `lib/api/mentorship/types.ts`
 
 **Before:**
+
 ```typescript
 export interface SessionsQueryParams {
   role?: "mentor" | "mentee";
@@ -97,6 +106,7 @@ export interface SessionsQueryParams {
 ```
 
 **After:**
+
 ```typescript
 export interface SessionsQueryParams {
   role?: "mentor" | "mentee";
@@ -114,9 +124,11 @@ export interface SessionsQueryParams {
 ---
 
 ### 4. Updated getSessions Function
+
 **File**: `lib/api/mentorship/index.ts`
 
 **Before:**
+
 ```typescript
 export async function getSessions(
   params?: SessionsQueryParams,
@@ -126,13 +138,13 @@ export async function getSessions(
   if (params?.status) queryParams.append("status", params.status);
   if (params?.upcoming) queryParams.append("upcoming", "true");
   if (params?.past) queryParams.append("past", "true");
-  if (params?.searchQuery)
-    queryParams.append("q", params.searchQuery); // ❌ Checking wrong property
+  if (params?.searchQuery) queryParams.append("q", params.searchQuery); // ❌ Checking wrong property
   // ...
 }
 ```
 
 **After:**
+
 ```typescript
 export async function getSessions(
   params?: SessionsQueryParams,
@@ -152,6 +164,7 @@ export async function getSessions(
 ## Frontend Pages (Already Correct)
 
 ### Applications Page
+
 **File**: `app/(business)/applications/page.tsx`
 
 ```typescript
@@ -167,6 +180,7 @@ const requestsResponse = await getMentorMentorshipRequests(apiParams);
 ```
 
 ### Sessions Page
+
 **File**: `app/(business)/sessions/page.tsx`
 
 ```typescript
@@ -187,6 +201,7 @@ const response = await getSessions(apiParams);
 ## Testing
 
 ### Applications Page Search
+
 1. Navigate to `/applications` (mentor role)
 2. Type in search box: "mentee name" or "topic"
 3. ✅ Results should filter based on search query
@@ -194,6 +209,7 @@ const response = await getSessions(apiParams);
 5. ✅ Empty state should show "Try adjusting your search query" if no results
 
 ### Sessions Page Search
+
 1. Navigate to `/sessions` (mentor role)
 2. Type in search box: "mentee name" or "topic"
 3. ✅ Results should filter based on search query
@@ -213,6 +229,7 @@ const response = await getSessions(apiParams);
 ## Summary
 
 Fixed search functionality on mentor applications and sessions pages by:
+
 1. ✅ Updated `RequestsQueryParams` type to use `q` instead of `searchQuery`
 2. ✅ Updated `SessionsQueryParams` type to use `q` instead of `searchQuery`
 3. ✅ Updated `getMentorMentorshipRequests` function to check for `params.q`

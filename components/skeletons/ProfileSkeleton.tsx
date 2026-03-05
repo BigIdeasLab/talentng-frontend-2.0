@@ -23,7 +23,7 @@ export function ProfileSkeleton({ role = "talent" }: ProfileSkeletonProps) {
         {/* Profile Image */}
         <div className="flex flex-col items-center gap-[20px]">
           <Sk className="w-[110px] h-[110px] rounded-full" color={color} />
-          
+
           {/* Name */}
           <div className="flex flex-col items-center gap-[12px] w-full">
             <Sk className="h-4 w-32" color={color} />

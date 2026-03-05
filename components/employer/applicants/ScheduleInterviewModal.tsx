@@ -36,7 +36,7 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   // Get today's date in YYYY-MM-DD format for min attribute
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split("T")[0];
 
   if (!isOpen) return null;
 
@@ -59,7 +59,7 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
 
       // Create a proper ISO 8601 datetime string
       const scheduledDateTime = new Date(`${date}T${time}:00`);
-      
+
       // Validate that the selected date/time is in the future
       const now = new Date();
       if (scheduledDateTime <= now) {

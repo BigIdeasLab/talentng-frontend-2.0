@@ -1,6 +1,7 @@
 # Recruiter Applications API - Frontend Implementation Guide
 
 ## Endpoint
+
 ```
 GET /api/v1/recruiter/applications
 ```
@@ -11,6 +12,7 @@ GET /api/v1/recruiter/applications
 ---
 
 ## Overview
+
 This endpoint allows recruiters to fetch applications for opportunities they've posted. It supports comprehensive search, filtering, sorting, and pagination capabilities - **matching the same pattern as the talent/opportunities endpoint**.
 
 ---
@@ -20,12 +22,15 @@ This endpoint allows recruiters to fetch applications for opportunities they've 
 ### 1. Search Parameters
 
 #### `q` (string, optional)
+
 Primary search parameter that searches across multiple fields:
+
 - Applicant's username
 - Applicant's full name (from talent profile)
 - Opportunity title
 
 **Example:**
+
 ```javascript
 // Search for "John"
 GET /api/v1/recruiter/applications?q=John
@@ -41,17 +46,21 @@ GET /api/v1/recruiter/applications?q=Software Engineer
 ### 2. Filter Parameters
 
 #### `opportunityId` (UUID, optional)
+
 Filter applications for a specific opportunity.
 
 **Example:**
+
 ```javascript
 GET /api/v1/recruiter/applications?opportunityId=a1b2c3d4-e5f6-7890-1234-567890abcdef
 ```
 
 #### `status` (enum, optional)
+
 Filter by application status.
 
 **Valid values:**
+
 - `applied` - Initial application submitted
 - `shortlisted` - Candidate shortlisted for interview
 - `rejected` - Application rejected
@@ -59,22 +68,27 @@ Filter by application status.
 - `invited` - Candidate invited by recruiter
 
 **Example:**
+
 ```javascript
 GET /api/v1/recruiter/applications?status=shortlisted
 ```
 
 #### `location` (string, optional)
+
 Filter by talent's location (partial match, case-insensitive).
 
 **Example:**
+
 ```javascript
 GET /api/v1/recruiter/applications?location=Lagos
 ```
 
 #### `skills` (string, optional)
+
 Filter by skills (comma-separated). Matches talents who have ANY of the specified skills.
 
 **Example:**
+
 ```javascript
 // Single skill
 GET /api/v1/recruiter/applications?skills=React
@@ -84,14 +98,17 @@ GET /api/v1/recruiter/applications?skills=React,Node.js,TypeScript
 ```
 
 #### `dateRange` (enum, optional)
+
 Filter applications by submission date.
 
 **Valid values:**
+
 - `today` - Applications submitted today
 - `week` - Applications from the last 7 days
 - `month` - Applications from the last 30 days
 
 **Example:**
+
 ```javascript
 GET /api/v1/recruiter/applications?dateRange=week
 ```
@@ -101,15 +118,18 @@ GET /api/v1/recruiter/applications?dateRange=week
 ### 3. Sorting Parameters
 
 #### `sortBy` (enum, optional)
+
 Sort the results.
 
 **Valid values:**
+
 - `newest` (default) - Most recent applications first
 - `oldest` - Oldest applications first
 - `name-asc` - Alphabetical by applicant name (A-Z)
 - `name-desc` - Alphabetical by applicant name (Z-A)
 
 **Example:**
+
 ```javascript
 GET /api/v1/recruiter/applications?sortBy=name-asc
 ```
@@ -119,17 +139,21 @@ GET /api/v1/recruiter/applications?sortBy=name-asc
 ### 4. Pagination Parameters
 
 #### `limit` (number, optional, default: 20)
+
 Number of results per page.
 
 **Example:**
+
 ```javascript
 GET /api/v1/recruiter/applications?limit=50
 ```
 
 #### `offset` (number, optional, default: 0)
+
 Number of results to skip (for pagination).
 
 **Example:**
+
 ```javascript
 // Page 1 (first 20 results)
 GET /api/v1/recruiter/applications?limit=20&offset=0
@@ -153,7 +177,7 @@ GET /api/v1/recruiter/applications?limit=20&offset=40
     opportunityId: string;
     profileType: string;
     profileId: string;
-    status: 'applied' | 'shortlisted' | 'rejected' | 'hired' | 'invited';
+    status: "applied" | "shortlisted" | "rejected" | "hired" | "invited";
     note: string | null;
     attachments: Array<any>;
     galleryIds: string[];
@@ -204,7 +228,7 @@ GET /api/v1/recruiter/applications?limit=20&offset=40
       scheduledDate: Date;
       message: string;
       meetingLink: string;
-      status: 'scheduled' | 'completed' | 'cancelled' | 'rescheduled';
+      status: "scheduled" | "completed" | "cancelled" | "rescheduled";
       createdAt: Date;
       updatedAt: Date;
     }>;
@@ -217,7 +241,7 @@ GET /api/v1/recruiter/applications?limit=20&offset=40
     totalPages: number;
     hasNextPage: boolean;
     hasPreviousPage: boolean;
-  };
+  }
 }
 ```
 
@@ -228,7 +252,7 @@ GET /api/v1/recruiter/applications?limit=20&offset=40
 ### 1. Basic Fetch (React/TypeScript)
 
 ```typescript
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 interface Application {
   id: string;
@@ -278,9 +302,9 @@ function useApplications() {
     setLoading(true);
     try {
       const queryParams = new URLSearchParams();
-      
+
       Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== '') {
+        if (value !== undefined && value !== null && value !== "") {
           queryParams.append(key, String(value));
         }
       });
@@ -289,19 +313,19 @@ function useApplications() {
         `/api/v1/recruiter/applications?${queryParams.toString()}`,
         {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
           },
-        }
+        },
       );
 
-      if (!response.ok) throw new Error('Failed to fetch applications');
+      if (!response.ok) throw new Error("Failed to fetch applications");
 
       const data: ApplicationsResponse = await response.json();
       setApplications(data.data);
       setPagination(data.pagination);
     } catch (error) {
-      console.error('Error fetching applications:', error);
+      console.error("Error fetching applications:", error);
     } finally {
       setLoading(false);
     }
@@ -450,12 +474,12 @@ function ApplicationsPagination() {
       <button onClick={prevPage} disabled={!pagination.hasPreviousPage}>
         Previous
       </button>
-      
+
       <span>
         Page {pagination.currentPage} of {pagination.totalPages}
         ({pagination.total} total results)
       </span>
-      
+
       <button onClick={nextPage} disabled={!pagination.hasNextPage}>
         Next
       </button>
@@ -593,26 +617,31 @@ function RecruiterApplicationsPage() {
 ## Common Use Cases
 
 ### 1. Search for a specific applicant
+
 ```
 GET /api/v1/recruiter/applications?q=John Doe
 ```
 
 ### 2. Get all shortlisted candidates
+
 ```
 GET /api/v1/recruiter/applications?status=shortlisted
 ```
 
 ### 3. Find React developers in Lagos
+
 ```
 GET /api/v1/recruiter/applications?skills=React&location=Lagos
 ```
 
 ### 4. Get this week's applications, sorted by name
+
 ```
 GET /api/v1/recruiter/applications?dateRange=week&sortBy=name-asc
 ```
 
 ### 5. Combine multiple filters
+
 ```
 GET /api/v1/recruiter/applications?status=applied&location=Lagos&skills=React,Node.js&dateRange=week&sortBy=newest&limit=50
 ```
@@ -635,6 +664,7 @@ GET /api/v1/recruiter/applications?status=applied&location=Lagos&skills=React,No
 ## Error Responses
 
 ### 401 Unauthorized
+
 ```json
 {
   "statusCode": 401,
@@ -643,6 +673,7 @@ GET /api/v1/recruiter/applications?status=applied&location=Lagos&skills=React,No
 ```
 
 ### 403 Forbidden
+
 ```json
 {
   "statusCode": 403,
@@ -651,6 +682,7 @@ GET /api/v1/recruiter/applications?status=applied&location=Lagos&skills=React,No
 ```
 
 ### 400 Bad Request
+
 ```json
 {
   "statusCode": 400,

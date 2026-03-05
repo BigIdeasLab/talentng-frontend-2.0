@@ -1,6 +1,7 @@
 # Session Flow Implementation - Complete
 
 ## Overview
+
 Implemented complete session flow for both mentor and mentee sides according to SESSION_FLOW_GUIDE.md specifications.
 
 ---
@@ -10,21 +11,24 @@ Implemented complete session flow for both mentor and mentee sides according to 
 ### 1. Mentor Side (SessionCard.tsx)
 
 #### Added Features:
+
 - ✅ **Dispute button** for `pending_completion` status
 - ✅ **Removed Cancel button** from `in_progress` status (per guide)
 - ✅ Import `AlertTriangle` icon (for future use)
 
 #### Status-Based Actions:
-| Status | Actions |
-|--------|---------|
-| `upcoming` | Reschedule + Cancel |
-| `in_progress` | Complete (only after endTime) |
+
+| Status               | Actions                                                 |
+| -------------------- | ------------------------------------------------------- |
+| `upcoming`           | Reschedule + Cancel                                     |
+| `in_progress`        | Complete (only after endTime)                           |
 | `pending_completion` | Dispute button + "Waiting for mentee confirmation" text |
-| `completed` | No actions (status text only) |
-| `cancelled` | No actions (status text only) |
-| `disputed` | No actions (status text only) |
+| `completed`          | No actions (status text only)                           |
+| `cancelled`          | No actions (status text only)                           |
+| `disputed`           | No actions (status text only)                           |
 
 #### Code Changes:
+
 ```typescript
 // Added onDispute prop
 onDispute?: (id: string) => void;
@@ -54,6 +58,7 @@ onDispute?: (id: string) => void;
 ### 2. Mentee Side (TalentSessionCard.tsx)
 
 #### Added Features:
+
 - ✅ **Cancel button** for `pending` status
 - ✅ **Reschedule + Cancel buttons** for `confirmed`/`rescheduled` status
 - ✅ **Confirm Completion button** for `pending_completion` status
@@ -61,17 +66,19 @@ onDispute?: (id: string) => void;
 - ✅ Status-appropriate messages for all states
 
 #### Status-Based Actions:
-| Status | Actions |
-|--------|---------|
-| `pending` | Cancel + "Waiting for mentor confirmation" text |
-| `confirmed` / `rescheduled` | Reschedule + Cancel |
-| `in_progress` | No actions (status text only) |
-| `pending_completion` | Confirm Completion button |
-| `completed` | Leave Review button (if not reviewed) OR "Review submitted" text |
-| `cancelled` | No actions (status text only) |
-| `disputed` | No actions + "Contact support" text |
+
+| Status                      | Actions                                                          |
+| --------------------------- | ---------------------------------------------------------------- |
+| `pending`                   | Cancel + "Waiting for mentor confirmation" text                  |
+| `confirmed` / `rescheduled` | Reschedule + Cancel                                              |
+| `in_progress`               | No actions (status text only)                                    |
+| `pending_completion`        | Confirm Completion button                                        |
+| `completed`                 | Leave Review button (if not reviewed) OR "Review submitted" text |
+| `cancelled`                 | No actions (status text only)                                    |
+| `disputed`                  | No actions + "Contact support" text                              |
 
 #### Code Changes:
+
 ```typescript
 // Added handler props
 interface TalentSessionCardProps {
@@ -91,11 +98,13 @@ interface TalentSessionCardProps {
 ### 3. Mentor Sessions Page (app/(business)/sessions/page.tsx)
 
 #### Added Features:
+
 - ✅ **Dispute modal** and handler
 - ✅ **disputeSession API call** integration
 - ✅ Connected `onDispute` prop to SessionCard
 
 #### Code Changes:
+
 ```typescript
 // Added import
 import { disputeSession } from "@/lib/api/mentorship";
@@ -152,12 +161,14 @@ const confirmDispute = async () => {
 All required API functions are already available in `lib/api/mentorship/index.ts`:
 
 ### Mentor Actions:
+
 - ✅ `completeSession(sessionId)` - Mark session as complete
 - ✅ `cancelSession(sessionId, data?)` - Cancel session
 - ✅ `rescheduleSession(sessionId, data)` - Reschedule session
 - ✅ `disputeSession(sessionId, data?)` - Dispute session completion
 
 ### Mentee Actions:
+
 - ✅ `confirmSessionCompletion(sessionId)` - Confirm session completion
 - ✅ `cancelSession(sessionId, data?)` - Cancel session
 - ✅ `rescheduleSession(sessionId, data)` - Reschedule session
@@ -170,10 +181,12 @@ All required API functions are already available in `lib/api/mentorship/index.ts
 The TalentSessionCard now has all the required props, but they need to be connected in the parent pages:
 
 ### Files That Use TalentSessionCard:
+
 1. `app/(business)/upcoming/page.tsx` - Talent upcoming page
 2. `components/talent/applications/TalentUpcomingTab.tsx` - Talent applications tab
 
 ### Required Implementation:
+
 ```typescript
 // In parent component, add these handlers:
 
@@ -216,32 +229,35 @@ const handleLeaveReview = (sessionId: string) => {
 ## Compliance with SESSION_FLOW_GUIDE.md
 
 ### ✅ Mentor Side - Fully Compliant
-| Status | Required Actions | Implemented |
-|--------|-----------------|-------------|
-| `pending` | Confirm + Cancel | ✅ (existing) |
-| `confirmed` / `rescheduled` | Reschedule + Cancel | ✅ (existing) |
-| `in_progress` | Complete (after endTime) | ✅ |
-| `pending_completion` | Dispute | ✅ |
-| `completed` | None | ✅ |
-| `cancelled` | None | ✅ |
-| `disputed` | None | ✅ |
+
+| Status                      | Required Actions         | Implemented   |
+| --------------------------- | ------------------------ | ------------- |
+| `pending`                   | Confirm + Cancel         | ✅ (existing) |
+| `confirmed` / `rescheduled` | Reschedule + Cancel      | ✅ (existing) |
+| `in_progress`               | Complete (after endTime) | ✅            |
+| `pending_completion`        | Dispute                  | ✅            |
+| `completed`                 | None                     | ✅            |
+| `cancelled`                 | None                     | ✅            |
+| `disputed`                  | None                     | ✅            |
 
 ### ✅ Mentee Side - Fully Compliant
-| Status | Required Actions | Implemented |
-|--------|-----------------|-------------|
-| `pending` | Cancel | ✅ |
-| `confirmed` / `rescheduled` | Reschedule + Cancel | ✅ |
-| `in_progress` | None | ✅ |
-| `pending_completion` | Confirm Completion | ✅ |
-| `completed` | Leave Review (if not reviewed) | ✅ |
-| `cancelled` | None | ✅ |
-| `disputed` | None | ✅ |
+
+| Status                      | Required Actions               | Implemented |
+| --------------------------- | ------------------------------ | ----------- |
+| `pending`                   | Cancel                         | ✅          |
+| `confirmed` / `rescheduled` | Reschedule + Cancel            | ✅          |
+| `in_progress`               | None                           | ✅          |
+| `pending_completion`        | Confirm Completion             | ✅          |
+| `completed`                 | Leave Review (if not reviewed) | ✅          |
+| `cancelled`                 | None                           | ✅          |
+| `disputed`                  | None                           | ✅          |
 
 ---
 
 ## Testing Checklist
 
 ### Mentor Side:
+
 - [ ] Test Complete button appears only after endTime
 - [ ] Test Dispute button appears for pending_completion status
 - [ ] Test Cancel button removed from in_progress status
@@ -249,6 +265,7 @@ const handleLeaveReview = (sessionId: string) => {
 - [ ] Test real-time status updates
 
 ### Mentee Side:
+
 - [ ] Test Cancel button for pending status
 - [ ] Test Reschedule + Cancel buttons for confirmed status
 - [ ] Test Confirm Completion button for pending_completion status
@@ -257,6 +274,7 @@ const handleLeaveReview = (sessionId: string) => {
 - [ ] Test all modals and API calls
 
 ### Integration:
+
 - [ ] Test session flow from pending → completed
 - [ ] Test dispute flow
 - [ ] Test cancellation from both sides

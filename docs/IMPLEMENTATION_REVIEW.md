@@ -1,6 +1,7 @@
 # Recruiter Applications API Implementation Review
 
 ## Summary
+
 Your implementation is **mostly correct** but has **one critical issue** that needs to be fixed.
 
 ---
@@ -8,6 +9,7 @@ Your implementation is **mostly correct** but has **one critical issue** that ne
 ## ✅ What's Correct
 
 ### 1. API Function (`lib/api/applications/index.ts`)
+
 ```typescript
 export const getRecruiterApplications = async (params: {
   status?: string;
@@ -23,16 +25,18 @@ export const getRecruiterApplications = async (params: {
 ```
 
 **Issues:**
+
 - ✅ All parameters are present
 - ❌ **CRITICAL:** Uses `searchQuery` instead of `q` as the search parameter
 - ❌ **CRITICAL:** Return type is `Application[]` but should be paginated response
 
 ### 2. Hook Implementation (`hooks/useRecruiterApplications.ts`)
+
 ```typescript
 interface RecruiterApplicationsParams {
   opportunityId?: string;
   status?: string;
-  searchQuery?: string;  // ❌ WRONG - should be 'q'
+  searchQuery?: string; // ❌ WRONG - should be 'q'
   location?: string;
   skills?: string;
   dateRange?: "today" | "week" | "month";
@@ -43,20 +47,20 @@ interface RecruiterApplicationsParams {
 ```
 
 **Issues:**
+
 - ✅ All parameters are present
 - ❌ **CRITICAL:** Uses `searchQuery` instead of `q`
 
 ### 3. Page Implementation (`app/(business)/applicants/page.tsx`)
+
 ```typescript
 const queryParams = useMemo(
   () => ({
-    ...(searchQuery ? { searchQuery } : {}),  // ❌ WRONG - should be 'q'
+    ...(searchQuery ? { searchQuery } : {}), // ❌ WRONG - should be 'q'
     ...(activeTab !== "all" ? { status: activeTab } : {}),
     ...(filters.status.length === 1 ? { status: filters.status[0] } : {}),
     ...(filters.location ? { location: filters.location } : {}),
-    ...(filters.skills.length > 0
-      ? { skills: filters.skills.join(",") }
-      : {}),
+    ...(filters.skills.length > 0 ? { skills: filters.skills.join(",") } : {}),
     ...(filters.dateRange !== "all"
       ? { dateRange: filters.dateRange as "today" | "week" | "month" }
       : {}),
@@ -69,6 +73,7 @@ const queryParams = useMemo(
 ```
 
 **Issues:**
+
 - ✅ All filters are correctly implemented
 - ✅ Skills are correctly joined with commas
 - ✅ Sorting is correctly implemented
@@ -80,21 +85,26 @@ const queryParams = useMemo(
 ## 🔴 Critical Issues to Fix
 
 ### Issue 1: Wrong Search Parameter Name
+
 **Current:** `searchQuery`  
 **Expected:** `q`
 
 **Why this matters:**
+
 - The API guide explicitly states the parameter should be `q`
 - This matches the pattern used in `/api/v1/talent/opportunities`
 - Your backend is likely expecting `q`, not `searchQuery`
 
 ### Issue 2: Missing Pagination Response Type
+
 **Current:**
+
 ```typescript
-Promise<Application[]>
+Promise<Application[]>;
 ```
 
 **Expected:**
+
 ```typescript
 interface PaginatedApplicationsResponse {
   data: Application[];
@@ -109,10 +119,11 @@ interface PaginatedApplicationsResponse {
   };
 }
 
-Promise<PaginatedApplicationsResponse>
+Promise<PaginatedApplicationsResponse>;
 ```
 
 ### Issue 3: No Pagination Implementation
+
 The page doesn't implement pagination controls (Previous/Next buttons, page numbers, etc.)
 
 ---
@@ -120,24 +131,26 @@ The page doesn't implement pagination controls (Previous/Next buttons, page numb
 ## 🔧 Required Fixes
 
 ### Fix 1: Update API Function
+
 ```typescript
 // lib/api/applications/index.ts
 
 export const getRecruiterApplications = async (params: {
   status?: string;
   opportunityId?: string;
-  q?: string;  // ✅ FIXED: Changed from searchQuery to q
+  q?: string; // ✅ FIXED: Changed from searchQuery to q
   location?: string;
   skills?: string;
   dateRange?: "today" | "week" | "month";
   sortBy?: "newest" | "oldest" | "name-asc" | "name-desc";
   limit?: number;
   offset?: number;
-}): Promise<PaginatedApplicationsResponse> => {  // ✅ FIXED: Return paginated response
+}): Promise<PaginatedApplicationsResponse> => {
+  // ✅ FIXED: Return paginated response
   const query = new URLSearchParams();
   if (params.status) query.append("status", params.status);
   if (params.opportunityId) query.append("opportunityId", params.opportunityId);
-  if (params.q) query.append("q", params.q);  // ✅ FIXED: Changed from searchQuery to q
+  if (params.q) query.append("q", params.q); // ✅ FIXED: Changed from searchQuery to q
   if (params.location) query.append("location", params.location);
   if (params.skills) query.append("skills", params.skills);
   if (params.dateRange) query.append("dateRange", params.dateRange);
@@ -153,13 +166,14 @@ export const getRecruiterApplications = async (params: {
 ```
 
 ### Fix 2: Update Hook Interface
+
 ```typescript
 // hooks/useRecruiterApplications.ts
 
 interface RecruiterApplicationsParams {
   opportunityId?: string;
   status?: string;
-  q?: string;  // ✅ FIXED: Changed from searchQuery to q
+  q?: string; // ✅ FIXED: Changed from searchQuery to q
   location?: string;
   skills?: string;
   dateRange?: "today" | "week" | "month";
@@ -170,26 +184,25 @@ interface RecruiterApplicationsParams {
 ```
 
 ### Fix 3: Update Page Implementation
+
 ```typescript
 // app/(business)/applicants/page.tsx
 
 const queryParams = useMemo(
   () => ({
-    ...(searchQuery ? { q: searchQuery } : {}),  // ✅ FIXED: Changed to 'q'
+    ...(searchQuery ? { q: searchQuery } : {}), // ✅ FIXED: Changed to 'q'
     ...(activeTab !== "all" ? { status: activeTab } : {}),
     ...(filters.status.length === 1 ? { status: filters.status[0] } : {}),
     ...(filters.location ? { location: filters.location } : {}),
-    ...(filters.skills.length > 0
-      ? { skills: filters.skills.join(",") }
-      : {}),
+    ...(filters.skills.length > 0 ? { skills: filters.skills.join(",") } : {}),
     ...(filters.dateRange !== "all"
       ? { dateRange: filters.dateRange as "today" | "week" | "month" }
       : {}),
     ...(sortBy !== "newest"
       ? { sortBy: sortBy as "newest" | "oldest" | "name-asc" | "name-desc" }
       : {}),
-    limit: 20,  // ✅ ADDED: Default limit
-    offset: currentPage * 20,  // ✅ ADDED: Pagination offset
+    limit: 20, // ✅ ADDED: Default limit
+    offset: currentPage * 20, // ✅ ADDED: Pagination offset
   }),
   [searchQuery, activeTab, filters, sortBy, currentPage],
 );
@@ -207,6 +220,7 @@ const pagination = response?.pagination;
 ```
 
 ### Fix 4: Add Pagination Component
+
 ```typescript
 // Add to the page
 {pagination && (
@@ -278,6 +292,7 @@ const pagination = response?.pagination;
 ## Testing Checklist
 
 After making the fixes, test:
+
 - [ ] Search by applicant name works
 - [ ] Search by opportunity title works
 - [ ] Filter by status works

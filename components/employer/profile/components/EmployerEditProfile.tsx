@@ -789,12 +789,14 @@ export function EmployerEditProfile() {
       const customLinks = Object.entries(links)
         .filter(([key]) => !knownKeys.includes(key))
         .map(([key, value]) => ({ name: key, url: (value as string) || "" }));
-      
+
       // Parse location - format is "State, City"
-      const locationParts = (profileData.location || "").split(",").map((s: string) => s.trim());
+      const locationParts = (profileData.location || "")
+        .split(",")
+        .map((s: string) => s.trim());
       const state = locationParts[0] || "";
       const city = locationParts[1] || "";
-      
+
       setFormData({
         personal: {
           profileImageUrl: profileData.profileImageUrl || "",
@@ -822,9 +824,8 @@ export function EmployerEditProfile() {
   }, [profileData]);
 
   // Warn on page leave (browser and client-side navigation)
-  const { navigateWithConfirmation } = useUnsavedChangesWarning(
-    hasUnsavedChanges,
-  );
+  const { navigateWithConfirmation } =
+    useUnsavedChangesWarning(hasUnsavedChanges);
 
   useEffect(() => {
     const section = searchParams.get("section");

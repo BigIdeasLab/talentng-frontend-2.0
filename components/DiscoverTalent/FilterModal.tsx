@@ -200,7 +200,13 @@ export function FilterModal({
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isSkillOpen, isStackOpen, isLocationOpen, isAvailabilityOpen, handleApplyFilter]);
+  }, [
+    isSkillOpen,
+    isStackOpen,
+    isLocationOpen,
+    isAvailabilityOpen,
+    handleApplyFilter,
+  ]);
 
   useEffect(() => {
     const scrollSection = (ref: React.RefObject<HTMLDivElement>) => {
@@ -242,7 +248,10 @@ export function FilterModal({
                   placeholder="Enter Headline"
                   value={filters.headline}
                   onChange={(e) =>
-                    setFilters((prev) => ({ ...prev, headline: e.target.value }))
+                    setFilters((prev) => ({
+                      ...prev,
+                      headline: e.target.value,
+                    }))
                   }
                   className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
                 />
@@ -496,12 +505,17 @@ export function FilterModal({
             </div>
 
             {/* Availability Dropdown */}
-            <div className="flex flex-col gap-[8px] w-full" ref={availabilityRef}>
+            <div
+              className="flex flex-col gap-[8px] w-full"
+              ref={availabilityRef}
+            >
               <div className="flex justify-between items-center">
                 <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
                   Availability
                 </span>
-                <button onClick={() => setIsAvailabilityOpen(!isAvailabilityOpen)}>
+                <button
+                  onClick={() => setIsAvailabilityOpen(!isAvailabilityOpen)}
+                >
                   <ChevronDown className="w-3 h-3 text-[#B2B2B2]" />
                 </button>
               </div>

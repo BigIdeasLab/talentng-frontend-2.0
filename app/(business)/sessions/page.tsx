@@ -152,7 +152,7 @@ export default function SessionsPage() {
   const fetchSessions = useCallback(async () => {
     try {
       setIsLoading(true);
-      
+
       // Map frontend tabs to backend status values
       let statusParam: any = undefined;
       if (activeTab === "upcoming") {
@@ -162,7 +162,7 @@ export default function SessionsPage() {
       } else if (activeTab !== "all") {
         statusParam = activeTab;
       }
-      
+
       const apiParams = {
         role: "mentor" as const,
         ...(statusParam ? { status: statusParam } : {}),
@@ -179,26 +179,27 @@ export default function SessionsPage() {
       const sessionsArray = Array.isArray(response)
         ? response
         : (response?.data ?? []);
-      
+
       // Map sessions
       let currentData = sessionsArray.map(mapSession);
-      
+
       // Client-side filter for "upcoming" tab
       if (activeTab === "upcoming") {
-        currentData = currentData.filter(session => 
-          session.status === "upcoming" || 
-          session.status === "in_progress" ||
-          session.status === "pending_completion"
+        currentData = currentData.filter(
+          (session) =>
+            session.status === "upcoming" ||
+            session.status === "in_progress" ||
+            session.status === "pending_completion",
         );
       }
-      
+
       setDisplayedSessions(currentData);
       setSessions(currentData);
-      
+
       if (response?.meta) {
         setMeta(response.meta);
       }
-      
+
       if (isInitialLoad) {
         setIsInitialLoad(false);
       }

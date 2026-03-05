@@ -2,15 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
-import {
-  Check,
-  X,
-  Clock,
-  Calendar,
-  MapPin,
-  Search,
-  Video,
-} from "lucide-react";
+import { Check, X, Clock, Calendar, MapPin, Search, Video } from "lucide-react";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { useToast } from "@/hooks";
 import { useRequireRole } from "@/hooks/useRequireRole";
@@ -87,7 +79,9 @@ export default function ApplicationsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [dateRange, setDateRange] = useState<string>("all");
-  const [displayedRequests, setDisplayedRequests] = useState<MentorshipRequest[]>([]);
+  const [displayedRequests, setDisplayedRequests] = useState<
+    MentorshipRequest[]
+  >([]);
 
   // Modal states
   const [acceptModalOpen, setAcceptModalOpen] = useState(false);
@@ -116,10 +110,7 @@ export default function ApplicationsPage() {
           ...(debouncedSearchQuery ? { q: debouncedSearchQuery } : {}),
           ...(dateRange && dateRange !== "all"
             ? {
-                dateRange: dateRange as
-                  | "today"
-                  | "week"
-                  | "month",
+                dateRange: dateRange as "today" | "week" | "month",
               }
             : {}),
         }),
@@ -129,14 +120,14 @@ export default function ApplicationsPage() {
       const requestsArray = Array.isArray(requestsResponse)
         ? requestsResponse
         : (requestsResponse?.data ?? []);
-      
+
       // Map and update requests
       const currentData = requestsArray.map(mapApiRequest);
       setDisplayedRequests(currentData);
       setRequests(currentData);
-      
+
       setPendingCount(countResponse?.count ?? 0);
-      
+
       if (isInitialLoad) {
         setIsInitialLoad(false);
       }

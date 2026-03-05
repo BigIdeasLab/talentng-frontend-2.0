@@ -342,8 +342,8 @@ export default function MentorDetailPage() {
                         />
                       </svg>
                       <span className="text-[13px] font-normal text-black font-inter-tight">
-                        {mentor.rating && Number(mentor.rating) > 0 
-                          ? Number(mentor.rating).toFixed(1) 
+                        {mentor.rating && Number(mentor.rating) > 0
+                          ? Number(mentor.rating).toFixed(1)
                           : "N/A"}{" "}
                         Rating
                       </span>
@@ -469,7 +469,7 @@ export default function MentorDetailPage() {
                     <h3 className="font-inter-tight text-[13px] font-medium text-black">
                       Availability
                     </h3>
-                    <button 
+                    <button
                       onClick={() => {
                         setBookingStep("availability");
                         setIsBookingModalOpen(true);

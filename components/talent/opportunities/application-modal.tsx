@@ -51,7 +51,10 @@ export function ApplicationModal({
     setSelectedProjects((prev) => prev.filter((p) => p.id !== projectId));
   };
 
-  const handleProjectsSelected = (projects: Project[], fullGalleryItems?: any[]) => {
+  const handleProjectsSelected = (
+    projects: Project[],
+    fullGalleryItems?: any[],
+  ) => {
     setSelectedProjects(projects);
     if (fullGalleryItems) {
       setProjects(fullGalleryItems);
@@ -170,7 +173,9 @@ export function ApplicationModal({
                   >
                     <LinkIcon size={20} className="text-[#525866]" />
                     <span className="text-[#525866] font-inter-tight text-[14px] font-normal">
-                      {selectedProjects.length === 0 ? 'Select projects' : 'Change selection'}
+                      {selectedProjects.length === 0
+                        ? "Select projects"
+                        : "Change selection"}
                     </span>
                   </button>
                 </div>

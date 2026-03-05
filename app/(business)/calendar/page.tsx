@@ -1,21 +1,15 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import {
-  Calendar,
-  Briefcase,
-  Users,
-  Search,
-  X,
-} from "lucide-react";
+import { Calendar, Briefcase, Users, Search, X } from "lucide-react";
 import { useToast } from "@/hooks";
 import { useProfile } from "@/hooks/useProfile";
 import { getTalentUpcoming } from "@/lib/api/talent";
-import { 
-  cancelSession, 
-  rescheduleSession, 
+import {
+  cancelSession,
+  rescheduleSession,
   confirmSessionCompletion,
-  createSessionReview 
+  createSessionReview,
 } from "@/lib/api/mentorship";
 import { useNotificationSocket } from "@/hooks/useNotificationSocket";
 import type {
@@ -85,16 +79,23 @@ function TalentUpcoming() {
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [dateRange, setDateRange] = useState<string>("all");
-  const [totalCounts, setTotalCounts] = useState({ all: 0, interviews: 0, sessions: 0 });
+  const [totalCounts, setTotalCounts] = useState({
+    all: 0,
+    interviews: 0,
+    sessions: 0,
+  });
   const isInitialLoadRef = useRef(true);
   const fetchIdRef = useRef(0);
-  
+
   // Session action states
-  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
+    null,
+  );
   const [selectedMentorId, setSelectedMentorId] = useState<string>("");
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false);
-  const [confirmCompletionModalOpen, setConfirmCompletionModalOpen] = useState(false);
+  const [confirmCompletionModalOpen, setConfirmCompletionModalOpen] =
+    useState(false);
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [isActionLoading, setIsActionLoading] = useState(false);
 
@@ -128,7 +129,11 @@ function TalentUpcoming() {
             dateRange && dateRange !== "all"
               ? (dateRange as "today" | "week" | "month")
               : undefined,
-          type: (filter === "interviews" ? "interview" : filter === "sessions" ? "session" : undefined) as "interview" | "session" | undefined,
+          type: (filter === "interviews"
+            ? "interview"
+            : filter === "sessions"
+              ? "session"
+              : undefined) as "interview" | "session" | undefined,
           limit: 20,
           offset: currentPage * 20,
         };
@@ -143,28 +148,32 @@ function TalentUpcoming() {
         setItems(items);
         setDisplayedItems(items);
         setPagination(res.pagination || null);
-        
+
         // Update counts based on current filter
         if (filter === "all") {
-          const interviews = items.filter((item: any) => item.type === "interview").length;
-          const sessions = items.filter((item: any) => item.type === "session").length;
+          const interviews = items.filter(
+            (item: any) => item.type === "interview",
+          ).length;
+          const sessions = items.filter(
+            (item: any) => item.type === "session",
+          ).length;
           setTotalCounts({
             all: res.pagination?.total || 0,
             interviews,
             sessions,
           });
         } else if (filter === "interviews") {
-          setTotalCounts(prev => ({
+          setTotalCounts((prev) => ({
             ...prev,
             interviews: res.pagination?.total || 0,
           }));
         } else if (filter === "sessions") {
-          setTotalCounts(prev => ({
+          setTotalCounts((prev) => ({
             ...prev,
             sessions: res.pagination?.total || 0,
           }));
         }
-        
+
         isInitialLoadRef.current = false;
         setIsLoading(false);
       } catch (error) {
@@ -229,7 +238,11 @@ function TalentUpcoming() {
     setRescheduleModalOpen(true);
   };
 
-  const confirmRescheduleSession = async (date: string, startTime: string, endTime: string) => {
+  const confirmRescheduleSession = async (
+    date: string,
+    startTime: string,
+    endTime: string,
+  ) => {
     if (!selectedSessionId) return;
     try {
       setIsActionLoading(true);

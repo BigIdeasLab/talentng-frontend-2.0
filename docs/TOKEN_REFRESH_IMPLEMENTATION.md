@@ -1,16 +1,20 @@
 # Token Refresh Implementation - Frontend
 
 ## Overview
+
 This document describes how the frontend implements automatic token refresh to handle expired access tokens without requiring user re-authentication.
 
 ## Implementation Location
+
 - **File**: `lib/api/index.ts`
 - **Client Type**: Client-side API client (uses localStorage for token storage)
 
 ## Token Refresh Flow
 
 ### 1. 401 Detection
+
 When any API call receives a `401 Unauthorized` response:
+
 - The client automatically intercepts the response
 - Checks if a token refresh is already in progress
 - If yes: queues the request to retry after refresh completes
@@ -21,6 +25,7 @@ When any API call receives a `401 Unauthorized` response:
 **Endpoint**: `POST /auth/refresh`
 
 **Request Format**:
+
 ```javascript
 {
   method: "POST",
@@ -28,13 +33,14 @@ When any API call receives a `401 Unauthorized` response:
     "Content-Type": "application/json"
   },
   credentials: "include",
-  body: JSON.stringify({ 
-    refreshToken: "<refresh_token_from_localStorage>" 
+  body: JSON.stringify({
+    refreshToken: "<refresh_token_from_localStorage>"
   })
 }
 ```
 
 **Key Points**:
+
 - Refresh token is sent in the **request body** (not Authorization header)
 - `credentials: "include"` is set to allow cookies if needed
 - Refresh token is retrieved from `localStorage.getItem("refreshToken")`
@@ -42,6 +48,7 @@ When any API call receives a `401 Unauthorized` response:
 ### 3. Expected Response Format
 
 **Success Response** (200 OK):
+
 ```json
 {
   "accessToken": "new_access_token_here",
@@ -51,6 +58,7 @@ When any API call receives a `401 Unauthorized` response:
 ```
 
 **Failure Response** (401 or other error):
+
 - Any non-200 response is treated as refresh failure
 - User is redirected to login page
 
@@ -73,7 +81,9 @@ if (currentActiveRole) {
 ```
 
 ### 5. Request Retry
+
 After successful token refresh:
+
 - Original failed request is automatically retried with new access token
 - All queued requests (if any) are also retried
 - User experiences seamless continuation without seeing errors
@@ -111,6 +121,7 @@ const failedQueue: Array<{
 ```
 
 **How it works**:
+
 1. First 401 sets `isRefreshing = true` and creates `refreshPromise`
 2. Subsequent 401s during refresh add their retry logic to `failedQueue`
 3. When refresh completes, all queued requests are processed via `processQueue()`
@@ -119,9 +130,11 @@ const failedQueue: Array<{
 ## Critical Implementation Details
 
 ### Active Role Preservation
+
 **Problem**: After token refresh, users were being redirected to a different role.
 
 **Solution**: Explicitly preserve `activeRole` from localStorage after storing new tokens:
+
 ```javascript
 const currentActiveRole = localStorage.getItem("activeRole");
 if (currentActiveRole) {
@@ -133,7 +146,9 @@ if (currentActiveRole) {
 This ensures the user stays on the same role (talent/recruiter/mentor) after token refresh.
 
 ### Complete State Cleanup
+
 When refresh fails, ALL auth-related state must be cleared:
+
 - Tokens (access, refresh)
 - User ID
 - Active role (localStorage + cookie)
@@ -151,6 +166,7 @@ For this implementation to work correctly, the backend must:
    - NOT in Authorization header
 
 2. **Return new tokens in response**:
+
    ```json
    {
      "accessToken": "new_token",
@@ -170,6 +186,7 @@ For this implementation to work correctly, the backend must:
 ## Testing Scenarios
 
 ### Scenario 1: Token Expires During API Call
+
 1. User makes API call with expired access token
 2. Backend returns 401
 3. Frontend automatically refreshes token
@@ -177,6 +194,7 @@ For this implementation to work correctly, the backend must:
 5. User sees no error, request completes successfully
 
 ### Scenario 2: Multiple Simultaneous Requests with Expired Token
+
 1. Multiple API calls happen at once with expired token
 2. All receive 401 responses
 3. Only ONE refresh request is made
@@ -185,6 +203,7 @@ For this implementation to work correctly, the backend must:
 6. All requests complete successfully
 
 ### Scenario 3: Refresh Token Expired
+
 1. User makes API call with expired access token
 2. Backend returns 401
 3. Frontend attempts refresh with expired refresh token
@@ -193,6 +212,7 @@ For this implementation to work correctly, the backend must:
 6. User is redirected to login page
 
 ### Scenario 4: Role Preservation
+
 1. User is on recruiter role
 2. Access token expires
 3. Token refresh happens automatically
@@ -202,6 +222,7 @@ For this implementation to work correctly, the backend must:
 ## Code Location Reference
 
 **Main Implementation**: `lib/api/index.ts` (lines 77-170)
+
 - 401 detection and handling
 - Token refresh logic
 - Request queuing
@@ -209,6 +230,7 @@ For this implementation to work correctly, the backend must:
 - State cleanup on failure
 
 **Token Storage Utilities**: `lib/auth.ts`
+
 - `storeTokens()` - Store tokens in localStorage
 - `getAccessToken()` - Retrieve access token
 - `getRefreshToken()` - Retrieve refresh token
@@ -234,15 +256,16 @@ For this implementation to work correctly, the backend must:
 4. What HTTP status code is returned when the refresh token is expired or invalid?
 5. Are there any rate limits on the refresh endpoint we should be aware of?
 
-
 ---
 
 ## Resolution - Backend Fix Applied
 
 ### Issue Identified
+
 The backend was returning `user` object instead of `userId` string, causing a mismatch with frontend expectations.
 
 **Backend Response (Before Fix)**:
+
 ```json
 {
   "message": "Token refreshed successfully",
@@ -258,6 +281,7 @@ The backend was returning `user` object instead of `userId` string, causing a mi
 ```
 
 **Frontend Expected**:
+
 ```json
 {
   "accessToken": "...",
@@ -267,9 +291,11 @@ The backend was returning `user` object instead of `userId` string, causing a mi
 ```
 
 ### Fix Applied
+
 Backend now returns both `userId` (for localStorage) and `user` (for additional context):
 
 **Backend Response (After Fix)**:
+
 ```json
 {
   "message": "Token refreshed successfully",
@@ -286,10 +312,13 @@ Backend now returns both `userId` (for localStorage) and `user` (for additional 
 ```
 
 ### Impact
+
 This fix resolves the issue where users would "temporarily don't have access until page reload". The frontend can now properly store the userId after token refresh, maintaining the authenticated session seamlessly.
 
 **File Modified**: `auth.controller.ts` (backend)
+
 - Added `userId: user.id` to the refresh endpoint response
 
 ### Status
+
 ✅ **RESOLVED** - Frontend and backend token refresh implementations are now aligned.

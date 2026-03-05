@@ -1,6 +1,7 @@
 # Session Status Color Coding Guide
 
 ## Overview
+
 Color-coded status system designed to immediately communicate urgency and required user attention through visual cues.
 
 ---
@@ -8,15 +9,19 @@ Color-coded status system designed to immediately communicate urgency and requir
 ## Color Psychology & Hierarchy
 
 ### 🔴 Red/Amber - **URGENT ATTENTION REQUIRED**
+
 Used for statuses that require immediate user action or decision.
 
 ### 🔵 Blue - **ACTIVE/INFORMATIONAL**
+
 Used for ongoing or scheduled sessions that don't require immediate action.
 
 ### 🟢 Green - **COMPLETED/SUCCESS**
+
 Used for successfully completed sessions.
 
 ### ⚫ Red (Dark) - **PROBLEM/ERROR**
+
 Used for disputed or cancelled sessions.
 
 ---
@@ -25,34 +30,35 @@ Used for disputed or cancelled sessions.
 
 ### Mentor View (SessionCard.tsx)
 
-| Status | Badge Color | Dot Color | Text Color | Label | Urgency | Action Required |
-|--------|-------------|-----------|------------|-------|---------|-----------------|
-| `pending` | `#FEF3C7` (Light Amber) | `#F59E0B` (Amber) | `#D97706` (Dark Amber) | "Pending Confirmation" | **HIGH** | Confirm or Cancel |
-| `pending_completion` | `#FEF2F2` (Light Red) | `#EF4444` (Red) | `#DC2626` (Dark Red) | "Needs Confirmation" | **URGENT** | Wait for mentee or Dispute |
-| `in_progress` | `#DBEAFE` (Light Blue) | `#3B82F6` (Blue) | `#2563EB` (Dark Blue) | "In Progress" | MEDIUM | Complete after endTime |
-| `upcoming` | `#EFF6FF` (Pale Blue) | `#60A5FA` (Sky Blue) | `#3B82F6` (Blue) | "Upcoming" | LOW | Reschedule or Cancel |
-| `completed` | `#ECFDF3` (Light Green) | `#10B981` (Green) | `#059669` (Dark Green) | "Completed" | NONE | No action |
-| `disputed` | `#FEF2F2` (Light Red) | `#DC2626` (Red) | `#B91C1C` (Dark Red) | "Disputed" | NONE | Admin resolution |
-| `cancelled` | `#FEF2F2` (Light Red) | `#EF4444` (Red) | `#DC2626` (Dark Red) | "Cancelled" | NONE | No action |
+| Status               | Badge Color             | Dot Color            | Text Color             | Label                  | Urgency    | Action Required            |
+| -------------------- | ----------------------- | -------------------- | ---------------------- | ---------------------- | ---------- | -------------------------- |
+| `pending`            | `#FEF3C7` (Light Amber) | `#F59E0B` (Amber)    | `#D97706` (Dark Amber) | "Pending Confirmation" | **HIGH**   | Confirm or Cancel          |
+| `pending_completion` | `#FEF2F2` (Light Red)   | `#EF4444` (Red)      | `#DC2626` (Dark Red)   | "Needs Confirmation"   | **URGENT** | Wait for mentee or Dispute |
+| `in_progress`        | `#DBEAFE` (Light Blue)  | `#3B82F6` (Blue)     | `#2563EB` (Dark Blue)  | "In Progress"          | MEDIUM     | Complete after endTime     |
+| `upcoming`           | `#EFF6FF` (Pale Blue)   | `#60A5FA` (Sky Blue) | `#3B82F6` (Blue)       | "Upcoming"             | LOW        | Reschedule or Cancel       |
+| `completed`          | `#ECFDF3` (Light Green) | `#10B981` (Green)    | `#059669` (Dark Green) | "Completed"            | NONE       | No action                  |
+| `disputed`           | `#FEF2F2` (Light Red)   | `#DC2626` (Red)      | `#B91C1C` (Dark Red)   | "Disputed"             | NONE       | Admin resolution           |
+| `cancelled`          | `#FEF2F2` (Light Red)   | `#EF4444` (Red)      | `#DC2626` (Dark Red)   | "Cancelled"            | NONE       | No action                  |
 
 ### Mentee View (TalentSessionCard.tsx)
 
-| Status | Badge Color | Dot Color | Text Color | Label | Urgency | Action Required |
-|--------|-------------|-----------|------------|-------|---------|-----------------|
-| `pending` | `#FEF3C7` (Light Amber) | `#F59E0B` (Amber) | `#D97706` (Dark Amber) | "Pending Confirmation" | **HIGH** | Wait or Cancel |
-| `rescheduled` | `#FEF3C7` (Light Amber) | `#F59E0B` (Amber) | `#D97706` (Dark Amber) | "Rescheduled" | **HIGH** | Reschedule or Cancel |
-| `pending_completion` | `#FEF2F2` (Light Red) | `#EF4444` (Red) | `#DC2626` (Dark Red) | "Action Required" | **URGENT** | Confirm Completion |
-| `in_progress` | `#DBEAFE` (Light Blue) | `#3B82F6` (Blue) | `#2563EB` (Dark Blue) | "In Progress" | MEDIUM | Join meeting |
-| `confirmed` | `#EFF6FF` (Pale Blue) | `#60A5FA` (Sky Blue) | `#3B82F6` (Blue) | "Confirmed" | LOW | Reschedule or Cancel |
-| `completed` | `#ECFDF3` (Light Green) | `#10B981` (Green) | `#059669` (Dark Green) | "Completed" | LOW | Leave Review (optional) |
-| `disputed` | `#FEF2F2` (Light Red) | `#DC2626` (Red) | `#B91C1C` (Dark Red) | "Disputed" | NONE | Contact support |
-| `cancelled` | `#FEF2F2` (Light Red) | `#EF4444` (Red) | `#DC2626` (Dark Red) | "Cancelled" | NONE | No action |
+| Status               | Badge Color             | Dot Color            | Text Color             | Label                  | Urgency    | Action Required         |
+| -------------------- | ----------------------- | -------------------- | ---------------------- | ---------------------- | ---------- | ----------------------- |
+| `pending`            | `#FEF3C7` (Light Amber) | `#F59E0B` (Amber)    | `#D97706` (Dark Amber) | "Pending Confirmation" | **HIGH**   | Wait or Cancel          |
+| `rescheduled`        | `#FEF3C7` (Light Amber) | `#F59E0B` (Amber)    | `#D97706` (Dark Amber) | "Rescheduled"          | **HIGH**   | Reschedule or Cancel    |
+| `pending_completion` | `#FEF2F2` (Light Red)   | `#EF4444` (Red)      | `#DC2626` (Dark Red)   | "Action Required"      | **URGENT** | Confirm Completion      |
+| `in_progress`        | `#DBEAFE` (Light Blue)  | `#3B82F6` (Blue)     | `#2563EB` (Dark Blue)  | "In Progress"          | MEDIUM     | Join meeting            |
+| `confirmed`          | `#EFF6FF` (Pale Blue)   | `#60A5FA` (Sky Blue) | `#3B82F6` (Blue)       | "Confirmed"            | LOW        | Reschedule or Cancel    |
+| `completed`          | `#ECFDF3` (Light Green) | `#10B981` (Green)    | `#059669` (Dark Green) | "Completed"            | LOW        | Leave Review (optional) |
+| `disputed`           | `#FEF2F2` (Light Red)   | `#DC2626` (Red)      | `#B91C1C` (Dark Red)   | "Disputed"             | NONE       | Contact support         |
+| `cancelled`          | `#FEF2F2` (Light Red)   | `#EF4444` (Red)      | `#DC2626` (Dark Red)   | "Cancelled"            | NONE       | No action               |
 
 ---
 
 ## Visual Hierarchy
 
 ### Priority 1: URGENT (Red) 🔴
+
 **Requires immediate action to prevent issues**
 
 - **Mentor**: `pending_completion` - Mentee hasn't confirmed, may need to dispute
@@ -61,6 +67,7 @@ Used for disputed or cancelled sessions.
 **Visual**: Red background with red dot and dark red text
 
 ### Priority 2: HIGH (Amber) 🟠
+
 **Requires action soon**
 
 - **Mentor**: `pending` - New booking request needs confirmation
@@ -70,6 +77,7 @@ Used for disputed or cancelled sessions.
 **Visual**: Amber background with amber dot and dark amber text
 
 ### Priority 3: ACTIVE (Blue) 🔵
+
 **Currently happening or scheduled**
 
 - **Both**: `in_progress` - Session is currently happening
@@ -78,6 +86,7 @@ Used for disputed or cancelled sessions.
 **Visual**: Blue background with blue dot and dark blue text
 
 ### Priority 4: COMPLETED (Green) 🟢
+
 **Successfully finished**
 
 - **Both**: `completed` - Session successfully completed
@@ -85,6 +94,7 @@ Used for disputed or cancelled sessions.
 **Visual**: Green background with green dot and dark green text
 
 ### Priority 5: PROBLEM (Dark Red) ⚫
+
 **Issue or cancellation**
 
 - **Both**: `disputed` - Session completion is disputed
@@ -135,11 +145,12 @@ Used for disputed or cancelled sessions.
 ## Usage Examples
 
 ### Mentor Dashboard
+
 ```typescript
 // Urgent - Needs immediate attention
 pending_completion: Red badge → "Needs Confirmation" → Dispute button visible
 
-// High Priority - Needs action soon  
+// High Priority - Needs action soon
 pending: Amber badge → "Pending Confirmation" → Confirm/Cancel buttons
 
 // Active - Currently happening
@@ -150,6 +161,7 @@ upcoming: Light blue badge → "Upcoming" → Reschedule/Cancel buttons
 ```
 
 ### Mentee Calendar
+
 ```typescript
 // Urgent - Must act now
 pending_completion: Red badge → "Action Required" → Confirm Completion button
@@ -170,12 +182,14 @@ confirmed: Light blue badge → "Confirmed" → Reschedule/Cancel buttons
 ## Testing Checklist
 
 ### Visual Testing
+
 - [ ] All status badges display correct colors
 - [ ] Dot indicators match badge colors
 - [ ] Text is readable against background (contrast check)
 - [ ] Colors are consistent between mentor and mentee views
 
 ### User Experience Testing
+
 - [ ] Users can quickly identify urgent sessions (red)
 - [ ] Users understand which sessions need action (amber)
 - [ ] Active sessions are clearly visible (blue)
@@ -183,6 +197,7 @@ confirmed: Light blue badge → "Confirmed" → Reschedule/Cancel buttons
 - [ ] Problem states are obvious (dark red)
 
 ### Accessibility Testing
+
 - [ ] Color blind users can distinguish statuses (text labels help)
 - [ ] Screen readers announce status correctly
 - [ ] Keyboard navigation works with colored badges
@@ -201,4 +216,3 @@ The color-coded status system uses a clear visual hierarchy:
 5. ⚫ **Dark Red** = PROBLEM - Disputed or cancelled
 
 This system ensures users can quickly scan their sessions and identify which ones need immediate attention, improving the overall user experience and reducing missed actions.
-

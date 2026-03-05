@@ -32,9 +32,9 @@ export function MentorProfile({
   initialError: _initialError = null,
 }: MentorProfileProps) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<
-    "about" | "sessions" | "reviews"
-  >("about");
+  const [activeTab, setActiveTab] = useState<"about" | "sessions" | "reviews">(
+    "about",
+  );
 
   const [profileData, setProfileData] = useState(
     initialProfileData as MentorProfileType,
@@ -129,14 +129,16 @@ export function MentorProfile({
 
         {/* Content Area with scroll */}
         <div className="flex-1 overflow-y-auto px-4 lg:px-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
-          <div className={`max-w-full lg:max-w-[560px] flex flex-col gap-6 lg:gap-7 ${activeTab === "about" ? "pt-5 lg:pt-8 pb-5 lg:pb-12" : "py-5 lg:py-12"}`}>
+          <div
+            className={`max-w-full lg:max-w-[560px] flex flex-col gap-6 lg:gap-7 ${activeTab === "about" ? "pt-5 lg:pt-8 pb-5 lg:pb-12" : "py-5 lg:py-12"}`}
+          >
             {activeTab === "about" && (
               <>
                 {/* About Section */}
-                <MentorAboutSection 
-                  bio={bio} 
+                <MentorAboutSection
+                  bio={bio}
                   mentorName={profileData.fullName || "Mentor"}
-                  onEditBio={handleEditBio} 
+                  onEditBio={handleEditBio}
                 />
 
                 {/* Background Section */}

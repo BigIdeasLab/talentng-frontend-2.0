@@ -45,7 +45,7 @@ export function RescheduleModal({
         const now = new Date();
         const startDate = format(now, "yyyy-MM-dd");
         const endDate = format(addDays(now, 14), "yyyy-MM-dd");
-        
+
         const data = await getMentorBookingSlots(mentorId, {
           startDate,
           endDate,
@@ -93,7 +93,7 @@ export function RescheduleModal({
           fullDate: dateStr,
           slots,
         }));
-        
+
         setAvailability(transformed);
       } catch (error) {
         console.error("Error fetching slots:", error);

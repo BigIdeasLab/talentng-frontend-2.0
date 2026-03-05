@@ -48,17 +48,22 @@ export function TalentMyApplications() {
   const [mentorshipStatusFilter, setMentorshipStatusFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
-  const [appliedFilters, setAppliedFilters] = useState<{ dateRange: string }>({ dateRange: "all" });
+  const [appliedFilters, setAppliedFilters] = useState<{ dateRange: string }>({
+    dateRange: "all",
+  });
 
   const [jobApplications, setJobApplications] = useState<Application[]>([]);
-  const [displayedJobApplications, setDisplayedJobApplications] = useState<Application[]>([]);
+  const [displayedJobApplications, setDisplayedJobApplications] = useState<
+    Application[]
+  >([]);
   const [jobPagination, setJobPagination] = useState<any>(null);
   const [jobCurrentPage, setJobCurrentPage] = useState(0);
 
   const [mentorshipRequests, setMentorshipRequests] = useState<
     MentorshipRequest[]
   >([]);
-  const [displayedMentorshipRequests, setDisplayedMentorshipRequests] = useState<MentorshipRequest[]>([]);
+  const [displayedMentorshipRequests, setDisplayedMentorshipRequests] =
+    useState<MentorshipRequest[]>([]);
   const [mentorshipPagination, setMentorshipPagination] = useState<any>(null);
   const [mentorshipCurrentPage, setMentorshipCurrentPage] = useState(0);
 
@@ -79,7 +84,12 @@ export function TalentMyApplications() {
   useEffect(() => {
     setJobCurrentPage(0);
     setMentorshipCurrentPage(0);
-  }, [debouncedSearchQuery, appliedFilters.dateRange, jobStatusFilter, mentorshipStatusFilter]);
+  }, [
+    debouncedSearchQuery,
+    appliedFilters.dateRange,
+    jobStatusFilter,
+    mentorshipStatusFilter,
+  ]);
 
   const fetchJobApplications = useCallback(async () => {
     const currentFetchId = ++fetchIdRef.current;
@@ -104,8 +114,12 @@ export function TalentMyApplications() {
       // Discard stale responses
       if (currentFetchId !== fetchIdRef.current) return;
 
-      const dataArray = Array.isArray(data) ? data : ((data as any)?.data ?? []);
-      const paginationData = Array.isArray(data) ? null : ((data as any)?.pagination ?? null);
+      const dataArray = Array.isArray(data)
+        ? data
+        : ((data as any)?.data ?? []);
+      const paginationData = Array.isArray(data)
+        ? null
+        : ((data as any)?.pagination ?? null);
 
       setJobApplications(dataArray);
       setDisplayedJobApplications(dataArray);
@@ -123,7 +137,13 @@ export function TalentMyApplications() {
       });
       setIsLoading(false);
     }
-  }, [toast, debouncedSearchQuery, jobStatusFilter, appliedFilters.dateRange, jobCurrentPage]);
+  }, [
+    toast,
+    debouncedSearchQuery,
+    jobStatusFilter,
+    appliedFilters.dateRange,
+    jobCurrentPage,
+  ]);
 
   const fetchMentorshipRequests = useCallback(async () => {
     const currentFetchId = ++fetchIdRef.current;
@@ -135,7 +155,10 @@ export function TalentMyApplications() {
       }
 
       const response = await getTalentMentorshipRequests({
-        status: mentorshipStatusFilter !== "all" ? (mentorshipStatusFilter as any) : undefined,
+        status:
+          mentorshipStatusFilter !== "all"
+            ? (mentorshipStatusFilter as any)
+            : undefined,
         q: debouncedSearchQuery || undefined,
         dateRange:
           appliedFilters.dateRange && appliedFilters.dateRange !== "all"
@@ -149,7 +172,9 @@ export function TalentMyApplications() {
       if (currentFetchId !== fetchIdRef.current) return;
 
       const data = Array.isArray(response) ? response : response?.data || [];
-      const paginationData = Array.isArray(response) ? null : response?.meta || null;
+      const paginationData = Array.isArray(response)
+        ? null
+        : response?.meta || null;
 
       setMentorshipRequests(data);
       setDisplayedMentorshipRequests(data);
@@ -167,7 +192,13 @@ export function TalentMyApplications() {
       });
       setIsLoading(false);
     }
-  }, [toast, mentorshipStatusFilter, debouncedSearchQuery, appliedFilters.dateRange, mentorshipCurrentPage]);
+  }, [
+    toast,
+    mentorshipStatusFilter,
+    debouncedSearchQuery,
+    appliedFilters.dateRange,
+    mentorshipCurrentPage,
+  ]);
 
   useEffect(() => {
     if (activeTab === "jobs") {
@@ -187,9 +218,12 @@ export function TalentMyApplications() {
     activeTab === "jobs" ? jobStatusFilter : mentorshipStatusFilter;
   const setStatusFilter =
     activeTab === "jobs" ? setJobStatusFilter : setMentorshipStatusFilter;
-  const currentPagination = activeTab === "jobs" ? jobPagination : mentorshipPagination;
-  const currentPage = activeTab === "jobs" ? jobCurrentPage : mentorshipCurrentPage;
-  const setCurrentPage = activeTab === "jobs" ? setJobCurrentPage : setMentorshipCurrentPage;
+  const currentPagination =
+    activeTab === "jobs" ? jobPagination : mentorshipPagination;
+  const currentPage =
+    activeTab === "jobs" ? jobCurrentPage : mentorshipCurrentPage;
+  const setCurrentPage =
+    activeTab === "jobs" ? setJobCurrentPage : setMentorshipCurrentPage;
 
   return (
     <div className="h-screen overflow-x-hidden bg-white flex flex-col">
@@ -303,12 +337,16 @@ export function TalentMyApplications() {
               <EmptyState
                 icon={Briefcase}
                 title={
-                  debouncedSearchQuery || jobStatusFilter !== "all" || appliedFilters.dateRange !== "all"
+                  debouncedSearchQuery ||
+                  jobStatusFilter !== "all" ||
+                  appliedFilters.dateRange !== "all"
                     ? "No applications found"
                     : "No job applications yet"
                 }
                 description={
-                  debouncedSearchQuery || jobStatusFilter !== "all" || appliedFilters.dateRange !== "all"
+                  debouncedSearchQuery ||
+                  jobStatusFilter !== "all" ||
+                  appliedFilters.dateRange !== "all"
                     ? "Try adjusting your filters or search query"
                     : "Start applying to jobs to see your applications here"
                 }
@@ -327,12 +365,16 @@ export function TalentMyApplications() {
             <EmptyState
               icon={Users}
               title={
-                debouncedSearchQuery || mentorshipStatusFilter !== "all" || appliedFilters.dateRange !== "all"
+                debouncedSearchQuery ||
+                mentorshipStatusFilter !== "all" ||
+                appliedFilters.dateRange !== "all"
                   ? "No requests found"
                   : "No mentorship requests yet"
               }
               description={
-                debouncedSearchQuery || mentorshipStatusFilter !== "all" || appliedFilters.dateRange !== "all"
+                debouncedSearchQuery ||
+                mentorshipStatusFilter !== "all" ||
+                appliedFilters.dateRange !== "all"
                   ? "Try adjusting your filters or search query"
                   : "Find mentors and send request to see them here"
               }
@@ -356,7 +398,8 @@ export function TalentMyApplications() {
                   currentPagination.offset + currentPagination.limit,
                   currentPagination.total,
                 )}{" "}
-                of {currentPagination.total} {activeTab === "jobs" ? "applications" : "requests"}
+                of {currentPagination.total}{" "}
+                {activeTab === "jobs" ? "applications" : "requests"}
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -367,7 +410,8 @@ export function TalentMyApplications() {
                   Previous
                 </button>
                 <span className="text-[13px] text-[#525866] font-inter-tight">
-                  Page {currentPagination.currentPage} of {currentPagination.totalPages}
+                  Page {currentPagination.currentPage} of{" "}
+                  {currentPagination.totalPages}
                 </span>
                 <button
                   onClick={() => setCurrentPage(currentPage + 1)}

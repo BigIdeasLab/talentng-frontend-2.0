@@ -5,6 +5,7 @@
 Add debounced search, loading optimization, and filter count calculation to the main component.
 
 ### Sub-tasks:
+
 - [ ] 1.1 Add `debouncedSearchQuery` state variable
 - [ ] 1.2 Add `isInitialLoadRef` ref with initial value `true`
 - [ ] 1.3 Add `searchTimeoutRef` ref for debounce timer
@@ -18,6 +19,7 @@ Add debounced search, loading optimization, and filter count calculation to the 
 Implement loading optimization to show skeleton only on initial load.
 
 ### Sub-tasks:
+
 - [ ] 2.1 Wrap skeleton loader display with `isInitialLoadRef.current` check
 - [ ] 2.2 Set `isInitialLoadRef.current = false` after first successful data fetch
 - [ ] 2.3 Keep current opportunities visible during subsequent fetches
@@ -29,6 +31,7 @@ Implement loading optimization to show skeleton only on initial load.
 Add loading indicator, clear button, and filter count badge.
 
 ### Sub-tasks:
+
 - [ ] 3.1 Add `isSearching` prop to SearchAndFiltersProps interface
 - [ ] 3.2 Add `onClearSearch` prop to SearchAndFiltersProps interface
 - [ ] 3.3 Add `filterCount` prop to SearchAndFiltersProps interface
@@ -43,6 +46,7 @@ Add loading indicator, clear button, and filter count badge.
 Modify the shared filter modal to auto-apply filters when clicking outside.
 
 ### Sub-tasks:
+
 - [ ] 4.1 Ensure `handleApplyFilter` or `onApply` is wrapped in useCallback
 - [ ] 4.2 Update useEffect to call `onApply(filters)` before `onClose()` when clicking outside modal
 - [ ] 4.3 Ensure Apply Filter button still works for explicit application
@@ -53,6 +57,7 @@ Modify the shared filter modal to auto-apply filters when clicking outside.
 Update empty state logic to show different messages based on context.
 
 ### Sub-tasks:
+
 - [ ] 5.1 Create `getEmptyStateProps` helper function in EmployerOpportunities
 - [ ] 5.2 Implement logic: if `searchQuery` exists, show "No opportunities found" / "Try adjusting your search query or filters"
 - [ ] 5.3 Implement logic: if `appliedFilters` exist (and no search), show "No opportunities found" / "Try adjusting your filters"
@@ -64,6 +69,7 @@ Update empty state logic to show different messages based on context.
 Connect all updated components with proper props and state.
 
 ### Sub-tasks:
+
 - [ ] 6.1 Pass `isSearching` prop to SearchAndFilters (derived from isPending or isLoading during search)
 - [ ] 6.2 Pass `onClearSearch` handler to SearchAndFilters
 - [ ] 6.3 Pass `filterCount` from `getFilterCount()` to SearchAndFilters
@@ -75,6 +81,7 @@ Connect all updated components with proper props and state.
 Verify search debounce works correctly with 500ms delay.
 
 ### Sub-tasks:
+
 - [ ] 7.1 Test that typing in search input waits 500ms before triggering API call
 - [ ] 7.2 Test that rapid typing resets the debounce timer
 - [ ] 7.3 Test that clearing search via X button immediately triggers API call
@@ -86,6 +93,7 @@ Verify search debounce works correctly with 500ms delay.
 Verify filters auto-apply when clicking outside the modal.
 
 ### Sub-tasks:
+
 - [ ] 8.1 Test that clicking outside filter modal applies current filter selections
 - [ ] 8.2 Test that clicking outside filter modal closes the modal
 - [ ] 8.3 Test that auto-applied filters trigger API call with correct parameters
@@ -96,6 +104,7 @@ Verify filters auto-apply when clicking outside the modal.
 Verify loading states work correctly for initial load vs subsequent updates.
 
 ### Sub-tasks:
+
 - [ ] 9.1 Test that skeleton loader appears on initial page load
 - [ ] 9.2 Test that skeleton loader does NOT appear when applying filters after initial load
 - [ ] 9.3 Test that skeleton loader does NOT appear when changing search query after initial load
@@ -106,6 +115,7 @@ Verify loading states work correctly for initial load vs subsequent updates.
 Verify empty state displays correct messages based on context.
 
 ### Sub-tasks:
+
 - [ ] 10.1 Test empty state with active filters shows "No opportunities found" / "Try adjusting your filters"
 - [ ] 10.2 Test empty state with search query shows "No opportunities found" / "Try adjusting your search query or filters"
 - [ ] 10.3 Test empty state with no filters/search shows default message
@@ -115,6 +125,7 @@ Verify empty state displays correct messages based on context.
 Verify filter count badge displays correct count.
 
 ### Sub-tasks:
+
 - [ ] 11.1 Test that filter count includes skills and types
 - [ ] 11.2 Test that filter button shows purple styling when count > 0
 - [ ] 11.3 Test that filter button shows default styling when count = 0
@@ -125,6 +136,7 @@ Verify filter count badge displays correct count.
 Implement property-based tests for all 11 correctness properties.
 
 ### Sub-tasks:
+
 - [ ] 12.1 Write PBT for Property 1: Auto-Apply Filters on Outside Click
 - [ ] 12.2 Write PBT for Property 2: Filter Button Visual State
 - [ ] 12.3 Write PBT for Property 3: Filter Count Badge Accuracy

@@ -390,16 +390,15 @@ export const ShowcaseSkillsStep = ({
                     Select one or more options...
                   </option>
                   {AVAILABILITY_OPTIONS.map((opt) => (
-                      <option
-                        key={opt}
-                        value={opt}
-                        disabled={formData.availability.includes(opt)}
-                        className="text-black"
-                      >
-                        {formData.availability.includes(opt) ? `✓ ${opt}` : opt}
-                      </option>
-                    ),
-                  )}
+                    <option
+                      key={opt}
+                      value={opt}
+                      disabled={formData.availability.includes(opt)}
+                      className="text-black"
+                    >
+                      {formData.availability.includes(opt) ? `✓ ${opt}` : opt}
+                    </option>
+                  ))}
                 </select>
                 {/* Selected Availability */}
                 {formData.availability.length > 0 && (

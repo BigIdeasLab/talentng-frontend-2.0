@@ -50,7 +50,8 @@ export function MentorshipRequestCard({ request }: MentorshipRequestCardProps) {
   const scheduledDate = new Date(`${datePart}T${request.scheduledTime}:00`);
 
   // Check if location is a URL (meeting link)
-  const isLocationUrl = request.location && /^https?:\/\//i.test(request.location);
+  const isLocationUrl =
+    request.location && /^https?:\/\//i.test(request.location);
 
   const handleCopyLink = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -61,7 +62,7 @@ export function MentorshipRequestCard({ request }: MentorshipRequestCardProps) {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       } catch (err) {
-        console.error('Failed to copy link:', err);
+        console.error("Failed to copy link:", err);
       }
     }
   };
@@ -151,8 +152,8 @@ export function MentorshipRequestCard({ request }: MentorshipRequestCardProps) {
               {request.duration} mins
             </span>
           </div>
-          {request.location && (
-            isLocationUrl ? (
+          {request.location &&
+            (isLocationUrl ? (
               <div className="flex items-center gap-1">
                 <a
                   href={request.location}
@@ -185,8 +186,7 @@ export function MentorshipRequestCard({ request }: MentorshipRequestCardProps) {
                   {request.location}
                 </span>
               </div>
-            )
-          )}
+            ))}
         </div>
       </div>
     </Link>

@@ -1,6 +1,7 @@
 # Filter & Search UI Patterns Study
 
 ## Overview
+
 This document captures the consistent patterns used across recruiter and talent pages for filter buttons, search functionality, loading states, and empty states.
 
 ---
@@ -8,12 +9,13 @@ This document captures the consistent patterns used across recruiter and talent 
 ## 1. Filter Button Styling
 
 ### Base Styling
+
 ```tsx
 <button
   className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
     filterCount > 0
-      ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"  // Active state
-      : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"  // Default state
+      ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]" // Active state
+      : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent" // Default state
   }`}
 >
   <SlidersHorizontal className="w-[15px] h-[15px]" />
@@ -27,6 +29,7 @@ This document captures the consistent patterns used across recruiter and talent 
 ```
 
 ### Key Features:
+
 - **Height**: Fixed at `38px` to match search bar
 - **Active State**: Purple background `#8463FF0D` with purple border when filters applied
 - **Badge**: Shows count of active filters in a purple circle
@@ -38,6 +41,7 @@ This document captures the consistent patterns used across recruiter and talent 
 ## 2. Search Bar Styling
 
 ### Base Structure
+
 ```tsx
 <div className="flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border border-[#E1E4EA] rounded-[8px]">
   {isLoading ? (
@@ -64,6 +68,7 @@ This document captures the consistent patterns used across recruiter and talent 
 ```
 
 ### Key Features:
+
 - **Max Width**: `585px` for optimal readability
 - **Loading State**: Spinner replaces search icon when loading
 - **Clear Button**: X icon appears when there's text, clears on click
@@ -75,6 +80,7 @@ This document captures the consistent patterns used across recruiter and talent 
 ## 3. Search Debouncing
 
 ### Implementation Pattern
+
 ```tsx
 const [searchQuery, setSearchQuery] = useState("");
 const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
@@ -95,6 +101,7 @@ useEffect(() => {
 ```
 
 ### Alternative Pattern (DiscoverTalent)
+
 ```tsx
 const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 const debounceTimer = useRef<NodeJS.Timeout>();
@@ -119,6 +126,7 @@ const handleSearchChange = useCallback(
 ```
 
 ### Key Features:
+
 - **Delay**: 300-500ms is standard
 - **Local State**: Immediate UI update, debounced API call
 - **Cleanup**: Clear timeout on unmount
@@ -131,8 +139,11 @@ const handleSearchChange = useCallback(
 ### Initial Load vs Filter Changes
 
 #### Pattern 1: Show Previous Data During Filter Changes
+
 ```tsx
-const [displayedApplicants, setDisplayedApplicants] = useState<MappedApplicant[]>([]);
+const [displayedApplicants, setDisplayedApplicants] = useState<
+  MappedApplicant[]
+>([]);
 const [isInitialLoad, setIsInitialLoad] = useState(true);
 const lastProcessedDataRef = useRef<any>(null);
 
@@ -155,17 +166,21 @@ if (isInitialLoad && (isLoading || isPending || !response)) {
 ```
 
 #### Pattern 2: Show Skeleton for All Loading
+
 ```tsx
-{isLoading ? (
-  <ApplicationsSkeleton />
-) : (
-  <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
-    {/* Content */}
-  </div>
-)}
+{
+  isLoading ? (
+    <ApplicationsSkeleton />
+  ) : (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
+      {/* Content */}
+    </div>
+  );
+}
 ```
 
 ### Key Features:
+
 - **Initial Load**: Show full skeleton
 - **Subsequent Loads**: Keep previous data visible (Pattern 1) OR show skeleton (Pattern 2)
 - **Ref Tracking**: Use `useRef` to track if data actually changed
@@ -176,6 +191,7 @@ if (isInitialLoad && (isLoading || isPending || !response)) {
 ## 5. Context-Aware Empty States
 
 ### Implementation Pattern
+
 ```tsx
 {filteredApplicants.length === 0 ? (
   <EmptyState
@@ -205,6 +221,7 @@ if (isInitialLoad && (isLoading || isPending || !response)) {
 ```
 
 ### Message Priority:
+
 1. **Search Active**: "Try adjusting your search query"
 2. **Filters Active**: "Try adjusting your filters"
 3. **Tab-Specific**: Custom message based on active tab
@@ -215,6 +232,7 @@ if (isInitialLoad && (isLoading || isPending || !response)) {
 ## 6. Filter Modal Integration
 
 ### Modal Trigger Pattern
+
 ```tsx
 const [isFilterOpen, setIsFilterOpen] = useState(false);
 const [filters, setFilters] = useState<ApplicantFilterState>({
@@ -224,19 +242,18 @@ const [filters, setFilters] = useState<ApplicantFilterState>({
 });
 
 <div className="relative">
-  <button onClick={() => setIsFilterOpen(true)}>
-    {/* Filter button */}
-  </button>
+  <button onClick={() => setIsFilterOpen(true)}>{/* Filter button */}</button>
   <ApplicantFilterModal
     isOpen={isFilterOpen}
     onClose={() => setIsFilterOpen(false)}
     onApply={(newFilters) => setFilters(newFilters)}
     initialFilters={filters}
   />
-</div>
+</div>;
 ```
 
 ### Filter Count Calculation
+
 ```tsx
 const getFilterCount = () => {
   let count = 0;
@@ -252,6 +269,7 @@ const getFilterCount = () => {
 ## 7. Tab Navigation
 
 ### Standard Tab Pattern
+
 ```tsx
 const TABS = [
   { id: "all", label: "All" },
@@ -274,10 +292,11 @@ const TABS = [
       <span className="text-[13px] font-inter-tight">{tab.label}</span>
     </button>
   ))}
-</div>
+</div>;
 ```
 
 ### Key Features:
+
 - **Active State**: Black text with 2px bottom border
 - **Inactive State**: 30% opacity black text
 - **Hover**: 50% opacity on inactive tabs
@@ -289,6 +308,7 @@ const TABS = [
 ## 8. Server-Side Filtering Pattern
 
 ### Query Params Construction
+
 ```tsx
 const queryParams = useMemo(
   () => ({
@@ -308,13 +328,15 @@ const queryParams = useMemo(
   [debouncedSearchQuery, activeTab, filters, sortBy, currentPage],
 );
 
-const { data: response, isLoading } = useRecruiterApplicationsQuery(queryParams);
+const { data: response, isLoading } =
+  useRecruiterApplicationsQuery(queryParams);
 
 // Server handles all filtering — use results directly
 const filteredApplicants = displayedApplicants;
 ```
 
 ### Key Features:
+
 - **Conditional Params**: Only include non-default values
 - **Memoization**: Use `useMemo` to prevent unnecessary re-renders
 - **No Client Filtering**: Trust server results completely
@@ -325,11 +347,18 @@ const filteredApplicants = displayedApplicants;
 ## 9. Sort Dropdown Pattern
 
 ### Implementation
+
 ```tsx
 <div className="relative group flex-shrink-0">
   <button className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] hover:bg-gray-100 transition-colors">
     <span className="text-[13px] font-normal text-black font-inter-tight">
-      {sortBy === "newest" ? "Newest" : sortBy === "oldest" ? "Oldest" : sortBy === "name-asc" ? "A-Z" : "Z-A"}
+      {sortBy === "newest"
+        ? "Newest"
+        : sortBy === "oldest"
+          ? "Oldest"
+          : sortBy === "name-asc"
+            ? "A-Z"
+            : "Z-A"}
     </span>
     <ChevronDown className="w-4 h-4" />
   </button>
@@ -344,7 +373,9 @@ const filteredApplicants = displayedApplicants;
         key={option.value}
         onClick={() => setSortBy(option.value)}
         className={`w-full text-left px-3 py-2 text-[12px] hover:bg-gray-50 first:rounded-t-[8px] last:rounded-b-[8px] ${
-          sortBy === option.value ? "bg-[#5C30FF]/10 text-[#5C30FF]" : "text-black"
+          sortBy === option.value
+            ? "bg-[#5C30FF]/10 text-[#5C30FF]"
+            : "text-black"
         }`}
       >
         {option.label}
@@ -359,35 +390,38 @@ const filteredApplicants = displayedApplicants;
 ## 10. Pagination Pattern
 
 ### Implementation
+
 ```tsx
-{pagination && pagination.total > 0 && (
-  <div className="flex items-center justify-between px-[24px] py-[16px] border-t border-[#E1E4EA] flex-shrink-0">
-    <div className="text-[13px] text-[#525866] font-inter-tight">
-      Showing {pagination.offset + 1} to{" "}
-      {Math.min(pagination.offset + pagination.limit, pagination.total)}{" "}
-      of {pagination.total} results
+{
+  pagination && pagination.total > 0 && (
+    <div className="flex items-center justify-between px-[24px] py-[16px] border-t border-[#E1E4EA] flex-shrink-0">
+      <div className="text-[13px] text-[#525866] font-inter-tight">
+        Showing {pagination.offset + 1} to{" "}
+        {Math.min(pagination.offset + pagination.limit, pagination.total)} of{" "}
+        {pagination.total} results
+      </div>
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => setCurrentPage(currentPage - 1)}
+          disabled={!pagination.hasPreviousPage}
+          className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+        >
+          Previous
+        </button>
+        <span className="text-[13px] text-[#525866] font-inter-tight">
+          Page {pagination.currentPage} of {pagination.totalPages}
+        </span>
+        <button
+          onClick={() => setCurrentPage(currentPage + 1)}
+          disabled={!pagination.hasNextPage}
+          className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+        >
+          Next
+        </button>
+      </div>
     </div>
-    <div className="flex items-center gap-2">
-      <button
-        onClick={() => setCurrentPage(currentPage - 1)}
-        disabled={!pagination.hasPreviousPage}
-        className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
-      >
-        Previous
-      </button>
-      <span className="text-[13px] text-[#525866] font-inter-tight">
-        Page {pagination.currentPage} of {pagination.totalPages}
-      </span>
-      <button
-        onClick={() => setCurrentPage(currentPage + 1)}
-        disabled={!pagination.hasNextPage}
-        className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
-      >
-        Next
-      </button>
-    </div>
-  </div>
-)}
+  );
+}
 ```
 
 ---

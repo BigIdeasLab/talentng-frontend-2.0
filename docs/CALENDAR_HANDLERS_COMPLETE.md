@@ -3,11 +3,13 @@
 ## Date: 2026-03-05
 
 ## Overview
+
 Successfully connected all TalentSessionCard action handlers to the Calendar page, enabling full session management functionality for talent users.
 
 **Important**: The calendar endpoint now includes `pending_completion` status, which means mentees can see sessions that need their confirmation. This ensures mentees don't miss sessions requiring action.
 
 ### Session Statuses Shown in Calendar:
+
 - `pending` - Waiting for mentor to confirm
 - `confirmed` - Confirmed, waiting to start
 - `rescheduled` - Rescheduled, waiting to start
@@ -21,12 +23,13 @@ Successfully connected all TalentSessionCard action handlers to the Calendar pag
 ### 1. ✅ Added Session Management Imports
 
 #### File: `app/(business)/calendar/page.tsx`
+
 ```typescript
-import { 
-  cancelSession, 
-  rescheduleSession, 
+import {
+  cancelSession,
+  rescheduleSession,
   confirmSessionCompletion,
-  createSessionReview 
+  createSessionReview,
 } from "@/lib/api/mentorship";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { RescheduleModal } from "@/components/ui/reschedule-modal";
@@ -42,7 +45,8 @@ const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
 const [selectedMentorId, setSelectedMentorId] = useState<string>("");
 const [cancelModalOpen, setCancelModalOpen] = useState(false);
 const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false);
-const [confirmCompletionModalOpen, setConfirmCompletionModalOpen] = useState(false);
+const [confirmCompletionModalOpen, setConfirmCompletionModalOpen] =
+  useState(false);
 const [reviewModalOpen, setReviewModalOpen] = useState(false);
 const [isActionLoading, setIsActionLoading] = useState(false);
 ```
@@ -50,6 +54,7 @@ const [isActionLoading, setIsActionLoading] = useState(false);
 ### 3. ✅ Implemented Handler Functions
 
 #### Cancel Session Handler
+
 ```typescript
 const handleCancelSession = (sessionId: string) => {
   setSelectedSessionId(sessionId);
@@ -64,6 +69,7 @@ const confirmCancelSession = async () => {
 ```
 
 #### Reschedule Session Handler
+
 ```typescript
 const handleRescheduleSession = (sessionId: string) => {
   const session = items.find((item) => item.id === sessionId);
@@ -72,7 +78,11 @@ const handleRescheduleSession = (sessionId: string) => {
   setRescheduleModalOpen(true);
 };
 
-const confirmRescheduleSession = async (date: string, startTime: string, endTime: string) => {
+const confirmRescheduleSession = async (
+  date: string,
+  startTime: string,
+  endTime: string,
+) => {
   // Calls rescheduleSession API with newStartTime and newEndTime
   // Shows toast notification
   // Refreshes data
@@ -80,6 +90,7 @@ const confirmRescheduleSession = async (date: string, startTime: string, endTime
 ```
 
 #### Confirm Completion Handler
+
 ```typescript
 const handleConfirmCompletion = (sessionId: string) => {
   setSelectedSessionId(sessionId);
@@ -94,6 +105,7 @@ const confirmSessionCompletionAction = async () => {
 ```
 
 #### Leave Review Handler
+
 ```typescript
 const handleLeaveReview = (sessionId: string) => {
   setSelectedSessionId(sessionId);
@@ -123,6 +135,7 @@ const confirmLeaveReview = async (rating: number, comment: string) => {
 ### 5. ✅ Added Modal Components
 
 #### Cancel Modal
+
 ```typescript
 <ConfirmationModal
   isOpen={cancelModalOpen}
@@ -138,6 +151,7 @@ const confirmLeaveReview = async (rating: number, comment: string) => {
 ```
 
 #### Reschedule Modal
+
 ```typescript
 <RescheduleModal
   isOpen={rescheduleModalOpen}
@@ -150,6 +164,7 @@ const confirmLeaveReview = async (rating: number, comment: string) => {
 ```
 
 #### Confirm Completion Modal
+
 ```typescript
 <ConfirmationModal
   isOpen={confirmCompletionModalOpen}
@@ -165,6 +180,7 @@ const confirmLeaveReview = async (rating: number, comment: string) => {
 ```
 
 #### Review Modal
+
 ```typescript
 <ReviewModal
   isOpen={reviewModalOpen}
@@ -180,6 +196,7 @@ const confirmLeaveReview = async (rating: number, comment: string) => {
 #### File: `components/ui/review-modal.tsx`
 
 **Features:**
+
 - Star rating selector (1-5 stars)
 - Hover effect on stars
 - Optional comment textarea
@@ -189,6 +206,7 @@ const confirmLeaveReview = async (rating: number, comment: string) => {
 - Consistent styling with other modals
 
 **Props:**
+
 ```typescript
 interface ReviewModalProps {
   isOpen: boolean;
@@ -206,6 +224,7 @@ interface ReviewModalProps {
 All API functions from `lib/api/mentorship/index.ts`:
 
 ### Talent Session Actions:
+
 - ✅ `cancelSession(sessionId, data?)` - Cancel session
 - ✅ `rescheduleSession(sessionId, data)` - Reschedule session
   - Uses `newStartTime` and `newEndTime` fields
@@ -217,15 +236,15 @@ All API functions from `lib/api/mentorship/index.ts`:
 
 ## Status-Based Actions (Per SESSION_FLOW_GUIDE.md)
 
-| Status | Available Actions | Why It's in Calendar |
-|--------|------------------|---------------------|
-| `pending` | Cancel | Waiting for mentor confirmation |
-| `confirmed` / `rescheduled` | Reschedule + Cancel | Upcoming session |
-| `in_progress` | None (status text only) | Currently happening - Join Now! |
-| `pending_completion` | Confirm Completion | **Needs mentee action** - Session ended, awaiting confirmation |
-| `completed` | Leave Review (if not reviewed) | Past session - can leave feedback |
-| `cancelled` | None | Cancelled session (for reference) |
-| `disputed` | None | Disputed session (for reference) |
+| Status                      | Available Actions              | Why It's in Calendar                                           |
+| --------------------------- | ------------------------------ | -------------------------------------------------------------- |
+| `pending`                   | Cancel                         | Waiting for mentor confirmation                                |
+| `confirmed` / `rescheduled` | Reschedule + Cancel            | Upcoming session                                               |
+| `in_progress`               | None (status text only)        | Currently happening - Join Now!                                |
+| `pending_completion`        | Confirm Completion             | **Needs mentee action** - Session ended, awaiting confirmation |
+| `completed`                 | Leave Review (if not reviewed) | Past session - can leave feedback                              |
+| `cancelled`                 | None                           | Cancelled session (for reference)                              |
+| `disputed`                  | None                           | Disputed session (for reference)                               |
 
 **Key Point**: The `pending_completion` status is crucial - it ensures mentees see sessions that need their confirmation action. Without this, mentees might miss confirming completed sessions.
 
@@ -234,6 +253,7 @@ All API functions from `lib/api/mentorship/index.ts`:
 ## User Experience Flow
 
 ### Cancel Session:
+
 1. User clicks "Cancel" button on session card
 2. Confirmation modal appears
 3. User confirms cancellation
@@ -242,6 +262,7 @@ All API functions from `lib/api/mentorship/index.ts`:
 6. Session list refreshes automatically
 
 ### Reschedule Session:
+
 1. User clicks "Reschedule" button on session card
 2. Reschedule modal appears with mentor's available slots
 3. User selects new date and time
@@ -251,6 +272,7 @@ All API functions from `lib/api/mentorship/index.ts`:
 7. Session list refreshes automatically
 
 ### Confirm Completion:
+
 1. User clicks "Confirm Completion" button on session card
 2. Confirmation modal appears
 3. User confirms completion
@@ -260,6 +282,7 @@ All API functions from `lib/api/mentorship/index.ts`:
 7. Session status changes to "completed"
 
 ### Leave Review:
+
 1. User clicks "Leave Review" button on completed session card
 2. Review modal appears
 3. User selects star rating (1-5)
@@ -275,6 +298,7 @@ All API functions from `lib/api/mentorship/index.ts`:
 ## Error Handling
 
 All handlers include try-catch blocks with:
+
 - Loading states during API calls
 - Error toast notifications on failure
 - Proper cleanup of modal states
@@ -292,6 +316,7 @@ All handlers include try-catch blocks with:
 ## Testing Checklist
 
 ### ✅ Implementation Complete
+
 - [x] Cancel session handler connected
 - [x] Reschedule session handler connected
 - [x] Confirm completion handler connected
@@ -302,6 +327,7 @@ All handlers include try-catch blocks with:
 - [x] Proper API parameter names used
 
 ### 🔄 User Testing Required
+
 - [ ] Test cancel session flow
 - [ ] Test reschedule session flow
 - [ ] Test confirm completion flow
@@ -345,4 +371,3 @@ The Calendar page now has full session management functionality for talent users
 9. ✅ Compliant with SESSION_FLOW_GUIDE.md
 
 Talent users can now manage their mentorship sessions directly from the Calendar page!
-

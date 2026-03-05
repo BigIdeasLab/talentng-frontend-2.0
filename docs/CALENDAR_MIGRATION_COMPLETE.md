@@ -3,6 +3,7 @@
 ## Date: 2026-03-05
 
 ## Overview
+
 Successfully migrated the talent "Upcoming" page to "Calendar" to align with the new API endpoint naming and better reflect that it includes ongoing events.
 
 ---
@@ -10,6 +11,7 @@ Successfully migrated the talent "Upcoming" page to "Calendar" to align with the
 ## Changes Made
 
 ### 1. ✅ Route Renamed
+
 - **Old**: `app/(business)/upcoming/`
 - **New**: `app/(business)/calendar/`
 - **Method**: Used `smartRelocate` to move folder
@@ -18,17 +20,19 @@ Successfully migrated the talent "Upcoming" page to "Calendar" to align with the
 ### 2. ✅ API Endpoints Updated
 
 #### File: `lib/api/talent/index.ts`
+
 ```typescript
 // OLD
-GET /talent/upcoming
-GET /talent/upcoming/count
+GET / talent / upcoming;
+GET / talent / upcoming / count;
 
 // NEW
-GET /talent/calendar
-GET /talent/calendar/count
+GET / talent / calendar;
+GET / talent / calendar / count;
 ```
 
 **Functions Updated:**
+
 - `getTalentUpcoming()` - Now calls `/talent/calendar`
 - `getTalentUpcomingCount()` - Now calls `/talent/calendar/count`
 
@@ -37,6 +41,7 @@ GET /talent/calendar/count
 ### 3. ✅ Page Title Updated
 
 #### File: `app/(business)/calendar/page.tsx`
+
 ```typescript
 // OLD
 <h1>Upcoming</h1>
@@ -48,6 +53,7 @@ GET /talent/calendar/count
 ### 4. ✅ Navigation Links Updated
 
 #### File: `components/layouts/sidebars/TalentSidebar.tsx`
+
 ```typescript
 // OLD
 {
@@ -65,12 +71,13 @@ GET /talent/calendar/count
 ```
 
 #### File: `components/talent/dashboard/UpcomingInterviews.tsx`
+
 ```typescript
 // OLD - Two occurrences
-href="/upcoming"
+href = "/upcoming";
 
 // NEW
-href="/calendar"
+href = "/calendar";
 ```
 
 ---
@@ -88,6 +95,7 @@ href="/calendar"
 ## What Was NOT Changed
 
 ### Session Status Labels (Intentionally Kept)
+
 The following files have "Upcoming" as a **status label** for sessions, which is correct and should NOT be changed:
 
 1. `app/(business)/sessions/page.tsx` - Tab label for "Upcoming" sessions
@@ -101,9 +109,11 @@ These refer to the **status** of a session (pending/upcoming/in_progress/complet
 ## Backward Compatibility
 
 According to TALENT_UPCOMING_API_GUIDE.md:
+
 > The old `/upcoming` endpoints still work but are marked as deprecated.
 
 This means:
+
 - ✅ Backend still supports old `/talent/upcoming` endpoint
 - ✅ Migration is safe - no breaking changes
 - ⚠️ Old endpoint will be removed in future - migration complete on frontend
@@ -113,6 +123,7 @@ This means:
 ## Testing Checklist
 
 ### ✅ Completed
+
 - [x] Page loads at new `/calendar` route
 - [x] API calls use new `/calendar` endpoint
 - [x] Navigation links point to `/calendar`
@@ -123,6 +134,7 @@ This means:
 - [x] Dashboard links updated
 
 ### 🔄 User Testing Required
+
 - [ ] Test navigation from sidebar
 - [ ] Test navigation from dashboard
 - [ ] Verify data loads correctly
@@ -137,6 +149,7 @@ This means:
 ## API Alignment
 
 The frontend now correctly uses:
+
 - ✅ `GET /api/v1/talent/calendar` - Main calendar endpoint
 - ✅ `GET /api/v1/talent/calendar/count` - Count endpoint
 
@@ -156,6 +169,7 @@ This aligns with the backend changes documented in TALENT_UPCOMING_API_GUIDE.md.
 ## Summary
 
 Migration completed successfully! The talent calendar page is now:
+
 - ✅ Accessible at `/calendar` route
 - ✅ Using `/talent/calendar` API endpoint
 - ✅ Labeled as "Calendar" in navigation

@@ -4,10 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useProfile } from "@/hooks/useProfile";
 import { useRecruiterOpportunitiesQuery } from "@/hooks/useRecruiterOpportunities";
-import type {
-  TabType,
-  SortType,
-} from "@/lib/types";
+import type { TabType, SortType } from "@/lib/types";
 import { transformOpportunityToCard } from "@/lib/utils/opportunities";
 import { OpportunitiesHeader } from "./OpportunitiesHeader";
 import { SearchAndFilters } from "./SearchAndFilters";
@@ -15,9 +12,7 @@ import { OpportunitiesTabs } from "./OpportunitiesTabs";
 import { OpportunityCard as OpportunityCardComponent } from "./OpportunityCard";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Briefcase } from "lucide-react";
-import {
-  OpportunitiesFilterModal,
-} from "@/components/talent/opportunities/OpportunitiesFilterModal";
+import { OpportunitiesFilterModal } from "@/components/talent/opportunities/OpportunitiesFilterModal";
 import { RoleColorProvider } from "@/lib/theme/RoleColorContext";
 import { OpportunitiesSkeleton } from "./OpportunitiesSkeleton";
 
@@ -32,7 +27,7 @@ export function EmployerOpportunities() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<any>(null);
   const [offset, setOffset] = useState(0);
-  
+
   const LIMIT = 20;
   const isInitialLoadRef = useRef(true);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -70,9 +65,7 @@ export function EmployerOpportunities() {
     ...(appliedFilters?.experienceLevels?.length
       ? { experienceLevel: appliedFilters.experienceLevels.join(",") }
       : {}),
-    ...(appliedFilters?.location
-      ? { location: appliedFilters.location }
-      : {}),
+    ...(appliedFilters?.location ? { location: appliedFilters.location } : {}),
     ...(appliedFilters?.minBudget && appliedFilters.minBudget > 0
       ? { minBudget: appliedFilters.minBudget }
       : {}),
@@ -119,8 +112,10 @@ export function EmployerOpportunities() {
     let count = 0;
     if (appliedFilters.skills?.length) count += appliedFilters.skills.length;
     if (appliedFilters.types?.length) count += appliedFilters.types.length;
-    if (appliedFilters.categories?.length) count += appliedFilters.categories.length;
-    if (appliedFilters.experienceLevels?.length) count += appliedFilters.experienceLevels.length;
+    if (appliedFilters.categories?.length)
+      count += appliedFilters.categories.length;
+    if (appliedFilters.experienceLevels?.length)
+      count += appliedFilters.experienceLevels.length;
     if (appliedFilters.location) count += 1;
     if (appliedFilters.minBudget && appliedFilters.minBudget > 0) count += 1;
     if (appliedFilters.maxBudget && appliedFilters.maxBudget > 0) count += 1;
@@ -226,8 +221,10 @@ export function EmployerOpportunities() {
                           appliedFilters.categories?.length > 0 ||
                           appliedFilters.experienceLevels?.length > 0 ||
                           appliedFilters.location ||
-                          (appliedFilters.minBudget && appliedFilters.minBudget > 0) ||
-                          (appliedFilters.maxBudget && appliedFilters.maxBudget > 0))
+                          (appliedFilters.minBudget &&
+                            appliedFilters.minBudget > 0) ||
+                          (appliedFilters.maxBudget &&
+                            appliedFilters.maxBudget > 0))
                       ? "Try adjusting your filters"
                       : activeTab === "draft"
                         ? "You haven't created any draft opportunities yet"
@@ -249,59 +246,61 @@ export function EmployerOpportunities() {
                   ))}
                 </div>
                 {/* Pagination Controls */}
-                {opportunitiesRaw?.pagination && opportunitiesRaw.pagination.totalPages > 1 && (
-                  <div className="flex items-center justify-between py-4">
-                    <button
-                      onClick={handlePreviousPage}
-                      disabled={!opportunitiesRaw.pagination.hasPreviousPage}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#E1E4EA] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#F5F5F5] transition-colors"
-                    >
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
+                {opportunitiesRaw?.pagination &&
+                  opportunitiesRaw.pagination.totalPages > 1 && (
+                    <div className="flex items-center justify-between py-4">
+                      <button
+                        onClick={handlePreviousPage}
+                        disabled={!opportunitiesRaw.pagination.hasPreviousPage}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#E1E4EA] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#F5F5F5] transition-colors"
                       >
-                        <path
-                          d="M15 18L9 12L15 6"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      <span className="text-sm font-normal">Previous</span>
-                    </button>
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M15 18L9 12L15 6"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        <span className="text-sm font-normal">Previous</span>
+                      </button>
 
-                    <span className="text-sm font-normal text-gray-600">
-                      Page {opportunitiesRaw.pagination.currentPage} of {opportunitiesRaw.pagination.totalPages}
-                    </span>
+                      <span className="text-sm font-normal text-gray-600">
+                        Page {opportunitiesRaw.pagination.currentPage} of{" "}
+                        {opportunitiesRaw.pagination.totalPages}
+                      </span>
 
-                    <button
-                      onClick={handleNextPage}
-                      disabled={!opportunitiesRaw.pagination.hasNextPage}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#E1E4EA] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#F5F5F5] transition-colors"
-                    >
-                      <span className="text-sm font-normal">Next</span>
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
+                      <button
+                        onClick={handleNextPage}
+                        disabled={!opportunitiesRaw.pagination.hasNextPage}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#E1E4EA] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#F5F5F5] transition-colors"
                       >
-                        <path
-                          d="M9 18L15 12L9 6"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                )}
+                        <span className="text-sm font-normal">Next</span>
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M9 18L15 12L9 6"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
               </>
             )}
           </div>

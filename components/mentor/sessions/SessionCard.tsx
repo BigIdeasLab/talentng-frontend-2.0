@@ -1,5 +1,15 @@
 import { useState } from "react";
-import { Clock, X, CheckCircle, Calendar, MapPin, Video, Copy, Check, AlertTriangle } from "lucide-react";
+import {
+  Clock,
+  X,
+  CheckCircle,
+  Calendar,
+  MapPin,
+  Video,
+  Copy,
+  Check,
+  AlertTriangle,
+} from "lucide-react";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface Mentee {
@@ -37,11 +47,11 @@ interface SessionCardProps {
 
 const statusConfig = {
   // Needs immediate attention - Urgent (Red/Orange tones)
-  pending: { 
-    label: "Pending Confirmation", 
-    bg: "#FEF3C7", 
-    dot: "#F59E0B", 
-    text: "#D97706" 
+  pending: {
+    label: "Pending Confirmation",
+    bg: "#FEF3C7",
+    dot: "#F59E0B",
+    text: "#D97706",
   },
   pending_completion: {
     label: "Needs Confirmation",
@@ -49,43 +59,43 @@ const statusConfig = {
     dot: "#EF4444",
     text: "#DC2626",
   },
-  
+
   // Active/In Progress - Blue (attention but not urgent)
-  in_progress: { 
-    label: "In Progress", 
-    bg: "#DBEAFE", 
-    dot: "#3B82F6", 
-    text: "#2563EB" 
+  in_progress: {
+    label: "In Progress",
+    bg: "#DBEAFE",
+    dot: "#3B82F6",
+    text: "#2563EB",
   },
-  
+
   // Scheduled/Upcoming - Neutral Blue
-  upcoming: { 
-    label: "Upcoming", 
-    bg: "#EFF6FF", 
-    dot: "#60A5FA", 
-    text: "#3B82F6" 
+  upcoming: {
+    label: "Upcoming",
+    bg: "#EFF6FF",
+    dot: "#60A5FA",
+    text: "#3B82F6",
   },
-  
+
   // Completed - Green
-  completed: { 
-    label: "Completed", 
-    bg: "#ECFDF3", 
-    dot: "#10B981", 
-    text: "#059669" 
+  completed: {
+    label: "Completed",
+    bg: "#ECFDF3",
+    dot: "#10B981",
+    text: "#059669",
   },
-  
+
   // Problem states - Red
-  disputed: { 
-    label: "Disputed", 
-    bg: "#FEF2F2", 
-    dot: "#DC2626", 
-    text: "#B91C1C" 
+  disputed: {
+    label: "Disputed",
+    bg: "#FEF2F2",
+    dot: "#DC2626",
+    text: "#B91C1C",
   },
-  cancelled: { 
-    label: "Cancelled", 
-    bg: "#FEF2F2", 
-    dot: "#EF4444", 
-    text: "#DC2626" 
+  cancelled: {
+    label: "Cancelled",
+    bg: "#FEF2F2",
+    dot: "#EF4444",
+    text: "#DC2626",
   },
 };
 
@@ -122,7 +132,7 @@ export function SessionCard({
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       } catch (err) {
-        console.error('Failed to copy link:', err);
+        console.error("Failed to copy link:", err);
       }
     }
   };

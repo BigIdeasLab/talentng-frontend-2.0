@@ -65,9 +65,18 @@ export default function ProfilePage() {
             tagline: displayProfile?.professional?.headline || "Employer",
           }}
           stats={{
-            jobsPosted: recruiterData?.stats?.jobsPosted ?? recruiterData?.jobsPosted ?? 0,
-            talentsHired: recruiterData?.stats?.talentsHired ?? recruiterData?.talentsHired ?? 0,
-            responseTime: recruiterData?.stats?.responseTime ?? recruiterData?.responseTime ?? "—",
+            jobsPosted:
+              recruiterData?.stats?.jobsPosted ??
+              recruiterData?.jobsPosted ??
+              0,
+            talentsHired:
+              recruiterData?.stats?.talentsHired ??
+              recruiterData?.talentsHired ??
+              0,
+            responseTime:
+              recruiterData?.stats?.responseTime ??
+              recruiterData?.responseTime ??
+              "—",
           }}
           socialLinks={{
             twitter: recruiterData?.links?.twitter || "",
