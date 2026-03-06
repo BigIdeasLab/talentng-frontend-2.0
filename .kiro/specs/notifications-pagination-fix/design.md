@@ -20,11 +20,12 @@ The notifications API has been updated to return paginated responses in the form
 The bug manifests when the notifications API returns a paginated response object `{data: Notification[], pagination: {...}}` but the client-side code attempts to use array methods on this object. The `getNotifications` and `getServerNotifications` functions are returning the entire paginated response object instead of extracting the `data` array, causing downstream code to fail when it attempts to call array methods like `.filter()`, `.map()`, or iterate over the result.
 
 **Formal Specification:**
+
 ```
 FUNCTION isBugCondition(input)
   INPUT: input of type APIResponse
   OUTPUT: boolean
-  
+
   RETURN input.structure == {data: Array, pagination: Object}
          AND clientExpects(Array)
          AND NOT dataArrayExtracted(input)
@@ -43,6 +44,7 @@ END FUNCTION
 ### Preservation Requirements
 
 **Unchanged Behaviors:**
+
 - All notification filtering (by userId, type, deliveryStatus, read status, recipientRole) must continue to work exactly as before
 - Marking individual notifications as read must continue to work
 - Marking all notifications as read must continue to work
@@ -88,6 +90,7 @@ _For any_ notification operation (filtering, marking as read, counting unread, s
 **Function**: `getNotifications`
 
 **Specific Changes**:
+
 1. **Update Return Type Handling**: Modify the function to expect a paginated response and extract the data array
    - Change the apiClient call to expect `{data: Notification[], pagination: any}`
    - Extract and return only the `data` array
@@ -104,6 +107,7 @@ _For any_ notification operation (filtering, marking as read, counting unread, s
 **Function**: `getServerNotifications`
 
 **Specific Changes**:
+
 1. **Update Return Type Handling**: Modify the function to expect a paginated response and extract the data array
    - Change the serverApiClient call to expect `{data: Notification[], pagination: any}`
    - Extract and return only the `data` array
@@ -122,12 +126,14 @@ The testing strategy follows a two-phase approach: first, surface counterexample
 **Test Plan**: Write tests that call `getNotifications()` and `getServerNotifications()`, then attempt to use array methods on the result. Run these tests on the UNFIXED code to observe failures and confirm the root cause.
 
 **Test Cases**:
+
 1. **Client getNotifications Test**: Call `getNotifications()` and attempt `.filter()` on result (will fail on unfixed code with "filter is not a function")
 2. **Server getServerNotifications Test**: Call `getServerNotifications()` and attempt `.map()` on result (will fail on unfixed code)
 3. **useNotifications Hook Test**: Render a component using `useNotifications` and verify unreadCount calculation (will crash on unfixed code at line 116)
 4. **markAllNotificationsAsRead Test**: Call `markAllNotificationsAsRead()` and verify it iterates correctly (will fail on unfixed code)
 
 **Expected Counterexamples**:
+
 - TypeError: "notifications.filter is not a function"
 - TypeError: "notifications.map is not a function"
 - Possible causes: API returns `{data: [], pagination: {}}` but client expects `[]`
@@ -137,6 +143,7 @@ The testing strategy follows a two-phase approach: first, surface counterexample
 **Goal**: Verify that for all inputs where the bug condition holds (API returns paginated response), the fixed functions produce the expected behavior (extract and return data array).
 
 **Pseudocode:**
+
 ```
 FOR ALL apiResponse WHERE isBugCondition(apiResponse) DO
   result := getNotifications_fixed(filters)
@@ -150,6 +157,7 @@ END FOR
 **Goal**: Verify that for all notification operations, the fixed code produces the same result as the original code would have produced with a direct array.
 
 **Pseudocode:**
+
 ```
 FOR ALL notificationOperation WHERE NOT isBugCondition(operation) DO
   ASSERT notificationOperation_original(directArray) = notificationOperation_fixed(extractedArray)
@@ -157,6 +165,7 @@ END FOR
 ```
 
 **Testing Approach**: Property-based testing is recommended for preservation checking because:
+
 - It generates many test cases automatically across different filter combinations
 - It catches edge cases that manual unit tests might miss (empty arrays, single items, many items)
 - It provides strong guarantees that behavior is unchanged for all notification operations
@@ -164,6 +173,7 @@ END FOR
 **Test Plan**: Observe behavior on UNFIXED code first by mocking the API to return direct arrays, then write property-based tests capturing that behavior and verify it works the same way after the fix.
 
 **Test Cases**:
+
 1. **Filter Preservation**: Verify filtering by userId, type, deliveryStatus, read status, recipientRole produces same results
 2. **Mark as Read Preservation**: Verify marking individual notifications as read works correctly
 3. **Mark All as Read Preservation**: Verify marking all notifications as read works correctly

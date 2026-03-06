@@ -5,6 +5,7 @@
 The useNotifications hook crashes with a runtime TypeError when attempting to calculate the unread notifications count. The error "notifications.filter is not a function" occurs because the API has been updated to return paginated responses in the format `{data: T[], pagination: {...}}`, but the client-side code still expects a direct array of `Notification[]`. This mismatch causes the notifications variable to be an object instead of an array, leading to the failure when calling array methods like `.filter()`.
 
 This bug affects:
+
 - `hooks/useNotifications.ts` (line 116 - unreadCount calculation)
 - `lib/api/notifications/index.ts` (getNotifications function)
 - `lib/api/notifications/server.ts` (getServerNotifications function)

@@ -39,6 +39,7 @@ This audit reviews all frontend API client files to ensure compliance with the s
 These endpoints correctly expect and handle the paginated response format:
 
 #### 1. Opportunities API (`lib/api/opportunities/index.ts`)
+
 - **Status**: ✅ Fully Compliant
 - **Endpoints**:
   - `getOpportunities()` - Returns `PaginatedOpportunitiesResponse`
@@ -49,21 +50,26 @@ These endpoints correctly expect and handle the paginated response format:
 - **Notes**: This is the reference implementation that other endpoints should follow
 
 #### 2. Notifications API (`lib/api/notifications/index.ts`)
+
 - **Status**: ✅ Fully Compliant
 - **Endpoint**: `getNotifications()`
 - **Implementation**:
   ```typescript
-  const response = await apiClient<{ data: Notification[]; pagination: any }>(endpoint);
+  const response = await apiClient<{ data: Notification[]; pagination: any }>(
+    endpoint,
+  );
   return response.data;
   ```
 - **Notes**: Recently fixed to extract `.data` from paginated response
 
 #### 3. Notifications Server API (`lib/api/notifications/server.ts`)
+
 - **Status**: ✅ Fully Compliant
 - **Endpoint**: `getServerNotifications()`
 - **Implementation**: Correctly extracts `.data` from paginated response
 
 #### 4. Applications API - Recruiter (`lib/api/applications/index.ts`)
+
 - **Status**: ✅ Partially Compliant
 - **Compliant Endpoints**:
   - `getRecruiterApplications()` - Returns `PaginatedApplicationsResponse`
@@ -71,6 +77,7 @@ These endpoints correctly expect and handle the paginated response format:
 - **Type Definition**: Has proper `PaginatedApplicationsResponse` type
 
 #### 5. Mentorship API - Requests (`lib/api/mentorship/index.ts`)
+
 - **Status**: ✅ Partially Compliant
 - **Compliant Endpoints**:
   - `getTalentMentorshipRequests()` - Returns `PaginatedResponse<MentorshipRequest>`
@@ -81,14 +88,17 @@ These endpoints correctly expect and handle the paginated response format:
 - **Type Definition**: Has proper `PaginatedResponse<T>` generic type
 
 #### 6. Mentorship API - Sessions (`lib/api/mentorship/index.ts`)
+
 - **Status**: ✅ Compliant
 - **Endpoint**: `getMentorSessions()` - Returns `{ data: any[]; pagination: any }`
 
 #### 7. Talent API - Profiles (`lib/api/talent/index.ts`)
+
 - **Status**: ✅ Compliant
 - **Endpoint**: `listTalentProfiles()` - Returns `PaginatedTalentResponse`
 
 #### 8. Mentorship API - Mentors (`lib/api/mentorship/index.ts`)
+
 - **Status**: ✅ Partially Compliant
 - **Endpoint**: `listMentors()` - Returns `PaginatedResponse<PublicMentor> | PublicMentor[]`
 - **Note**: Has union type, may need clarification on when it returns array vs paginated
@@ -100,6 +110,7 @@ These endpoints correctly expect and handle the paginated response format:
 These endpoints return arrays directly but should be updated to handle the paginated response format:
 
 #### 1. Learning Resources API (`lib/api/learning-resources/index.ts`)
+
 - **Status**: ❌ Non-Compliant
 - **Endpoint**: `getLearningResources()`
 - **Current Implementation**:
@@ -110,27 +121,36 @@ These endpoints return arrays directly but should be updated to handle the pagin
 - **Issue**: Returns array directly, should extract `.data` from paginated response
 - **Recommended Fix**:
   ```typescript
-  const response = await apiClient<{ data: LearningResource[]; pagination: PaginationInfo }>(endpoint);
+  const response = await apiClient<{
+    data: LearningResource[];
+    pagination: PaginationInfo;
+  }>(endpoint);
   return response.data;
   ```
 - **Type Update Needed**: Add `PaginatedLearningResourcesResponse` type
 - **Priority**: 🔴 HIGH (Backend already standardized)
 
 #### 2. Applications API - Talent (`lib/api/applications/index.ts`)
+
 - **Status**: ❌ Non-Compliant
 - **Endpoint**: `getTalentApplications()`
 - **Current Implementation**:
   ```typescript
-  return apiClient<Application[]>(`/talent/applications${queryString ? `?${queryString}` : ""}`);
+  return apiClient<Application[]>(
+    `/talent/applications${queryString ? `?${queryString}` : ""}`,
+  );
   ```
 - **Issue**: Returns array directly, should return paginated response
 - **Recommended Fix**:
   ```typescript
-  return apiClient<PaginatedApplicationsResponse>(`/talent/applications${queryString ? `?${queryString}` : ""}`);
+  return apiClient<PaginatedApplicationsResponse>(
+    `/talent/applications${queryString ? `?${queryString}` : ""}`,
+  );
   ```
 - **Priority**: 🔴 HIGH (Inconsistent with `getRecruiterApplications`)
 
 #### 3. Applications API - Generic (`lib/api/applications/index.ts`)
+
 - **Status**: ❌ Non-Compliant
 - **Endpoints**:
   - `getApplications()` - Returns `Application[]`
@@ -140,6 +160,7 @@ These endpoints return arrays directly but should be updated to handle the pagin
 - **Priority**: 🟡 MEDIUM (Legacy endpoints, may be deprecated)
 
 #### 4. Mentorship API - Sessions List (`lib/api/mentorship/index.ts`)
+
 - **Status**: ❌ Non-Compliant
 - **Endpoint**: `getSessions()`
 - **Current Implementation**:
@@ -159,6 +180,7 @@ These endpoints return arrays directly but should be updated to handle the pagin
 - **Priority**: 🟡 MEDIUM (Custom format, may be intentional)
 
 #### 5. Mentor API - All Mentors (`lib/api/mentor/index.ts`)
+
 - **Status**: ❌ Non-Compliant
 - **Endpoints**:
   - `getAllMentors()` - Returns `MentorProfile[]`
@@ -170,6 +192,7 @@ These endpoints return arrays directly but should be updated to handle the pagin
 - **Priority**: 🟡 MEDIUM (May need backend standardization first)
 
 #### 6. Mentors API (`lib/api/mentors/index.ts`)
+
 - **Status**: ❌ Non-Compliant
 - **Endpoint**: `getMentors()` - Returns `Mentor[]`
 - **Issue**: Returns array directly
@@ -177,6 +200,7 @@ These endpoints return arrays directly but should be updated to handle the pagin
 - **Priority**: 🟡 MEDIUM (Duplicate of mentor API?)
 
 #### 7. Recruiter API - List (`lib/api/recruiter/index.ts`)
+
 - **Status**: ❌ Non-Compliant
 - **Endpoint**: `listRecruiterProfiles()` - Returns `RecruiterProfile[]`
 - **Issue**: Returns array directly
@@ -184,6 +208,7 @@ These endpoints return arrays directly but should be updated to handle the pagin
 - **Priority**: 🟡 MEDIUM
 
 #### 8. Applications Server API (`lib/api/applications/server.ts`)
+
 - **Status**: ❌ Non-Compliant
 - **Endpoint**: `getServerApplications()` - Returns `Application[]`
 - **Issue**: Returns array directly
@@ -197,6 +222,7 @@ These endpoints return arrays directly but should be updated to handle the pagin
 These endpoints either return single resources or have unclear pagination requirements:
 
 #### Single Resource Endpoints (Not Applicable)
+
 - `getOpportunityById()` - Single opportunity
 - `getApplicationById()` - Single application
 - `getNotificationById()` - Single notification
@@ -210,6 +236,7 @@ These endpoints either return single resources or have unclear pagination requir
 - All update/create/delete operations
 
 #### Count/Stats Endpoints (Not Applicable)
+
 - `getUnreadNotificationsCount()` - Returns number
 - `getRecruiterInterviewsCount()` - Returns `{ count: number }`
 - `getMentorSessionsCount()` - Returns `{ count: number }`
@@ -221,6 +248,7 @@ These endpoints either return single resources or have unclear pagination requir
 - `getTalentDashboard()` - Returns dashboard object
 
 #### Availability/Settings Endpoints (Not Applicable)
+
 - `getMentorAvailableSlots()` - Returns `MentorAvailability[]`
 - `getMentorAvailability()` - Returns `MentorAvailability[]`
 - `getMyAvailability()` - Returns `MentorAvailabilityResponse`
@@ -230,6 +258,7 @@ These endpoints either return single resources or have unclear pagination requir
 - `getRecruiterSettings()` - Returns settings object
 
 #### Special Purpose Endpoints (Not Applicable)
+
 - `checkUsernameAvailability()` - Returns `UsernameAvailability`
 - `getSaveStatus()` - Returns `{ saved: boolean }`
 - `getMyRequestsForMentor()` - Returns `MyRequestsResponse`
@@ -245,20 +274,20 @@ These endpoints either return single resources or have unclear pagination requir
 
 Based on the backend standardization document, here's the status of the 12 standardized endpoints:
 
-| # | Endpoint | Backend Path | Frontend Status | Priority |
-|---|----------|--------------|-----------------|----------|
-| 1 | Learning Resources | `/api/v1/learning-resources` | ❌ Needs Update | 🔴 HIGH |
-| 2 | Notifications | `/api/v1/notifications` | ✅ Compliant | - |
-| 3 | Users | `/api/v1/admin/users` | ⚠️ No Frontend Client | 🟡 MEDIUM |
-| 4 | Payment Transactions | `/api/v1/payment-transactions` | ⚠️ No Frontend Client | 🟡 MEDIUM |
-| 5 | Badges | `/api/v1/badges` | ⚠️ No Frontend Client | 🟡 MEDIUM |
-| 6 | Reports | `/api/v1/reports` | ⚠️ No Frontend Client | 🟡 MEDIUM |
-| 7 | Audit Logs | `/api/v1/audit-logs` | ⚠️ No Frontend Client | 🟡 MEDIUM |
-| 8 | Verification Requests | `/api/v1/verification-requests` | ⚠️ No Frontend Client | 🟡 MEDIUM |
-| 9 | Media Assets | `/api/v1/media-assets` | ⚠️ No Frontend Client | 🟡 MEDIUM |
-| 10 | Saved Searches | `/api/v1/saved-searches` | ⚠️ No Frontend Client | 🟡 MEDIUM |
-| 11 | Subscriptions | `/api/v1/subscriptions` | ⚠️ No Frontend Client | 🟡 MEDIUM |
-| 12 | User Learning | `/api/v1/user-learning` | ⚠️ No Frontend Client | 🟡 MEDIUM |
+| #   | Endpoint              | Backend Path                    | Frontend Status       | Priority  |
+| --- | --------------------- | ------------------------------- | --------------------- | --------- |
+| 1   | Learning Resources    | `/api/v1/learning-resources`    | ❌ Needs Update       | 🔴 HIGH   |
+| 2   | Notifications         | `/api/v1/notifications`         | ✅ Compliant          | -         |
+| 3   | Users                 | `/api/v1/admin/users`           | ⚠️ No Frontend Client | 🟡 MEDIUM |
+| 4   | Payment Transactions  | `/api/v1/payment-transactions`  | ⚠️ No Frontend Client | 🟡 MEDIUM |
+| 5   | Badges                | `/api/v1/badges`                | ⚠️ No Frontend Client | 🟡 MEDIUM |
+| 6   | Reports               | `/api/v1/reports`               | ⚠️ No Frontend Client | 🟡 MEDIUM |
+| 7   | Audit Logs            | `/api/v1/audit-logs`            | ⚠️ No Frontend Client | 🟡 MEDIUM |
+| 8   | Verification Requests | `/api/v1/verification-requests` | ⚠️ No Frontend Client | 🟡 MEDIUM |
+| 9   | Media Assets          | `/api/v1/media-assets`          | ⚠️ No Frontend Client | 🟡 MEDIUM |
+| 10  | Saved Searches        | `/api/v1/saved-searches`        | ⚠️ No Frontend Client | 🟡 MEDIUM |
+| 11  | Subscriptions         | `/api/v1/subscriptions`         | ⚠️ No Frontend Client | 🟡 MEDIUM |
+| 12  | User Learning         | `/api/v1/user-learning`         | ⚠️ No Frontend Client | 🟡 MEDIUM |
 
 **Note**: 10 out of 12 standardized backend endpoints don't have corresponding frontend API clients yet. These may be admin-only or not yet implemented in the frontend.
 

@@ -1,16 +1,16 @@
 /**
  * Bug Condition Exploration Test - Notifications Pagination Fix
  * Feature: notifications-pagination-fix
- * 
+ *
  * CRITICAL: This test MUST FAIL on unfixed code - failure confirms the bug exists
- * 
+ *
  * Property 1: Fault Condition - Extract Data Array from Paginated Response
  * **Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.5**
- * 
+ *
  * This test verifies that when the API returns a paginated response {data: Notification[], pagination: {...}},
  * the client-side code correctly extracts and returns only the data array, ensuring all downstream
  * code receives the expected Notification[] type.
- * 
+ *
  * EXPECTED OUTCOME ON UNFIXED CODE: Test FAILS with "filter is not a function" or similar
  * This failure proves the bug exists - the API returns an object but the code expects an array.
  */
@@ -37,7 +37,7 @@ describe("Property 1: Fault Condition - Extract Data Array from Paginated Respon
 
   /**
    * Test that getNotifications() returns an array when API returns paginated response
-   * 
+   *
    * Scoped PBT: Generate paginated responses and verify the result is an array
    * that supports array methods like .filter(), .map()
    */
@@ -55,7 +55,7 @@ describe("Property 1: Fault Condition - Extract Data Array from Paginated Respon
               "message",
               "profile_update",
               "application_update",
-              "system_alert"
+              "system_alert",
             ),
             payload: fc.record({
               title: fc.string(),
@@ -63,23 +63,32 @@ describe("Property 1: Fault Condition - Extract Data Array from Paginated Respon
             }),
             channels: fc.array(
               fc.constantFrom("email", "push", "in_app", "sms"),
-              { minLength: 1, maxLength: 4 }
+              { minLength: 1, maxLength: 4 },
             ),
             deliveryStatus: fc.constantFrom("queued", "sent", "failed"),
             readAt: fc.option(
               fc
-                .integer({ min: new Date("2020-01-01").getTime(), max: new Date("2025-12-31").getTime() })
+                .integer({
+                  min: new Date("2020-01-01").getTime(),
+                  max: new Date("2025-12-31").getTime(),
+                })
                 .map((timestamp) => new Date(timestamp).toISOString()),
-              { nil: null }
+              { nil: null },
             ),
             createdAt: fc
-              .integer({ min: new Date("2020-01-01").getTime(), max: new Date("2025-12-31").getTime() })
+              .integer({
+                min: new Date("2020-01-01").getTime(),
+                max: new Date("2025-12-31").getTime(),
+              })
               .map((timestamp) => new Date(timestamp).toISOString()),
             updatedAt: fc
-              .integer({ min: new Date("2020-01-01").getTime(), max: new Date("2025-12-31").getTime() })
+              .integer({
+                min: new Date("2020-01-01").getTime(),
+                max: new Date("2025-12-31").getTime(),
+              })
               .map((timestamp) => new Date(timestamp).toISOString()),
           }),
-          { minLength: 0, maxLength: 10 }
+          { minLength: 0, maxLength: 10 },
         ),
         async (notifications) => {
           // Mock API to return paginated response (the bug condition)
@@ -106,9 +115,9 @@ describe("Property 1: Fault Condition - Extract Data Array from Paginated Respon
 
           // Property: Result should contain the same notifications
           expect(result).toHaveLength(notifications.length);
-        }
+        },
       ),
-      { numRuns: 20 }
+      { numRuns: 20 },
     );
   });
 
@@ -129,7 +138,7 @@ describe("Property 1: Fault Condition - Extract Data Array from Paginated Respon
               "message",
               "profile_update",
               "application_update",
-              "system_alert"
+              "system_alert",
             ),
             payload: fc.record({
               title: fc.string(),
@@ -137,23 +146,32 @@ describe("Property 1: Fault Condition - Extract Data Array from Paginated Respon
             }),
             channels: fc.array(
               fc.constantFrom("email", "push", "in_app", "sms"),
-              { minLength: 1, maxLength: 4 }
+              { minLength: 1, maxLength: 4 },
             ),
             deliveryStatus: fc.constantFrom("queued", "sent", "failed"),
             readAt: fc.option(
               fc
-                .integer({ min: new Date("2020-01-01").getTime(), max: new Date("2025-12-31").getTime() })
+                .integer({
+                  min: new Date("2020-01-01").getTime(),
+                  max: new Date("2025-12-31").getTime(),
+                })
                 .map((timestamp) => new Date(timestamp).toISOString()),
-              { nil: null }
+              { nil: null },
             ),
             createdAt: fc
-              .integer({ min: new Date("2020-01-01").getTime(), max: new Date("2025-12-31").getTime() })
+              .integer({
+                min: new Date("2020-01-01").getTime(),
+                max: new Date("2025-12-31").getTime(),
+              })
               .map((timestamp) => new Date(timestamp).toISOString()),
             updatedAt: fc
-              .integer({ min: new Date("2020-01-01").getTime(), max: new Date("2025-12-31").getTime() })
+              .integer({
+                min: new Date("2020-01-01").getTime(),
+                max: new Date("2025-12-31").getTime(),
+              })
               .map((timestamp) => new Date(timestamp).toISOString()),
           }),
-          { minLength: 0, maxLength: 10 }
+          { minLength: 0, maxLength: 10 },
         ),
         async (userId, notifications) => {
           // Mock server API to return paginated response (the bug condition)
@@ -181,9 +199,9 @@ describe("Property 1: Fault Condition - Extract Data Array from Paginated Respon
 
           // Property: Result should contain the same notifications
           expect(result).toHaveLength(notifications.length);
-        }
+        },
       ),
-      { numRuns: 20 }
+      { numRuns: 20 },
     );
   });
 
@@ -204,7 +222,7 @@ describe("Property 1: Fault Condition - Extract Data Array from Paginated Respon
               "message",
               "profile_update",
               "application_update",
-              "system_alert"
+              "system_alert",
             ),
             payload: fc.record({
               title: fc.string(),
@@ -212,18 +230,24 @@ describe("Property 1: Fault Condition - Extract Data Array from Paginated Respon
             }),
             channels: fc.array(
               fc.constantFrom("email", "push", "in_app", "sms"),
-              { minLength: 1, maxLength: 4 }
+              { minLength: 1, maxLength: 4 },
             ),
             deliveryStatus: fc.constantFrom("queued", "sent", "failed"),
             readAt: fc.constant(null), // Unread notifications
             createdAt: fc
-              .integer({ min: new Date("2020-01-01").getTime(), max: new Date("2025-12-31").getTime() })
+              .integer({
+                min: new Date("2020-01-01").getTime(),
+                max: new Date("2025-12-31").getTime(),
+              })
               .map((timestamp) => new Date(timestamp).toISOString()),
             updatedAt: fc
-              .integer({ min: new Date("2020-01-01").getTime(), max: new Date("2025-12-31").getTime() })
+              .integer({
+                min: new Date("2020-01-01").getTime(),
+                max: new Date("2025-12-31").getTime(),
+              })
               .map((timestamp) => new Date(timestamp).toISOString()),
           }),
-          { minLength: 1, maxLength: 5 }
+          { minLength: 1, maxLength: 5 },
         ),
         async (unreadNotifications) => {
           // Mock API to return paginated response
@@ -246,9 +270,9 @@ describe("Property 1: Fault Condition - Extract Data Array from Paginated Respon
             const ids = result.map((notification) => notification.id);
             expect(ids).toHaveLength(unreadNotifications.length);
           }).not.toThrow();
-        }
+        },
       ),
-      { numRuns: 20 }
+      { numRuns: 20 },
     );
   });
 
@@ -269,7 +293,7 @@ describe("Property 1: Fault Condition - Extract Data Array from Paginated Respon
               "message",
               "profile_update",
               "application_update",
-              "system_alert"
+              "system_alert",
             ),
             payload: fc.record({
               title: fc.string(),
@@ -277,23 +301,32 @@ describe("Property 1: Fault Condition - Extract Data Array from Paginated Respon
             }),
             channels: fc.array(
               fc.constantFrom("email", "push", "in_app", "sms"),
-              { minLength: 1, maxLength: 4 }
+              { minLength: 1, maxLength: 4 },
             ),
             deliveryStatus: fc.constantFrom("queued", "sent", "failed"),
             readAt: fc.option(
               fc
-                .integer({ min: new Date("2020-01-01").getTime(), max: new Date("2025-12-31").getTime() })
+                .integer({
+                  min: new Date("2020-01-01").getTime(),
+                  max: new Date("2025-12-31").getTime(),
+                })
                 .map((timestamp) => new Date(timestamp).toISOString()),
-              { nil: null }
+              { nil: null },
             ),
             createdAt: fc
-              .integer({ min: new Date("2020-01-01").getTime(), max: new Date("2025-12-31").getTime() })
+              .integer({
+                min: new Date("2020-01-01").getTime(),
+                max: new Date("2025-12-31").getTime(),
+              })
               .map((timestamp) => new Date(timestamp).toISOString()),
             updatedAt: fc
-              .integer({ min: new Date("2020-01-01").getTime(), max: new Date("2025-12-31").getTime() })
+              .integer({
+                min: new Date("2020-01-01").getTime(),
+                max: new Date("2025-12-31").getTime(),
+              })
               .map((timestamp) => new Date(timestamp).toISOString()),
           }),
-          { minLength: 0, maxLength: 10 }
+          { minLength: 0, maxLength: 10 },
         ),
         async (notifications) => {
           // Mock API to return paginated response
@@ -316,13 +349,13 @@ describe("Property 1: Fault Condition - Extract Data Array from Paginated Respon
           expect(() => {
             const unreadCount = result.filter((n) => !n.readAt).length;
             const expectedUnreadCount = notifications.filter(
-              (n) => !n.readAt
+              (n) => !n.readAt,
             ).length;
             expect(unreadCount).toBe(expectedUnreadCount);
           }).not.toThrow();
-        }
+        },
       ),
-      { numRuns: 20 }
+      { numRuns: 20 },
     );
   });
 });

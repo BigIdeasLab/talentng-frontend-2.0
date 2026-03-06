@@ -1,14 +1,14 @@
 /**
  * Preservation Property Tests - Notifications Pagination Fix
  * Feature: notifications-pagination-fix
- * 
+ *
  * Property 2: Preservation - Notification Functionality Unchanged
  * **Validates: Requirements 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8**
- * 
+ *
  * IMPORTANT: These tests verify that after the fix, all notification functionality
  * continues to work exactly as before. The fix extracts the data array from paginated
  * responses, but all downstream behavior should be unchanged.
- * 
+ *
  * EXPECTED OUTCOME: Tests PASS (confirms no regressions after fix)
  */
 
@@ -50,7 +50,7 @@ const notificationArbitrary = () =>
       "message",
       "profile_update",
       "application_update",
-      "system_alert"
+      "system_alert",
     ),
     payload: fc.record({
       title: fc.string(),
@@ -65,7 +65,7 @@ const notificationArbitrary = () =>
       fc
         .integer({ min: 1577836800000, max: 1735689600000 }) // 2020-01-01 to 2025-01-01 in ms
         .map((ms) => new Date(ms).toISOString()),
-      { nil: null }
+      { nil: null },
     ),
     createdAt: fc
       .integer({ min: 1577836800000, max: 1735689600000 })
@@ -92,12 +92,14 @@ describe("Property 2: Preservation - Notification Functionality Unchanged", () =
         async (targetUserId, allNotifications) => {
           // Filter to only include notifications for target user
           const userNotifications = allNotifications.filter(
-            (n) => n.userId === targetUserId
+            (n) => n.userId === targetUserId,
           );
 
           // Mock API to return paginated response
           const apiClient = (await import("@/lib/api")).default;
-          vi.mocked(apiClient).mockResolvedValueOnce(paginatedResponse(userNotifications));
+          vi.mocked(apiClient).mockResolvedValueOnce(
+            paginatedResponse(userNotifications),
+          );
 
           // Call getNotifications with userId filter
           const result = await getNotifications({ userId: targetUserId });
@@ -105,9 +107,9 @@ describe("Property 2: Preservation - Notification Functionality Unchanged", () =
           // Property: All returned notifications should belong to the target user
           expect(result.every((n) => n.userId === targetUserId)).toBe(true);
           expect(result).toHaveLength(userNotifications.length);
-        }
+        },
       ),
-      { numRuns: 20 }
+      { numRuns: 20 },
     );
   });
 
@@ -124,18 +126,20 @@ describe("Property 2: Preservation - Notification Functionality Unchanged", () =
           "message",
           "profile_update",
           "application_update",
-          "system_alert"
+          "system_alert",
         ),
         fc.array(notificationArbitrary(), { minLength: 0, maxLength: 20 }),
         async (targetType, allNotifications) => {
           // Filter to only include notifications of target type
           const typeNotifications = allNotifications.filter(
-            (n) => n.type === targetType
+            (n) => n.type === targetType,
           );
 
           // Mock API to return paginated response
           const apiClient = (await import("@/lib/api")).default;
-          vi.mocked(apiClient).mockResolvedValueOnce(paginatedResponse(typeNotifications));
+          vi.mocked(apiClient).mockResolvedValueOnce(
+            paginatedResponse(typeNotifications),
+          );
 
           // Call getNotificationsByType
           const result = await getNotificationsByType(targetType);
@@ -143,9 +147,9 @@ describe("Property 2: Preservation - Notification Functionality Unchanged", () =
           // Property: All returned notifications should be of the target type
           expect(result.every((n) => n.type === targetType)).toBe(true);
           expect(result).toHaveLength(typeNotifications.length);
-        }
+        },
       ),
-      { numRuns: 20 }
+      { numRuns: 20 },
     );
   });
 
@@ -160,12 +164,14 @@ describe("Property 2: Preservation - Notification Functionality Unchanged", () =
         async (allNotifications) => {
           // Filter to only include failed notifications
           const failedNotifications = allNotifications.filter(
-            (n) => n.deliveryStatus === "failed"
+            (n) => n.deliveryStatus === "failed",
           );
 
           // Mock API to return paginated response
           const apiClient = (await import("@/lib/api")).default;
-          vi.mocked(apiClient).mockResolvedValueOnce(paginatedResponse(failedNotifications));
+          vi.mocked(apiClient).mockResolvedValueOnce(
+            paginatedResponse(failedNotifications),
+          );
 
           // Call getFailedNotifications
           const result = await getFailedNotifications();
@@ -173,9 +179,9 @@ describe("Property 2: Preservation - Notification Functionality Unchanged", () =
           // Property: All returned notifications should have failed delivery status
           expect(result.every((n) => n.deliveryStatus === "failed")).toBe(true);
           expect(result).toHaveLength(failedNotifications.length);
-        }
+        },
       ),
-      { numRuns: 20 }
+      { numRuns: 20 },
     );
   });
 
@@ -193,7 +199,9 @@ describe("Property 2: Preservation - Notification Functionality Unchanged", () =
 
           // Mock API to return paginated response
           const apiClient = (await import("@/lib/api")).default;
-          vi.mocked(apiClient).mockResolvedValueOnce(paginatedResponse(unreadNotifications));
+          vi.mocked(apiClient).mockResolvedValueOnce(
+            paginatedResponse(unreadNotifications),
+          );
 
           // Call getNotifications with read: false filter
           const result = await getNotifications({ read: false });
@@ -201,16 +209,16 @@ describe("Property 2: Preservation - Notification Functionality Unchanged", () =
           // Property: All returned notifications should be unread
           expect(result.every((n) => !n.readAt)).toBe(true);
           expect(result).toHaveLength(unreadNotifications.length);
-        }
+        },
       ),
-      { numRuns: 20 }
+      { numRuns: 20 },
     );
   });
 
   /**
    * Test: Filtering by recipientRole produces expected results
    * Validates: Requirement 3.1, 3.5
-   * 
+   *
    * NOTE: Skipped - recipientRole is not a property on the Notification type.
    * The GetNotificationsFilters interface includes recipientRole as a filter option,
    * but it's not part of the Notification entity itself. This test would require
@@ -236,16 +244,19 @@ describe("Property 2: Preservation - Notification Functionality Unchanged", () =
             "message",
             "profile_update",
             "application_update",
-            "system_alert"
+            "system_alert",
           ),
           payload: fc.record({
             title: fc.string(),
             message: fc.string(),
           }),
-          channels: fc.array(fc.constantFrom("email", "push", "in_app", "sms"), {
-            minLength: 1,
-            maxLength: 4,
-          }),
+          channels: fc.array(
+            fc.constantFrom("email", "push", "in_app", "sms"),
+            {
+              minLength: 1,
+              maxLength: 4,
+            },
+          ),
           deliveryStatus: fc.constantFrom("queued", "sent", "failed"),
           readAt: fc.constant(null), // Unread notification
           createdAt: fc
@@ -270,9 +281,9 @@ describe("Property 2: Preservation - Notification Functionality Unchanged", () =
           // Property: Returned notification should have readAt set
           expect(result.readAt).not.toBeNull();
           expect(result.id).toBe(unreadNotification.id);
-        }
+        },
       ),
-      { numRuns: 20 }
+      { numRuns: 20 },
     );
   });
 
@@ -293,16 +304,19 @@ describe("Property 2: Preservation - Notification Functionality Unchanged", () =
               "message",
               "profile_update",
               "application_update",
-              "system_alert"
+              "system_alert",
             ),
             payload: fc.record({
               title: fc.string(),
               message: fc.string(),
             }),
-            channels: fc.array(fc.constantFrom("email", "push", "in_app", "sms"), {
-              minLength: 1,
-              maxLength: 4,
-            }),
+            channels: fc.array(
+              fc.constantFrom("email", "push", "in_app", "sms"),
+              {
+                minLength: 1,
+                maxLength: 4,
+              },
+            ),
             deliveryStatus: fc.constantFrom("queued", "sent", "failed"),
             readAt: fc.constant(null), // All unread
             createdAt: fc
@@ -312,7 +326,7 @@ describe("Property 2: Preservation - Notification Functionality Unchanged", () =
               .integer({ min: 1577836800000, max: 1735689600000 })
               .map((ms) => new Date(ms).toISOString()),
           }),
-          { minLength: 1, maxLength: 10 }
+          { minLength: 1, maxLength: 10 },
         ),
         async (unreadNotifications) => {
           const apiClient = (await import("@/lib/api")).default;
@@ -321,7 +335,9 @@ describe("Property 2: Preservation - Notification Functionality Unchanged", () =
           vi.mocked(apiClient).mockClear();
 
           // First call: getNotifications({ read: false }) returns unread notifications
-          vi.mocked(apiClient).mockResolvedValueOnce(paginatedResponse(unreadNotifications));
+          vi.mocked(apiClient).mockResolvedValueOnce(
+            paginatedResponse(unreadNotifications),
+          );
 
           // Subsequent calls: markNotificationAsRead for each notification
           unreadNotifications.forEach((notification) => {
@@ -337,11 +353,11 @@ describe("Property 2: Preservation - Notification Functionality Unchanged", () =
           // Property: getNotifications should have been called once
           // and markNotificationAsRead should have been called for each notification
           expect(vi.mocked(apiClient)).toHaveBeenCalledTimes(
-            1 + unreadNotifications.length
+            1 + unreadNotifications.length,
           );
-        }
+        },
       ),
-      { numRuns: 20 }
+      { numRuns: 20 },
     );
   });
 
@@ -356,22 +372,24 @@ describe("Property 2: Preservation - Notification Functionality Unchanged", () =
         async (allNotifications) => {
           // Calculate expected unread count
           const expectedUnreadCount = allNotifications.filter(
-            (n) => !n.readAt
+            (n) => !n.readAt,
           ).length;
 
           // Mock API to return unread notifications
           const apiClient = (await import("@/lib/api")).default;
           const unreadNotifications = allNotifications.filter((n) => !n.readAt);
-          vi.mocked(apiClient).mockResolvedValueOnce(paginatedResponse(unreadNotifications));
+          vi.mocked(apiClient).mockResolvedValueOnce(
+            paginatedResponse(unreadNotifications),
+          );
 
           // Call getUnreadNotificationsCount
           const result = await getUnreadNotificationsCount();
 
           // Property: Returned count should match expected unread count
           expect(result).toBe(expectedUnreadCount);
-        }
+        },
       ),
-      { numRuns: 20 }
+      { numRuns: 20 },
     );
   });
 

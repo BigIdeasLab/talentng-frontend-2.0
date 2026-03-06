@@ -7,6 +7,7 @@ All 12 GET endpoints have been successfully standardized to follow the Opportuni
 ## Completed Endpoints
 
 ### Phase 1: High Priority ✅
+
 1. **Learning Resources** (`/api/v1/learning-resources`)
 2. **Notifications** (`/api/v1/notifications`)
 3. **Users** (`/api/v1/admin/users`)
@@ -14,12 +15,14 @@ All 12 GET endpoints have been successfully standardized to follow the Opportuni
 5. **Badges** (`/api/v1/badges`)
 
 ### Phase 2: Medium Priority ✅
+
 6. **Reports** (`/api/v1/reports`)
 7. **Audit Logs** (`/api/v1/audit-logs`)
 8. **Verification Requests** (`/api/v1/verification-requests`)
 9. **Media Assets** (`/api/v1/media-assets`)
 
 ### Phase 3: Low Priority ✅
+
 10. **Saved Searches** (`/api/v1/saved-searches`)
 11. **Subscriptions** (`/api/v1/subscriptions`)
 12. **User Learning** (`/api/v1/user-learning`)
@@ -48,17 +51,21 @@ All endpoints now return responses in this consistent format:
 All endpoints support these standard parameters:
 
 ### Search
+
 - `q` - Full-text search query (searches across multiple fields with prioritization)
 
 ### Pagination
+
 - `limit` - Number of results per page (default: 20)
 - `offset` - Number of results to skip (default: 0)
 
 ### Sorting
+
 - `sortBy` - Field to sort by (default: `createdAt`)
 - `sortOrder` - Sort direction: `asc` or `desc` (default: `desc`)
 
 ### Resource-Specific Filters
+
 Each endpoint also supports filters specific to its resource type (see individual endpoint documentation).
 
 ## Search Implementation
@@ -74,17 +81,20 @@ All endpoints implement prioritized database search with fallback:
 ### Example Priority Rankings
 
 **Learning Resources**:
+
 1. Title
 2. Category
 3. Provider
 4. Tags
 
 **Notifications**:
+
 1. Type
 2. Title (from payload)
 3. Message (from payload)
 
 **Users**:
+
 1. Username
 2. Email
 3. Full Name
@@ -94,14 +104,16 @@ All endpoints implement prioritized database search with fallback:
 ### Response Structure Change
 
 **Before**:
+
 ```javascript
-const response = await fetch('/api/v1/learning-resources');
+const response = await fetch("/api/v1/learning-resources");
 const resources = await response.json(); // Direct array
 ```
 
 **After**:
+
 ```javascript
-const response = await fetch('/api/v1/learning-resources');
+const response = await fetch("/api/v1/learning-resources");
 const result = await response.json();
 const resources = result.data; // Access via .data
 const pagination = result.pagination; // Pagination metadata available
@@ -111,7 +123,7 @@ const pagination = result.pagination; // Pagination metadata available
 
 ```javascript
 // Search across multiple fields
-const response = await fetch('/api/v1/learning-resources?q=javascript');
+const response = await fetch("/api/v1/learning-resources?q=javascript");
 const result = await response.json();
 ```
 
@@ -120,7 +132,7 @@ const result = await response.json();
 ```javascript
 // Combine search with filters
 const response = await fetch(
-  '/api/v1/learning-resources?q=react&category=Frontend&featured=true'
+  "/api/v1/learning-resources?q=react&category=Frontend&featured=true",
 );
 const result = await response.json();
 ```
@@ -129,10 +141,12 @@ const result = await response.json();
 
 ```javascript
 // Get page 2 with 50 results per page
-const response = await fetch('/api/v1/learning-resources?limit=50&offset=50');
+const response = await fetch("/api/v1/learning-resources?limit=50&offset=50");
 const result = await response.json();
 
-console.log(`Page ${result.pagination.currentPage} of ${result.pagination.totalPages}`);
+console.log(
+  `Page ${result.pagination.currentPage} of ${result.pagination.totalPages}`,
+);
 console.log(`Total results: ${result.pagination.total}`);
 ```
 
@@ -140,7 +154,9 @@ console.log(`Total results: ${result.pagination.total}`);
 
 ```javascript
 // Sort by title ascending
-const response = await fetch('/api/v1/learning-resources?sortBy=title&sortOrder=asc');
+const response = await fetch(
+  "/api/v1/learning-resources?sortBy=title&sortOrder=asc",
+);
 const result = await response.json();
 ```
 
@@ -188,15 +204,19 @@ curl "http://localhost:3000/api/v1/learning-resources?q=react&category=Frontend&
 ## Performance Considerations
 
 ### Parallel Query Execution
+
 All endpoints use `Promise.all()` to execute count and data queries in parallel, reducing response time.
 
 ### Indexed Fields
+
 Ensure database indexes exist on commonly filtered/sorted fields:
+
 - `createdAt` (all tables)
 - `status` fields
 - Foreign key fields (`userId`, `opportunityId`, etc.)
 
 ### Search Optimization
+
 - Prioritized search uses CASE statements for efficient ranking
 - ILIKE operations are case-insensitive but may be slower on large datasets
 - Consider adding GIN indexes for full-text search on frequently searched text fields

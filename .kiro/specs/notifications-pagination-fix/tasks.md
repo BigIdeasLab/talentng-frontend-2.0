@@ -35,7 +35,6 @@
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8_
 
 - [x] 3. Fix for notifications pagination response handling
-
   - [x] 3.1 Update getNotifications in lib/api/notifications/index.ts
     - Modify function to expect paginated response format `{data: Notification[], pagination: any}`
     - Extract and return only the `data` array

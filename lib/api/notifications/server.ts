@@ -23,6 +23,9 @@ export async function getServerNotifications(
     query.append("type", type);
   }
   const endpoint = `/notifications?${query.toString()}`;
-  const response = await serverApiClient<{ data: Notification[]; pagination: any }>(endpoint);
+  const response = await serverApiClient<{
+    data: Notification[];
+    pagination: any;
+  }>(endpoint);
   return response.data;
 }
