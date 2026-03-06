@@ -1,0 +1,400 @@
+# Implementation Plan: Consistent Search Input Component
+
+## Overview
+
+This plan implements a unified, reusable search input component to replace 21 existing search implementations. The component provides consistent visual design, debounced search execution, loading states, clear button functionality, keyboard shortcuts, and full accessibility compliance using TypeScript and React.
+
+## Tasks
+
+- [x] 1. Set up component structure and TypeScript interfaces
+  - Create `components/ui/search-input.tsx` with SearchInputProps interface
+  - Define all prop types: onSearch, placeholder, debounceDelay, value, onChange, defaultValue, isLoading, error, ariaLabel, ariaDescribedBy, maxLength, disabled, className, onClear, onError, onFocus, onBlur
+  - Set up component exports and basic file structure
+  - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6_
+
+- [ ] 2. Implement core input rendering and controlled/uncontrolled modes
+  - [x] 2.1 Implement controlled vs uncontrolled mode detection logic
+    - Add logic to detect if `value` prop is provided (controlled) or undefined (uncontrolled)
+    - Create internal state with useState for uncontrolled mode
+    - Implement currentValue logic that uses either value prop or internal state
+    - _Requirements: 8.1, 8.2_
+  
+  - [ ]* 2.2 Write property test for controlled mode behavior
+    - **Property 14: Controlled Mode Behavior**
+    - **Validates: Requirements 8.1, 8.3**
+  
+  - [ ]* 2.3 Write property test for uncontrolled mode behavior
+    - **Property 15: Uncontrolled Mode Behavior**
+    - **Validates: Requirements 8.2, 8.4**
+  
+  - [x] 2.4 Implement basic input element with placeholder support
+    - Render input element with type="text"
+    - Implement placeholder prop with default value "Search..."
+    - Connect value to currentValue from controlled/uncontrolled logic
+    - _Requirements: 1.2, 12.1, 12.2, 12.3, 12.4_
+  
+  - [ ]* 2.5 Write property test for placeholder text rendering
+    - **Property 1: Placeholder Text Rendering**
+    - **Validates: Requirements 1.2, 12.2, 12.3, 12.4**
+  
+  - [ ]* 2.6 Write property test for initial value display
+    - **Property 2: Initial Value Display**
+    - **Validates: Requirements 1.3**
+
+- [ ] 3. Implement debounce logic with timer management
+  - [x] 3.1 Create debounce timer with useRef and implement debounced search function
+    - Create debounceTimerRef using useRef<NodeJS.Timeout>
+    - Implement debouncedSearch function that clears previous timer and sets new timer
+    - Use debounceDelay prop with default of 300ms
+    - Invoke onSearch callback after delay expires
+    - _Requirements: 1.4, 3.1, 3.2, 3.3, 3.4_
+  
+  - [ ]* 3.2 Write property test for debounce delay configuration
+    - **Property 3: Debounce Delay Configuration**
+    - **Validates: Requirements 1.4, 3.3, 3.4**
+  
+  - [ ]* 3.3 Write property test for debounce timer reset
+    - **Property 7: Debounce Timer Reset**
+    - **Validates: Requirements 3.1, 3.2**
+  
+  - [x] 3.4 Implement timer cleanup on component unmount
+    - Add useEffect with cleanup function that clears debounceTimerRef
+    - Ensure timer is cleared when component unmounts to prevent memory leaks
+    - _Requirements: 11.1_
+  
+  - [ ]* 3.5 Write property test for timer cleanup on unmount
+    - **Property 18: Timer Cleanup on Unmount**
+    - **Validates: Requirements 11.1**
+
+- [ ] 4. Implement input change handler and value exposure
+  - [x] 4.1 Create handleInputChange callback with memoization
+    - Implement handleInputChange using useCallback
+    - Update internal state if uncontrolled mode
+    - Invoke onChange callback if provided (for controlled mode)
+    - Invoke debouncedSearch with new value
+    - _Requirements: 1.6, 8.3, 8.4_
+  
+  - [ ]* 4.2 Write property test for value exposure to parent
+    - **Property 4: Value Exposure to Parent**
+    - **Validates: Requirements 1.6**
+  
+  - [ ]* 4.3 Write property test for callback memoization
+    - **Property 19: Callback Memoization**
+    - **Validates: Requirements 11.2, 11.3**
+
+- [ ] 5. Implement visual styling with Tailwind CSS
+  - [x] 5.1 Apply container styling and layout
+    - Create container div with flex layout, gap-[6px], items-center
+    - Apply height: 38px, padding: 12px horizontal and 7px vertical
+    - Apply border: 1px solid #E1E4EA, border-radius: 8px
+    - Apply transparent background (or #FEF2F2 for error state)
+    - _Requirements: 2.1, 2.2, 2.3_
+  
+  - [x] 5.2 Apply input text styling
+    - Apply font: 13px Inter Tight, font-weight: 400
+    - Apply text color: #000000
+    - Apply placeholder color: rgba(0,0,0,0.3)
+    - Remove default input styling (border, outline, background)
+    - _Requirements: 2.3, 12.2, 12.3_
+  
+  - [x] 5.3 Implement focus state styling
+    - Apply visible focus indicator that meets accessibility standards
+    - Use browser default focus ring for accessibility
+    - _Requirements: 2.5_
+  
+  - [ ]* 5.4 Write property test for consistent visual styling
+    - **Property 5: Consistent Visual Styling**
+    - **Validates: Requirements 2.1, 2.2, 2.3**
+  
+  - [ ]* 5.5 Write property test for focus state visibility
+    - **Property 6: Focus State Visibility**
+    - **Validates: Requirements 2.5**
+
+- [ ] 6. Implement search icon and loading spinner
+  - [x] 6.1 Add search icon from lucide-react
+    - Import Search icon from lucide-react
+    - Render Search icon with size 15x15px, color #B2B2B2
+    - Position icon at start of input with flex-shrink-0
+    - _Requirements: 2.4_
+  
+  - [x] 6.2 Implement loading spinner with conditional rendering
+    - Create loading spinner div with 15x15px size, border-2, border-[#B2B2B2], border-t-transparent
+    - Add animate-spin class for rotation animation
+    - Show spinner when isLoading is true, hide search icon
+    - Show search icon when isLoading is false, hide spinner
+    - _Requirements: 1.5, 4.1, 4.2, 4.3, 4.4_
+
+- [ ] 7. Implement clear button functionality
+  - [x] 7.1 Create clear button with conditional visibility
+    - Import X icon from lucide-react
+    - Render clear button with X icon (15x15px)
+    - Show button when currentValue.length > 0 && !isLoading
+    - Hide button when input is empty or loading
+    - Apply hover state styling (color transition to #000000)
+    - _Requirements: 5.1, 5.2, 5.5_
+  
+  - [x] 7.2 Implement handleClear callback
+    - Create handleClear using useCallback
+    - Clear input by setting value to empty string
+    - Invoke onChange("") if provided
+    - Invoke onSearch("") immediately (no debounce)
+    - Invoke onClear() callback if provided
+    - _Requirements: 5.3, 5.4_
+  
+  - [ ]* 7.3 Write property test for clear button visibility
+    - **Property 8: Clear Button Visibility**
+    - **Validates: Requirements 5.1, 5.2**
+  
+  - [ ]* 7.4 Write property test for clear button action
+    - **Property 9: Clear Button Action**
+    - **Validates: Requirements 5.3, 5.4**
+
+- [ ] 8. Implement keyboard shortcuts
+  - [x] 8.1 Create handleKeyDown callback for Escape key
+    - Implement handleKeyDown using useCallback
+    - Detect Escape key press
+    - When Escape pressed and input has value, invoke handleClear
+    - Prevent default browser behavior for Escape
+    - _Requirements: 6.1, 6.2, 6.4_
+  
+  - [ ]* 8.2 Write property test for Escape key clears input
+    - **Property 10: Escape Key Clears Input**
+    - **Validates: Requirements 6.1, 6.2**
+  
+  - [ ]* 8.3 Write unit tests for keyboard navigation
+    - Test Tab key moves focus to clear button
+    - Test Enter key in input (standard browser behavior)
+    - Test arrow keys for text navigation (standard browser behavior)
+
+- [ ] 9. Implement accessibility features
+  - [x] 9.1 Add ARIA attributes to input element
+    - Add aria-label prop with default "Search"
+    - Add aria-describedby when ariaDescribedBy prop provided
+    - Add aria-busy attribute that reflects isLoading state
+    - Ensure input has accessible label or aria-label
+    - _Requirements: 7.1, 7.2, 7.3_
+  
+  - [x] 9.2 Add ARIA label to clear button
+    - Add aria-label="Clear search" to clear button
+    - Ensure clear button is keyboard accessible
+    - _Requirements: 7.4_
+  
+  - [x] 9.3 Verify color contrast ratios
+    - Ensure text color #000000 on transparent background meets 4.5:1 ratio
+    - Ensure border color #E1E4EA meets contrast requirements
+    - Ensure placeholder color rgba(0,0,0,0.3) meets minimum contrast
+    - _Requirements: 7.5_
+  
+  - [ ]* 9.4 Write property test for accessible label presence
+    - **Property 11: Accessible Label Presence**
+    - **Validates: Requirements 7.1**
+  
+  - [ ]* 9.5 Write property test for conditional aria attributes
+    - **Property 12: Conditional Aria Attributes**
+    - **Validates: Requirements 7.2**
+  
+  - [ ]* 9.6 Write property test for keyboard navigation
+    - **Property 13: Keyboard Navigation**
+    - **Validates: Requirements 7.6**
+
+- [ ] 10. Implement error handling and resilience
+  - [x] 10.1 Add try-catch to debounced search function
+    - Wrap onSearch invocation in try-catch block
+    - Catch errors and invoke onError callback if provided
+    - Log errors to console in development mode
+    - Ensure component continues functioning after error
+    - _Requirements: 10.1, 10.2_
+  
+  - [x] 10.2 Implement error state visual styling
+    - When error prop provided, apply red border color #FF0000
+    - When error prop provided, apply error background tint #FEF2F2
+    - Display error message below input if error prop is string
+    - Link error message with aria-describedby
+    - _Requirements: 10.3_
+  
+  - [x] 10.3 Add prop validation and warnings
+    - Validate debounceDelay is non-negative, use 300ms default if invalid
+    - Validate maxLength is positive integer if provided
+    - Log warnings in development mode for invalid props
+    - Handle both value and defaultValue provided (prioritize value, log warning)
+    - _Requirements: 10.4_
+  
+  - [ ]* 10.4 Write property test for error resilience
+    - **Property 16: Error Resilience**
+    - **Validates: Requirements 10.1, 10.2, 10.3**
+  
+  - [ ]* 10.5 Write property test for invalid props handling
+    - **Property 17: Invalid Props Handling**
+    - **Validates: Requirements 10.4**
+
+- [ ] 11. Implement performance optimizations
+  - [x] 11.1 Apply useCallback to all event handlers
+    - Wrap handleInputChange, handleClear, handleKeyDown in useCallback
+    - Specify correct dependency arrays for each callback
+    - _Requirements: 11.2, 11.3_
+  
+  - [x] 11.2 Implement selective re-rendering with React.memo
+    - Wrap component export with React.memo
+    - Implement custom comparison function if needed
+    - Ensure component only re-renders when relevant props change
+    - _Requirements: 11.4_
+  
+  - [ ]* 11.3 Write property test for selective re-rendering
+    - **Property 20: Selective Re-rendering**
+    - **Validates: Requirements 11.4**
+
+- [ ] 12. Checkpoint - Ensure all tests pass
+  - Run all unit tests and property-based tests
+  - Verify no TypeScript errors or warnings
+  - Test component manually in isolation
+  - Ensure all tests pass, ask the user if questions arise
+
+- [ ] 13. Create comprehensive unit tests
+  - [ ]* 13.1 Write unit tests for default values
+    - Test default placeholder is "Search..."
+    - Test default debounce delay is 300ms
+    - Test default aria-label is "Search"
+  
+  - [ ]* 13.2 Write unit tests for edge cases
+    - Test empty string input
+    - Test very long input strings with maxLength
+    - Test rapid typing followed by immediate unmount
+    - Test switching between controlled and uncontrolled mode
+    - Test multiple simultaneous clear actions
+  
+  - [ ]* 13.3 Write unit tests for error conditions
+    - Test onSearch throws synchronous error
+    - Test onSearch throws asynchronous error
+    - Test invalid debounce delay (negative number)
+    - Test component with missing optional props
+  
+  - [ ]* 13.4 Write unit tests for specific visual states
+    - Test loading spinner appears when isLoading=true
+    - Test search icon hidden when isLoading=true
+    - Test clear button has aria-label="Clear search"
+    - Test error state applies red border and background
+
+- [ ] 14. Set up property-based testing framework
+  - [ ]* 14.1 Install @fast-check/vitest dependency
+    - Add @fast-check/vitest to devDependencies
+    - Configure vitest for property-based testing
+  
+  - [ ]* 14.2 Create property test file structure
+    - Create `components/ui/search-input.spec.tsx`
+    - Set up test utilities and helpers for property testing
+    - Configure minimum 100 iterations per property test
+
+- [ ] 15. Write property-based tests for all 20 properties
+  - [ ]* 15.1 Write remaining property tests not yet implemented
+    - Implement any property tests not created in previous tasks
+    - Ensure each test references design document property number
+    - Tag each test with format: "Feature: consistent-search-input, Property {N}: {title}"
+    - Verify all 20 properties have corresponding tests
+
+- [x] 16. Create migration documentation
+  - [x] 16.1 Document component API and props
+    - Create JSDoc comments for all props in SearchInputProps interface
+    - Document controlled vs uncontrolled mode usage
+    - Document default values for all optional props
+    - _Requirements: 9.1, 9.3_
+  
+  - [x] 16.2 Create migration guide with examples
+    - Document migration pattern for simple search (search-bar.tsx style)
+    - Document migration pattern for debounced search (DiscoverTalentHeader.tsx style)
+    - Document migration pattern for search with loading state
+    - Provide before/after code examples for each pattern
+    - _Requirements: 9.3, 9.4_
+  
+  - [x] 16.3 Create list of all 21 files to migrate
+    - Document all 21 existing search implementations from audit
+    - Prioritize 2-3 low-risk implementations for pilot migration
+    - Create checklist for bulk migration phase
+
+- [x] 17. Pilot migration - Replace 2-3 low-risk search implementations
+  - [x] 17.1 Migrate first pilot implementation
+    - Choose low-risk search implementation from list
+    - Replace with SearchInput component
+    - Test functionality matches original behavior
+    - Verify visual appearance matches original
+    - _Requirements: 9.1, 9.2, 9.4_
+  
+  - [x] 17.2 Migrate second pilot implementation
+    - Choose second low-risk search implementation
+    - Replace with SearchInput component
+    - Test functionality and visual appearance
+  
+  - [x] 17.3 Migrate third pilot implementation
+    - Choose third low-risk search implementation
+    - Replace with SearchInput component
+    - Test functionality and visual appearance
+  
+  - [x] 17.4 Gather feedback and refine component
+    - Test pilot migrations in development environment
+    - Identify any issues or missing features
+    - Refine SearchInput component based on feedback
+    - Update documentation with lessons learned
+
+- [x] 18. Checkpoint - Verify pilot migrations successful
+  - Ensure all pilot migrations work correctly
+  - Verify no visual regressions
+  - Verify no accessibility regressions
+  - Ensure all tests pass, ask the user if questions arise
+
+- [x] 19. Bulk migration - Replace remaining 18 search implementations
+  - [x] 19.1 Migrate implementations 4-10
+    - Replace 7 search implementations with SearchInput
+    - Test each migration for functionality and visual parity
+    - _Requirements: 9.1, 9.2, 9.4_
+  
+  - [x] 19.2 Migrate implementations 11-17
+    - Replace 7 search implementations with SearchInput
+    - Test each migration for functionality and visual parity
+  
+  - [x] 19.3 Migrate implementations 18-21
+    - Replace final 4 search implementations with SearchInput
+    - Test each migration for functionality and visual parity
+  
+  - [x] 19.4 Remove deprecated search components
+    - Identify any old search components no longer used
+    - Remove deprecated files and imports
+    - Update any remaining references
+
+- [x] 20. Final verification and documentation
+  - [x] 20.1 Run full test suite
+    - Run all unit tests and property-based tests
+    - Verify 90%+ test coverage achieved
+    - Run accessibility audits with axe-core
+    - Verify zero accessibility violations
+  
+  - [x] 20.2 Verify all 21 migrations complete
+    - Check all 21 original implementations replaced
+    - Verify consistent visual appearance across all instances
+    - Test search functionality in all contexts
+  
+  - [x] 20.3 Update design system documentation
+    - Add SearchInput to design system documentation
+    - Document usage guidelines and best practices
+    - Add component to Storybook or component library if applicable
+  
+  - [x] 20.4 Create future developer guide
+    - Document when to use SearchInput vs custom search
+    - Document how to extend SearchInput for special cases
+    - Document common pitfalls and troubleshooting
+
+- [x] 21. Final checkpoint - Complete implementation
+  - Verify all requirements met
+  - Verify all 21 migrations successful
+  - Verify no performance regressions
+  - Ensure all tests pass, ask the user if questions arise
+
+## Notes
+
+- Tasks marked with `*` are optional and can be skipped for faster MVP
+- Each task references specific requirements for traceability
+- Property-based tests validate universal correctness properties from design document
+- Unit tests validate specific examples and edge cases
+- Pilot migration phase allows for feedback and refinement before bulk migration
+- All 20 correctness properties from design document have corresponding test tasks
+- Component uses TypeScript for type safety and React 18+ for modern features
+- Tailwind CSS used for styling consistency with existing design system
+- lucide-react used for icons (Search, X)

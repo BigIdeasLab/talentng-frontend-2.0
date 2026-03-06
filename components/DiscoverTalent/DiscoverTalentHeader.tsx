@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
-import { Search, SlidersHorizontal, X, ChevronDown } from "lucide-react";
+import { useState, useCallback } from "react";
+import { SlidersHorizontal, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FilterModal, type FilterState } from "./FilterModal";
 import categories from "@/lib/data/categories.json";
+import { SearchInput } from "@/components/ui/search-input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,7 +27,6 @@ interface DiscoverTalentHeaderProps {
 
 const CONSTANTS = {
   SEARCH_MAX_LENGTH: 100,
-  DEBOUNCE_DELAY: 300,
   PLACEHOLDER: "Search talents, skills, or services",
 } as const;
 
@@ -44,46 +44,6 @@ export function DiscoverTalentHeader({
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<FilterState | null>(
     null,
-  );
-  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
-  const debounceTimer = useRef<NodeJS.Timeout>();
-
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      // Validate input length
-      if (value.length > CONSTANTS.SEARCH_MAX_LENGTH) return;
-
-      // Update local state immediately for responsive input
-      setLocalSearchQuery(value);
-
-      // Clear previous debounce
-      if (debounceTimer.current) {
-        clearTimeout(debounceTimer.current);
-      }
-
-      // Debounce the search call
-      debounceTimer.current = setTimeout(() => {
-        onSearchChange(value);
-      }, CONSTANTS.DEBOUNCE_DELAY);
-    },
-    [onSearchChange],
-  );
-
-  const handleClearSearch = useCallback(() => {
-    if (debounceTimer.current) {
-      clearTimeout(debounceTimer.current);
-    }
-    setLocalSearchQuery("");
-    onSearchChange("");
-  }, [onSearchChange]);
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Escape" && searchQuery) {
-        handleClearSearch();
-      }
-    },
-    [searchQuery, handleClearSearch],
   );
 
   const handleCategoryChange = useCallback(
@@ -117,41 +77,17 @@ export function DiscoverTalentHeader({
       <div className="flex flex-col gap-[8px] mb-[19px]">
         <div className="flex items-center gap-[8px]">
           {/* Search Input */}
-          <div
-            className={cn(
-              "flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border rounded-[8px] transition-colors",
-              error ? "border-red-500 bg-red-50" : "border-[#E1E4EA]",
-            )}
-          >
-            {isLoading ? (
-              <div className="w-[15px] h-[15px] border-2 border-[#B2B2B2] border-t-transparent rounded-full animate-spin flex-shrink-0" />
-            ) : (
-              <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
-            )}
-            <input
-              type="text"
+          <div className="flex-1 max-w-[585px]">
+            <SearchInput
+              value={searchQuery}
+              onChange={onSearchChange}
+              onSearch={onSearchChange}
               placeholder={CONSTANTS.PLACEHOLDER}
-              value={localSearchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              onKeyDown={handleKeyDown}
               maxLength={CONSTANTS.SEARCH_MAX_LENGTH}
-              aria-label="Search talents"
-              aria-busy={isLoading}
-              aria-describedby={error ? "search-error" : undefined}
-              className={cn(
-                "flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent transition-opacity",
-              )}
+              isLoading={isLoading}
+              error={error || undefined}
+              ariaLabel="Search talents"
             />
-            {localSearchQuery && !isLoading && (
-              <button
-                onClick={handleClearSearch}
-                className="flex-shrink-0 text-[#B2B2B2] hover:text-black transition-colors"
-                aria-label="Clear search"
-                type="button"
-              >
-                <X className="w-[15px] h-[15px]" />
-              </button>
-            )}
           </div>
 
           {/* Filter Button */}
@@ -215,13 +151,6 @@ export function DiscoverTalentHeader({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-
-        {/* Error Message */}
-        {error && (
-          <p id="search-error" className="text-[12px] text-red-500 px-[12px]">
-            {error}
-          </p>
-        )}
       </div>
 
       {/* Category Tabs */}

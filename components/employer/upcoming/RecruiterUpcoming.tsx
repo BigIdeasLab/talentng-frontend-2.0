@@ -4,12 +4,11 @@ import { useState, useEffect, useCallback } from "react";
 import {
   Calendar,
   Briefcase,
-  Search,
-  X,
   SlidersHorizontal,
   Clock,
   MapPin,
 } from "lucide-react";
+import { SearchInput } from "@/components/ui/search-input";
 import {
   ApplicationFilterModal,
   type ApplicationFilterState,
@@ -39,18 +38,9 @@ export function RecruiterUpcoming() {
   const [isLoading, setIsLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] =
     useState<ApplicationFilterState | null>(null);
-
-  // Debounce search query
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
 
   const fetchData = useCallback(
     async (showLoading = true) => {
@@ -58,7 +48,7 @@ export function RecruiterUpcoming() {
         // Only show loading skeleton on initial load
         if (showLoading && isInitialLoad) setIsLoading(true);
         const res = await getRecruiterInterviews({
-          q: debouncedSearchQuery || undefined,
+          q: searchQuery || undefined,
           dateRange:
             appliedFilters?.dateRange && appliedFilters.dateRange !== "all"
               ? (appliedFilters.dateRange as any)
@@ -78,7 +68,7 @@ export function RecruiterUpcoming() {
         if (showLoading && isInitialLoad) setIsLoading(false);
       }
     },
-    [debouncedSearchQuery, appliedFilters, toast, isInitialLoad],
+    [searchQuery, appliedFilters, toast, isInitialLoad],
   );
 
   useEffect(() => {
@@ -138,23 +128,14 @@ export function RecruiterUpcoming() {
 
         {/* Search Bar */}
         <div className="flex items-center gap-[8px] mb-[19px]">
-          <div className="flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border border-[#E1E4EA] rounded-[8px]">
-            <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
-            <input
-              type="text"
-              placeholder="Search interviews by candidate name or position..."
+          <div className="flex-1 max-w-[585px]">
+            <SearchInput
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+              onChange={setSearchQuery}
+              onSearch={setSearchQuery}
+              placeholder="Search interviews by candidate name or position..."
+              debounceDelay={500}
             />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="flex-shrink-0 text-[#B2B2B2] hover:text-black transition-colors"
-              >
-                <X className="w-[15px] h-[15px]" />
-              </button>
-            )}
           </div>
 
           <div className="relative">
@@ -219,7 +200,7 @@ export function RecruiterUpcoming() {
               icon={Calendar}
               title="No upcoming interviews"
               description={
-                debouncedSearchQuery.trim()
+                searchQuery.trim()
                   ? "Try adjusting your search query"
                   : appliedFilters && appliedFilters.dateRange !== "all"
                     ? "Try adjusting your filters"

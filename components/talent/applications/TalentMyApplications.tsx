@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Briefcase, Users, Search, X } from "lucide-react";
+import { Briefcase, Users } from "lucide-react";
 import { useToast } from "@/hooks";
 import { getTalentApplications } from "@/lib/api/applications/index";
 import { getTalentMentorshipRequests } from "@/lib/api/mentorship";
@@ -13,6 +13,7 @@ import {
   MyApplicationsSkeleton,
 } from "@/components/talent/applications";
 import { EmptyState } from "@/components/ui/empty-state";
+import { SearchInput } from "@/components/ui/search-input";
 
 type TabType = "jobs" | "mentorship";
 
@@ -47,7 +48,6 @@ export function TalentMyApplications() {
   const [jobStatusFilter, setJobStatusFilter] = useState("all");
   const [mentorshipStatusFilter, setMentorshipStatusFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [appliedFilters, setAppliedFilters] = useState<{ dateRange: string }>({
     dateRange: "all",
   });
@@ -71,21 +71,12 @@ export function TalentMyApplications() {
   const isInitialLoadRef = useRef(true);
   const fetchIdRef = useRef(0);
 
-  // Debounce search query
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
-
   // Reset to page 1 when filters change (must happen before fetch)
   useEffect(() => {
     setJobCurrentPage(0);
     setMentorshipCurrentPage(0);
   }, [
-    debouncedSearchQuery,
+    searchQuery,
     appliedFilters.dateRange,
     jobStatusFilter,
     mentorshipStatusFilter,
@@ -101,7 +92,7 @@ export function TalentMyApplications() {
       }
 
       const data = await getTalentApplications({
-        q: debouncedSearchQuery || undefined,
+        q: searchQuery || undefined,
         status: jobStatusFilter !== "all" ? jobStatusFilter : undefined,
         dateRange:
           appliedFilters.dateRange && appliedFilters.dateRange !== "all"
@@ -139,7 +130,7 @@ export function TalentMyApplications() {
     }
   }, [
     toast,
-    debouncedSearchQuery,
+    searchQuery,
     jobStatusFilter,
     appliedFilters.dateRange,
     jobCurrentPage,
@@ -159,7 +150,7 @@ export function TalentMyApplications() {
           mentorshipStatusFilter !== "all"
             ? (mentorshipStatusFilter as any)
             : undefined,
-        q: debouncedSearchQuery || undefined,
+        q: searchQuery || undefined,
         dateRange:
           appliedFilters.dateRange && appliedFilters.dateRange !== "all"
             ? (appliedFilters.dateRange as "today" | "week" | "month")
@@ -195,7 +186,7 @@ export function TalentMyApplications() {
   }, [
     toast,
     mentorshipStatusFilter,
-    debouncedSearchQuery,
+    searchQuery,
     appliedFilters.dateRange,
     mentorshipCurrentPage,
   ]);
@@ -265,23 +256,14 @@ export function TalentMyApplications() {
 
         {/* Search Bar and Date Range Filters */}
         <div className="flex items-center gap-[8px] mb-[19px]">
-          <div className="flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border border-[#E1E4EA] rounded-[8px]">
-            <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
-            <input
-              type="text"
-              placeholder={`Search ${activeTab === "jobs" ? "jobs" : "mentorship requests"}...`}
+          <div className="flex-1 max-w-[585px]">
+            <SearchInput
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+              onChange={setSearchQuery}
+              onSearch={setSearchQuery}
+              placeholder={`Search ${activeTab === "jobs" ? "jobs" : "mentorship requests"}...`}
+              debounceDelay={500}
             />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="flex-shrink-0 text-[#B2B2B2] hover:text-black transition-colors"
-              >
-                <X className="w-[15px] h-[15px]" />
-              </button>
-            )}
           </div>
 
           {/* Date Range Filter Buttons */}
@@ -337,14 +319,14 @@ export function TalentMyApplications() {
               <EmptyState
                 icon={Briefcase}
                 title={
-                  debouncedSearchQuery ||
+                  searchQuery ||
                   jobStatusFilter !== "all" ||
                   appliedFilters.dateRange !== "all"
                     ? "No applications found"
                     : "No job applications yet"
                 }
                 description={
-                  debouncedSearchQuery ||
+                  searchQuery ||
                   jobStatusFilter !== "all" ||
                   appliedFilters.dateRange !== "all"
                     ? "Try adjusting your filters or search query"
@@ -365,14 +347,14 @@ export function TalentMyApplications() {
             <EmptyState
               icon={Users}
               title={
-                debouncedSearchQuery ||
+                searchQuery ||
                 mentorshipStatusFilter !== "all" ||
                 appliedFilters.dateRange !== "all"
                   ? "No requests found"
                   : "No mentorship requests yet"
               }
               description={
-                debouncedSearchQuery ||
+                searchQuery ||
                 mentorshipStatusFilter !== "all" ||
                 appliedFilters.dateRange !== "all"
                   ? "Try adjusting your filters or search query"

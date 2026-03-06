@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
-import { Search, X } from "lucide-react";
+import { SearchInput } from "@/components/ui/search-input";
 import {
   SessionCard,
   type SessionStatus as CardSessionStatus,
@@ -125,7 +125,6 @@ export default function SessionsPage() {
     "upcoming" | "completed" | "cancelled" | "all"
   >("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [dateRange, setDateRange] = useState<string>("all");
   const [displayedSessions, setDisplayedSessions] = useState<SessionView[]>([]);
 
@@ -139,15 +138,6 @@ export default function SessionsPage() {
   const [selectedMentorId, setSelectedMentorId] = useState<string>("");
 
   const hasAccess = useRequireRole(["mentor"]);
-
-  // Debounce search query
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
 
   const fetchSessions = useCallback(async () => {
     try {
@@ -166,7 +156,7 @@ export default function SessionsPage() {
       const apiParams = {
         role: "mentor" as const,
         ...(statusParam ? { status: statusParam } : {}),
-        ...(debouncedSearchQuery ? { q: debouncedSearchQuery } : {}),
+        ...(searchQuery ? { q: searchQuery } : {}),
         ...(dateRange && dateRange !== "all"
           ? {
               dateRange: dateRange as "today" | "week" | "month",
@@ -210,7 +200,7 @@ export default function SessionsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [activeTab, debouncedSearchQuery, dateRange, isInitialLoad]);
+  }, [activeTab, searchQuery, dateRange, isInitialLoad]);
 
   // Subscribe to real-time updates
   useNotificationSocket({
@@ -382,27 +372,15 @@ export default function SessionsPage() {
 
         {/* Search Bar and Date Range Filters */}
         <div className="flex items-center gap-[8px] mb-[19px]">
-          <div className="flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border border-[#E1E4EA] rounded-[8px]">
-            {isLoading && !isInitialLoad ? (
-              <div className="w-[15px] h-[15px] border-2 border-[#B2B2B2] border-t-transparent rounded-full animate-spin flex-shrink-0" />
-            ) : (
-              <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
-            )}
-            <input
-              type="text"
-              placeholder="Search mentee, topic..."
+          <div className="flex-1 max-w-[585px]">
+            <SearchInput
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+              onChange={setSearchQuery}
+              onSearch={setSearchQuery}
+              placeholder="Search mentee, topic..."
+              isLoading={isLoading && !isInitialLoad}
+              debounceDelay={500}
             />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="flex-shrink-0 text-[#B2B2B2] hover:text-black transition-colors"
-              >
-                <X className="w-[15px] h-[15px]" />
-              </button>
-            )}
           </div>
 
           {/* Date Range Filter Buttons */}
@@ -455,7 +433,7 @@ export default function SessionsPage() {
               {filteredSessions.length === 0 ? (
                 <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
                   <p className="font-inter-tight text-[14px] text-[#525866]">
-                    {debouncedSearchQuery.trim()
+                    {searchQuery.trim()
                       ? "Try adjusting your search query"
                       : dateRange && dateRange !== "all"
                         ? "Try adjusting your date range"
@@ -486,7 +464,7 @@ export default function SessionsPage() {
               {filteredSessions.length === 0 ? (
                 <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
                   <p className="font-inter-tight text-[14px] text-[#525866]">
-                    {debouncedSearchQuery.trim()
+                    {searchQuery.trim()
                       ? "Try adjusting your search query"
                       : dateRange && dateRange !== "all"
                         ? "Try adjusting your date range"

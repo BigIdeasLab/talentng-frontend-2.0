@@ -11,7 +11,7 @@ export default function AuthError({ error, reset }: ErrorProps) {
   return (
     <ErrorState
       title="Authentication Error"
-      description="Something went wrong during authentication. Please try again."
+      message="Something went wrong during authentication. Please try again."
       onRetry={reset}
     />
   );

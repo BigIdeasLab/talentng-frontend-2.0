@@ -1,4 +1,5 @@
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
+import { SearchInput } from "@/components/ui/search-input";
 
 interface SearchBarProps {
   searchQuery: string;
@@ -20,28 +21,15 @@ export function SearchBar({
   return (
     <div className="flex items-center gap-[8px] mb-[19px]">
       {/* Search Bar */}
-      <div className="flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border border-[#E1E4EA] rounded-[8px]">
-        {isLoading ? (
-          <div className="w-[15px] h-[15px] border-2 border-[#B2B2B2] border-t-transparent rounded-full animate-spin flex-shrink-0" />
-        ) : (
-          <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
-        )}
-        <input
-          type="text"
-          placeholder="Search opportunities, skills..."
+      <div className="flex-1 max-w-[585px]">
+        <SearchInput
           value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
-          className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+          onChange={onSearchChange}
+          onSearch={onSearchChange}
+          placeholder="Search opportunities, skills..."
+          isLoading={isLoading}
+          debounceDelay={400}
         />
-        {searchQuery && !isLoading && (
-          <button
-            onClick={() => onSearchChange("")}
-            className="flex-shrink-0 text-[#B2B2B2] hover:text-black transition-colors"
-            aria-label="Clear search"
-          >
-            <X className="w-[15px] h-[15px]" />
-          </button>
-        )}
       </div>
 
       {/* Filter Button */}

@@ -22,7 +22,6 @@ export function EmployerOpportunities() {
 
   const [activeTab, setActiveTab] = useState<TabType>("open");
   const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortType>("newest");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<any>(null);
@@ -30,7 +29,6 @@ export function EmployerOpportunities() {
 
   const LIMIT = 20;
   const isInitialLoadRef = useRef(true);
-  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const STATUS_MAP: Record<TabType, string> = {
     open: "active",
@@ -52,7 +50,7 @@ export function EmployerOpportunities() {
 
   const queryParams = {
     status: STATUS_MAP[activeTab],
-    ...(debouncedSearchQuery ? { q: debouncedSearchQuery } : {}),
+    ...(searchQuery ? { q: searchQuery } : {}),
     ...(appliedFilters?.types?.length
       ? { type: appliedFilters.types.join(",") }
       : {}),
@@ -83,28 +81,6 @@ export function EmployerOpportunities() {
     isPending,
     refetch: fetchOpportunities,
   } = useRecruiterOpportunitiesQuery(queryParams);
-
-  // Debounced search handler
-  const handleSearchDebounced = (query: string) => {
-    setSearchQuery(query);
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
-    searchTimeoutRef.current = setTimeout(() => {
-      setDebouncedSearchQuery(query);
-      setOffset(0); // Reset to first page on search
-    }, 500);
-  };
-
-  // Clear search handler
-  const handleClearSearch = () => {
-    setSearchQuery("");
-    setDebouncedSearchQuery("");
-    setOffset(0); // Reset to first page
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
-  };
 
   // Filter count calculation
   const getFilterCount = (): number => {
@@ -181,12 +157,11 @@ export function EmployerOpportunities() {
             <OpportunitiesHeader onPostClick={handlePostClick} />
             <SearchAndFilters
               searchQuery={searchQuery}
-              onSearchChange={handleSearchDebounced}
-              onClearSearch={handleClearSearch}
+              onSearchChange={setSearchQuery}
               sortBy={sortBy}
               onSortChange={setSortBy}
               onFilterClick={() => setIsFilterOpen(true)}
-              isSearching={isPending && debouncedSearchQuery !== searchQuery}
+              isSearching={isPending}
               filterCount={getFilterCount()}
               filterModal={
                 <OpportunitiesFilterModal
@@ -213,7 +188,7 @@ export function EmployerOpportunities() {
                 icon={Briefcase}
                 title="No opportunities found"
                 description={
-                  debouncedSearchQuery.trim()
+                  searchQuery.trim()
                     ? "Try adjusting your search query"
                     : appliedFilters &&
                         (appliedFilters.skills?.length > 0 ||

@@ -1,6 +1,6 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
+import { SearchInput } from "@/components/ui/search-input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +12,6 @@ import type { SortType } from "@/lib/types";
 interface SearchAndFiltersProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  onClearSearch: () => void;
   sortBy: SortType;
   onSortChange: (sort: SortType) => void;
   onFilterClick: () => void;
@@ -24,7 +23,6 @@ interface SearchAndFiltersProps {
 export function SearchAndFilters({
   searchQuery,
   onSearchChange,
-  onClearSearch,
   sortBy,
   onSortChange,
   onFilterClick,
@@ -34,64 +32,16 @@ export function SearchAndFilters({
 }: SearchAndFiltersProps) {
   return (
     <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
-      <div className="flex-1 relative">
-        {isSearching ? (
-          <div className="absolute left-2.5 top-1/2 -translate-y-1/2 w-[15px] h-[15px] border-2 border-[#B2B2B2] border-t-transparent rounded-full animate-spin" />
-        ) : (
-          <svg
-            className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
-            width="15"
-            height="15"
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12.75 12.75L15.75 15.75"
-              stroke="#B2B2B2"
-              strokeWidth="1.125"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25Z"
-              stroke="#B2B2B2"
-              strokeWidth="1.125"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        )}
-        <Input
-          type="text"
-          placeholder="Search role, Level or jobs"
+      <div className="flex-1">
+        <SearchInput
           value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-8 pr-8 h-9 rounded-lg border-[#E1E4EA] font-inter-tight text-xs placeholder:text-black/30 placeholder:capitalize"
+          onChange={onSearchChange}
+          onSearch={onSearchChange}
+          placeholder="Search role, Level or jobs"
+          isLoading={isSearching}
+          debounceDelay={500}
+          className="h-9"
         />
-        {searchQuery && !isSearching && (
-          <button
-            onClick={onClearSearch}
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#B2B2B2] hover:text-black transition-colors"
-            aria-label="Clear search"
-          >
-            <svg
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M18 6L6 18M6 6L18 18"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-        )}
       </div>
 
       <div className="relative">

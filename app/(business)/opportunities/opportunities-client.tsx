@@ -16,6 +16,7 @@ import type { OpportunityData } from "./server-data";
 import { getOpportunitiesData } from "./server-data";
 import { useProfile } from "@/hooks";
 import { RoleColorProvider } from "@/lib/theme/RoleColorContext";
+import { ErrorState } from "@/components/ui/error-state";
 
 interface OpportunitiesClientProps {
   initialOpportunities: OpportunityData[];
@@ -53,7 +54,6 @@ export function OpportunitiesClient({
   const [pagination, setPagination] = useState(initialPagination);
   const [isLoading, setIsLoading] = useState(initialOpportunities.length === 0);
   const [error, setError] = useState<string | null>(initialError);
-  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialLoadRef = useRef(true);
   const fetchIdRef = useRef(0);
 
@@ -140,17 +140,10 @@ export function OpportunitiesClient({
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
-
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
+    // Only trigger search API with min 2 characters (or empty to clear)
+    if (query.length >= 2 || query.length === 0) {
+      fetchOpportunitiesWithFilters(0, undefined, query);
     }
-
-    searchTimeoutRef.current = setTimeout(() => {
-      // Only trigger search API with min 2 characters (or empty to clear)
-      if (query.length >= 2 || query.length === 0) {
-        fetchOpportunitiesWithFilters(0, undefined, query);
-      }
-    }, 400);
   };
 
   const handleFilterChange = (filter: FilterType) => {
@@ -268,12 +261,11 @@ export function OpportunitiesClient({
           {isLoading && <OpportunitiesGridSkeleton />}
           {error && !isLoading && (
             <div className="flex-1 flex items-center justify-center">
-              <div className="text-center">
-                <p className="text-lg font-semibold text-gray-900">
-                  Error loading opportunities
-                </p>
-                <p className="text-gray-600">{error}</p>
-              </div>
+              <ErrorState
+                title="Error loading opportunities"
+                message={error}
+                onRetry={() => window.location.reload()}
+              />
             </div>
           )}
           {!isLoading && !error && (

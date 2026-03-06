@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Calendar, Briefcase, Users, Search, X } from "lucide-react";
+import { Calendar, Briefcase, Users } from "lucide-react";
+import { SearchInput } from "@/components/ui/search-input";
 import { useToast } from "@/hooks";
 import { useProfile } from "@/hooks/useProfile";
 import { getTalentUpcoming } from "@/lib/api/talent";
@@ -76,7 +77,6 @@ function TalentUpcoming() {
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [dateRange, setDateRange] = useState<string>("all");
   const [totalCounts, setTotalCounts] = useState({
@@ -99,19 +99,10 @@ function TalentUpcoming() {
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [isActionLoading, setIsActionLoading] = useState(false);
 
-  // Debounce search query
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
-
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(0);
-  }, [debouncedSearchQuery, dateRange, filter]);
+  }, [searchQuery, dateRange, filter]);
 
   const fetchData = useCallback(
     async (showLoading = true) => {
@@ -124,7 +115,7 @@ function TalentUpcoming() {
         }
 
         const apiParams = {
-          q: debouncedSearchQuery || undefined,
+          q: searchQuery || undefined,
           dateRange:
             dateRange && dateRange !== "all"
               ? (dateRange as "today" | "week" | "month")
@@ -186,7 +177,7 @@ function TalentUpcoming() {
         setIsLoading(false);
       }
     },
-    [debouncedSearchQuery, dateRange, filter, currentPage, toast],
+    [searchQuery, dateRange, filter, currentPage, toast],
   );
 
   useEffect(() => {
@@ -386,23 +377,14 @@ function TalentUpcoming() {
         </h1>
 
         <div className="flex items-center gap-[8px] mb-[19px]">
-          <div className="flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border border-[#E1E4EA] rounded-[8px]">
-            <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
-            <input
-              type="text"
-              placeholder="Search interviews, sessions..."
+          <div className="flex-1 max-w-[585px]">
+            <SearchInput
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+              onChange={setSearchQuery}
+              onSearch={setSearchQuery}
+              placeholder="Search interviews, sessions..."
+              debounceDelay={500}
             />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="flex-shrink-0 text-[#B2B2B2] hover:text-black transition-colors"
-              >
-                <X className="w-[15px] h-[15px]" />
-              </button>
-            )}
           </div>
 
           {/* Date Range Filter Buttons */}
@@ -481,12 +463,12 @@ function TalentUpcoming() {
             <EmptyState
               icon={Calendar}
               title={
-                debouncedSearchQuery || dateRange !== "all"
+                searchQuery || dateRange !== "all"
                   ? "No events found"
                   : "No upcoming events"
               }
               description={
-                debouncedSearchQuery || dateRange !== "all"
+                searchQuery || dateRange !== "all"
                   ? "Try adjusting your filters or search query"
                   : filter === "interviews"
                     ? "You have no upcoming interviews"

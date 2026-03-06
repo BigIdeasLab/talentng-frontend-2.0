@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react";
 import {
-  Search,
   SlidersHorizontal,
   MapPin,
   Mail,
   Calendar,
 } from "lucide-react";
+import { SearchInput } from "@/components/ui/search-input";
 import { HireFilterModal, type HireFilterState } from "./HireFilterModal";
 import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
 import { type Application } from "@/lib/api/applications/types";
@@ -112,14 +112,12 @@ export function PastHiresTab() {
         {/* Search and Filters */}
         <div className="flex items-center gap-2 w-full">
           {/* Search Container */}
-          <div className="flex-1 min-w-0 h-[38px] px-2.5 flex items-center gap-1.5 rounded-[8px] border border-[#E1E4EA]">
-            <Search className="w-4 h-4 text-[#B2B2B2] flex-shrink-0" />
-            <input
-              type="text"
-              placeholder="Search Talent, Role"
+          <div className="flex-1 min-w-0">
+            <SearchInput
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 min-w-0 text-[13px] font-normal font-inter-tight placeholder:text-[rgba(0,0,0,0.30)] placeholder:capitalize border-0 focus:outline-none bg-transparent"
+              onChange={setSearchQuery}
+              onSearch={setSearchQuery}
+              placeholder="Search Talent, Role"
             />
           </div>
 

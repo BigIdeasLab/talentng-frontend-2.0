@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
+import { SearchInput } from "@/components/ui/search-input";
 import { MentorGridSkeleton } from "@/components/talent/mentorship/MentorCardSkeleton";
 import { MentorGrid } from "@/components/talent/mentorship/MentorGrid";
 import {
@@ -167,14 +168,10 @@ export default function MentorshipPage() {
   }, [hasAccess]);
 
   const handleMentorSearch = (query: string) => {
-    setSearchQuery(query);
-    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
-    searchTimeoutRef.current = setTimeout(() => {
-      if (query.length >= 2 || query.length === 0) {
-        setOffset(0);
-        fetchMentors(query, undefined, undefined, 0);
-      }
-    }, 400);
+    if (query.length >= 2 || query.length === 0) {
+      setOffset(0);
+      fetchMentors(query, undefined, undefined, 0);
+    }
   };
 
   const handleCategoryChange = (category: string) => {
@@ -224,14 +221,13 @@ export default function MentorshipPage() {
 
         {/* Search Bar and Filter */}
         <div className="flex items-center gap-[8px] mb-[19px]">
-          <div className="flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border border-[#E1E4EA] rounded-[8px]">
-            <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
-            <input
-              type="text"
-              placeholder="Search mentors, topics..."
+          <div className="flex-1 max-w-[585px]">
+            <SearchInput
               value={searchQuery}
-              onChange={(e) => handleMentorSearch(e.target.value)}
-              className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+              onChange={setSearchQuery}
+              onSearch={handleMentorSearch}
+              placeholder="Search mentors, topics..."
+              debounceDelay={400}
             />
           </div>
 

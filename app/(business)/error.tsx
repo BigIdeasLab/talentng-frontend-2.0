@@ -8,5 +8,10 @@ interface ErrorProps {
 }
 
 export default function BusinessError({ error, reset }: ErrorProps) {
-  return <ErrorState onRetry={reset} />;
+  return (
+    <ErrorState
+      message="Something went wrong. Please try again."
+      onRetry={reset}
+    />
+  );
 }

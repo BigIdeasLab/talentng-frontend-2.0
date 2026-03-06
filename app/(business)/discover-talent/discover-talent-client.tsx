@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { SearchInput } from "@/components/ui/search-input";
 import {
   DiscoverTalentHeader,
   TalentGrid,
@@ -31,7 +32,6 @@ export function DiscoverTalentClient({
   const [offset, setOffset] = useState(0);
   const [pagination, setPagination] = useState<any>(initialPagination);
   const LIMIT = 20;
-  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isInitialLoadRef = useRef(true);
 
   useEffect(() => {
@@ -84,16 +84,7 @@ export function DiscoverTalentClient({
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
-
-    // Clear previous timeout
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
-
-    // Set new timeout for debouncing
-    searchTimeoutRef.current = setTimeout(() => {
-      fetchTalents(query, selectedCategory, filters, 0);
-    }, 500);
+    fetchTalents(query, selectedCategory, filters, 0);
   };
 
   const handleCategoryChange = (category: string) => {

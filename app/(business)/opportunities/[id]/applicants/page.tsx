@@ -7,6 +7,7 @@ import { Users } from "lucide-react";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
 import { EmptyState } from "@/components/ui/empty-state";
+import { SearchInput } from "@/components/ui/search-input";
 import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
 import { useRecruiterOpportunityQuery } from "@/hooks/useRecruiterOpportunities";
 import type { Application } from "@/lib/api/applications";
@@ -271,35 +272,12 @@ export default function OpportunityApplicantsPage() {
         {/* Search and Filters */}
         <div className="flex items-center gap-[8px] mb-[20px] relative overflow-visible">
           {/* Search Container */}
-          <div className="flex-1 max-w-[585px] flex items-center gap-[6px] px-[12px] py-[7px] rounded-[8px] border border-[#E1E4EA]">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 18 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12.75 12.75L15.75 15.75"
-                stroke="#B2B2B2"
-                strokeWidth="1.125"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25Z"
-                stroke="#B2B2B2"
-                strokeWidth="1.125"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search name or username"
+          <div className="flex-1 max-w-[585px]">
+            <SearchInput
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 font-inter-tight text-[13px] font-normal text-black placeholder:text-black/30 outline-none bg-transparent capitalize"
+              onChange={setSearchQuery}
+              onSearch={setSearchQuery}
+              placeholder="Search name or username"
             />
           </div>
 

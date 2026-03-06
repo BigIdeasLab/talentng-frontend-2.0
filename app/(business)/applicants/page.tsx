@@ -3,7 +3,8 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Users, Search, SlidersHorizontal, X } from "lucide-react";
+import { Users, SlidersHorizontal } from "lucide-react";
+import { SearchInput } from "@/components/ui/search-input";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
@@ -40,7 +41,6 @@ const interviewStatusDisplayMap = {
 export default function ApplicantsPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<string>("all");
   const [sortBy, setSortBy] = useState("newest");
   const [currentPage, setCurrentPage] = useState(0);
@@ -56,24 +56,15 @@ export default function ApplicantsPage() {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const lastProcessedDataRef = useRef<any>(null);
 
-  // Debounce search query to avoid resetting page on every keystroke
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery);
-    }, 500); // 500ms delay
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
-
   // Reset to page 1 when filters change (but not on every keystroke)
   useEffect(() => {
     setCurrentPage(0);
-  }, [debouncedSearchQuery, activeTab, filters, sortBy]);
+  }, [searchQuery, activeTab, filters, sortBy]);
 
   // Build server-side params from all active filters
   const queryParams = useMemo(
     () => ({
-      ...(debouncedSearchQuery ? { q: debouncedSearchQuery } : {}),
+      ...(searchQuery ? { q: searchQuery } : {}),
       ...(activeTab !== "all" ? { status: activeTab } : {}),
       ...(filters.status.length === 1 ? { status: filters.status[0] } : {}),
       ...(filters.location ? { location: filters.location } : {}),
@@ -86,7 +77,7 @@ export default function ApplicantsPage() {
       limit: 20,
       offset: currentPage * 20,
     }),
-    [debouncedSearchQuery, activeTab, filters, sortBy, currentPage],
+    [searchQuery, activeTab, filters, sortBy, currentPage],
   );
 
   const {
@@ -207,23 +198,14 @@ export default function ApplicantsPage() {
 
         {/* Search Bar and Filter */}
         <div className="flex items-center gap-[8px] mb-4">
-          <div className="flex-1 max-w-[585px] h-[38px] px-[12px] py-[7px] flex items-center gap-[6px] border border-[#E1E4EA] rounded-[8px]">
-            <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
-            <input
-              type="text"
-              placeholder="Search name, role..."
+          <div className="flex-1 max-w-[585px]">
+            <SearchInput
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
+              onChange={setSearchQuery}
+              onSearch={setSearchQuery}
+              placeholder="Search name, role..."
+              debounceDelay={500}
             />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="flex-shrink-0 text-[#B2B2B2] hover:text-black transition-colors"
-              >
-                <X className="w-[15px] h-[15px]" />
-              </button>
-            )}
           </div>
 
           <div className="relative flex-shrink-0">
@@ -331,7 +313,7 @@ export default function ApplicantsPage() {
                 icon={Users}
                 title="No applicants found"
                 description={
-                  debouncedSearchQuery.trim()
+                  searchQuery.trim()
                     ? "Try adjusting your search query"
                     : filters.status.length > 0 ||
                         filters.location ||
