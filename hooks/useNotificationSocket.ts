@@ -83,7 +83,8 @@ export function useNotificationSocket({
     }
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_TALENTNG_API_URL || "http://localhost:3001";
+      const apiUrl =
+        process.env.NEXT_PUBLIC_TALENTNG_API_URL || "http://localhost:3001";
       const streamUrl = new URL("/api/v1/notifications/stream", apiUrl);
       streamUrl.searchParams.append("recipientRole", recipientRole);
 
