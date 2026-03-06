@@ -54,7 +54,8 @@ export const getNotifications = async (
   }
 
   const endpoint = `/notifications${query.toString() ? `?${query.toString()}` : ""}`;
-  return apiClient<Notification[]>(endpoint);
+  const response = await apiClient<{ data: Notification[]; pagination: any }>(endpoint);
+  return response.data;
 };
 
 /**

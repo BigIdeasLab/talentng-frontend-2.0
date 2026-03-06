@@ -18,26 +18,21 @@ This plan implements a unified, reusable search input component to replace 21 ex
     - Create internal state with useState for uncontrolled mode
     - Implement currentValue logic that uses either value prop or internal state
     - _Requirements: 8.1, 8.2_
-  
-  - [ ]* 2.2 Write property test for controlled mode behavior
+  - [ ]\* 2.2 Write property test for controlled mode behavior
     - **Property 14: Controlled Mode Behavior**
     - **Validates: Requirements 8.1, 8.3**
-  
-  - [ ]* 2.3 Write property test for uncontrolled mode behavior
+  - [ ]\* 2.3 Write property test for uncontrolled mode behavior
     - **Property 15: Uncontrolled Mode Behavior**
     - **Validates: Requirements 8.2, 8.4**
-  
   - [x] 2.4 Implement basic input element with placeholder support
     - Render input element with type="text"
     - Implement placeholder prop with default value "Search..."
     - Connect value to currentValue from controlled/uncontrolled logic
     - _Requirements: 1.2, 12.1, 12.2, 12.3, 12.4_
-  
-  - [ ]* 2.5 Write property test for placeholder text rendering
+  - [ ]\* 2.5 Write property test for placeholder text rendering
     - **Property 1: Placeholder Text Rendering**
     - **Validates: Requirements 1.2, 12.2, 12.3, 12.4**
-  
-  - [ ]* 2.6 Write property test for initial value display
+  - [ ]\* 2.6 Write property test for initial value display
     - **Property 2: Initial Value Display**
     - **Validates: Requirements 1.3**
 
@@ -48,21 +43,17 @@ This plan implements a unified, reusable search input component to replace 21 ex
     - Use debounceDelay prop with default of 300ms
     - Invoke onSearch callback after delay expires
     - _Requirements: 1.4, 3.1, 3.2, 3.3, 3.4_
-  
-  - [ ]* 3.2 Write property test for debounce delay configuration
+  - [ ]\* 3.2 Write property test for debounce delay configuration
     - **Property 3: Debounce Delay Configuration**
     - **Validates: Requirements 1.4, 3.3, 3.4**
-  
-  - [ ]* 3.3 Write property test for debounce timer reset
+  - [ ]\* 3.3 Write property test for debounce timer reset
     - **Property 7: Debounce Timer Reset**
     - **Validates: Requirements 3.1, 3.2**
-  
   - [x] 3.4 Implement timer cleanup on component unmount
     - Add useEffect with cleanup function that clears debounceTimerRef
     - Ensure timer is cleared when component unmounts to prevent memory leaks
     - _Requirements: 11.1_
-  
-  - [ ]* 3.5 Write property test for timer cleanup on unmount
+  - [ ]\* 3.5 Write property test for timer cleanup on unmount
     - **Property 18: Timer Cleanup on Unmount**
     - **Validates: Requirements 11.1**
 
@@ -73,12 +64,10 @@ This plan implements a unified, reusable search input component to replace 21 ex
     - Invoke onChange callback if provided (for controlled mode)
     - Invoke debouncedSearch with new value
     - _Requirements: 1.6, 8.3, 8.4_
-  
-  - [ ]* 4.2 Write property test for value exposure to parent
+  - [ ]\* 4.2 Write property test for value exposure to parent
     - **Property 4: Value Exposure to Parent**
     - **Validates: Requirements 1.6**
-  
-  - [ ]* 4.3 Write property test for callback memoization
+  - [ ]\* 4.3 Write property test for callback memoization
     - **Property 19: Callback Memoization**
     - **Validates: Requirements 11.2, 11.3**
 
@@ -89,24 +78,20 @@ This plan implements a unified, reusable search input component to replace 21 ex
     - Apply border: 1px solid #E1E4EA, border-radius: 8px
     - Apply transparent background (or #FEF2F2 for error state)
     - _Requirements: 2.1, 2.2, 2.3_
-  
   - [x] 5.2 Apply input text styling
     - Apply font: 13px Inter Tight, font-weight: 400
     - Apply text color: #000000
     - Apply placeholder color: rgba(0,0,0,0.3)
     - Remove default input styling (border, outline, background)
     - _Requirements: 2.3, 12.2, 12.3_
-  
   - [x] 5.3 Implement focus state styling
     - Apply visible focus indicator that meets accessibility standards
     - Use browser default focus ring for accessibility
     - _Requirements: 2.5_
-  
-  - [ ]* 5.4 Write property test for consistent visual styling
+  - [ ]\* 5.4 Write property test for consistent visual styling
     - **Property 5: Consistent Visual Styling**
     - **Validates: Requirements 2.1, 2.2, 2.3**
-  
-  - [ ]* 5.5 Write property test for focus state visibility
+  - [ ]\* 5.5 Write property test for focus state visibility
     - **Property 6: Focus State Visibility**
     - **Validates: Requirements 2.5**
 
@@ -116,7 +101,6 @@ This plan implements a unified, reusable search input component to replace 21 ex
     - Render Search icon with size 15x15px, color #B2B2B2
     - Position icon at start of input with flex-shrink-0
     - _Requirements: 2.4_
-  
   - [x] 6.2 Implement loading spinner with conditional rendering
     - Create loading spinner div with 15x15px size, border-2, border-[#B2B2B2], border-t-transparent
     - Add animate-spin class for rotation animation
@@ -132,7 +116,6 @@ This plan implements a unified, reusable search input component to replace 21 ex
     - Hide button when input is empty or loading
     - Apply hover state styling (color transition to #000000)
     - _Requirements: 5.1, 5.2, 5.5_
-  
   - [x] 7.2 Implement handleClear callback
     - Create handleClear using useCallback
     - Clear input by setting value to empty string
@@ -140,12 +123,10 @@ This plan implements a unified, reusable search input component to replace 21 ex
     - Invoke onSearch("") immediately (no debounce)
     - Invoke onClear() callback if provided
     - _Requirements: 5.3, 5.4_
-  
-  - [ ]* 7.3 Write property test for clear button visibility
+  - [ ]\* 7.3 Write property test for clear button visibility
     - **Property 8: Clear Button Visibility**
     - **Validates: Requirements 5.1, 5.2**
-  
-  - [ ]* 7.4 Write property test for clear button action
+  - [ ]\* 7.4 Write property test for clear button action
     - **Property 9: Clear Button Action**
     - **Validates: Requirements 5.3, 5.4**
 
@@ -156,12 +137,10 @@ This plan implements a unified, reusable search input component to replace 21 ex
     - When Escape pressed and input has value, invoke handleClear
     - Prevent default browser behavior for Escape
     - _Requirements: 6.1, 6.2, 6.4_
-  
-  - [ ]* 8.2 Write property test for Escape key clears input
+  - [ ]\* 8.2 Write property test for Escape key clears input
     - **Property 10: Escape Key Clears Input**
     - **Validates: Requirements 6.1, 6.2**
-  
-  - [ ]* 8.3 Write unit tests for keyboard navigation
+  - [ ]\* 8.3 Write unit tests for keyboard navigation
     - Test Tab key moves focus to clear button
     - Test Enter key in input (standard browser behavior)
     - Test arrow keys for text navigation (standard browser behavior)
@@ -173,27 +152,22 @@ This plan implements a unified, reusable search input component to replace 21 ex
     - Add aria-busy attribute that reflects isLoading state
     - Ensure input has accessible label or aria-label
     - _Requirements: 7.1, 7.2, 7.3_
-  
   - [x] 9.2 Add ARIA label to clear button
     - Add aria-label="Clear search" to clear button
     - Ensure clear button is keyboard accessible
     - _Requirements: 7.4_
-  
   - [x] 9.3 Verify color contrast ratios
     - Ensure text color #000000 on transparent background meets 4.5:1 ratio
     - Ensure border color #E1E4EA meets contrast requirements
     - Ensure placeholder color rgba(0,0,0,0.3) meets minimum contrast
     - _Requirements: 7.5_
-  
-  - [ ]* 9.4 Write property test for accessible label presence
+  - [ ]\* 9.4 Write property test for accessible label presence
     - **Property 11: Accessible Label Presence**
     - **Validates: Requirements 7.1**
-  
-  - [ ]* 9.5 Write property test for conditional aria attributes
+  - [ ]\* 9.5 Write property test for conditional aria attributes
     - **Property 12: Conditional Aria Attributes**
     - **Validates: Requirements 7.2**
-  
-  - [ ]* 9.6 Write property test for keyboard navigation
+  - [ ]\* 9.6 Write property test for keyboard navigation
     - **Property 13: Keyboard Navigation**
     - **Validates: Requirements 7.6**
 
@@ -204,26 +178,22 @@ This plan implements a unified, reusable search input component to replace 21 ex
     - Log errors to console in development mode
     - Ensure component continues functioning after error
     - _Requirements: 10.1, 10.2_
-  
   - [x] 10.2 Implement error state visual styling
     - When error prop provided, apply red border color #FF0000
     - When error prop provided, apply error background tint #FEF2F2
     - Display error message below input if error prop is string
     - Link error message with aria-describedby
     - _Requirements: 10.3_
-  
   - [x] 10.3 Add prop validation and warnings
     - Validate debounceDelay is non-negative, use 300ms default if invalid
     - Validate maxLength is positive integer if provided
     - Log warnings in development mode for invalid props
     - Handle both value and defaultValue provided (prioritize value, log warning)
     - _Requirements: 10.4_
-  
-  - [ ]* 10.4 Write property test for error resilience
+  - [ ]\* 10.4 Write property test for error resilience
     - **Property 16: Error Resilience**
     - **Validates: Requirements 10.1, 10.2, 10.3**
-  
-  - [ ]* 10.5 Write property test for invalid props handling
+  - [ ]\* 10.5 Write property test for invalid props handling
     - **Property 17: Invalid Props Handling**
     - **Validates: Requirements 10.4**
 
@@ -232,14 +202,12 @@ This plan implements a unified, reusable search input component to replace 21 ex
     - Wrap handleInputChange, handleClear, handleKeyDown in useCallback
     - Specify correct dependency arrays for each callback
     - _Requirements: 11.2, 11.3_
-  
   - [x] 11.2 Implement selective re-rendering with React.memo
     - Wrap component export with React.memo
     - Implement custom comparison function if needed
     - Ensure component only re-renders when relevant props change
     - _Requirements: 11.4_
-  
-  - [ ]* 11.3 Write property test for selective re-rendering
+  - [ ]\* 11.3 Write property test for selective re-rendering
     - **Property 20: Selective Re-rendering**
     - **Validates: Requirements 11.4**
 
@@ -250,42 +218,38 @@ This plan implements a unified, reusable search input component to replace 21 ex
   - Ensure all tests pass, ask the user if questions arise
 
 - [ ] 13. Create comprehensive unit tests
-  - [ ]* 13.1 Write unit tests for default values
+  - [ ]\* 13.1 Write unit tests for default values
     - Test default placeholder is "Search..."
     - Test default debounce delay is 300ms
     - Test default aria-label is "Search"
-  
-  - [ ]* 13.2 Write unit tests for edge cases
+  - [ ]\* 13.2 Write unit tests for edge cases
     - Test empty string input
     - Test very long input strings with maxLength
     - Test rapid typing followed by immediate unmount
     - Test switching between controlled and uncontrolled mode
     - Test multiple simultaneous clear actions
-  
-  - [ ]* 13.3 Write unit tests for error conditions
+  - [ ]\* 13.3 Write unit tests for error conditions
     - Test onSearch throws synchronous error
     - Test onSearch throws asynchronous error
     - Test invalid debounce delay (negative number)
     - Test component with missing optional props
-  
-  - [ ]* 13.4 Write unit tests for specific visual states
+  - [ ]\* 13.4 Write unit tests for specific visual states
     - Test loading spinner appears when isLoading=true
     - Test search icon hidden when isLoading=true
     - Test clear button has aria-label="Clear search"
     - Test error state applies red border and background
 
 - [ ] 14. Set up property-based testing framework
-  - [ ]* 14.1 Install @fast-check/vitest dependency
+  - [ ]\* 14.1 Install @fast-check/vitest dependency
     - Add @fast-check/vitest to devDependencies
     - Configure vitest for property-based testing
-  
-  - [ ]* 14.2 Create property test file structure
+  - [ ]\* 14.2 Create property test file structure
     - Create `components/ui/search-input.spec.tsx`
     - Set up test utilities and helpers for property testing
     - Configure minimum 100 iterations per property test
 
 - [ ] 15. Write property-based tests for all 20 properties
-  - [ ]* 15.1 Write remaining property tests not yet implemented
+  - [ ]\* 15.1 Write remaining property tests not yet implemented
     - Implement any property tests not created in previous tasks
     - Ensure each test references design document property number
     - Tag each test with format: "Feature: consistent-search-input, Property {N}: {title}"
@@ -297,14 +261,12 @@ This plan implements a unified, reusable search input component to replace 21 ex
     - Document controlled vs uncontrolled mode usage
     - Document default values for all optional props
     - _Requirements: 9.1, 9.3_
-  
   - [x] 16.2 Create migration guide with examples
     - Document migration pattern for simple search (search-bar.tsx style)
     - Document migration pattern for debounced search (DiscoverTalentHeader.tsx style)
     - Document migration pattern for search with loading state
     - Provide before/after code examples for each pattern
     - _Requirements: 9.3, 9.4_
-  
   - [x] 16.3 Create list of all 21 files to migrate
     - Document all 21 existing search implementations from audit
     - Prioritize 2-3 low-risk implementations for pilot migration
@@ -317,17 +279,14 @@ This plan implements a unified, reusable search input component to replace 21 ex
     - Test functionality matches original behavior
     - Verify visual appearance matches original
     - _Requirements: 9.1, 9.2, 9.4_
-  
   - [x] 17.2 Migrate second pilot implementation
     - Choose second low-risk search implementation
     - Replace with SearchInput component
     - Test functionality and visual appearance
-  
   - [x] 17.3 Migrate third pilot implementation
     - Choose third low-risk search implementation
     - Replace with SearchInput component
     - Test functionality and visual appearance
-  
   - [x] 17.4 Gather feedback and refine component
     - Test pilot migrations in development environment
     - Identify any issues or missing features
@@ -345,15 +304,12 @@ This plan implements a unified, reusable search input component to replace 21 ex
     - Replace 7 search implementations with SearchInput
     - Test each migration for functionality and visual parity
     - _Requirements: 9.1, 9.2, 9.4_
-  
   - [x] 19.2 Migrate implementations 11-17
     - Replace 7 search implementations with SearchInput
     - Test each migration for functionality and visual parity
-  
   - [x] 19.3 Migrate implementations 18-21
     - Replace final 4 search implementations with SearchInput
     - Test each migration for functionality and visual parity
-  
   - [x] 19.4 Remove deprecated search components
     - Identify any old search components no longer used
     - Remove deprecated files and imports
@@ -365,17 +321,14 @@ This plan implements a unified, reusable search input component to replace 21 ex
     - Verify 90%+ test coverage achieved
     - Run accessibility audits with axe-core
     - Verify zero accessibility violations
-  
   - [x] 20.2 Verify all 21 migrations complete
     - Check all 21 original implementations replaced
     - Verify consistent visual appearance across all instances
     - Test search functionality in all contexts
-  
   - [x] 20.3 Update design system documentation
     - Add SearchInput to design system documentation
     - Document usage guidelines and best practices
     - Add component to Storybook or component library if applicable
-  
   - [x] 20.4 Create future developer guide
     - Document when to use SearchInput vs custom search
     - Document how to extend SearchInput for special cases

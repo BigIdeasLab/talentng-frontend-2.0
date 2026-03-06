@@ -51,7 +51,7 @@ export const getTalentApplications = async (params?: {
   dateRange?: "today" | "week" | "month";
   limit?: number;
   offset?: number;
-}): Promise<Application[]> => {
+}): Promise<PaginatedApplicationsResponse> => {
   const query = new URLSearchParams();
   if (params?.q) query.append("q", params.q);
   if (params?.status) query.append("status", params.status);
@@ -59,7 +59,7 @@ export const getTalentApplications = async (params?: {
   if (params?.limit) query.append("limit", String(params.limit));
   if (params?.offset) query.append("offset", String(params.offset));
   const queryString = query.toString();
-  return apiClient<Application[]>(
+  return apiClient<PaginatedApplicationsResponse>(
     `/talent/applications${queryString ? `?${queryString}` : ""}`,
   );
 };

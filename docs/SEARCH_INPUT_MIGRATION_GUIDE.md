@@ -14,29 +14,30 @@ import { SearchInput } from "@/components/ui/search-input";
 
 ### Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `onSearch` | `(query: string) => void` | **Required** | Callback invoked after debounce delay |
-| `placeholder` | `string` | `"Search..."` | Placeholder text |
-| `debounceDelay` | `number` | `300` | Debounce delay in milliseconds |
-| `value` | `string` | `undefined` | Current value (controlled mode) |
-| `onChange` | `(value: string) => void` | `undefined` | Immediate change callback (controlled mode) |
-| `defaultValue` | `string` | `""` | Initial value (uncontrolled mode) |
-| `isLoading` | `boolean` | `false` | Shows loading spinner |
-| `error` | `string` | `undefined` | Error message |
-| `ariaLabel` | `string` | `"Search"` | Accessible label |
-| `ariaDescribedBy` | `string` | `undefined` | ID of describing element |
-| `maxLength` | `number` | `undefined` | Maximum input length |
-| `disabled` | `boolean` | `false` | Disables the input |
-| `className` | `string` | `""` | Additional CSS classes |
-| `onClear` | `() => void` | `undefined` | Clear button callback |
-| `onError` | `(error: Error) => void` | `undefined` | Error handler callback |
-| `onFocus` | `() => void` | `undefined` | Focus callback |
-| `onBlur` | `() => void` | `undefined` | Blur callback |
+| Prop              | Type                      | Default       | Description                                 |
+| ----------------- | ------------------------- | ------------- | ------------------------------------------- |
+| `onSearch`        | `(query: string) => void` | **Required**  | Callback invoked after debounce delay       |
+| `placeholder`     | `string`                  | `"Search..."` | Placeholder text                            |
+| `debounceDelay`   | `number`                  | `300`         | Debounce delay in milliseconds              |
+| `value`           | `string`                  | `undefined`   | Current value (controlled mode)             |
+| `onChange`        | `(value: string) => void` | `undefined`   | Immediate change callback (controlled mode) |
+| `defaultValue`    | `string`                  | `""`          | Initial value (uncontrolled mode)           |
+| `isLoading`       | `boolean`                 | `false`       | Shows loading spinner                       |
+| `error`           | `string`                  | `undefined`   | Error message                               |
+| `ariaLabel`       | `string`                  | `"Search"`    | Accessible label                            |
+| `ariaDescribedBy` | `string`                  | `undefined`   | ID of describing element                    |
+| `maxLength`       | `number`                  | `undefined`   | Maximum input length                        |
+| `disabled`        | `boolean`                 | `false`       | Disables the input                          |
+| `className`       | `string`                  | `""`          | Additional CSS classes                      |
+| `onClear`         | `() => void`              | `undefined`   | Clear button callback                       |
+| `onError`         | `(error: Error) => void`  | `undefined`   | Error handler callback                      |
+| `onFocus`         | `() => void`              | `undefined`   | Focus callback                              |
+| `onBlur`          | `() => void`              | `undefined`   | Blur callback                               |
 
 ### Controlled vs Uncontrolled Mode
 
 **Controlled Mode**: Provide `value` and `onChange` props
+
 ```typescript
 <SearchInput
   value={searchQuery}
@@ -46,6 +47,7 @@ import { SearchInput } from "@/components/ui/search-input";
 ```
 
 **Uncontrolled Mode**: Omit `value` prop, optionally provide `defaultValue`
+
 ```typescript
 <SearchInput
   onSearch={handleSearch}
@@ -58,6 +60,7 @@ import { SearchInput } from "@/components/ui/search-input";
 ### Pattern 1: Simple Search (search-bar.tsx style)
 
 **Before:**
+
 ```typescript
 <div className="flex items-center gap-[6px] border border-[#E1E4EA] rounded-lg px-3 py-[7px]">
   <Search className="w-[15px] h-[15px] text-[#B2B2B2]" />
@@ -77,6 +80,7 @@ import { SearchInput } from "@/components/ui/search-input";
 ```
 
 **After:**
+
 ```typescript
 <SearchInput
   value={searchQuery}
@@ -89,6 +93,7 @@ import { SearchInput } from "@/components/ui/search-input";
 ### Pattern 2: Debounced Search (DiscoverTalentHeader.tsx style)
 
 **Before:**
+
 ```typescript
 const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 const debounceTimer = useRef<NodeJS.Timeout>();
@@ -123,6 +128,7 @@ return (
 ```
 
 **After:**
+
 ```typescript
 <SearchInput
   onSearch={onSearchChange}
@@ -135,6 +141,7 @@ return (
 ### Pattern 3: Search with Loading State
 
 **Before:**
+
 ```typescript
 <div className="flex items-center gap-[6px]">
   {isLoading ? (
@@ -152,6 +159,7 @@ return (
 ```
 
 **After:**
+
 ```typescript
 <SearchInput
   value={searchQuery}
@@ -165,6 +173,7 @@ return (
 ### Pattern 4: Search with Debounced State
 
 **Before:**
+
 ```typescript
 const [searchQuery, setSearchQuery] = useState("");
 const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
@@ -180,6 +189,7 @@ useEffect(() => {
 ```
 
 **After:**
+
 ```typescript
 const [searchQuery, setSearchQuery] = useState("");
 
@@ -196,6 +206,7 @@ const [searchQuery, setSearchQuery] = useState("");
 ### Pattern 5: Search with Clear Button
 
 **Before:**
+
 ```typescript
 <div className="flex items-center">
   <input
@@ -215,6 +226,7 @@ const [searchQuery, setSearchQuery] = useState("");
 ```
 
 **After:**
+
 ```typescript
 <SearchInput
   value={searchQuery}
@@ -259,6 +271,7 @@ const [searchQuery, setSearchQuery] = useState("");
 ### Filter Modal Search Inputs (Not migrating - different use case)
 
 These are internal filter searches within modals, not primary page searches:
+
 - `components/talent/opportunities/OpportunitiesFilterModal.tsx` (4 search inputs)
 - `components/DiscoverTalent/FilterModal.tsx` (3 search inputs)
 - `components/employer/applicants/ApplicantFilterModal.tsx` (1 search input)
@@ -268,6 +281,7 @@ These are internal filter searches within modals, not primary page searches:
 ## Common Migration Steps
 
 1. **Import the component:**
+
    ```typescript
    import { SearchInput } from "@/components/ui/search-input";
    ```
@@ -300,18 +314,23 @@ These are internal filter searches within modals, not primary page searches:
 ## Troubleshooting
 
 ### Issue: Search fires too frequently
+
 **Solution:** Increase `debounceDelay` prop (default is 300ms)
 
 ### Issue: Need immediate onChange callback
+
 **Solution:** Use both `onChange` (immediate) and `onSearch` (debounced)
 
 ### Issue: Need to control value externally
+
 **Solution:** Use controlled mode with `value` and `onChange` props
 
 ### Issue: Clear button not appearing
+
 **Solution:** Ensure `isLoading` is false and input has value
 
 ### Issue: Styling doesn't match
+
 **Solution:** Use `className` prop to add additional styles to container
 
 ## Best Practices
@@ -327,6 +346,7 @@ These are internal filter searches within modals, not primary page searches:
 ## Examples
 
 ### Example 1: Simple Page Search
+
 ```typescript
 function MyPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -343,6 +363,7 @@ function MyPage() {
 ```
 
 ### Example 2: API Search with Loading
+
 ```typescript
 function MyPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -370,6 +391,7 @@ function MyPage() {
 ```
 
 ### Example 3: Uncontrolled with Custom Debounce
+
 ```typescript
 function MyPage() {
   const handleSearch = (query: string) => {
@@ -391,6 +413,7 @@ function MyPage() {
 ## Support
 
 For questions or issues with migration, please refer to:
+
 - Component source: `components/ui/search-input.tsx`
 - Requirements: `.kiro/specs/consistent-search-input/requirements.md`
 - Design: `.kiro/specs/consistent-search-input/design.md`

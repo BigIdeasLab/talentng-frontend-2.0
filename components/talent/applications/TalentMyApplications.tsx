@@ -91,7 +91,7 @@ export function TalentMyApplications() {
         setIsLoading(true);
       }
 
-      const data = await getTalentApplications({
+      const response = await getTalentApplications({
         q: searchQuery || undefined,
         status: jobStatusFilter !== "all" ? jobStatusFilter : undefined,
         dateRange:
@@ -105,12 +105,8 @@ export function TalentMyApplications() {
       // Discard stale responses
       if (currentFetchId !== fetchIdRef.current) return;
 
-      const dataArray = Array.isArray(data)
-        ? data
-        : ((data as any)?.data ?? []);
-      const paginationData = Array.isArray(data)
-        ? null
-        : ((data as any)?.pagination ?? null);
+      const dataArray = response.data;
+      const paginationData = response.pagination ?? null;
 
       setJobApplications(dataArray);
       setDisplayedJobApplications(dataArray);

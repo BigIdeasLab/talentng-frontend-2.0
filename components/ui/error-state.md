@@ -14,13 +14,15 @@ A reusable error state component for displaying errors with optional retry funct
 ## Basic Usage
 
 ### Simple Error
+
 ```tsx
 import { ErrorState } from "@/components/ui/error-state";
 
-<ErrorState message="Failed to load data" />
+<ErrorState message="Failed to load data" />;
 ```
 
 ### Error with Retry
+
 ```tsx
 <ErrorState
   title="Error loading opportunities"
@@ -30,6 +32,7 @@ import { ErrorState } from "@/components/ui/error-state";
 ```
 
 ### Custom Retry Text
+
 ```tsx
 <ErrorState
   message="Connection failed"
@@ -41,7 +44,9 @@ import { ErrorState } from "@/components/ui/error-state";
 ## Variants
 
 ### Error (Default)
+
 Red theme for critical errors
+
 ```tsx
 <ErrorState
   variant="error"
@@ -51,7 +56,9 @@ Red theme for critical errors
 ```
 
 ### Warning
+
 Yellow theme for warnings
+
 ```tsx
 <ErrorState
   variant="warning"
@@ -61,7 +68,9 @@ Yellow theme for warnings
 ```
 
 ### Info
+
 Blue theme for informational messages
+
 ```tsx
 <ErrorState
   variant="info"
@@ -81,7 +90,7 @@ import { ErrorStateFullPage } from "@/components/ui/error-state";
   title="Error loading page"
   message="Failed to fetch data"
   onRetry={() => window.location.reload()}
-/>
+/>;
 ```
 
 ## Custom Icon
@@ -100,28 +109,26 @@ import { ErrorStateFullPage } from "@/components/ui/error-state";
 ## Hide Icon
 
 ```tsx
-<ErrorState
-  message="Error without icon"
-  showIcon={false}
-/>
+<ErrorState message="Error without icon" showIcon={false} />
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `string` | `"Something went wrong"` | Error title/heading |
-| `message` | `string` | **Required** | Error message/description |
-| `onRetry` | `() => void` | `undefined` | Optional retry callback |
-| `retryText` | `string` | `"Retry"` | Custom retry button text |
-| `showIcon` | `boolean` | `true` | Show/hide icon |
-| `icon` | `React.ReactNode` | Default variant icon | Custom icon element |
-| `variant` | `"error" \| "warning" \| "info"` | `"error"` | Visual variant |
-| `className` | `string` | `""` | Additional CSS classes |
+| Prop        | Type                             | Default                  | Description               |
+| ----------- | -------------------------------- | ------------------------ | ------------------------- |
+| `title`     | `string`                         | `"Something went wrong"` | Error title/heading       |
+| `message`   | `string`                         | **Required**             | Error message/description |
+| `onRetry`   | `() => void`                     | `undefined`              | Optional retry callback   |
+| `retryText` | `string`                         | `"Retry"`                | Custom retry button text  |
+| `showIcon`  | `boolean`                        | `true`                   | Show/hide icon            |
+| `icon`      | `React.ReactNode`                | Default variant icon     | Custom icon element       |
+| `variant`   | `"error" \| "warning" \| "info"` | `"error"`                | Visual variant            |
+| `className` | `string`                         | `""`                     | Additional CSS classes    |
 
 ## Common Use Cases
 
 ### API Fetch Error
+
 ```tsx
 const { data, error, refetch } = useQuery();
 
@@ -137,6 +144,7 @@ if (error) {
 ```
 
 ### Page Load Error
+
 ```tsx
 if (loadError) {
   return (
@@ -152,6 +160,7 @@ if (loadError) {
 ```
 
 ### Empty State (Warning Variant)
+
 ```tsx
 if (items.length === 0) {
   return (
@@ -166,6 +175,7 @@ if (items.length === 0) {
 ```
 
 ### Network Error
+
 ```tsx
 <ErrorState
   title="Connection Error"
@@ -178,31 +188,38 @@ if (items.length === 0) {
 ## Migration Examples
 
 ### Before (Inline Error)
+
 ```tsx
-{error && (
-  <div className="text-center">
-    <p className="text-lg font-semibold text-gray-900">
-      Error loading opportunities
-    </p>
-    <p className="text-gray-600">{error}</p>
-  </div>
-)}
+{
+  error && (
+    <div className="text-center">
+      <p className="text-lg font-semibold text-gray-900">
+        Error loading opportunities
+      </p>
+      <p className="text-gray-600">{error}</p>
+    </div>
+  );
+}
 ```
 
 ### After (ErrorState Component)
+
 ```tsx
-{error && (
-  <ErrorState
-    title="Error loading opportunities"
-    message={error}
-    onRetry={() => refetch()}
-  />
-)}
+{
+  error && (
+    <ErrorState
+      title="Error loading opportunities"
+      message={error}
+      onRetry={() => refetch()}
+    />
+  );
+}
 ```
 
 ## Styling
 
 The component uses Tailwind CSS and follows your design system:
+
 - Font: Inter Tight
 - Colors: Red (error), Yellow (warning), Blue (info)
 - Consistent spacing and sizing

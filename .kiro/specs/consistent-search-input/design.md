@@ -40,6 +40,7 @@ The component supports two modes:
 2. **Uncontrolled Mode**: Component manages internal state with `defaultValue`
 
 Internal state includes:
+
 - `internalValue`: Current input text (uncontrolled mode only)
 - `debounceTimer`: Reference to active debounce timeout
 
@@ -51,7 +52,6 @@ User Input → Local State Update → Debounce Timer → Search Handler Invocati
                                             Parent Component
 ```
 
-
 ## Components and Interfaces
 
 ### SearchInput Component API
@@ -62,27 +62,27 @@ interface SearchInputProps {
   onSearch: (query: string) => void;
   placeholder?: string;
   debounceDelay?: number;
-  
+
   // Controlled mode
   value?: string;
   onChange?: (value: string) => void;
-  
+
   // Uncontrolled mode
   defaultValue?: string;
-  
+
   // Visual state
   isLoading?: boolean;
   error?: string;
-  
+
   // Accessibility
   ariaLabel?: string;
   ariaDescribedBy?: string;
-  
+
   // Customization
   maxLength?: number;
   disabled?: boolean;
   className?: string;
-  
+
   // Callbacks
   onClear?: () => void;
   onError?: (error: Error) => void;
@@ -94,38 +94,43 @@ interface SearchInputProps {
 ### Component Behavior Specification
 
 **Controlled vs Uncontrolled Mode Detection**:
+
 - If `value` prop is provided → Controlled mode
 - If `value` prop is undefined → Uncontrolled mode
 - `defaultValue` only used in uncontrolled mode
 
 **Debounce Behavior**:
+
 - Timer starts on each keystroke
 - Previous timer cancelled on new keystroke
 - Timer cleared on component unmount
 - Timer cleared when clear button clicked
 
 **Loading State Behavior**:
+
 - When `isLoading={true}`: Show spinner, hide search icon
 - When `isLoading={false}`: Show search icon, hide spinner
 - Loading state does not disable input
 
 **Clear Button Behavior**:
+
 - Visible when: `value.length > 0 && !isLoading`
 - On click: Clear input, invoke `onSearch("")`, invoke `onClear()` if provided
 - Keyboard accessible with proper ARIA label
-
 
 ### Visual Design Specifications
 
 Based on analysis of existing implementations, the component uses these specifications:
 
 **Dimensions**:
+
 - Height: `38px`
 - Padding: `12px` horizontal, `7px` vertical
 - Border radius: `8px`
 - Border width: `1px`
 
 **Colors**:
+
 - Border: `#E1E4EA` (default), `#FF0000` (error state)
 - Background: `transparent` (default), `#FEF2F2` (error state)
 - Text: `#000000` (13px, Inter Tight font)
@@ -134,41 +139,47 @@ Based on analysis of existing implementations, the component uses these specific
 - Clear button hover: `#000000`
 
 **Spacing**:
+
 - Gap between icon and input: `6px`
 - Icon size: `15px × 15px`
 - Spinner size: `15px × 15px`
 
 **Typography**:
+
 - Font family: `Inter Tight`
 - Font size: `13px`
 - Font weight: `400` (normal)
 - Line height: normal
 
 **Focus State**:
+
 - Outline: Browser default focus ring
 - No custom focus styling to maintain accessibility
 
 **Transitions**:
+
 - Color transitions: `150ms ease`
 - Opacity transitions: `150ms ease`
 
 ### Icon Components
 
 **Search Icon** (from lucide-react):
+
 ```typescript
 <Search className="w-[15px] h-[15px] text-[#B2B2B2] flex-shrink-0" />
 ```
 
 **Loading Spinner**:
+
 ```typescript
 <div className="w-[15px] h-[15px] border-2 border-[#B2B2B2] border-t-transparent rounded-full animate-spin flex-shrink-0" />
 ```
 
 **Clear Button Icon** (from lucide-react):
+
 ```typescript
 <X className="w-[15px] h-[15px]" />
 ```
-
 
 ## Data Models
 
@@ -178,7 +189,7 @@ Based on analysis of existing implementations, the component uses these specific
 interface SearchInputState {
   // Current value (uncontrolled mode only)
   internalValue: string;
-  
+
   // Debounce timer reference
   debounceTimer: NodeJS.Timeout | null;
 }
@@ -216,10 +227,9 @@ The component handles errors gracefully:
 2. **Invalid Props**: Component logs warnings in development mode
 3. **Cleanup Failures**: Silently handled to prevent crashes
 
-
 ## Correctness Properties
 
-*A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
+_A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees._
 
 ### Property Reflection
 
@@ -235,124 +245,123 @@ After analyzing all acceptance criteria, I identified several areas of redundanc
 
 ### Property 1: Placeholder Text Rendering
 
-*For any* string provided as placeholder text, the component SHALL render that text in the input field with consistent styling (rgba(0,0,0,0.3) color, 13px Inter Tight font), and when no placeholder is provided, SHALL default to "Search...".
+_For any_ string provided as placeholder text, the component SHALL render that text in the input field with consistent styling (rgba(0,0,0,0.3) color, 13px Inter Tight font), and when no placeholder is provided, SHALL default to "Search...".
 
 **Validates: Requirements 1.2, 12.2, 12.3, 12.4**
 
 ### Property 2: Initial Value Display
 
-*For any* string provided as defaultValue or value prop, the component SHALL display that exact string in the input field on initial render.
+_For any_ string provided as defaultValue or value prop, the component SHALL display that exact string in the input field on initial render.
 
 **Validates: Requirements 1.3**
 
 ### Property 3: Debounce Delay Configuration
 
-*For any* non-negative number provided as debounceDelay, the component SHALL wait exactly that many milliseconds before invoking onSearch, and when no delay is provided, SHALL default to 300ms.
+_For any_ non-negative number provided as debounceDelay, the component SHALL wait exactly that many milliseconds before invoking onSearch, and when no delay is provided, SHALL default to 300ms.
 
 **Validates: Requirements 1.4, 3.3, 3.4**
 
 ### Property 4: Value Exposure to Parent
 
-*For any* input change in controlled mode, the component SHALL invoke onChange with the exact current input value.
+_For any_ input change in controlled mode, the component SHALL invoke onChange with the exact current input value.
 
 **Validates: Requirements 1.6**
 
 ### Property 5: Consistent Visual Styling
 
-*For any* instance of the component, the rendered container SHALL have height of 38px, padding of 12px horizontal and 7px vertical, border radius of 8px, border color of #E1E4EA, and the input text SHALL use 13px Inter Tight font.
+_For any_ instance of the component, the rendered container SHALL have height of 38px, padding of 12px horizontal and 7px vertical, border radius of 8px, border color of #E1E4EA, and the input text SHALL use 13px Inter Tight font.
 
 **Validates: Requirements 2.1, 2.2, 2.3**
 
 ### Property 6: Focus State Visibility
 
-*For any* component instance, when the input receives focus, the component SHALL display a visible focus indicator that meets accessibility standards.
+_For any_ component instance, when the input receives focus, the component SHALL display a visible focus indicator that meets accessibility standards.
 
 **Validates: Requirements 2.5**
 
 ### Property 7: Debounce Timer Reset
 
-*For any* sequence of rapid input changes, the component SHALL cancel previous timers and only invoke onSearch once after the final input, waiting the full debounce delay from the last keystroke.
+_For any_ sequence of rapid input changes, the component SHALL cancel previous timers and only invoke onSearch once after the final input, waiting the full debounce delay from the last keystroke.
 
 **Validates: Requirements 3.1, 3.2**
 
 ### Property 8: Clear Button Visibility
 
-*For any* non-empty input value when not loading, the component SHALL display a clear button, and for any empty input value, SHALL hide the clear button.
+_For any_ non-empty input value when not loading, the component SHALL display a clear button, and for any empty input value, SHALL hide the clear button.
 
 **Validates: Requirements 5.1, 5.2**
 
 ### Property 9: Clear Button Action
 
-*For any* input value, when the clear button is clicked, the component SHALL set the input to empty string AND invoke onSearch("") AND invoke onClear() if provided.
+_For any_ input value, when the clear button is clicked, the component SHALL set the input to empty string AND invoke onSearch("") AND invoke onClear() if provided.
 
 **Validates: Requirements 5.3, 5.4**
 
 ### Property 10: Escape Key Clears Input
 
-*For any* non-empty input value, when the Escape key is pressed while the input has focus, the component SHALL clear the input text AND invoke onSearch("").
+_For any_ non-empty input value, when the Escape key is pressed while the input has focus, the component SHALL clear the input text AND invoke onSearch("").
 
 **Validates: Requirements 6.1, 6.2**
 
 ### Property 11: Accessible Label Presence
 
-*For any* component instance, the input element SHALL have either an aria-label attribute or an associated label element.
+_For any_ component instance, the input element SHALL have either an aria-label attribute or an associated label element.
 
 **Validates: Requirements 7.1**
 
 ### Property 12: Conditional Aria Attributes
 
-*For any* component instance where ariaDescribedBy prop is provided, the input element SHALL have an aria-describedby attribute with that value.
+_For any_ component instance where ariaDescribedBy prop is provided, the input element SHALL have an aria-describedby attribute with that value.
 
 **Validates: Requirements 7.2**
 
 ### Property 13: Keyboard Navigation
 
-*For any* component instance, all interactive elements (input, clear button) SHALL be reachable and operable using only keyboard navigation (Tab, Enter, Escape).
+_For any_ component instance, all interactive elements (input, clear button) SHALL be reachable and operable using only keyboard navigation (Tab, Enter, Escape).
 
 **Validates: Requirements 7.6**
 
 ### Property 14: Controlled Mode Behavior
 
-*For any* component instance where a value prop is provided, the input SHALL always display that value and SHALL invoke onChange on every input change, never managing its own internal state.
+_For any_ component instance where a value prop is provided, the input SHALL always display that value and SHALL invoke onChange on every input change, never managing its own internal state.
 
 **Validates: Requirements 8.1, 8.3**
 
 ### Property 15: Uncontrolled Mode Behavior
 
-*For any* component instance where no value prop is provided, the component SHALL manage its own internal state and SHALL still invoke onSearch after the debounce delay.
+_For any_ component instance where no value prop is provided, the component SHALL manage its own internal state and SHALL still invoke onSearch after the debounce delay.
 
 **Validates: Requirements 8.2, 8.4**
 
 ### Property 16: Error Resilience
 
-*For any* onSearch function that throws an error, the component SHALL catch the error, continue functioning, invoke onError callback if provided, and exit loading state.
+_For any_ onSearch function that throws an error, the component SHALL catch the error, continue functioning, invoke onError callback if provided, and exit loading state.
 
 **Validates: Requirements 10.1, 10.2, 10.3**
 
 ### Property 17: Invalid Props Handling
 
-*For any* invalid prop values (negative debounce, non-function callbacks), the component SHALL not crash and SHALL log warnings in development mode.
+_For any_ invalid prop values (negative debounce, non-function callbacks), the component SHALL not crash and SHALL log warnings in development mode.
 
 **Validates: Requirements 10.4**
 
 ### Property 18: Timer Cleanup on Unmount
 
-*For any* component instance with an active debounce timer, when the component unmounts, the timer SHALL be cleared and SHALL not invoke onSearch.
+_For any_ component instance with an active debounce timer, when the component unmounts, the timer SHALL be cleared and SHALL not invoke onSearch.
 
 **Validates: Requirements 11.1**
 
 ### Property 19: Callback Memoization
 
-*For any* component instance, internal callback functions SHALL maintain referential equality across renders when their dependencies have not changed.
+_For any_ component instance, internal callback functions SHALL maintain referential equality across renders when their dependencies have not changed.
 
 **Validates: Requirements 11.2, 11.3**
 
 ### Property 20: Selective Re-rendering
 
-*For any* prop change that does not affect the component's output (e.g., unrelated parent state), the component SHALL not re-render.
+_For any_ prop change that does not affect the component's output (e.g., unrelated parent state), the component SHALL not re-render.
 
 **Validates: Requirements 11.4**
-
 
 ## Error Handling
 
@@ -361,6 +370,7 @@ After analyzing all acceptance criteria, I identified several areas of redundanc
 **1. Search Handler Errors**
 
 When `onSearch` throws an error:
+
 - Catch error in try-catch block
 - Invoke `onError(error)` callback if provided
 - Set loading state to false
@@ -373,8 +383,8 @@ try {
 } catch (error) {
   setIsLoading(false);
   onError?.(error as Error);
-  if (process.env.NODE_ENV === 'development') {
-    console.error('SearchInput: Search handler error:', error);
+  if (process.env.NODE_ENV === "development") {
+    console.error("SearchInput: Search handler error:", error);
   }
 }
 ```
@@ -382,6 +392,7 @@ try {
 **2. Invalid Props**
 
 When invalid props are provided:
+
 - Use default values for invalid numeric props (e.g., negative debounce → 300ms)
 - Log warnings in development mode
 - Component continues to render with safe defaults
@@ -390,6 +401,7 @@ When invalid props are provided:
 **3. Cleanup Failures**
 
 When timer cleanup fails:
+
 - Silently handle cleanup errors
 - Prevent error propagation to parent
 - Ensure component can still unmount
@@ -397,6 +409,7 @@ When timer cleanup fails:
 **4. Controlled/Uncontrolled Mode Conflicts**
 
 When both `value` and `defaultValue` are provided:
+
 - Prioritize `value` (controlled mode)
 - Log warning in development mode
 - Ignore `defaultValue`
@@ -408,11 +421,11 @@ The component does not implement its own error boundary. Parent components shoul
 ### Accessibility Error States
 
 When `error` prop is provided:
+
 - Apply error styling (red border, red background tint)
 - Display error message below input
 - Link error message with `aria-describedby`
 - Maintain keyboard accessibility in error state
-
 
 ## Testing Strategy
 
@@ -430,6 +443,7 @@ Unit tests are helpful for concrete scenarios, but we should avoid writing too m
 **Library**: `@fast-check/vitest` (for TypeScript/React projects)
 
 **Configuration**:
+
 - Minimum 100 iterations per property test
 - Each test tagged with reference to design document property
 - Tag format: `Feature: consistent-search-input, Property {number}: {property_text}`
@@ -488,6 +502,7 @@ Unit tests are helpful for concrete scenarios, but we should avoid writing too m
    - Missing required props
 
 **Testing Tools**:
+
 - Vitest for test runner
 - React Testing Library for component testing
 - @testing-library/user-event for user interactions
@@ -497,6 +512,7 @@ Unit tests are helpful for concrete scenarios, but we should avoid writing too m
 ### Visual Regression Testing
 
 Consider adding visual regression tests for:
+
 - Default state
 - Loading state
 - Error state
@@ -507,6 +523,7 @@ Consider adding visual regression tests for:
 ### Accessibility Testing
 
 Use `@testing-library/jest-dom` and `axe-core` to verify:
+
 - No accessibility violations in default state
 - Proper ARIA attributes
 - Keyboard navigation works
@@ -516,6 +533,7 @@ Use `@testing-library/jest-dom` and `axe-core` to verify:
 ### Performance Testing
 
 Monitor:
+
 - Render time with React DevTools Profiler
 - Memory leaks with Chrome DevTools
 - Debounce timer cleanup
@@ -524,29 +542,32 @@ Monitor:
 ### Migration Testing
 
 Create tests that verify the new component can replace existing implementations:
+
 - Test with props matching search-bar.tsx patterns
 - Test with props matching DiscoverTalentHeader.tsx patterns
 - Test with props matching SearchAndFilters.tsx patterns
 - Verify visual parity with screenshots
-
 
 ## Migration Strategy
 
 ### Migration Phases
 
 **Phase 1: Component Creation**
+
 1. Create SearchInput component in `components/ui/search-input.tsx`
 2. Implement all core functionality
 3. Write comprehensive tests
 4. Document component API
 
 **Phase 2: Pilot Migration**
+
 1. Migrate 2-3 low-risk search implementations
 2. Gather feedback from team
 3. Refine component based on real-world usage
 4. Update documentation with migration examples
 
 **Phase 3: Bulk Migration**
+
 1. Migrate remaining 18 implementations
 2. Remove deprecated search components
 3. Update design system documentation
@@ -557,6 +578,7 @@ Create tests that verify the new component can replace existing implementations:
 **Pattern 1: Simple Search (search-bar.tsx style)**
 
 Before:
+
 ```typescript
 <div className="flex items-center gap-[6px]">
   <Search className="w-[15px] h-[15px]" />
@@ -570,6 +592,7 @@ Before:
 ```
 
 After:
+
 ```typescript
 <SearchInput
   value={searchQuery}
@@ -582,6 +605,7 @@ After:
 **Pattern 2: With Debouncing (DiscoverTalentHeader.tsx style)**
 
 Before:
+
 ```typescript
 const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 const debounceTimer = useRef<NodeJS.Timeout>();
@@ -598,6 +622,7 @@ const handleSearchChange = (value: string) => {
 ```
 
 After:
+
 ```typescript
 <SearchInput
   onSearch={onSearchChange}
@@ -609,6 +634,7 @@ After:
 **Pattern 3: With Loading State**
 
 Before:
+
 ```typescript
 {isLoading ? (
   <div className="animate-spin..." />
@@ -618,6 +644,7 @@ Before:
 ```
 
 After:
+
 ```typescript
 <SearchInput
   onSearch={handleSearch}
@@ -633,6 +660,7 @@ None expected. The component is designed to be additive, not replacing existing 
 ### Rollback Plan
 
 If critical issues are discovered:
+
 1. Keep old implementations in codebase temporarily
 2. Revert specific migrations that cause problems
 3. Fix issues in SearchInput component
@@ -645,7 +673,6 @@ If critical issues are discovered:
 - Consistent visual appearance across all instances
 - No performance degradation
 - Positive developer feedback on API usability
-
 
 ## Implementation Notes
 
@@ -663,7 +690,7 @@ If critical issues are discovered:
 
 ```typescript
 const isControlled = value !== undefined;
-const [internalValue, setInternalValue] = useState(defaultValue || '');
+const [internalValue, setInternalValue] = useState(defaultValue || "");
 const currentValue = isControlled ? value : internalValue;
 ```
 
@@ -672,19 +699,22 @@ const currentValue = isControlled ? value : internalValue;
 ```typescript
 const debounceTimerRef = useRef<NodeJS.Timeout>();
 
-const debouncedSearch = useCallback((query: string) => {
-  if (debounceTimerRef.current) {
-    clearTimeout(debounceTimerRef.current);
-  }
-  
-  debounceTimerRef.current = setTimeout(() => {
-    try {
-      onSearch(query);
-    } catch (error) {
-      onError?.(error as Error);
+const debouncedSearch = useCallback(
+  (query: string) => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
     }
-  }, debounceDelay);
-}, [onSearch, debounceDelay, onError]);
+
+    debounceTimerRef.current = setTimeout(() => {
+      try {
+        onSearch(query);
+      } catch (error) {
+        onError?.(error as Error);
+      }
+    }, debounceDelay);
+  },
+  [onSearch, debounceDelay, onError],
+);
 
 // Cleanup on unmount
 useEffect(() => {
@@ -699,24 +729,27 @@ useEffect(() => {
 **3. Memoization Strategy**
 
 ```typescript
-const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-  const newValue = e.target.value;
-  
-  if (!isControlled) {
-    setInternalValue(newValue);
-  }
-  
-  onChange?.(newValue);
-  debouncedSearch(newValue);
-}, [isControlled, onChange, debouncedSearch]);
+const handleInputChange = useCallback(
+  (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+
+    if (!isControlled) {
+      setInternalValue(newValue);
+    }
+
+    onChange?.(newValue);
+    debouncedSearch(newValue);
+  },
+  [isControlled, onChange, debouncedSearch],
+);
 
 const handleClear = useCallback(() => {
-  const emptyValue = '';
-  
+  const emptyValue = "";
+
   if (!isControlled) {
     setInternalValue(emptyValue);
   }
-  
+
   onChange?.(emptyValue);
   onSearch(emptyValue);
   onClear?.();
@@ -726,12 +759,15 @@ const handleClear = useCallback(() => {
 **4. Keyboard Event Handling**
 
 ```typescript
-const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-  if (e.key === 'Escape' && currentValue) {
-    e.preventDefault();
-    handleClear();
-  }
-}, [currentValue, handleClear]);
+const handleKeyDown = useCallback(
+  (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Escape" && currentValue) {
+      e.preventDefault();
+      handleClear();
+    }
+  },
+  [currentValue, handleClear],
+);
 ```
 
 **5. Accessibility Attributes**
@@ -801,26 +837,26 @@ graph TD
     A --> C[Internal State]
     A --> D[Event Handlers]
     A --> E[Render Logic]
-    
+
     B --> B1[onSearch]
     B --> B2[value/defaultValue]
     B --> B3[isLoading]
     B --> B4[placeholder]
     B --> B5[debounceDelay]
-    
+
     C --> C1[internalValue]
     C --> C2[debounceTimer ref]
-    
+
     D --> D1[handleInputChange]
     D --> D2[handleClear]
     D --> D3[handleKeyDown]
     D --> D4[debouncedSearch]
-    
+
     E --> E1[Container div]
     E --> E2[Icon/Spinner]
     E --> E3[Input element]
     E --> E4[Clear button]
-    
+
     D1 --> D4
     D2 --> B1
     D3 --> D2
@@ -835,4 +871,3 @@ graph TD
 - **Test Coverage**: Minimum 90% coverage
 - **Documentation**: JSDoc comments for all props
 - **Accessibility**: Pass axe-core audits with zero violations
-

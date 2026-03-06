@@ -1,12 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  SlidersHorizontal,
-  MapPin,
-  Mail,
-  Calendar,
-} from "lucide-react";
+import { SlidersHorizontal, MapPin, Mail, Calendar } from "lucide-react";
 import { SearchInput } from "@/components/ui/search-input";
 import { HireFilterModal, type HireFilterState } from "./HireFilterModal";
 import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";

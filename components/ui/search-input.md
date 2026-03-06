@@ -17,16 +17,18 @@ A unified, reusable search input component with consistent design, debouncing, l
 ## Basic Usage
 
 ### Simple Search (Uncontrolled)
+
 ```tsx
 import { SearchInput } from "@/components/ui/search-input";
 
 <SearchInput
   onSearch={(query) => console.log("Searching:", query)}
   placeholder="Search..."
-/>
+/>;
 ```
 
 ### Controlled Search
+
 ```tsx
 const [searchQuery, setSearchQuery] = useState("");
 
@@ -35,10 +37,11 @@ const [searchQuery, setSearchQuery] = useState("");
   onChange={setSearchQuery}
   onSearch={handleSearch}
   placeholder="Search opportunities..."
-/>
+/>;
 ```
 
 ### Search with Loading State
+
 ```tsx
 const [isLoading, setIsLoading] = useState(false);
 
@@ -52,13 +55,15 @@ const [isLoading, setIsLoading] = useState(false);
   }}
   isLoading={isLoading}
   placeholder="Search..."
-/>
+/>;
 ```
 
 ## Modes
 
 ### Controlled Mode
+
 Parent component manages the search value:
+
 ```tsx
 const [searchQuery, setSearchQuery] = useState("");
 
@@ -66,16 +71,15 @@ const [searchQuery, setSearchQuery] = useState("");
   value={searchQuery}
   onChange={setSearchQuery}
   onSearch={handleSearch}
-/>
+/>;
 ```
 
 ### Uncontrolled Mode
+
 Component manages its own internal state:
+
 ```tsx
-<SearchInput
-  onSearch={handleSearch}
-  defaultValue=""
-/>
+<SearchInput onSearch={handleSearch} defaultValue="" />
 ```
 
 ## Debouncing
@@ -120,7 +124,7 @@ const handleSearch = async (query: string) => {
   onChange={setSearchQuery}
   onSearch={handleSearch}
   isLoading={isLoading}
-/>
+/>;
 ```
 
 ## Clear Button
@@ -142,6 +146,7 @@ The clear button appears automatically when input has text:
 ## Keyboard Shortcuts
 
 Built-in keyboard support:
+
 - **Escape**: Clears the search input
 - **Tab**: Navigate to clear button
 - **Enter**: Standard input behavior
@@ -171,7 +176,7 @@ const [error, setError] = useState("");
     setError(err.message);
     console.error("Search error:", err);
   }}
-/>
+/>;
 ```
 
 ## Accessibility
@@ -193,29 +198,30 @@ Full WCAG compliance with proper ARIA attributes:
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `onSearch` | `(query: string) => void` | **Required** | Callback invoked after debounce delay |
-| `placeholder` | `string` | `"Search..."` | Placeholder text |
-| `debounceDelay` | `number` | `300` | Debounce delay in milliseconds |
-| `value` | `string` | `undefined` | Current value (controlled mode) |
-| `onChange` | `(value: string) => void` | `undefined` | Immediate change callback |
-| `defaultValue` | `string` | `""` | Initial value (uncontrolled mode) |
-| `isLoading` | `boolean` | `false` | Shows loading spinner |
-| `error` | `string` | `undefined` | Error message |
-| `ariaLabel` | `string` | `"Search"` | Accessible label |
-| `ariaDescribedBy` | `string` | `undefined` | ID of describing element |
-| `maxLength` | `number` | `undefined` | Maximum input length |
-| `disabled` | `boolean` | `false` | Disables the input |
-| `className` | `string` | `""` | Additional CSS classes |
-| `onClear` | `() => void` | `undefined` | Clear button callback |
-| `onError` | `(error: Error) => void` | `undefined` | Error handler callback |
-| `onFocus` | `() => void` | `undefined` | Focus callback |
-| `onBlur` | `() => void` | `undefined` | Blur callback |
+| Prop              | Type                      | Default       | Description                           |
+| ----------------- | ------------------------- | ------------- | ------------------------------------- |
+| `onSearch`        | `(query: string) => void` | **Required**  | Callback invoked after debounce delay |
+| `placeholder`     | `string`                  | `"Search..."` | Placeholder text                      |
+| `debounceDelay`   | `number`                  | `300`         | Debounce delay in milliseconds        |
+| `value`           | `string`                  | `undefined`   | Current value (controlled mode)       |
+| `onChange`        | `(value: string) => void` | `undefined`   | Immediate change callback             |
+| `defaultValue`    | `string`                  | `""`          | Initial value (uncontrolled mode)     |
+| `isLoading`       | `boolean`                 | `false`       | Shows loading spinner                 |
+| `error`           | `string`                  | `undefined`   | Error message                         |
+| `ariaLabel`       | `string`                  | `"Search"`    | Accessible label                      |
+| `ariaDescribedBy` | `string`                  | `undefined`   | ID of describing element              |
+| `maxLength`       | `number`                  | `undefined`   | Maximum input length                  |
+| `disabled`        | `boolean`                 | `false`       | Disables the input                    |
+| `className`       | `string`                  | `""`          | Additional CSS classes                |
+| `onClear`         | `() => void`              | `undefined`   | Clear button callback                 |
+| `onError`         | `(error: Error) => void`  | `undefined`   | Error handler callback                |
+| `onFocus`         | `() => void`              | `undefined`   | Focus callback                        |
+| `onBlur`          | `() => void`              | `undefined`   | Blur callback                         |
 
 ## Common Use Cases
 
 ### Page Search with Filters
+
 ```tsx
 function OpportunitiesPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -248,13 +254,12 @@ function OpportunitiesPage() {
 ```
 
 ### Search with URL Sync
+
 ```tsx
 function SearchPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState(
-    searchParams.get("q") || ""
-  );
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
 
   const handleSearch = (query: string) => {
     const params = new URLSearchParams(searchParams);
@@ -278,6 +283,7 @@ function SearchPage() {
 ```
 
 ### Search with Character Limit
+
 ```tsx
 <SearchInput
   value={searchQuery}
@@ -289,12 +295,13 @@ function SearchPage() {
 ```
 
 ### Simple Local Search
+
 ```tsx
 function TalentList({ talents }) {
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredTalents = talents.filter((talent) =>
-    talent.name.toLowerCase().includes(searchQuery.toLowerCase())
+    talent.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
@@ -314,6 +321,7 @@ function TalentList({ talents }) {
 ## Migration Examples
 
 ### Before: Manual Debounce Implementation
+
 ```tsx
 const [localSearchQuery, setLocalSearchQuery] = useState("");
 const debounceTimer = useRef<NodeJS.Timeout>();
@@ -346,14 +354,13 @@ return (
 ```
 
 ### After: SearchInput Component
+
 ```tsx
-<SearchInput
-  onSearch={onSearchChange}
-  debounceDelay={300}
-/>
+<SearchInput onSearch={onSearchChange} debounceDelay={300} />
 ```
 
 ### Before: Dual State Pattern
+
 ```tsx
 const [searchQuery, setSearchQuery] = useState("");
 const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
@@ -369,6 +376,7 @@ useEffect(() => {
 ```
 
 ### After: SearchInput Component
+
 ```tsx
 const [searchQuery, setSearchQuery] = useState("");
 
@@ -377,12 +385,13 @@ const [searchQuery, setSearchQuery] = useState("");
   onChange={setSearchQuery}
   onSearch={setSearchQuery}
   debounceDelay={500}
-/>
+/>;
 
 // Use searchQuery directly for filtering
 ```
 
 ### Before: Custom Search Input Markup
+
 ```tsx
 <div className="flex items-center gap-[6px] border border-[#E1E4EA] rounded-lg px-3 py-[7px]">
   <Search className="w-[15px] h-[15px] text-[#B2B2B2]" />
@@ -402,6 +411,7 @@ const [searchQuery, setSearchQuery] = useState("");
 ```
 
 ### After: SearchInput Component
+
 ```tsx
 <SearchInput
   value={searchQuery}
@@ -442,18 +452,23 @@ The component follows consistent design specifications:
 ## Troubleshooting
 
 ### Search fires too frequently
+
 **Solution:** Increase `debounceDelay` prop (default is 300ms)
 
 ### Need immediate onChange callback
+
 **Solution:** Use both `onChange` (immediate) and `onSearch` (debounced)
 
 ### Need to control value externally
+
 **Solution:** Use controlled mode with `value` and `onChange` props
 
 ### Clear button not appearing
+
 **Solution:** Ensure `isLoading` is false and input has value
 
 ### Styling doesn't match
+
 **Solution:** Use `className` prop to add additional styles to container
 
 ## Related Documentation
@@ -466,5 +481,6 @@ The component follows consistent design specifications:
 ## Support
 
 For questions or issues:
+
 - Component source: `components/ui/search-input.tsx`
 - Spec location: `.kiro/specs/consistent-search-input/`

@@ -21,7 +21,10 @@ import {
 export function useTalentApplicationsQuery() {
   return useQuery({
     queryKey: ["applications", "talent"],
-    queryFn: () => getTalentApplications(),
+    queryFn: async () => {
+      const response = await getTalentApplications();
+      return response.data; // Extract data array from paginated response
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }

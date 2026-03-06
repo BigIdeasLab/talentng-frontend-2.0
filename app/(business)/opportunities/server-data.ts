@@ -49,7 +49,7 @@ export async function getOpportunitiesData(params?: {
   maxBudget?: number;
 }): Promise<OpportunitiesResponse> {
   try {
-    const response = await getTalentOpportunities({
+    const apiParams = {
       status: "active",
       limit: params?.limit || 20,
       offset: params?.offset || 0,
@@ -63,28 +63,14 @@ export async function getOpportunitiesData(params?: {
       }),
       ...(params?.minBudget && { minBudget: params.minBudget }),
       ...(params?.maxBudget && { maxBudget: params.maxBudget }),
-    });
+    };
 
-    console.log(
-      "[Opportunities] API response:",
-      JSON.stringify({
-        dataLength: response?.data?.length,
-        pagination: response?.pagination,
-        rawKeys: Object.keys(response || {}),
-      }),
-    );
+    const response = await getTalentOpportunities(apiParams);
 
     // Handle different response structures (object with .data or raw array)
     const rawData = Array.isArray(response)
       ? response
       : response?.data || (response as any)?.opportunities || [];
-
-    // 🔍 DEBUG: log raw budget fields from the API for the first 5 opps
-    rawData.slice(0, 20).forEach((opp: any) => {
-      console.log(
-        `[Budget Debug] "${opp.title}" → priceMode=${JSON.stringify(opp.priceMode)}, price=${JSON.stringify(opp.price)}, minBudget=${JSON.stringify(opp.minBudget)}, maxBudget=${JSON.stringify(opp.maxBudget)}`,
-      );
-    });
 
     const opportunities: OpportunityData[] = rawData.map((opp: any) => ({
       id: opp.id || "",

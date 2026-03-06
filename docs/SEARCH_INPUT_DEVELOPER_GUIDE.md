@@ -19,6 +19,7 @@ This guide helps developers understand when and how to use the unified `SearchIn
 ## When to Use SearchInput
 
 ### ✅ Primary Page Search
+
 Use SearchInput for main search functionality on pages:
 
 ```tsx
@@ -36,6 +37,7 @@ function OpportunitiesPage() {
 ```
 
 **Examples:**
+
 - Opportunities page search
 - Talent discovery search
 - Applications search
@@ -43,17 +45,18 @@ function OpportunitiesPage() {
 - Any primary search feature
 
 ### ✅ List/Grid Filtering
+
 Use SearchInput for filtering lists or grids:
 
 ```tsx
 // ✅ Good: List filtering
 function TalentList({ talents }) {
   const [searchQuery, setSearchQuery] = useState("");
-  
-  const filtered = talents.filter(t => 
-    t.name.toLowerCase().includes(searchQuery.toLowerCase())
+
+  const filtered = talents.filter((t) =>
+    t.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
-  
+
   return (
     <>
       <SearchInput
@@ -69,13 +72,14 @@ function TalentList({ talents }) {
 ```
 
 ### ✅ API Search with Debouncing
+
 Use SearchInput when making API calls that benefit from debouncing:
 
 ```tsx
 // ✅ Good: API search with debouncing
 function SearchPage() {
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const handleSearch = async (query: string) => {
     setIsLoading(true);
     try {
@@ -84,7 +88,7 @@ function SearchPage() {
       setIsLoading(false);
     }
   };
-  
+
   return (
     <SearchInput
       onSearch={handleSearch}
@@ -96,6 +100,7 @@ function SearchPage() {
 ```
 
 ### ✅ Search with URL Synchronization
+
 Use SearchInput when syncing search with URL parameters:
 
 ```tsx
@@ -103,10 +108,8 @@ Use SearchInput when syncing search with URL parameters:
 function SearchPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState(
-    searchParams.get("q") || ""
-  );
-  
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
+
   const handleSearch = (query: string) => {
     const params = new URLSearchParams(searchParams);
     if (query) {
@@ -116,7 +119,7 @@ function SearchPage() {
     }
     router.push(`?${params.toString()}`);
   };
-  
+
   return (
     <SearchInput
       value={searchQuery}
@@ -132,13 +135,14 @@ function SearchPage() {
 ## When NOT to Use SearchInput
 
 ### ❌ Filter Modal Internal Search
+
 Do NOT use SearchInput for filtering dropdown options within modals:
 
 ```tsx
 // ❌ Bad: Filter modal internal search
 function FilterModal() {
   const [skillSearch, setSkillSearch] = useState("");
-  
+
   return (
     <Modal>
       {/* This is for filtering dropdown options, not primary search */}
@@ -157,6 +161,7 @@ function FilterModal() {
 **Why?** Filter modal searches are for narrowing dropdown options, not primary search functionality. They don't need debouncing, loading states, or the full SearchInput feature set.
 
 ### ❌ Form Input Fields
+
 Do NOT use SearchInput for regular form inputs:
 
 ```tsx
@@ -178,6 +183,7 @@ Do NOT use SearchInput for regular form inputs:
 ```
 
 ### ❌ Autocomplete/Typeahead
+
 Do NOT use SearchInput for autocomplete or typeahead functionality:
 
 ```tsx
@@ -198,6 +204,7 @@ Do NOT use SearchInput for autocomplete or typeahead functionality:
 **Why?** SearchInput doesn't have built-in autocomplete/suggestion functionality. Use a dedicated autocomplete component instead.
 
 ### ❌ Instant Search (No Debounce Needed)
+
 Do NOT use SearchInput when you need instant search without debouncing:
 
 ```tsx
@@ -249,15 +256,10 @@ export function SearchWithFilters({
           placeholder="Search..."
         />
       </div>
-      <button
-        onClick={onFilterClick}
-        className="flex items-center gap-2"
-      >
+      <button onClick={onFilterClick} className="flex items-center gap-2">
         <SlidersHorizontal className="w-4 h-4" />
         Filters
-        {filterCount > 0 && (
-          <span className="badge">{filterCount}</span>
-        )}
+        {filterCount > 0 && <span className="badge">{filterCount}</span>}
       </button>
     </div>
   );
@@ -307,10 +309,10 @@ const handleSearch = async (query: string) => {
     setError("Search query must be at least 3 characters");
     return;
   }
-  
+
   // Clear error
   setError("");
-  
+
   // Perform search with multiple filters
   setIsLoading(true);
   try {
@@ -334,7 +336,7 @@ const handleSearch = async (query: string) => {
   onSearch={handleSearch}
   isLoading={isLoading}
   error={error}
-/>
+/>;
 ```
 
 ---
@@ -344,15 +346,17 @@ const handleSearch = async (query: string) => {
 ### 1. Forgetting to Handle Loading State
 
 ❌ **Bad:**
+
 ```tsx
 const handleSearch = async (query: string) => {
   await searchAPI(query); // No loading state
 };
 
-<SearchInput onSearch={handleSearch} />
+<SearchInput onSearch={handleSearch} />;
 ```
 
 ✅ **Good:**
+
 ```tsx
 const [isLoading, setIsLoading] = useState(false);
 
@@ -365,15 +369,13 @@ const handleSearch = async (query: string) => {
   }
 };
 
-<SearchInput
-  onSearch={handleSearch}
-  isLoading={isLoading}
-/>
+<SearchInput onSearch={handleSearch} isLoading={isLoading} />;
 ```
 
 ### 2. Using Both value and defaultValue
 
 ❌ **Bad:**
+
 ```tsx
 <SearchInput
   value={searchQuery}
@@ -383,6 +385,7 @@ const handleSearch = async (query: string) => {
 ```
 
 ✅ **Good:**
+
 ```tsx
 // Controlled mode
 <SearchInput
@@ -403,6 +406,7 @@ const handleSearch = async (query: string) => {
 The SearchInput component handles cleanup automatically, but if you're managing external state:
 
 ❌ **Bad:**
+
 ```tsx
 const handleSearch = async (query: string) => {
   const results = await searchAPI(query);
@@ -411,6 +415,7 @@ const handleSearch = async (query: string) => {
 ```
 
 ✅ **Good:**
+
 ```tsx
 const handleSearch = async (query: string) => {
   try {
@@ -429,6 +434,7 @@ const handleSearch = async (query: string) => {
 ### 4. Incorrect Debounce Delay
 
 ❌ **Bad:**
+
 ```tsx
 // Too short for API calls
 <SearchInput
@@ -444,6 +450,7 @@ const handleSearch = async (query: string) => {
 ```
 
 ✅ **Good:**
+
 ```tsx
 // Appropriate for API calls
 <SearchInput
@@ -461,14 +468,13 @@ const handleSearch = async (query: string) => {
 ### 5. Not Providing Descriptive Placeholders
 
 ❌ **Bad:**
+
 ```tsx
-<SearchInput
-  onSearch={handleSearch}
-  placeholder="Search..."
-/>
+<SearchInput onSearch={handleSearch} placeholder="Search..." />
 ```
 
 ✅ **Good:**
+
 ```tsx
 <SearchInput
   onSearch={handleSearch}
@@ -479,6 +485,7 @@ const handleSearch = async (query: string) => {
 ### 6. Missing Error Handling
 
 ❌ **Bad:**
+
 ```tsx
 const handleSearch = async (query: string) => {
   await searchAPI(query); // Errors not handled
@@ -486,6 +493,7 @@ const handleSearch = async (query: string) => {
 ```
 
 ✅ **Good:**
+
 ```tsx
 const [error, setError] = useState("");
 
@@ -502,7 +510,7 @@ const handleSearch = async (query: string) => {
   onSearch={handleSearch}
   error={error}
   onError={(err) => console.error("Search error:", err)}
-/>
+/>;
 ```
 
 ---
@@ -515,16 +523,21 @@ Use `useCallback` to prevent unnecessary re-renders:
 
 ```tsx
 // ✅ Good: Memoized handler
-const handleSearch = useCallback(async (query: string) => {
-  setIsLoading(true);
-  try {
-    await searchAPI(query);
-  } finally {
-    setIsLoading(false);
-  }
-}, [/* dependencies */]);
+const handleSearch = useCallback(
+  async (query: string) => {
+    setIsLoading(true);
+    try {
+      await searchAPI(query);
+    } finally {
+      setIsLoading(false);
+    }
+  },
+  [
+    /* dependencies */
+  ],
+);
 
-<SearchInput onSearch={handleSearch} />
+<SearchInput onSearch={handleSearch} />;
 ```
 
 ### 2. Optimize Filter Logic
@@ -535,11 +548,12 @@ For local filtering, optimize the filter function:
 // ✅ Good: Optimized filtering
 const filteredItems = useMemo(() => {
   if (!searchQuery) return items;
-  
+
   const lowerQuery = searchQuery.toLowerCase();
-  return items.filter(item =>
-    item.name.toLowerCase().includes(lowerQuery) ||
-    item.description.toLowerCase().includes(lowerQuery)
+  return items.filter(
+    (item) =>
+      item.name.toLowerCase().includes(lowerQuery) ||
+      item.description.toLowerCase().includes(lowerQuery),
   );
 }, [items, searchQuery]);
 ```
@@ -566,6 +580,7 @@ Use appropriate debounce delays for expensive operations:
 Don't create new callback functions on every render:
 
 ❌ **Bad:**
+
 ```tsx
 <SearchInput
   onSearch={(query) => searchAPI(query)} // New function every render
@@ -573,12 +588,13 @@ Don't create new callback functions on every render:
 ```
 
 ✅ **Good:**
+
 ```tsx
 const handleSearch = useCallback((query: string) => {
   searchAPI(query);
 }, []);
 
-<SearchInput onSearch={handleSearch} />
+<SearchInput onSearch={handleSearch} />;
 ```
 
 ---
@@ -597,38 +613,37 @@ describe("SearchPage", () => {
   it("should call onSearch after debounce delay", async () => {
     const handleSearch = vi.fn();
     render(<SearchInput onSearch={handleSearch} debounceDelay={300} />);
-    
+
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "test query");
-    
+
     // Should not call immediately
     expect(handleSearch).not.toHaveBeenCalled();
-    
+
     // Should call after debounce delay
-    await waitFor(() => {
-      expect(handleSearch).toHaveBeenCalledWith("test query");
-    }, { timeout: 400 });
+    await waitFor(
+      () => {
+        expect(handleSearch).toHaveBeenCalledWith("test query");
+      },
+      { timeout: 400 },
+    );
   });
-  
+
   it("should clear search on Escape key", async () => {
     const handleSearch = vi.fn();
     render(
-      <SearchInput
-        value="test"
-        onChange={vi.fn()}
-        onSearch={handleSearch}
-      />
+      <SearchInput value="test" onChange={vi.fn()} onSearch={handleSearch} />,
     );
-    
+
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "{Escape}");
-    
+
     expect(handleSearch).toHaveBeenCalledWith("");
   });
-  
+
   it("should show loading spinner when isLoading is true", () => {
     render(<SearchInput onSearch={vi.fn()} isLoading={true} />);
-    
+
     // Check for spinner (aria-hidden div with animate-spin)
     const spinner = document.querySelector(".animate-spin");
     expect(spinner).toBeInTheDocument();
@@ -645,16 +660,16 @@ describe("SearchPage Integration", () => {
   it("should fetch results on search", async () => {
     const mockResults = [{ id: 1, name: "Result 1" }];
     vi.mocked(searchAPI).mockResolvedValue(mockResults);
-    
+
     render(<SearchPage />);
-    
+
     const input = screen.getByRole("textbox");
     await userEvent.type(input, "test");
-    
+
     await waitFor(() => {
       expect(searchAPI).toHaveBeenCalledWith("test");
     });
-    
+
     expect(screen.getByText("Result 1")).toBeInTheDocument();
   });
 });
@@ -725,11 +740,13 @@ Is this a primary search feature on a page?
 ## Quick Reference
 
 ### Import
+
 ```tsx
 import { SearchInput } from "@/components/ui/search-input";
 ```
 
 ### Basic Usage
+
 ```tsx
 <SearchInput
   value={searchQuery}
@@ -740,28 +757,21 @@ import { SearchInput } from "@/components/ui/search-input";
 ```
 
 ### With Loading
+
 ```tsx
-<SearchInput
-  onSearch={handleSearch}
-  isLoading={isLoading}
-/>
+<SearchInput onSearch={handleSearch} isLoading={isLoading} />
 ```
 
 ### With Error
+
 ```tsx
-<SearchInput
-  onSearch={handleSearch}
-  error={error}
-  onError={handleError}
-/>
+<SearchInput onSearch={handleSearch} error={error} onError={handleError} />
 ```
 
 ### Custom Debounce
+
 ```tsx
-<SearchInput
-  onSearch={handleSearch}
-  debounceDelay={500}
-/>
+<SearchInput onSearch={handleSearch} debounceDelay={500} />
 ```
 
 ---
@@ -779,6 +789,7 @@ import { SearchInput } from "@/components/ui/search-input";
 ## Support
 
 For questions or issues:
+
 - Component source: `components/ui/search-input.tsx`
 - Spec location: `.kiro/specs/consistent-search-input/`
 - Migration guide: `docs/SEARCH_INPUT_MIGRATION_GUIDE.md`
@@ -788,6 +799,7 @@ For questions or issues:
 ## Changelog
 
 ### v1.0.0 (Initial Release)
+
 - Unified search input component
 - Debounced search execution
 - Loading states
