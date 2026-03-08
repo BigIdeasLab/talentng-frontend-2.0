@@ -10,11 +10,15 @@ import { MentorNotificationsSkeleton } from "@/components/skeletons/Notification
 interface MentorNotificationsProps {
   onActionClick?: () => void;
   onNotificationRead?: () => void;
+  onNotificationSelect?: (notificationId: string) => void;
+  selectedNotificationId?: string | null;
 }
 
 export function MentorNotifications({
   onActionClick,
   onNotificationRead,
+  onNotificationSelect,
+  selectedNotificationId,
 }: MentorNotificationsProps) {
   const router = useRouter();
   const [allNotifications, setAllNotifications] = useState<any[]>([]);
@@ -186,6 +190,12 @@ export function MentorNotifications({
   ) => {
     await markAsRead(notificationId);
     onNotificationRead?.();
+
+    // Call onNotificationSelect when clicking the notification item (not action button)
+    if (!isActionButton && onNotificationSelect) {
+      onNotificationSelect(notificationId);
+    }
+
     if (action?.route) {
       router.push(action.route);
     }
@@ -202,12 +212,20 @@ export function MentorNotifications({
         const formatted = formatNotification(notification);
         const colors = getTypeColors(formatted.payloadType);
         const isUnread = !notification.readAt;
+        const isSelected = selectedNotificationId === notification.id;
 
         return (
           <div
             key={notification.id}
-            className={`flex gap-3 px-5 py-4 border-b border-gray-100 hover:bg-gray-50 transition-colors ${isUnread ? "bg-blue-50/50" : ""}`}
+            className={`flex gap-3 px-5 py-4 border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer ${
+              isUnread ? "bg-blue-50/50" : ""
+            } ${
+              isSelected
+                ? "bg-blue-50 border-l-4 border-l-blue-500"
+                : "border-l-4 border-l-transparent"
+            }`}
             onClick={(e) => {
+              // Don't handle click if it's from an action button
               const target = e.target as HTMLElement;
               if (target.closest("button")) {
                 return;
@@ -275,6 +293,7 @@ export function MentorNotifications({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
+                      e.preventDefault();
                       handleNotificationClick(
                         notification.id,
                         formatted.action,

@@ -1,10 +1,16 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { useProfile } from "@/hooks/useProfile";
 import { TalentNotifications } from "@/components/talent/notification/TalentNotifications";
 import { EmployerNotifications } from "@/components/employer/notification/EmployerNotifications";
 import { MentorNotifications } from "@/components/mentor/notification/MentorNotifications";
+import { useNotifications } from "@/hooks/useNotifications";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { NotificationDetailPanel } from "@/components/layouts/modals/NotificationDetailPanel";
+import type { NotificationAction } from "@/lib/types/notification";
 
 interface NotificationsModalProps {
   isOpen: boolean;
@@ -18,12 +24,62 @@ export function NotificationsModal({
   onNotificationRead,
 }: NotificationsModalProps) {
   const { activeRole } = useProfile();
+  const router = useRouter();
+  const { markAsRead, notifications } = useNotifications((activeRole || "talent") as "talent" | "recruiter" | "general");
+  const isMobile = useIsMobile();
+  
+  // State management for selected notification
+  const [selectedNotificationId, setSelectedNotificationId] = useState<string | null>(null);
 
-  const handleActionClick = () => {
+  /**
+   * Handle notification deletion while viewing
+   * Automatically close detail panel when selected notification is removed from list
+   */
+  useEffect(() => {
+    if (selectedNotificationId) {
+      const notificationExists = notifications.some((n) => n.id === selectedNotificationId);
+      if (!notificationExists) {
+        setSelectedNotificationId(null);
+      }
+    }
+  }, [notifications, selectedNotificationId]);
+
+  /**
+   * Handle notification selection
+   * Marks notification as read, sets selectedNotificationId, calls onNotificationRead callback
+   */
+  const handleNotificationSelect = async (notificationId: string) => {
+    await markAsRead(notificationId);
+    setSelectedNotificationId(notificationId);
+    onNotificationRead?.();
+  };
+
+  /**
+   * Handle detail panel close
+   * Clears selectedNotificationId
+   */
+  const handleDetailPanelClose = () => {
+    setSelectedNotificationId(null);
+  };
+
+  /**
+   * Handle action click
+   * Executes action (navigation), closes both panels
+   */
+  const handleActionClick = (action?: NotificationAction) => {
+    if (action?.route) {
+      router.push(action.route);
+    }
+    setSelectedNotificationId(null);
     onClose();
   };
 
   if (!isOpen) return null;
+
+  // Find the selected notification from the notifications list
+  const selectedNotification = selectedNotificationId
+    ? notifications.find((n) => n.id === selectedNotificationId) || null
+    : null;
 
   const renderNotifications = () => {
     switch (activeRole) {
@@ -32,6 +88,8 @@ export function NotificationsModal({
           <EmployerNotifications
             onActionClick={handleActionClick}
             onNotificationRead={onNotificationRead}
+            onNotificationSelect={handleNotificationSelect}
+            selectedNotificationId={selectedNotificationId}
           />
         );
       case "mentor":
@@ -39,6 +97,8 @@ export function NotificationsModal({
           <MentorNotifications
             onActionClick={handleActionClick}
             onNotificationRead={onNotificationRead}
+            onNotificationSelect={handleNotificationSelect}
+            selectedNotificationId={selectedNotificationId}
           />
         );
       case "talent":
@@ -47,15 +107,26 @@ export function NotificationsModal({
           <TalentNotifications
             onActionClick={handleActionClick}
             onNotificationRead={onNotificationRead}
+            onNotificationSelect={handleNotificationSelect}
+            selectedNotificationId={selectedNotificationId}
           />
         );
     }
   };
 
+  /**
+   * Handle backdrop click
+   * Closes both detail panel and notification modal
+   */
+  const handleBackdropClick = () => {
+    handleDetailPanelClose();
+    onClose();
+  };
+
   return (
     <>
-      {/* Backdrop - closes modal when clicked */}
-      <div className="fixed inset-0 z-40" onClick={onClose} />
+      {/* Backdrop - closes both panels when clicked */}
+      <div className="fixed inset-0 z-40" onClick={handleBackdropClick} />
 
       {/* Modal */}
       <div className="fixed left-[250px] top-0 bottom-0 w-[350px] z-50">
@@ -83,6 +154,17 @@ export function NotificationsModal({
           </div>
         </div>
       </div>
+
+      {/* NotificationDetailPanel - conditionally rendered based on selectedNotificationId */}
+      {selectedNotificationId && (
+        <NotificationDetailPanel
+          notification={selectedNotification}
+          isOpen={!!selectedNotificationId}
+          onClose={handleDetailPanelClose}
+          onActionClick={handleActionClick}
+          isMobile={isMobile ?? false}
+        />
+      )}
     </>
   );
 }
