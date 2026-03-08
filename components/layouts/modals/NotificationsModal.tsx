@@ -25,11 +25,15 @@ export function NotificationsModal({
 }: NotificationsModalProps) {
   const { activeRole } = useProfile();
   const router = useRouter();
-  const { markAsRead, notifications } = useNotifications((activeRole || "talent") as "talent" | "recruiter" | "general");
+  const { markAsRead, notifications } = useNotifications(
+    (activeRole || "talent") as "talent" | "recruiter" | "general",
+  );
   const isMobile = useIsMobile();
-  
+
   // State management for selected notification
-  const [selectedNotificationId, setSelectedNotificationId] = useState<string | null>(null);
+  const [selectedNotificationId, setSelectedNotificationId] = useState<
+    string | null
+  >(null);
 
   /**
    * Handle notification deletion while viewing
@@ -37,7 +41,9 @@ export function NotificationsModal({
    */
   useEffect(() => {
     if (selectedNotificationId) {
-      const notificationExists = notifications.some((n) => n.id === selectedNotificationId);
+      const notificationExists = notifications.some(
+        (n) => n.id === selectedNotificationId,
+      );
       if (!notificationExists) {
         setSelectedNotificationId(null);
       }

@@ -3,7 +3,10 @@
 import { X } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useEffect, useRef } from "react";
-import type { Notification, InAppNotificationPayload } from "@/lib/types/notification";
+import type {
+  Notification,
+  InAppNotificationPayload,
+} from "@/lib/types/notification";
 
 interface NotificationDetailPanelProps {
   notification: Notification | null;
@@ -27,8 +30,9 @@ export function NotificationDetailPanel({
   useEffect(() => {
     if (isOpen) {
       // Store the currently focused element before moving focus
-      previouslyFocusedElementRef.current = document.activeElement as HTMLElement;
-      
+      previouslyFocusedElementRef.current =
+        document.activeElement as HTMLElement;
+
       // Move focus to the close button
       closeButtonRef.current?.focus();
     }
@@ -64,7 +68,9 @@ export function NotificationDetailPanel({
   if (!isOpen || !notification) return null;
 
   // Extract payload data
-  const payload = notification.payload as InAppNotificationPayload | Record<string, any>;
+  const payload = notification.payload as
+    | InAppNotificationPayload
+    | Record<string, any>;
   const title = (payload.title as string) || "Notification";
   const message = (payload.message as string) || "";
   const payloadType = (payload as InAppNotificationPayload).type || "info";
@@ -173,7 +179,7 @@ export function NotificationDetailPanel({
     >
       {/* Header with close button */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 flex-shrink-0 bg-white">
-        <h3 
+        <h3
           id="detail-panel-title"
           className="text-[17px] font-semibold text-gray-900"
         >
@@ -193,8 +199,12 @@ export function NotificationDetailPanel({
       <div className="flex-1 overflow-y-auto px-5 py-4 bg-white">
         {/* Type indicator */}
         <div className="flex items-center gap-2 mb-4">
-          <div className={`w-2 h-2 rounded-full ${colors.badge} transition-colors`} />
-          <span className={`text-sm font-medium ${colors.text} capitalize transition-colors`}>
+          <div
+            className={`w-2 h-2 rounded-full ${colors.badge} transition-colors`}
+          />
+          <span
+            className={`text-sm font-medium ${colors.text} capitalize transition-colors`}
+          >
             {payloadType}
           </span>
         </div>
@@ -220,9 +230,7 @@ export function NotificationDetailPanel({
         )}
 
         {/* Title */}
-        <h4 className="text-lg font-semibold text-gray-900 mb-3">
-          {title}
-        </h4>
+        <h4 className="text-lg font-semibold text-gray-900 mb-3">{title}</h4>
 
         {/* Message */}
         <p className="text-[15px] text-gray-700 leading-relaxed mb-4 whitespace-pre-wrap">
@@ -244,7 +252,9 @@ export function NotificationDetailPanel({
             <div className="space-y-1 text-sm text-gray-700">
               <div className="flex justify-between">
                 <span className="text-gray-600">Type:</span>
-                <span className="font-medium capitalize">{metadata.relatedType}</span>
+                <span className="font-medium capitalize">
+                  {metadata.relatedType}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">ID:</span>

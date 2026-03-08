@@ -7,6 +7,7 @@ This design document specifies the technical implementation for enhancing the ex
 ### Current State
 
 The application currently implements a notification system with:
+
 - A modal component (`NotificationsModal`) positioned at `left-[250px]` with fixed width `350px`
 - Role-specific notification components (TalentNotifications, MentorNotifications, EmployerNotifications)
 - Support for notification types (success, warning, error, info), actions, images, and metadata
@@ -16,6 +17,7 @@ The application currently implements a notification system with:
 ### Enhancement Goals
 
 The detail panel enhancement will:
+
 - Add a side panel that displays full notification details when a notification is clicked
 - Maintain the notification list visibility while viewing details
 - Support responsive behavior for mobile and desktop viewports
@@ -57,6 +59,7 @@ interface NotificationPanelState {
 ```
 
 State will be managed at the `NotificationsModal` level and passed down to child components via props. This approach:
+
 - Keeps state close to where it's used
 - Avoids unnecessary global state complexity
 - Maintains consistency with the existing codebase patterns
@@ -87,6 +90,7 @@ NotificationsModal updates state accordingly
 **Purpose**: Orchestrate the two-panel layout and manage shared state
 
 **Props**:
+
 ```typescript
 interface NotificationsModalProps {
   isOpen: boolean;
@@ -96,6 +100,7 @@ interface NotificationsModalProps {
 ```
 
 **State**:
+
 ```typescript
 interface NotificationsModalState {
   selectedNotificationId: string | null;
@@ -103,6 +108,7 @@ interface NotificationsModalState {
 ```
 
 **Key Responsibilities**:
+
 - Manage selected notification state
 - Render both notification list and detail panel
 - Handle backdrop click behavior (close both panels)
@@ -110,6 +116,7 @@ interface NotificationsModalState {
 - Pass callbacks to child components
 
 **Layout Strategy**:
+
 - Desktop (≥768px): Two-panel side-by-side layout
   - Notification list: `left-[250px]`, width `350px`
   - Detail panel: Adjacent to list, extends to right edge
@@ -122,6 +129,7 @@ interface NotificationsModalState {
 **Purpose**: Display comprehensive notification details
 
 **Props**:
+
 ```typescript
 interface NotificationDetailPanelProps {
   notification: Notification | null;
@@ -133,6 +141,7 @@ interface NotificationDetailPanelProps {
 ```
 
 **Key Responsibilities**:
+
 - Render notification details with proper formatting
 - Display images with fallback handling
 - Render action buttons with click handlers
@@ -142,6 +151,7 @@ interface NotificationDetailPanelProps {
 - Announce content to screen readers
 
 **Styling Approach**:
+
 - Match existing notification panel styling (colors, typography, spacing)
 - Use Tailwind CSS utility classes consistent with codebase
 - Apply smooth transitions for open/close animations
@@ -152,6 +162,7 @@ interface NotificationDetailPanelProps {
 **Components**: TalentNotifications, MentorNotifications, EmployerNotifications
 
 **New Props**:
+
 ```typescript
 interface NotificationComponentProps {
   onActionClick?: () => void;
@@ -162,6 +173,7 @@ interface NotificationComponentProps {
 ```
 
 **Modifications**:
+
 - Add click handler to notification items that calls `onNotificationSelect`
 - Apply visual selection indicator when `selectedNotificationId` matches item
 - Prevent action button clicks from triggering selection
@@ -229,7 +241,7 @@ interface DetailPanelDisplayData {
   timestamp: string;
   type: InAppPayloadType;
   displayElement: {
-    type: 'image' | 'emoji';
+    type: "image" | "emoji";
     value: string;
   };
   action?: NotificationAction;
@@ -243,6 +255,7 @@ interface DetailPanelDisplayData {
 ### Desktop Layout (≥768px)
 
 **Notification List Panel**:
+
 - Position: `fixed`, `left-[250px]`, `top-0`, `bottom-0`
 - Width: `350px`
 - Z-index: `50`
@@ -250,6 +263,7 @@ interface DetailPanelDisplayData {
 - Shadow: `shadow-lg`
 
 **Detail Panel**:
+
 - Position: `fixed`, `left-[600px]` (250px sidebar + 350px list)
 - Width: `calc(100vw - 600px)` or max-width `500px`
 - Height: `100vh`
@@ -259,6 +273,7 @@ interface DetailPanelDisplayData {
 - Border-left: `border-l border-gray-200`
 
 **Backdrop**:
+
 - Position: `fixed`, `inset-0`
 - Z-index: `40`
 - Background: `rgba(0, 0, 0, 0.5)`
@@ -267,17 +282,20 @@ interface DetailPanelDisplayData {
 ### Mobile Layout (<768px)
 
 **Notification List Panel** (when detail closed):
+
 - Position: `fixed`, `inset-0`
 - Width: `100vw`
 - Z-index: `50`
 
 **Detail Panel** (when open):
+
 - Position: `fixed`, `inset-0`
 - Width: `100vw`
 - Z-index: `51` (above notification list)
 - Hides notification list from view
 
 **Backdrop**:
+
 - Position: `fixed`, `inset-0`
 - Z-index: `40`
 
@@ -287,8 +305,10 @@ interface DetailPanelDisplayData {
 - Desktop: `≥ 768px`
 
 Use Tailwind's responsive utilities:
+
 ```tsx
-className="fixed inset-0 md:left-[600px] md:right-0 md:w-auto md:max-w-[500px]"
+className =
+  "fixed inset-0 md:left-[600px] md:right-0 md:w-auto md:max-w-[500px]";
 ```
 
 ## Responsive Design Implementation
@@ -332,17 +352,17 @@ className="fixed inset-0 md:left-[600px] md:right-0 md:w-auto md:max-w-[500px]"
 ### Responsive Utilities
 
 Use custom hook for viewport detection:
+
 ```typescript
 const isMobile = useIsMobile(); // Existing hook in codebase
 ```
 
 Apply conditional rendering and styling:
+
 ```tsx
-{isMobile ? (
-  <MobileDetailPanel />
-) : (
-  <DesktopDetailPanel />
-)}
+{
+  isMobile ? <MobileDetailPanel /> : <DesktopDetailPanel />;
+}
 ```
 
 ## Integration with Existing Notification Panel Component
@@ -391,6 +411,7 @@ Apply conditional rendering and styling:
 **Handler**: `handleNotificationSelect`
 
 **Behavior**:
+
 1. Mark notification as read (existing behavior)
 2. Set `selectedNotificationId` state
 3. Open detail panel
@@ -398,6 +419,7 @@ Apply conditional rendering and styling:
 5. Move focus to detail panel (accessibility)
 
 **Implementation**:
+
 ```typescript
 const handleNotificationSelect = async (notificationId: string) => {
   await markAsRead(notificationId);
@@ -413,12 +435,14 @@ const handleNotificationSelect = async (notificationId: string) => {
 **Handler**: `handleDetailPanelClose`
 
 **Behavior**:
+
 1. Clear `selectedNotificationId` state
 2. Close detail panel
 3. Return focus to previously selected notification item (accessibility)
 4. Notification list remains open
 
 **Implementation**:
+
 ```typescript
 const handleDetailPanelClose = () => {
   setSelectedNotificationId(null);
@@ -433,11 +457,13 @@ const handleDetailPanelClose = () => {
 **Handler**: `handleActionClick`
 
 **Behavior**:
+
 1. Execute action (navigation, etc.)
 2. Close both detail panel and notification modal
 3. Call `onActionClick` callback
 
 **Implementation**:
+
 ```typescript
 const handleActionClick = (action: NotificationAction) => {
   if (action.route) {
@@ -455,11 +481,13 @@ const handleActionClick = (action: NotificationAction) => {
 **Handler**: `handleBackdropClick`
 
 **Behavior**:
+
 1. Close detail panel if open
 2. Close notification modal
 3. Clear selected notification state
 
 **Implementation**:
+
 ```typescript
 const handleBackdropClick = () => {
   setSelectedNotificationId(null);
@@ -474,11 +502,13 @@ const handleBackdropClick = () => {
 **Handler**: Prevent backdrop close behavior
 
 **Behavior**:
+
 1. Event propagation stopped
 2. Detail panel remains open
 3. User can select different notification
 
 **Implementation**:
+
 ```tsx
 <div onClick={(e) => e.stopPropagation()}>
   {/* Notification list content */}
@@ -488,14 +518,17 @@ const handleBackdropClick = () => {
 ### Keyboard Events
 
 **Escape Key**:
+
 - If detail panel open: Close detail panel only
 - If detail panel closed: Close notification modal
 
 **Tab Key**:
+
 - Navigate between focusable elements
 - Trap focus within modal when open
 
 **Enter/Space on Notification Item**:
+
 - Same behavior as click (open detail panel)
 
 ## Accessibility Implementation Details
@@ -503,6 +536,7 @@ const handleBackdropClick = () => {
 ### Keyboard Navigation
 
 **Focus Management**:
+
 1. When notification modal opens: Focus moves to modal container
 2. When detail panel opens: Focus moves to detail panel close button
 3. When detail panel closes: Focus returns to selected notification item
@@ -510,15 +544,17 @@ const handleBackdropClick = () => {
 5. Escape key closes detail panel, then modal
 
 **Focus Trap**:
+
 - Implement focus trap within modal when open
 - Prevent focus from moving to elements behind backdrop
 - Use `aria-modal="true"` attribute
 
 **Implementation**:
+
 ```typescript
 useEffect(() => {
   if (isDetailPanelOpen && detailPanelRef.current) {
-    const closeButton = detailPanelRef.current.querySelector('button');
+    const closeButton = detailPanelRef.current.querySelector("button");
     closeButton?.focus();
   }
 }, [isDetailPanelOpen]);
@@ -527,17 +563,15 @@ useEffect(() => {
 ### ARIA Attributes
 
 **NotificationsModal**:
+
 ```tsx
-<div
-  role="dialog"
-  aria-modal="true"
-  aria-labelledby="notifications-title"
->
+<div role="dialog" aria-modal="true" aria-labelledby="notifications-title">
   <h2 id="notifications-title">Notifications</h2>
 </div>
 ```
 
 **NotificationDetailPanel**:
+
 ```tsx
 <div
   role="complementary"
@@ -549,6 +583,7 @@ useEffect(() => {
 ```
 
 **Notification Items**:
+
 ```tsx
 <div
   role="button"
@@ -560,11 +595,9 @@ useEffect(() => {
 ```
 
 **Close Buttons**:
+
 ```tsx
-<button
-  aria-label="Close detail panel"
-  onClick={onClose}
->
+<button aria-label="Close detail panel" onClick={onClose}>
   <X aria-hidden="true" />
 </button>
 ```
@@ -572,6 +605,7 @@ useEffect(() => {
 ### Screen Reader Announcements
 
 **Detail Panel Opens**:
+
 ```tsx
 <div aria-live="polite" className="sr-only">
   {isOpen && `Viewing details for ${notification.title}`}
@@ -579,6 +613,7 @@ useEffect(() => {
 ```
 
 **Notification Marked as Read**:
+
 ```tsx
 <div aria-live="polite" className="sr-only">
   {wasMarkedRead && "Notification marked as read"}
@@ -586,6 +621,7 @@ useEffect(() => {
 ```
 
 **Action Executed**:
+
 ```tsx
 <div aria-live="assertive" className="sr-only">
   {actionExecuted && `Navigating to ${action.label}`}
@@ -618,15 +654,20 @@ useEffect(() => {
 **Scenario**: Selected notification is deleted or removed while detail panel is open
 
 **Handling**:
+
 1. Detect notification removal in useEffect
 2. Automatically close detail panel
 3. Clear selected notification state
 4. Show toast notification (optional): "Notification no longer available"
 
 **Implementation**:
+
 ```typescript
 useEffect(() => {
-  if (selectedNotificationId && !notifications.find(n => n.id === selectedNotificationId)) {
+  if (
+    selectedNotificationId &&
+    !notifications.find((n) => n.id === selectedNotificationId)
+  ) {
     setSelectedNotificationId(null);
   }
 }, [notifications, selectedNotificationId]);
@@ -637,21 +678,25 @@ useEffect(() => {
 **Scenario**: Notification image URL fails to load
 
 **Handling**:
+
 1. Use `onError` handler on `<img>` element
 2. Fall back to emoji/icon display
 3. Log error for debugging (non-blocking)
 
 **Implementation**:
+
 ```tsx
 <img
   src={imageUrl}
   alt={title}
   onError={(e) => {
-    e.currentTarget.style.display = 'none';
+    e.currentTarget.style.display = "none";
     setDisplayFallback(true);
   }}
-/>
-{displayFallback && <div className="emoji-fallback">📌</div>}
+/>;
+{
+  displayFallback && <div className="emoji-fallback">📌</div>;
+}
 ```
 
 ### Network Errors (Mark as Read)
@@ -659,6 +704,7 @@ useEffect(() => {
 **Scenario**: API call to mark notification as read fails
 
 **Handling**:
+
 1. Catch error in markAsRead function
 2. Show error toast: "Failed to mark notification as read"
 3. Allow user to retry
@@ -666,12 +712,13 @@ useEffect(() => {
 5. Optimistic UI update with rollback on error
 
 **Implementation**:
+
 ```typescript
 const handleMarkAsRead = async (id: string) => {
   const previousState = notifications;
   // Optimistic update
   updateNotificationLocally(id, { readAt: new Date().toISOString() });
-  
+
   try {
     await markAsRead(id);
   } catch (error) {
@@ -687,12 +734,14 @@ const handleMarkAsRead = async (id: string) => {
 **Scenario**: Notification payload is malformed or missing required fields
 
 **Handling**:
+
 1. Validate payload structure before rendering
 2. Provide default values for missing fields
 3. Log validation errors
 4. Display generic notification if critical fields missing
 
 **Implementation**:
+
 ```typescript
 const validateNotification = (notification: Notification): boolean => {
   const payload = notification.payload as InAppNotificationPayload;
@@ -702,8 +751,8 @@ const validateNotification = (notification: Notification): boolean => {
 const getDisplayData = (notification: Notification): DetailPanelDisplayData => {
   const payload = notification.payload as InAppNotificationPayload;
   return {
-    title: payload?.title || 'Notification',
-    message: payload?.message || 'No message available',
+    title: payload?.title || "Notification",
+    message: payload?.message || "No message available",
     // ... other fields with defaults
   };
 };
@@ -714,20 +763,22 @@ const getDisplayData = (notification: Notification): DetailPanelDisplayData => {
 **Scenario**: Viewport resize while detail panel is open
 
 **Handling**:
+
 1. Listen to window resize events
 2. Recalculate layout on breakpoint changes
 3. Smoothly transition between mobile and desktop layouts
 4. Maintain detail panel open state across transitions
 
 **Implementation**:
+
 ```typescript
 useEffect(() => {
   const handleResize = () => {
     setIsMobile(window.innerWidth < 768);
   };
-  
-  window.addEventListener('resize', handleResize);
-  return () => window.removeEventListener('resize', handleResize);
+
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
 }, []);
 ```
 
@@ -736,12 +787,14 @@ useEffect(() => {
 **Scenario**: Navigation or action execution fails
 
 **Handling**:
+
 1. Wrap action execution in try-catch
 2. Show error toast with specific message
 3. Keep detail panel open for user to retry
 4. Log error for debugging
 
 **Implementation**:
+
 ```typescript
 const handleActionClick = async (action: NotificationAction) => {
   try {
@@ -751,7 +804,7 @@ const handleActionClick = async (action: NotificationAction) => {
     }
   } catch (error) {
     toast.error(`Failed to navigate: ${error.message}`);
-    console.error('Action execution failed:', error);
+    console.error("Action execution failed:", error);
   }
 };
 ```
@@ -765,6 +818,7 @@ The testing strategy employs both unit tests and property-based tests to ensure 
 **Framework**: Vitest with React Testing Library
 
 **Test Files**:
+
 - `NotificationDetailPanel.test.tsx`
 - `NotificationsModal.test.tsx`
 - `NotificationIntegration.test.tsx`
@@ -817,7 +871,7 @@ describe('NotificationDetailPanel', () => {
   it('renders notification details correctly', () => {
     const notification = createMockNotification();
     render(<NotificationDetailPanel notification={notification} isOpen={true} />);
-    
+
     expect(screen.getByText(notification.payload.title)).toBeInTheDocument();
     expect(screen.getByText(notification.payload.message)).toBeInTheDocument();
   });
@@ -825,7 +879,7 @@ describe('NotificationDetailPanel', () => {
   it('calls onClose when close button clicked', () => {
     const onClose = vi.fn();
     render(<NotificationDetailPanel notification={mockNotification} isOpen={true} onClose={onClose} />);
-    
+
     fireEvent.click(screen.getByLabelText('Close detail panel'));
     expect(onClose).toHaveBeenCalledOnce();
   });
@@ -835,7 +889,7 @@ describe('NotificationDetailPanel', () => {
       action: { label: 'View Details', route: '/details', id: '1' }
     });
     render(<NotificationDetailPanel notification={notification} isOpen={true} />);
-    
+
     expect(screen.getByText('View Details')).toBeInTheDocument();
   });
 });
@@ -848,6 +902,7 @@ describe('NotificationDetailPanel', () => {
 **Configuration**: Minimum 100 iterations per property test
 
 **Test Tags**: Each property test must include a comment referencing the design property:
+
 ```typescript
 // Feature: notification-detail-panel, Property 1: Selection state consistency
 ```
@@ -861,6 +916,7 @@ Property-based tests will be implemented during the implementation phase based o
 **Scope**: Test interaction between notification list and detail panel
 
 **Key Integration Tests**:
+
 1. Selecting notification in list opens detail panel with correct data
 2. Marking notification as read updates both list and detail panel
 3. Deleting notification while viewing closes detail panel
@@ -870,6 +926,7 @@ Property-based tests will be implemented during the implementation phase based o
 ### Manual Testing Checklist
 
 **Desktop Testing**:
+
 - [ ] Two-panel layout displays correctly
 - [ ] Clicking notifications opens detail panel
 - [ ] Both panels remain visible and interactive
@@ -880,6 +937,7 @@ Property-based tests will be implemented during the implementation phase based o
 - [ ] Focus management is correct
 
 **Mobile Testing**:
+
 - [ ] Detail panel overlays notification list
 - [ ] Back/close returns to notification list
 - [ ] Touch interactions are responsive
@@ -887,6 +945,7 @@ Property-based tests will be implemented during the implementation phase based o
 - [ ] Layout adapts on orientation change
 
 **Accessibility Testing**:
+
 - [ ] Screen reader announces content correctly
 - [ ] Keyboard-only navigation is complete
 - [ ] Focus indicators are visible
@@ -894,12 +953,11 @@ Property-based tests will be implemented during the implementation phase based o
 - [ ] ARIA attributes are correct
 
 **Cross-Browser Testing**:
+
 - [ ] Chrome/Edge (Chromium)
 - [ ] Firefox
 - [ ] Safari (macOS and iOS)
 - [ ] Mobile browsers (Chrome, Safari)
-
-
 
 ## Correctness Properties
 
@@ -1120,4 +1178,3 @@ For any notification being viewed in the detail panel, when the notification lis
 For any notification being viewed in the detail panel, when that notification's data is updated in the background, the detail panel should reflect the updated content.
 
 **Validates: Requirements 10.5**
-
