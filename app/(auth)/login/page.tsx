@@ -88,9 +88,9 @@ const Login = () => {
       />
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-3 py-6 md:py-8 lg:py-12 md:px-4 lg:px-6">
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-6 md:py-8 lg:py-12 md:px-6 lg:px-8">
         <div className="w-full max-w-5xl">
-          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden flex flex-col md:flex-row h-[600px]">
+          <div className="bg-white rounded-[20px] md:rounded-[30px] shadow-lg overflow-hidden flex flex-col md:flex-row min-h-[500px] md:h-[600px]">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0 w-full h-full">
               {/* Left Side - Logo */}
               <div className="hidden md:flex flex-col items-center justify-center p-8 lg:p-12 bg-white min-h-[400px] md:min-h-auto">
@@ -102,7 +102,7 @@ const Login = () => {
               </div>
 
               {/* Right Side - Form */}
-              <div className="flex flex-col justify-center p-4 md:p-6 lg:p-8 bg-white h-full overflow-y-auto">
+              <div className="flex flex-col justify-center p-6 md:p-6 lg:p-8 bg-white h-full overflow-y-auto">
                 <div className="flex flex-col gap-3 text-sm md:text-base w-full">
                   {/* Header */}
                   <div className="flex flex-col gap-1">

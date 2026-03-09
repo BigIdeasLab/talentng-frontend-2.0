@@ -307,29 +307,29 @@ The implementation uses TypeScript with React and leverages Tailwind CSS's utili
     - Ensure proper layout on all breakpoints
     - _Requirements: 9.6_
 
-- [ ] 12. Implement page-specific responsive layouts (Part 1)
-  - [ ] 12.1 Adapt authentication pages
+- [x] 12. Implement page-specific responsive layouts (Part 1)
+  - [x] 12.1 Adapt authentication pages
     - Update LoginPage, SignupPage, ForgotPasswordPage, ResetPasswordPage
     - Display auth forms at full width with appropriate padding on mobile
     - Stack form elements vertically
     - Maintain branding and logos with responsive sizing
     - _Requirements: 10.1, 10.2, 10.3, 10.5_
 
-  - [ ] 12.2 Adapt onboarding pages
+  - [x] 12.2 Adapt onboarding pages
     - Update OnboardingPage and all step components
     - Display onboarding steps vertically on mobile
     - Adapt step progress indicator for narrow screens
     - Maintain navigation buttons in fixed position on mobile
     - _Requirements: 11.1, 11.2, 11.3, 11.4_
 
-  - [ ] 12.3 Adapt opportunities pages
+  - [x] 12.3 Adapt opportunities pages
     - Update OpportunitiesPage and OpportunityDetails components
     - Transform opportunity cards to full-width stacked layout on mobile
     - Display opportunity details in scrollable full-screen view on mobile
     - Maintain all actions (edit, delete, view applicants) with touch-friendly controls
     - _Requirements: 12.1, 12.3, 12.4_
 
-  - [ ] 12.4 Adapt applicants pages
+  - [x] 12.4 Adapt applicants pages
     - Update ApplicantsPage and ApplicantsView components
     - Display applicant list as cards on mobile (using ResponsiveTable from task 5.3)
     - Maintain all applicant actions (schedule, hire, decline) in mobile view

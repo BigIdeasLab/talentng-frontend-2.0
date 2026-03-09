@@ -95,9 +95,9 @@ const Signup = () => {
       />
 
       {/* Content */}
-      <div className="relative z-10 h-screen flex items-center justify-center px-3 py-3 md:px-4 lg:px-6 overflow-hidden">
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-6 md:py-8 lg:py-12 md:px-6 lg:px-8 overflow-hidden">
         <div className="w-full max-w-5xl max-h-full">
-          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden h-[600px] flex flex-col">
+          <div className="bg-white rounded-[20px] md:rounded-[30px] shadow-lg overflow-hidden min-h-[500px] md:h-[600px] flex flex-col">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
               {/* Left Side - Logo */}
               <div className="hidden md:flex flex-col items-center justify-center p-8 lg:p-12 bg-white overflow-hidden">
@@ -109,7 +109,7 @@ const Signup = () => {
               </div>
 
               {/* Right Side - Form */}
-              <div className="flex flex-col justify-center p-4 md:p-6 lg:p-8 bg-white overflow-y-auto">
+              <div className="flex flex-col justify-center p-6 md:p-6 lg:p-8 bg-white overflow-y-auto">
                 <div className="flex flex-col gap-3 text-sm md:text-base">
                   {/* Header */}
                   <div className="flex flex-col gap-1">

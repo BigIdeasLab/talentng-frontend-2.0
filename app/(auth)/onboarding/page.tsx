@@ -506,7 +506,7 @@ const OnboardingPage = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center px-3 py-8 md:px-4 lg:px-6 w-full bg-white overflow-auto">
+    <div className="relative min-h-screen flex flex-col items-center justify-center px-4 py-6 md:py-8 lg:py-12 md:px-6 lg:px-8 w-full bg-white overflow-auto">
       {/* Background Image */}
       <img
         src="/backgroundgradient.png"
@@ -515,7 +515,7 @@ const OnboardingPage = () => {
       />
 
       {/* Content */}
-      <div className="bg-white rounded-[30px] shadow-lg overflow-hidden w-full max-w-5xl z-10 h-[600px] flex flex-col">
+      <div className="bg-white rounded-[20px] md:rounded-[30px] shadow-lg overflow-hidden w-full max-w-5xl z-10 min-h-[500px] md:h-[600px] flex flex-col">
         {currentStep === 1 && (
           <div className="h-full flex flex-col overflow-hidden">
             <SelectRoleStep
