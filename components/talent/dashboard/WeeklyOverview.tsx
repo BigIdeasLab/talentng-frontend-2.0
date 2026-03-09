@@ -58,7 +58,7 @@ export function WeeklyOverview({ data }: WeeklyOverviewProps) {
           </div>
         </div>
       </div>
-      <div className="w-full h-[180px]">
+      <div className="w-full h-[300px] md:h-[400px]">
         <ChartContainer config={chartConfig} className="w-full h-full">
           <AreaChart
             data={data}
@@ -97,13 +97,13 @@ export function WeeklyOverview({ data }: WeeklyOverviewProps) {
               tickLine={false}
               axisLine={false}
               tickMargin={6}
-              tick={{ fill: "#606060", fontSize: 11 }}
+              tick={{ fill: "#606060", fontSize: 10 }}
             />
             <YAxis
               tickLine={false}
               axisLine={false}
               tickMargin={6}
-              tick={{ fill: "#606060", fontSize: 11 }}
+              tick={{ fill: "#606060", fontSize: 10 }}
             />
             <ChartTooltip
               cursor={false}

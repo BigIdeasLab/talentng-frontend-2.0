@@ -174,7 +174,7 @@ The implementation uses TypeScript with React and leverages Tailwind CSS's utili
     - _Requirements: 5.5_
 
 - [ ] 7. Implement responsive form layouts
-  - [ ] 7.1 Create responsive form field wrapper
+  - [x] 7.1 Create responsive form field wrapper
     - Create `components/forms/ResponsiveFormField.tsx` wrapper component
     - Stack fields vertically on mobile, support multi-column on desktop
     - Apply full width on mobile: `w-full lg:w-auto`
@@ -182,7 +182,7 @@ The implementation uses TypeScript with React and leverages Tailwind CSS's utili
     - Position labels above inputs on mobile
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 18.1_
 
-  - [ ] 7.2 Create responsive form button group
+  - [x] 7.2 Create responsive form button group
     - Create `components/forms/ResponsiveFormButtons.tsx` component
     - Stack buttons vertically on mobile with full width
     - Display horizontally on desktop: `flex flex-col md:flex-row gap-2`
@@ -221,14 +221,14 @@ The implementation uses TypeScript with React and leverages Tailwind CSS's utili
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 9. Implement dashboard responsive layouts
-  - [ ] 9.1 Create responsive stat cards layout
+  - [x] 9.1 Create responsive stat cards layout
     - Update dashboard stat card containers
     - Apply responsive grid: `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4`
     - Hide detailed descriptions on mobile, keep primary metric and label
     - Scale icon sizes appropriately for each breakpoint
     - _Requirements: 7.1, 7.2, 7.3_
 
-  - [ ] 9.2 Adapt chart components for mobile
+  - [-] 9.2 Adapt chart components for mobile
     - Update WeeklyOverviewChart, HiringPipeline, and other chart components
     - Scale charts to full container width: `w-full h-[300px] md:h-[400px]`
     - Position legends below charts on mobile

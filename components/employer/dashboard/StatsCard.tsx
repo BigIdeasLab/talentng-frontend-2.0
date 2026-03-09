@@ -32,18 +32,18 @@ export function StatsCard({
           <h3 className="text-[#606060] text-[12px] font-medium font-inter-tight">
             {label}
           </h3>
-          <p className="text-[20px] font-bold font-inter-tight group-hover:text-blue-600 transition-colors">
+          <p className="text-[20px] md:text-[24px] font-bold font-inter-tight group-hover:text-blue-600 transition-colors">
             {value}
           </p>
         </div>
         <div
-          className={`w-[40px] h-[40px] rounded-full ${iconBg} flex items-center justify-center group-hover:scale-110 transition-transform`}
+          className={`w-[36px] h-[36px] md:w-[40px] md:h-[40px] rounded-full ${iconBg} flex items-center justify-center group-hover:scale-110 transition-transform`}
         >
           <div className={iconColor}>{icon}</div>
         </div>
       </div>
       {change && (
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 md:hidden lg:flex">
           <svg
             width="10"
             height="8"

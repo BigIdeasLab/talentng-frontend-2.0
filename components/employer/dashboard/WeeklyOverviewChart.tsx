@@ -65,7 +65,7 @@ export function WeeklyOverviewChart({ data }: WeeklyOverviewChartProps) {
         </p>
       </div>
 
-      <div className="w-full h-[230px]">
+      <div className="w-full h-[300px] md:h-[400px]">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
@@ -82,7 +82,7 @@ export function WeeklyOverviewChart({ data }: WeeklyOverviewChartProps) {
               tickLine={false}
               tick={{
                 fill: "#606060",
-                fontSize: 11,
+                fontSize: 10,
                 fontFamily: "Inter Tight",
               }}
             />
@@ -91,7 +91,7 @@ export function WeeklyOverviewChart({ data }: WeeklyOverviewChartProps) {
               tickLine={false}
               tick={{
                 fill: "#606060",
-                fontSize: 11,
+                fontSize: 10,
                 fontFamily: "Inter Tight",
               }}
               domain={[0, yAxisMax]}
@@ -119,8 +119,10 @@ export function WeeklyOverviewChart({ data }: WeeklyOverviewChartProps) {
               iconType="circle"
               wrapperStyle={{
                 fontFamily: "Inter Tight",
-                fontSize: "11px",
+                fontSize: "10px",
               }}
+              verticalAlign="bottom"
+              align="center"
               formatter={(value) => {
                 return value.charAt(0).toUpperCase() + value.slice(1);
               }}
