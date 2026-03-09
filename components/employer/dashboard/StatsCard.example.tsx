@@ -19,8 +19,8 @@ export default function StatsCardExample() {
             icons (40px), larger value text (24px), change indicators hidden
           </li>
           <li>
-            <strong>Desktop (≥1024px):</strong> Four column layout, larger
-            icons (40px), larger value text (24px), change indicators visible
+            <strong>Desktop (≥1024px):</strong> Four column layout, larger icons
+            (40px), larger value text (24px), change indicators visible
           </li>
         </ul>
       </div>

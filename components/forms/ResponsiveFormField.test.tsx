@@ -1,10 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
-import {
-  ResponsiveFormField,
-  ResponsiveFormRow,
-} from "./ResponsiveFormField";
+import { ResponsiveFormField, ResponsiveFormRow } from "./ResponsiveFormField";
 
 describe("ResponsiveFormField", () => {
   it("renders children correctly", () => {
@@ -121,7 +118,9 @@ describe("ResponsiveFormField", () => {
   });
 
   it("renders empty field when no children provided", () => {
-    const { container } = render(<ResponsiveFormField>{null}</ResponsiveFormField>);
+    const { container } = render(
+      <ResponsiveFormField>{null}</ResponsiveFormField>,
+    );
 
     const field = container.firstChild as HTMLElement;
     expect(field).toBeInTheDocument();

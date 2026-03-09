@@ -1,10 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  ResponsiveFormField,
-  ResponsiveFormRow,
-} from "./ResponsiveFormField";
+import { ResponsiveFormField, ResponsiveFormRow } from "./ResponsiveFormField";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 

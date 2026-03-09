@@ -228,7 +228,7 @@ The implementation uses TypeScript with React and leverages Tailwind CSS's utili
     - Scale icon sizes appropriately for each breakpoint
     - _Requirements: 7.1, 7.2, 7.3_
 
-  - [-] 9.2 Adapt chart components for mobile
+  - [x] 9.2 Adapt chart components for mobile
     - Update WeeklyOverviewChart, HiringPipeline, and other chart components
     - Scale charts to full container width: `w-full h-[300px] md:h-[400px]`
     - Position legends below charts on mobile
