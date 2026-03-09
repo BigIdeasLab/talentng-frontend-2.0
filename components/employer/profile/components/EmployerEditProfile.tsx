@@ -21,6 +21,8 @@ import statesCities from "@/lib/data/states-cities.json";
 import { EmployerEditProfileSkeleton } from "@/components/skeletons/EditProfileSkeleton";
 import { SuccessModal } from "@/components/ui/success-modal";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import { ResponsiveFormField, ResponsiveFormRow } from "@/components/forms/ResponsiveFormField";
+import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
 
 interface EmployerFormData {
   personal: {
@@ -84,7 +86,7 @@ function EditProfileSidebar({
   onToggleSection,
 }: EditProfileSidebarProps) {
   return (
-    <div className="w-[250px] flex flex-col items-start gap-[35px] px-5 pt-[20px] border-r border-[#E1E4EA]">
+    <div className="hidden lg:flex w-[250px] flex-col items-start gap-[35px] px-5 pt-[20px] border-r border-[#E1E4EA]">
       <h1 className="text-[20px] font-semibold text-black font-inter-tight">
         Edit Profile
       </h1>
@@ -120,19 +122,19 @@ function EditProfileActionBar({
   onDiscard: () => void;
 }) {
   return (
-    <div className="h-[56px] border-b border-[#E1E4EA] flex items-center justify-end px-[80px] gap-2 bg-white">
+    <div className="h-[56px] border-b border-[#E1E4EA] flex items-center justify-end px-4 lg:px-[80px] gap-2 bg-white">
       <Button
         variant="outline"
         onClick={onDiscard}
         disabled={isLoading}
-        className="h-[40px] px-[24px] rounded-full border border-[#F5F5F5] bg-[#F5F5F5] text-black hover:bg-[#e5e5e5] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-normal"
+        className="h-[40px] min-h-[44px] px-[24px] rounded-full border border-[#F5F5F5] bg-[#F5F5F5] text-black hover:bg-[#e5e5e5] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-normal"
       >
         Discard
       </Button>
       <Button
         onClick={onSave}
         disabled={isLoading || !hasUnsavedChanges}
-        className="h-[40px] px-[24px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-normal"
+        className="h-[40px] min-h-[44px] px-[24px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-normal"
       >
         {isLoading ? "Saving..." : "Save Changes"}
       </Button>
@@ -207,7 +209,7 @@ function PersonalDetailsSection({
           <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
             {/* Profile Picture with Completeness Ring */}
             <div
-              className="relative"
+              className="relative mx-auto lg:mx-0"
               style={{ width: ringSize, height: ringSize }}
             >
               <input
@@ -247,7 +249,7 @@ function PersonalDetailsSection({
                 type="button"
                 onClick={handleProfileImageClick}
                 disabled={isUploading}
-                className="absolute rounded-full cursor-pointer hover:opacity-80 transition-opacity disabled:opacity-50"
+                className="absolute rounded-full cursor-pointer hover:opacity-80 transition-opacity disabled:opacity-50 min-w-[44px] min-h-[44px]"
                 style={{
                   top: strokeWidth + 2,
                   left: strokeWidth + 2,
@@ -271,7 +273,7 @@ function PersonalDetailsSection({
             </div>
 
             {/* Company Name */}
-            <div className="flex flex-col gap-[10px]">
+            <ResponsiveFormField>
               <label className="text-[13px] font-normal text-black font-inter-tight">
                 Company Name
               </label>
@@ -280,12 +282,12 @@ function PersonalDetailsSection({
                 value={formData.company}
                 onChange={(e) => onInputChange("company", e.target.value)}
                 placeholder="e.g., Tech Talents Inc"
-                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                className="px-[12px] py-[18px] min-h-[44px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
               />
-            </div>
+            </ResponsiveFormField>
 
             {/* Bio */}
-            <div className="flex flex-col gap-[10px]">
+            <ResponsiveFormField>
               <label className="text-[13px] font-normal text-black font-inter-tight">
                 Bio
               </label>
@@ -295,18 +297,18 @@ function PersonalDetailsSection({
                 placeholder="Tell us about your company"
                 className="min-h-[100px] px-[12px] py-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent resize-none"
               />
-            </div>
+            </ResponsiveFormField>
 
             {/* State and City */}
-            <div className="flex gap-[10px]">
-              <div className="flex-1 flex flex-col gap-[10px]">
+            <ResponsiveFormRow columns={2}>
+              <ResponsiveFormField>
                 <label className="text-[13px] font-normal text-black font-inter-tight">
                   State
                 </label>
                 <select
                   value={formData.state}
                   onChange={(e) => onInputChange("state", e.target.value)}
-                  className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                  className="h-[48px] min-h-[44px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                 >
                   <option value="">Select State</option>
                   {Object.keys(statesCities).map((state) => (
@@ -315,16 +317,16 @@ function PersonalDetailsSection({
                     </option>
                   ))}
                 </select>
-              </div>
+              </ResponsiveFormField>
 
-              <div className="flex-1 flex flex-col gap-[10px]">
+              <ResponsiveFormField>
                 <label className="text-[13px] font-normal text-black font-inter-tight">
                   City
                 </label>
                 <select
                   value={formData.city}
                   onChange={(e) => onInputChange("city", e.target.value)}
-                  className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                  className="h-[48px] min-h-[44px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                 >
                   <option value="">Select City</option>
                   {formData.state &&
@@ -336,18 +338,18 @@ function PersonalDetailsSection({
                       </option>
                     ))}
                 </select>
-              </div>
-            </div>
+              </ResponsiveFormField>
+            </ResponsiveFormRow>
 
             {/* Next Button */}
-            <div className="flex justify-end">
+            <ResponsiveFormButtons align="end">
               <button
                 onClick={onNext}
-                className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal"
+                className="h-[44px] min-h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal"
               >
                 Next
               </button>
-            </div>
+            </ResponsiveFormButtons>
           </div>
         </>
       </SmoothCollapse>
@@ -386,7 +388,7 @@ function CompanyDetailsSection({
           <div className="h-[1px] bg-[#E1E4EA]" />
           <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
             {/* Industry */}
-            <div className="flex flex-col gap-[10px]">
+            <ResponsiveFormField>
               <label className="text-[13px] font-normal text-black font-inter-tight">
                 Industry
               </label>
@@ -395,20 +397,20 @@ function CompanyDetailsSection({
                 value={formData.industry}
                 onChange={(e) => onInputChange("industry", e.target.value)}
                 placeholder="e.g., Technology, Legal Services, etc."
-                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                className="px-[12px] py-[18px] min-h-[44px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
               />
-            </div>
+            </ResponsiveFormField>
 
             {/* Company Size and Stage */}
-            <div className="flex gap-[10px]">
-              <div className="flex-1 flex flex-col gap-[10px]">
+            <ResponsiveFormRow columns={2}>
+              <ResponsiveFormField>
                 <label className="text-[13px] font-normal text-black font-inter-tight">
                   Company Size
                 </label>
                 <select
                   value={formData.size}
                   onChange={(e) => onInputChange("size", e.target.value)}
-                  className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                  className="h-[48px] min-h-[44px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                 >
                   <option value="">Select size</option>
                   <option value="1-10 employees">1-10 employees</option>
@@ -417,16 +419,16 @@ function CompanyDetailsSection({
                   <option value="201-500 employees">201-500 employees</option>
                   <option value="500+ employees">500+ employees</option>
                 </select>
-              </div>
+              </ResponsiveFormField>
 
-              <div className="flex-1 flex flex-col gap-[10px]">
+              <ResponsiveFormField>
                 <label className="text-[13px] font-normal text-black font-inter-tight">
                   Company Stage
                 </label>
                 <select
                   value={formData.stage}
                   onChange={(e) => onInputChange("stage", e.target.value)}
-                  className="h-[48px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                  className="h-[48px] min-h-[44px] px-[12px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                 >
                   <option value="">Select stage</option>
                   <option value="Seed">Seed</option>
@@ -436,11 +438,11 @@ function CompanyDetailsSection({
                   <option value="Mature">Mature</option>
                   <option value="Public">Public</option>
                 </select>
-              </div>
-            </div>
+              </ResponsiveFormField>
+            </ResponsiveFormRow>
 
             {/* Operating Model */}
-            <div className="flex flex-col gap-[10px]">
+            <ResponsiveFormField>
               <label className="text-[13px] font-normal text-black font-inter-tight">
                 Operating Model
               </label>
@@ -449,24 +451,24 @@ function CompanyDetailsSection({
                 onChange={(e) =>
                   onInputChange("operatingModel", e.target.value)
                 }
-                className="px-[12px] py-[18px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                className="px-[12px] py-[18px] min-h-[44px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px] text-[13px] font-normal text-black font-inter-tight focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
               >
                 <option value="">Select operating model</option>
                 <option value="Fully Remote">Fully Remote</option>
                 <option value="Hybrid">Hybrid</option>
                 <option value="On-site">On-site</option>
               </select>
-            </div>
+            </ResponsiveFormField>
 
             {/* Next Button */}
-            <div className="flex justify-end">
+            <ResponsiveFormButtons align="end">
               <button
                 onClick={onNext}
-                className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal"
+                className="h-[44px] min-h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal"
               >
                 Next
               </button>
-            </div>
+            </ResponsiveFormButtons>
           </div>
         </>
       </SmoothCollapse>
@@ -505,11 +507,11 @@ function SocialLinksSection({
           <div className="h-[1px] bg-[#E1E4EA]" />
           <div className="px-[16px] py-[18px] flex flex-col gap-[16px]">
             {/* X (Twitter) */}
-            <div className="flex flex-col gap-[10px]">
+            <ResponsiveFormField>
               <label className="text-[13px] font-normal text-black font-inter-tight">
                 X
               </label>
-              <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
+              <div className="px-[12px] py-[18px] min-h-[44px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path
                     d="M2 14L7.03227 8.96773M7.03227 8.96773L2 2H5.33333L8.96773 7.03227M7.03227 8.96773L10.6667 14H14L8.96773 7.03227M14 2L8.96773 7.03227"
@@ -526,14 +528,14 @@ function SocialLinksSection({
                   className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
                 />
               </div>
-            </div>
+            </ResponsiveFormField>
 
             {/* Instagram */}
-            <div className="flex flex-col gap-[10px]">
+            <ResponsiveFormField>
               <label className="text-[13px] font-normal text-black font-inter-tight">
                 Instagram
               </label>
-              <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
+              <div className="px-[12px] py-[18px] min-h-[44px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path
                     d="M1.66602 8.00033C1.66602 5.01477 1.66602 3.52199 2.59351 2.59449C3.52101 1.66699 5.01379 1.66699 7.99935 1.66699C10.9849 1.66699 12.4777 1.66699 13.4052 2.59449C14.3327 3.52199 14.3327 5.01477 14.3327 8.00033C14.3327 10.9859 14.3327 12.4787 13.4052 13.4062C12.4777 14.3337 10.9849 14.3337 7.99935 14.3337C5.01379 14.3337 3.52101 14.3337 2.59351 13.4062C1.66602 12.4787 1.66602 10.9859 1.66602 8.00033Z"
@@ -560,14 +562,14 @@ function SocialLinksSection({
                   className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
                 />
               </div>
-            </div>
+            </ResponsiveFormField>
 
             {/* LinkedIn */}
-            <div className="flex flex-col gap-[10px]">
+            <ResponsiveFormField>
               <label className="text-[13px] font-normal text-black font-inter-tight">
                 LinkedIn
               </label>
-              <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
+              <div className="px-[12px] py-[18px] min-h-[44px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path
                     d="M3.00065 6.33301H2.66732C2.03878 6.33301 1.72451 6.33301 1.52924 6.52827C1.33398 6.72354 1.33398 7.03781 1.33398 7.66634V13.333C1.33398 13.9615 1.33398 14.2758 1.52924 14.4711C1.72451 14.6663 2.03878 14.6663 2.66732 14.6663H3.00065C3.62919 14.6663 3.94346 14.6663 4.13872 14.4711C4.33398 14.2758 4.33398 13.9615 4.33398 13.333V7.66634C4.33398 7.03781 4.33398 6.72354 4.13872 6.52827C3.94346 6.33301 3.62919 6.33301 3.00065 6.33301Z"
@@ -591,14 +593,14 @@ function SocialLinksSection({
                   className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
                 />
               </div>
-            </div>
+            </ResponsiveFormField>
 
             {/* Website */}
-            <div className="flex flex-col gap-[10px]">
+            <ResponsiveFormField>
               <label className="text-[13px] font-normal text-black font-inter-tight">
                 Website
               </label>
-              <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
+              <div className="px-[12px] py-[18px] min-h-[44px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <circle cx="8" cy="8" r="6.5" stroke="#525866" />
                   <path
@@ -619,11 +621,11 @@ function SocialLinksSection({
                   className="flex-1 text-[13px] font-normal font-inter-tight placeholder:text-black/30 border-0 focus:outline-none bg-transparent"
                 />
               </div>
-            </div>
+            </ResponsiveFormField>
 
             {/* Custom Links */}
             {(formData.customLinks || []).map((link, index) => (
-              <div key={index} className="flex flex-col gap-[10px]">
+              <ResponsiveFormField key={index}>
                 <div className="flex items-center justify-between">
                   <input
                     type="text"
@@ -652,13 +654,13 @@ function SocialLinksSection({
                       );
                       onCustomLinksChange?.(updated);
                     }}
-                    className="text-[#525866] hover:text-red-500 transition-colors"
+                    className="text-[#525866] hover:text-red-500 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
                   >
                     <XIcon className="w-4 h-4" />
                   </button>
                 </div>
                 <div className="flex flex-col gap-[4px]">
-                  <div className="px-[12px] py-[18px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
+                  <div className="px-[12px] py-[18px] min-h-[44px] flex items-center gap-[10px] border border-[#ADD8F7] bg-[#F0F7FF] rounded-[8px]">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                       <path
                         d="M6.66699 8.66699C6.95329 9.04972 7.31856 9.36642 7.73803 9.59559C8.15751 9.82476 8.62133 9.96105 9.09804 9.99512C9.57475 10.0292 10.0533 9.96029 10.501 9.79319C10.9488 9.62609 11.3555 9.36474 11.6937 9.02699L13.6937 7.02699C14.3009 6.3981 14.6369 5.55606 14.6293 4.68099C14.6216 3.80592 14.2709 2.96966 13.6527 2.35148C13.0345 1.73331 12.1983 1.38257 11.3232 1.37492C10.4481 1.36727 9.60607 1.7033 8.97699 2.31033L7.83366 3.44699"
@@ -694,7 +696,7 @@ function SocialLinksSection({
                     </span>
                   )}
                 </div>
-              </div>
+              </ResponsiveFormField>
             ))}
 
             {/* Add Link Button */}
@@ -707,21 +709,21 @@ function SocialLinksSection({
                 ];
                 onCustomLinksChange?.(updated);
               }}
-              className="flex items-center gap-2 text-[13px] font-normal text-[#5C30FF] font-inter-tight hover:opacity-80 transition-opacity"
+              className="flex items-center gap-2 text-[13px] font-normal text-[#5C30FF] font-inter-tight hover:opacity-80 transition-opacity min-h-[44px]"
             >
               <Plus className="w-4 h-4" />
               Add Link
             </button>
 
-            <div className="flex justify-end">
+            <ResponsiveFormButtons align="end">
               <Button
                 type="button"
                 onClick={onSave}
-                className="h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal"
+                className="h-[44px] min-h-[44px] px-[32px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[13px] font-normal"
               >
                 Save
               </Button>
-            </div>
+            </ResponsiveFormButtons>
           </div>
         </>
       </SmoothCollapse>
@@ -1009,7 +1011,7 @@ export function EmployerEditProfile() {
   }
 
   return (
-    <div className="flex h-screen bg-white">
+    <div className="flex flex-col lg:flex-row h-screen bg-white">
       <EditProfileSidebar
         expandedSection={expandedSection}
         onToggleSection={toggleSection}
@@ -1023,7 +1025,7 @@ export function EmployerEditProfile() {
           onDiscard={handleDiscard}
         />
 
-        <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
+        <div className="flex-1 overflow-y-auto scrollbar-styled px-4 lg:px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
             <PersonalDetailsSection
               isOpen={expandedSection === "personal"}

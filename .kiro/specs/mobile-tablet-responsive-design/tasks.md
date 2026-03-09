@@ -189,21 +189,21 @@ The implementation uses TypeScript with React and leverages Tailwind CSS's utili
     - Ensure 44px minimum button height
     - _Requirements: 6.7, 18.1_
 
-  - [ ] 7.3 Adapt opportunity forms (Post and Edit)
+  - [x] 7.3 Adapt opportunity forms (Post and Edit)
     - Update PostOpportunityForm and EditOpportunityForm
     - Apply responsive form field wrappers
     - Collapse multi-column layouts to single column on mobile
     - Use responsive button groups for form actions
     - _Requirements: 6.5, 6.8, 12.4_
 
-  - [ ] 7.4 Adapt profile edit forms
+  - [x] 7.4 Adapt profile edit forms
     - Update EmployerEditProfile, TalentEditProfile, MentorEditProfile
     - Apply responsive form patterns
     - Ensure profile image upload has touch-friendly controls
     - Stack all sections vertically on mobile
     - _Requirements: 6.8, 8.4_
 
-  - [ ] 7.5 Adapt authentication forms
+  - [x] 7.5 Adapt authentication forms
     - Update LoginForm, SignupForm, ForgotPasswordForm, ResetPasswordForm
     - Apply full width on mobile with appropriate padding
     - Stack form elements vertically

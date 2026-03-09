@@ -26,6 +26,8 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
+import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
 
 const resetPasswordSchema = z.object({
   resetCode: z
@@ -227,7 +229,7 @@ const ResetPassword = () => {
                       />
 
                       {/* Password Field */}
-                      <div className="flex flex-col gap-2 mt-2">
+                      <ResponsiveFormField fullWidth className="mt-2">
                         <label className="text-xs md:text-sm font-medium text-black">
                           New Password
                         </label>
@@ -253,7 +255,12 @@ const ResetPassword = () => {
                                     onClick={() =>
                                       setShowPassword(!showPassword)
                                     }
-                                    className="text-gray-500 hover:text-gray-700"
+                                    className="text-gray-500 hover:text-gray-700 min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2"
+                                    aria-label={
+                                      showPassword
+                                        ? "Hide password"
+                                        : "Show password"
+                                    }
                                   >
                                     {showPassword ? (
                                       <EyeOff size={20} />
@@ -353,26 +360,28 @@ const ResetPassword = () => {
                             </div>
                           </div>
                         )}
-                      </div>
+                      </ResponsiveFormField>
 
                       {/* Reset Button */}
-                      <Button
-                        type="submit"
-                        disabled={
-                          mutation.isPending ||
-                          !email ||
-                          !isPasswordValid ||
-                          resetCode.length !== 6
-                        }
-                        style={{ backgroundColor: COLORS.primary }}
-                        className="w-full h-[48px] rounded-[10px] text-white font-semibold text-sm md:text-base mt-1 hover:opacity-90 disabled:opacity-50"
-                      >
-                        {mutation.isPending ? (
-                          <Loader2 size={18} className="animate-spin" />
-                        ) : (
-                          "Reset Password"
-                        )}
-                      </Button>
+                      <ResponsiveFormButtons>
+                        <Button
+                          type="submit"
+                          disabled={
+                            mutation.isPending ||
+                            !email ||
+                            !isPasswordValid ||
+                            resetCode.length !== 6
+                          }
+                          style={{ backgroundColor: COLORS.primary }}
+                          className="h-[48px] rounded-[10px] text-white font-semibold text-sm md:text-base hover:opacity-90 disabled:opacity-50"
+                        >
+                          {mutation.isPending ? (
+                            <Loader2 size={18} className="animate-spin" />
+                          ) : (
+                            "Reset Password"
+                          )}
+                        </Button>
+                      </ResponsiveFormButtons>
                     </form>
                   </Form>
 

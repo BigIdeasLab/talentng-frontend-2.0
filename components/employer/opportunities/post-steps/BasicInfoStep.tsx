@@ -4,6 +4,11 @@ import { useState } from "react";
 import statesCitiesData from "@/lib/data/states-cities.json";
 import categories from "@/lib/data/categories.json";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import {
+  ResponsiveFormField,
+  ResponsiveFormRow,
+} from "@/components/forms/ResponsiveFormField";
+import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
 
 interface BasicInfoStepProps {
   formData: {
@@ -93,7 +98,7 @@ export function BasicInfoStep({
       {/* Form Fields */}
       <div className="flex flex-col gap-4">
         {/* Title */}
-        <div className="flex flex-col gap-2.5">
+        <ResponsiveFormField>
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Title
           </label>
@@ -105,7 +110,7 @@ export function BasicInfoStep({
               updateFormData({ title: e.target.value });
               if (errors.title) setErrors({ ...errors, title: "" });
             }}
-            className={`w-full px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none transition-colors ${
+            className={`w-full px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none transition-colors min-h-[44px] ${
               errors.title || titleError ? "border-red-500" : "border-[#E1E4EA]"
             }`}
             onFocus={(e) =>
@@ -125,11 +130,11 @@ export function BasicInfoStep({
               {errors.title || titleError}
             </span>
           )}
-        </div>
+        </ResponsiveFormField>
 
         {/* Opportunity Type & Category */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex flex-col gap-2.5">
+        <ResponsiveFormRow columns={2}>
+          <ResponsiveFormField>
             <label className="font-inter-tight text-[13px] font-normal text-black">
               Opportunity Type
             </label>
@@ -180,9 +185,9 @@ export function BasicInfoStep({
                 {errors.type}
               </span>
             )}
-          </div>
+          </ResponsiveFormField>
 
-          <div className="flex flex-col gap-2.5">
+          <ResponsiveFormField>
             <label className="font-inter-tight text-[13px] font-normal text-black">
               Category / Role
             </label>
@@ -233,12 +238,12 @@ export function BasicInfoStep({
                 {errors.category}
               </span>
             )}
-          </div>
-        </div>
+          </ResponsiveFormField>
+        </ResponsiveFormRow>
 
         {/* Location - State & City */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex flex-col gap-2.5">
+        <ResponsiveFormRow columns={2}>
+          <ResponsiveFormField>
             <label className="font-inter-tight text-[13px] font-normal text-black">
               State
             </label>
@@ -284,9 +289,9 @@ export function BasicInfoStep({
                 />
               </svg>
             </div>
-          </div>
+          </ResponsiveFormField>
 
-          <div className="flex flex-col gap-2.5">
+          <ResponsiveFormField>
             <label className="font-inter-tight text-[13px] font-normal text-black">
               City
             </label>
@@ -333,8 +338,8 @@ export function BasicInfoStep({
                 />
               </svg>
             </div>
-          </div>
-        </div>
+          </ResponsiveFormField>
+        </ResponsiveFormRow>
         {errors.location && (
           <span
             data-error
@@ -346,12 +351,14 @@ export function BasicInfoStep({
       </div>
 
       {/* Next Button */}
-      <button
-        onClick={handleNext}
-        className="w-full h-[44px] bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
-      >
-        Next
-      </button>
+      <ResponsiveFormButtons>
+        <button
+          onClick={handleNext}
+          className="bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
+        >
+          Next
+        </button>
+      </ResponsiveFormButtons>
     </div>
   );
 }

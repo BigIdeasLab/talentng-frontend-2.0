@@ -22,7 +22,9 @@ export default function WeeklyOverviewExample() {
           This chart adapts to different screen sizes:
         </p>
         <ul className="list-disc list-inside text-gray-600 mb-6 space-y-2">
-          <li>Mobile (&lt; 768px): Height 300px with smaller font sizes (10px)</li>
+          <li>
+            Mobile (&lt; 768px): Height 300px with smaller font sizes (10px)
+          </li>
           <li>Desktop (≥ 768px): Height 400px with standard font sizes</li>
           <li>Custom legend positioned above chart with responsive layout</li>
           <li>Legend stacks vertically on mobile, horizontal on desktop</li>

@@ -18,7 +18,7 @@ export function EditProfileSidebar({
   onToggleSection,
 }: SidebarProps) {
   return (
-    <div className="w-[250px] flex flex-col items-start gap-[35px] px-5 pt-[20px] border-r border-[#E1E4EA]">
+    <div className="hidden lg:flex w-[250px] flex-col items-start gap-[35px] px-5 pt-[20px] border-r border-[#E1E4EA]">
       <h1 className="text-[20px] font-semibold text-black font-inter-tight">
         Edit Profile
       </h1>

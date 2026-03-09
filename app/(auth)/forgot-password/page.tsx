@@ -20,6 +20,8 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
+import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
@@ -99,7 +101,7 @@ const ForgotPassword = () => {
                       className="flex flex-col gap-3 w-full"
                     >
                       {/* Email Field */}
-                      <div className="flex flex-col gap-2">
+                      <ResponsiveFormField fullWidth>
                         <label className="text-xs md:text-sm font-medium text-black">
                           Email Address
                         </label>
@@ -120,15 +122,15 @@ const ForgotPassword = () => {
                             </FormItem>
                           )}
                         />
-                      </div>
+                      </ResponsiveFormField>
 
                       {/* Action Buttons */}
-                      <div className="flex flex-col gap-2">
+                      <ResponsiveFormButtons>
                         <Button
                           type="submit"
                           disabled={mutation.isPending}
                           style={{ backgroundColor: COLORS.primary }}
-                          className="w-full h-[48px] rounded-[10px] text-white font-semibold text-sm md:text-base hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="h-[48px] rounded-[10px] text-white font-semibold text-sm md:text-base hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {mutation.isPending ? (
                             <Loader2 size={18} className="animate-spin" />
@@ -139,11 +141,11 @@ const ForgotPassword = () => {
 
                         <Link
                           href="/login"
-                          className="w-full h-[48px] rounded-[10px] bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-800 font-medium text-sm md:text-base transition-colors"
+                          className="h-[48px] rounded-[10px] bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-800 font-medium text-sm md:text-base transition-colors"
                         >
                           Cancel
                         </Link>
-                      </div>
+                      </ResponsiveFormButtons>
                     </form>
                   </Form>
                 </div>

@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { SuccessModal } from "@/components/ui/success-modal";
 import { EditOpportunityFormSkeleton } from "@/components/skeletons/EditProfileSkeleton";
+import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
 
 type FormSection =
   | "basic-info"
@@ -343,8 +344,8 @@ export function EditOpportunityForm({
 
   return (
     <div className="flex h-screen bg-white">
-      {/* Sidebar */}
-      <div className="w-[250px] border-r border-[#E1E4EA] p-6 overflow-y-auto flex flex-col gap-[22px]">
+      {/* Sidebar - Hidden on mobile */}
+      <div className="hidden lg:block w-[250px] border-r border-[#E1E4EA] p-6 overflow-y-auto flex flex-col gap-[22px]">
         <h3 className="text-[14px] font-semibold text-black">Sections</h3>
         <div className="flex flex-col gap-[22px]">
           <button
@@ -415,22 +416,22 @@ export function EditOpportunityForm({
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Action Bar */}
-        <div className="px-[80px] py-4 border-b border-[#E1E4EA] flex items-center justify-between">
+        <div className="px-4 lg:px-[80px] py-4 border-b border-[#E1E4EA] flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
           <h1 className="font-inter-tight text-[17px] font-medium text-black">
             Edit Opportunity
           </h1>
-          <div className="flex items-center gap-3">
+          <ResponsiveFormButtons align="end">
             <button
               onClick={handleCancel}
               disabled={isSaving}
-              className="px-5 py-2 border border-gray-200 rounded-full font-inter-tight text-[13px] font-normal text-black hover:bg-gray-50 transition-colors disabled:opacity-50"
+              className="border border-gray-200 rounded-full font-inter-tight text-[13px] font-normal text-black hover:bg-gray-50 transition-colors disabled:opacity-50 px-5 py-2"
             >
               Cancel
             </button>
             <button
               onClick={handlePreview}
               disabled={isSaving}
-              className="px-5 py-2 rounded-full font-inter-tight text-[13px] font-normal text-white hover:opacity-80 transition-colors disabled:opacity-50"
+              className="rounded-full font-inter-tight text-[13px] font-normal text-white hover:opacity-80 transition-colors disabled:opacity-50 px-5 py-2"
               style={{
                 backgroundColor: ROLE_COLORS.recruiter.primary,
                 borderColor: ROLE_COLORS.recruiter.primary,
@@ -438,11 +439,11 @@ export function EditOpportunityForm({
             >
               Preview & Save
             </button>
-          </div>
+          </ResponsiveFormButtons>
         </div>
 
         {/* Form Sections */}
-        <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
+        <div className="flex-1 overflow-y-auto scrollbar-styled px-4 lg:px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
             {/* Basic Info Section */}
             <div

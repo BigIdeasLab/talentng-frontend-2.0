@@ -13,6 +13,7 @@ import { FormSectionComponent } from "./FormSection";
 import { BasicInfoStep } from "./post-steps/BasicInfoStep";
 import { DescriptionStep } from "./post-steps/DescriptionStep";
 import { BudgetScopeStep } from "./post-steps/BudgetScopeStep";
+import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
 
 const DEFAULT_FORM_DATA = {
   type: "",
@@ -312,8 +313,8 @@ export function PostOpportunityForm() {
 
   return (
     <div className="flex h-screen bg-white">
-      {/* Sidebar */}
-      <div className="w-[250px] border-r border-[#E1E4EA] p-6 overflow-y-auto flex flex-col gap-[22px]">
+      {/* Sidebar - Hidden on mobile */}
+      <div className="hidden lg:block w-[250px] border-r border-[#E1E4EA] p-6 overflow-y-auto flex flex-col gap-[22px]">
         <h3 className="text-[14px] font-semibold text-black">Sections</h3>
         <div className="flex flex-col gap-[22px]">
           <button
@@ -384,20 +385,20 @@ export function PostOpportunityForm() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Action Bar */}
-        <div className="px-[80px] py-4 border-b border-[#E1E4EA] flex items-center justify-between">
+        <div className="px-4 lg:px-[80px] py-4 border-b border-[#E1E4EA] flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
           <h1 className="font-inter-tight text-[17px] font-medium text-black">
             Post An Opportunity
           </h1>
-          <div className="flex items-center gap-3">
+          <ResponsiveFormButtons align="end">
             <button
               onClick={handleCancel}
-              className="px-5 py-2 border border-gray-200 rounded-full font-inter-tight text-[13px] font-normal text-black hover:bg-gray-50 transition-colors"
+              className="border border-gray-200 rounded-full font-inter-tight text-[13px] font-normal text-black hover:bg-gray-50 transition-colors px-5 py-2"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
-              className="px-5 py-2 rounded-full font-inter-tight text-[13px] font-normal text-white hover:opacity-80 transition-colors"
+              className="rounded-full font-inter-tight text-[13px] font-normal text-white hover:opacity-80 transition-colors px-5 py-2"
               style={{
                 backgroundColor: ROLE_COLORS.recruiter.primary,
                 borderColor: ROLE_COLORS.recruiter.primary,
@@ -405,11 +406,11 @@ export function PostOpportunityForm() {
             >
               Save & Post
             </button>
-          </div>
+          </ResponsiveFormButtons>
         </div>
 
         {/* Form Sections */}
-        <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
+        <div className="flex-1 overflow-y-auto scrollbar-styled px-4 lg:px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
             {/* Basic Info Section */}
             <FormSectionComponent
@@ -594,12 +595,14 @@ export function PostOpportunityForm() {
                     </div>
 
                     {/* Preview Button */}
-                    <button
-                      onClick={handleSave}
-                      className="w-full h-[44px] bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors mt-4"
-                    >
-                      Preview
-                    </button>
+                    <ResponsiveFormButtons>
+                      <button
+                        onClick={handleSave}
+                        className="bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
+                      >
+                        Preview
+                      </button>
+                    </ResponsiveFormButtons>
                   </div>
                 </>
               )}
@@ -610,7 +613,7 @@ export function PostOpportunityForm() {
 
       {/* Exit Modal */}
       {showExitModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-[16px] p-6 max-w-[400px] w-full mx-4 flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <h2 className="font-inter-tight text-[17px] font-medium text-black">
@@ -622,22 +625,22 @@ export function PostOpportunityForm() {
               </p>
             </div>
 
-            <div className="flex gap-2 pt-4">
+            <ResponsiveFormButtons>
               <button
                 onClick={handleCloseModal}
-                className="flex-1 px-4 py-2.5 border border-gray-200 rounded-full font-inter-tight text-[13px] font-normal text-black hover:bg-gray-50 transition-colors"
+                className="border border-gray-200 rounded-full font-inter-tight text-[13px] font-normal text-black hover:bg-gray-50 transition-colors px-4 py-2.5"
               >
                 Continue Editing
               </button>
               <button
                 onClick={handleDiscard}
-                className="flex-1 px-4 py-2.5 border border-gray-200 rounded-full font-inter-tight text-[13px] font-normal text-[#E63C23] hover:bg-red-50 transition-colors"
+                className="border border-gray-200 rounded-full font-inter-tight text-[13px] font-normal text-[#E63C23] hover:bg-red-50 transition-colors px-4 py-2.5"
               >
                 Discard
               </button>
               <button
                 onClick={handleSaveAsDraft}
-                className="flex-1 px-4 py-2.5 rounded-full font-inter-tight text-[13px] font-normal text-white hover:opacity-80 transition-colors"
+                className="rounded-full font-inter-tight text-[13px] font-normal text-white hover:opacity-80 transition-colors px-4 py-2.5"
                 style={{
                   backgroundColor: ROLE_COLORS.recruiter.primary,
                   borderColor: ROLE_COLORS.recruiter.primary,
@@ -645,7 +648,7 @@ export function PostOpportunityForm() {
               >
                 Save Draft
               </button>
-            </div>
+            </ResponsiveFormButtons>
           </div>
         </div>
       )}

@@ -422,7 +422,7 @@ export function TalentEditProfile() {
   }
 
   return (
-    <div className="flex h-screen bg-white">
+    <div className="flex flex-col lg:flex-row h-screen bg-white">
       <EditProfileSidebar
         expandedSection={expandedSection}
         onToggleSection={toggleSection}
@@ -436,7 +436,7 @@ export function TalentEditProfile() {
           onDiscard={handleDiscard}
         />
 
-        <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
+        <div className="flex-1 overflow-y-auto scrollbar-styled px-4 lg:px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
             <PersonalDetailsSection
               isOpen={expandedSection === "personal"}

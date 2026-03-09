@@ -5,6 +5,8 @@ import skills from "@/lib/data/skills.json";
 import toolsData from "@/lib/data/tools.json";
 import { getToolInfo } from "@/lib/utils/tools";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
+import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
 
 const tools = toolsData.map((tool) => tool.name);
 
@@ -201,7 +203,7 @@ export function DescriptionStep({
       {/* Form Fields */}
       <div className="flex flex-col gap-4">
         {/* Description */}
-        <div className="flex flex-col gap-2.5">
+        <ResponsiveFormField>
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Description
           </label>
@@ -232,10 +234,10 @@ export function DescriptionStep({
               {errors.description}
             </span>
           )}
-        </div>
+        </ResponsiveFormField>
 
         {/* Key Responsibilities */}
-        <div className="flex flex-col gap-2.5">
+        <ResponsiveFormField>
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Key Responsibilities
           </label>
@@ -310,10 +312,10 @@ export function DescriptionStep({
               </button>
             </div>
           </div>
-        </div>
+        </ResponsiveFormField>
 
         {/* Requirements */}
-        <div className="flex flex-col gap-2.5">
+        <ResponsiveFormField>
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Requirements
           </label>
@@ -380,10 +382,10 @@ export function DescriptionStep({
               </button>
             </div>
           </div>
-        </div>
+        </ResponsiveFormField>
 
         {/* Tags (Skills) */}
-        <div className="flex flex-col gap-2.5">
+        <ResponsiveFormField>
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Tags (Skills)
           </label>
@@ -500,10 +502,10 @@ export function DescriptionStep({
               </div>
             )}
           </div>
-        </div>
+        </ResponsiveFormField>
 
         {/* Tools */}
-        <div className="flex flex-col gap-2.5 overflow-visible">
+        <ResponsiveFormField className="overflow-visible">
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Tools
           </label>
@@ -648,16 +650,18 @@ export function DescriptionStep({
               </div>
             )}
           </div>
-        </div>
+        </ResponsiveFormField>
       </div>
 
       {/* Next Button */}
-      <button
-        onClick={handleNext}
-        className="w-full h-[44px] bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
-      >
-        Next
-      </button>
+      <ResponsiveFormButtons>
+        <button
+          onClick={handleNext}
+          className="bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
+        >
+          Next
+        </button>
+      </ResponsiveFormButtons>
     </div>
   );
 }

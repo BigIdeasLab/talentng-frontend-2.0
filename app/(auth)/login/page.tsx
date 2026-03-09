@@ -21,6 +21,8 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
+import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
 
 import type { AuthResponse } from "@/lib/api/auth-service";
 
@@ -119,7 +121,7 @@ const Login = () => {
                       className="flex flex-col gap-2"
                     >
                       {/* Email Field */}
-                      <div className="flex flex-col gap-2">
+                      <ResponsiveFormField fullWidth>
                         <label className="text-xs md:text-sm font-medium text-black">
                           Email Address
                         </label>
@@ -140,10 +142,10 @@ const Login = () => {
                             </FormItem>
                           )}
                         />
-                      </div>
+                      </ResponsiveFormField>
 
                       {/* Password Field */}
-                      <div className="flex flex-col gap-2">
+                      <ResponsiveFormField fullWidth>
                         <label className="text-xs md:text-sm font-medium text-black">
                           Password
                         </label>
@@ -165,7 +167,12 @@ const Login = () => {
                                     onClick={() =>
                                       setShowPassword(!showPassword)
                                     }
-                                    className="text-gray-500 hover:text-gray-700"
+                                    className="text-gray-500 hover:text-gray-700 min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2"
+                                    aria-label={
+                                      showPassword
+                                        ? "Hide password"
+                                        : "Show password"
+                                    }
                                   >
                                     {showPassword ? (
                                       <EyeOff size={20} />
@@ -179,7 +186,7 @@ const Login = () => {
                             </FormItem>
                           )}
                         />
-                      </div>
+                      </ResponsiveFormField>
 
                       {/* Forgot Password Link */}
                       <div className="text-right">
@@ -193,18 +200,20 @@ const Login = () => {
                       </div>
 
                       {/* Continue Button */}
-                      <Button
-                        type="submit"
-                        disabled={loginMutation.isPending}
-                        style={{ backgroundColor: COLORS.primary }}
-                        className="w-full h-[48px] rounded-[10px] text-white font-semibold text-sm md:text-base mt-1 hover:opacity-90 disabled:opacity-50"
-                      >
-                        {loginMutation.isPending ? (
-                          <Loader2 size={18} className="animate-spin" />
-                        ) : (
-                          "Continue"
-                        )}
-                      </Button>
+                      <ResponsiveFormButtons>
+                        <Button
+                          type="submit"
+                          disabled={loginMutation.isPending}
+                          style={{ backgroundColor: COLORS.primary }}
+                          className="h-[48px] rounded-[10px] text-white font-semibold text-sm md:text-base hover:opacity-90 disabled:opacity-50"
+                        >
+                          {loginMutation.isPending ? (
+                            <Loader2 size={18} className="animate-spin" />
+                          ) : (
+                            "Continue"
+                          )}
+                        </Button>
+                      </ResponsiveFormButtons>
                     </form>
                   </Form>
 

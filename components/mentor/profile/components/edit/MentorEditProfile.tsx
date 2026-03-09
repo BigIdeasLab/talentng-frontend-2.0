@@ -27,6 +27,8 @@ import type {
 import categoriesData from "@/lib/data/categories.json";
 import statesCities from "@/lib/data/states-cities.json";
 import { MentorEditProfileSkeleton } from "@/components/skeletons/EditProfileSkeleton";
+import { ResponsiveFormField, ResponsiveFormRow } from "@/components/forms/ResponsiveFormField";
+import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
 
 interface MentorFormData {
   personal: {
@@ -156,7 +158,7 @@ function EditProfileSidebar({
   onToggleSection: (section: string) => void;
 }) {
   return (
-    <div className="w-[250px] flex flex-col items-start gap-[35px] px-5 pt-[20px] border-r border-[#E1E4EA]">
+    <div className="hidden lg:flex w-[250px] flex-col items-start gap-[35px] px-5 pt-[20px] border-r border-[#E1E4EA]">
       <h1 className="text-[20px] font-semibold text-black font-inter-tight">
         Edit Profile
       </h1>
@@ -192,19 +194,19 @@ function EditProfileActionBar({
   onDiscard: () => void;
 }) {
   return (
-    <div className="h-[56px] border-b border-[#E1E4EA] flex items-center justify-end px-[80px] gap-2 bg-white">
+    <div className="h-[56px] border-b border-[#E1E4EA] flex items-center justify-end px-4 lg:px-[80px] gap-2 bg-white">
       <Button
         variant="outline"
         onClick={onDiscard}
         disabled={isLoading}
-        className="h-[40px] px-[24px] rounded-full border border-[#F5F5F5] bg-[#F5F5F5] text-black hover:bg-[#e5e5e5] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-normal"
+        className="h-[40px] min-h-[44px] px-[24px] rounded-full border border-[#F5F5F5] bg-[#F5F5F5] text-black hover:bg-[#e5e5e5] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-normal"
       >
         Discard
       </Button>
       <Button
         onClick={onSave}
         disabled={isLoading || !hasUnsavedChanges}
-        className="h-[40px] px-[24px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-normal"
+        className="h-[40px] min-h-[44px] px-[24px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[13px] font-normal"
       >
         {isLoading ? "Saving..." : "Save Changes"}
       </Button>
@@ -1377,7 +1379,7 @@ export function MentorEditProfile() {
   }
 
   return (
-    <div className="flex h-screen bg-white">
+    <div className="flex flex-col lg:flex-row h-screen bg-white">
       <EditProfileSidebar
         expandedSection={expandedSection}
         onToggleSection={toggleSection}
@@ -1391,7 +1393,7 @@ export function MentorEditProfile() {
           onDiscard={handleDiscard}
         />
 
-        <div className="flex-1 overflow-y-auto scrollbar-styled px-[80px] pt-[25px] pb-6">
+        <div className="flex-1 overflow-y-auto scrollbar-styled px-4 lg:px-[80px] pt-[25px] pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
             <PersonalDetailsSection
               isOpen={expandedSection === "personal"}

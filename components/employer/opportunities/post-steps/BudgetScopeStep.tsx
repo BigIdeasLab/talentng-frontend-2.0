@@ -2,6 +2,11 @@
 
 import { useState } from "react";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import {
+  ResponsiveFormField,
+  ResponsiveFormRow,
+} from "@/components/forms/ResponsiveFormField";
+import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
 
 interface BudgetScopeStepProps {
   formData: {
@@ -205,7 +210,7 @@ export function BudgetScopeStep({
       {/* Form Fields */}
       <div className="flex flex-col gap-4">
         {/* Payment Type */}
-        <div className="flex flex-col gap-3">
+        <ResponsiveFormField>
           <label className="font-inter-tight text-[13px] font-normal text-black">
             How do you want to pay talents
           </label>
@@ -276,10 +281,10 @@ export function BudgetScopeStep({
               {errors.paymentType}
             </span>
           )}
-        </div>
+        </ResponsiveFormField>
 
         {/* Pricing */}
-        <div className="flex flex-col gap-3">
+        <ResponsiveFormField>
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Pricing
           </label>
@@ -412,10 +417,10 @@ export function BudgetScopeStep({
               />
             </div>
           )}
-        </div>
+        </ResponsiveFormField>
 
         {/* Duration */}
-        <div className="flex flex-col gap-2.5">
+        <ResponsiveFormField>
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Duration
           </label>
@@ -466,10 +471,10 @@ export function BudgetScopeStep({
               />
             </svg>
           </div>
-        </div>
+        </ResponsiveFormField>
 
         {/* Start Date */}
-        <div className="flex flex-col gap-2.5">
+        <ResponsiveFormField>
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Start date
           </label>
@@ -498,10 +503,10 @@ export function BudgetScopeStep({
               className="w-full h-[46px] px-3 py-3 border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none transition-colors"
             />
           </div>
-        </div>
+        </ResponsiveFormField>
 
         {/* Experience Level */}
-        <div className="flex flex-col gap-2.5">
+        <ResponsiveFormField>
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Experience Level
           </label>
@@ -550,22 +555,24 @@ export function BudgetScopeStep({
               />
             </svg>
           </div>
-        </div>
+        </ResponsiveFormField>
       </div>
 
       {/* Submit Button */}
-      <button
-        onClick={() => {
-          if (validateForm()) {
-            onNext?.();
-          } else {
-            scrollToFirstError();
-          }
-        }}
-        className="w-full h-[44px] bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
-      >
-        Next
-      </button>
+      <ResponsiveFormButtons>
+        <button
+          onClick={() => {
+            if (validateForm()) {
+              onNext?.();
+            } else {
+              scrollToFirstError();
+            }
+          }}
+          className="bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
+        >
+          Next
+        </button>
+      </ResponsiveFormButtons>
     </div>
   );
 }
