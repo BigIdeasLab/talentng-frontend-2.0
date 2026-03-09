@@ -7,6 +7,7 @@ import { Users, SlidersHorizontal } from "lucide-react";
 import { SearchInput } from "@/components/ui/search-input";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useRequireRole } from "@/hooks/useRequireRole";
+import { useProfile } from "@/hooks/useProfile";
 import { PageLoadingState } from "@/lib/page-utils";
 import { ApplicantsSkeleton } from "@/components/employer/applicants/ApplicantsSkeleton";
 import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
@@ -40,6 +41,7 @@ const interviewStatusDisplayMap = {
 
 export default function ApplicantsPage() {
   const router = useRouter();
+  const { activeRole, isLoading: isProfileLoading } = useProfile();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<string>("all");
   const [sortBy, setSortBy] = useState("newest");
@@ -55,6 +57,9 @@ export default function ApplicantsPage() {
   >([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const lastProcessedDataRef = useRef<any>(null);
+
+  // Only fetch when the active role is confirmed as recruiter
+  const isRoleReady = !isProfileLoading && activeRole === "recruiter";
 
   // Reset to page 1 when filters change (but not on every keystroke)
   useEffect(() => {
@@ -85,7 +90,7 @@ export default function ApplicantsPage() {
     isLoading,
     isPending,
     error: queryError,
-  } = useRecruiterApplicationsQuery(queryParams);
+  } = useRecruiterApplicationsQuery(queryParams, { enabled: isRoleReady });
   const hasAccess = useRequireRole(["recruiter"]);
   const error =
     queryError instanceof Error
@@ -103,6 +108,12 @@ export default function ApplicantsPage() {
     // Only update if response has actually changed
     if (response && response !== lastProcessedDataRef.current) {
       lastProcessedDataRef.current = response;
+      console.log("=== APPLICANTS PAGE DEBUG ===");
+      console.log("Raw API Response:", JSON.stringify(response, null, 2));
+      console.log("Applicants count:", response.data?.length);
+      console.log("Pagination:", response.pagination);
+      console.log("isRoleReady:", isRoleReady, "activeRole:", activeRole);
+      console.log("============================");
       const mapped = mapApplicationsToUI(response.data || []);
       setDisplayedApplicants(mapped);
       if (isInitialLoad && !isLoading && !isPending) {

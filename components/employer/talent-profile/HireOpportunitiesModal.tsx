@@ -43,12 +43,14 @@ export function HireOpportunitiesModal({
     }
   };
 
-  // Determine which opportunities have been invited based on backend data or local tracking
-  const getInvitationStatus = (oppId: string) => {
-    return opportunities.find((o) => o.id === oppId)?.invitationSent ||
-      sentInvitations.has(oppId)
-      ? true
-      : false;
+  // Determine application status: 'applied' > 'invited' > 'available'
+  const getApplicationStatus = (
+    oppId: string,
+  ): "applied" | "invited" | "available" => {
+    const opp = opportunities.find((o) => o.id === oppId);
+    if (opp?.alreadyApplied) return "applied";
+    if (opp?.invitationSent || sentInvitations.has(oppId)) return "invited";
+    return "available";
   };
 
   if (!isOpen) return null;
@@ -104,16 +106,15 @@ export function HireOpportunitiesModal({
         ) : (
           <div className="flex flex-col gap-2.5 mb-6 max-h-[280px] overflow-y-auto scrollbar-styled">
             {opportunities.map((opp) => {
-              const isInvitationSent = getInvitationStatus(opp.id);
+              const status = getApplicationStatus(opp.id);
+              const isDisabled = status === "applied" || status === "invited";
               return (
                 <button
                   key={opp.id}
-                  onClick={() =>
-                    !isInvitationSent && setSelectedOpportunityId(opp.id)
-                  }
-                  disabled={isInvitationSent}
+                  onClick={() => !isDisabled && setSelectedOpportunityId(opp.id)}
+                  disabled={isDisabled}
                   className={`p-3 rounded-[10px] border-2 text-left transition-colors flex items-center gap-3 flex-shrink-0 ${
-                    isInvitationSent
+                    isDisabled
                       ? "border-[#D1D5DB] bg-[#F9FAFB] opacity-60 cursor-not-allowed"
                       : selectedOpportunityId === opp.id
                         ? "border-[#5C30FF] bg-[#F8F6FF]"
@@ -150,18 +151,43 @@ export function HireOpportunitiesModal({
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <div
                       className={`px-2.5 py-0.5 rounded-full font-inter-tight text-[10px] font-medium whitespace-nowrap ${
-                        isInvitationSent
-                          ? "bg-[#E0E7FF] text-[#4F46E5]"
-                          : opp.type === "Job"
-                            ? "bg-[#5C30FF] text-white"
-                            : opp.type === "Internship"
-                              ? "bg-[#D4F1E8] text-[#0B7563]"
-                              : "bg-[#FEE8C1] text-[#8B5C00]"
+                        status === "applied"
+                          ? "bg-[#D1FAE5] text-[#065F46]"
+                          : status === "invited"
+                            ? "bg-[#E0E7FF] text-[#4F46E5]"
+                            : opp.type === "Job"
+                              ? "bg-[#5C30FF] text-white"
+                              : opp.type === "Internship"
+                                ? "bg-[#D4F1E8] text-[#0B7563]"
+                                : "bg-[#FEE8C1] text-[#8B5C00]"
                       }`}
                     >
-                      {isInvitationSent ? "Invited" : opp.type || "Position"}
+                      {status === "applied"
+                        ? "Already Applied"
+                        : status === "invited"
+                          ? "Invited"
+                          : opp.type || "Position"}
                     </div>
-                    {!isInvitationSent && selectedOpportunityId === opp.id && (
+                    {status === "available" &&
+                      selectedOpportunityId === opp.id && (
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <circle cx="10" cy="10" r="9" fill="#5C30FF" />
+                          <path
+                            d="M7 10L9 12L13 8"
+                            stroke="white"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      )}
+                    {status === "applied" && (
                       <svg
                         width="16"
                         height="16"
@@ -169,7 +195,7 @@ export function HireOpportunitiesModal({
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
-                        <circle cx="10" cy="10" r="9" fill="#5C30FF" />
+                        <circle cx="10" cy="10" r="9" fill="#065F46" />
                         <path
                           d="M7 10L9 12L13 8"
                           stroke="white"
@@ -179,7 +205,7 @@ export function HireOpportunitiesModal({
                         />
                       </svg>
                     )}
-                    {isInvitationSent && (
+                    {status === "invited" && (
                       <svg
                         width="16"
                         height="16"
@@ -218,7 +244,7 @@ export function HireOpportunitiesModal({
               isLoading ||
               !selectedOpportunityId ||
               opportunities.length === 0 ||
-              getInvitationStatus(selectedOpportunityId || "")
+              getApplicationStatus(selectedOpportunityId || "") !== "available"
             }
             className="flex-1 px-3.5 py-2.5 rounded-[8px] bg-[#5C30FF] hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[12px] font-medium text-white transition-colors flex items-center justify-center gap-1.5"
           >
@@ -240,9 +266,13 @@ export function HireOpportunitiesModal({
             </svg>
             {isLoading
               ? "Hiring..."
-              : getInvitationStatus(selectedOpportunityId || "")
-                ? "Already Invited"
-                : "Continue Hire"}
+              : selectedOpportunityId &&
+                  getApplicationStatus(selectedOpportunityId) === "applied"
+                ? "Already Applied"
+                : selectedOpportunityId &&
+                    getApplicationStatus(selectedOpportunityId) === "invited"
+                  ? "Already Invited"
+                  : "Continue Hire"}
           </button>
         </div>
       </div>

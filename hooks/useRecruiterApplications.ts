@@ -40,12 +40,13 @@ interface RecruiterApplicationsParams {
  */
 export function useRecruiterApplicationsQuery(
   params: RecruiterApplicationsParams = {},
+  options: { enabled?: boolean } = {},
 ) {
   return useQuery({
     queryKey: ["applications", "recruiter", params],
     queryFn: () => getRecruiterApplications(params),
     staleTime: 5 * 60 * 1000, // 5 minutes
-    enabled: true,
+    enabled: options.enabled ?? true,
   });
 }
 

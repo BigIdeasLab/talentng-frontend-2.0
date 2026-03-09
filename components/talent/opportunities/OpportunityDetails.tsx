@@ -145,7 +145,7 @@ export function OpportunityDetails({
       // Optimistic UI update - disable buttons immediately
       setInvitationResponse(response);
       setTimeout(() => {
-        router.push("/opportunities");
+        router.push(response === "accepted" ? "/my-applications" : "/opportunities");
       }, 1500);
     } catch (error) {
       console.error("Failed to respond to invitation:", error);

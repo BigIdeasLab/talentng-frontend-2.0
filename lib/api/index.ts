@@ -91,7 +91,15 @@ const apiClient = async <T>(
                 },
               };
               fetch(`${baseUrl}${endpoint}`, retryConfig)
-                .then((res) => res.json())
+                .then(async (res) => {
+                  if (!res.ok) {
+                    const errBody = await res.text();
+                    const err = new Error(errBody || res.statusText);
+                    (err as any).status = res.status;
+                    throw err;
+                  }
+                  return res.json();
+                })
                 .then(resolve)
                 .catch(reject);
             },
@@ -118,13 +126,20 @@ const apiClient = async <T>(
       }
 
       isRefreshing = true;
+      const currentActiveRole =
+        typeof window !== "undefined"
+          ? localStorage.getItem("activeRole")
+          : null;
       refreshPromise = fetch(`${baseUrl}/auth/refresh`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ refreshToken }),
+        body: JSON.stringify({
+          refreshToken,
+          ...(currentActiveRole ? { activeRole: currentActiveRole } : {}),
+        }),
       });
 
       try {

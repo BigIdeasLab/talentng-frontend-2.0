@@ -78,6 +78,7 @@ export interface Opportunity {
   inviteResponse?: "accepted" | "declined" | null;
   respondedAt?: string | null;
   invitationSent?: boolean;
+  alreadyApplied?: boolean;
 }
 
 export interface PaginationInfo {

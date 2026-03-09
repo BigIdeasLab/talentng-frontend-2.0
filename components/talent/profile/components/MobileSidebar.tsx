@@ -28,12 +28,12 @@ export function MobileSidebar({
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger asChild>
+      <SheetTrigger asChild suppressHydrationWarning>
         <button className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors">
           <Menu className="w-6 h-6 text-black" />
         </button>
       </SheetTrigger>
-      <SheetContent side="left" className="p-0 w-[271px]">
+      <SheetContent side="left" className="p-0 w-[271px]" suppressHydrationWarning>
         <div className="h-full overflow-y-auto">
           <Sidebar
             activeItem={activeItem}

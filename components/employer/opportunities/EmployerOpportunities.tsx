@@ -143,8 +143,48 @@ export function EmployerOpportunities() {
     router.push("/opportunities/post");
   };
 
-  if (isLoading && isInitialLoadRef.current && !opportunitiesRaw) {
-    return <OpportunitiesSkeleton />;
+  if ((isLoading || isPending) && isInitialLoadRef.current && !opportunitiesRaw) {
+    return (
+      <RoleColorProvider role="recruiter">
+        <div className="h-screen overflow-x-hidden bg-white flex flex-col">
+          {/* Fixed Header */}
+          <div className="w-full px-3 md:px-5 pt-5 md:pt-6 border-b border-[#E1E4EA] flex-shrink-0">
+            {/* Header */}
+            <div className="flex flex-col gap-4 mb-4">
+              <OpportunitiesHeader onPostClick={handlePostClick} />
+              <SearchAndFilters
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                sortBy={sortBy}
+                onSortChange={setSortBy}
+                onFilterClick={() => setIsFilterOpen(true)}
+                isSearching={false}
+                filterCount={getFilterCount()}
+                filterModal={
+                  <OpportunitiesFilterModal
+                    isOpen={isFilterOpen}
+                    onClose={() => setIsFilterOpen(false)}
+                    onApply={handleApplyFilters}
+                    availableSkills={[]}
+                    initialFilters={appliedFilters || undefined}
+                  />
+                }
+              />
+            </div>
+
+            {/* Tabs */}
+            <OpportunitiesTabs activeTab={activeTab} onTabChange={setActiveTab} />
+          </div>
+
+          {/* Scrollable Content with Skeleton */}
+          <div className="flex-1 overflow-y-auto">
+            <div className="px-3 md:px-5 pt-5 md:pt-6">
+              <OpportunitiesSkeleton />
+            </div>
+          </div>
+        </div>
+      </RoleColorProvider>
+    );
   }
 
   return (
