@@ -173,7 +173,7 @@ The implementation uses TypeScript with React and leverages Tailwind CSS's utili
     - Ensure proper spacing and alignment on all breakpoints
     - _Requirements: 5.5_
 
-- [ ] 7. Implement responsive form layouts
+- [x] 7. Implement responsive form layouts
   - [x] 7.1 Create responsive form field wrapper
     - Create `components/forms/ResponsiveFormField.tsx` wrapper component
     - Stack fields vertically on mobile, support multi-column on desktop
@@ -210,14 +210,14 @@ The implementation uses TypeScript with React and leverages Tailwind CSS's utili
     - Ensure password visibility toggle is touch-friendly (44x44px)
     - _Requirements: 6.8, 10.1, 10.2, 10.4_
 
-  - [ ] 7.6 Adapt onboarding forms
+  - [x] 7.6 Adapt onboarding forms
     - Update all onboarding step forms (SelectRoleStep, CreateProfileStep, etc.)
     - Apply responsive form patterns
     - Ensure step progress indicator adapts for narrow screens
     - Maintain navigation buttons in fixed position on mobile
     - _Requirements: 6.8, 11.1, 11.2, 11.3_
 
-- [ ] 8. Checkpoint - Verify data display and forms
+- [x] 8. Checkpoint - Verify data display and forms
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 9. Implement dashboard responsive layouts

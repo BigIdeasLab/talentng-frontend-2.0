@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Role } from "@/lib/types/onboarding";
 import { Check } from "lucide-react";
+import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
 
 const CheckIcon = () => (
   <svg
@@ -92,13 +93,15 @@ export const SelectRoleStep = ({
         />
 
         {/* Back Button */}
-        <button
-          type="button"
-          onClick={onBack}
-          className="px-5 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-11"
-        >
-          Back
-        </button>
+        <ResponsiveFormButtons align="end">
+          <button
+            type="button"
+            onClick={onBack}
+            className="px-5 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-11"
+          >
+            Back
+          </button>
+        </ResponsiveFormButtons>
       </div>
 
       {/* Main Content */}

@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { CompanyProfileData } from "@/lib/types/onboarding";
+import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
+import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
 
 export const CreateCompanyProfileStep = ({
   onNext,
@@ -44,7 +46,7 @@ export const CreateCompanyProfileStep = ({
           alt="TalentNG Logo"
           className="w-16 h-auto rounded-[3.457px] shadow-[0.777px_0.777px_24.66px_0_rgba(0,0,0,0.25)]"
         />
-        <div className="flex gap-3">
+        <ResponsiveFormButtons align="end">
           <button
             type="button"
             onClick={onBack}
@@ -60,7 +62,7 @@ export const CreateCompanyProfileStep = ({
           >
             {isLoading ? <Loader2 className="animate-spin" /> : "Continue"}
           </button>
-        </div>
+        </ResponsiveFormButtons>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-0 flex-1 overflow-hidden">
         <div className="flex flex-col justify-start p-6 md:p-10 md:pr-6 md:pl-12 bg-white overflow-y-auto scrollbar-hidden">

@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import statesCitiesData from "@/lib/data/states-cities.json";
 import { useToast } from "@/hooks";
+import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
+import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
 
 type CompanyFormData = {
   companyName: string;
@@ -266,7 +268,7 @@ export const CompanyProfileStep = ({
         />
 
         {/* Buttons */}
-        <div className="flex gap-3">
+        <ResponsiveFormButtons align="end">
           <button
             type="button"
             onClick={onBack}
@@ -281,7 +283,7 @@ export const CompanyProfileStep = ({
           >
             Continue
           </button>
-        </div>
+        </ResponsiveFormButtons>
       </div>
 
       {/* Main Content Grid */}

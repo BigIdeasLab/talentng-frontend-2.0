@@ -21,7 +21,10 @@ import statesCities from "@/lib/data/states-cities.json";
 import { EmployerEditProfileSkeleton } from "@/components/skeletons/EditProfileSkeleton";
 import { SuccessModal } from "@/components/ui/success-modal";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
-import { ResponsiveFormField, ResponsiveFormRow } from "@/components/forms/ResponsiveFormField";
+import {
+  ResponsiveFormField,
+  ResponsiveFormRow,
+} from "@/components/forms/ResponsiveFormField";
 import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
 
 interface EmployerFormData {

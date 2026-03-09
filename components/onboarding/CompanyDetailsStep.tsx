@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
+import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
 
 type CompanyDetailsData = {
   companySize: string;
@@ -101,7 +103,7 @@ export const CompanyDetailsStep = ({
         />
 
         {/* Buttons */}
-        <div className="flex gap-3">
+        <ResponsiveFormButtons align="end">
           <button
             type="button"
             onClick={onBack}
@@ -122,7 +124,7 @@ export const CompanyDetailsStep = ({
               "Complete"
             )}
           </button>
-        </div>
+        </ResponsiveFormButtons>
       </div>
 
       {/* Main Content Grid */}

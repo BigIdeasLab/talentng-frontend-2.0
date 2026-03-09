@@ -27,7 +27,10 @@ import type {
 import categoriesData from "@/lib/data/categories.json";
 import statesCities from "@/lib/data/states-cities.json";
 import { MentorEditProfileSkeleton } from "@/components/skeletons/EditProfileSkeleton";
-import { ResponsiveFormField, ResponsiveFormRow } from "@/components/forms/ResponsiveFormField";
+import {
+  ResponsiveFormField,
+  ResponsiveFormRow,
+} from "@/components/forms/ResponsiveFormField";
 import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
 
 interface MentorFormData {

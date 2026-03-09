@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { ProfileData, SkillsData } from "@/lib/types/onboarding";
 import categories from "@/lib/data/categories.json";
 import { AVAILABILITY_OPTIONS } from "@/lib/constants/availability";
+import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
+import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
 
 const ALL_SKILLS = [
   "UI Design",
@@ -261,7 +263,7 @@ export const ShowcaseSkillsStep = ({
         />
 
         {/* Buttons */}
-        <div className="flex gap-3">
+        <ResponsiveFormButtons align="end">
           <button
             type="button"
             onClick={onBack}
@@ -282,7 +284,7 @@ export const ShowcaseSkillsStep = ({
               "Complete"
             )}
           </button>
-        </div>
+        </ResponsiveFormButtons>
       </div>
 
       {/* Main Content Grid */}

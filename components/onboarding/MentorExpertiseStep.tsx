@@ -4,6 +4,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { Loader2, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { MentorExpertiseData } from "@/lib/types/onboarding";
+import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
+import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
 
 type MentorExpertiseFormData = {
   industries: string[];
@@ -305,7 +307,7 @@ export const MentorExpertiseStep = ({
         />
 
         {/* Buttons */}
-        <div className="flex gap-3">
+        <ResponsiveFormButtons align="end">
           <button
             type="button"
             onClick={onBack}
@@ -326,7 +328,7 @@ export const MentorExpertiseStep = ({
               "Complete"
             )}
           </button>
-        </div>
+        </ResponsiveFormButtons>
       </div>
 
       {/* Main Content Grid */}
