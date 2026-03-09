@@ -19,9 +19,9 @@ export function SearchBar({
   filterModal,
 }: SearchBarProps) {
   return (
-    <div className="flex items-center gap-[8px] mb-[19px]">
+    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-[8px] mb-[19px]">
       {/* Search Bar */}
-      <div className="flex-1 max-w-[585px]">
+      <div className="flex-1 w-full lg:max-w-[585px]">
         <SearchInput
           value={searchQuery}
           onChange={onSearchChange}
@@ -33,10 +33,10 @@ export function SearchBar({
       </div>
 
       {/* Filter Button */}
-      <div className="relative">
+      <div className="relative flex-shrink-0">
         <button
           onClick={onFilterClick}
-          className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
+          className={`h-[44px] lg:h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] w-full sm:w-auto justify-center transition-colors ${
             filterCount > 0
               ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
               : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"

@@ -75,9 +75,9 @@ export function DiscoverTalentHeader({
 
       {/* Search Bar and Filter */}
       <div className="flex flex-col gap-[8px] mb-[19px]">
-        <div className="flex items-center gap-[8px]">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-[8px]">
           {/* Search Input */}
-          <div className="flex-1 max-w-[585px]">
+          <div className="flex-1 w-full lg:max-w-[585px]">
             <SearchInput
               value={searchQuery}
               onChange={onSearchChange}
@@ -90,66 +90,69 @@ export function DiscoverTalentHeader({
             />
           </div>
 
-          {/* Filter Button */}
-          <div className="relative">
-            <button
-              onClick={() => setIsFilterOpen(true)}
-              disabled={isLoading}
-              className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${
-                getFilterCount() > 0
-                  ? "bg-[#5C30FF0D] border border-[#5C30FF] text-[#5C30FF]"
-                  : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
-              }`}
-              aria-label="Filter results"
-            >
-              <SlidersHorizontal className="w-[15px] h-[15px]" />
-              <span className="text-[13px] font-normal font-inter-tight">
-                Filter
-              </span>
-              {getFilterCount() > 0 && (
-                <span className="ml-1 bg-[#5C30FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-                  {getFilterCount()}
-                </span>
-              )}
-            </button>
-
-            {/* Filter Modal */}
-            <FilterModal
-              isOpen={isFilterOpen}
-              onClose={() => setIsFilterOpen(false)}
-              onApply={(filters) => {
-                setAppliedFilters(filters);
-                setIsFilterOpen(false);
-                onFilterApply?.(filters);
-              }}
-            />
-          </div>
-
-          {/* Sort Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          {/* Filter and Sort Container */}
+          <div className="flex items-center gap-[8px]">
+            {/* Filter Button */}
+            <div className="relative flex-1 sm:flex-initial">
               <button
+                onClick={() => setIsFilterOpen(true)}
                 disabled={isLoading}
-                className={cn(
-                  "h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed",
-                  isLoading ? "bg-gray-100" : "bg-[#F5F5F5]",
-                )}
+                className={`h-[44px] lg:h-[38px] px-[15px] py-[7px] flex items-center justify-center gap-[5px] rounded-[8px] w-full sm:w-auto transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${
+                  getFilterCount() > 0
+                    ? "bg-[#5C30FF0D] border border-[#5C30FF] text-[#5C30FF]"
+                    : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
+                }`}
+                aria-label="Filter results"
               >
-                <span className="text-[13px] font-normal text-black font-inter-tight capitalize">
-                  {sortBy === "newest" ? "Newest" : "Oldest"}
+                <SlidersHorizontal className="w-[15px] h-[15px]" />
+                <span className="text-[13px] font-normal font-inter-tight">
+                  Filter
                 </span>
-                <ChevronDown className="w-4 h-4 text-black" />
+                {getFilterCount() > 0 && (
+                  <span className="ml-1 bg-[#5C30FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                    {getFilterCount()}
+                  </span>
+                )}
               </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onSortChange?.("newest")}>
-                Newest
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onSortChange?.("oldest")}>
-                Oldest
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+
+              {/* Filter Modal */}
+              <FilterModal
+                isOpen={isFilterOpen}
+                onClose={() => setIsFilterOpen(false)}
+                onApply={(filters) => {
+                  setAppliedFilters(filters);
+                  setIsFilterOpen(false);
+                  onFilterApply?.(filters);
+                }}
+              />
+            </div>
+
+            {/* Sort Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  disabled={isLoading}
+                  className={cn(
+                    "h-[44px] lg:h-[38px] px-[15px] py-[7px] flex items-center justify-center gap-[5px] rounded-[8px] flex-1 sm:flex-initial transition-opacity disabled:opacity-60 disabled:cursor-not-allowed",
+                    isLoading ? "bg-gray-100" : "bg-[#F5F5F5]",
+                  )}
+                >
+                  <span className="text-[13px] font-normal text-black font-inter-tight capitalize">
+                    {sortBy === "newest" ? "Newest" : "Oldest"}
+                  </span>
+                  <ChevronDown className="w-4 h-4 text-black" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => onSortChange?.("newest")}>
+                  Newest
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onSortChange?.("oldest")}>
+                  Oldest
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
 

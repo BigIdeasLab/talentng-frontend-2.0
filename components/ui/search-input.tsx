@@ -245,7 +245,7 @@ export const SearchInput = React.memo<SearchInputProps>(
     // Container classes with error state
     const containerClasses = `
       flex items-center gap-[6px]
-      h-[38px] px-3 py-[7px]
+      h-[44px] lg:h-[38px] px-3 py-[7px]
       border rounded-lg
       ${error ? "border-red-500 bg-red-50" : "border-[#E1E4EA] bg-transparent"}
       transition-colors duration-150

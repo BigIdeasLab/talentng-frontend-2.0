@@ -28,9 +28,9 @@ export function ApplicantsHeader({
   filterModal,
 }: ApplicantsHeaderProps) {
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
       {/* Search Container */}
-      <div className="flex-1 w-full sm:max-w-[570px]">
+      <div className="flex-1 w-full lg:max-w-[570px]">
         <SearchInput
           value={searchQuery}
           onChange={setSearchQuery}
@@ -39,15 +39,17 @@ export function ApplicantsHeader({
         />
       </div>
 
-      <div className="relative">
-        <button
-          onClick={onFilterClick}
-          className={`flex items-center gap-1 px-2 py-2 rounded-[8px] transition-colors ${
-            filterCount > 0
-              ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
-              : "hover:bg-gray-50 border border-transparent text-black"
-          }`}
-        >
+      {/* Filter and Sort Container */}
+      <div className="flex items-center gap-2">
+        <div className="relative flex-1 sm:flex-initial">
+          <button
+            onClick={onFilterClick}
+            className={`h-[44px] lg:h-[38px] flex items-center justify-center gap-1 px-2 py-2 rounded-[8px] w-full sm:w-auto transition-colors ${
+              filterCount > 0
+                ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
+                : "hover:bg-gray-50 border border-transparent text-black"
+            }`}
+          >
           <svg
             width="15"
             height="15"
@@ -109,7 +111,7 @@ export function ApplicantsHeader({
       {/* Sort Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="flex items-center gap-1 px-2 py-2 hover:bg-gray-50 rounded-[8px] transition-colors shrink-0">
+          <button className="h-[44px] lg:h-[38px] flex items-center justify-center gap-1 px-2 py-2 hover:bg-gray-50 rounded-[8px] transition-colors flex-1 sm:flex-initial">
             <span className="font-inter-tight text-[13px] font-normal text-black capitalize">
               {sortBy === "newest" ? "Newest" : "Oldest"}
             </span>
@@ -136,6 +138,7 @@ export function ApplicantsHeader({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      </div>
     </div>
   );
 }
