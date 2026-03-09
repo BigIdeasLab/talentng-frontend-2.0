@@ -5,7 +5,9 @@ import { useRecruiterDashboard } from "@/hooks/useRecruiterDashboard";
 
 // Mock the hook
 vi.mock("@/hooks/useRecruiterDashboard");
-const mockUseRecruiterDashboard = useRecruiterDashboard as ReturnType<typeof vi.fn>;
+const mockUseRecruiterDashboard = useRecruiterDashboard as ReturnType<
+  typeof vi.fn
+>;
 
 // Mock Next.js router
 vi.mock("next/navigation", () => ({
@@ -27,7 +29,9 @@ vi.mock("./StatsCard", () => ({
 }));
 
 vi.mock("./WeeklyOverviewChart", () => ({
-  WeeklyOverviewChart: () => <div data-testid="weekly-overview-chart">Chart</div>,
+  WeeklyOverviewChart: () => (
+    <div data-testid="weekly-overview-chart">Chart</div>
+  ),
 }));
 
 vi.mock("./HiringPipeline", () => ({
@@ -35,7 +39,9 @@ vi.mock("./HiringPipeline", () => ({
 }));
 
 vi.mock("./TopOpportunities", () => ({
-  TopOpportunities: () => <div data-testid="top-opportunities">Opportunities</div>,
+  TopOpportunities: () => (
+    <div data-testid="top-opportunities">Opportunities</div>
+  ),
 }));
 
 vi.mock("./RecentActivity", () => ({
@@ -109,7 +115,7 @@ describe("EmployerDashboard - Responsive Layout", () => {
 
     // Find the stat cards container
     const statsContainer = container.querySelector(
-      ".grid.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4"
+      ".grid.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4",
     );
     expect(statsContainer).toBeInTheDocument();
   });
@@ -126,7 +132,7 @@ describe("EmployerDashboard - Responsive Layout", () => {
 
     // Find the charts container
     const chartsContainer = container.querySelector(
-      ".grid.grid-cols-1.lg\\:grid-cols-\\[5fr_3fr\\]"
+      ".grid.grid-cols-1.lg\\:grid-cols-\\[5fr_3fr\\]",
     );
     expect(chartsContainer).toBeInTheDocument();
   });
@@ -143,7 +149,7 @@ describe("EmployerDashboard - Responsive Layout", () => {
 
     // Find the opportunities/activity container
     const opportunitiesContainer = container.querySelector(
-      ".grid.grid-cols-1.lg\\:grid-cols-2"
+      ".grid.grid-cols-1.lg\\:grid-cols-2",
     );
     expect(opportunitiesContainer).toBeInTheDocument();
   });
@@ -173,7 +179,9 @@ describe("EmployerDashboard - Responsive Layout", () => {
 
     render(<EmployerDashboard />);
 
-    expect(screen.getByText("Failed to load dashboard data")).toBeInTheDocument();
+    expect(
+      screen.getByText("Failed to load dashboard data"),
+    ).toBeInTheDocument();
     expect(screen.getByText("Retry")).toBeInTheDocument();
   });
 
@@ -189,7 +197,7 @@ describe("EmployerDashboard - Responsive Layout", () => {
 
     // Find the main container
     const mainContainer = container.querySelector(
-      ".px-4.py-6.md\\:px-8.md\\:py-7"
+      ".px-4.py-6.md\\:px-8.md\\:py-7",
     );
     expect(mainContainer).toBeInTheDocument();
   });

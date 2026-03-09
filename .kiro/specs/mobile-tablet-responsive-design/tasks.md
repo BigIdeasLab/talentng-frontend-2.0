@@ -250,27 +250,27 @@ The implementation uses TypeScript with React and leverages Tailwind CSS's utili
     - Ensure consistent layout behavior across all dashboards
     - _Requirements: 7.7_
 
-- [ ] 10. Implement profile page responsive layouts
-  - [ ] 10.1 Adapt profile navigation for mobile
+- [x] 10. Implement profile page responsive layouts
+  - [x] 10.1 Adapt profile navigation for mobile
     - Update profile page navigation to horizontal scrollable tabs on mobile
     - Use `flex overflow-x-auto` with touch-friendly tab buttons
     - Maintain vertical sidebar navigation on desktop
     - _Requirements: 8.2_
 
-  - [ ] 10.2 Adapt profile layout structure
+  - [x] 10.2 Adapt profile layout structure
     - Stack profile sections vertically on mobile
     - Hide profile sidebar on mobile, show content full-width
     - Apply responsive grid for profile stats: `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4`
     - _Requirements: 8.1, 8.3, 8.5_
 
-  - [ ] 10.3 Adapt EmployerProfile and TalentProfile pages
+  - [x] 10.3 Adapt EmployerProfile and TalentProfile pages
     - Update EmployerProfile and TalentProfile components
     - Apply responsive profile navigation and layout patterns
     - Ensure profile image upload has touch-friendly controls
     - Test profile viewing and editing on all breakpoints
     - _Requirements: 8.6_
 
-  - [ ] 10.4 Adapt MentorProfile and TalentProfileView pages
+  - [x] 10.4 Adapt MentorProfile and TalentProfileView pages
     - Update MentorProfile and TalentProfileView components
     - Apply responsive layout patterns
     - Ensure all profile sections adapt properly

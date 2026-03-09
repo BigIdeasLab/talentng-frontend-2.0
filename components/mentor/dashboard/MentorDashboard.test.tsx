@@ -16,19 +16,27 @@ vi.mock("@/components/talent/mentorship/mentor/MentorStatCards", () => ({
 }));
 
 vi.mock("@/components/talent/mentorship/mentor/WeeklyOverview", () => ({
-  WeeklyOverview: () => <div data-testid="weekly-overview">Weekly Overview</div>,
+  WeeklyOverview: () => (
+    <div data-testid="weekly-overview">Weekly Overview</div>
+  ),
 }));
 
 vi.mock("@/components/talent/mentorship/mentor/HiringPipeline", () => ({
-  HiringPipeline: () => <div data-testid="hiring-pipeline">Hiring Pipeline</div>,
+  HiringPipeline: () => (
+    <div data-testid="hiring-pipeline">Hiring Pipeline</div>
+  ),
 }));
 
 vi.mock("@/components/talent/mentorship/mentor/UpcomingInterviews", () => ({
-  UpcomingInterviews: () => <div data-testid="upcoming-interviews">Upcoming Interviews</div>,
+  UpcomingInterviews: () => (
+    <div data-testid="upcoming-interviews">Upcoming Interviews</div>
+  ),
 }));
 
 vi.mock("@/components/talent/mentorship/mentor/MenteeProgress", () => ({
-  MenteeProgress: () => <div data-testid="mentee-progress">Mentee Progress</div>,
+  MenteeProgress: () => (
+    <div data-testid="mentee-progress">Mentee Progress</div>
+  ),
 }));
 
 vi.mock("@/components/talent/mentorship/mentor/RecentReviews", () => ({
@@ -107,7 +115,9 @@ describe("MentorDashboard", () => {
     } as any);
 
     render(<MentorDashboard />);
-    expect(screen.getByText("Failed to load dashboard data")).toBeInTheDocument();
+    expect(
+      screen.getByText("Failed to load dashboard data"),
+    ).toBeInTheDocument();
   });
 
   it("renders all dashboard sections when data is loaded", () => {
@@ -153,7 +163,11 @@ describe("MentorDashboard", () => {
     } as any);
 
     render(<MentorDashboard />);
-    expect(screen.getByText("Dashboard data unavailable. Check console for details.")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Dashboard data unavailable. Check console for details.",
+      ),
+    ).toBeInTheDocument();
   });
 
   it("applies responsive padding classes", () => {
@@ -182,7 +196,9 @@ describe("MentorDashboard", () => {
     } as any);
 
     const { container } = render(<MentorDashboard />);
-    const chartsGrid = container.querySelector(".grid.grid-cols-1.lg\\:grid-cols-\\[5fr_3fr\\]");
+    const chartsGrid = container.querySelector(
+      ".grid.grid-cols-1.lg\\:grid-cols-\\[5fr_3fr\\]",
+    );
 
     expect(chartsGrid).toBeInTheDocument();
   });
@@ -196,7 +212,9 @@ describe("MentorDashboard", () => {
     } as any);
 
     const { container } = render(<MentorDashboard />);
-    const sectionsGrid = container.querySelector(".grid.grid-cols-1.lg\\:grid-cols-2");
+    const sectionsGrid = container.querySelector(
+      ".grid.grid-cols-1.lg\\:grid-cols-2",
+    );
 
     expect(sectionsGrid).toBeInTheDocument();
   });

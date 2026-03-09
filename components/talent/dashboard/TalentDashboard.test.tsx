@@ -16,19 +16,27 @@ vi.mock("./StatCards", () => ({
 }));
 
 vi.mock("./WeeklyOverview", () => ({
-  WeeklyOverview: () => <div data-testid="weekly-overview">Weekly Overview</div>,
+  WeeklyOverview: () => (
+    <div data-testid="weekly-overview">Weekly Overview</div>
+  ),
 }));
 
 vi.mock("./HiringPipeline", () => ({
-  HiringPipeline: () => <div data-testid="hiring-pipeline">Hiring Pipeline</div>,
+  HiringPipeline: () => (
+    <div data-testid="hiring-pipeline">Hiring Pipeline</div>
+  ),
 }));
 
 vi.mock("./RecentApplications", () => ({
-  RecentApplications: () => <div data-testid="recent-applications">Recent Applications</div>,
+  RecentApplications: () => (
+    <div data-testid="recent-applications">Recent Applications</div>
+  ),
 }));
 
 vi.mock("./UpcomingInterviews", () => ({
-  UpcomingInterviews: () => <div data-testid="upcoming-interviews">Upcoming Interviews</div>,
+  UpcomingInterviews: () => (
+    <div data-testid="upcoming-interviews">Upcoming Interviews</div>
+  ),
 }));
 
 vi.mock("./TopSkills", () => ({
@@ -107,7 +115,9 @@ describe("TalentDashboard", () => {
     } as any);
 
     render(<TalentDashboard />);
-    expect(screen.getByText("Failed to load dashboard data")).toBeInTheDocument();
+    expect(
+      screen.getByText("Failed to load dashboard data"),
+    ).toBeInTheDocument();
   });
 
   it("renders all dashboard sections when data is loaded", () => {
@@ -156,7 +166,9 @@ describe("TalentDashboard", () => {
     } as any);
 
     const { container } = render(<TalentDashboard />);
-    const chartsGrid = container.querySelector(".grid.grid-cols-1.lg\\:grid-cols-\\[5fr_3fr\\]");
+    const chartsGrid = container.querySelector(
+      ".grid.grid-cols-1.lg\\:grid-cols-\\[5fr_3fr\\]",
+    );
 
     expect(chartsGrid).toBeInTheDocument();
   });
@@ -170,7 +182,9 @@ describe("TalentDashboard", () => {
     } as any);
 
     const { container } = render(<TalentDashboard />);
-    const sectionsGrid = container.querySelector(".grid.grid-cols-1.lg\\:grid-cols-2");
+    const sectionsGrid = container.querySelector(
+      ".grid.grid-cols-1.lg\\:grid-cols-2",
+    );
 
     expect(sectionsGrid).toBeInTheDocument();
   });
