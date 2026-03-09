@@ -4,7 +4,12 @@ import { ApplicantsTable } from "./ApplicantsTable";
 
 // Mock the ResponsiveTable component
 vi.mock("@/components/ui/ResponsiveTable", () => ({
-  ResponsiveTable: ({ data, columns, mobileCardRenderer, emptyMessage }: any) => (
+  ResponsiveTable: ({
+    data,
+    columns,
+    mobileCardRenderer,
+    emptyMessage,
+  }: any) => (
     <div data-testid="responsive-table">
       {data.length === 0 ? (
         <div>{emptyMessage}</div>
@@ -13,7 +18,11 @@ vi.mock("@/components/ui/ResponsiveTable", () => ({
           <div key={item.id} data-testid={`table-row-${index}`}>
             {columns.map((col: any) => (
               <div key={col.key} data-testid={`cell-${col.key}`}>
-                {col.render ? col.render(item, index) : col.accessor ? col.accessor(item) : "-"}
+                {col.render
+                  ? col.render(item, index)
+                  : col.accessor
+                    ? col.accessor(item)
+                    : "-"}
               </div>
             ))}
           </div>
@@ -75,7 +84,7 @@ describe("ApplicantsTable", () => {
         sortBy="newest"
         applicants={[]}
         opportunityTitle="Software Engineer"
-      />
+      />,
     );
 
     expect(screen.getByText("No applicants found")).toBeInTheDocument();
@@ -88,7 +97,7 @@ describe("ApplicantsTable", () => {
         sortBy="newest"
         applicants={[mockApplicant]}
         opportunityTitle="Software Engineer"
-      />
+      />,
     );
 
     expect(screen.getByTestId("responsive-table")).toBeInTheDocument();
@@ -102,7 +111,7 @@ describe("ApplicantsTable", () => {
         sortBy="newest"
         applicants={[mockApplicant]}
         opportunityTitle="Software Engineer"
-      />
+      />,
     );
 
     expect(screen.getByTestId("table-row-0")).toBeInTheDocument();
@@ -115,7 +124,7 @@ describe("ApplicantsTable", () => {
         sortBy="newest"
         applicants={[mockApplicant]}
         opportunityTitle="Software Engineer"
-      />
+      />,
     );
 
     expect(screen.getByText("No applicants found")).toBeInTheDocument();
@@ -134,7 +143,7 @@ describe("ApplicantsTable", () => {
         sortBy="newest"
         applicants={[mockApplicant, applicant2]}
         opportunityTitle="Software Engineer"
-      />
+      />,
     );
 
     const rows = screen.getAllByTestId(/table-row-/);
@@ -154,7 +163,7 @@ describe("ApplicantsTable", () => {
         sortBy="oldest"
         applicants={[mockApplicant, applicant2]}
         opportunityTitle="Software Engineer"
-      />
+      />,
     );
 
     const rows = screen.getAllByTestId(/table-row-/);
@@ -173,7 +182,7 @@ describe("ApplicantsTable", () => {
           location: "",
           dateRange: "all",
         }}
-      />
+      />,
     );
 
     expect(screen.getByText("No applicants found")).toBeInTheDocument();
@@ -191,7 +200,7 @@ describe("ApplicantsTable", () => {
           location: "San Francisco",
           dateRange: "all",
         }}
-      />
+      />,
     );
 
     expect(screen.getByText("No applicants found")).toBeInTheDocument();
@@ -204,7 +213,7 @@ describe("ApplicantsTable", () => {
         sortBy="newest"
         applicants={[mockApplicant]}
         opportunityTitle="Senior Developer"
-      />
+      />,
     );
 
     expect(screen.getByTestId("responsive-table")).toBeInTheDocument();

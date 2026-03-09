@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import { HamburgerMenuButton } from "./HamburgerMenuButton";
-import { MobileDrawer, MobileDrawerItem, MobileDrawerSection } from "./MobileDrawer";
+import {
+  MobileDrawer,
+  MobileDrawerItem,
+  MobileDrawerSection,
+} from "./MobileDrawer";
 import { Home, User, Settings, LogOut } from "lucide-react";
 
 /**
@@ -27,10 +31,8 @@ export function HamburgerMenuButtonExample() {
         <div className="flex items-center justify-between px-4 py-2">
           {/* Hamburger Menu Button - Top Left */}
           <HamburgerMenuButton isOpen={isDrawerOpen} onClick={handleToggle} />
-
           {/* App Logo/Title */}
           <h1 className="text-lg font-semibold text-gray-900">My App</h1>
-
           {/* Right side placeholder (e.g., notifications) */}
           <div className="w-11" /> {/* Spacer for centering */}
         </div>

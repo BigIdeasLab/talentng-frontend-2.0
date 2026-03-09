@@ -1,9 +1,9 @@
 /**
  * ApplicantsTable Example
- * 
+ *
  * This example demonstrates the refactored ApplicantsTable component
  * that now uses the ResponsiveTable component for responsive behavior.
- * 
+ *
  * Features:
  * - Desktop: Traditional table with all columns (S/N, Talents, Hires, Opportunity, Location, Date Applied, Status, Actions)
  * - Tablet: Horizontal scrolling with essential columns only (Talents, Location, Date Applied, Status)
@@ -90,10 +90,12 @@ export default function ApplicantsTableExample() {
   return (
     <div className="p-8 space-y-8">
       <div>
-        <h2 className="text-2xl font-bold mb-4">ApplicantsTable - Default View</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          ApplicantsTable - Default View
+        </h2>
         <p className="text-gray-600 mb-4">
-          Shows all applicants with sorting and filtering capabilities.
-          Resize your browser to see responsive behavior.
+          Shows all applicants with sorting and filtering capabilities. Resize
+          your browser to see responsive behavior.
         </p>
         <ApplicantsTable
           searchQuery=""
@@ -104,7 +106,9 @@ export default function ApplicantsTableExample() {
       </div>
 
       <div>
-        <h2 className="text-2xl font-bold mb-4">ApplicantsTable - With Search</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          ApplicantsTable - With Search
+        </h2>
         <p className="text-gray-600 mb-4">
           Filtered to show only applicants matching "john"
         </p>
@@ -117,7 +121,9 @@ export default function ApplicantsTableExample() {
       </div>
 
       <div>
-        <h2 className="text-2xl font-bold mb-4">ApplicantsTable - With Filters</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          ApplicantsTable - With Filters
+        </h2>
         <p className="text-gray-600 mb-4">
           Filtered to show only "pending" status applicants
         </p>
@@ -135,10 +141,10 @@ export default function ApplicantsTableExample() {
       </div>
 
       <div>
-        <h2 className="text-2xl font-bold mb-4">ApplicantsTable - Sorted by Oldest</h2>
-        <p className="text-gray-600 mb-4">
-          Applicants sorted by oldest first
-        </p>
+        <h2 className="text-2xl font-bold mb-4">
+          ApplicantsTable - Sorted by Oldest
+        </h2>
+        <p className="text-gray-600 mb-4">Applicants sorted by oldest first</p>
         <ApplicantsTable
           searchQuery=""
           sortBy="oldest"
@@ -148,7 +154,9 @@ export default function ApplicantsTableExample() {
       </div>
 
       <div>
-        <h2 className="text-2xl font-bold mb-4">ApplicantsTable - Empty State</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          ApplicantsTable - Empty State
+        </h2>
         <p className="text-gray-600 mb-4">
           Shows empty state when no applicants match the criteria
         </p>
@@ -163,11 +171,26 @@ export default function ApplicantsTableExample() {
       <div className="mt-8 p-4 bg-blue-50 rounded-lg">
         <h3 className="font-bold mb-2">Responsive Behavior:</h3>
         <ul className="list-disc list-inside space-y-1 text-sm">
-          <li><strong>Desktop (≥ 1024px):</strong> Traditional table with all columns and row numbers</li>
-          <li><strong>Tablet (768px - 1023px):</strong> Horizontal scrolling with essential columns (Talents, Location, Date Applied, Status)</li>
-          <li><strong>Mobile (&lt; 768px):</strong> Card-based layout with custom mobile card renderer showing applicant details</li>
-          <li><strong>Actions:</strong> Desktop shows inline buttons, mobile shows full-width buttons in card footer</li>
-          <li><strong>Touch-friendly:</strong> All interactive elements meet 44x44px minimum tap target size on mobile</li>
+          <li>
+            <strong>Desktop (≥ 1024px):</strong> Traditional table with all
+            columns and row numbers
+          </li>
+          <li>
+            <strong>Tablet (768px - 1023px):</strong> Horizontal scrolling with
+            essential columns (Talents, Location, Date Applied, Status)
+          </li>
+          <li>
+            <strong>Mobile (&lt; 768px):</strong> Card-based layout with custom
+            mobile card renderer showing applicant details
+          </li>
+          <li>
+            <strong>Actions:</strong> Desktop shows inline buttons, mobile shows
+            full-width buttons in card footer
+          </li>
+          <li>
+            <strong>Touch-friendly:</strong> All interactive elements meet
+            44x44px minimum tap target size on mobile
+          </li>
         </ul>
       </div>
 
@@ -180,7 +203,8 @@ export default function ApplicantsTableExample() {
           <li>Status</li>
         </ul>
         <p className="mt-2 text-sm text-gray-600">
-          Non-essential columns (Hires, Opportunity) are hidden on tablet to reduce horizontal scrolling.
+          Non-essential columns (Hires, Opportunity) are hidden on tablet to
+          reduce horizontal scrolling.
         </p>
       </div>
     </div>

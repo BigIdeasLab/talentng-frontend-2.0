@@ -84,7 +84,7 @@ export function MobileDrawer({
             "data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left",
             // Ensure touch-friendly spacing
             "flex flex-col",
-            className
+            className,
           )}
           // Prevent default close button from showing (we'll handle close via navigation)
           onPointerDownOutside={onClose}
@@ -147,7 +147,7 @@ export function MobileDrawerItem({
         "text-base font-medium text-gray-900",
         // Hover state (for devices that support it)
         "hover:bg-gray-50",
-        className
+        className,
       )}
       style={{
         minHeight: `${TOUCH_TARGET.minSize}px`,

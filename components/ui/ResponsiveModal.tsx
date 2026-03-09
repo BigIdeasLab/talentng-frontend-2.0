@@ -23,12 +23,12 @@ const sizeClasses = {
 
 /**
  * ResponsiveModal - A responsive modal wrapper component that adapts to different viewport sizes
- * 
+ *
  * Responsive behavior:
  * - Mobile (< 768px): Full-screen overlay (100vw/100vh) with 16px padding
  * - Tablet (768px - 1023px): 90vw width, centered, with 24px padding
  * - Desktop (≥ 1024px): Fixed width based on size prop, centered, with 32px padding
- * 
+ *
  * Features:
  * - Touch-friendly close button (44x44px minimum tap target)
  * - Scrollable content area with proper overflow handling
@@ -55,7 +55,7 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
   };
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center"
       role="dialog"
       aria-modal="true"
@@ -83,7 +83,7 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
           "p-4 md:p-6 lg:p-8",
           // Ensure content is scrollable
           "flex flex-col overflow-hidden",
-          className
+          className,
         )}
       >
         {/* Close Button - Touch-friendly, positioned top-right */}
@@ -94,7 +94,7 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
             "flex items-center justify-center",
             "rounded-full bg-gray-100 hover:bg-gray-200",
             "transition-colors",
-            "focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+            "focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2",
           )}
           style={{
             width: `${TOUCH_TARGET.minSize}px`,
@@ -109,7 +109,7 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
         {(title || description) && (
           <div className="mb-4 pr-12">
             {title && (
-              <h2 
+              <h2
                 id="modal-title"
                 className="text-lg md:text-xl font-semibold text-black"
               >
@@ -117,10 +117,7 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
               </h2>
             )}
             {description && (
-              <p 
-                id="modal-description"
-                className="text-sm text-gray-600 mt-1"
-              >
+              <p id="modal-description" className="text-sm text-gray-600 mt-1">
                 {description}
               </p>
             )}
@@ -128,9 +125,7 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
         )}
 
         {/* Body - Scrollable content area */}
-        <div className="flex-1 overflow-y-auto">
-          {children}
-        </div>
+        <div className="flex-1 overflow-y-auto">{children}</div>
 
         {/* Footer */}
         {footer && (

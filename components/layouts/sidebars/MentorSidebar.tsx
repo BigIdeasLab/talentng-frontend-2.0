@@ -488,7 +488,7 @@ export function MentorSidebar({
                       {item.badge}
                     </span>
                   </div>
-                  )}
+                )}
               </MenuComponent>
             );
           })}

@@ -69,18 +69,18 @@ export interface ResponsiveTableProps<T> {
 
 /**
  * ResponsiveTable - A responsive table component that adapts to different viewport sizes
- * 
+ *
  * Responsive behavior:
  * - Desktop (≥ 1024px): Traditional table with all columns
  * - Tablet (768px - 1023px): Horizontal scrolling with essential columns only
  * - Mobile (< 768px): Card-based layout with table headers as labels
- * 
+ *
  * Features:
  * - Dropdown menu for row actions on mobile
  * - Custom mobile card renderer via prop
  * - Touch-friendly tap targets (44x44px minimum)
  * - Flexible column configuration
- * 
+ *
  * Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6
  */
 export function ResponsiveTable<T>({
@@ -201,7 +201,7 @@ export function ResponsiveTable<T>({
                               onClick={() => action.onClick(item)}
                               className={cn(
                                 "cursor-pointer font-inter-tight text-[13px]",
-                                action.className
+                                action.className,
                               )}
                               style={{
                                 minHeight: `${TOUCH_TARGET.minSize}px`,
@@ -232,16 +232,13 @@ export function ResponsiveTable<T>({
       className={cn(
         "border border-[#E1E4EA] rounded-[16px] overflow-hidden",
         isTablet && "overflow-x-auto",
-        className
+        className,
       )}
     >
       {/* Table Header */}
       <div className="px-3 py-4 border-b border-[#E1E4EA] bg-gray-50/50">
         <div
-          className={cn(
-            "grid gap-3 items-center",
-            isTablet && "min-w-max"
-          )}
+          className={cn("grid gap-3 items-center", isTablet && "min-w-max")}
           style={{
             gridTemplateColumns: `${showRowNumbers ? "50px " : ""}${visibleColumns
               .map(() => "minmax(100px, 1fr)")
@@ -258,7 +255,7 @@ export function ResponsiveTable<T>({
               key={column.key}
               className={cn(
                 "font-inter-tight text-[13px] font-medium text-[#525866]",
-                column.headerClassName
+                column.headerClassName,
               )}
             >
               {column.label}
@@ -289,7 +286,7 @@ export function ResponsiveTable<T>({
               <div
                 className={cn(
                   "grid gap-3 items-center",
-                  isTablet && "min-w-max"
+                  isTablet && "min-w-max",
                 )}
                 style={{
                   gridTemplateColumns: `${showRowNumbers ? "50px " : ""}${visibleColumns
@@ -307,7 +304,7 @@ export function ResponsiveTable<T>({
                     key={column.key}
                     className={cn(
                       "font-inter-tight text-[13px] font-normal text-black",
-                      column.className
+                      column.className,
                     )}
                   >
                     {renderCell(column, item, index)}
@@ -322,7 +319,7 @@ export function ResponsiveTable<T>({
                         className={cn(
                           "px-3 py-1.5 rounded-full font-inter-tight text-[12px] font-medium transition-colors whitespace-nowrap",
                           action.className ||
-                            "bg-[#181B25] text-white hover:bg-[#2a2d35]"
+                            "bg-[#181B25] text-white hover:bg-[#2a2d35]",
                         )}
                         style={{
                           minHeight: `${TOUCH_TARGET.minSize}px`,

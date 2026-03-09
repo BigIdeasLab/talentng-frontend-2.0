@@ -6,7 +6,7 @@ import { Eye, Edit, Trash2, Mail } from "lucide-react";
 
 /**
  * Example usage of ResponsiveTable component
- * 
+ *
  * This file demonstrates various use cases:
  * 1. Basic table with all columns
  * 2. Table with essential columns for tablet view
@@ -262,9 +262,7 @@ export function CustomMobileCardExample() {
 
   return (
     <div className="p-6">
-      <h2 className="text-xl font-semibold mb-4">
-        Custom Mobile Card Example
-      </h2>
+      <h2 className="text-xl font-semibold mb-4">Custom Mobile Card Example</h2>
       <p className="text-sm text-gray-600 mb-4">
         Resize your browser to mobile width to see the custom card layout
       </p>

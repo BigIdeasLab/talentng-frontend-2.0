@@ -198,7 +198,7 @@ export function OpportunitiesTable({
       onMutationSuccess?.();
       if (hadCap) {
         router.push(
-          `/opportunities/edit/${selectedOpportunity.id}?section=application-settings`
+          `/opportunities/edit/${selectedOpportunity.id}?section=application-settings`,
         );
       }
     } catch (error) {

@@ -1,6 +1,6 @@
 /**
  * MobileNavigation Component Examples
- * 
+ *
  * This file demonstrates various usage patterns for the MobileNavigation component.
  * The MobileNavigation component provides role-specific navigation for mobile devices,
  * including ProfileSwitcher, navigation items with badges, and auto-close on selection.
@@ -13,7 +13,7 @@ import { HamburgerMenuButton } from "./HamburgerMenuButton";
 
 /**
  * Example 1: Basic Talent Navigation
- * 
+ *
  * Shows the simplest usage with talent role and no badges.
  */
 export function BasicTalentNavigation() {
@@ -21,15 +21,9 @@ export function BasicTalentNavigation() {
 
   return (
     <div>
-      <HamburgerMenuButton
-        isOpen={isOpen}
-        onClick={() => setIsOpen(!isOpen)}
-      />
-      
-      <MobileDrawer
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-      >
+      <HamburgerMenuButton isOpen={isOpen} onClick={() => setIsOpen(!isOpen)} />
+
+      <MobileDrawer isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <MobileNavigation
           activeRole="talent"
           onClose={() => setIsOpen(false)}
@@ -41,7 +35,7 @@ export function BasicTalentNavigation() {
 
 /**
  * Example 2: Recruiter Navigation with Badges
- * 
+ *
  * Shows recruiter navigation with notification and upcoming badges.
  */
 export function RecruiterNavigationWithBadges() {
@@ -51,15 +45,9 @@ export function RecruiterNavigationWithBadges() {
 
   return (
     <div>
-      <HamburgerMenuButton
-        isOpen={isOpen}
-        onClick={() => setIsOpen(!isOpen)}
-      />
-      
-      <MobileDrawer
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-      >
+      <HamburgerMenuButton isOpen={isOpen} onClick={() => setIsOpen(!isOpen)} />
+
+      <MobileDrawer isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <MobileNavigation
           activeRole="recruiter"
           notificationCount={notificationCount}
@@ -73,7 +61,7 @@ export function RecruiterNavigationWithBadges() {
 
 /**
  * Example 3: Mentor Navigation with Callbacks
- * 
+ *
  * Shows mentor navigation with item selection and notification callbacks.
  */
 export function MentorNavigationWithCallbacks() {
@@ -93,15 +81,9 @@ export function MentorNavigationWithCallbacks() {
 
   return (
     <div>
-      <HamburgerMenuButton
-        isOpen={isOpen}
-        onClick={() => setIsOpen(!isOpen)}
-      />
-      
-      <MobileDrawer
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-      >
+      <HamburgerMenuButton isOpen={isOpen} onClick={() => setIsOpen(!isOpen)} />
+
+      <MobileDrawer isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <MobileNavigation
           activeRole="mentor"
           onItemSelect={handleItemSelect}
@@ -126,7 +108,7 @@ export function MentorNavigationWithCallbacks() {
 
 /**
  * Example 4: Complete Mobile Layout Integration
- * 
+ *
  * Shows how to integrate mobile navigation into a complete layout
  * with header, drawer, and content area.
  */
@@ -207,12 +189,14 @@ export function CompleteMobileLayout() {
 
 /**
  * Example 5: Role Switching
- * 
+ *
  * Shows how navigation adapts when switching between roles.
  */
 export function RoleSwitchingNavigation() {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeRole, setActiveRole] = useState<"talent" | "recruiter" | "mentor">("talent");
+  const [activeRole, setActiveRole] = useState<
+    "talent" | "recruiter" | "mentor"
+  >("talent");
 
   return (
     <div>
@@ -238,15 +222,9 @@ export function RoleSwitchingNavigation() {
         </button>
       </div>
 
-      <HamburgerMenuButton
-        isOpen={isOpen}
-        onClick={() => setIsOpen(!isOpen)}
-      />
-      
-      <MobileDrawer
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-      >
+      <HamburgerMenuButton isOpen={isOpen} onClick={() => setIsOpen(!isOpen)} />
+
+      <MobileDrawer isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <MobileNavigation
           activeRole={activeRole}
           notificationCount={5}

@@ -345,7 +345,9 @@ export function OpportunitiesGrid({
                             ? "text-gray-600"
                             : "text-white"
                         }`}
-                        color={appliedIds.has(opportunity.id) ? "#999" : "white"}
+                        color={
+                          appliedIds.has(opportunity.id) ? "#999" : "white"
+                        }
                         strokeWidth={1.125}
                       />
                       <span

@@ -22,7 +22,7 @@ describe("HamburgerMenuButton", () => {
           isOpen={false}
           onClick={onClick}
           ariaLabel="Open menu"
-        />
+        />,
       );
 
       const button = screen.getByRole("button", { name: /open menu/i });
@@ -50,7 +50,7 @@ describe("HamburgerMenuButton", () => {
     it("shows hamburger icon when closed", () => {
       const onClick = vi.fn();
       const { container } = render(
-        <HamburgerMenuButton isOpen={false} onClick={onClick} />
+        <HamburgerMenuButton isOpen={false} onClick={onClick} />,
       );
 
       // Menu icon should be visible (opacity-100)
@@ -61,7 +61,7 @@ describe("HamburgerMenuButton", () => {
     it("shows X icon when open", () => {
       const onClick = vi.fn();
       const { container } = render(
-        <HamburgerMenuButton isOpen={true} onClick={onClick} />
+        <HamburgerMenuButton isOpen={true} onClick={onClick} />,
       );
 
       // X icon should be visible
@@ -72,7 +72,7 @@ describe("HamburgerMenuButton", () => {
     it("toggles icon state when isOpen changes", () => {
       const onClick = vi.fn();
       const { rerender } = render(
-        <HamburgerMenuButton isOpen={false} onClick={onClick} />
+        <HamburgerMenuButton isOpen={false} onClick={onClick} />,
       );
 
       // Initially closed
@@ -97,14 +97,14 @@ describe("HamburgerMenuButton", () => {
       expect(button).toHaveAttribute("aria-expanded", "false");
       expect(button).toHaveAttribute(
         "aria-controls",
-        "mobile-navigation-drawer"
+        "mobile-navigation-drawer",
       );
     });
 
     it("updates aria-expanded when state changes", () => {
       const onClick = vi.fn();
       const { rerender } = render(
-        <HamburgerMenuButton isOpen={false} onClick={onClick} />
+        <HamburgerMenuButton isOpen={false} onClick={onClick} />,
       );
 
       let button = screen.getByRole("button");
@@ -168,7 +168,7 @@ describe("HamburgerMenuButton", () => {
           isOpen={false}
           onClick={onClick}
           className="custom-class"
-        />
+        />,
       );
 
       const button = screen.getByRole("button");
@@ -182,7 +182,7 @@ describe("HamburgerMenuButton", () => {
           isOpen={false}
           onClick={onClick}
           className="custom-class"
-        />
+        />,
       );
 
       const button = screen.getByRole("button");

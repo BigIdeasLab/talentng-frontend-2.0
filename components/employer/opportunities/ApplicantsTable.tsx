@@ -10,7 +10,11 @@ import {
 import { SuccessModal } from "@/components/ui/success-modal";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { HireApplicationModal } from "@/components/employer/applicants/HireApplicationModal";
-import { ResponsiveTable, ColumnDef, RowAction } from "@/components/ui/ResponsiveTable";
+import {
+  ResponsiveTable,
+  ColumnDef,
+  RowAction,
+} from "@/components/ui/ResponsiveTable";
 
 interface Applicant {
   id: string;

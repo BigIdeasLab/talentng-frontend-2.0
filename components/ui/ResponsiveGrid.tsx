@@ -16,14 +16,14 @@ export interface ResponsiveGridProps {
 
 /**
  * ResponsiveGrid - A responsive grid layout component
- * 
+ *
  * Features:
  * - Single column on mobile (< 768px)
  * - Two columns on tablet (768px - 1023px)
  * - Three or four columns on desktop (≥ 1024px) based on columns prop
  * - Consistent gap spacing across breakpoints
  * - Configurable gap size
- * 
+ *
  * Requirements: 5.1, 5.2, 5.3, 5.4
  */
 export function ResponsiveGrid({
@@ -44,7 +44,7 @@ export function ResponsiveGrid({
       "gap-6": gap === 6,
       "gap-8": gap === 8,
     },
-    className
+    className,
   );
 
   return <div className={gridClasses}>{children}</div>;

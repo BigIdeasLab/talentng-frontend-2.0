@@ -61,7 +61,7 @@ describe("MobileTableCard", () => {
 
     const actionsButton = screen.getByText("Actions").closest("button");
     expect(actionsButton).toBeInTheDocument();
-    
+
     // Verify button has proper ARIA attributes
     expect(actionsButton).toHaveAttribute("aria-haspopup", "menu");
   });
@@ -81,7 +81,7 @@ describe("MobileTableCard", () => {
         fields={mockFields}
         actions={mockActions}
         footer={customFooter}
-      />
+      />,
     );
 
     expect(screen.getByTestId("custom-footer")).toBeInTheDocument();
@@ -104,7 +104,7 @@ describe("MobileTableCard", () => {
 
   it("applies custom className to card container", () => {
     const { container } = render(
-      <MobileTableCard fields={mockFields} className="custom-class" />
+      <MobileTableCard fields={mockFields} className="custom-class" />,
     );
 
     const card = container.firstChild;
@@ -177,6 +177,11 @@ describe("MobileTableCard", () => {
     const { container } = render(<MobileTableCard fields={mockFields} />);
 
     const card = container.firstChild as HTMLElement;
-    expect(card).toHaveClass("border", "border-[#E1E4EA]", "rounded-[16px]", "p-4");
+    expect(card).toHaveClass(
+      "border",
+      "border-[#E1E4EA]",
+      "rounded-[16px]",
+      "p-4",
+    );
   });
 });

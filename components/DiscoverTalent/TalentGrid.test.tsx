@@ -97,7 +97,7 @@ describe("TalentGrid", () => {
         totalPages={5}
         hasNextPage={true}
         hasPreviousPage={true}
-      />
+      />,
     );
 
     expect(screen.getByText("Page 2 of 5")).toBeInTheDocument();

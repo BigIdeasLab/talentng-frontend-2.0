@@ -15,7 +15,7 @@ describe("ResponsiveModal", () => {
     render(
       <ResponsiveModal isOpen={false} onClose={mockOnClose}>
         <div>Modal Content</div>
-      </ResponsiveModal>
+      </ResponsiveModal>,
     );
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
@@ -25,7 +25,7 @@ describe("ResponsiveModal", () => {
     render(
       <ResponsiveModal isOpen={true} onClose={mockOnClose}>
         <div>Modal Content</div>
-      </ResponsiveModal>
+      </ResponsiveModal>,
     );
 
     expect(screen.getByRole("dialog")).toBeInTheDocument();
@@ -41,7 +41,7 @@ describe("ResponsiveModal", () => {
         description="Test Description"
       >
         <div>Modal Content</div>
-      </ResponsiveModal>
+      </ResponsiveModal>,
     );
 
     expect(screen.getByText("Test Title")).toBeInTheDocument();
@@ -56,7 +56,7 @@ describe("ResponsiveModal", () => {
         footer={<button>Footer Button</button>}
       >
         <div>Modal Content</div>
-      </ResponsiveModal>
+      </ResponsiveModal>,
     );
 
     expect(screen.getByText("Footer Button")).toBeInTheDocument();
@@ -66,7 +66,7 @@ describe("ResponsiveModal", () => {
     render(
       <ResponsiveModal isOpen={true} onClose={mockOnClose}>
         <div>Modal Content</div>
-      </ResponsiveModal>
+      </ResponsiveModal>,
     );
 
     const closeButton = screen.getByLabelText("Close modal");
@@ -77,12 +77,18 @@ describe("ResponsiveModal", () => {
 
   it("should call onClose when backdrop is clicked and closeOnBackdrop is true", () => {
     render(
-      <ResponsiveModal isOpen={true} onClose={mockOnClose} closeOnBackdrop={true}>
+      <ResponsiveModal
+        isOpen={true}
+        onClose={mockOnClose}
+        closeOnBackdrop={true}
+      >
         <div>Modal Content</div>
-      </ResponsiveModal>
+      </ResponsiveModal>,
     );
 
-    const backdrop = screen.getByRole("dialog").querySelector("[aria-hidden='true']") as HTMLElement;
+    const backdrop = screen
+      .getByRole("dialog")
+      .querySelector("[aria-hidden='true']") as HTMLElement;
     fireEvent.click(backdrop);
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
@@ -90,12 +96,18 @@ describe("ResponsiveModal", () => {
 
   it("should not call onClose when backdrop is clicked and closeOnBackdrop is false", () => {
     render(
-      <ResponsiveModal isOpen={true} onClose={mockOnClose} closeOnBackdrop={false}>
+      <ResponsiveModal
+        isOpen={true}
+        onClose={mockOnClose}
+        closeOnBackdrop={false}
+      >
         <div>Modal Content</div>
-      </ResponsiveModal>
+      </ResponsiveModal>,
     );
 
-    const backdrop = screen.getByRole("dialog").querySelector("[aria-hidden='true']") as HTMLElement;
+    const backdrop = screen
+      .getByRole("dialog")
+      .querySelector("[aria-hidden='true']") as HTMLElement;
     fireEvent.click(backdrop);
 
     expect(mockOnClose).not.toHaveBeenCalled();
@@ -105,12 +117,12 @@ describe("ResponsiveModal", () => {
     render(
       <ResponsiveModal isOpen={true} onClose={mockOnClose}>
         <div>Modal Content</div>
-      </ResponsiveModal>
+      </ResponsiveModal>,
     );
 
     const closeButton = screen.getByLabelText("Close modal");
     const styles = window.getComputedStyle(closeButton);
-    
+
     expect(closeButton).toHaveStyle({
       width: `${TOUCH_TARGET.minSize}px`,
       height: `${TOUCH_TARGET.minSize}px`,
@@ -119,12 +131,18 @@ describe("ResponsiveModal", () => {
 
   it("should apply custom className when provided", () => {
     render(
-      <ResponsiveModal isOpen={true} onClose={mockOnClose} className="custom-class">
+      <ResponsiveModal
+        isOpen={true}
+        onClose={mockOnClose}
+        className="custom-class"
+      >
         <div>Modal Content</div>
-      </ResponsiveModal>
+      </ResponsiveModal>,
     );
 
-    const modalContent = screen.getByRole("dialog").querySelector(".custom-class");
+    const modalContent = screen
+      .getByRole("dialog")
+      .querySelector(".custom-class");
     expect(modalContent).toBeInTheDocument();
   });
 
@@ -132,7 +150,7 @@ describe("ResponsiveModal", () => {
     const { rerender } = render(
       <ResponsiveModal isOpen={true} onClose={mockOnClose} size="sm">
         <div>Modal Content</div>
-      </ResponsiveModal>
+      </ResponsiveModal>,
     );
 
     let modalContent = screen.getByRole("dialog").children[1] as HTMLElement;
@@ -141,7 +159,7 @@ describe("ResponsiveModal", () => {
     rerender(
       <ResponsiveModal isOpen={true} onClose={mockOnClose} size="md">
         <div>Modal Content</div>
-      </ResponsiveModal>
+      </ResponsiveModal>,
     );
 
     modalContent = screen.getByRole("dialog").children[1] as HTMLElement;
@@ -150,7 +168,7 @@ describe("ResponsiveModal", () => {
     rerender(
       <ResponsiveModal isOpen={true} onClose={mockOnClose} size="lg">
         <div>Modal Content</div>
-      </ResponsiveModal>
+      </ResponsiveModal>,
     );
 
     modalContent = screen.getByRole("dialog").children[1] as HTMLElement;
@@ -166,7 +184,7 @@ describe("ResponsiveModal", () => {
         description="Test Description"
       >
         <div>Modal Content</div>
-      </ResponsiveModal>
+      </ResponsiveModal>,
     );
 
     const dialog = screen.getByRole("dialog");
@@ -179,12 +197,12 @@ describe("ResponsiveModal", () => {
     render(
       <ResponsiveModal isOpen={true} onClose={mockOnClose}>
         <div style={{ height: "2000px" }}>Very long content</div>
-      </ResponsiveModal>
+      </ResponsiveModal>,
     );
 
     const modalContent = screen.getByRole("dialog").children[1] as HTMLElement;
     expect(modalContent).toHaveClass("overflow-hidden");
-    
+
     const contentArea = modalContent.querySelector(".overflow-y-auto");
     expect(contentArea).toBeInTheDocument();
   });
@@ -193,7 +211,7 @@ describe("ResponsiveModal", () => {
     render(
       <ResponsiveModal isOpen={true} onClose={mockOnClose}>
         <div>Modal Content</div>
-      </ResponsiveModal>
+      </ResponsiveModal>,
     );
 
     const modalContent = screen.getByRole("dialog").children[1] as HTMLElement;
@@ -204,13 +222,17 @@ describe("ResponsiveModal", () => {
     render(
       <ResponsiveModal isOpen={true} onClose={mockOnClose}>
         <div>Modal Content</div>
-      </ResponsiveModal>
+      </ResponsiveModal>,
     );
 
     const modalContent = screen.getByRole("dialog").children[1] as HTMLElement;
     // Mobile: full screen
     expect(modalContent).toHaveClass("w-full", "h-full");
     // Tablet: 90vw width, auto height
-    expect(modalContent).toHaveClass("md:w-[90vw]", "md:h-auto", "md:max-h-[90vh]");
+    expect(modalContent).toHaveClass(
+      "md:w-[90vw]",
+      "md:h-auto",
+      "md:max-h-[90vh]",
+    );
   });
 });

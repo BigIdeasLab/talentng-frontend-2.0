@@ -6,7 +6,13 @@ import { ResponsiveGrid } from "./ResponsiveGrid";
  */
 export default function ResponsiveGridExample() {
   // Sample card component
-  const Card = ({ title, description }: { title: string; description: string }) => (
+  const Card = ({
+    title,
+    description,
+  }: {
+    title: string;
+    description: string;
+  }) => (
     <div className="border border-[#E1E4EA] rounded-lg p-4 bg-white">
       <h3 className="font-inter-tight text-[14px] font-semibold text-black mb-2">
         {title}
@@ -33,9 +39,18 @@ export default function ResponsiveGridExample() {
             Single column on mobile, 2 columns on tablet, 3 columns on desktop
           </p>
           <ResponsiveGrid>
-            <Card title="Card 1" description="This is a sample card in a 3-column grid" />
-            <Card title="Card 2" description="Resize your browser to see responsive behavior" />
-            <Card title="Card 3" description="Grid adapts to different screen sizes" />
+            <Card
+              title="Card 1"
+              description="This is a sample card in a 3-column grid"
+            />
+            <Card
+              title="Card 2"
+              description="Resize your browser to see responsive behavior"
+            />
+            <Card
+              title="Card 3"
+              description="Grid adapts to different screen sizes"
+            />
             <Card title="Card 4" description="Mobile: 1 column" />
             <Card title="Card 5" description="Tablet: 2 columns" />
             <Card title="Card 6" description="Desktop: 3 columns" />
@@ -51,7 +66,10 @@ export default function ResponsiveGridExample() {
             Single column on mobile, 2 columns on tablet, 4 columns on desktop
           </p>
           <ResponsiveGrid columns={4}>
-            <Card title="Card 1" description="4-column layout on large screens" />
+            <Card
+              title="Card 1"
+              description="4-column layout on large screens"
+            />
             <Card title="Card 2" description="Perfect for product grids" />
             <Card title="Card 3" description="Or image galleries" />
             <Card title="Card 4" description="Maintains responsiveness" />
@@ -140,12 +158,36 @@ export default function ResponsiveGridExample() {
           </p>
           <ResponsiveGrid>
             {[
-              { name: "John Doe", role: "Frontend Developer", location: "New York" },
-              { name: "Jane Smith", role: "UI/UX Designer", location: "San Francisco" },
-              { name: "Bob Johnson", role: "Backend Developer", location: "Austin" },
-              { name: "Alice Williams", role: "Product Manager", location: "Seattle" },
-              { name: "Charlie Brown", role: "DevOps Engineer", location: "Boston" },
-              { name: "Diana Prince", role: "Data Scientist", location: "Chicago" },
+              {
+                name: "John Doe",
+                role: "Frontend Developer",
+                location: "New York",
+              },
+              {
+                name: "Jane Smith",
+                role: "UI/UX Designer",
+                location: "San Francisco",
+              },
+              {
+                name: "Bob Johnson",
+                role: "Backend Developer",
+                location: "Austin",
+              },
+              {
+                name: "Alice Williams",
+                role: "Product Manager",
+                location: "Seattle",
+              },
+              {
+                name: "Charlie Brown",
+                role: "DevOps Engineer",
+                location: "Boston",
+              },
+              {
+                name: "Diana Prince",
+                role: "Data Scientist",
+                location: "Chicago",
+              },
             ].map((talent, idx) => (
               <div
                 key={idx}
@@ -179,17 +221,20 @@ export default function ResponsiveGridExample() {
           <h3 className="font-bold mb-2">Responsive Behavior:</h3>
           <ul className="list-disc list-inside space-y-1 text-sm">
             <li>
-              <strong>Mobile (&lt; 768px):</strong> Single column layout (grid-cols-1)
+              <strong>Mobile (&lt; 768px):</strong> Single column layout
+              (grid-cols-1)
             </li>
             <li>
-              <strong>Tablet (768px - 1023px):</strong> Two column layout (md:grid-cols-2)
+              <strong>Tablet (768px - 1023px):</strong> Two column layout
+              (md:grid-cols-2)
             </li>
             <li>
-              <strong>Desktop (≥ 1024px):</strong> Three or four columns based on columns prop
-              (lg:grid-cols-3 or lg:grid-cols-4)
+              <strong>Desktop (≥ 1024px):</strong> Three or four columns based
+              on columns prop (lg:grid-cols-3 or lg:grid-cols-4)
             </li>
             <li>
-              <strong>Gap:</strong> Consistent spacing across all breakpoints (configurable: 2, 3, 4, 6, or 8)
+              <strong>Gap:</strong> Consistent spacing across all breakpoints
+              (configurable: 2, 3, 4, 6, or 8)
             </li>
           </ul>
         </div>

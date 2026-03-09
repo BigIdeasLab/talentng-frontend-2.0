@@ -12,7 +12,7 @@ describe("MobileDrawer", () => {
     render(
       <MobileDrawer isOpen={true} onClose={vi.fn()}>
         <div>Test Content</div>
-      </MobileDrawer>
+      </MobileDrawer>,
     );
 
     expect(screen.getByText("Test Content")).toBeInTheDocument();
@@ -23,11 +23,11 @@ describe("MobileDrawer", () => {
     render(
       <MobileDrawer isOpen={true} onClose={onClose}>
         <div>Test Content</div>
-      </MobileDrawer>
+      </MobileDrawer>,
     );
 
     // Find the overlay and simulate click
-    const overlay = document.querySelector('[data-radix-dialog-overlay]');
+    const overlay = document.querySelector("[data-radix-dialog-overlay]");
     if (overlay) {
       fireEvent.click(overlay);
     }
@@ -41,7 +41,7 @@ describe("MobileDrawer", () => {
     render(
       <MobileDrawer isOpen={true} onClose={vi.fn()} className="custom-class">
         <div>Test Content</div>
-      </MobileDrawer>
+      </MobileDrawer>,
     );
 
     // The custom class is applied to the SheetContent which has role="dialog"
@@ -88,7 +88,7 @@ describe("MobileDrawerItem", () => {
 
   it("applies custom className", () => {
     render(
-      <MobileDrawerItem className="custom-item">Test Item</MobileDrawerItem>
+      <MobileDrawerItem className="custom-item">Test Item</MobileDrawerItem>,
     );
 
     const button = screen.getByRole("button", { name: "Test Item" });
@@ -101,7 +101,7 @@ describe("MobileDrawerSection", () => {
     render(
       <MobileDrawerSection>
         <div>Section Content</div>
-      </MobileDrawerSection>
+      </MobileDrawerSection>,
     );
 
     expect(screen.getByText("Section Content")).toBeInTheDocument();
@@ -111,7 +111,7 @@ describe("MobileDrawerSection", () => {
     render(
       <MobileDrawerSection title="Test Section">
         <div>Section Content</div>
-      </MobileDrawerSection>
+      </MobileDrawerSection>,
     );
 
     expect(screen.getByText("Test Section")).toBeInTheDocument();
@@ -121,7 +121,7 @@ describe("MobileDrawerSection", () => {
     const { container } = render(
       <MobileDrawerSection>
         <div>Section Content</div>
-      </MobileDrawerSection>
+      </MobileDrawerSection>,
     );
 
     // Check that there's no title element
@@ -133,7 +133,7 @@ describe("MobileDrawerSection", () => {
     const { container } = render(
       <MobileDrawerSection className="custom-section">
         <div>Section Content</div>
-      </MobileDrawerSection>
+      </MobileDrawerSection>,
     );
 
     const section = container.firstChild;
@@ -147,7 +147,7 @@ describe("MobileDrawer accessibility", () => {
       <MobileDrawer isOpen={true} onClose={vi.fn()}>
         <MobileDrawerItem>Item 1</MobileDrawerItem>
         <MobileDrawerItem>Item 2</MobileDrawerItem>
-      </MobileDrawer>
+      </MobileDrawer>,
     );
 
     // Radix UI Sheet handles focus trapping automatically
@@ -160,7 +160,7 @@ describe("MobileDrawer accessibility", () => {
     render(
       <MobileDrawer isOpen={true} onClose={vi.fn()}>
         <div>Content</div>
-      </MobileDrawer>
+      </MobileDrawer>,
     );
 
     const dialog = screen.getByRole("dialog");
@@ -184,7 +184,7 @@ describe("MobileDrawer touch interactions", () => {
       <MobileDrawerSection>
         <MobileDrawerItem>Item 1</MobileDrawerItem>
         <MobileDrawerItem>Item 2</MobileDrawerItem>
-      </MobileDrawerSection>
+      </MobileDrawerSection>,
     );
 
     const section = container.firstChild as HTMLElement;

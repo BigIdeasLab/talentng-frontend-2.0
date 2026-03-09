@@ -83,7 +83,7 @@ describe("OpportunitiesTable", () => {
         <OpportunitiesTable
           opportunities={[mockOpportunity]}
           activeTab="open"
-        />
+        />,
       );
 
       expect(screen.getByText("Senior Frontend Developer")).toBeInTheDocument();
@@ -104,7 +104,7 @@ describe("OpportunitiesTable", () => {
         <OpportunitiesTable
           opportunities={[mockOpportunity]}
           activeTab="open"
-        />
+        />,
       );
 
       expect(screen.getByText("Active")).toBeInTheDocument();
@@ -115,7 +115,7 @@ describe("OpportunitiesTable", () => {
         <OpportunitiesTable
           opportunities={[mockOpportunity]}
           activeTab="open"
-        />
+        />,
       );
 
       expect(screen.getByText(/₦500,000 - ₦800,000/)).toBeInTheDocument();
@@ -129,7 +129,7 @@ describe("OpportunitiesTable", () => {
       };
 
       render(
-        <OpportunitiesTable opportunities={[fixedPriceOpp]} activeTab="open" />
+        <OpportunitiesTable opportunities={[fixedPriceOpp]} activeTab="open" />,
       );
 
       expect(screen.getByText(/₦600,000\/mo/)).toBeInTheDocument();
@@ -142,7 +142,7 @@ describe("OpportunitiesTable", () => {
       };
 
       render(
-        <OpportunitiesTable opportunities={[volunteerOpp]} activeTab="open" />
+        <OpportunitiesTable opportunities={[volunteerOpp]} activeTab="open" />,
       );
 
       expect(screen.getByText("Volunteer")).toBeInTheDocument();
@@ -155,7 +155,7 @@ describe("OpportunitiesTable", () => {
         <OpportunitiesTable
           opportunities={[mockOpportunity]}
           activeTab="open"
-        />
+        />,
       );
 
       // Essential columns: Title, Category, Location, Applicants, Status
@@ -172,7 +172,7 @@ describe("OpportunitiesTable", () => {
       const draftOpp = { ...mockOpportunity, status: "draft" as const };
 
       render(
-        <OpportunitiesTable opportunities={[draftOpp]} activeTab="draft" />
+        <OpportunitiesTable opportunities={[draftOpp]} activeTab="draft" />,
       );
 
       // Note: Actions are not rendered in table view on desktop
@@ -188,7 +188,7 @@ describe("OpportunitiesTable", () => {
         <OpportunitiesTable
           opportunities={[mockOpportunity]}
           activeTab="open"
-        />
+        />,
       );
 
       // This would be tested in mobile view where action buttons are visible
@@ -201,7 +201,7 @@ describe("OpportunitiesTable", () => {
       const closedOpp = { ...mockOpportunity, status: "closed" as const };
 
       render(
-        <OpportunitiesTable opportunities={[closedOpp]} activeTab="closed" />
+        <OpportunitiesTable opportunities={[closedOpp]} activeTab="closed" />,
       );
 
       // Actions would be visible in mobile card view
@@ -227,7 +227,7 @@ describe("OpportunitiesTable", () => {
       ];
 
       render(
-        <OpportunitiesTable opportunities={opportunities} activeTab="open" />
+        <OpportunitiesTable opportunities={opportunities} activeTab="open" />,
       );
 
       expect(screen.getByText("Senior Frontend Developer")).toBeInTheDocument();
@@ -242,7 +242,7 @@ describe("OpportunitiesTable", () => {
         <OpportunitiesTable
           opportunities={[mockOpportunity]}
           activeTab="open"
-        />
+        />,
       );
 
       expect(screen.getByText("S/N")).toBeInTheDocument();
@@ -256,7 +256,7 @@ describe("OpportunitiesTable", () => {
         <OpportunitiesTable
           opportunities={[mockOpportunity]}
           activeTab="open"
-        />
+        />,
       );
 
       // ResponsiveTable should render with proper structure
@@ -274,7 +274,7 @@ describe("OpportunitiesTable", () => {
           opportunities={[mockOpportunity]}
           activeTab="draft"
           onMutationSuccess={onMutationSuccess}
-        />
+        />,
       );
 
       // Would need to trigger post action in mobile view
@@ -285,14 +285,14 @@ describe("OpportunitiesTable", () => {
   describe("Error Handling", () => {
     it("shows toast on delete error", async () => {
       mockMutations.delete.mutateAsync.mockRejectedValue(
-        new Error("Delete failed")
+        new Error("Delete failed"),
       );
 
       render(
         <OpportunitiesTable
           opportunities={[mockOpportunity]}
           activeTab="draft"
-        />
+        />,
       );
 
       // Would need to trigger delete action and verify toast is called
@@ -300,14 +300,14 @@ describe("OpportunitiesTable", () => {
 
     it("shows toast on update error", async () => {
       mockMutations.update.mutateAsync.mockRejectedValue(
-        new Error("Update failed")
+        new Error("Update failed"),
       );
 
       render(
         <OpportunitiesTable
           opportunities={[mockOpportunity]}
           activeTab="open"
-        />
+        />,
       );
 
       // Would need to trigger update action and verify toast is called
@@ -325,7 +325,7 @@ describe("OpportunitiesTable", () => {
         <OpportunitiesTable
           opportunities={[mockOpportunity]}
           activeTab="draft"
-        />
+        />,
       );
 
       // Actions should be disabled during loading

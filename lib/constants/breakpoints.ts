@@ -1,6 +1,6 @@
 /**
  * Breakpoint constants for responsive design
- * 
+ *
  * Mobile viewport: < 768px
  * Tablet viewport: 768px - 1023px
  * Desktop viewport: >= 1024px
@@ -16,5 +16,5 @@ export const TAILWIND_BREAKPOINTS = {
   md: 768,
   lg: 1024,
   xl: 1280,
-  '2xl': 1536,
+  "2xl": 1536,
 } as const;

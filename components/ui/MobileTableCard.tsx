@@ -58,14 +58,14 @@ export interface MobileTableCardProps {
 
 /**
  * MobileTableCard - A mobile-optimized card component for displaying table data
- * 
+ *
  * Features:
  * - Displays table data as labeled key-value pairs
  * - Includes action dropdown menu at card bottom
  * - Touch-friendly tap targets (44x44px minimum)
  * - Card styling with proper spacing and borders
  * - Flexible field layout (2-column grid by default)
- * 
+ *
  * Requirements: 4.1, 4.5, 4.6, 18.1
  */
 export function MobileTableCard({
@@ -78,10 +78,7 @@ export function MobileTableCard({
 }: MobileTableCardProps) {
   return (
     <div
-      className={cn(
-        "border border-[#E1E4EA] rounded-[16px] p-4",
-        className
-      )}
+      className={cn("border border-[#E1E4EA] rounded-[16px] p-4", className)}
     >
       <div className="space-y-3">
         {/* Optional header */}
@@ -132,15 +129,13 @@ export function MobileTableCard({
                     onClick={action.onClick}
                     className={cn(
                       "cursor-pointer font-inter-tight text-[13px]",
-                      action.className
+                      action.className,
                     )}
                     style={{
                       minHeight: `${TOUCH_TARGET.minSize}px`,
                     }}
                   >
-                    {action.icon && (
-                      <span className="mr-2">{action.icon}</span>
-                    )}
+                    {action.icon && <span className="mr-2">{action.icon}</span>}
                     {action.label}
                   </DropdownMenuItem>
                 ))}

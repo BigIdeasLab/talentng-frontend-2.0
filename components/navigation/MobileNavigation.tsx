@@ -37,7 +37,7 @@ interface MenuItem {
 
 const getTalentMenuItems = (
   notificationCount?: number,
-  upcomingCount?: number
+  upcomingCount?: number,
 ): MenuItem[] => [
   {
     id: "dashboard",
@@ -80,7 +80,7 @@ const getTalentMenuItems = (
 
 const getRecruiterMenuItems = (
   notificationCount?: number,
-  upcomingCount?: number
+  upcomingCount?: number,
 ): MenuItem[] => [
   {
     id: "dashboard",
@@ -111,7 +111,7 @@ const getRecruiterMenuItems = (
 
 const getMentorMenuItems = (
   notificationCount?: number,
-  upcomingCount?: number
+  upcomingCount?: number,
 ): MenuItem[] => [
   {
     id: "dashboard",
@@ -217,7 +217,7 @@ export function MobileNavigation({
                     "active:bg-gray-100",
                     isActive
                       ? "bg-opacity-10 border border-opacity-100"
-                      : "hover:bg-gray-50"
+                      : "hover:bg-gray-50",
                   )}
                   style={
                     isActive
@@ -251,7 +251,7 @@ export function MobileNavigation({
                   "active:bg-gray-100",
                   isActive
                     ? "bg-opacity-10 border border-opacity-100"
-                    : "hover:bg-gray-50"
+                    : "hover:bg-gray-50",
                 )}
                 style={
                   isActive
@@ -297,7 +297,7 @@ export function MobileNavigation({
                       "active:bg-gray-100",
                       isActive
                         ? "bg-opacity-10 border border-opacity-100"
-                        : "hover:bg-gray-50"
+                        : "hover:bg-gray-50",
                     )}
                     style={
                       isActive
@@ -326,7 +326,7 @@ export function MobileNavigation({
                     "active:bg-gray-100",
                     isActive
                       ? "bg-opacity-10 border border-opacity-100"
-                      : "hover:bg-gray-50"
+                      : "hover:bg-gray-50",
                   )}
                   style={
                     isActive

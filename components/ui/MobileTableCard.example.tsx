@@ -80,7 +80,12 @@ export default function MobileTableCardExample() {
 
   // Example with full-width field
   const fullWidthFields: CardField[] = [
-    { key: "title", label: "Job Title", value: "Full Stack Developer", className: "col-span-2" },
+    {
+      key: "title",
+      label: "Job Title",
+      value: "Full Stack Developer",
+      className: "col-span-2",
+    },
     { key: "company", label: "Company", value: "Tech Corp" },
     { key: "location", label: "Location", value: "San Francisco, CA" },
     { key: "type", label: "Type", value: "Full-time" },
@@ -145,10 +150,7 @@ export default function MobileTableCardExample() {
           <h2 className="text-lg font-semibold mb-3 text-black">
             Card with Custom Footer
           </h2>
-          <MobileTableCard
-            fields={styledFields}
-            footer={customFooter}
-          />
+          <MobileTableCard fields={styledFields} footer={customFooter} />
         </div>
 
         {/* Card without actions */}
@@ -178,7 +180,11 @@ export default function MobileTableCardExample() {
                 key={num}
                 fields={[
                   { key: "name", label: "Name", value: `User ${num}` },
-                  { key: "email", label: "Email", value: `user${num}@example.com` },
+                  {
+                    key: "email",
+                    label: "Email",
+                    value: `user${num}@example.com`,
+                  },
                   { key: "role", label: "Role", value: "Member" },
                   { key: "status", label: "Status", value: "Active" },
                 ]}

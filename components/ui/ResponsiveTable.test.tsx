@@ -112,7 +112,7 @@ describe("ResponsiveTable", () => {
           data={mockData}
           columns={mockColumns}
           actions={mockActions}
-        />
+        />,
       );
 
       // Should have action buttons for each row
@@ -129,7 +129,7 @@ describe("ResponsiveTable", () => {
           data={mockData}
           columns={mockColumns}
           actions={mockActions}
-        />
+        />,
       );
 
       const editButtons = screen.getAllByText("Edit");
@@ -144,7 +144,7 @@ describe("ResponsiveTable", () => {
           data={mockData}
           columns={mockColumns}
           showRowNumbers={true}
-        />
+        />,
       );
 
       expect(screen.getByText("S/N")).toBeInTheDocument();
@@ -215,7 +215,7 @@ describe("ResponsiveTable", () => {
           data={mockData}
           columns={mockColumns}
           actions={mockActions}
-        />
+        />,
       );
 
       // Should have action dropdown triggers
@@ -233,7 +233,7 @@ describe("ResponsiveTable", () => {
           data={mockData}
           columns={mockColumns}
           mobileCardRenderer={customRenderer}
-        />
+        />,
       );
 
       expect(customRenderer).toHaveBeenCalledTimes(2);
@@ -258,7 +258,7 @@ describe("ResponsiveTable", () => {
           data={[]}
           columns={mockColumns}
           emptyMessage="No users available"
-        />
+        />,
       );
 
       expect(screen.getByText("No users available")).toBeInTheDocument();
@@ -295,7 +295,7 @@ describe("ResponsiveTable", () => {
           data={mockData}
           columns={mockColumns}
           keyExtractor={keyExtractor}
-        />
+        />,
       );
 
       expect(keyExtractor).toHaveBeenCalledTimes(2);
@@ -305,7 +305,7 @@ describe("ResponsiveTable", () => {
       vi.spyOn(useBreakpointModule, "useBreakpoint").mockReturnValue("lg");
 
       const { container } = render(
-        <ResponsiveTable data={mockData} columns={mockColumns} />
+        <ResponsiveTable data={mockData} columns={mockColumns} />,
       );
 
       // Check that rows are rendered (implementation detail, but verifies keys work)

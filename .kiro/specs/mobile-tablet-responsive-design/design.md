@@ -52,16 +52,17 @@ The responsive system follows a layered architecture:
 
 The system uses Tailwind CSS's default breakpoint system:
 
-| Breakpoint | Min Width | Max Width | Device Target | Prefix |
-|------------|-----------|-----------|---------------|--------|
-| xs (default) | 0px | 639px | Small phones | (none) |
-| sm | 640px | 767px | Large phones | `sm:` |
-| md | 768px | 1023px | Tablets | `md:` |
-| lg | 1024px | 1279px | Small desktops | `lg:` |
-| xl | 1280px | 1535px | Large desktops | `xl:` |
-| 2xl | 1536px | ∞ | Extra large | `2xl:` |
+| Breakpoint   | Min Width | Max Width | Device Target  | Prefix |
+| ------------ | --------- | --------- | -------------- | ------ |
+| xs (default) | 0px       | 639px     | Small phones   | (none) |
+| sm           | 640px     | 767px     | Large phones   | `sm:`  |
+| md           | 768px     | 1023px    | Tablets        | `md:`  |
+| lg           | 1024px    | 1279px    | Small desktops | `lg:`  |
+| xl           | 1280px    | 1535px    | Large desktops | `xl:`  |
+| 2xl          | 1536px    | ∞         | Extra large    | `2xl:` |
 
 **Semantic Breakpoints:**
+
 - **Mobile Viewport**: < 768px (xs + sm)
 - **Tablet Viewport**: 768px - 1023px (md)
 - **Desktop Viewport**: ≥ 1024px (lg+)
@@ -85,11 +86,13 @@ The system employs several transformation patterns:
 **Purpose**: Detect if the current viewport is mobile (< 768px)
 
 **Interface**:
+
 ```typescript
-function useIsMobile(): boolean
+function useIsMobile(): boolean;
 ```
 
 **Implementation Details**:
+
 - Uses `window.matchMedia` for efficient breakpoint detection
 - Returns `undefined` initially (SSR compatibility), then `boolean`
 - Listens to viewport changes and updates reactively
@@ -102,11 +105,13 @@ function useIsMobile(): boolean
 **Purpose**: Detect if the current viewport is tablet (768px - 1024px)
 
 **Interface**:
+
 ```typescript
-function useIsTablet(): boolean
+function useIsTablet(): boolean;
 ```
 
 **Implementation Details**:
+
 - Uses `window.matchMedia` with range query
 - Returns `true` when viewport is between 768px and 1023px
 - Handles SSR with `undefined` initial state
@@ -117,13 +122,15 @@ function useIsTablet(): boolean
 **Purpose**: Get the current breakpoint name for fine-grained control
 
 **Interface**:
-```typescript
-type Breakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 
-function useBreakpoint(): Breakpoint
+```typescript
+type Breakpoint = "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
+
+function useBreakpoint(): Breakpoint;
 ```
 
 **Implementation Details**:
+
 - Returns current breakpoint based on viewport width
 - Uses multiple `matchMedia` queries for accuracy
 - Provides more granular control than boolean hooks
@@ -136,11 +143,13 @@ function useBreakpoint(): Breakpoint
 **Current Behavior**: Full-width sidebar with icons and labels
 
 **Responsive Adaptations**:
+
 - **Desktop (≥ 1024px)**: Full sidebar with icons and labels
 - **Tablet (768px - 1023px)**: Collapsed sidebar with icons only
 - **Mobile (< 768px)**: Hidden completely
 
 **Implementation Strategy**:
+
 - Use Tailwind classes: `hidden lg:flex` for desktop sidebar
 - Maintain existing sidebar component structure
 - Add collapsed state for tablet view
@@ -150,6 +159,7 @@ function useBreakpoint(): Breakpoint
 **Purpose**: Provide mobile-optimized navigation
 
 **Interface**:
+
 ```typescript
 interface MobileDrawerProps {
   isOpen: boolean;
@@ -159,6 +169,7 @@ interface MobileDrawerProps {
 ```
 
 **Features**:
+
 - Slide-in animation from left
 - Overlay backdrop with blur effect
 - Auto-close on navigation item selection
@@ -167,6 +178,7 @@ interface MobileDrawerProps {
 - Touch-friendly tap targets (minimum 44x44px)
 
 **Implementation Details**:
+
 - Use Radix UI Sheet component as foundation
 - Implement swipe-to-close gesture
 - Trap focus within drawer when open
@@ -179,6 +191,7 @@ interface MobileDrawerProps {
 **Visibility**: Only on mobile viewport (< 768px)
 
 **Implementation**:
+
 - Positioned in top-left of mobile header
 - Animated icon (hamburger ↔ X)
 - Minimum 44x44px tap target
@@ -192,19 +205,21 @@ interface MobileDrawerProps {
 
 **Responsive Behavior**:
 
-| Viewport | Width | Height | Padding | Position |
-|----------|-------|--------|---------|----------|
-| Mobile | 100vw | 100vh | 16px | Full screen |
-| Tablet | 90vw | max-content | 24px | Centered |
-| Desktop | Fixed (varies) | max-content | 32px | Centered |
+| Viewport | Width          | Height      | Padding | Position    |
+| -------- | -------------- | ----------- | ------- | ----------- |
+| Mobile   | 100vw          | 100vh       | 16px    | Full screen |
+| Tablet   | 90vw           | max-content | 24px    | Centered    |
+| Desktop  | Fixed (varies) | max-content | 32px    | Centered    |
 
 **Implementation Strategy**:
+
 - Enhance existing Modal component with responsive classes
 - Use Tailwind: `w-full h-full md:w-[90vw] md:h-auto lg:w-[600px]`
 - Ensure all modal content is scrollable
 - Position close button in touch-friendly location (top-right, 44x44px)
 
 **Modals Requiring Treatment**:
+
 - ApplicantFilterModal
 - HireOpportunitiesModal
 - ScheduleInterviewModal
@@ -230,6 +245,7 @@ interface MobileDrawerProps {
 - SuccessModal
 
 **Modal Content Adaptations**:
+
 - Stack form fields vertically on mobile
 - Stack action buttons vertically on mobile with full width
 - Reduce padding on mobile (16px vs 32px desktop)
@@ -242,22 +258,26 @@ interface MobileDrawerProps {
 **Purpose**: Transform tables into mobile-friendly card layouts
 
 **Desktop View** (≥ 1024px):
+
 - Traditional table with all columns
 - Sortable headers
 - Row actions in dedicated column
 
 **Tablet View** (768px - 1023px):
+
 - Horizontal scrolling table
 - Essential columns only
 - Sticky first column
 
 **Mobile View** (< 768px):
+
 - Card-based layout
 - Each row becomes a card
 - Table headers become labels within cards
 - Actions in dropdown menu per card
 
 **Interface**:
+
 ```typescript
 interface ResponsiveTableProps<T> {
   data: T[];
@@ -269,6 +289,7 @@ interface ResponsiveTableProps<T> {
 ```
 
 **Tables Requiring Treatment**:
+
 - ApplicantsTable
 - OpportunitiesTable
 - ApplicationsTable
@@ -281,11 +302,13 @@ interface ResponsiveTableProps<T> {
 **Purpose**: Adapt grid layouts to viewport size
 
 **Grid Columns by Viewport**:
+
 - Mobile: 1 column
 - Tablet: 2 columns
 - Desktop: 3-4 columns (configurable)
 
 **Implementation**:
+
 ```typescript
 interface ResponsiveGridProps {
   children: React.ReactNode;
@@ -295,11 +318,13 @@ interface ResponsiveGridProps {
 ```
 
 **Tailwind Classes**:
+
 ```
 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
 ```
 
 **Grids Requiring Treatment**:
+
 - TalentGrid
 - OpportunitiesGrid
 - WorksGrid
@@ -311,6 +336,7 @@ grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
 #### Responsive Form Layout
 
 **Mobile Adaptations**:
+
 - All fields stack vertically (single column)
 - Input fields expand to full width
 - Input height increased to 44px minimum
@@ -319,17 +345,20 @@ grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
 - Increased spacing between fields (16px)
 
 **Desktop Layout**:
+
 - Multi-column layouts where appropriate
 - Inline labels for compact forms
 - Horizontal button groups
 - Tighter spacing (12px)
 
 **Implementation Strategy**:
+
 - Use Tailwind grid: `grid grid-cols-1 lg:grid-cols-2 gap-4`
 - Apply to all form containers
 - Ensure touch-friendly input sizing
 
 **Forms Requiring Treatment**:
+
 - PostOpportunityForm
 - EditOpportunityForm
 - EmployerEditProfile
@@ -344,16 +373,19 @@ grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
 #### Stat Cards Layout
 
 **Responsive Grid**:
+
 - Mobile: 1 column (stacked)
 - Tablet: 2 columns
 - Desktop: 4 columns
 
 **Implementation**:
+
 ```
 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4
 ```
 
 **Content Adaptations**:
+
 - Hide detailed descriptions on mobile
 - Maintain primary metric and label
 - Scale icon sizes appropriately
@@ -361,6 +393,7 @@ grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4
 #### Chart Components
 
 **Mobile Adaptations**:
+
 - Scale to full container width
 - Reduce height for better scrolling
 - Position legend below chart
@@ -368,6 +401,7 @@ grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4
 - Maintain interactivity with touch events
 
 **Implementation Strategy**:
+
 - Use responsive container: `w-full h-[300px] md:h-[400px]`
 - Configure Recharts with responsive prop
 - Adjust font sizes for mobile readability
@@ -388,7 +422,7 @@ export const TAILWIND_BREAKPOINTS = {
   md: 768,
   lg: 1024,
   xl: 1280,
-  '2xl': 1536,
+  "2xl": 1536,
 } as const;
 ```
 
@@ -416,7 +450,7 @@ export interface ResponsiveProps {
 }
 
 export interface TouchFriendlyProps {
-  touchTarget?: 'small' | 'medium' | 'large';
+  touchTarget?: "small" | "medium" | "large";
   touchFeedback?: boolean;
 }
 ```
@@ -434,4 +468,3 @@ export interface ResponsiveModalConfig {
   desktopPadding?: string;
 }
 ```
-

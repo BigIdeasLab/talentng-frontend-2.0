@@ -10,7 +10,7 @@ describe("ResponsiveGrid", () => {
         <div data-testid="child-1">Child 1</div>
         <div data-testid="child-2">Child 2</div>
         <div data-testid="child-3">Child 3</div>
-      </ResponsiveGrid>
+      </ResponsiveGrid>,
     );
 
     expect(screen.getByTestId("child-1")).toBeInTheDocument();
@@ -22,7 +22,7 @@ describe("ResponsiveGrid", () => {
     const { container } = render(
       <ResponsiveGrid>
         <div>Child</div>
-      </ResponsiveGrid>
+      </ResponsiveGrid>,
     );
 
     const grid = container.firstChild as HTMLElement;
@@ -36,7 +36,7 @@ describe("ResponsiveGrid", () => {
     const { container } = render(
       <ResponsiveGrid columns={4}>
         <div>Child</div>
-      </ResponsiveGrid>
+      </ResponsiveGrid>,
     );
 
     const grid = container.firstChild as HTMLElement;
@@ -47,7 +47,7 @@ describe("ResponsiveGrid", () => {
     const { container } = render(
       <ResponsiveGrid>
         <div>Child</div>
-      </ResponsiveGrid>
+      </ResponsiveGrid>,
     );
 
     const grid = container.firstChild as HTMLElement;
@@ -58,7 +58,7 @@ describe("ResponsiveGrid", () => {
     const { container } = render(
       <ResponsiveGrid gap={6}>
         <div>Child</div>
-      </ResponsiveGrid>
+      </ResponsiveGrid>,
     );
 
     const grid = container.firstChild as HTMLElement;
@@ -69,7 +69,7 @@ describe("ResponsiveGrid", () => {
     const { container } = render(
       <ResponsiveGrid gap={2}>
         <div>Child</div>
-      </ResponsiveGrid>
+      </ResponsiveGrid>,
     );
 
     const grid = container.firstChild as HTMLElement;
@@ -80,7 +80,7 @@ describe("ResponsiveGrid", () => {
     const { container } = render(
       <ResponsiveGrid gap={3}>
         <div>Child</div>
-      </ResponsiveGrid>
+      </ResponsiveGrid>,
     );
 
     const grid = container.firstChild as HTMLElement;
@@ -91,7 +91,7 @@ describe("ResponsiveGrid", () => {
     const { container } = render(
       <ResponsiveGrid gap={8}>
         <div>Child</div>
-      </ResponsiveGrid>
+      </ResponsiveGrid>,
     );
 
     const grid = container.firstChild as HTMLElement;
@@ -102,7 +102,7 @@ describe("ResponsiveGrid", () => {
     const { container } = render(
       <ResponsiveGrid className="custom-class">
         <div>Child</div>
-      </ResponsiveGrid>
+      </ResponsiveGrid>,
     );
 
     const grid = container.firstChild as HTMLElement;
@@ -117,7 +117,7 @@ describe("ResponsiveGrid", () => {
             Item {num}
           </div>
         ))}
-      </ResponsiveGrid>
+      </ResponsiveGrid>,
     );
 
     for (let i = 1; i <= 6; i++) {
@@ -129,7 +129,7 @@ describe("ResponsiveGrid", () => {
     const { container } = render(
       <ResponsiveGrid className="bg-gray-100" columns={4} gap={6}>
         <div>Child</div>
-      </ResponsiveGrid>
+      </ResponsiveGrid>,
     );
 
     const grid = container.firstChild as HTMLElement;
@@ -156,7 +156,7 @@ describe("ResponsiveGrid", () => {
           <div data-testid="fragment-child-1">Child 1</div>
           <div data-testid="fragment-child-2">Child 2</div>
         </>
-      </ResponsiveGrid>
+      </ResponsiveGrid>,
     );
 
     expect(screen.getByTestId("fragment-child-1")).toBeInTheDocument();
