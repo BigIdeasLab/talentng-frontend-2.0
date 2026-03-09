@@ -33,7 +33,11 @@ export function MobileSidebar({
           <Menu className="w-6 h-6 text-black" />
         </button>
       </SheetTrigger>
-      <SheetContent side="left" className="p-0 w-[271px]" suppressHydrationWarning>
+      <SheetContent
+        side="left"
+        className="p-0 w-[271px]"
+        suppressHydrationWarning
+      >
         <div className="h-full overflow-y-auto">
           <Sidebar
             activeItem={activeItem}

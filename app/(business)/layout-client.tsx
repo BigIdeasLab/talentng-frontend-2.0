@@ -169,7 +169,10 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
       <GlobalErrorHandler />
 
       {/* Mobile Sidebar */}
-      <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-[#E1E4EA]" suppressHydrationWarning>
+      <div
+        className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-[#E1E4EA]"
+        suppressHydrationWarning
+      >
         <div className="font-medium text-[18px] text-black font-inter-tight">
           TalentNG
         </div>

@@ -143,7 +143,11 @@ export function EmployerOpportunities() {
     router.push("/opportunities/post");
   };
 
-  if ((isLoading || isPending) && isInitialLoadRef.current && !opportunitiesRaw) {
+  if (
+    (isLoading || isPending) &&
+    isInitialLoadRef.current &&
+    !opportunitiesRaw
+  ) {
     return (
       <RoleColorProvider role="recruiter">
         <div className="h-screen overflow-x-hidden bg-white flex flex-col">
@@ -173,7 +177,10 @@ export function EmployerOpportunities() {
             </div>
 
             {/* Tabs */}
-            <OpportunitiesTabs activeTab={activeTab} onTabChange={setActiveTab} />
+            <OpportunitiesTabs
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+            />
           </div>
 
           {/* Scrollable Content with Skeleton */}

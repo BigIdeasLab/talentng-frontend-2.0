@@ -111,7 +111,9 @@ export function HireOpportunitiesModal({
               return (
                 <button
                   key={opp.id}
-                  onClick={() => !isDisabled && setSelectedOpportunityId(opp.id)}
+                  onClick={() =>
+                    !isDisabled && setSelectedOpportunityId(opp.id)
+                  }
                   disabled={isDisabled}
                   className={`p-3 rounded-[10px] border-2 text-left transition-colors flex items-center gap-3 flex-shrink-0 ${
                     isDisabled
