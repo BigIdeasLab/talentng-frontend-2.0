@@ -165,7 +165,7 @@ export function ApplicantFilterModal({
                 </button>
               </div>
               <div className="relative">
-                <div className="flex items-center gap-[4px] px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] bg-white">
+                <div className="flex items-center gap-[4px] px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] bg-white min-h-[44px]">
                   <Search className="w-[12px] h-[12px] text-[#B2B2B2]" />
                   <input
                     type="text"
@@ -245,10 +245,10 @@ export function ApplicantFilterModal({
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-[4px]">
+          <div className="flex flex-col md:flex-row items-center gap-[4px]">
             <button
               onClick={handleClearFilter}
-              className="flex-1 flex items-center justify-center px-4 py-[13px] border border-[#E1E4EA] rounded-[8px] bg-white"
+              className="w-full md:flex-1 flex items-center justify-center px-4 min-h-[44px] py-[13px] border border-[#E1E4EA] rounded-[8px] bg-white"
             >
               <span className="text-[11px] font-normal text-black text-center font-inter-tight">
                 Clear Filter
@@ -256,7 +256,7 @@ export function ApplicantFilterModal({
             </button>
             <button
               onClick={handleApplyFilter}
-              className="flex-1 flex items-center justify-center px-4 py-[13px] border border-[#5C30FF] rounded-[8px] bg-[#5C30FF]"
+              className="w-full md:flex-1 flex items-center justify-center px-4 min-h-[44px] py-[13px] border border-[#5C30FF] rounded-[8px] bg-[#5C30FF]"
             >
               <span className="text-[11px] font-normal text-white text-center font-inter-tight">
                 Apply Filter

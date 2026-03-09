@@ -10,6 +10,7 @@ import {
 import { SuccessModal } from "@/components/ui/success-modal";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { HireApplicationModal } from "@/components/employer/applicants/HireApplicationModal";
+import { ResponsiveTable, ColumnDef, RowAction } from "@/components/ui/ResponsiveTable";
 
 interface Applicant {
   id: string;
@@ -161,200 +162,176 @@ export function ApplicantsTable({
     }
   };
 
-  return (
-    <div className="border border-[#E1E4EA] rounded-[16px] overflow-hidden">
-      {/* Table Header - Hidden on mobile */}
-      <div className="hidden lg:block px-3 py-4 border-b border-[#E1E4EA]">
-        <div className="grid grid-cols-[35px_1fr_100px_130px_100px_115px_85px_140px] gap-3 items-center">
-          <div className="font-inter-tight text-[13px] font-medium text-[#525866]">
-            S/N
+  // Define columns for ResponsiveTable
+  // Essential columns for tablet: Talents, Location, Date Applied, Status
+  const columns: ColumnDef<Applicant>[] = [
+    {
+      key: "talent",
+      label: "Talents",
+      essential: true,
+      render: (applicant) => (
+        <div className="flex items-center gap-2">
+          <img
+            src={applicant.user?.talentProfile?.profileImageUrl || ""}
+            alt={applicant.user?.talentProfile?.fullName || ""}
+            className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+          />
+          <div className="flex flex-col gap-0.5">
+            <div className="font-inter-tight text-[13px] font-medium text-black">
+              {applicant.user?.talentProfile?.fullName || "Unknown"}
+            </div>
+            <div className="font-inter-tight text-[12px] font-light text-[#525866]">
+              {applicant.user?.talentProfile?.headline ||
+                applicant.user?.talentProfile?.category ||
+                ""}
+            </div>
           </div>
-          <div className="font-inter-tight text-[13px] font-medium text-[#525866]">
-            Talents
+        </div>
+      ),
+    },
+    {
+      key: "hires",
+      label: "Hires",
+      essential: false,
+      accessor: () => "-",
+    },
+    {
+      key: "opportunity",
+      label: "Opportunity",
+      essential: false,
+      accessor: () => opportunityTitle || "-",
+    },
+    {
+      key: "location",
+      label: "Location",
+      essential: true,
+      accessor: (applicant) => applicant.user?.talentProfile?.location || "-",
+    },
+    {
+      key: "dateApplied",
+      label: "Date Applied",
+      essential: true,
+      accessor: (applicant) => formatDate(applicant.createdAt),
+    },
+    {
+      key: "status",
+      label: "Status",
+      essential: true,
+      render: (applicant) => (
+        <span className="capitalize">{applicant.status || "pending"}</span>
+      ),
+    },
+  ];
+
+  // Define actions for ResponsiveTable
+  const actions: RowAction<Applicant>[] = [
+    {
+      key: "view",
+      label: "View Profile",
+      onClick: (applicant) => {
+        // TODO: Navigate to profile
+        console.log("View profile:", applicant.id);
+      },
+      className: "bg-[#181B25] text-white hover:bg-[#2a2d35]",
+    },
+    {
+      key: "hire",
+      label: "Hire",
+      onClick: handleHireClick,
+      className: "text-white hover:opacity-80",
+    },
+  ];
+
+  // Custom mobile card renderer for applicant data
+  const mobileCardRenderer = (applicant: Applicant, index: number) => (
+    <div className="space-y-3">
+      {/* Applicant header with profile image */}
+      <div className="flex items-center gap-2">
+        <div className="font-inter-tight text-[13px] font-normal text-black">
+          {index + 1}.
+        </div>
+        <img
+          src={applicant.user?.talentProfile?.profileImageUrl || ""}
+          alt={applicant.user?.talentProfile?.fullName || ""}
+          className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+        />
+        <div className="flex flex-col gap-0.5">
+          <div className="font-inter-tight text-[13px] font-medium text-black">
+            {applicant.user?.talentProfile?.fullName || "Unknown"}
           </div>
-          <div className="font-inter-tight text-[13px] font-medium text-[#525866]">
-            Hires
+          <div className="font-inter-tight text-[12px] font-light text-[#525866]">
+            {applicant.user?.talentProfile?.headline ||
+              applicant.user?.talentProfile?.category ||
+              ""}
           </div>
-          <div className="font-inter-tight text-[13px] font-medium text-[#525866]">
+        </div>
+      </div>
+
+      {/* Applicant details */}
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
             Opportunity
           </div>
-          <div className="font-inter-tight text-[13px] font-medium text-[#525866]">
+          <div className="font-inter-tight text-[12px] text-black">
+            {opportunityTitle || "-"}
+          </div>
+        </div>
+        <div>
+          <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
             Location
           </div>
-          <div className="font-inter-tight text-[13px] font-medium text-[#525866]">
+          <div className="font-inter-tight text-[12px] text-black">
+            {applicant.user?.talentProfile?.location || "-"}
+          </div>
+        </div>
+        <div>
+          <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
             Date Applied
           </div>
-          <div className="font-inter-tight text-[13px] font-medium text-[#525866]">
+          <div className="font-inter-tight text-[12px] text-black">
+            {formatDate(applicant.createdAt)}
+          </div>
+        </div>
+        <div>
+          <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
             Status
           </div>
-          <div className="font-inter-tight text-[13px] font-medium text-[#525866] text-right">
-            Actions
+          <div className="font-inter-tight text-[12px] text-black capitalize">
+            {applicant.status || "pending"}
           </div>
         </div>
       </div>
 
-      <div className="divide-y divide-[#E1E4EA]">
-        {filteredAndSortedApplicants.map((applicant, index) => (
-          <div
-            key={applicant.id}
-            className="px-3 py-4 hover:bg-gray-50/50 transition-colors"
-          >
-            {/* Desktop Layout */}
-            <div className="hidden lg:grid grid-cols-[35px_1fr_100px_130px_100px_115px_85px_140px] gap-3 items-center">
-              {/* S/N */}
-              <div className="font-inter-tight text-[13px] font-normal text-black">
-                {index + 1}.
-              </div>
-
-              {/* Talent Info */}
-              <div className="flex items-center gap-2">
-                <img
-                  src={applicant.user?.talentProfile?.profileImageUrl || ""}
-                  alt={applicant.user?.talentProfile?.fullName || ""}
-                  className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-                />
-                <div className="flex flex-col gap-0.5">
-                  <div className="font-inter-tight text-[13px] font-medium text-black">
-                    {applicant.user?.talentProfile?.fullName || "Unknown"}
-                  </div>
-                  <div className="font-inter-tight text-[12px] font-light text-[#525866]">
-                    {applicant.user?.talentProfile?.headline ||
-                      applicant.user?.talentProfile?.category ||
-                      ""}
-                  </div>
-                </div>
-              </div>
-
-              {/* Hires */}
-              <div className="font-inter-tight text-[13px] font-normal text-black">
-                -
-              </div>
-
-              {/* Opportunity */}
-              <div className="font-inter-tight text-[13px] font-normal text-black">
-                {opportunityTitle || "-"}
-              </div>
-
-              {/* Location */}
-              <div className="font-inter-tight text-[13px] font-normal text-black">
-                {applicant.user?.talentProfile?.location || ""}
-              </div>
-
-              {/* Date Applied */}
-              <div className="font-inter-tight text-[13px] font-normal text-black">
-                {formatDate(applicant.createdAt)}
-              </div>
-
-              {/* Status */}
-              <div className="font-inter-tight text-[13px] font-normal text-black capitalize">
-                {applicant.status || "pending"}
-              </div>
-
-              {/* Actions */}
-              <div className="flex items-center justify-end gap-1">
-                <button className="px-3 py-1.5 bg-[#181B25] text-white rounded-full font-inter-tight text-[12px] font-medium hover:bg-[#2a2d35] transition-colors whitespace-nowrap">
-                  View Profile
-                </button>
-                <button
-                  onClick={() => handleHireClick(applicant)}
-                  className="px-3 py-1.5 text-white rounded-full font-inter-tight text-[12px] font-medium border hover:opacity-80 transition-colors whitespace-nowrap"
-                  style={{
-                    backgroundColor: ROLE_COLORS.recruiter.primary,
-                    borderColor: ROLE_COLORS.recruiter.primary,
-                  }}
-                >
-                  Hire
-                </button>
-              </div>
-            </div>
-
-            {/* Mobile Layout */}
-            <div className="lg:hidden flex flex-col gap-3">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="font-inter-tight text-[13px] font-normal text-black">
-                    {index + 1}.
-                  </div>
-                  <img
-                    src={applicant.user?.talentProfile?.profileImageUrl || ""}
-                    alt={applicant.user?.talentProfile?.fullName || ""}
-                    className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-                  />
-                  <div className="flex flex-col gap-0.5">
-                    <div className="font-inter-tight text-[13px] font-medium text-black">
-                      {applicant.user?.talentProfile?.fullName || "Unknown"}
-                    </div>
-                    <div className="font-inter-tight text-[12px] font-light text-[#525866]">
-                      {applicant.user?.talentProfile?.headline ||
-                        applicant.user?.talentProfile?.category ||
-                        ""}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <div>
-                  <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
-                    Opportunity
-                  </div>
-                  <div className="font-inter-tight text-[12px] text-black">
-                    {opportunityTitle || "-"}
-                  </div>
-                </div>
-                <div>
-                  <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
-                    Location
-                  </div>
-                  <div className="font-inter-tight text-[12px] text-black">
-                    {applicant.user?.talentProfile?.location || "-"}
-                  </div>
-                </div>
-                <div>
-                  <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
-                    Date Applied
-                  </div>
-                  <div className="font-inter-tight text-[12px] text-black">
-                    {formatDate(applicant.createdAt)}
-                  </div>
-                </div>
-                <div>
-                  <div className="font-inter-tight text-[11px] text-[#525866] mb-0.5">
-                    Status
-                  </div>
-                  <div className="font-inter-tight text-[12px] text-black capitalize">
-                    {applicant.status || "pending"}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-1.5">
-                <button className="flex-1 px-3 py-1.5 bg-[#181B25] text-white rounded-full font-inter-tight text-[11px] font-medium hover:bg-[#2a2d35] transition-colors">
-                  View Profile
-                </button>
-                <button
-                  onClick={() => handleHireClick(applicant)}
-                  className="flex-1 px-3 py-1.5 text-white rounded-full font-inter-tight text-[11px] font-medium border hover:opacity-80 transition-colors"
-                  style={{
-                    backgroundColor: ROLE_COLORS.recruiter.primary,
-                    borderColor: ROLE_COLORS.recruiter.primary,
-                  }}
-                >
-                  Hire
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
+      {/* Action buttons for mobile */}
+      <div className="pt-2 border-t border-[#E1E4EA] flex items-center gap-1.5">
+        <button className="flex-1 px-3 py-1.5 bg-[#181B25] text-white rounded-full font-inter-tight text-[11px] font-medium hover:bg-[#2a2d35] transition-colors">
+          View Profile
+        </button>
+        <button
+          onClick={() => handleHireClick(applicant)}
+          className="flex-1 px-3 py-1.5 text-white rounded-full font-inter-tight text-[11px] font-medium border hover:opacity-80 transition-colors"
+          style={{
+            backgroundColor: ROLE_COLORS.recruiter.primary,
+            borderColor: ROLE_COLORS.recruiter.primary,
+          }}
+        >
+          Hire
+        </button>
       </div>
+    </div>
+  );
 
-      {filteredAndSortedApplicants.length === 0 && (
-        <div className="px-3 py-9 text-center">
-          <p className="font-inter-tight text-[13px] text-gray-500">
-            No applicants found
-          </p>
-        </div>
-      )}
+  return (
+    <>
+      <ResponsiveTable
+        data={filteredAndSortedApplicants}
+        columns={columns}
+        mobileCardRenderer={mobileCardRenderer}
+        emptyMessage="No applicants found"
+        keyExtractor={(applicant) => applicant.id}
+        showRowNumbers={true}
+      />
 
       {/* Hire Modal */}
       {selectedApplicant && (
@@ -384,6 +361,6 @@ export function ApplicantsTable({
         description={`${selectedApplicant?.user?.talentProfile?.fullName} has been hired for the ${opportunityTitle} position.`}
         accentColor={ROLE_COLORS.recruiter.primary}
       />
-    </div>
+    </>
   );
 }

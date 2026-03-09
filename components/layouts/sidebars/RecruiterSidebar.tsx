@@ -266,9 +266,9 @@ export function RecruiterSidebar({
   }, [currentProfileUI, currentProfile]);
 
   return (
-    <aside className="hidden md:flex w-[250px] flex-col bg-white border-r border-[#E1E4EA] h-screen overflow-hidden">
+    <aside className="hidden lg:flex md:w-16 lg:w-[250px] flex-col bg-white border-r border-[#E1E4EA] h-screen overflow-hidden">
       {/* Logo Section */}
-      <div className="px-[30px] py-[12px] flex-shrink-0">
+      <div className="px-[30px] py-[12px] flex-shrink-0 md:hidden lg:block">
         <div className="flex items-center gap-[10px]">
           <img
             src="/logo.png"
@@ -282,10 +282,12 @@ export function RecruiterSidebar({
       </div>
 
       {/* Content Container */}
-      <div className="flex-1 px-[20px] py-[8px] overflow-y-auto">
+      <div className="flex-1 md:px-[8px] lg:px-[20px] py-[8px] overflow-y-auto">
         <div className="flex flex-col gap-[6px]">
           {/* Profile Switcher */}
-          <ProfileSwitcher />
+          <div className="md:hidden lg:block">
+            <ProfileSwitcher />
+          </div>
 
           {/* Main Navigation */}
           <div className="flex flex-col gap-[6px]">
@@ -308,6 +310,7 @@ export function RecruiterSidebar({
                   className={cn(
                     sidebarItemBase,
                     isActive ? sidebarItemActive : sidebarItemInactive,
+                    "md:justify-center lg:justify-start",
                   )}
                   style={
                     isActive
@@ -319,11 +322,11 @@ export function RecruiterSidebar({
                   }
                 >
                   {item.icon}
-                  <span className="text-[13px] font-inter-tight text-left flex-1">
+                  <span className="text-[13px] font-inter-tight text-left flex-1 md:hidden lg:inline">
                     {item.label}
                   </span>
                   {item.badge !== undefined && item.badge > 0 && (
-                    <div className="flex items-center justify-center w-5 h-5 rounded-full bg-[#E63C23] flex-shrink-0">
+                    <div className="flex items-center justify-center w-5 h-5 rounded-full bg-[#E63C23] flex-shrink-0 md:absolute md:top-1 md:right-1 lg:static">
                       <span className="text-[11px] font-semibold text-white font-inter-tight">
                         {item.badge}
                       </span>
@@ -337,8 +340,8 @@ export function RecruiterSidebar({
       </div>
 
       {/* Others Section */}
-      <div className=" px-[20px] py-[8px] flex-shrink-0">
-        <div className="px-[12px] mb-[8px]">
+      <div className="md:px-[8px] lg:px-[20px] py-[8px] flex-shrink-0">
+        <div className="px-[12px] mb-[8px] md:hidden lg:block">
           <span className="text-[11px] font-medium text-[rgba(0,0,0,0.30)] font-inter-tight">
             OTHERS
           </span>
@@ -355,6 +358,7 @@ export function RecruiterSidebar({
                 className={cn(
                   sidebarItemBase,
                   isActive ? sidebarItemActive : sidebarItemInactive,
+                  "md:justify-center lg:justify-start",
                 )}
                 style={
                   isActive
@@ -366,7 +370,7 @@ export function RecruiterSidebar({
                 }
               >
                 {item.icon}
-                <span className="text-[13px] font-inter-tight text-left flex-1">
+                <span className="text-[13px] font-inter-tight text-left flex-1 md:hidden lg:inline">
                   {item.label}
                 </span>
               </MenuComponent>

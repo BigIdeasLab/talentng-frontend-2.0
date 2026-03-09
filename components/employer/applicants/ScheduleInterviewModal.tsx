@@ -170,9 +170,9 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                 </div>
 
                 {/* Date and Time Inputs */}
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col md:flex-row items-center gap-4">
                   {/* Interview Date */}
-                  <div className="flex-1 flex flex-col gap-2.5">
+                  <div className="w-full md:flex-1 flex flex-col gap-2.5">
                     <label className="font-inter-tight text-sm font-medium text-black">
                       Interview Date
                     </label>
@@ -182,13 +182,13 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                         value={date}
                         onChange={(e) => setDate(e.target.value)}
                         min={today}
-                        className="w-full h-10 px-3.5 pr-3 rounded-[10px] border border-[#E1E4EA] font-inter-tight text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                        className="w-full min-h-[44px] h-10 px-3.5 pr-3 rounded-[10px] border border-[#E1E4EA] font-inter-tight text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                       />
                     </div>
                   </div>
 
                   {/* Interview Time */}
-                  <div className="flex-1 flex flex-col gap-2.5">
+                  <div className="w-full md:flex-1 flex flex-col gap-2.5">
                     <label className="font-inter-tight text-sm font-medium text-black">
                       Interview Time
                     </label>
@@ -197,7 +197,7 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                         type="time"
                         value={time}
                         onChange={(e) => setTime(e.target.value)}
-                        className="w-full h-10 px-3.5 pr-3 rounded-[10px] border border-[#E1E4EA] font-inter-tight text-[15px] text-[#525866] focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
+                        className="w-full min-h-[44px] h-10 px-3.5 pr-3 rounded-[10px] border border-[#E1E4EA] font-inter-tight text-[15px] text-[#525866] focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -217,7 +217,7 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
                     value={meetingLink}
                     onChange={(e) => setMeetingLink(e.target.value)}
                     placeholder="https://zoom.us/j/... or https://meet.google.com/..."
-                    className="w-full h-10 px-3.5 pr-3 rounded-[10px] border border-[#E1E4EA] font-inter-tight text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent placeholder:text-[#B2B2B2]"
+                    className="w-full min-h-[44px] h-10 px-3.5 pr-3 rounded-[10px] border border-[#E1E4EA] font-inter-tight text-[15px] text-black focus:outline-none focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent placeholder:text-[#B2B2B2]"
                   />
                 </div>
               </div>
@@ -256,18 +256,18 @@ export const ScheduleInterviewModal: React.FC<ScheduleInterviewModalProps> = ({
           </div>
 
           {/* Footer Actions */}
-          <div className="flex justify-end items-center gap-2">
+          <div className="flex flex-col md:flex-row justify-end items-center gap-2">
             <button
               onClick={onClose}
               disabled={isLoading}
-              className="h-10 px-5 rounded-[10px] border border-[#E6E7EA] font-inter-tight text-sm font-medium text-black hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full md:w-auto min-h-[44px] h-10 px-5 rounded-[10px] border border-[#E6E7EA] font-inter-tight text-sm font-medium text-black hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
             <button
               onClick={handleSubmit}
               disabled={isLoading || !isFormValid}
-              className={`h-10 px-6 rounded-[10px] border border-[#5C30FF] font-inter-tight text-sm font-medium text-white transition-colors ${
+              className={`w-full md:w-auto min-h-[44px] h-10 px-6 rounded-[10px] border border-[#5C30FF] font-inter-tight text-sm font-medium text-white transition-colors ${
                 isLoading || !isFormValid
                   ? "bg-[#5C30FF] opacity-50 cursor-not-allowed"
                   : "bg-[#5C30FF] hover:bg-[#4a26cc]"

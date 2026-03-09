@@ -233,10 +233,10 @@ export function HireOpportunitiesModal({
         )}
 
         {/* Actions */}
-        <div className="flex items-center gap-2.5 mt-6">
+        <div className="flex flex-col md:flex-row items-center gap-2.5 mt-6">
           <button
             onClick={onClose}
-            className="flex-1 px-3.5 py-2.5 rounded-[8px] border border-[#E1E4EA] font-inter-tight text-[12px] font-medium text-black hover:bg-gray-50 transition-colors"
+            className="w-full md:flex-1 px-3.5 min-h-[44px] py-2.5 rounded-[8px] border border-[#E1E4EA] font-inter-tight text-[12px] font-medium text-black hover:bg-gray-50 transition-colors"
           >
             Cancel
           </button>
@@ -248,7 +248,7 @@ export function HireOpportunitiesModal({
               opportunities.length === 0 ||
               getApplicationStatus(selectedOpportunityId || "") !== "available"
             }
-            className="flex-1 px-3.5 py-2.5 rounded-[8px] bg-[#5C30FF] hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[12px] font-medium text-white transition-colors flex items-center justify-center gap-1.5"
+            className="w-full md:flex-1 px-3.5 min-h-[44px] py-2.5 rounded-[8px] bg-[#5C30FF] hover:bg-[#4a26cc] disabled:opacity-50 disabled:cursor-not-allowed font-inter-tight text-[12px] font-medium text-white transition-colors flex items-center justify-center gap-1.5"
           >
             <svg
               width="15"

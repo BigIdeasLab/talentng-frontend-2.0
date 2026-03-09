@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { TalentCard } from "./TalentCard";
+import { ResponsiveGrid } from "@/components/ui/ResponsiveGrid";
 import type { TalentData } from "@/app/(business)/discover-talent/server-data";
 
 interface TalentGridProps {
@@ -37,17 +38,17 @@ export function TalentGrid({
       </div>
 
       <div className="flex-1 overflow-y-auto scrollbar-styled px-[25px] py-[16px]">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px] pb-8">
-          {talents.length > 0 ? (
-            talents.map((talent) => (
+        {talents.length > 0 ? (
+          <ResponsiveGrid columns={3} gap={2} className="pb-8">
+            {talents.map((talent) => (
               <TalentCard key={talent.id} talent={talent} />
-            ))
-          ) : (
-            <div className="col-span-full flex items-center justify-center py-8">
-              <p className="text-gray-500">No talents found</p>
-            </div>
-          )}
-        </div>
+            ))}
+          </ResponsiveGrid>
+        ) : (
+          <div className="flex items-center justify-center py-8">
+            <p className="text-gray-500">No talents found</p>
+          </div>
+        )}
       </div>
 
       {/* Pagination Controls */}
