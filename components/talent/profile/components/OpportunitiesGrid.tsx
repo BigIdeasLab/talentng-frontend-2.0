@@ -317,7 +317,7 @@ export function OpportunitiesGrid({
                       disabled={
                         saveMutation.isPending || unsaveMutation.isPending
                       }
-                      className="flex h-[36px] px-[16px] py-[12px] items-center gap-[3px] rounded-[50px] bg-[#181B25] hover:bg-[#2a2d3a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex h-[44px] px-[16px] py-[12px] items-center gap-[3px] rounded-[50px] bg-[#181B25] hover:bg-[#2a2d3a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Bookmark
                         className="w-[15px] h-[15px]"
@@ -333,7 +333,7 @@ export function OpportunitiesGrid({
                     <button
                       onClick={() => handleApplyClick(opportunity)}
                       disabled={appliedIds.has(opportunity.id)}
-                      className={`flex h-[36px] px-[16px] py-[12px] items-center gap-[3px] rounded-[50px] border-[0.822px] transition-colors ${
+                      className={`flex h-[44px] px-[16px] py-[12px] items-center gap-[3px] rounded-[50px] border-[0.822px] transition-colors ${
                         appliedIds.has(opportunity.id)
                           ? "bg-gray-200 border-gray-200 cursor-not-allowed"
                           : "border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4a24d6]"

@@ -43,7 +43,7 @@ export function SuccessModal({
 
       {/* Modal Card */}
       <div
-        className="relative bg-white rounded-[20px] w-full max-w-[380px] mx-4 shadow-[0_8px_40px_0_rgba(0,0,0,0.18)] flex flex-col items-center text-center px-8 py-10 gap-5"
+        className="relative bg-white rounded-[20px] w-full max-w-[380px] mx-4 shadow-[0_8px_40px_0_rgba(0,0,0,0.18)] flex flex-col items-center text-center px-4 md:px-8 py-6 md:py-10 gap-4 md:gap-5"
         style={{
           animation: "successModalIn 0.25s cubic-bezier(0.22,1,0.36,1) both",
         }}
@@ -115,7 +115,7 @@ export function SuccessModal({
                 onCta();
                 onClose();
               }}
-              className="w-full py-3 rounded-[30px] font-inter-tight text-[13px] font-medium text-white hover:opacity-80 transition-opacity"
+              className="w-full py-3 rounded-[30px] font-inter-tight text-[13px] font-medium text-white active:opacity-80 hover:opacity-80 transition-opacity"
               style={{ backgroundColor: accentColor }}
             >
               {ctaLabel}
@@ -123,7 +123,7 @@ export function SuccessModal({
           )}
           <button
             onClick={onClose}
-            className="w-full py-3 rounded-[30px] font-inter-tight text-[13px] font-normal text-[#525866] border border-[#E1E4EA] hover:bg-[#F5F5F5] transition-colors"
+            className="w-full py-3 rounded-[30px] font-inter-tight text-[13px] font-normal text-[#525866] border border-[#E1E4EA] active:bg-[#F5F5F5] hover:bg-[#F5F5F5] transition-colors"
           >
             Done
           </button>

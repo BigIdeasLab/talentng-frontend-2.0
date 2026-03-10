@@ -137,7 +137,7 @@ export function ApplicantFilterModal({
               <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
                 Status
               </span>
-              <div className="flex flex-wrap gap-[6px]">
+              <div className="flex flex-wrap gap-2">
                 {availableStatuses.map((status) => (
                   <button
                     key={status}
@@ -165,7 +165,7 @@ export function ApplicantFilterModal({
                 </button>
               </div>
               <div className="relative">
-                <div className="flex items-center gap-[4px] px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] bg-white min-h-[44px]">
+                <div className="flex items-center gap-2 px-[6px] py-[10px] border border-[#E1E4EA] rounded-[8px] bg-white min-h-[44px]">
                   <Search className="w-[12px] h-[12px] text-[#B2B2B2]" />
                   <input
                     type="text"
@@ -199,7 +199,7 @@ export function ApplicantFilterModal({
                 )}
               </div>
               {filters.location && (
-                <div className="flex flex-wrap gap-[4px]">
+                <div className="flex flex-wrap gap-2">
                   <div className="flex items-center gap-[5px] px-[7px] py-[8px] bg-[#F5F5F5] rounded-[25px]">
                     <span className="text-[10px] font-normal text-black font-inter-tight">
                       {filters.location}
@@ -221,7 +221,7 @@ export function ApplicantFilterModal({
               <span className="text-[11px] font-normal text-black font-inter-tight capitalize">
                 Date
               </span>
-              <div className="flex flex-wrap gap-[6px]">
+              <div className="flex flex-wrap gap-2">
                 {dateRangeOptions.map((option) => (
                   <button
                     key={option.value}
@@ -245,7 +245,7 @@ export function ApplicantFilterModal({
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col md:flex-row items-center gap-[4px]">
+          <div className="flex flex-col md:flex-row items-center gap-2">
             <button
               onClick={handleClearFilter}
               className="w-full md:flex-1 flex items-center justify-center px-4 min-h-[44px] py-[13px] border border-[#E1E4EA] rounded-[8px] bg-white"

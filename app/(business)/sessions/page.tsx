@@ -364,15 +364,15 @@ export default function SessionsPage() {
   return (
     <div className="h-screen overflow-x-hidden bg-white flex flex-col">
       {/* Header */}
-      <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+      <div className="w-full px-4 md:px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
         {/* Title */}
         <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px] mb-[19px]">
           Sessions
         </h1>
 
         {/* Search Bar and Date Range Filters */}
-        <div className="flex items-center gap-[8px] mb-[19px]">
-          <div className="flex-1 max-w-[585px]">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-[8px] mb-[19px]">
+          <div className="flex-1 w-full md:max-w-[585px]">
             <SearchInput
               value={searchQuery}
               onChange={setSearchQuery}
@@ -384,7 +384,7 @@ export default function SessionsPage() {
           </div>
 
           {/* Date Range Filter Buttons */}
-          <div className="flex items-center gap-[6px]">
+          <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hide">
             {[
               { value: "all", label: "All Time" },
               { value: "today", label: "Today" },
@@ -394,7 +394,7 @@ export default function SessionsPage() {
               <button
                 key={option.value}
                 onClick={() => setDateRange(option.value)}
-                className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors text-[13px] font-normal font-inter-tight border ${
+                className={`min-h-[44px] md:h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors text-[13px] font-normal font-inter-tight border ${
                   dateRange === option.value
                     ? "bg-[#8463FF0D] border-[#8463FF] text-[#8463FF]"
                     : "bg-[#F5F5F5] hover:bg-gray-100 text-black border-transparent"
@@ -412,7 +412,7 @@ export default function SessionsPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as typeof activeTab)}
-              className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors ${
+              className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors min-h-[44px] md:min-h-0 ${
                 activeTab === tab.id
                   ? "text-black font-medium border-b-2 border-black"
                   : "text-black/30 font-medium hover:text-black/50"
@@ -429,7 +429,7 @@ export default function SessionsPage() {
         <div className="h-full overflow-y-auto p-4 md:p-6">
           {isLoading && !isInitialLoad ? (
             // Show previous data with loading indicator in search bar
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-[7px]">
               {filteredSessions.length === 0 ? (
                 <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
                   <p className="font-inter-tight text-[14px] text-[#525866]">
@@ -460,7 +460,7 @@ export default function SessionsPage() {
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-[7px]">
               {filteredSessions.length === 0 ? (
                 <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
                   <p className="font-inter-tight text-[14px] text-[#525866]">

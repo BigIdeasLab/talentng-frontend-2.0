@@ -153,7 +153,7 @@ export function MentorSessionCard({ session }: MentorSessionCardProps) {
         )}
 
         {/* Details as pills */}
-        <div className="flex items-start content-start gap-x-1 gap-y-1.5 flex-wrap">
+        <div className="flex items-start content-start gap-x-2 gap-y-1.5 flex-wrap">
           <div className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#F5F5F5]">
             <Calendar className="w-3 h-3 text-[#525866]" />
             <span className="text-[12px] font-normal font-inter-tight text-black leading-[12.6px]">
@@ -226,7 +226,7 @@ export function MentorSessionCard({ session }: MentorSessionCardProps) {
       <div className="flex items-center justify-end px-4 py-2.5 border-t border-[#E1E4EA]">
         <Link
           href="/sessions"
-          className="flex items-center gap-1 text-[12px] font-medium font-inter-tight text-[#525866] hover:text-black transition-colors"
+          className="flex items-center gap-2 text-[12px] font-medium font-inter-tight text-[#525866] hover:text-black transition-colors"
         >
           View Sessions
           <ExternalLink className="w-3 h-3" />

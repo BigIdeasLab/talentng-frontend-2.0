@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 // ─── SVG Icons ───────────────────────────────────────────────────────────────
 
@@ -533,16 +534,16 @@ function TalentCard({ talent }: { talent: (typeof talents)[0] }) {
               avatarBg={talent.avatarBg}
               initials={talent.initials}
             />
-            <div className="flex flex-col gap-0.5">
-              <span className="text-black font-medium text-[15px] leading-tight">
+            <div className="flex flex-col gap-0.5 min-w-0">
+              <span className="text-black font-medium text-[15px] leading-tight truncate">
                 {talent.name}
               </span>
-              <span className="text-black/30 text-sm font-light leading-tight">
+              <span className="text-black/30 text-sm font-light leading-tight truncate">
                 {talent.role}
               </span>
             </div>
           </div>
-          <button className="flex items-center gap-1 px-4 py-3 rounded-full bg-[#181B25] border border-[#181B25] text-white text-[13px] whitespace-nowrap hover:bg-[#2a2f3d] transition-colors">
+          <button className="flex items-center gap-2 px-4 py-3 rounded-full bg-[#181B25] border border-[#181B25] text-white text-[13px] whitespace-nowrap hover:bg-[#2a2f3d] transition-colors">
             View Profile
           </button>
         </div>
@@ -550,22 +551,22 @@ function TalentCard({ talent }: { talent: (typeof talents)[0] }) {
         <div className="flex flex-wrap items-center gap-4 mt-1">
           <div className="flex items-center gap-2">
             <LocationIcon />
-            <span className="text-[#525866] text-sm">{talent.location}</span>
+            <span className="text-[#525866] text-sm truncate">{talent.location}</span>
           </div>
           <div className="flex items-center gap-2">
             <WorkIcon />
-            <span className="text-[#525866] text-sm">{talent.hired}</span>
+            <span className="text-[#525866] text-sm truncate">{talent.hired}</span>
           </div>
           {talent.showEarned && (
             <div className="flex items-center gap-2">
               <DollarIcon />
-              <span className="text-[#525866] text-sm">{talent.earned}</span>
+              <span className="text-[#525866] text-sm truncate">{talent.earned}</span>
             </div>
           )}
           {talent.showTag && (
             <div className="flex items-center gap-2">
               <PenToolIcon />
-              <span className="text-[#525866] text-sm">{talent.tag}</span>
+              <span className="text-[#525866] text-sm truncate">{talent.tag}</span>
             </div>
           )}
         </div>
@@ -630,10 +631,14 @@ function HeroMockup() {
         }}
       />
       {/* Platform screenshot */}
-      <img
+      <Image
         src="https://api.builder.io/api/v1/image/assets/TEMP/d694f83bf298a860b64aa722c354b702b33f2bcc?width=1614"
         alt="Talent.ng platform screenshot"
+        width={1614}
+        height={1000}
         className="absolute inset-0 w-full h-full object-cover object-left-top"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1614px"
+        priority
       />
     </div>
   );
@@ -646,10 +651,14 @@ function PlatformMockup({ images, bg }: { images: string[]; bg: string }) {
       style={{ backgroundColor: bg }}
     >
       {/* Full mockup image */}
-      <img
+      <Image
         src={images[0]}
         alt="Platform mockup"
+        width={1200}
+        height={800}
         className="w-full h-auto object-contain"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
+        priority
       />
     </div>
   );
@@ -672,10 +681,14 @@ export default function LandingPage() {
         <div className="max-w-[1280px] mx-auto px-4 sm:px-8 flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0">
-            <img
+            <Image
               src="/landing-page-logo.png"
               alt="Talent.ng"
+              width={200}
+              height={70}
               className="h-[70px] w-auto object-contain"
+              sizes="200px"
+              priority
             />
           </Link>
 
@@ -708,7 +721,7 @@ export default function LandingPage() {
             </Link>
             {/* Mobile menu button */}
             <button
-              className="md:hidden p-2 text-gray-700"
+              className="md:hidden p-3 text-gray-700 min-w-[44px] min-h-[44px] flex items-center justify-center"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle menu"
             >
@@ -950,7 +963,7 @@ export default function LandingPage() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
+                className={`px-4 py-3 rounded-full text-sm font-medium border transition-colors min-h-[44px] flex items-center ${
                   activeTab === tab
                     ? "border-black bg-white text-black"
                     : "border-transparent bg-transparent text-[#525866] hover:border-gray-300"
@@ -967,7 +980,7 @@ export default function LandingPage() {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors whitespace-nowrap ${
+                className={`flex-shrink-0 px-4 py-3 rounded-full text-sm font-medium transition-colors whitespace-nowrap min-h-[44px] flex items-center ${
                   activeCategory === cat
                     ? "bg-[#181B25] text-white"
                     : "bg-white text-gray-700 hover:bg-gray-100 border border-[#E1E4EA]"
@@ -1004,7 +1017,7 @@ export default function LandingPage() {
                 <div key={i}>
                   <button
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    className={`w-full flex items-center justify-between py-5 text-left ${
+                    className={`w-full flex items-center justify-between py-5 text-left min-h-[44px] ${
                       i === 0
                         ? "border-t border-b border-[#E1E4EA]"
                         : "border-b border-[#E1E4EA]"
@@ -1035,10 +1048,13 @@ export default function LandingPage() {
       <section className="bg-white py-16 md:py-20 border-t border-[#F0F0F0]">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-8">
           <div className="flex flex-col items-center text-center gap-5">
-            <img
+            <Image
               src="/landing-page-logo.png"
               alt="Talent.ng Logo"
+              width={400}
+              height={200}
               className="h-[200px] w-auto object-contain"
+              sizes="400px"
             />
             <div className="flex flex-col gap-4">
               <h2 className="text-4xl sm:text-[56px] md:text-[60px] font-normal text-black leading-[1.05]">
@@ -1064,10 +1080,13 @@ export default function LandingPage() {
           <div className="flex flex-col md:flex-row gap-12 md:gap-16">
             {/* Brand */}
             <div className="md:w-[320px] flex-shrink-0 flex flex-col gap-6">
-              <img
+              <Image
                 src="/landing-page-logo.png"
                 alt="Talent.ng"
+                width={200}
+                height={70}
                 className="h-[70px] w-auto object-contain self-start"
+                sizes="200px"
               />
               <p className="text-[#525866] text-base leading-6 max-w-xs">
                 Nigeria&rsquo;s centralized platform connecting talents,

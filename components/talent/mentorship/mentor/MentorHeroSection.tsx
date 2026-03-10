@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Calendar, ArrowRight } from "lucide-react";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import { HideOnMobile } from "@/components/ui/HideOnMobile";
 
 interface MentorHeroSectionProps {
   name: string;
@@ -22,54 +23,56 @@ export function MentorHeroSection({
         background: `linear-gradient(to bottom right, ${ROLE_COLORS.mentor.dark}E6, ${ROLE_COLORS.mentor.dark})`,
       }}
     >
-      <svg
-        className="absolute right-[10%] top-[-5%] opacity-100"
-        width="56"
-        height="56"
-        viewBox="0 0 70 70"
-        fill="none"
-      >
-        <path
-          d="M35 -1.5L42.232 37.768L80.5 45L42.232 52.232L35 90.5L27.768 52.232L-10.5 45L27.768 37.768L35 -1.5Z"
-          fill={ROLE_COLORS.mentor.light}
-        />
-      </svg>
-      <svg
-        className="absolute right-[4%] bottom-[20%] opacity-45"
-        width="43"
-        height="43"
-        viewBox="0 0 54 54"
-        fill="none"
-      >
-        <path
-          d="M27 0L32.296 21.704L54 27L32.296 32.296L27 54L21.704 32.296L0 27L21.704 21.704L27 0Z"
-          fill={ROLE_COLORS.mentor.light}
-        />
-      </svg>
-      <svg
-        className="absolute left-[35%] bottom-[10%] opacity-70"
-        width="43"
-        height="43"
-        viewBox="0 0 54 54"
-        fill="none"
-      >
-        <path
-          d="M27 0L32.296 21.704L54 27L32.296 32.296L27 54L21.704 32.296L0 27L21.704 21.704L27 0Z"
-          fill={ROLE_COLORS.mentor.light}
-        />
-      </svg>
-      <svg
-        className="absolute left-[37%] top-[5%] opacity-45"
-        width="26"
-        height="26"
-        viewBox="0 0 32 32"
-        fill="none"
-      >
-        <path
-          d="M16 0L19.113 12.887L32 16L19.113 19.113L16 32L12.887 19.113L0 16L12.887 12.887L16 0Z"
-          fill={ROLE_COLORS.mentor.light}
-        />
-      </svg>
+      <HideOnMobile>
+        <svg
+          className="absolute right-[10%] top-[-5%] opacity-100"
+          width="56"
+          height="56"
+          viewBox="0 0 70 70"
+          fill="none"
+        >
+          <path
+            d="M35 -1.5L42.232 37.768L80.5 45L42.232 52.232L35 90.5L27.768 52.232L-10.5 45L27.768 37.768L35 -1.5Z"
+            fill={ROLE_COLORS.mentor.light}
+          />
+        </svg>
+        <svg
+          className="absolute right-[4%] bottom-[20%] opacity-45"
+          width="43"
+          height="43"
+          viewBox="0 0 54 54"
+          fill="none"
+        >
+          <path
+            d="M27 0L32.296 21.704L54 27L32.296 32.296L27 54L21.704 32.296L0 27L21.704 21.704L27 0Z"
+            fill={ROLE_COLORS.mentor.light}
+          />
+        </svg>
+        <svg
+          className="absolute left-[35%] bottom-[10%] opacity-70"
+          width="43"
+          height="43"
+          viewBox="0 0 54 54"
+          fill="none"
+        >
+          <path
+            d="M27 0L32.296 21.704L54 27L32.296 32.296L27 54L21.704 32.296L0 27L21.704 21.704L27 0Z"
+            fill={ROLE_COLORS.mentor.light}
+          />
+        </svg>
+        <svg
+          className="absolute left-[37%] top-[5%] opacity-45"
+          width="26"
+          height="26"
+          viewBox="0 0 32 32"
+          fill="none"
+        >
+          <path
+            d="M16 0L19.113 12.887L32 16L19.113 19.113L16 32L12.887 19.113L0 16L12.887 12.887L16 0Z"
+            fill={ROLE_COLORS.mentor.light}
+          />
+        </svg>
+      </HideOnMobile>
 
       <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div>
@@ -89,7 +92,7 @@ export function MentorHeroSection({
         </div>
         <Link
           href="/sessions"
-          className="flex h-[38px] px-4 justify-center items-center gap-1 rounded-lg bg-white hover:bg-gray-100 transition-colors group flex-shrink-0 w-fit"
+          className="flex h-[44px] px-4 justify-center items-center gap-2 rounded-lg bg-white hover:bg-gray-100 transition-colors group flex-shrink-0 w-fit"
         >
           <span className="font-inter-tight text-xs font-medium text-[#DB2777]">
             View Schedule

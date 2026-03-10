@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useUnsavedChangesWarning } from "@/hooks/useUnsavedChangesWarning";
@@ -333,10 +334,14 @@ function PersonalDetailsSection({
                   height: ringSize - (strokeWidth + 4) * 2,
                 }}
               >
-                <img
+                <Image
                   src={formData.profileImageUrl || "/logo.png"}
                   alt="Profile"
+                  width={110}
+                  height={110}
                   className="w-full h-full object-cover rounded-full"
+                  sizes="110px"
+                  priority
                 />
               </button>
               <div

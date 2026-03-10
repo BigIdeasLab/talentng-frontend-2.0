@@ -244,8 +244,8 @@ export const SearchInput = React.memo<SearchInputProps>(
 
     // Container classes with error state
     const containerClasses = `
-      flex items-center gap-[6px]
-      h-[44px] lg:h-[38px] px-3 py-[7px]
+      flex items-center gap-2
+      h-[44px] px-3 py-[7px]
       border rounded-lg
       ${error ? "border-red-500 bg-red-50" : "border-[#E1E4EA] bg-transparent"}
       transition-colors duration-150
@@ -301,7 +301,7 @@ export const SearchInput = React.memo<SearchInputProps>(
               type="button"
               onClick={handleClear}
               aria-label="Clear search"
-              className="flex-shrink-0 text-[#B2B2B2] hover:text-black transition-colors duration-150"
+              className="flex-shrink-0 text-[#B2B2B2] active:text-black hover:text-black transition-colors duration-150 min-w-[44px] min-h-[44px] flex items-center justify-center"
             >
               <X className="w-[15px] h-[15px]" />
             </button>

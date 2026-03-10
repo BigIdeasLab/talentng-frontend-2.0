@@ -33,7 +33,9 @@ export default function DashboardPage() {
             );
             setActiveRole(jwtActiveRole);
           }
-        } catch (e) {}
+        } catch (_e) {
+          // Ignore token parsing errors
+        }
       }
     }
   }, [activeRole, setActiveRole]);

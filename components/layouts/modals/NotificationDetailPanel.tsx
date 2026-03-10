@@ -3,6 +3,8 @@
 import { X } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useEffect, useRef } from "react";
+import Image from "next/image";
+import { SwipeableModal } from "@/components/ui/SwipeableModal";
 import type {
   Notification,
   InAppNotificationPayload,
@@ -166,16 +168,13 @@ export function NotificationDetailPanel({
   };
 
   return (
-    <div
-      className={`fixed bg-white shadow-xl flex flex-col overflow-hidden transition-transform duration-300 ease-in-out ${
-        isMobile
-          ? "inset-0 z-[51] animate-slide-in-right"
-          : "left-[600px] top-0 bottom-0 right-0 border-l border-gray-200 z-50 animate-slide-in-right"
-      }`}
-      onClick={(e) => e.stopPropagation()}
-      role="complementary"
-      aria-labelledby="detail-panel-title"
-      aria-live="polite"
+    <SwipeableModal
+      isOpen={isOpen}
+      onClose={onClose}
+      isMobile={isMobile}
+      swipeDirection={isMobile ? "down" : "right"}
+      swipeEnabled={true}
+      className="animate-slide-in-right"
     >
       {/* Header with close button */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 flex-shrink-0 bg-white">
@@ -210,12 +209,15 @@ export function NotificationDetailPanel({
         </div>
 
         {/* Image/Icon display */}
-        {displayElement.type === "image" ? (
+        {displayElement.type === "image" && displayElement.value ? (
           <div className="mb-4">
-            <img
+            <Image
               src={displayElement.value}
               alt={title}
+              width={64}
+              height={64}
               className="w-16 h-16 rounded-lg object-cover transition-opacity duration-200"
+              sizes="64px"
               onError={(e) => {
                 e.currentTarget.style.display = "none";
               }}
@@ -284,6 +286,6 @@ export function NotificationDetailPanel({
           Close
         </button>
       </div>
-    </div>
+    </SwipeableModal>
   );
 }

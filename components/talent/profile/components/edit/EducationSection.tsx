@@ -164,7 +164,7 @@ export function EducationSection({
 
             <Button
               onClick={onAdd}
-              className="h-[40px] px-[24px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] font-inter-tight text-[12px] font-normal"
+              className="h-[44px] px-[24px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] font-inter-tight text-[12px] font-normal"
             >
               + Add Education
             </Button>

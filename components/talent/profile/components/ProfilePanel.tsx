@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { MapPin, Briefcase, Users } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 
@@ -119,10 +120,14 @@ export function ProfilePanel({
               className="transition-all duration-500"
             />
           </svg>
-          <img
+          <Image
             src={user?.profileImageUrl || "/lucas-gouvea.jpg"}
             alt={user?.fullName || "Profile"}
+            width={110}
+            height={110}
             className="absolute rounded-full object-cover"
+            sizes="(max-width: 768px) 80px, 110px"
+            priority
             style={{
               top: strokeWidth + 4,
               left: strokeWidth + 4,
@@ -225,7 +230,7 @@ export function ProfilePanel({
 
       {/* Edit Profile Button */}
       <Link href="/profile/edit" className="w-full mt-[15px]">
-        <Button className="w-full h-[40px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-aeonik text-[14px] font-normal flex-shrink-0">
+        <Button className="w-full h-[44px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-aeonik text-[14px] font-normal flex-shrink-0">
           ✏️ Edit Profile
         </Button>
       </Link>

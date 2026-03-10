@@ -2,6 +2,8 @@ import React from "react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TOUCH_TARGET } from "@/lib/constants/touch-targets";
+import { SwipeableModal } from "./SwipeableModal";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface ResponsiveModalProps {
   isOpen: boolean;
@@ -13,6 +15,16 @@ interface ResponsiveModalProps {
   size?: "sm" | "md" | "lg";
   closeOnBackdrop?: boolean;
   className?: string;
+  /**
+   * Whether swipe-to-dismiss is enabled
+   * @default true
+   */
+  swipeEnabled?: boolean;
+  /**
+   * Direction of swipe to dismiss (mobile only)
+   * @default "down"
+   */
+  swipeDirection?: "up" | "down" | "left" | "right";
 }
 
 const sizeClasses = {
@@ -25,7 +37,7 @@ const sizeClasses = {
  * ResponsiveModal - A responsive modal wrapper component that adapts to different viewport sizes
  *
  * Responsive behavior:
- * - Mobile (< 768px): Full-screen overlay (100vw/100vh) with 16px padding
+ * - Mobile (< 768px): Full-screen overlay (100vw/100vh) with 16px padding, supports swipe-to-dismiss
  * - Tablet (768px - 1023px): 90vw width, centered, with 24px padding
  * - Desktop (≥ 1024px): Fixed width based on size prop, centered, with 32px padding
  *
@@ -33,6 +45,7 @@ const sizeClasses = {
  * - Touch-friendly close button (44x44px minimum tap target)
  * - Scrollable content area with proper overflow handling
  * - Backdrop click to close (configurable)
+ * - Swipe-to-dismiss on mobile (configurable)
  * - Accessible with proper ARIA attributes
  */
 export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
@@ -45,7 +58,11 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
   size = "md",
   closeOnBackdrop = true,
   className,
+  swipeEnabled = true,
+  swipeDirection = "down",
 }) => {
+  const isMobile = useIsMobile();
+
   if (!isOpen) return null;
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -54,6 +71,74 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
     }
   };
 
+  // Use SwipeableModal for mobile, regular modal for desktop
+  if (isMobile && swipeEnabled) {
+    return (
+      <SwipeableModal
+        isOpen={isOpen}
+        onClose={onClose}
+        isMobile={true}
+        swipeDirection={swipeDirection}
+        swipeEnabled={swipeEnabled}
+        className={cn(
+          "bg-white rounded-t-lg",
+          "p-4",
+          "flex flex-col overflow-hidden",
+          className,
+        )}
+      >
+        {/* Close Button - Touch-friendly, positioned top-right */}
+        <button
+          onClick={onClose}
+          className={cn(
+            "absolute top-4 right-4 z-10",
+            "flex items-center justify-center",
+            "rounded-full bg-gray-100 active:bg-gray-200 hover:bg-gray-200",
+            "transition-colors",
+            "focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2",
+          )}
+          style={{
+            width: `${TOUCH_TARGET.minSize}px`,
+            height: `${TOUCH_TARGET.minSize}px`,
+          }}
+          aria-label="Close modal"
+        >
+          <X className="w-5 h-5 text-gray-600" />
+        </button>
+
+        {/* Header */}
+        {(title || description) && (
+          <div className="mb-4 pr-12">
+            {title && (
+              <h2
+                id="modal-title"
+                className="text-lg font-semibold text-black"
+              >
+                {title}
+              </h2>
+            )}
+            {description && (
+              <p id="modal-description" className="text-base md:text-sm text-gray-600 mt-1">
+                {description}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Body - Scrollable content area */}
+        <div className="flex-1 overflow-y-auto">{children}</div>
+
+        {/* Footer */}
+        {footer && (
+          <div className="mt-4 pt-4 border-t border-gray-200 flex flex-col justify-end gap-2">
+            {footer}
+          </div>
+        )}
+      </SwipeableModal>
+    );
+  }
+
+  // Regular modal for desktop or when swipe is disabled
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center"
@@ -73,7 +158,7 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
       <div
         className={cn(
           "relative bg-white rounded-lg shadow-lg",
-          // Mobile: full screen
+          // Mobile: full screen (when swipe is disabled)
           "w-full h-full",
           // Tablet: 90vw width, auto height
           "md:w-[90vw] md:h-auto md:max-h-[90vh]",
@@ -92,7 +177,7 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
           className={cn(
             "absolute top-4 right-4 z-10",
             "flex items-center justify-center",
-            "rounded-full bg-gray-100 hover:bg-gray-200",
+            "rounded-full bg-gray-100 active:bg-gray-200 hover:bg-gray-200",
             "transition-colors",
             "focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2",
           )}
@@ -117,7 +202,7 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
               </h2>
             )}
             {description && (
-              <p id="modal-description" className="text-sm text-gray-600 mt-1">
+              <p id="modal-description" className="text-base md:text-sm text-gray-600 mt-1">
                 {description}
               </p>
             )}

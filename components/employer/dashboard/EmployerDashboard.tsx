@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { Users, Briefcase, TrendingUp, Clock } from "lucide-react";
 import { StatsCard } from "./StatsCard";
 import { WeeklyOverviewChart } from "./WeeklyOverviewChart";
@@ -10,6 +11,14 @@ import { QuickActions } from "./QuickActions";
 import { WelcomeHeader } from "./WelcomeHeader";
 import { useRecruiterDashboard } from "@/hooks/useRecruiterDashboard";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import { OrientationAdaptiveGrid, OrientationAdaptiveLayout } from "@/components/ui/OrientationAdaptiveLayout";
+import { 
+  mobileOptimizedMemo, 
+  useMobileOptimizedMemo, 
+  useMobileOptimizedCallback,
+  MobileLazyRender 
+} from "@/lib/utils/mobile-performance";
+import { useOrientationScrollPreservation } from "@/hooks/useOrientationState";
 
 function Skeleton({ className }: { className?: string }) {
   return (
@@ -47,15 +56,55 @@ function DashboardSkeleton() {
   );
 }
 
-function formatChange(value: number, isPercent: boolean): string {
-  const sign = value >= 0 ? "+" : "";
-  return isPercent ? `${sign}${value}%` : `${sign}${value}`;
-}
-
-export function EmployerDashboard() {
+const EmployerDashboard = mobileOptimizedMemo(function EmployerDashboard() {
   const { data, isLoading, isPending, error } = useRecruiterDashboard();
 
+  // Preserve scroll position during orientation changes
+  useOrientationScrollPreservation();
+
   console.log("Recruiter Dashboard Data:", data);
+
+  // Memoized format function
+  const formatChange = useMobileOptimizedCallback((value: number, isPercent: boolean): string => {
+    const sign = value >= 0 ? "+" : "";
+    return isPercent ? `${sign}${value}%` : `${sign}${value}`;
+  }, []);
+
+  // Memoize formatted stats to prevent unnecessary re-calculations
+  const formattedStats = useMobileOptimizedMemo(() => {
+    if (!data) return null;
+    
+    return {
+      totalApplicants: {
+        value: data.totalApplicants?.value ?? 0,
+        change: formatChange(data.totalApplicants?.change ?? 0, true),
+        changeType: (data.totalApplicants?.change ?? 0) >= 0 ? "positive" : "negative",
+      },
+      activeOpportunities: {
+        value: data.activeOpportunities?.value ?? 0,
+        change: formatChange(data.activeOpportunities?.change ?? 0, false),
+        changeType: (data.activeOpportunities?.change ?? 0) >= 0 ? "positive" : "negative",
+      },
+      hiredThisMonth: {
+        value: data.hiredThisMonth?.value ?? 0,
+        change: formatChange(data.hiredThisMonth?.change ?? 0, true),
+        changeType: (data.hiredThisMonth?.change ?? 0) >= 0 ? "positive" : "negative",
+      },
+      pendingReviews: {
+        value: data.pendingReviews?.value ?? 0,
+        change: formatChange(data.pendingReviews?.change ?? 0, false),
+        changeType: (data.pendingReviews?.change ?? 0) >= 0 ? "positive" : "negative",
+      },
+    };
+  }, [data, formatChange], {
+    // On mobile, only recalculate if data reference changes
+    simplifyOnMobile: true,
+    mobileDeps: [data]
+  });
+
+  const handleRetry = useMobileOptimizedCallback(() => {
+    window.location.reload();
+  }, []);
 
   if (isLoading || isPending) {
     return <DashboardSkeleton />;
@@ -70,7 +119,7 @@ export function EmployerDashboard() {
             Failed to load dashboard data
           </p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={handleRetry}
             className="px-4 py-2 rounded-lg border border-gray-300 text-sm"
           >
             Retry
@@ -80,97 +129,116 @@ export function EmployerDashboard() {
     );
   }
 
+  if (!formattedStats) {
+    return <DashboardSkeleton />;
+  }
+
   return (
     <div className="px-4 py-6 md:px-8 md:py-7 flex flex-col gap-5 h-full overflow-y-auto scrollbar-styled">
       {/* Welcome Header */}
       <WelcomeHeader
         companyName={data?.companyName ?? "Employer"}
-        totalApplicants={data?.totalApplicants?.value ?? 0}
-        pendingReviews={data?.pendingReviews?.value ?? 0}
+        totalApplicants={formattedStats.totalApplicants.value}
+        pendingReviews={formattedStats.pendingReviews.value}
       />
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 flex-shrink-0">
+      <OrientationAdaptiveGrid
+        portraitMobileCols={1}
+        landscapeMobileCols={2}
+        tabletCols={2}
+        desktopCols={4}
+        className="flex-shrink-0"
+      >
         <StatsCard
           icon={<Users className="w-5 h-5" strokeWidth={1.6} />}
-          value={data?.totalApplicants?.value ?? 0}
+          value={formattedStats.totalApplicants.value}
           label="Total Applicants"
           gradient="bg-gradient-to-br from-[#F59E0B]/8 to-white"
           iconBg="bg-[#FEF3C7]"
           iconColor="text-[#D97706]"
           href="/applicants"
           change={{
-            value: formatChange(data?.totalApplicants?.change ?? 0, true),
-            type:
-              (data?.totalApplicants?.change ?? 0) >= 0
-                ? "positive"
-                : "negative",
+            value: formattedStats.totalApplicants.change,
+            type: formattedStats.totalApplicants.changeType as "positive" | "negative",
           }}
         />
         <StatsCard
           icon={<Briefcase className="w-5 h-5" strokeWidth={1.6} />}
-          value={data?.activeOpportunities?.value ?? 0}
+          value={formattedStats.activeOpportunities.value}
           label="Active Opportunities"
           gradient="bg-gradient-to-br from-[#008B47]/8 to-white"
           iconBg="bg-[#D1FAE5]"
           iconColor="text-[#008B47]"
           href="/opportunities"
           change={{
-            value: formatChange(data?.activeOpportunities?.change ?? 0, false),
-            type:
-              (data?.activeOpportunities?.change ?? 0) >= 0
-                ? "positive"
-                : "negative",
+            value: formattedStats.activeOpportunities.change,
+            type: formattedStats.activeOpportunities.changeType as "positive" | "negative",
           }}
         />
         <StatsCard
           icon={<TrendingUp className="w-5 h-5" strokeWidth={2} />}
-          value={data?.hiredThisMonth?.value ?? 0}
+          value={formattedStats.hiredThisMonth.value}
           label="Hired This Month"
           gradient="bg-gradient-to-br from-[#2463EB]/8 to-white"
           iconBg="bg-[#DBE9FE]"
           iconColor="text-[#2463EB]"
           href="/applicants/hired-talents"
           change={{
-            value: formatChange(data?.hiredThisMonth?.change ?? 0, true),
-            type:
-              (data?.hiredThisMonth?.change ?? 0) >= 0
-                ? "positive"
-                : "negative",
+            value: formattedStats.hiredThisMonth.change,
+            type: formattedStats.hiredThisMonth.changeType as "positive" | "negative",
           }}
         />
         <StatsCard
           icon={<Clock className="w-5 h-5" strokeWidth={1.6} />}
-          value={data?.pendingReviews?.value ?? 0}
+          value={formattedStats.pendingReviews.value}
           label="Pending Reviews"
           gradient="bg-gradient-to-br from-[#FCE7F3] to-white"
           iconBg="bg-[#FCE7F3]"
           iconColor="text-[#DB2777]"
           href="/applicants"
           change={{
-            value: formatChange(data?.pendingReviews?.change ?? 0, false),
-            type:
-              (data?.pendingReviews?.change ?? 0) >= 0
-                ? "positive"
-                : "negative",
+            value: formattedStats.pendingReviews.change,
+            type: formattedStats.pendingReviews.changeType as "positive" | "negative",
           }}
         />
-      </div>
+      </OrientationAdaptiveGrid>
 
-      {/* Weekly Overview and Hiring Pipeline */}
-      <div className="grid grid-cols-1 lg:grid-cols-[5fr_3fr] gap-4 flex-shrink-0">
-        <WeeklyOverviewChart data={data?.weeklyOverview} />
-        <HiringPipeline data={data?.hiringPipeline} />
-      </div>
+      {/* Weekly Overview and Hiring Pipeline - Lazy render on mobile */}
+      <MobileLazyRender mobileDelay={50}>
+        <OrientationAdaptiveLayout
+          portraitClassName="space-y-4"
+          landscapeClassName="grid grid-cols-1 lg:grid-cols-[5fr_3fr] gap-4"
+          className="flex-shrink-0"
+        >
+          <WeeklyOverviewChart data={data?.weeklyOverview} />
+          <HiringPipeline data={data?.hiringPipeline} />
+        </OrientationAdaptiveLayout>
+      </MobileLazyRender>
 
-      {/* Opportunities and Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-shrink-0">
-        <TopOpportunities data={data?.topOpportunities} />
-        <RecentActivity data={data?.recentActivity} />
-      </div>
+      {/* Opportunities and Activity - Lazy render on mobile */}
+      <MobileLazyRender mobileDelay={100}>
+        <OrientationAdaptiveLayout
+          portraitClassName="space-y-4"
+          landscapeClassName="grid grid-cols-1 lg:grid-cols-2 gap-4"
+          className="flex-shrink-0"
+        >
+          <TopOpportunities data={data?.topOpportunities} />
+          <RecentActivity data={data?.recentActivity} />
+        </OrientationAdaptiveLayout>
+      </MobileLazyRender>
 
-      {/* Quick Actions */}
-      <QuickActions />
+      {/* Quick Actions - Lazy render on mobile */}
+      <MobileLazyRender mobileDelay={150}>
+        <QuickActions />
+      </MobileLazyRender>
     </div>
   );
+});
+
+function formatChange(value: number, isPercent: boolean): string {
+  const sign = value >= 0 ? "+" : "";
+  return isPercent ? `${sign}${value}%` : `${sign}${value}`;
 }
+
+export { EmployerDashboard };

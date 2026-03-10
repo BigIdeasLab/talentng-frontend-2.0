@@ -192,7 +192,7 @@ export function ServiceDetailView({
               )}
 
               {/* Get in Touch Button */}
-              <button className="flex h-8 px-4 py-2 items-center gap-1 rounded-[42px] bg-[#181B25] hover:bg-[#2a2d38] transition-colors self-start">
+              <button className="flex h-11 px-4 py-2 items-center gap-2 rounded-[42px] bg-[#181B25] hover:bg-[#2a2d38] transition-colors self-start">
                 <svg
                   width="17"
                   height="17"

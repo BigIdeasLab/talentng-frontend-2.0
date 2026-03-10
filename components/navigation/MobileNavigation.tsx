@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { ProfileSwitcher } from "@/components/layouts/ProfileSwitcher";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { TOUCH_TARGET } from "@/lib/constants/touch-targets";
+import { PrefetchOnInteraction, usePrefetchRoute } from "@/lib/utils/resource-prefetching";
 
 interface MobileNavigationProps {
   activeRole: "talent" | "recruiter" | "mentor";
@@ -157,7 +158,7 @@ const otherItems: MenuItem[] = [
 
 /**
  * MobileNavigation component provides role-specific navigation for mobile devices.
- * Includes ProfileSwitcher, navigation items with badges, and auto-close on selection.
+ * Includes ProfileSwitcher, navigation items with badges, auto-close on selection, and route prefetching.
  */
 export function MobileNavigation({
   activeRole,
@@ -182,6 +183,12 @@ export function MobileNavigation({
       : activeRole === "mentor"
         ? ROLE_COLORS.mentor
         : ROLE_COLORS.talent;
+
+  // Prefetch all navigation routes on component mount using Next.js Link prefetch
+  React.useEffect(() => {
+    // The PrefetchOnInteraction component handles prefetching for individual links
+    // No additional prefetch logic needed here
+  }, []);
 
   const handleItemClick = (item: MenuItem) => {
     if (item.id === "notification") {
@@ -242,36 +249,41 @@ export function MobileNavigation({
             }
 
             return (
-              <Link
-                key={item.id}
+              <PrefetchOnInteraction 
                 href={item.href}
-                onClick={() => handleItemClick(item)}
-                className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left w-full",
-                  "active:bg-gray-100",
-                  isActive
-                    ? "bg-opacity-10 border border-opacity-100"
-                    : "hover:bg-gray-50",
-                )}
-                style={
-                  isActive
-                    ? {
-                        backgroundColor: roleColors.light,
-                        borderColor: roleColors.dark,
-                      }
-                    : undefined
-                }
+                config={{ enableOnMobile: true, delay: 0 }}
               >
-                <span className="text-gray-700">{item.icon}</span>
-                <span className="flex-1 text-sm font-medium text-gray-900">
-                  {item.label}
-                </span>
-                {item.badge !== undefined && item.badge > 0 && (
-                  <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-red-600 text-xs font-semibold text-white">
-                    {item.badge}
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  onClick={() => handleItemClick(item)}
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left w-full",
+                    "active:bg-gray-100",
+                    isActive
+                      ? "bg-opacity-10 border border-opacity-100"
+                      : "hover:bg-gray-50",
+                  )}
+                  style={
+                    isActive
+                      ? {
+                          backgroundColor: roleColors.light,
+                          borderColor: roleColors.dark,
+                        }
+                      : undefined
+                  }
+                >
+                  <span className="text-gray-700">{item.icon}</span>
+                  <span className="flex-1 text-sm font-medium text-gray-900">
+                    {item.label}
                   </span>
-                )}
-              </Link>
+                  {item.badge !== undefined && item.badge > 0 && (
+                    <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-red-600 text-xs font-semibold text-white">
+                      {item.badge}
+                    </span>
+                  )}
+                </Link>
+              </PrefetchOnInteraction>
             );
           })}
         </div>
@@ -317,31 +329,36 @@ export function MobileNavigation({
               }
 
               return (
-                <Link
-                  key={item.id}
+                <PrefetchOnInteraction 
                   href={item.href}
-                  onClick={() => handleItemClick(item)}
-                  className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left w-full",
-                    "active:bg-gray-100",
-                    isActive
-                      ? "bg-opacity-10 border border-opacity-100"
-                      : "hover:bg-gray-50",
-                  )}
-                  style={
-                    isActive
-                      ? {
-                          backgroundColor: roleColors.light,
-                          borderColor: roleColors.dark,
-                        }
-                      : undefined
-                  }
+                  config={{ enableOnMobile: true, delay: 0 }}
                 >
-                  <span className="text-gray-700">{item.icon}</span>
-                  <span className="flex-1 text-sm font-medium text-gray-900">
-                    {item.label}
-                  </span>
-                </Link>
+                  <Link
+                    key={item.id}
+                    href={item.href}
+                    onClick={() => handleItemClick(item)}
+                    className={cn(
+                      "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left w-full",
+                      "active:bg-gray-100",
+                      isActive
+                        ? "bg-opacity-10 border border-opacity-100"
+                        : "hover:bg-gray-50",
+                    )}
+                    style={
+                      isActive
+                        ? {
+                            backgroundColor: roleColors.light,
+                            borderColor: roleColors.dark,
+                          }
+                        : undefined
+                    }
+                  >
+                    <span className="text-gray-700">{item.icon}</span>
+                    <span className="flex-1 text-sm font-medium text-gray-900">
+                      {item.label}
+                    </span>
+                  </Link>
+                </PrefetchOnInteraction>
               );
             })}
           </div>

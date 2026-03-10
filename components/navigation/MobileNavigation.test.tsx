@@ -5,7 +5,33 @@ import { MobileNavigation } from "./MobileNavigation";
 // Mock next/navigation
 vi.mock("next/navigation", () => ({
   usePathname: () => "/dashboard",
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    prefetch: vi.fn(),
+  }),
 }));
+
+// Mock window.matchMedia for useIsMobile hook
+Object.defineProperty(window, "matchMedia", {
+  writable: true,
+  value: vi.fn().mockImplementation((query) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })),
+});
+
+// Mock requestIdleCallback
+Object.defineProperty(window, "requestIdleCallback", {
+  writable: true,
+  value: vi.fn().mockImplementation((cb: () => void) => setTimeout(cb, 0)),
+});
 
 // Mock ProfileSwitcher
 vi.mock("@/components/layouts/ProfileSwitcher", () => ({

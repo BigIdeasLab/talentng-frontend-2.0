@@ -69,7 +69,7 @@ export function RoleSwitchModal({
             <Button
               onClick={handleSwitch}
               disabled={isLoading}
-              className="w-full bg-[#5C30FF] hover:bg-[#4a26cc] text-white border-0"
+              className="w-full bg-[#5C30FF] active:bg-[#4a26cc] hover:bg-[#4a26cc] text-white border-0"
             >
               {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               Switch to{" "}

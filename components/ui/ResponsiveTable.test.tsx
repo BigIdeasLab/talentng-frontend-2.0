@@ -309,7 +309,7 @@ describe("ResponsiveTable", () => {
       );
 
       // Check that rows are rendered (implementation detail, but verifies keys work)
-      const rows = container.querySelectorAll(".hover\\:bg-gray-50\\/50");
+      const rows = container.querySelectorAll(".active\\:bg-gray-50\\/50");
       expect(rows).toHaveLength(2);
     });
   });

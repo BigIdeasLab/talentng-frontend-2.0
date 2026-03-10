@@ -29,7 +29,7 @@ export function TalentProfilePanel({
   const stackRemaining = Math.max(0, (profile.stack?.length || 0) - 5);
 
   return (
-    <div className="hidden lg:flex w-[350px] flex-col bg-white border-r border-[#E1E4EA] px-[25px] py-[15px] overflow-y-auto h-screen scrollbar-hide">
+    <div className="w-full lg:w-[350px] flex flex-col bg-white lg:border-r border-[#E1E4EA] px-[25px] py-[15px] overflow-y-auto lg:h-screen scrollbar-hide">
       {/* User Profile Section */}
       <div className="flex flex-col items-center gap-[20px]">
         {/* Profile Picture with Completion Badge */}
@@ -150,10 +150,10 @@ export function TalentProfilePanel({
         </div>
       </div>
 
-      {/* Hire Button */}
+      {/* Hire Button - Touch-friendly with 44px minimum height */}
       <button
         onClick={onHireClick}
-        className="w-full mt-[20px] px-6 py-3 rounded-full bg-[#1A1D2E] hover:bg-[#252A3E] transition-colors text-white text-[14px] font-medium font-inter-tight flex items-center justify-center gap-2"
+        className="w-full mt-[20px] px-6 py-3 min-h-[44px] rounded-full bg-[#1A1D2E] hover:bg-[#252A3E] transition-colors text-white text-[14px] font-medium font-inter-tight flex items-center justify-center gap-2"
       >
         <svg
           width="20"
@@ -258,7 +258,7 @@ export function TalentProfilePanel({
                 </div>
                 <Link
                   href={social.url || "#"}
-                  className="text-[#525866] hover:text-black transition-colors"
+                  className="text-[#525866] hover:text-black transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
                 >
                   <svg
                     width="18"

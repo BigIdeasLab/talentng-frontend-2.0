@@ -20,13 +20,13 @@ export function TalentProfileNav({
 }: TalentProfileNavProps) {
   return (
     <div className="flex-shrink-0 border-b border-[#E1E4EA] px-[25px] bg-white">
-      <div className="flex items-center gap-[24px]">
+      <div className="flex items-center gap-[24px] overflow-x-auto scrollbar-hidden">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => onTabChange(tab.id)}
             className={cn(
-              "py-[16px] px-[8px] text-[14px] font-medium border-b-2 transition-colors",
+              "py-[16px] px-[8px] text-[14px] font-medium border-b-2 transition-colors whitespace-nowrap flex-shrink-0",
               activeTab === tab.id
                 ? "border-[#5C30FF] text-[#5C30FF]"
                 : "border-transparent text-gray-600 hover:text-black",

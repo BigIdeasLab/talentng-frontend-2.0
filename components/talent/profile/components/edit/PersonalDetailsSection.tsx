@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import Image from "next/image";
 import { SmoothCollapse } from "@/components/SmoothCollapse";
 import { SectionHeader } from "./SectionHeader";
 import { updateProfileImage } from "@/lib/api/talent";
@@ -157,10 +158,14 @@ export function PersonalDetailsSection({
                   height: ringSize - (strokeWidth + 4) * 2,
                 }}
               >
-                <img
+                <Image
                   src={formData.profileImageUrl || "/logo.png"}
                   alt="Profile"
+                  width={110}
+                  height={110}
                   className="w-full h-full object-cover rounded-full"
+                  sizes="110px"
+                  priority
                 />
               </button>
               <div

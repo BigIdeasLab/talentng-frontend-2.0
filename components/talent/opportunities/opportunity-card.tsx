@@ -78,7 +78,7 @@ export function OpportunityCard({
     <div className="relative">
       <div
         onClick={handleCardClick}
-        className="flex flex-col items-start gap-4 pt-4 pb-1 border border-[#E1E4EA] rounded-[16px] bg-white transition-all cursor-pointer hover:shadow-[0_4px_20px_0_rgba(0,0,0,0.05)] h-full"
+        className="flex flex-col items-start gap-4 pt-4 pb-1 border border-[#E1E4EA] rounded-[16px] bg-white transition-all cursor-pointer hover:shadow-[0_4px_20px_0_rgba(0,0,0,0.05)] active:scale-[0.98] active:shadow-sm h-full"
       >
         {/* Card Content */}
         <div className="flex flex-col items-start gap-3.5 w-full px-4 md:px-5 flex-1">
@@ -172,7 +172,7 @@ export function OpportunityCard({
               <div className="flex items-center justify-end w-full h-8">
                 <button
                   onClick={handleCardClick}
-                  className="flex items-center gap-1 px-4 py-2 h-8 border-[0.822px] rounded-[40px] hover:opacity-80 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 h-8 border-[0.822px] rounded-[40px] hover:opacity-80 transition-colors"
                   style={{ backgroundColor: primary, borderColor: primary }}
                 >
                   <span className="text-[12px] font-medium font-inter-tight text-white text-center">
@@ -209,7 +209,7 @@ export function OpportunityCard({
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center justify-end gap-1">
+                <div className="flex items-center justify-end gap-2">
                   {/* Save Button */}
                   <button
                     onClick={(e) => {
@@ -217,7 +217,7 @@ export function OpportunityCard({
                       handleToggleSave();
                     }}
                     disabled={isSavingLoading}
-                    className={`flex items-center gap-1 px-4 py-2 h-8 rounded-[40px] transition-colors ${
+                    className={`flex items-center gap-2 px-4 py-2 h-8 rounded-[40px] transition-colors ${
                       isSaved
                         ? "hover:opacity-80"
                         : "bg-[#181B25] hover:bg-[#2a2d39]"
@@ -239,7 +239,7 @@ export function OpportunityCard({
                       if (!isApplied) setShowApplicationModal(true);
                     }}
                     disabled={isApplied}
-                    className={`flex items-center gap-1 px-4 py-2 h-8 border-[0.822px] rounded-[40px] transition-colors ${
+                    className={`flex items-center gap-2 px-4 py-2 h-8 border-[0.822px] rounded-[40px] transition-colors ${
                       isApplied
                         ? "bg-gray-200 border-gray-200 cursor-not-allowed"
                         : "hover:opacity-80"

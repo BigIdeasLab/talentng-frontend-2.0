@@ -185,7 +185,7 @@ export function ResponsiveTable<T>({
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <button
-                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors font-inter-tight text-[13px] font-medium text-black"
+                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-50 active:bg-gray-100 hover:bg-gray-100 rounded-lg transition-colors font-inter-tight text-[13px] font-medium text-black"
                             style={{
                               minHeight: `${TOUCH_TARGET.minSize}px`,
                             }}
@@ -203,9 +203,6 @@ export function ResponsiveTable<T>({
                                 "cursor-pointer font-inter-tight text-[13px]",
                                 action.className,
                               )}
-                              style={{
-                                minHeight: `${TOUCH_TARGET.minSize}px`,
-                              }}
                             >
                               {action.icon && (
                                 <span className="mr-2">{action.icon}</span>
@@ -281,7 +278,7 @@ export function ResponsiveTable<T>({
           data.map((item, index) => (
             <div
               key={getKey(item, index)}
-              className="px-3 py-4 hover:bg-gray-50/50 transition-colors"
+              className="px-3 py-4 active:bg-gray-50/50 hover:bg-gray-50/50 transition-colors"
             >
               <div
                 className={cn(
@@ -319,7 +316,7 @@ export function ResponsiveTable<T>({
                         className={cn(
                           "px-3 py-1.5 rounded-full font-inter-tight text-[12px] font-medium transition-colors whitespace-nowrap",
                           action.className ||
-                            "bg-[#181B25] text-white hover:bg-[#2a2d35]",
+                            "bg-[#181B25] text-white active:bg-[#2a2d35] hover:bg-[#2a2d35]",
                         )}
                         style={{
                           minHeight: `${TOUCH_TARGET.minSize}px`,

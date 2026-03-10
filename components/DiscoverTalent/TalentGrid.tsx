@@ -56,7 +56,7 @@ export function TalentGrid({
         <button
           onClick={onPreviousPage}
           disabled={!hasPreviousPage}
-          className="flex items-center gap-[6px] px-[12px] py-[8px] rounded-[8px] border border-[#E1E4EA] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#F5F5F5]"
+          className="flex items-center gap-[6px] px-[12px] py-[8px] min-h-[44px] rounded-[8px] border border-[#E1E4EA] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#F5F5F5]"
         >
           <ChevronLeft className="w-4 h-4" />
           <span className="text-[13px] font-normal">Previous</span>
@@ -69,7 +69,7 @@ export function TalentGrid({
         <button
           onClick={onNextPage}
           disabled={!hasNextPage}
-          className="flex items-center gap-[6px] px-[12px] py-[8px] rounded-[8px] border border-[#E1E4EA] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#F5F5F5]"
+          className="flex items-center gap-[6px] px-[12px] py-[8px] min-h-[44px] rounded-[8px] border border-[#E1E4EA] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#F5F5F5]"
         >
           <span className="text-[13px] font-normal">Next</span>
           <ChevronRight className="w-4 h-4" />

@@ -205,7 +205,7 @@ export function SessionCard({
         )}
 
         {/* Details as pills */}
-        <div className="flex items-start content-start gap-x-1 gap-y-1.5 flex-wrap">
+        <div className="flex items-start content-start gap-x-2 gap-y-1.5 flex-wrap">
           <div className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#F5F5F5]">
             <Calendar className="w-3 h-3 text-[#525866]" />
             <span className="text-[12px] font-normal font-inter-tight text-black leading-[12.6px]">
@@ -219,7 +219,7 @@ export function SessionCard({
             </span>
           </div>
           {location && /^https?:\/\//i.test(location) ? (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               <a
                 href={location}
                 target="_blank"
@@ -256,12 +256,12 @@ export function SessionCard({
 
       {/* Footer - Actions */}
       <div className="flex items-center justify-end px-4 py-2.5 border-t border-[#E1E4EA]">
-        <div className="flex items-center gap-1">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2 w-full md:w-auto">
           {status === "upcoming" && (
             <>
               <button
                 onClick={() => onReschedule?.(id)}
-                className="flex items-center gap-1 px-4 py-2 h-8 bg-[#181B25] hover:bg-[#2a2d39] rounded-[40px] transition-colors"
+                className="flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] md:h-auto bg-[#181B25] hover:bg-[#2a2d39] rounded-[40px] transition-colors"
               >
                 <Clock className="w-4 h-4 text-white" />
                 <span className="text-[12px] font-medium font-inter-tight text-white">
@@ -270,7 +270,7 @@ export function SessionCard({
               </button>
               <button
                 onClick={() => onCancel?.(id)}
-                className="flex items-center gap-1 px-4 py-2 h-8 border border-[#E1E4EA] rounded-[40px] hover:border-[#EF4444] hover:bg-[#FEF2F2] hover:text-[#EF4444] transition-colors"
+                className="flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] md:h-auto border border-[#E1E4EA] rounded-[40px] hover:border-[#EF4444] hover:bg-[#FEF2F2] hover:text-[#EF4444] transition-colors"
               >
                 <X className="w-4 h-4" />
                 <span className="text-[12px] font-medium font-inter-tight">
@@ -284,7 +284,7 @@ export function SessionCard({
               {isSessionEnded ? (
                 <button
                   onClick={() => onComplete?.(id)}
-                  className="flex items-center gap-1 px-4 py-2 h-8 hover:opacity-80 rounded-[40px] transition-colors"
+                  className="flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] md:h-auto hover:opacity-80 rounded-[40px] transition-colors"
                   style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
                 >
                   <CheckCircle className="w-4 h-4 text-white" />
@@ -301,12 +301,12 @@ export function SessionCard({
           )}
           {status === "pending_completion" && (
             <>
-              <span className="text-[12px] font-inter-tight text-[#DC2626]">
+              <span className="text-[12px] font-inter-tight text-[#DC2626] text-center md:text-left">
                 Waiting for mentee confirmation
               </span>
               <button
                 onClick={() => onDispute?.(id)}
-                className="flex items-center gap-1 px-4 py-2 h-8 border border-[#E1E4EA] rounded-[40px] hover:border-[#DC2626] hover:bg-[#FEF2F2] hover:text-[#DC2626] transition-colors"
+                className="flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] md:h-auto border border-[#E1E4EA] rounded-[40px] hover:border-[#DC2626] hover:bg-[#FEF2F2] hover:text-[#DC2626] transition-colors"
               >
                 <X className="w-4 h-4" />
                 <span className="text-[12px] font-medium font-inter-tight">
@@ -316,17 +316,17 @@ export function SessionCard({
             </>
           )}
           {status === "disputed" && (
-            <span className="text-[12px] font-inter-tight text-[#DC2626]">
+            <span className="text-[12px] font-inter-tight text-[#DC2626] text-center md:text-left">
               Session disputed by mentee
             </span>
           )}
           {status === "completed" && (
-            <span className="text-[12px] font-inter-tight text-[#10B981]">
+            <span className="text-[12px] font-inter-tight text-[#10B981] text-center md:text-left">
               Session completed
             </span>
           )}
           {status === "cancelled" && (
-            <span className="text-[12px] font-inter-tight text-[#EF4444]">
+            <span className="text-[12px] font-inter-tight text-[#EF4444] text-center md:text-left">
               Session cancelled
             </span>
           )}

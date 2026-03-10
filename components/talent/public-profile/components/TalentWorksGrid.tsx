@@ -45,16 +45,18 @@ export function TalentWorksGrid({
           >
             <button
               onClick={() => onItemClick?.(item)}
-              className="relative w-full h-full overflow-hidden hover:shadow-lg transition-all duration-200"
+              className="relative w-full h-full overflow-hidden active:shadow-lg hover:shadow-lg transition-all duration-200"
             >
               <Image
                 src={item.images?.[0] || (item as any).url}
                 alt={item.title || "Portfolio item"}
                 fill
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                className="w-full h-full object-cover group-active:scale-105 group-hover:scale-105 transition-transform duration-200"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                loading="lazy"
                 unoptimized
               />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200" />
+              <div className="absolute inset-0 bg-black/0 group-active:bg-black/20 group-hover:bg-black/20 transition-colors duration-200" />
             </button>
           </div>
         ))}

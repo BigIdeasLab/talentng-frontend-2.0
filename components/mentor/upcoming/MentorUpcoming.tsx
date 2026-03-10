@@ -110,7 +110,7 @@ export function MentorUpcoming() {
           <div className="relative">
             <button
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
+              className={`h-[44px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
                 appliedFilters && appliedFilters.dateRange !== "all"
                   ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
                   : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
@@ -140,7 +140,7 @@ export function MentorUpcoming() {
 
         {/* Filter Tab */}
         <div className="flex items-center gap-2">
-          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-inter-tight bg-[#e63c23] text-white font-medium">
+          <button className="flex items-center gap-2 px-3 py-1.5 rounded-full text-[12px] font-inter-tight bg-[#e63c23] text-white font-medium">
             <Users className="w-3 h-3" />
             Sessions
             {upcomingItems.length > 0 && (

@@ -59,13 +59,13 @@ export function ProfileNav({
   return (
     <div className="flex items-center justify-between w-full bg-white border-b border-[#E1E4EA] sticky top-0 z-30">
       {/* Navigation Links */}
-      <div className="flex items-center gap-0 overflow-x-auto flex-1 scrollbar-hidden">
+      <div className="flex items-center gap-2 overflow-x-auto flex-1 scrollbar-hidden">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => handleTabChange(tab.id)}
             className={cn(
-              "px-[12px] sm:px-[20px] py-[14px] sm:py-[18px] text-[12px] sm:text-[13px] font-medium font-inter-tight whitespace-nowrap transition-colors relative",
+              "px-[12px] sm:px-[20px] py-[14px] sm:py-[18px] text-[12px] sm:text-[13px] font-medium font-inter-tight whitespace-nowrap transition-all relative active:scale-95 active:bg-gray-100",
               active === tab.id
                 ? "text-black"
                 : "text-[rgba(0,0,0,0.30)] hover:text-[rgba(0,0,0,0.6)]",
@@ -87,7 +87,7 @@ export function ProfileNav({
           <>
             <Button
               onClick={handleActionClick}
-              className="hidden sm:flex h-[40px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a24d6] font-inter-tight text-[13px] font-normal gap-[8px] mr-[20px] flex-shrink-0"
+              className="hidden sm:flex h-[44px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a24d6] font-inter-tight text-[13px] font-normal gap-[8px] mr-[20px] flex-shrink-0"
             >
               <Plus className="w-4 h-4" />
               {buttonText}
@@ -96,7 +96,7 @@ export function ProfileNav({
             {/* Mobile CTA Icon Button */}
             <button
               onClick={handleActionClick}
-              className="sm:hidden p-2 text-[#5C30FF] hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
+              className="sm:hidden p-2 text-[#5C30FF] hover:bg-gray-100 active:bg-gray-200 active:scale-95 rounded-full transition-all flex-shrink-0"
             >
               <Plus className="w-5 h-5" />
             </button>

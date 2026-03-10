@@ -8,11 +8,8 @@ import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
 import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
 import { useToast } from "@/hooks";
-import { RecommendationModal } from "@/components/employer/opportunities/RecommendationModal";
-import {
-  HiredTalentFilterModal,
-  type HiredTalentFilterState,
-} from "@/components/employer/applicants/HiredTalentFilterModal";
+import { LazyRecommendationModal, LazyHiredTalentFilterModal } from "@/components/lazy";
+import type { HiredTalentFilterState } from "@/components/employer/applicants/HiredTalentFilterModal";
 import {
   getTalentRecommendationsByUserId,
   createRecommendation,
@@ -403,10 +400,10 @@ export default function HiredTalentsPage() {
                   </span>
                 )}
               </button>
-              <HiredTalentFilterModal
+              <LazyHiredTalentFilterModal
                 isOpen={isFilterOpen}
                 onClose={() => setIsFilterOpen(false)}
-                onApply={(newFilters) => setFilters(newFilters)}
+                onApply={(newFilters: HiredTalentFilterState) => setFilters(newFilters)}
                 initialFilters={filters}
                 availableLocations={availableLocations}
               />
@@ -414,7 +411,7 @@ export default function HiredTalentsPage() {
 
             {/* Sort Button */}
             <div className="relative group flex-shrink-0">
-              <button className="flex items-center gap-1 px-[14px] py-[7px] rounded-[8px] bg-[#F5F5F5] hover:bg-[#e8e8e8] transition-colors">
+              <button className="flex items-center gap-2 px-[14px] py-[7px] rounded-[8px] bg-[#F5F5F5] hover:bg-[#e8e8e8] transition-colors">
                 <span className="font-inter-tight text-[13px] font-normal text-black">
                   {sortBy === "newest"
                     ? "Newest"
@@ -721,7 +718,7 @@ export default function HiredTalentsPage() {
 
       {/* Recommendation Modal */}
       {isRecommendationModalOpen && selectedTalentUserId && (
-        <RecommendationModal
+        <LazyRecommendationModal
           isOpen={isRecommendationModalOpen}
           onClose={() => {
             setIsRecommendationModalOpen(false);

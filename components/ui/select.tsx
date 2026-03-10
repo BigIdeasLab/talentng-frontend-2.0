@@ -17,7 +17,7 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex h-14 w-full items-center justify-between rounded-lg border border-[#E1E4EA] bg-white px-4 py-6 text-[15px] font-normal text-[#99A0AE] placeholder:text-[#99A0AE] focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+      "flex h-14 w-full items-center justify-between rounded-lg border border-[#E1E4EA] bg-white px-3 md:px-4 py-4 md:py-6 text-[15px] font-normal text-[#99A0AE] placeholder:text-[#99A0AE] focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
       className,
     )}
     {...props}
@@ -84,7 +84,8 @@ const SelectContent = React.forwardRef<
       <SelectScrollUpButton />
       <SelectPrimitive.Viewport
         className={cn(
-          "p-1",
+          // Touch-friendly spacing - increased padding for better touch targets
+          "p-2 space-y-1",
           position === "popper" &&
             "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]",
         )}
@@ -103,7 +104,12 @@ const SelectLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.Label
     ref={ref}
-    className={cn("py-1.5 pl-8 pr-2 text-sm font-semibold", className)}
+    className={cn(
+      "pl-8 pr-2 text-sm font-semibold",
+      // Touch-friendly minimum height (44px) and spacing
+      "min-h-[44px] py-2 flex items-center",
+      className,
+    )}
     {...props}
   />
 ));
@@ -116,7 +122,9 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "relative flex w-full cursor-default select-none items-center rounded-sm pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      // Touch-friendly minimum height (44px) and spacing
+      "min-h-[44px] py-2",
       className,
     )}
     {...props}
@@ -138,7 +146,12 @@ const SelectSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.Separator
     ref={ref}
-    className={cn("-mx-1 my-1 h-px bg-muted", className)}
+    className={cn(
+      "-mx-1 h-px bg-muted",
+      // Touch-friendly spacing - increased margin for better separation
+      "my-2",
+      className,
+    )}
     {...props}
   />
 ));

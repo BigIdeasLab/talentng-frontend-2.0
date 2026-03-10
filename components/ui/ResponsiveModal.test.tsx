@@ -4,6 +4,10 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { ResponsiveModal } from "./ResponsiveModal";
 import { TOUCH_TARGET } from "@/lib/constants/touch-targets";
 
+vi.mock("@/hooks/useIsMobile", () => ({
+  useIsMobile: () => false,
+}));
+
 describe("ResponsiveModal", () => {
   const mockOnClose = vi.fn();
 

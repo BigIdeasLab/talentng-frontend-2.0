@@ -1,0 +1,151 @@
+/* Orientation-specific styles */
+
+/* Landscape orientation utilities */
+@media screen and (orientation: landscape) {
+  /* Mobile landscape should behave more like tablet */
+  .mobile-landscape-tablet-layout {
+    @apply md:grid-cols-2 md:gap-4;
+  }
+
+  /* Dashboard stats in landscape mobile */
+  .mobile-landscape-stats {
+    @apply grid-cols-2 gap-3;
+  }
+
+  /* Form fields in landscape mobile */
+  .mobile-landscape-form {
+    @apply md:grid-cols-2 md:gap-4;
+  }
+
+  /* Navigation drawer in landscape */
+  .mobile-landscape-drawer {
+    @apply w-80 max-w-[40vw];
+  }
+
+  /* Modal sizing in landscape */
+  .mobile-landscape-modal {
+    @apply max-h-[90vh] w-[90vw] max-w-4xl;
+  }
+
+  /* Table cards in landscape mobile */
+  .mobile-landscape-table-cards {
+    @apply md:grid-cols-2 md:gap-4;
+  }
+
+  /* Calendar in landscape mobile */
+  .mobile-landscape-calendar {
+    @apply md:grid-cols-7; /* Week view */
+  }
+
+  /* Dashboard charts in landscape */
+  .mobile-landscape-chart {
+    @apply h-[250px] md:h-[300px];
+  }
+}
+
+/* Portrait orientation utilities */
+@media screen and (orientation: portrait) {
+  /* Ensure single column in portrait mobile */
+  .portrait-mobile-single-column {
+    @apply grid-cols-1;
+  }
+
+  /* Taller modals in portrait */
+  .portrait-mobile-modal {
+    @apply max-h-[95vh];
+  }
+
+  /* Calendar in portrait mobile */
+  .portrait-mobile-calendar {
+    @apply grid-cols-1; /* List/day view */
+  }
+
+  /* Charts in portrait mobile */
+  .portrait-mobile-chart {
+    @apply h-[200px];
+  }
+}
+
+/* Landscape-specific breakpoint utilities */
+@media screen and (orientation: landscape) and (max-width: 1023px) {
+  /* This targets landscape tablets and mobile devices */
+  .landscape-tablet-behavior {
+    @apply md:grid-cols-2 lg:grid-cols-3;
+  }
+
+  .landscape-tablet-spacing {
+    @apply p-4 md:p-6;
+  }
+
+  .landscape-tablet-text {
+    @apply text-sm md:text-base;
+  }
+}
+
+/* Specific component adaptations */
+
+/* Dashboard adaptations */
+.dashboard-landscape-mobile {
+  @apply grid-cols-1;
+}
+
+@media screen and (orientation: landscape) and (max-width: 767px) {
+  .dashboard-landscape-mobile {
+    @apply grid-cols-2 gap-3;
+  }
+}
+
+/* Data table adaptations */
+.table-landscape-mobile {
+  @apply block;
+}
+
+@media screen and (orientation: landscape) and (max-width: 767px) {
+  .table-landscape-mobile {
+    @apply grid grid-cols-2 gap-4;
+  }
+}
+
+/* Form adaptations */
+.form-landscape-mobile {
+  @apply space-y-4;
+}
+
+@media screen and (orientation: landscape) and (max-width: 767px) {
+  .form-landscape-mobile {
+    @apply grid grid-cols-2 gap-4 space-y-0;
+  }
+}
+
+/* Navigation adaptations */
+.nav-landscape-mobile {
+  @apply w-full;
+}
+
+@media screen and (orientation: landscape) and (max-width: 767px) {
+  .nav-landscape-mobile {
+    @apply w-80 max-w-[50vw];
+  }
+}
+
+/* Calendar specific adaptations */
+.calendar-landscape-mobile {
+  @apply grid-cols-1;
+}
+
+@media screen and (orientation: landscape) and (max-width: 767px) {
+  .calendar-landscape-mobile {
+    @apply grid-cols-7; /* Week view in landscape mobile */
+  }
+}
+
+/* Profile page adaptations */
+.profile-landscape-mobile {
+  @apply space-y-6;
+}
+
+@media screen and (orientation: landscape) and (max-width: 767px) {
+  .profile-landscape-mobile {
+    @apply grid grid-cols-2 gap-6 space-y-0;
+  }
+}

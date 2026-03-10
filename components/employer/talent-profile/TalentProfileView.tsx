@@ -57,7 +57,7 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-white">
-      {/* Left Sidebar - Profile Panel */}
+      {/* Left Sidebar - Profile Panel - Stacked on mobile, sidebar on desktop */}
       <TalentProfilePanel
         profile={profile}
         onHireClick={() => setIsHireModalOpen(true)}

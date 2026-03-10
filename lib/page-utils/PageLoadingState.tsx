@@ -26,7 +26,7 @@ export function PageLoadingState({
       <div className="flex flex-col items-center gap-4">
         <Spinner size="lg" className="text-blue-600" />
         {message && (
-          <p className="text-sm text-gray-600 animate-pulse">{message}</p>
+          <p className="text-sm md:text-gray-600 animate-pulse">{message}</p>
         )}
       </div>
     </div>

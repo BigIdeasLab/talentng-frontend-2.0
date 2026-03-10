@@ -121,14 +121,14 @@ export function RecruiterUpcoming() {
   return (
     <div className="h-screen overflow-x-hidden bg-white flex flex-col">
       {/* Header */}
-      <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+      <div className="w-full px-4 md:px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
         <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px] mb-[19px]">
           Upcoming
         </h1>
 
         {/* Search Bar */}
-        <div className="flex items-center gap-[8px] mb-[19px]">
-          <div className="flex-1 max-w-[585px]">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-[8px] mb-[19px]">
+          <div className="flex-1 w-full md:max-w-[585px]">
             <SearchInput
               value={searchQuery}
               onChange={setSearchQuery}
@@ -141,7 +141,7 @@ export function RecruiterUpcoming() {
           <div className="relative">
             <button
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className={`flex items-center gap-1.5 px-3 h-9 rounded-lg transition-colors flex-shrink-0 ${
+              className={`flex items-center justify-center gap-1.5 px-3 min-h-[44px] md:h-9 rounded-lg transition-colors flex-shrink-0 w-full md:w-auto ${
                 appliedFilters && appliedFilters.dateRange !== "all"
                   ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
                   : "hover:bg-gray-50 border border-transparent"
@@ -171,7 +171,7 @@ export function RecruiterUpcoming() {
 
         {/* Filter Tab */}
         <div className="flex items-center gap-2">
-          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-inter-tight bg-[#047857] text-white font-medium">
+          <button className="flex items-center gap-2 px-3 py-2 md:py-1.5 rounded-full text-[12px] font-inter-tight bg-[#047857] text-white font-medium min-h-[44px] md:min-h-0">
             <Briefcase className="w-3 h-3" />
             Interviews
             {upcomingItems.length > 0 && (
@@ -187,7 +187,7 @@ export function RecruiterUpcoming() {
       <div className="flex-1 overflow-hidden">
         <div className="h-full overflow-y-auto p-4 md:p-6">
           {isLoading ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-[7px]">
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
@@ -208,7 +208,7 @@ export function RecruiterUpcoming() {
               }
             />
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-[7px]">
               {upcomingItems.map((item) => (
                 <RecruiterInterviewCard
                   key={`int-${item.interview.interview.id}`}

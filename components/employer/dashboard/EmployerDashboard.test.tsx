@@ -3,6 +3,37 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { EmployerDashboard } from "./EmployerDashboard";
 import { useRecruiterDashboard } from "@/hooks/useRecruiterDashboard";
 
+// Mock window.matchMedia
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: vi.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })),
+});
+
+vi.mock("@/lib/utils/mobile-performance", () => ({
+  mobileOptimizedMemo: (fn: any) => fn,
+  useMobileOptimizedMemo: (fn: any) => fn(),
+  useMobileOptimizedCallback: (fn: any) => fn,
+  MobileLazyRender: ({ children }: any) => children,
+}));
+
+vi.mock("@/hooks/useOrientationState", () => ({
+  useOrientationScrollPreservation: () => {},
+}));
+
+vi.mock("@/components/ui/OrientationAdaptiveLayout", () => ({
+  OrientationAdaptiveGrid: ({ children, className }: any) => <div className={className}>{children}</div>,
+  OrientationAdaptiveLayout: ({ children, className, landscapeClassName }: any) => <div className={`${className ?? ""} ${landscapeClassName ?? ""}`}>{children}</div>,
+}));
+
 // Mock the hook
 vi.mock("@/hooks/useRecruiterDashboard");
 const mockUseRecruiterDashboard = useRecruiterDashboard as ReturnType<
@@ -113,9 +144,9 @@ describe("EmployerDashboard - Responsive Layout", () => {
 
     const { container } = render(<EmployerDashboard />);
 
-    // Find the stat cards container
+    // Find the stat cards container (rendered by mocked OrientationAdaptiveGrid with className="flex-shrink-0")
     const statsContainer = container.querySelector(
-      ".grid.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-4",
+      ".flex-shrink-0",
     );
     expect(statsContainer).toBeInTheDocument();
   });
@@ -130,7 +161,7 @@ describe("EmployerDashboard - Responsive Layout", () => {
 
     const { container } = render(<EmployerDashboard />);
 
-    // Find the charts container
+    // Find the charts container (mocked OrientationAdaptiveLayout combines className + landscapeClassName)
     const chartsContainer = container.querySelector(
       ".grid.grid-cols-1.lg\\:grid-cols-\\[5fr_3fr\\]",
     );

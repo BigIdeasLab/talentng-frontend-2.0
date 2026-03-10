@@ -3,6 +3,26 @@ import { describe, it, expect, vi } from "vitest";
 import { HamburgerMenuButton } from "./HamburgerMenuButton";
 import { TOUCH_TARGET } from "@/lib/constants/touch-targets";
 
+vi.mock("@/hooks/useIsTablet", () => ({
+  useIsTablet: () => false,
+}));
+
+vi.mock("@/lib/utils/screen-reader", () => ({
+  mobileScreenReaderOptimizations: {
+    optimizeButtonLabel: (label: string) => label,
+  },
+}));
+
+vi.mock("@/lib/utils/keyboard-navigation", () => ({
+  keyboardHandlers: {
+    handleActivation: (fn: () => void) => () => fn(),
+  },
+  TABLET_FOCUS_STYLES: {
+    focusRing: "focus:outline-none focus:ring-2 focus:ring-blue-500",
+    largeFocusRing: "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+  },
+}));
+
 describe("HamburgerMenuButton", () => {
   describe("Basic Rendering", () => {
     it("renders the button", () => {

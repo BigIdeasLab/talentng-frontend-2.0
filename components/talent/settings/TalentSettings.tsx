@@ -32,7 +32,7 @@ function SettingsSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="border border-[#E1E4EA] rounded-[16px] bg-white px-6 py-5">
+    <div className="border border-[#E1E4EA] rounded-[16px] bg-white px-4 md:px-6 py-4 md:py-5">
       <div className="mb-5">
         <h2 className="text-[15px] font-medium font-inter-tight text-black">
           {title}
@@ -190,13 +190,13 @@ export function TalentSettings() {
       </div>
 
       <div className="flex-1 overflow-hidden">
-        <div className="h-full overflow-y-auto p-4 md:p-6 space-y-6">
+        <div className="h-full overflow-y-auto p-4 md:p-6 space-y-4 md:space-y-6">
           {/* Profile Visibility */}
           <SettingsSection
             title="Profile Visibility"
             description="Control who can see your profile and what information is displayed"
           >
-            <div className="space-y-1">
+            <div className="space-y-2">
               <ToggleSetting
                 label="Profile Visibility"
                 description="Allow your profile to be discovered by recruiters"
@@ -212,7 +212,7 @@ export function TalentSettings() {
                   })
                 }
                 disabled={saveSettings.isPending}
-                className="text-white hover:opacity-90"
+                className="text-white active:opacity-90 hover:opacity-90 w-full md:w-auto min-h-[44px]"
                 style={{ backgroundColor: roleColors.primary }}
               >
                 {saveSettings.isPending && (
@@ -233,7 +233,7 @@ export function TalentSettings() {
                 <Mail className="w-4 h-4" />
                 Email Notifications
               </h3>
-              <div className="space-y-1 pl-5">
+              <div className="space-y-2 pl-5">
                 <ToggleSetting
                   label="Application Updates"
                   description="Get notified when employers view or respond to your applications"
@@ -272,7 +272,7 @@ export function TalentSettings() {
                 <Bell className="w-4 h-4" />
                 Push Notifications
               </h3>
-              <div className="space-y-1 pl-5">
+              <div className="space-y-2 pl-5">
                 <ToggleSetting
                   label="Application Updates"
                   description="Receive push alerts when employers view or respond to your applications"
@@ -299,7 +299,7 @@ export function TalentSettings() {
               <Button
                 onClick={() => saveSettings.mutate(notifications)}
                 disabled={saveSettings.isPending}
-                className="text-white hover:opacity-90"
+                className="text-white active:opacity-90 hover:opacity-90 w-full md:w-auto min-h-[44px]"
                 style={{ backgroundColor: roleColors.primary }}
               >
                 {saveSettings.isPending && (
@@ -373,7 +373,7 @@ export function TalentSettings() {
                     !newPassword ||
                     !confirmPassword
                   }
-                  className="text-white hover:opacity-90"
+                  className="text-white active:opacity-90 hover:opacity-90 w-full md:w-auto min-h-[44px]"
                   style={{ backgroundColor: roleColors.primary }}
                 >
                   {changePassword.isPending && (
@@ -392,7 +392,7 @@ export function TalentSettings() {
             description="Manage your account details"
           >
             <div className="space-y-4">
-              <div className="flex items-center justify-between py-3 border-b border-[#E1E4EA]">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between py-3 border-b border-[#E1E4EA] gap-3">
                 <div className="flex items-center gap-3">
                   <User className="w-5 h-5 text-[#B2B2B2]" />
                   <div>
@@ -404,12 +404,12 @@ export function TalentSettings() {
                     </p>
                   </div>
                 </div>
-                <Button variant="outline" size="sm" asChild>
+                <Button variant="outline" size="sm" className="w-full md:w-auto min-h-[44px]" asChild>
                   <a href="/profile/edit">Change</a>
                 </Button>
               </div>
 
-              <div className="flex items-center justify-between py-3 border-b border-[#E1E4EA]">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between py-3 border-b border-[#E1E4EA] gap-3">
                 <div className="flex items-center gap-3">
                   <LogOut className="w-5 h-5 text-[#B2B2B2]" />
                   <div>
@@ -424,6 +424,7 @@ export function TalentSettings() {
                 <Button
                   variant="outline"
                   size="sm"
+                  className="w-full md:w-auto min-h-[44px]"
                   onClick={() => handleLogoutAll.mutate()}
                   disabled={handleLogoutAll.isPending}
                 >
@@ -431,7 +432,7 @@ export function TalentSettings() {
                 </Button>
               </div>
 
-              <div className="flex items-center justify-between py-3">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between py-3 gap-3">
                 <div className="flex items-center gap-3">
                   <Trash2 className="w-5 h-5 text-red-500" />
                   <div>
@@ -446,7 +447,7 @@ export function TalentSettings() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-red-600 border-red-200 hover:bg-red-50"
+                  className="text-red-600 border-red-200 hover:bg-red-50 w-full md:w-auto min-h-[44px]"
                 >
                   Delete
                 </Button>

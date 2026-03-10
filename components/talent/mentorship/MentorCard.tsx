@@ -64,7 +64,7 @@ export function MentorCard({
       <div className="flex flex-col gap-1.5 flex-1 px-1 pb-2">
         {/* Profile Info */}
         <div className="flex flex-col gap-2.5">
-          <Link href={`/mentorship/${id}`} className="flex flex-col gap-1.5">
+          <Link href={`/mentorship/${id}`} className="flex flex-col gap-1.5 active:scale-[0.98] transition-transform">
             <h3 className="font-inter-tight text-[15px] font-semibold leading-tight text-black group-hover:text-black/60 transition-colors line-clamp-1">
               {name}
             </h3>
@@ -103,7 +103,7 @@ export function MentorCard({
           {/* Book Session Button */}
           <Link
             href={`/mentorship/${id}?book=true`}
-            className="flex-1 flex items-center justify-center h-[42px] rounded-full bg-[#181B25] text-white font-inter-tight text-[13px] font-medium hover:bg-[#252831] transition-all"
+            className="flex-1 flex items-center justify-center min-h-[44px] rounded-full bg-[#181B25] text-white font-inter-tight text-[13px] font-medium hover:bg-[#252831] transition-all"
           >
             Book Session
           </Link>
@@ -111,7 +111,7 @@ export function MentorCard({
           {/* External Link Button */}
           <Link
             href={`/mentorship/${id}`}
-            className="flex items-center justify-center h-[42px] w-[42px] rounded-full border border-[#E1E4EA] bg-white hover:bg-[#F5F5F5] transition-all"
+            className="flex items-center justify-center min-h-[44px] min-w-[44px] rounded-full border border-[#E1E4EA] bg-white hover:bg-[#F5F5F5] transition-all"
           >
             <ArrowUpRight className="w-5 h-5 text-black" strokeWidth={1.5} />
           </Link>

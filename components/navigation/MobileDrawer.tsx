@@ -12,6 +12,11 @@ import {
 import { cn } from "@/lib/utils";
 import { TOUCH_TARGET } from "@/lib/constants/touch-targets";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { useIsLandscape } from "@/hooks/useOrientation";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useTabletKeyboardContainer } from "@/hooks/useTabletKeyboardNavigation";
+import { keyboardHandlers, TABLET_FOCUS_STYLES } from "@/lib/utils/keyboard-navigation";
+import { useScreenReader, MOBILE_ARIA_ATTRIBUTES } from "@/lib/utils/screen-reader";
 
 interface MobileDrawerProps {
   /**
@@ -69,6 +74,34 @@ export function MobileDrawer({
   title = "Navigation Menu",
   description = "Mobile navigation drawer",
 }: MobileDrawerProps) {
+  const isLandscape = useIsLandscape();
+  const isMobile = useIsMobile();
+  const { containerRef, isTabletMode } = useTabletKeyboardContainer<HTMLDivElement>();
+  const { announceModalState } = useScreenReader();
+
+  // Announce drawer state changes for screen readers
+  React.useEffect(() => {
+    announceModalState(isOpen, "Navigation menu");
+  }, [isOpen, announceModalState]);
+
+  // Determine drawer width based on orientation and device type
+  const getDrawerWidth = () => {
+    if (isMobile && isLandscape) {
+      // In landscape mobile, use smaller width to preserve content space
+      return "w-[320px] max-w-[40vw]";
+    }
+    // Default width for portrait mobile and tablet
+    return "w-[280px]";
+  };
+
+  // Enhanced keyboard navigation for tablets
+  const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+    if (isTabletMode) {
+      // Handle Escape key to close drawer
+      keyboardHandlers.handleEscape(onClose)(event);
+    }
+  }, [isTabletMode, onClose]);
+
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetPortal>
@@ -77,7 +110,9 @@ export function MobileDrawer({
           side="left"
           className={cn(
             // Base styles
-            "fixed inset-y-0 left-0 z-50 h-full w-[280px] bg-white p-0 shadow-lg",
+            "fixed inset-y-0 left-0 z-50 h-full bg-white p-0 shadow-lg",
+            // Orientation-adaptive width
+            getDrawerWidth(),
             // Animation styles
             "transition-transform duration-300 ease-in-out",
             "data-[state=open]:animate-in data-[state=closed]:animate-out",
@@ -98,12 +133,15 @@ export function MobileDrawer({
 
           {/* Navigation content wrapper with proper spacing */}
           <div
+            ref={containerRef}
             className="flex-1 overflow-y-auto"
             style={{
               // Ensure minimum tap target spacing
               paddingTop: TOUCH_TARGET.minSpacing,
               paddingBottom: TOUCH_TARGET.minSpacing,
             }}
+            onKeyDown={handleKeyDown}
+            {...MOBILE_ARIA_ATTRIBUTES.mobileMenu}
           >
             {children}
           </div>
@@ -122,6 +160,14 @@ interface MobileDrawerItemProps {
   onClick?: () => void;
   className?: string;
   href?: string;
+  /**
+   * Accessible label for screen readers
+   */
+  ariaLabel?: string;
+  /**
+   * Whether this item is currently active/selected
+   */
+  isActive?: boolean;
 }
 
 export function MobileDrawerItem({
@@ -129,29 +175,52 @@ export function MobileDrawerItem({
   onClick,
   className,
   href,
+  ariaLabel,
+  isActive = false,
 }: MobileDrawerItemProps) {
   const Component = href ? "a" : "button";
+  const { announceNavigation } = useScreenReader();
+
+  const handleClick = React.useCallback(() => {
+    if (onClick) {
+      onClick();
+    }
+    // Announce navigation for screen readers
+    if (ariaLabel) {
+      announceNavigation(ariaLabel);
+    }
+  }, [onClick, ariaLabel, announceNavigation]);
 
   return (
     <Component
       href={href}
-      onClick={onClick}
+      onClick={handleClick}
       className={cn(
         // Touch-friendly tap target
         "flex w-full items-center px-6 py-3 text-left",
         // Ensure minimum tap target height
         `min-h-[${TOUCH_TARGET.minSize}px]`,
         // Visual feedback for touch
-        "active:bg-gray-100 transition-colors",
+        "active:bg-gray-100 active:scale-[0.98] transition-all",
         // Typography
         "text-base font-medium text-gray-900",
         // Hover state (for devices that support it)
         "hover:bg-gray-50",
+        // Enhanced focus styles for tablet keyboard navigation
+        TABLET_FOCUS_STYLES.focusRing,
+        // Active state styling
+        isActive && "bg-blue-50 text-blue-700 border-r-2 border-blue-700",
         className,
       )}
       style={{
         minHeight: `${TOUCH_TARGET.minSize}px`,
       }}
+      // Enhanced keyboard support
+      onKeyDown={keyboardHandlers.handleActivation(() => handleClick())}
+      role={href ? undefined : "menuitem"}
+      tabIndex={0}
+      aria-label={ariaLabel}
+      aria-current={isActive ? "page" : undefined}
     >
       {children}
     </Component>
@@ -181,7 +250,7 @@ export function MobileDrawerSection({
       }}
     >
       {title && (
-        <div className="px-6 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
+        <div className="px-6 py-2 text-sm md:text-xs font-semibold uppercase tracking-wider text-gray-500">
           {title}
         </div>
       )}

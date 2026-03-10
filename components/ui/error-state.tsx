@@ -125,9 +125,9 @@ export function ErrorState({
   const defaultIcon = DEFAULT_ICONS[variant];
 
   return (
-    <div className={`flex items-center justify-center p-8 ${className}`}>
+    <div className={`flex items-center justify-center p-4 md:p-8 ${className}`}>
       <div
-        className={`max-w-md w-full bg-white border ${styles.border} rounded-lg p-6 shadow-sm`}
+        className={`max-w-md w-full bg-white border ${styles.border} rounded-lg p-4 md:p-6 shadow-sm`}
       >
         <div className="flex items-start gap-3">
           {/* Icon */}
@@ -141,10 +141,10 @@ export function ErrorState({
 
           {/* Content */}
           <div className="flex-1">
-            <h3 className="text-base font-semibold text-gray-900 font-inter-tight mb-1">
+            <h3 className="text-base md:text-base font-semibold text-gray-900 font-inter-tight mb-1">
               {title}
             </h3>
-            <p className="text-sm text-gray-600 font-inter-tight mb-4">
+            <p className="text-base md:text-sm text-gray-600 font-inter-tight mb-4">
               {message}
             </p>
 
@@ -152,7 +152,7 @@ export function ErrorState({
             {onRetry && (
               <button
                 onClick={onRetry}
-                className={`inline-flex items-center gap-2 px-4 py-2 ${styles.buttonBg} text-white text-sm font-medium font-inter-tight rounded-lg transition-colors`}
+                className={`inline-flex items-center gap-2 px-4 py-2 ${styles.buttonBg} text-white text-base md:text-sm font-medium font-inter-tight rounded-lg transition-colors`}
               >
                 <svg
                   className="w-4 h-4"

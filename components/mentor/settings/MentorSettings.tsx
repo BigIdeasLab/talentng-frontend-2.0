@@ -34,7 +34,7 @@ function SettingsSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="border border-[#E1E4EA] rounded-[16px] bg-white px-6 py-5">
+    <div className="border border-[#E1E4EA] rounded-[16px] bg-white px-4 md:px-6 py-4 md:py-5">
       <div className="mb-5">
         <h2 className="text-[15px] font-medium font-inter-tight text-black">
           {title}
@@ -241,13 +241,13 @@ export function MentorSettings() {
       </div>
 
       <div className="flex-1 overflow-hidden">
-        <div className="h-full overflow-y-auto p-4 md:p-6 space-y-6">
+        <div className="h-full overflow-y-auto p-4 md:p-6 space-y-4 md:space-y-6">
           {/* Profile Visibility */}
           <SettingsSection
             title="Profile Visibility"
             description="Control who can see your profile and information"
           >
-            <div className="space-y-1">
+            <div className="space-y-2">
               <ToggleSetting
                 label="Profile Visibility"
                 description="Allow your profile to be discovered by mentees"
@@ -269,7 +269,7 @@ export function MentorSettings() {
               <Button
                 onClick={handleSaveVisibility}
                 disabled={saveSettings.isPending}
-                className="text-white hover:opacity-90"
+                className="text-white hover:opacity-90 w-full md:w-auto min-h-[44px]"
                 style={{ backgroundColor: roleColors.primary }}
               >
                 {saveSettings.isPending && (
@@ -285,7 +285,7 @@ export function MentorSettings() {
             title="Session Settings"
             description="Configure your mentoring session preferences"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
               <div>
                 <Label className="text-[12px] font-medium font-inter-tight text-[#525866] flex items-center gap-2">
                   <Clock className="w-4 h-4" />
@@ -377,7 +377,7 @@ export function MentorSettings() {
               <Button
                 onClick={handleSaveSession}
                 disabled={saveSettings.isPending}
-                className="text-white hover:opacity-90"
+                className="text-white hover:opacity-90 w-full md:w-auto min-h-[44px]"
                 style={{ backgroundColor: roleColors.primary }}
               >
                 {saveSettings.isPending && (
@@ -398,7 +398,7 @@ export function MentorSettings() {
                 <Mail className="w-4 h-4" />
                 Email Notifications
               </h3>
-              <div className="space-y-1 pl-5">
+              <div className="space-y-2 pl-5">
                 <ToggleSetting
                   label="New Booking Requests"
                   description="Get notified when someone wants to book a session"
@@ -440,7 +440,7 @@ export function MentorSettings() {
                 <Bell className="w-4 h-4" />
                 Push Notifications
               </h3>
-              <div className="space-y-1 pl-5">
+              <div className="space-y-2 pl-5">
                 <ToggleSetting
                   label="New Booking Requests"
                   checked={notifications.pushNewRequests}
@@ -468,7 +468,7 @@ export function MentorSettings() {
               <Button
                 onClick={handleSaveNotifications}
                 disabled={saveSettings.isPending}
-                className="text-white hover:opacity-90"
+                className="text-white hover:opacity-90 w-full md:w-auto min-h-[44px]"
                 style={{ backgroundColor: roleColors.primary }}
               >
                 {saveSettings.isPending && (
@@ -542,7 +542,7 @@ export function MentorSettings() {
                     !newPassword ||
                     !confirmPassword
                   }
-                  className="text-white hover:opacity-90"
+                  className="text-white hover:opacity-90 w-full md:w-auto min-h-[44px]"
                   style={{ backgroundColor: roleColors.primary }}
                 >
                   {changePassword.isPending && (
@@ -558,7 +558,7 @@ export function MentorSettings() {
           {/* Account */}
           <SettingsSection title="Account" description="Manage your account">
             <div className="space-y-4">
-              <div className="flex items-center justify-between py-3 border-b border-[#E1E4EA]">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between py-3 border-b border-[#E1E4EA] gap-3">
                 <div className="flex items-center gap-3">
                   <User className="w-5 h-5 text-[#B2B2B2]" />
                   <div>
@@ -570,12 +570,12 @@ export function MentorSettings() {
                     </p>
                   </div>
                 </div>
-                <Button variant="outline" size="sm" asChild>
+                <Button variant="outline" size="sm" className="w-full md:w-auto min-h-[44px]" asChild>
                   <a href="/profile/edit">Change</a>
                 </Button>
               </div>
 
-              <div className="flex items-center justify-between py-3 border-b border-[#E1E4EA]">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between py-3 border-b border-[#E1E4EA] gap-3">
                 <div className="flex items-center gap-3">
                   <LogOut className="w-5 h-5 text-[#B2B2B2]" />
                   <div>
@@ -590,6 +590,7 @@ export function MentorSettings() {
                 <Button
                   variant="outline"
                   size="sm"
+                  className="w-full md:w-auto min-h-[44px]"
                   onClick={() => handleLogoutAll.mutate()}
                   disabled={handleLogoutAll.isPending}
                 >
@@ -597,7 +598,7 @@ export function MentorSettings() {
                 </Button>
               </div>
 
-              <div className="flex items-center justify-between py-3">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between py-3 gap-3">
                 <div className="flex items-center gap-3">
                   <Trash2 className="w-5 h-5 text-red-500" />
                   <div>
@@ -612,7 +613,7 @@ export function MentorSettings() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-red-600 border-red-200 hover:bg-red-50"
+                  className="text-red-600 border-red-200 hover:bg-red-50 w-full md:w-auto min-h-[44px]"
                 >
                   Delete
                 </Button>

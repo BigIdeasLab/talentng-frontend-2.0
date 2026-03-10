@@ -409,12 +409,12 @@ export default function AvailabilityPage() {
   return (
     <div className="h-screen overflow-x-hidden bg-white flex flex-col">
       {/* Header */}
-      <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
-        <div className="flex items-center justify-between">
+      <div className="w-full px-4 md:px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
           <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px]">
             Availability
           </h1>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 w-full md:w-auto">
             {isSaved && !hasChanges && (
               <div className="flex items-center gap-2 rounded-full bg-green-50 px-3 py-1.5 text-green-700">
                 <Check className="h-4 w-4" />
@@ -436,8 +436,8 @@ export default function AvailabilityPage() {
 
       <div className="flex-1 overflow-y-auto p-4 md:p-6">
         {/* Stats & Quick Actions */}
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex gap-3">
+        <div className="mb-5 flex flex-col md:flex-row flex-wrap items-stretch md:items-center justify-between gap-4">
+          <div className="flex gap-3 flex-wrap">
             <div className="flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 shadow-sm">
               <Clock
                 className="h-4 w-4"
@@ -459,29 +459,29 @@ export default function AvailabilityPage() {
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <button
               onClick={clearAll}
-              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-xs font-medium text-[#525866] transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600"
+              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-sm md:text-xs font-medium text-[#525866] transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600 min-h-[44px] md:min-h-0"
             >
               Clear All
             </button>
             <button
               onClick={selectWeekdays9to5}
-              className="flex items-center gap-1.5 rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-xs font-medium text-[#525866] transition-colors hover:opacity-80"
+              className="flex items-center gap-1.5 rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-sm md:text-xs font-medium text-[#525866] transition-colors hover:opacity-80 min-h-[44px] md:min-h-0"
             >
               <Zap className="h-3 w-3" />
               Weekdays 9-5
             </button>
             <button
               onClick={selectMornings}
-              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-xs font-medium text-[#525866] transition-colors hover:opacity-80"
+              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-sm md:text-xs font-medium text-[#525866] transition-colors hover:opacity-80 min-h-[44px] md:min-h-0"
             >
               Mornings
             </button>
             <button
               onClick={selectAfternoons}
-              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-xs font-medium text-[#525866] transition-colors hover:opacity-80"
+              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-sm md:text-xs font-medium text-[#525866] transition-colors hover:opacity-80 min-h-[44px] md:min-h-0"
             >
               Afternoons
             </button>
@@ -491,7 +491,7 @@ export default function AvailabilityPage() {
         {/* Main Card */}
         <div className="overflow-hidden rounded-xl border border-[#E1E4EA] bg-white shadow-sm">
           {/* Settings Bar */}
-          <div className="flex flex-wrap gap-4 border-b border-[#E1E4EA] bg-[#FAFAFA] px-5 py-4">
+          <div className="flex flex-col md:flex-row flex-wrap gap-4 border-b border-[#E1E4EA] bg-[#FAFAFA] px-5 py-4">
             <div className="flex items-center gap-2">
               <label className="text-xs font-medium text-[#525866]">
                 Duration
@@ -507,7 +507,7 @@ export default function AvailabilityPage() {
                   setHasChanges(true);
                 }}
               >
-                <SelectTrigger className="h-8 w-24 border-[#E1E4EA] bg-white text-xs">
+                <SelectTrigger className="h-10 md:h-8 w-24 border-[#E1E4EA] bg-white text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -529,7 +529,7 @@ export default function AvailabilityPage() {
                   setHasChanges(true);
                 }}
               >
-                <SelectTrigger className="h-8 w-20 border-[#E1E4EA] bg-white text-xs">
+                <SelectTrigger className="h-10 md:h-8 w-20 border-[#E1E4EA] bg-white text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -540,8 +540,8 @@ export default function AvailabilityPage() {
               </Select>
             </div>
 
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col gap-1 flex-1 min-w-[200px]">
+              <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2">
                 <label className="text-xs font-medium text-[#525866]">
                   Meeting Link <span className="text-red-500">*</span>
                 </label>
@@ -554,7 +554,7 @@ export default function AvailabilityPage() {
                     setHasChanges(true);
                     if (e.target.value.trim()) setMeetingLinkError(false);
                   }}
-                  className={`h-8 w-48 text-xs ${
+                  className={`h-10 md:h-8 w-full md:w-48 text-xs ${
                     meetingLinkError
                       ? "border-red-500 focus:ring-red-500"
                       : "border-[#E1E4EA]"
@@ -562,7 +562,7 @@ export default function AvailabilityPage() {
                 />
               </div>
               {meetingLinkError && (
-                <span className="text-[10px] text-red-500 ml-[82px]">
+                <span className="text-[10px] text-red-500">
                   Meeting link is required
                 </span>
               )}
@@ -735,8 +735,8 @@ export default function AvailabilityPage() {
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between border-t border-[#E1E4EA] bg-[#FAFAFA] px-5 py-4">
-            <div className="text-sm text-[#525866]">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between border-t border-[#E1E4EA] bg-[#FAFAFA] px-5 py-4 gap-3">
+            <div className="text-sm text-[#525866] text-center md:text-left">
               <span
                 className="font-semibold"
                 style={{ color: ROLE_COLORS.mentor.dark }}
@@ -748,7 +748,7 @@ export default function AvailabilityPage() {
             <Button
               onClick={handleSave}
               disabled={isSaving || !hasChanges}
-              className="rounded-lg px-6 py-2 text-sm font-medium text-white hover:opacity-80 disabled:opacity-50"
+              className="rounded-lg px-6 py-2 text-sm font-medium text-white hover:opacity-80 disabled:opacity-50 min-h-[44px] md:min-h-0"
               style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
             >
               {isSaving ? (

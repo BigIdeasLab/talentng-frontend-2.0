@@ -40,7 +40,7 @@ export function EditableItem({
                 <Button
                   onClick={() => onDelete(index)}
                   variant="outline"
-                  className="h-[40px] px-[16px] rounded-full border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600 hover:border-red-300 gap-2 font-inter-tight text-[12px]"
+                  className="h-[44px] px-[16px] rounded-full border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600 hover:border-red-300 gap-2 font-inter-tight text-[12px]"
                 >
                   <Trash2 size={14} />
                   Delete
@@ -49,7 +49,7 @@ export function EditableItem({
             </div>
             <Button
               onClick={onDone}
-              className="h-[40px] px-[24px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[12px] font-normal"
+              className="h-[44px] px-[24px] rounded-full bg-[#181B25] text-white hover:bg-[#2a2f3a] font-inter-tight text-[12px] font-normal"
             >
               Done
             </Button>
@@ -81,7 +81,7 @@ export function EditableItem({
           </div>
           <Button
             onClick={onEdit}
-            className="h-[36px] px-[16px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] font-inter-tight text-[12px] font-normal"
+            className="h-[44px] px-[16px] rounded-full bg-[#5C30FF] text-white hover:bg-[#4a26cc] font-inter-tight text-[12px] font-normal"
           >
             Edit
           </Button>

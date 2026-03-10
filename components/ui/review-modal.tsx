@@ -70,7 +70,7 @@ export function ReviewModal({
                   onClick={() => setRating(star)}
                   onMouseEnter={() => setHoveredRating(star)}
                   onMouseLeave={() => setHoveredRating(0)}
-                  className="transition-transform hover:scale-110"
+                  className="transition-transform active:scale-95 hover:scale-110 min-w-[44px] min-h-[44px] flex items-center justify-center"
                 >
                   <Star
                     className="h-8 w-8"
@@ -110,14 +110,14 @@ export function ReviewModal({
             variant="outline"
             onClick={handleClose}
             disabled={isLoading}
-            className="flex-1 rounded-[30px] border-[#E1E4EA] px-4 py-2.5 font-inter-tight text-[13px] font-normal text-[#525866] hover:bg-[#F5F5F5]"
+            className="flex-1 rounded-[30px] border-[#E1E4EA] px-4 py-2.5 font-inter-tight text-[13px] font-normal text-[#525866] active:bg-[#F5F5F5] hover:bg-[#F5F5F5]"
           >
             Cancel
           </Button>
           <Button
             onClick={handleConfirm}
             disabled={isLoading || rating === 0}
-            className="flex-1 rounded-[30px] px-4 py-2.5 font-inter-tight text-[13px] font-normal text-white hover:opacity-80 disabled:opacity-50"
+            className="flex-1 rounded-[30px] px-4 py-2.5 font-inter-tight text-[13px] font-normal text-white active:opacity-80 hover:opacity-80 disabled:opacity-50"
             style={{ backgroundColor: accentColor }}
           >
             {isLoading ? "Submitting..." : "Submit Review"}

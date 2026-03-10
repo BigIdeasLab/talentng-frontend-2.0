@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { ResponsiveTable, ColumnDef, RowAction } from "./ResponsiveTable";
 import { Eye, Edit, Trash2, Mail } from "lucide-react";
 
@@ -116,10 +117,13 @@ export function TableWithActionsExample() {
       render: (user) => (
         <div className="flex items-center gap-2">
           {user.avatar && (
-            <img
+            <Image
               src={user.avatar}
               alt={user.name}
+              width={32}
+              height={32}
               className="w-8 h-8 rounded-full object-cover"
+              sizes="32px"
             />
           )}
           <span>{user.name}</span>
@@ -208,10 +212,13 @@ export function CustomMobileCardExample() {
       {/* User header with avatar */}
       <div className="flex items-center gap-3">
         {user.avatar && (
-          <img
+          <Image
             src={user.avatar}
             alt={user.name}
+            width={48}
+            height={48}
             className="w-12 h-12 rounded-full object-cover"
+            sizes="48px"
           />
         )}
         <div>

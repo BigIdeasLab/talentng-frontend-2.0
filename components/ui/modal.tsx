@@ -53,22 +53,22 @@ export const Modal: React.FC<ModalProps> = ({
       >
         {/* Header */}
         {(title || description) && (
-          <div className="border-b border-gray-200 px-6 py-4">
+          <div className="border-b border-gray-200 px-4 md:px-6 py-3 md:py-4">
             {title && (
               <h2 className="text-lg font-semibold text-black">{title}</h2>
             )}
             {description && (
-              <p className="text-sm text-gray-600 mt-1">{description}</p>
+              <p className="text-base md:text-sm text-gray-600 mt-1">{description}</p>
             )}
           </div>
         )}
 
         {/* Body */}
-        <div className="px-6 py-4">{children}</div>
+        <div className="px-4 md:px-6 py-3 md:py-4">{children}</div>
 
         {/* Footer */}
         {footer && (
-          <div className="border-t border-gray-200 px-6 py-4 flex justify-end gap-2">
+          <div className="border-t border-gray-200 px-4 md:px-6 py-3 md:py-4 flex justify-end gap-2">
             {footer}
           </div>
         )}

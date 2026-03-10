@@ -229,7 +229,7 @@ export function MentorSessionSection() {
         {isLoading ? (
           <SessionsSkeleton />
         ) : sessions.length === 0 ? (
-          <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
+          <div className="rounded-xl border border-[#E1E4EA] bg-white px-4 md:px-6 py-8 md:py-12 text-center">
             <p className="font-inter-tight text-[14px] text-[#525866]">
               No upcoming sessions
             </p>

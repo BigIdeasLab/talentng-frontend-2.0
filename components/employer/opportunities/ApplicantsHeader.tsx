@@ -111,7 +111,7 @@ export function ApplicantsHeader({
         {/* Sort Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="h-[44px] lg:h-[38px] flex items-center justify-center gap-1 px-2 py-2 hover:bg-gray-50 rounded-[8px] transition-colors flex-1 sm:flex-initial">
+            <button className="h-[44px] lg:h-[38px] flex items-center justify-center gap-2 px-2 py-2 hover:bg-gray-50 rounded-[8px] transition-colors flex-1 sm:flex-initial">
               <span className="font-inter-tight text-[13px] font-normal text-black capitalize">
                 {sortBy === "newest" ? "Newest" : "Oldest"}
               </span>

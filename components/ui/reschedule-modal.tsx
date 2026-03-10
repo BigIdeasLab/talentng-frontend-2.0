@@ -169,7 +169,7 @@ export function RescheduleModal({
               <label className="font-inter-tight text-[13px] font-medium text-black">
                 Select a date
               </label>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
                 {availability.slice(0, 8).map((slot, index) => (
                   <button
                     key={index}
@@ -177,7 +177,7 @@ export function RescheduleModal({
                       setSelectedDate(index);
                       setSelectedTime(null);
                     }}
-                    className={`flex flex-col items-center justify-center gap-1 h-[52px] rounded-lg border transition-colors ${
+                    className={`flex flex-col items-center justify-center gap-2 min-h-[52px] rounded-lg border transition-colors ${
                       selectedDate === index
                         ? "text-white"
                         : "bg-white border-[#E1E4EA] hover:opacity-80"
@@ -222,7 +222,7 @@ export function RescheduleModal({
                     <button
                       key={index}
                       onClick={() => setSelectedTime(index)}
-                      className={`px-4 py-2 rounded-lg border font-inter-tight text-[13px] font-normal transition-colors ${
+                      className={`px-4 py-2 min-h-[44px] rounded-lg border font-inter-tight text-[13px] font-normal transition-colors ${
                         selectedTime === index
                           ? "text-white"
                           : "bg-white border-[#E1E4EA] text-black hover:opacity-80"
@@ -245,12 +245,12 @@ export function RescheduleModal({
           </div>
         )}
 
-        <div className="mt-6 flex gap-3">
+        <div className="mt-6 flex flex-col md:flex-row gap-3">
           <Button
             variant="outline"
             onClick={handleClose}
             disabled={isLoading}
-            className="flex-1 rounded-[30px] border-[#E1E4EA] px-4 py-2.5 font-inter-tight text-[13px] font-normal text-[#525866] hover:bg-[#F5F5F5]"
+            className="flex-1 rounded-[30px] border-[#E1E4EA] px-4 py-2.5 font-inter-tight text-[13px] font-normal text-[#525866] hover:bg-[#F5F5F5] min-h-[44px]"
           >
             Cancel
           </Button>
@@ -259,7 +259,7 @@ export function RescheduleModal({
             disabled={
               isLoading || selectedDate === null || selectedTime === null
             }
-            className="flex-1 rounded-[30px] px-4 py-2.5 font-inter-tight text-[13px] font-normal text-white hover:opacity-80 disabled:opacity-50"
+            className="flex-1 rounded-[30px] px-4 py-2.5 font-inter-tight text-[13px] font-normal text-white hover:opacity-80 disabled:opacity-50 min-h-[44px]"
             style={{ backgroundColor: accentColor }}
           >
             {isLoading ? "Saving..." : "Confirm"}

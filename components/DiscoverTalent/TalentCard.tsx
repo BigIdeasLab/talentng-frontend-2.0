@@ -29,7 +29,7 @@ export function TalentCard({ talent }: TalentCardProps) {
         ];
 
   return (
-    <div className="p-[12px_10px] flex flex-col gap-[8px] border border-[#E1E4EA] rounded-[16px] bg-white transition-all hover:shadow-[0_4px_20px_0_rgba(0,0,0,0.05)] cursor-pointer group">
+    <div className="p-[12px_10px] flex flex-col gap-[8px] border border-[#E1E4EA] rounded-[16px] bg-white transition-all active:shadow-[0_4px_20px_0_rgba(0,0,0,0.05)] hover:shadow-[0_4px_20px_0_rgba(0,0,0,0.05)] cursor-pointer group">
       {/* Header */}
       <div className="flex flex-col gap-[16px]">
         <div className="flex flex-col gap-[5px]">
@@ -41,10 +41,11 @@ export function TalentCard({ talent }: TalentCardProps) {
                 width={34}
                 height={34}
                 className="w-[34px] h-[34px] rounded-full object-cover flex-shrink-0"
+                sizes="34px"
                 unoptimized
               />
               <div className="flex flex-col gap-[2px]">
-                <h3 className="text-[14px] font-semibold text-black font-inter-tight group-hover:text-black/60 transition-colors line-clamp-1">
+                <h3 className="text-[14px] font-semibold text-black font-inter-tight group-active:text-black/60 group-hover:text-black/60 transition-colors line-clamp-1">
                   {talent.fullName}
                 </h3>
                 <p className="text-[12px] font-normal text-black/40 font-inter-tight line-clamp-1">
@@ -54,7 +55,7 @@ export function TalentCard({ talent }: TalentCardProps) {
             </div>
             <Button
               onClick={handleViewProfile}
-              className="h-auto px-[8px] py-[12px] rounded-full bg-[#181B25] hover:bg-[#2a2f3a] border border-[#181B25] flex-shrink-0"
+              className="h-auto min-h-[44px] px-[8px] py-[12px] rounded-full bg-[#181B25] active:bg-[#2a2f3a] hover:bg-[#2a2f3a] border border-[#181B25] flex-shrink-0"
             >
               <span className="text-[11px] font-normal text-white font-inter-tight w-[60px]">
                 View Profile
@@ -110,6 +111,8 @@ export function TalentCard({ talent }: TalentCardProps) {
               width={147}
               height={147}
               className="h-[147px] w-[147px] object-cover rounded flex-shrink-0"
+              sizes="(max-width: 768px) 120px, (max-width: 1024px) 140px, 147px"
+              loading="lazy"
               unoptimized
             />
           ))}

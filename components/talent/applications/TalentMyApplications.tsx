@@ -221,13 +221,13 @@ export function TalentMyApplications() {
         </h1>
 
         {/* Top Tab Switch */}
-        <div className="flex items-center gap-1 mb-[19px]">
+        <div className="flex items-center gap-2 mb-[19px]">
           <button
             onClick={() => setActiveTab("jobs")}
-            className={`flex items-center gap-2 px-4 py-2 h-10 rounded-[8px] transition-colors ${
+            className={`flex items-center gap-2 px-4 py-2 h-10 rounded-[8px] transition-all active:scale-95 ${
               activeTab === "jobs"
-                ? "bg-[#5C30FF] text-white font-medium"
-                : "text-[#525866] font-normal hover:text-black hover:bg-gray-50"
+                ? "bg-[#5C30FF] text-white font-medium active:bg-[#4a24d6]"
+                : "text-[#525866] font-normal hover:text-black hover:bg-gray-50 active:bg-gray-100"
             }`}
           >
             <Briefcase className="w-4 h-4" />
@@ -237,10 +237,10 @@ export function TalentMyApplications() {
           </button>
           <button
             onClick={() => setActiveTab("mentorship")}
-            className={`flex items-center gap-2 px-4 py-2 h-10 rounded-[8px] transition-colors ${
+            className={`flex items-center gap-2 px-4 py-2 h-10 rounded-[8px] transition-all active:scale-95 ${
               activeTab === "mentorship"
-                ? "bg-[#5C30FF] text-white font-medium"
-                : "text-[#525866] font-normal hover:text-black hover:bg-gray-50"
+                ? "bg-[#5C30FF] text-white font-medium active:bg-[#4a24d6]"
+                : "text-[#525866] font-normal hover:text-black hover:bg-gray-50 active:bg-gray-100"
             }`}
           >
             <Users className="w-4 h-4" />
@@ -275,7 +275,7 @@ export function TalentMyApplications() {
                 onClick={() => {
                   setAppliedFilters({ dateRange: option.value });
                 }}
-                className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors text-[13px] font-normal font-inter-tight border ${
+                className={`h-[44px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors text-[13px] font-normal font-inter-tight border ${
                   appliedFilters?.dateRange === option.value
                     ? "bg-[#8463FF0D] border-[#8463FF] text-[#8463FF]"
                     : "bg-[#F5F5F5] hover:bg-gray-100 text-black border-transparent"
@@ -383,7 +383,7 @@ export function TalentMyApplications() {
                 <button
                   onClick={() => setCurrentPage(currentPage - 1)}
                   disabled={!currentPagination.hasPreviousPage}
-                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all"
                 >
                   Previous
                 </button>
@@ -394,7 +394,7 @@ export function TalentMyApplications() {
                 <button
                   onClick={() => setCurrentPage(currentPage + 1)}
                   disabled={!currentPagination.hasNextPage}
-                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all"
                 >
                   Next
                 </button>

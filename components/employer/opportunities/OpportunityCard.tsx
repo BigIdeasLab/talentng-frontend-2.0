@@ -341,7 +341,7 @@ export function OpportunityCard({
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="p-1.5 hover:bg-gray-100 rounded-md transition-colors flex-shrink-0">
+            <button className="p-2.5 hover:bg-gray-100 rounded-md transition-colors flex-shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center">
               <svg
                 width="18"
                 height="18"
@@ -408,7 +408,7 @@ export function OpportunityCard({
   return (
     <div
       onClick={handleCardClick}
-      className={`flex flex-col border border-[#E1E4EA] cursor-pointer hover:shadow-md transition-shadow ${
+      className={`flex flex-col border border-[#E1E4EA] cursor-pointer hover:shadow-md active:scale-[0.98] active:shadow-sm transition-all ${
         activeTab === "open" ? "rounded-t-[16px]" : "rounded-[16px]"
       } ${isLoading ? "pointer-events-none opacity-50" : ""}`}
     >

@@ -120,7 +120,7 @@ export const SelectRoleStep = ({
               </span>
             )}
           </div>
-          <p className="text-xs md:text-sm font-light text-[#919191] font-[Inter_Tight]">
+          <p className="text-sm md:text-sm font-light text-[#919191] font-[Inter_Tight]">
             {isAddingRole
               ? "Choose another role to expand your opportunities"
               : "Pick the option that best describes you"}

@@ -113,7 +113,7 @@ export function MobileTableCard({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors font-inter-tight text-[13px] font-medium text-black"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-50 hover:bg-gray-100 active:bg-gray-200 active:scale-95 rounded-lg transition-all font-inter-tight text-[13px] font-medium text-black"
                   style={{
                     minHeight: `${TOUCH_TARGET.minSize}px`,
                   }}
@@ -131,9 +131,6 @@ export function MobileTableCard({
                       "cursor-pointer font-inter-tight text-[13px]",
                       action.className,
                     )}
-                    style={{
-                      minHeight: `${TOUCH_TARGET.minSize}px`,
-                    }}
                   >
                     {action.icon && <span className="mr-2">{action.icon}</span>}
                     {action.label}

@@ -4,6 +4,9 @@ import * as React from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TOUCH_TARGET } from "@/lib/constants/touch-targets";
+import { keyboardHandlers, TABLET_FOCUS_STYLES } from "@/lib/utils/keyboard-navigation";
+import { useIsTablet } from "@/hooks/useIsTablet";
+import { mobileScreenReaderOptimizations } from "@/lib/utils/screen-reader";
 
 interface HamburgerMenuButtonProps {
   /**
@@ -50,11 +53,19 @@ export function HamburgerMenuButton({
   className,
   ariaLabel = "Toggle navigation menu",
 }: HamburgerMenuButtonProps) {
+  const isTablet = useIsTablet();
+
+  // Optimize aria label for mobile screen readers
+  const optimizedAriaLabel = mobileScreenReaderOptimizations.optimizeButtonLabel(
+    ariaLabel,
+    isOpen ? "currently open" : "currently closed"
+  );
+
   return (
     <button
       type="button"
       onClick={onClick}
-      aria-label={ariaLabel}
+      aria-label={optimizedAriaLabel}
       aria-expanded={isOpen}
       aria-controls="mobile-navigation-drawer"
       className={cn(
@@ -62,11 +73,11 @@ export function HamburgerMenuButton({
         "flex items-center justify-center",
         "rounded-md",
         // Visual feedback for touch/click
-        "active:bg-gray-200 transition-colors duration-150",
+        "active:bg-gray-200 active:scale-95 transition-all duration-150",
         // Hover state (for devices that support it)
         "hover:bg-gray-100",
-        // Focus state for keyboard navigation
-        "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+        // Enhanced focus state for tablet keyboard navigation
+        isTablet ? TABLET_FOCUS_STYLES.largeFocusRing : TABLET_FOCUS_STYLES.focusRing,
         // Ensure proper z-index for mobile header
         "relative z-10",
         className,
@@ -77,6 +88,8 @@ export function HamburgerMenuButton({
         width: `${TOUCH_TARGET.minSize}px`,
         height: `${TOUCH_TARGET.minSize}px`,
       }}
+      // Enhanced keyboard support
+      onKeyDown={keyboardHandlers.handleActivation(onClick)}
     >
       {/* Icon with animated transition */}
       <div className="relative w-6 h-6">

@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import {
   LineChart,
   Line,
@@ -10,6 +11,11 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { 
+  mobileOptimizedMemo, 
+  useMobileOptimizedMemo,
+  performanceMonitor 
+} from "@/lib/utils/mobile-performance";
 
 interface WeeklyOverviewData {
   day: string;
@@ -21,35 +27,58 @@ interface WeeklyOverviewChartProps {
   data?: WeeklyOverviewData[];
 }
 
-export function WeeklyOverviewChart({ data }: WeeklyOverviewChartProps) {
-  const chartData =
-    data?.map((item) => ({
+const WeeklyOverviewChart = mobileOptimizedMemo(function WeeklyOverviewChart({ data }: WeeklyOverviewChartProps) {
+  // Performance monitoring in development
+  React.useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      performanceMonitor.mark('WeeklyOverviewChart-render');
+      return () => {
+        performanceMonitor.measure('WeeklyOverviewChart-render');
+      };
+    }
+  });
+
+  // Memoize chart data transformation
+  const chartData = useMobileOptimizedMemo(
+    () => data?.map((item) => ({
       day: item.day,
       applications: item.applications,
       interviews: item.interviews,
-    })) ?? [];
+    })) ?? [],
+    [data],
+    {
+      // On mobile, only re-compute if data reference changes
+      simplifyOnMobile: true,
+      mobileDeps: [data]
+    }
+  );
 
-  const maxValue =
-    data?.reduce(
+  // Memoize Y-axis calculations
+  const { yAxisMax, yAxisTicks } = useMobileOptimizedMemo(() => {
+    const maxValue = data?.reduce(
       (max, item) => Math.max(max, item.applications, item.interviews),
       0,
     ) ?? 0;
 
-  const yAxisMax =
-    maxValue > 0 ? Math.max(Math.ceil(maxValue / 5) * 5, 12) : 80;
-  const yAxisTicks = [
-    0,
-    Math.round(yAxisMax / 4),
-    Math.round(yAxisMax / 2),
-    Math.round((3 * yAxisMax) / 4),
-    yAxisMax,
-  ];
+    const yAxisMax = maxValue > 0 ? Math.max(Math.ceil(maxValue / 5) * 5, 12) : 80;
+    const yAxisTicks = [
+      0,
+      Math.round(yAxisMax / 4),
+      Math.round(yAxisMax / 2),
+      Math.round((3 * yAxisMax) / 4),
+      yAxisMax,
+    ];
+
+    return { yAxisMax, yAxisTicks };
+  }, [data], {
+    // On mobile, only re-compute if data changes
+    simplifyOnMobile: true,
+    mobileDeps: [data]
+  });
 
   console.log(
     "WeeklyOverviewChart - data:",
     data,
-    "maxValue:",
-    maxValue,
     "yAxisMax:",
     yAxisMax,
   );
@@ -161,4 +190,9 @@ export function WeeklyOverviewChart({ data }: WeeklyOverviewChartProps) {
       </div>
     </div>
   );
-}
+}, (prevProps, nextProps) => {
+  // Custom comparison: only re-render if data actually changed
+  return prevProps.data === nextProps.data;
+});
+
+export { WeeklyOverviewChart };

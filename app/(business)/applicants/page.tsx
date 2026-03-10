@@ -302,7 +302,7 @@ export default function ApplicantsPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-3 py-1.5 text-xs font-medium font-inter-tight whitespace-nowrap transition-colors flex-shrink-0 rounded ${
+              className={`px-3 py-1.5 text-sm md:text-xs font-medium font-inter-tight whitespace-nowrap transition-colors flex-shrink-0 rounded ${
                 activeTab === tab.id
                   ? "text-black border-b-2 border-black"
                   : "text-black/30"

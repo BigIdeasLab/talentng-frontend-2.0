@@ -228,7 +228,7 @@ export function useProfileData() {
     if (!user) {
       fetchProfiles();
     }
-  }, [fetchProfiles]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [fetchProfiles]); // eslint-disable-line
 
   return { fetchProfiles };
 }

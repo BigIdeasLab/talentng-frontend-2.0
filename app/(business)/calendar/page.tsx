@@ -28,7 +28,9 @@ import { RecruiterUpcoming } from "@/components/employer/upcoming/RecruiterUpcom
 import { LoadingScreen } from "@/components/layouts/LoadingScreen";
 import { useRouter } from "next/navigation";
 import { useRequireRole } from "@/hooks/useRequireRole";
+import { OrientationAdaptiveGrid } from "@/components/ui/OrientationAdaptiveLayout";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import { useOrientationScrollPreservation } from "@/hooks/useOrientationState";
 
 interface UpcomingItem {
   type: "interview" | "session";
@@ -70,6 +72,9 @@ export default function UpcomingPage() {
 
 function TalentUpcoming() {
   const { toast } = useToast();
+
+  // Preserve scroll position during orientation changes
+  useOrientationScrollPreservation();
 
   const [items, setItems] = useState<any[]>([]);
   const [displayedItems, setDisplayedItems] = useState<any[]>([]);
@@ -371,13 +376,13 @@ function TalentUpcoming() {
 
   return (
     <div className="h-screen overflow-x-hidden bg-white flex flex-col">
-      <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+      <div className="w-full px-4 md:px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
         <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px] mb-[19px]">
           Calendar
         </h1>
 
-        <div className="flex items-center gap-[8px] mb-[19px]">
-          <div className="flex-1 max-w-[585px]">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-[8px] mb-[19px]">
+          <div className="flex-1 w-full md:max-w-[585px]">
             <SearchInput
               value={searchQuery}
               onChange={setSearchQuery}
@@ -388,7 +393,7 @@ function TalentUpcoming() {
           </div>
 
           {/* Date Range Filter Buttons */}
-          <div className="flex items-center gap-[6px]">
+          <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hide">
             {[
               { value: "all", label: "All Time" },
               { value: "today", label: "Today" },
@@ -398,7 +403,7 @@ function TalentUpcoming() {
               <button
                 key={option.value}
                 onClick={() => setDateRange(option.value)}
-                className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors text-[13px] font-normal font-inter-tight border ${
+                className={`min-h-[44px] md:h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors text-[13px] font-normal font-inter-tight border ${
                   dateRange === option.value
                     ? "bg-[#8463FF0D] border-[#8463FF] text-[#8463FF]"
                     : "bg-[#F5F5F5] hover:bg-gray-100 text-black border-transparent"
@@ -410,7 +415,7 @@ function TalentUpcoming() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
           {FILTER_TABS.map((tab) => {
             const Icon = tab.icon;
             const count =
@@ -423,7 +428,7 @@ function TalentUpcoming() {
               <button
                 key={tab.id}
                 onClick={() => setFilter(tab.id)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-inter-tight transition-colors ${
+                className={`flex items-center gap-1.5 px-3 py-2 md:py-1.5 rounded-full text-[12px] font-inter-tight transition-colors flex-shrink-0 min-h-[44px] md:min-h-0 ${
                   filter === tab.id
                     ? "bg-[#5C30FF] text-white font-medium"
                     : "bg-[#F5F5F5] text-[#525866] hover:bg-gray-200"
@@ -451,14 +456,20 @@ function TalentUpcoming() {
       <div className="flex-1 overflow-hidden flex flex-col">
         <div className="flex-1 overflow-y-auto p-4 md:p-6">
           {isLoading ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
+            <OrientationAdaptiveGrid
+              portraitMobileCols={1}
+              landscapeMobileCols={2}
+              tabletCols={2}
+              desktopCols={2}
+              className="gap-[7px]"
+            >
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
                   className="h-[180px] rounded-[16px] bg-gray-100 animate-pulse"
                 />
               ))}
-            </div>
+            </OrientationAdaptiveGrid>
           ) : filteredItems.length === 0 ? (
             <EmptyState
               icon={Calendar}
@@ -478,7 +489,13 @@ function TalentUpcoming() {
               }
             />
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
+            <OrientationAdaptiveGrid
+              portraitMobileCols={1}
+              landscapeMobileCols={2}
+              tabletCols={2}
+              desktopCols={2}
+              className="gap-[7px]"
+            >
               {filteredItems.map((item) => {
                 if (item.type === "interview" && item.interview) {
                   const { interview, application } = item.interview;
@@ -508,15 +525,15 @@ function TalentUpcoming() {
                 }
                 return null;
               })}
-            </div>
+            </OrientationAdaptiveGrid>
           )}
         </div>
 
         {/* Pagination - Fixed at bottom */}
         {!isLoading && pagination && pagination.total > 0 && (
           <div className="flex-shrink-0 px-4 md:px-6 py-4 border-t border-[#E1E4EA] bg-white">
-            <div className="flex items-center justify-between">
-              <div className="text-[13px] text-[#525866] font-inter-tight">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-3">
+              <div className="text-[13px] text-[#525866] font-inter-tight text-center md:text-left">
                 Showing {pagination.offset + 1} to{" "}
                 {Math.min(
                   pagination.offset + pagination.limit,
@@ -528,17 +545,17 @@ function TalentUpcoming() {
                 <button
                   onClick={() => setCurrentPage(currentPage - 1)}
                   disabled={!pagination.hasPreviousPage}
-                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                  className="min-h-[44px] px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
                 >
                   Previous
                 </button>
-                <span className="text-[13px] text-[#525866] font-inter-tight">
+                <span className="text-[13px] text-[#525866] font-inter-tight whitespace-nowrap">
                   Page {pagination.currentPage} of {pagination.totalPages}
                 </span>
                 <button
                   onClick={() => setCurrentPage(currentPage + 1)}
                   disabled={!pagination.hasNextPage}
-                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                  className="min-h-[44px] px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
                 >
                   Next
                 </button>

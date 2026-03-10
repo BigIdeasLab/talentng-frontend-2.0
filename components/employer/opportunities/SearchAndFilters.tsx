@@ -111,7 +111,7 @@ export function SearchAndFilters({
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="flex items-center gap-1.5 px-3 h-9 hover:bg-gray-50 rounded-lg transition-colors flex-shrink-0">
+          <button className="flex items-center gap-2 px-3 h-11 hover:bg-gray-50 rounded-lg transition-colors flex-shrink-0">
             <span className="text-xs font-normal font-inter-tight text-black">
               {sortBy === "newest"
                 ? "Newest"

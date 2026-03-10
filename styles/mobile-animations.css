@@ -1,0 +1,216 @@
+/**
+ * Mobile-optimized animations using CSS transforms and opacity.
+ * These animations are GPU-accelerated and perform better on mobile devices.
+ */
+
+/* Disable animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Keep essential loading animations */
+  .animate-spin,
+  .animate-pulse {
+    animation-duration: revert !important;
+    animation-iteration-count: revert !important;
+  }
+}
+
+/* Mobile-optimized animations using transforms (GPU-accelerated) */
+.mobile-fade-in {
+  opacity: 0;
+  animation: mobile-fade-in 0.3s ease-out forwards;
+}
+
+.mobile-fade-out {
+  opacity: 1;
+  animation: mobile-fade-out 0.2s ease-out forwards;
+}
+
+.mobile-slide-up {
+  transform: translateY(100%);
+  animation: mobile-slide-up 0.3s ease-out forwards;
+}
+
+.mobile-slide-down {
+  transform: translateY(0);
+  animation: mobile-slide-down 0.3s ease-out forwards;
+}
+
+.mobile-slide-in-right {
+  transform: translateX(100%);
+  animation: mobile-slide-in-right 0.3s ease-out forwards;
+}
+
+.mobile-slide-out-right {
+  transform: translateX(0);
+  animation: mobile-slide-out-right 0.3s ease-out forwards;
+}
+
+.mobile-scale-in {
+  transform: scale(0.95);
+  opacity: 0;
+  animation: mobile-scale-in 0.2s ease-out forwards;
+}
+
+.mobile-scale-out {
+  transform: scale(1);
+  opacity: 1;
+  animation: mobile-scale-out 0.15s ease-out forwards;
+}
+
+/* Touch feedback animations */
+.mobile-touch-feedback {
+  transition: transform 0.1s ease-out;
+}
+
+.mobile-touch-feedback:active {
+  transform: scale(0.98);
+}
+
+/* Keyframe definitions */
+@keyframes mobile-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes mobile-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes mobile-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes mobile-slide-down {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes mobile-slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes mobile-slide-out-right {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes mobile-scale-in {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes mobile-scale-out {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+
+/* Optimized hover effects for devices that support hover */
+@media (hover: hover) {
+  .mobile-hover-lift {
+    transition: transform 0.2s ease-out;
+  }
+  
+  .mobile-hover-lift:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* Reduce animation complexity on low-end devices */
+@media (max-width: 768px) and (max-resolution: 1.5dppx) {
+  /* Simplified animations for low-resolution mobile devices */
+  .mobile-slide-up,
+  .mobile-slide-down,
+  .mobile-slide-in-right,
+  .mobile-slide-out-right {
+    animation-duration: 0.2s;
+  }
+  
+  .mobile-scale-in,
+  .mobile-scale-out {
+    animation-duration: 0.15s;
+  }
+  
+  /* Disable complex hover effects on low-end devices */
+  .mobile-hover-lift:hover {
+    transform: none;
+  }
+}
+
+/* Performance optimization: Use will-change for animated elements */
+.mobile-animating {
+  will-change: transform, opacity;
+}
+
+.mobile-animating.mobile-animation-complete {
+  will-change: auto;
+}
+
+/* Utility classes for conditional animation */
+.animate-on-mobile {
+  /* Only animate on mobile devices */
+}
+
+@media (min-width: 768px) {
+  .animate-on-mobile {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.no-animate-on-mobile {
+  /* Animate on desktop, not on mobile */
+}
+
+@media (max-width: 767px) {
+  .no-animate-on-mobile {
+    animation: none !important;
+    transition: none !important;
+  }
+}

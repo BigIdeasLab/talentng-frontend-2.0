@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { X, Loader } from "lucide-react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useCreateService, useMyServices } from "@/hooks/useTalentApi";
 import { updateService } from "@/lib/api/talent";
@@ -254,10 +255,14 @@ export function CreateServiceModal({
                     <div className="grid grid-cols-2 gap-1.5 p-2 w-full h-full overflow-y-auto">
                       {images.map((image, idx) => (
                         <div key={idx} className="relative aspect-square">
-                          <img
+                          <Image
                             src={image}
                             alt={`Preview ${idx + 1}`}
+                            width={100}
+                            height={100}
                             className="w-full h-full object-cover rounded-[6px]"
+                            sizes="100px"
+                            loading="lazy"
                           />
                           <button
                             type="button"

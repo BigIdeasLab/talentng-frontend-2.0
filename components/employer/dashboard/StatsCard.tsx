@@ -1,5 +1,6 @@
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import Link from "next/link";
+import { mobileOptimizedMemo } from "@/lib/utils/mobile-performance";
 
 interface StatsCardProps {
   icon: ReactNode;
@@ -15,7 +16,7 @@ interface StatsCardProps {
   href?: string;
 }
 
-export function StatsCard({
+const StatsCard = mobileOptimizedMemo(function StatsCard({
   icon,
   value,
   label,
@@ -94,4 +95,15 @@ export function StatsCard({
       {content}
     </div>
   );
-}
+}, (prevProps, nextProps) => {
+  // Custom comparison: re-render only if essential props change
+  return (
+    prevProps.value === nextProps.value &&
+    prevProps.label === nextProps.label &&
+    prevProps.change?.value === nextProps.change?.value &&
+    prevProps.change?.type === nextProps.change?.type &&
+    prevProps.href === nextProps.href
+  );
+});
+
+export { StatsCard };

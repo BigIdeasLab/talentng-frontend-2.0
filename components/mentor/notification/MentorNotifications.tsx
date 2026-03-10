@@ -6,12 +6,14 @@ import { useNotifications } from "@/hooks/useNotifications";
 import { formatDistanceToNow } from "date-fns";
 import type { InAppNotificationPayload } from "@/lib/types/notification";
 import { MentorNotificationsSkeleton } from "@/components/skeletons/NotificationsSkeleton";
+import { SwipeableNotificationItem } from "@/components/ui/SwipeableNotificationItem";
 
 interface MentorNotificationsProps {
   onActionClick?: () => void;
   onNotificationRead?: () => void;
   onNotificationSelect?: (notificationId: string) => void;
   selectedNotificationId?: string | null;
+  onNotificationDismiss?: (notificationId: string) => void;
 }
 
 export function MentorNotifications({
@@ -19,6 +21,7 @@ export function MentorNotifications({
   onNotificationRead,
   onNotificationSelect,
   selectedNotificationId,
+  onNotificationDismiss,
 }: MentorNotificationsProps) {
   const router = useRouter();
   const [allNotifications, setAllNotifications] = useState<any[]>([]);
@@ -52,8 +55,8 @@ export function MentorNotifications({
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
-          <p className="text-red-600 text-sm">{error}</p>
-          <p className="text-gray-500 text-xs mt-2">
+          <p className="text-red-600 text-sm md:text-sm">{error}</p>
+          <p className="text-gray-500 text-sm md:text-xs mt-2">
             Failed to load notifications
           </p>
         </div>
@@ -65,8 +68,8 @@ export function MentorNotifications({
     return (
       <div className="flex items-center justify-center h-full bg-gray-50">
         <div className="text-center">
-          <p className="text-gray-600 text-sm">No notifications yet</p>
-          <p className="text-gray-500 text-xs mt-1">
+          <p className="text-gray-600 text-sm md:text-sm">No notifications yet</p>
+          <p className="text-gray-500 text-sm md:text-xs mt-1">
             You'll see mentorship and learning-related notifications here
           </p>
         </div>
@@ -215,99 +218,104 @@ export function MentorNotifications({
         const isSelected = selectedNotificationId === notification.id;
 
         return (
-          <div
+          <SwipeableNotificationItem
             key={notification.id}
-            className={`flex gap-3 px-5 py-4 border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer ${
-              isUnread ? "bg-blue-50/50" : ""
-            } ${
-              isSelected
-                ? "bg-blue-50 border-l-4 border-l-blue-500"
-                : "border-l-4 border-l-transparent"
-            }`}
-            onClick={(e) => {
-              // Don't handle click if it's from an action button
-              const target = e.target as HTMLElement;
-              if (target.closest("button")) {
-                return;
-              }
-              handleNotificationClick(notification.id, formatted.action, false);
-            }}
-            role="button"
-            tabIndex={0}
+            onDismiss={() => onNotificationDismiss?.(notification.id)}
+            enabled={!!onNotificationDismiss}
           >
-            {/* Unread indicator */}
-            {isUnread && (
-              <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2" />
-            )}
-            {/* Avatar with image or emoji */}
-            {formatted.display.type === "image" ? (
-              <img
-                src={formatted.display.value}
-                alt={formatted.title}
-                className="flex-shrink-0 w-11 h-11 rounded-full object-cover"
-                onError={(e) => {
-                  // Fallback to emoji if image fails to load
-                  const imgElement = e.currentTarget;
-                  imgElement.style.display = "none";
-                  const parent = imgElement.parentElement;
-                  if (parent) {
-                    parent.innerHTML = `<div class="flex-shrink-0 w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-lg ${colors.badge}">📌</div>`;
-                  }
-                }}
-              />
-            ) : (
-              <div
-                className={`flex-shrink-0 w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-lg ${colors.badge}`}
-              >
-                {formatted.display.value}
-              </div>
-            )}
-
-            {/* Content */}
-            <div className="flex-1 min-w-0 py-0.5">
-              <p className="text-[12px] leading-snug">
-                <span
-                  className={`${isUnread ? "font-semibold" : "font-medium"} text-gray-900`}
+            <div
+              className={`flex gap-3 px-4 md:px-5 py-4 border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer ${
+                isUnread ? "bg-blue-50/50" : ""
+              } ${
+                isSelected
+                  ? "bg-blue-50 border-l-4 border-l-blue-500"
+                  : "border-l-4 border-l-transparent"
+              }`}
+              onClick={(e) => {
+                // Don't handle click if it's from an action button
+                const target = e.target as HTMLElement;
+                if (target.closest("button")) {
+                  return;
+                }
+                handleNotificationClick(notification.id, formatted.action, false);
+              }}
+              role="button"
+              tabIndex={0}
+            >
+              {/* Unread indicator */}
+              {isUnread && (
+                <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-2" />
+              )}
+              {/* Avatar with image or emoji */}
+              {formatted.display.type === "image" ? (
+                <img
+                  src={formatted.display.value}
+                  alt={formatted.title}
+                  className="flex-shrink-0 w-11 h-11 rounded-full object-cover"
+                  onError={(e) => {
+                    // Fallback to emoji if image fails to load
+                    const imgElement = e.currentTarget;
+                    imgElement.style.display = "none";
+                    const parent = imgElement.parentElement;
+                    if (parent) {
+                      parent.innerHTML = `<div class="flex-shrink-0 w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-lg ${colors.badge}">📌</div>`;
+                    }
+                  }}
+                />
+              ) : (
+                <div
+                  className={`flex-shrink-0 w-11 h-11 rounded-full flex items-center justify-center text-white font-bold text-lg ${colors.badge}`}
                 >
-                  {formatted.title}
-                </span>{" "}
-                <span className="font-normal text-gray-700">
-                  {formatted.message}
-                </span>
-              </p>
+                  {formatted.display.value}
+                </div>
+              )}
 
-              <div className="flex flex-col gap-0.5 mt-1.5">
-                <div className="flex items-center gap-1.5">
-                  <p className="text-[10px] text-gray-500">
-                    {formatted.timestamp}
-                  </p>
-                  {formatted.deliveryStatus === "failed" && (
-                    <span className="text-[9px] text-red-500 ml-auto">
-                      Failed
-                    </span>
+              {/* Content */}
+              <div className="flex-1 min-w-0 py-0.5">
+                <p className="text-[12px] md:text-[13px] leading-snug">
+                  <span
+                    className={`${isUnread ? "font-semibold" : "font-medium"} text-gray-900`}
+                  >
+                    {formatted.title}
+                  </span>{" "}
+                  <span className="font-normal text-gray-700">
+                    {formatted.message}
+                  </span>
+                </p>
+
+                <div className="flex flex-col gap-0.5 mt-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <p className="text-[10px] md:text-[11px] text-gray-500">
+                      {formatted.timestamp}
+                    </p>
+                    {formatted.deliveryStatus === "failed" && (
+                      <span className="text-[9px] md:text-[10px] text-red-500 ml-auto">
+                        Failed
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Action button - touch-friendly */}
+                  {formatted.action && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        handleNotificationClick(
+                          notification.id,
+                          formatted.action,
+                          true,
+                        );
+                      }}
+                      className="text-[11px] md:text-[10px] text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-0.5 mt-1 min-h-[44px] md:min-h-0 -ml-2 pl-2 md:ml-0 md:pl-0"
+                    >
+                      {formatted.action.label} →
+                    </button>
                   )}
                 </div>
-
-                {/* Action button */}
-                {formatted.action && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      handleNotificationClick(
-                        notification.id,
-                        formatted.action,
-                        true,
-                      );
-                    }}
-                    className="text-[10px] text-blue-600 hover:text-blue-700 font-medium inline-flex items-center gap-0.5 mt-1"
-                  >
-                    {formatted.action.label} →
-                  </button>
-                )}
               </div>
             </div>
-          </div>
+          </SwipeableNotificationItem>
         );
       })}
     </div>

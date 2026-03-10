@@ -69,6 +69,21 @@ export function NotificationsModal({
   };
 
   /**
+   * Handle notification dismissal via swipe
+   */
+  const handleNotificationDismiss = async (notificationId: string) => {
+    try {
+      // TODO: Implement delete notification functionality
+      console.log("Dismissing notification:", notificationId);
+      // If the dismissed notification was selected, close the detail panel
+      if (selectedNotificationId === notificationId) {
+        setSelectedNotificationId(null);
+      }
+    } catch (error) {
+      console.error("Failed to dismiss notification:", error);
+    }
+  };
+  /**
    * Handle action click
    * Executes action (navigation), closes both panels
    */
@@ -96,6 +111,7 @@ export function NotificationsModal({
             onNotificationRead={onNotificationRead}
             onNotificationSelect={handleNotificationSelect}
             selectedNotificationId={selectedNotificationId}
+            onNotificationDismiss={handleNotificationDismiss}
           />
         );
       case "mentor":
@@ -105,6 +121,7 @@ export function NotificationsModal({
             onNotificationRead={onNotificationRead}
             onNotificationSelect={handleNotificationSelect}
             selectedNotificationId={selectedNotificationId}
+            onNotificationDismiss={handleNotificationDismiss}
           />
         );
       case "talent":
@@ -115,6 +132,7 @@ export function NotificationsModal({
             onNotificationRead={onNotificationRead}
             onNotificationSelect={handleNotificationSelect}
             selectedNotificationId={selectedNotificationId}
+            onNotificationDismiss={handleNotificationDismiss}
           />
         );
     }
@@ -134,21 +152,22 @@ export function NotificationsModal({
       {/* Backdrop - closes both panels when clicked */}
       <div className="fixed inset-0 z-40" onClick={handleBackdropClick} />
 
-      {/* Modal */}
-      <div className="fixed left-[250px] top-0 bottom-0 w-[350px] z-50">
+      {/* Modal - Full screen on mobile, sidebar on desktop */}
+      <div className="fixed inset-0 md:left-[250px] md:top-0 md:bottom-0 md:w-[350px] md:inset-auto z-50">
         <div
           className="w-full h-full flex flex-col overflow-hidden shadow-lg"
           style={{ backgroundColor: "#FFFFFF" }}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Modal Header */}
-          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 flex-shrink-0">
-            <h2 className="text-[17px] font-semibold text-gray-900">
+          <div className="flex items-center justify-between px-4 md:px-5 py-4 border-b border-gray-100 flex-shrink-0">
+            <h2 className="text-lg md:text-[17px] font-semibold text-gray-900">
               Notifications
             </h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0"
+              className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2"
+              aria-label="Close notifications"
             >
               <X size={20} strokeWidth={1.5} />
             </button>

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { X, Loader } from "lucide-react";
+import Image from "next/image";
 import {
   uploadGalleryImages,
   updateGalleryItem,
@@ -284,10 +285,14 @@ export function UploadWorksModal({
                           key={`existing-${idx}`}
                           className="relative aspect-square"
                         >
-                          <img
+                          <Image
                             src={url}
                             alt={`Existing ${idx + 1}`}
+                            width={100}
+                            height={100}
                             className="w-full h-full object-cover rounded-[6px]"
+                            sizes="100px"
+                            loading="lazy"
                           />
                           <button
                             type="button"
@@ -307,10 +312,14 @@ export function UploadWorksModal({
                           className="relative aspect-square"
                         >
                           {file.type.startsWith("image/") ? (
-                            <img
+                            <Image
                               src={previewUrls[idx]}
                               alt={`Preview ${idx + 1}`}
+                              width={100}
+                              height={100}
                               className="w-full h-full object-cover rounded-[6px]"
+                              sizes="100px"
+                              loading="lazy"
                             />
                           ) : file.type.startsWith("video/") ? (
                             <video

@@ -15,7 +15,7 @@ export function OpportunitiesTabs({
     <div className="flex items-center gap-5 border-b border-transparent mb-6 overflow-x-auto scrollbar-hide">
       <button
         onClick={() => onTabChange("open")}
-        className={`px-3 py-1.5 text-xs font-medium font-inter-tight whitespace-nowrap transition-colors flex-shrink-0 rounded ${
+        className={`px-3 py-1.5 text-sm md:text-xs font-medium font-inter-tight whitespace-nowrap transition-colors flex-shrink-0 rounded ${
           activeTab === "open"
             ? "text-black border-b-2 border-black"
             : "text-black/30"
@@ -25,7 +25,7 @@ export function OpportunitiesTabs({
       </button>
       <button
         onClick={() => onTabChange("closed")}
-        className={`px-3 py-1.5 text-xs font-medium font-inter-tight whitespace-nowrap transition-colors flex-shrink-0 rounded ${
+        className={`px-3 py-1.5 text-sm md:text-xs font-medium font-inter-tight whitespace-nowrap transition-colors flex-shrink-0 rounded ${
           activeTab === "closed"
             ? "text-black border-b-2 border-black"
             : "text-black/30"
@@ -35,7 +35,7 @@ export function OpportunitiesTabs({
       </button>
       <button
         onClick={() => onTabChange("draft")}
-        className={`px-3 py-1.5 text-xs font-medium font-inter-tight whitespace-nowrap transition-colors flex-shrink-0 rounded ${
+        className={`px-3 py-1.5 text-sm md:text-xs font-medium font-inter-tight whitespace-nowrap transition-colors flex-shrink-0 rounded ${
           activeTab === "draft"
             ? "text-black border-b-2 border-black"
             : "text-black/30"

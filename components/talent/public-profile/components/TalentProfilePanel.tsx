@@ -2,6 +2,7 @@
 
 import { MapPin, Briefcase, Users, DollarSign } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import type { TalentProfile } from "@/lib/api/talent/types";
 
@@ -32,10 +33,14 @@ export function TalentProfilePanel({
       <div className="flex flex-col items-center gap-[20px]">
         {/* Profile Picture with Completion Badge */}
         <div className="relative w-[110px] h-[110px]">
-          <img
+          <Image
             src={profile.profileImageUrl || "/lucas-gouvea.jpg"}
             alt={profile.fullName || "Profile"}
+            width={110}
+            height={110}
             className="w-full h-full object-cover rounded-full p-2"
+            sizes="(max-width: 768px) 80px, 110px"
+            priority
           />
           <svg
             width="110"

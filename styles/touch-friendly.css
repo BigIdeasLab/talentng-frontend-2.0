@@ -1,0 +1,184 @@
+/* Touch-friendly interaction styles */
+/* This file provides touch alternatives for hover-only interactions */
+
+/* Only apply hover styles on devices that support hover */
+@media (hover: hover) {
+  /* Card hover effects - optimized for mobile performance */
+  .card-hover:hover {
+    transform: translateY(-2px); /* Reduced from -4px */
+    box-shadow: 0 8px 20px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+  }
+
+  /* Button hover effects */
+  .btn-hover:hover {
+    opacity: 0.8;
+    transition: opacity 0.15s ease-out;
+  }
+
+  .btn-bg-hover:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    transition: background-color 0.15s ease-out;
+  }
+
+  /* Navigation item hover */
+  .nav-item-hover:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    transition: background-color 0.15s ease-out;
+  }
+
+  /* Image overlay hover - optimized */
+  .image-overlay-hover:hover .overlay {
+    background-color: rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s ease-out;
+  }
+
+  .image-overlay-hover:hover .image {
+    transform: scale(1.02); /* Reduced from 1.05 for better performance */
+    transition: transform 0.2s ease-out;
+  }
+
+  /* Text color hover */
+  .text-hover:hover {
+    color: rgba(0, 0, 0, 0.6);
+    transition: color 0.15s ease-out;
+  }
+
+  /* Scale hover effect - reduced scale */
+  .scale-hover:hover {
+    transform: scale(1.05); /* Reduced from 1.1 */
+    transition: transform 0.15s ease-out;
+  }
+
+  /* Shadow hover effect */
+  .shadow-hover:hover {
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease-out;
+  }
+}
+
+/* Touch-specific active states for devices without hover */
+@media (hover: none) {
+  /* Card active effects - optimized */
+  .card-hover:active {
+    transform: translateY(-2px); /* Reduced from -4px */
+    box-shadow: 0 8px 20px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+  }
+
+  /* Button active effects */
+  .btn-hover:active {
+    opacity: 0.8;
+    transition: opacity 0.1s ease-out;
+  }
+
+  .btn-bg-hover:active {
+    background-color: rgba(0, 0, 0, 0.05);
+    transition: background-color 0.1s ease-out;
+  }
+
+  /* Navigation item active */
+  .nav-item-hover:active {
+    background-color: rgba(0, 0, 0, 0.05);
+    transition: background-color 0.1s ease-out;
+  }
+
+  /* Image overlay active - optimized */
+  .image-overlay-hover:active .overlay {
+    background-color: rgba(0, 0, 0, 0.2);
+    transition: background-color 0.1s ease-out;
+  }
+
+  .image-overlay-hover:active .image {
+    transform: scale(1.02); /* Reduced from 1.05 */
+    transition: transform 0.1s ease-out;
+  }
+
+  /* Text color active */
+  .text-hover:active {
+    color: rgba(0, 0, 0, 0.6);
+    transition: color 0.1s ease-out;
+  }
+
+  /* Scale active effect - reduced scale */
+  .scale-hover:active {
+    transform: scale(1.05); /* Reduced from 1.1 */
+    transition: transform 0.1s ease-out;
+  }
+
+  /* Shadow active effect */
+  .shadow-hover:active {
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.1s ease-out;
+  }
+
+  /* Ensure touch targets are large enough */
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Common transition for all interactive elements - optimized for mobile */
+.interactive-element {
+  transition: transform 0.15s ease-out, opacity 0.15s ease-out, background-color 0.15s ease-out;
+}
+
+/* Tooltip alternatives for touch devices */
+@media (hover: none) {
+  /* Hide hover-only tooltips on touch devices */
+  .tooltip-hover {
+    display: none;
+  }
+  
+  /* Show tap-to-reveal tooltips instead */
+  .tooltip-touch {
+    display: block;
+  }
+}
+
+@media (hover: hover) {
+  .tooltip-hover {
+    display: block;
+  }
+  
+  .tooltip-touch {
+    display: none;
+  }
+}
+
+/* Dropdown menu touch improvements */
+@media (hover: none) {
+  /* Ensure dropdown menus work with touch */
+  .dropdown-menu {
+    /* Touch-optimized dropdown styling */
+    padding: 8px 0;
+  }
+  
+  .dropdown-item {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+  }
+}
+
+/* Focus styles for keyboard navigation */
+.focus-visible:focus-visible {
+  outline: 2px solid #5C30FF;
+  outline-offset: 2px;
+}
+
+/* Ensure sufficient spacing between touch targets */
+@media (hover: none) {
+  .touch-spacing > * + * {
+    margin-top: 8px;
+  }
+  
+  .touch-spacing-horizontal > * + * {
+    margin-left: 8px;
+  }
+}

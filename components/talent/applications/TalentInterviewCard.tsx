@@ -188,7 +188,7 @@ export function TalentInterviewCard({
       <div className="flex items-center justify-end px-4 py-2.5 border-t border-[#E1E4EA]">
         <Link
           href={`/opportunities/${opportunityId}`}
-          className="flex items-center gap-1 text-[12px] font-medium font-inter-tight text-[#525866] hover:text-black transition-colors"
+          className="flex items-center gap-2 text-[12px] font-medium font-inter-tight text-[#525866] hover:text-black transition-colors"
         >
           View Opportunity
           <ExternalLink className="w-3 h-3" />

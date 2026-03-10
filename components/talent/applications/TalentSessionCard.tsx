@@ -275,7 +275,7 @@ export function TalentSessionCard({
 
       {/* Footer */}
       <div className="flex items-center justify-between px-4 py-2.5 border-t border-[#E1E4EA]">
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           {/* Pending - Show Cancel button */}
           {session.status === "pending" && (
             <>

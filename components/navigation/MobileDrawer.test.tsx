@@ -7,6 +7,20 @@ import {
 } from "./MobileDrawer";
 import { TOUCH_TARGET } from "@/lib/constants/touch-targets";
 
+vi.mock("@/hooks/useIsMobile", () => ({
+  useIsMobile: () => false,
+}));
+
+vi.mock("@/hooks/useIsTablet", () => ({
+  useIsTablet: () => false,
+}));
+
+vi.mock("@/hooks/useOrientation", () => ({
+  useOrientation: () => ({ orientation: "portrait", angle: 0, isChanging: false }),
+  useIsLandscape: () => false,
+  useIsPortrait: () => true,
+}));
+
 describe("MobileDrawer", () => {
   it("renders children when open", () => {
     render(
@@ -54,7 +68,7 @@ describe("MobileDrawerItem", () => {
   it("renders as button when no href provided", () => {
     render(<MobileDrawerItem>Test Item</MobileDrawerItem>);
 
-    const button = screen.getByRole("button", { name: "Test Item" });
+    const button = screen.getByRole("menuitem", { name: "Test Item" });
     expect(button).toBeInTheDocument();
   });
 
@@ -70,7 +84,7 @@ describe("MobileDrawerItem", () => {
     const onClick = vi.fn();
     render(<MobileDrawerItem onClick={onClick}>Test Item</MobileDrawerItem>);
 
-    const button = screen.getByRole("button", { name: "Test Item" });
+    const button = screen.getByRole("menuitem", { name: "Test Item" });
     fireEvent.click(button);
 
     expect(onClick).toHaveBeenCalledTimes(1);
@@ -79,7 +93,7 @@ describe("MobileDrawerItem", () => {
   it("has minimum touch target height", () => {
     render(<MobileDrawerItem>Test Item</MobileDrawerItem>);
 
-    const button = screen.getByRole("button", { name: "Test Item" });
+    const button = screen.getByRole("menuitem", { name: "Test Item" });
     const styles = window.getComputedStyle(button);
 
     // Check that minHeight is set to at least the touch target minimum
@@ -91,7 +105,7 @@ describe("MobileDrawerItem", () => {
       <MobileDrawerItem className="custom-item">Test Item</MobileDrawerItem>,
     );
 
-    const button = screen.getByRole("button", { name: "Test Item" });
+    const button = screen.getByRole("menuitem", { name: "Test Item" });
     expect(button).toHaveClass("custom-item");
   });
 });
@@ -172,11 +186,11 @@ describe("MobileDrawer touch interactions", () => {
   it("provides visual feedback on touch", () => {
     render(<MobileDrawerItem>Test Item</MobileDrawerItem>);
 
-    const button = screen.getByRole("button", { name: "Test Item" });
+    const button = screen.getByRole("menuitem", { name: "Test Item" });
 
     // Check for active state classes
     expect(button).toHaveClass("active:bg-gray-100");
-    expect(button).toHaveClass("transition-colors");
+    expect(button).toHaveClass("transition-all");
   });
 
   it("maintains minimum spacing between items", () => {

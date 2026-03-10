@@ -194,7 +194,7 @@ export function EmployerSettings() {
             title="Profile Discovery"
             description="Control how your company profile appears to candidates"
           >
-            <div className="space-y-1">
+            <div className="space-y-2">
               <ToggleSetting
                 label="Public Profile"
                 description="Allow candidates to find and view your company profile"
@@ -204,7 +204,7 @@ export function EmployerSettings() {
             </div>
             <div className="mt-4 flex justify-end">
               <Button
-                className="text-white hover:opacity-90"
+                className="text-white hover:opacity-90 w-full md:w-auto min-h-[44px]"
                 style={{ backgroundColor: roleColors.primary }}
                 onClick={() =>
                   saveSettings.mutate({
@@ -231,7 +231,7 @@ export function EmployerSettings() {
                 <Mail className="w-4 h-4" />
                 Email Notifications
               </h3>
-              <div className="space-y-1 pl-5">
+              <div className="space-y-2 pl-5">
                 <ToggleSetting
                   label="New Applications"
                   description="Get notified when candidates apply to your opportunities"
@@ -262,7 +262,7 @@ export function EmployerSettings() {
                 <Bell className="w-4 h-4" />
                 Push Notifications
               </h3>
-              <div className="space-y-1 pl-5">
+              <div className="space-y-2 pl-5">
                 <ToggleSetting
                   label="New Applications"
                   checked={notifications.pushNewApplications}
@@ -280,7 +280,7 @@ export function EmployerSettings() {
               <Button
                 onClick={() => saveSettings.mutate(notifications)}
                 disabled={saveSettings.isPending}
-                className="text-white hover:opacity-90"
+                className="text-white hover:opacity-90 w-full md:w-auto min-h-[44px]"
                 style={{ backgroundColor: roleColors.primary }}
               >
                 {saveSettings.isPending && (
@@ -354,7 +354,7 @@ export function EmployerSettings() {
                     !newPassword ||
                     !confirmPassword
                   }
-                  className="text-white hover:opacity-90"
+                  className="text-white hover:opacity-90 w-full md:w-auto min-h-[44px]"
                   style={{ backgroundColor: roleColors.primary }}
                 >
                   {changePassword.isPending && (
@@ -370,7 +370,7 @@ export function EmployerSettings() {
           {/* Account */}
           <SettingsSection title="Account" description="Manage your account">
             <div className="space-y-4">
-              <div className="flex items-center justify-between py-3 border-b border-[#E1E4EA]">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between py-3 border-b border-[#E1E4EA] gap-3">
                 <div className="flex items-center gap-3">
                   <User className="w-5 h-5 text-[#B2B2B2]" />
                   <div>
@@ -382,12 +382,12 @@ export function EmployerSettings() {
                     </p>
                   </div>
                 </div>
-                <Button variant="outline" size="sm" asChild>
+                <Button variant="outline" size="sm" className="w-full md:w-auto min-h-[44px]" asChild>
                   <a href="/profile/edit">Change</a>
                 </Button>
               </div>
 
-              <div className="flex items-center justify-between py-3 border-b border-[#E1E4EA]">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between py-3 border-b border-[#E1E4EA] gap-3">
                 <div className="flex items-center gap-3">
                   <LogOut className="w-5 h-5 text-[#B2B2B2]" />
                   <div>
@@ -402,6 +402,7 @@ export function EmployerSettings() {
                 <Button
                   variant="outline"
                   size="sm"
+                  className="w-full md:w-auto min-h-[44px]"
                   onClick={() => handleLogoutAll.mutate()}
                   disabled={handleLogoutAll.isPending}
                 >
@@ -409,7 +410,7 @@ export function EmployerSettings() {
                 </Button>
               </div>
 
-              <div className="flex items-center justify-between py-3">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between py-3 gap-3">
                 <div className="flex items-center gap-3">
                   <Trash2 className="w-5 h-5 text-red-500" />
                   <div>
@@ -424,7 +425,7 @@ export function EmployerSettings() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-red-600 border-red-200 hover:bg-red-50"
+                  className="text-red-600 border-red-200 hover:bg-red-50 w-full md:w-auto min-h-[44px]"
                 >
                   Delete
                 </Button>

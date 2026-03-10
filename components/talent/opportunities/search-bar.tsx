@@ -36,7 +36,7 @@ export function SearchBar({
       <div className="relative flex-shrink-0">
         <button
           onClick={onFilterClick}
-          className={`h-[44px] lg:h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] w-full sm:w-auto justify-center transition-colors ${
+          className={`h-[44px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] w-full sm:w-auto justify-center transition-colors ${
             filterCount > 0
               ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
               : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"

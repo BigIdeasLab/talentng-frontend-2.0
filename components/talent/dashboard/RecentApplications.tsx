@@ -109,7 +109,7 @@ export function RecentApplications({ applications }: RecentApplicationsProps) {
         </h2>
         <Link
           href="/my-applications"
-          className="flex items-center gap-1 text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity"
+          className="flex items-center gap-2 text-[12px] font-medium font-inter-tight hover:opacity-80 transition-opacity"
           style={{ color: ROLE_COLORS.talent.dark }}
         >
           View All

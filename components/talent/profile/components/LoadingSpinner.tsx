@@ -20,7 +20,7 @@ export function LoadingSpinner({
   return (
     <div className="flex flex-col items-center justify-center gap-2 p-4">
       <Loader2 className={`${sizeMap[size]} animate-spin text-[#5C30FF]`} />
-      {label && <p className="text-sm text-gray-500">{label}</p>}
+      {label && <p className="text-sm md:text-sm text-gray-500">{label}</p>}
     </div>
   );
 }
