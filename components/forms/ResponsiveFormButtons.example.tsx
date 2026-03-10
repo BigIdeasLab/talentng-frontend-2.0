@@ -131,7 +131,9 @@ export function ResponsiveFormButtonsExample() {
       </section>
 
       <section>
-        <h2 className="text-2xl font-bold mb-4">Form with Different Button Variants</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          Form with Different Button Variants
+        </h2>
         <form className="space-y-4">
           <div className="p-4 border rounded-lg">
             <ResponsiveFormButtons>

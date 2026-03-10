@@ -2,223 +2,463 @@
 
 ## Overview
 
-This design document outlines the comprehensive responsive design system for the Next.js application, enabling seamless user experiences across mobile (< 768px), tablet (768px - 1024px), and desktop (≥ 1024px) viewports. The system leverages Tailwind CSS's utility-first approach combined with custom React hooks to provide a robust, maintainable responsive architecture.
+This design document outlines the technical implementation for making the entire Next.js application responsive across mobile (< 768px), tablet (768px - 1024px), and desktop (≥ 1024px) viewports. The solution leverages Tailwind CSS's responsive utilities, custom React hooks for breakpoint detection, and component-level adaptations to ensure optimal user experience across all device sizes.
 
-### Goals
+The application contains multiple user flows (authentication, business/employer, talent, mentor) with numerous pages, modals, tables, forms, and interactive components. The responsive system will transform layouts, hide/show components conditionally, adapt navigation patterns, and optimize touch interactions for mobile and tablet devices.
 
-- Provide consistent, touch-friendly interfaces across all device sizes
-- Maintain feature parity across breakpoints while optimizing for device capabilities
-- Ensure performance optimization for mobile devices with limited resources
-- Create reusable patterns and components for responsive behavior
-- Support both portrait and landscape orientations
-- Maintain accessibility standards across all viewports
+### Key Design Principles
 
-### Non-Goals
-
-- Native mobile application development
-- Progressive Web App (PWA) offline functionality (out of scope for this feature)
-- Device-specific optimizations beyond standard responsive breakpoints
-- Custom breakpoints beyond Tailwind's default system
+1. **Mobile-First Approach**: Base styles target mobile viewports, with progressive enhancement for larger screens
+2. **Performance-Conscious**: Minimize re-renders, lazy load components, and optimize bundle size for mobile
+3. **Touch-Friendly**: All interactive elements meet minimum 44x44px tap target requirements
+4. **Consistent Breakpoints**: Use Tailwind's standard breakpoint system consistently across the application
+5. **Graceful Degradation**: Maintain full functionality across all breakpoints, adapting UI patterns as needed
+6. **Accessibility**: Preserve ARIA labels, keyboard navigation, and screen reader compatibility
 
 ## Architecture
 
-### High-Level Architecture
+### Breakpoint System
 
-The responsive system follows a layered architecture:
+The responsive system is built on Tailwind CSS's default breakpoint configuration:
 
+- **sm**: 640px (small phones in landscape, reference point)
+- **md**: 768px (tablets in portrait, primary mobile/tablet boundary)
+- **lg**: 1024px (tablets in landscape, primary tablet/desktop boundary)
+- **xl**: 1280px (desktop)
+- **2xl**: 1536px (large desktop)
+
+**Viewport Classifications**:
+
+- **Mobile_Viewport**: < 768px (below md breakpoint)
+- **Tablet_Viewport**: 768px - 1023px (md to lg breakpoint)
+- **Desktop_Viewport**: ≥ 1024px (lg breakpoint and above)
+
+### Core Utilities Layer
+
+#### Breakpoint Detection Hooks
+
+Three custom hooks provide programmatic breakpoint detection for conditional rendering and logic:
+
+**useIsMobile Hook** (already exists, will be enhanced):
+
+```typescript
+// Returns true for viewports < 768px
+const isMobile = useIsMobile();
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    Application Layer                     │
-│  (Pages, Features, Business Logic)                      │
-└─────────────────────────────────────────────────────────┘
-                          │
-┌─────────────────────────────────────────────────────────┐
-│              Responsive Component Layer                  │
-│  (Adaptive Components, Layout Transformers)             │
-└─────────────────────────────────────────────────────────┘
-                          │
-┌─────────────────────────────────────────────────────────┐
-│           Responsive Utilities Layer                     │
-│  (Hooks, Breakpoint Detection, Visibility Control)      │
-└─────────────────────────────────────────────────────────┘
-                          │
-┌─────────────────────────────────────────────────────────┐
-│              Tailwind CSS Foundation                     │
-│  (Breakpoints, Utilities, Responsive Classes)           │
-└─────────────────────────────────────────────────────────┘
+
+**useIsTablet Hook** (new):
+
+```typescript
+// Returns true for viewports 768px - 1023px
+const isTablet = useIsTablet();
 ```
 
-### Breakpoint Strategy
+**useBreakpoint Hook** (new):
 
-The system uses Tailwind CSS's default breakpoint system:
+```typescript
+// Returns current breakpoint name: 'mobile' | 'tablet' | 'desktop'
+const breakpoint = useBreakpoint();
+```
 
-| Breakpoint   | Min Width | Max Width | Device Target  | Prefix |
-| ------------ | --------- | --------- | -------------- | ------ |
-| xs (default) | 0px       | 639px     | Small phones   | (none) |
-| sm           | 640px     | 767px     | Large phones   | `sm:`  |
-| md           | 768px     | 1023px    | Tablets        | `md:`  |
-| lg           | 1024px    | 1279px    | Small desktops | `lg:`  |
-| xl           | 1280px    | 1535px    | Large desktops | `xl:`  |
-| 2xl          | 1536px    | ∞         | Extra large    | `2xl:` |
+These hooks use `window.matchMedia` with proper event listeners for real-time updates and SSR-safe initialization.
 
-**Semantic Breakpoints:**
+#### Responsive Utility Components
 
-- **Mobile Viewport**: < 768px (xs + sm)
-- **Tablet Viewport**: 768px - 1023px (md)
-- **Desktop Viewport**: ≥ 1024px (lg+)
+**ResponsiveContainer Component**:
+Wrapper component that provides consistent padding and max-width constraints across breakpoints.
 
-### Component Transformation Patterns
+**ConditionalRender Component**:
+Declarative component for showing/hiding content based on breakpoint:
 
-The system employs several transformation patterns:
+```typescript
+<ConditionalRender mobile tablet desktop>
+  {children}
+</ConditionalRender>
+```
 
-1. **Layout Transformation**: Grid → Column stacking, Multi-column → Single column
-2. **Component Replacement**: Desktop sidebar → Mobile drawer, Table → Card list
-3. **Visibility Control**: Show/hide components based on breakpoint
-4. **Size Adaptation**: Modal sizing, touch target expansion, typography scaling
-5. **Interaction Adaptation**: Hover → Touch, Click → Tap with visual feedback
+### Component Architecture Layers
+
+#### 1. Navigation System
+
+**Desktop Sidebar** (≥ 1024px):
+
+- Full-width sidebar (240px) with icons and labels
+- Fixed position on left side
+- ProfileSwitcher at bottom
+- Notification badges visible
+
+**Tablet Sidebar** (768px - 1023px):
+
+- Collapsed sidebar (64px) with icons only
+- Labels appear on hover
+- Fixed position on left side
+- Maintains all navigation items
+
+**Mobile Navigation** (< 768px):
+
+- Desktop sidebar hidden completely
+- Hamburger menu button in header (top-left)
+- Slide-out drawer from left on menu tap
+- Full navigation items in drawer
+- ProfileSwitcher in drawer
+- Auto-close on navigation selection
+- Overlay backdrop when open
+
+**Implementation Components**:
+
+- `MobileNav`: Hamburger button + drawer component
+- `TabletSidebar`: Collapsed icon-only sidebar
+- `DesktopSidebar`: Full sidebar (existing)
+- `NavigationDrawer`: Shared drawer content for mobile
+
+#### 2. Modal System
+
+All modals adapt based on viewport:
+
+**Mobile Modals** (< 768px):
+
+- Full-screen overlay (100vw x 100vh)
+- Slide-up animation from bottom
+- Close button top-right (44x44px minimum)
+- Reduced padding (16px)
+- Vertical button stacking
+- Scrollable content area
+
+**Tablet Modals** (768px - 1023px):
+
+- 90% screen width with max-width constraints
+- Centered positioning
+- Standard padding (24px)
+- Buttons can be horizontal if space permits
+
+**Desktop Modals** (≥ 1024px):
+
+- Fixed widths as designed
+- Centered positioning
+- Full padding (32px)
+
+**Modal Component Wrapper**:
+A `ResponsiveModal` wrapper component that handles viewport-specific rendering for all modal types.
+
+#### 3. Data Display System
+
+**Table to Card Transformation**:
+
+Mobile viewports transform tables into card-based layouts:
+
+- Each table row becomes a card
+- Column headers become labels within cards
+- Actions appear as dropdown menu in card
+- Sorting/filtering maintained
+- Pagination adapted for mobile
+
+**Grid Layouts**:
+
+- Mobile: 1 column (grid-cols-1)
+- Tablet: 2 columns (md:grid-cols-2)
+- Desktop: 3-4 columns (lg:grid-cols-3 or lg:grid-cols-4)
+
+**Implementation Components**:
+
+- `ResponsiveTable`: Wrapper that switches between table and card view
+- `TableCard`: Card representation of table row
+- `ResponsiveGrid`: Grid with responsive column counts
+
+#### 4. Form System
+
+Forms adapt to maximize usability on smaller screens:
+
+**Mobile Forms** (< 768px):
+
+- Single column layout (all fields full-width)
+- Increased input height (48px minimum)
+- Labels above inputs
+- Vertical button stacking
+- Full-width buttons
+
+**Tablet/Desktop Forms**:
+
+- Multi-column layouts where designed
+- Standard input heights
+- Horizontal button groups
+
+**Form Components**:
+
+- All existing form components enhanced with responsive classes
+- No new wrapper needed, just Tailwind utility updates
+
+#### 5. Dashboard and Stats
+
+**Stat Cards Grid**:
+
+- Mobile: 1 column (grid-cols-1)
+- Tablet: 2 columns (md:grid-cols-2)
+- Desktop: 4 columns (lg:grid-cols-4)
+
+**Charts**:
+
+- Responsive width (w-full)
+- Height adjusts based on viewport
+- Legends positioned below on mobile
+- Touch-friendly tooltips
+
+### Touch Interaction Layer
+
+**Touch Target Requirements**:
+
+- Minimum 44x44px for all interactive elements
+- 8px minimum spacing between touch targets
+- Visual feedback on touch (active states)
+- Disable hover-only interactions on touch devices
+
+**Swipe Gestures**:
+
+- Dismissible modals with swipe-down gesture
+- Horizontal scrolling for tabs and chips
+- Swipe navigation for carousels
+
+### Performance Optimization Layer
+
+**Code Splitting**:
+
+- Lazy load mobile-specific components
+- Separate bundles for navigation variants
+- Dynamic imports for modals
+
+**Image Optimization**:
+
+- Next.js Image component with responsive sizes
+- Serve appropriately sized images per viewport
+- Lazy loading for below-fold images
+
+**Virtual Scrolling**:
+
+- Implement for long lists on mobile
+- Reduces DOM nodes and improves performance
 
 ## Components and Interfaces
 
-### Core Responsive Hooks
+### New Hooks
 
-#### useIsMobile Hook
-
-**Purpose**: Detect if the current viewport is mobile (< 768px)
-
-**Interface**:
+#### useIsTablet
 
 ```typescript
-function useIsMobile(): boolean;
-```
+export function useIsTablet(): boolean {
+  const [isTablet, setIsTablet] = useState<boolean | undefined>(undefined);
 
-**Implementation Details**:
+  useEffect(() => {
+    const mql = window.matchMedia("(min-width: 768px) and (max-width: 1023px)");
+    const onChange = () => {
+      setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
+    };
+    mql.addEventListener("change", onChange);
+    setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
 
-- Uses `window.matchMedia` for efficient breakpoint detection
-- Returns `undefined` initially (SSR compatibility), then `boolean`
-- Listens to viewport changes and updates reactively
-- Breakpoint threshold: 768px
-
-**Current Implementation**: Already exists at `hooks/useIsMobile.tsx`
-
-#### useIsTablet Hook (New)
-
-**Purpose**: Detect if the current viewport is tablet (768px - 1024px)
-
-**Interface**:
-
-```typescript
-function useIsTablet(): boolean;
-```
-
-**Implementation Details**:
-
-- Uses `window.matchMedia` with range query
-- Returns `true` when viewport is between 768px and 1023px
-- Handles SSR with `undefined` initial state
-- Updates on viewport resize
-
-#### useBreakpoint Hook (New)
-
-**Purpose**: Get the current breakpoint name for fine-grained control
-
-**Interface**:
-
-```typescript
-type Breakpoint = "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
-
-function useBreakpoint(): Breakpoint;
-```
-
-**Implementation Details**:
-
-- Returns current breakpoint based on viewport width
-- Uses multiple `matchMedia` queries for accuracy
-- Provides more granular control than boolean hooks
-- Useful for complex responsive logic
-
-### Navigation System
-
-#### Desktop Sidebar Component
-
-**Current Behavior**: Full-width sidebar with icons and labels
-
-**Responsive Adaptations**:
-
-- **Desktop (≥ 1024px)**: Full sidebar with icons and labels
-- **Tablet (768px - 1023px)**: Collapsed sidebar with icons only
-- **Mobile (< 768px)**: Hidden completely
-
-**Implementation Strategy**:
-
-- Use Tailwind classes: `hidden lg:flex` for desktop sidebar
-- Maintain existing sidebar component structure
-- Add collapsed state for tablet view
-
-#### Mobile Navigation Drawer (New)
-
-**Purpose**: Provide mobile-optimized navigation
-
-**Interface**:
-
-```typescript
-interface MobileDrawerProps {
-  isOpen: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
+  return !!isTablet;
 }
 ```
 
-**Features**:
+#### useBreakpoint
 
-- Slide-in animation from left
-- Overlay backdrop with blur effect
-- Auto-close on navigation item selection
-- Contains ProfileSwitcher component
-- Displays notification badges
-- Touch-friendly tap targets (minimum 44x44px)
+```typescript
+type Breakpoint = "mobile" | "tablet" | "desktop";
 
-**Implementation Details**:
+export function useBreakpoint(): Breakpoint {
+  const [breakpoint, setBreakpoint] = useState<Breakpoint>("desktop");
 
-- Use Radix UI Sheet component as foundation
-- Implement swipe-to-close gesture
-- Trap focus within drawer when open
-- Prevent body scroll when drawer is open
+  useEffect(() => {
+    const updateBreakpoint = () => {
+      const width = window.innerWidth;
+      if (width < 768) {
+        setBreakpoint("mobile");
+      } else if (width < 1024) {
+        setBreakpoint("tablet");
+      } else {
+        setBreakpoint("desktop");
+      }
+    };
 
-#### Hamburger Menu Button (New)
+    updateBreakpoint();
+    window.addEventListener("resize", updateBreakpoint);
+    return () => window.removeEventListener("resize", updateBreakpoint);
+  }, []);
 
-**Purpose**: Toggle mobile navigation drawer
+  return breakpoint;
+}
+```
 
-**Visibility**: Only on mobile viewport (< 768px)
+### New Components
 
-**Implementation**:
+#### ResponsiveModal
 
-- Positioned in top-left of mobile header
-- Animated icon (hamburger ↔ X)
-- Minimum 44x44px tap target
-- Accessible with ARIA labels
+Wrapper component for all modals that handles viewport-specific rendering:
 
-### Modal System
+```typescript
+interface ResponsiveModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+  title?: string;
+  size?: "sm" | "md" | "lg" | "xl";
+}
 
-#### Responsive Modal Wrapper (Enhanced)
+export function ResponsiveModal({
+  isOpen,
+  onClose,
+  children,
+  title,
+  size = "md",
+}: ResponsiveModalProps) {
+  const isMobile = useIsMobile();
 
-**Purpose**: Adapt all modals to viewport size
+  // Mobile: full-screen, Tablet/Desktop: sized modal
+  const modalClasses = isMobile
+    ? "fixed inset-0 z-50 bg-background"
+    : `fixed inset-0 z-50 flex items-center justify-center p-4`;
 
-**Responsive Behavior**:
+  const contentClasses = isMobile
+    ? "h-full w-full flex flex-col"
+    : `bg-background rounded-lg shadow-lg ${sizeClasses[size]} max-h-[90vh] flex flex-col`;
 
-| Viewport | Width          | Height      | Padding | Position    |
-| -------- | -------------- | ----------- | ------- | ----------- |
-| Mobile   | 100vw          | 100vh       | 16px    | Full screen |
-| Tablet   | 90vw           | max-content | 24px    | Centered    |
-| Desktop  | Fixed (varies) | max-content | 32px    | Centered    |
+  // Implementation details...
+}
+```
 
-**Implementation Strategy**:
+#### MobileNav
 
-- Enhance existing Modal component with responsive classes
-- Use Tailwind: `w-full h-full md:w-[90vw] md:h-auto lg:w-[600px]`
-- Ensure all modal content is scrollable
-- Position close button in touch-friendly location (top-right, 44x44px)
+Mobile navigation component with hamburger menu and drawer:
 
-**Modals Requiring Treatment**:
+```typescript
+export function MobileNav() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <button
+        onClick={() => setIsOpen(true)}
+        className="p-2 hover:bg-gray-100 rounded-lg"
+        aria-label="Open navigation menu"
+      >
+        <MenuIcon className="h-6 w-6" />
+      </button>
+
+      <NavigationDrawer
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+      />
+    </>
+  );
+}
+```
+
+#### NavigationDrawer
+
+Slide-out drawer for mobile navigation:
+
+```typescript
+interface NavigationDrawerProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export function NavigationDrawer({ isOpen, onClose }: NavigationDrawerProps) {
+  // Slide-in from left animation
+  // Contains all navigation items
+  // ProfileSwitcher at bottom
+  // Overlay backdrop
+  // Auto-close on navigation
+}
+```
+
+#### ResponsiveTable
+
+Wrapper that switches between table and card view:
+
+```typescript
+interface ResponsiveTableProps<T> {
+  data: T[];
+  columns: ColumnDef<T>[];
+  onRowAction?: (row: T, action: string) => void;
+}
+
+export function ResponsiveTable<T>({
+  data,
+  columns,
+  onRowAction
+}: ResponsiveTableProps<T>) {
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return <TableCardView data={data} columns={columns} onRowAction={onRowAction} />;
+  }
+
+  return <TableView data={data} columns={columns} onRowAction={onRowAction} />;
+}
+```
+
+#### TableCard
+
+Card representation of a table row for mobile:
+
+```typescript
+interface TableCardProps<T> {
+  row: T;
+  columns: ColumnDef<T>[];
+  onAction?: (action: string) => void;
+}
+
+export function TableCard<T>({ row, columns, onAction }: TableCardProps<T>) {
+  // Renders each column as label: value pair
+  // Actions as dropdown menu
+  // Touch-friendly tap targets
+}
+```
+
+#### ConditionalRender
+
+Declarative component for breakpoint-based rendering:
+
+```typescript
+interface ConditionalRenderProps {
+  mobile?: boolean;
+  tablet?: boolean;
+  desktop?: boolean;
+  children: React.ReactNode;
+}
+
+export function ConditionalRender({
+  mobile = false,
+  tablet = false,
+  desktop = false,
+  children
+}: ConditionalRenderProps) {
+  const breakpoint = useBreakpoint();
+
+  const shouldRender = (
+    (mobile && breakpoint === 'mobile') ||
+    (tablet && breakpoint === 'tablet') ||
+    (desktop && breakpoint === 'desktop')
+  );
+
+  return shouldRender ? <>{children}</> : null;
+}
+```
+
+### Component Modifications
+
+The following existing components will be modified with responsive Tailwind classes:
+
+#### Navigation Components
+
+- `DesktopSidebar`: Add `hidden lg:flex` to hide on mobile/tablet
+- `ProfileSwitcher`: Adapt for mobile drawer placement
+- Header components: Add mobile hamburger menu
+
+#### Modal Components
+
+All modals wrapped with `ResponsiveModal`:
 
 - ApplicantFilterModal
 - HireOpportunitiesModal
@@ -244,120 +484,29 @@ interface MobileDrawerProps {
 - RoleSwitchModal
 - SuccessModal
 
-**Modal Content Adaptations**:
+#### Table Components
 
-- Stack form fields vertically on mobile
-- Stack action buttons vertically on mobile with full width
-- Reduce padding on mobile (16px vs 32px desktop)
-- Ensure scrollable content area
-
-### Data Display Components
-
-#### Responsive Table Component (New)
-
-**Purpose**: Transform tables into mobile-friendly card layouts
-
-**Desktop View** (≥ 1024px):
-
-- Traditional table with all columns
-- Sortable headers
-- Row actions in dedicated column
-
-**Tablet View** (768px - 1023px):
-
-- Horizontal scrolling table
-- Essential columns only
-- Sticky first column
-
-**Mobile View** (< 768px):
-
-- Card-based layout
-- Each row becomes a card
-- Table headers become labels within cards
-- Actions in dropdown menu per card
-
-**Interface**:
-
-```typescript
-interface ResponsiveTableProps<T> {
-  data: T[];
-  columns: ColumnDef<T>[];
-  mobileCardRenderer?: (item: T) => React.ReactNode;
-  essentialColumns?: string[]; // For tablet view
-  onRowAction?: (action: string, item: T) => void;
-}
-```
-
-**Tables Requiring Treatment**:
+Wrapped with `ResponsiveTable`:
 
 - ApplicantsTable
 - OpportunitiesTable
 - ApplicationsTable
 - SessionsTable
 - InterviewsTable
-- HiredTalentTable
 
-#### Responsive Grid Component
+#### Grid Components
 
-**Purpose**: Adapt grid layouts to viewport size
+Add responsive grid classes:
 
-**Grid Columns by Viewport**:
+- TalentGrid: `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`
+- OpportunitiesGrid: `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`
+- WorksGrid: `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`
+- ServicesGrid: `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`
+- RecommendationsGrid: `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`
 
-- Mobile: 1 column
-- Tablet: 2 columns
-- Desktop: 3-4 columns (configurable)
+#### Form Components
 
-**Implementation**:
-
-```typescript
-interface ResponsiveGridProps {
-  children: React.ReactNode;
-  desktopColumns?: 3 | 4;
-  className?: string;
-}
-```
-
-**Tailwind Classes**:
-
-```
-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
-```
-
-**Grids Requiring Treatment**:
-
-- TalentGrid
-- OpportunitiesGrid
-- WorksGrid
-- ServicesGrid
-- RecommendationsGrid
-
-### Form Components
-
-#### Responsive Form Layout
-
-**Mobile Adaptations**:
-
-- All fields stack vertically (single column)
-- Input fields expand to full width
-- Input height increased to 44px minimum
-- Labels positioned above inputs
-- Action buttons stack vertically with full width
-- Increased spacing between fields (16px)
-
-**Desktop Layout**:
-
-- Multi-column layouts where appropriate
-- Inline labels for compact forms
-- Horizontal button groups
-- Tighter spacing (12px)
-
-**Implementation Strategy**:
-
-- Use Tailwind grid: `grid grid-cols-1 lg:grid-cols-2 gap-4`
-- Apply to all form containers
-- Ensure touch-friendly input sizing
-
-**Forms Requiring Treatment**:
+Add responsive form classes:
 
 - PostOpportunityForm
 - EditOpportunityForm
@@ -368,103 +517,73 @@ grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
 - LoginForm
 - SignupForm
 
-### Dashboard Components
+#### Dashboard Components
 
-#### Stat Cards Layout
+Add responsive stat grid classes:
 
-**Responsive Grid**:
+- EmployerDashboard: Stats grid `grid-cols-1 md:grid-cols-2 lg:grid-cols-4`
+- TalentDashboard: Stats grid `grid-cols-1 md:grid-cols-2 lg:grid-cols-4`
+- MentorDashboard: Stats grid `grid-cols-1 md:grid-cols-2 lg:grid-cols-4`
+- Chart components: Responsive width and height
 
-- Mobile: 1 column (stacked)
-- Tablet: 2 columns
-- Desktop: 4 columns
+#### Profile Components
 
-**Implementation**:
+Add responsive layout classes:
 
-```
-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4
-```
+- EmployerProfile: Stack sections on mobile
+- TalentProfile: Stack sections on mobile
+- MentorProfile: Stack sections on mobile
+- TalentProfileView: Stack sections on mobile
+- Profile navigation: Horizontal scrollable tabs on mobile
 
-**Content Adaptations**:
+#### Search and Filter Components
 
-- Hide detailed descriptions on mobile
-- Maintain primary metric and label
-- Scale icon sizes appropriately
+Add responsive classes:
 
-#### Chart Components
-
-**Mobile Adaptations**:
-
-- Scale to full container width
-- Reduce height for better scrolling
-- Position legend below chart
-- Simplify tooltips for touch
-- Maintain interactivity with touch events
-
-**Implementation Strategy**:
-
-- Use responsive container: `w-full h-[300px] md:h-[400px]`
-- Configure Recharts with responsive prop
-- Adjust font sizes for mobile readability
+- SearchAndFilters: Stack on mobile, full-width search
+- DiscoverTalentHeader: Responsive layout
+- OpportunitiesHeader: Responsive layout
+- ApplicantsHeader: Responsive layout
 
 ## Data Models
 
-### Breakpoint Configuration
+### Breakpoint Type
 
 ```typescript
-// lib/constants/breakpoints.ts
-export const BREAKPOINTS = {
-  mobile: 768,
-  tablet: 1024,
-} as const;
-
-export const TAILWIND_BREAKPOINTS = {
-  sm: 640,
-  md: 768,
-  lg: 1024,
-  xl: 1280,
-  "2xl": 1536,
-} as const;
+type Breakpoint = "mobile" | "tablet" | "desktop";
 ```
 
-### Touch Target Configuration
+### Responsive Configuration
 
 ```typescript
-// lib/constants/touch-targets.ts
-export const TOUCH_TARGET = {
-  minSize: 44, // pixels
-  minSpacing: 8, // pixels
-} as const;
-```
-
-### Responsive Component Props
-
-```typescript
-// types/responsive.ts
-export interface ResponsiveProps {
-  hideOnMobile?: boolean;
-  hideOnTablet?: boolean;
-  hideOnDesktop?: boolean;
-  mobileOnly?: boolean;
-  tabletOnly?: boolean;
-  desktopOnly?: boolean;
-}
-
-export interface TouchFriendlyProps {
-  touchTarget?: "small" | "medium" | "large";
-  touchFeedback?: boolean;
+interface ResponsiveConfig {
+  breakpoints: {
+    mobile: number; // 768
+    tablet: number; // 1024
+  };
+  touchTargetSize: number; // 44
+  touchTargetSpacing: number; // 8
 }
 ```
 
-### Modal Responsive Configuration
+### Modal Size Mapping
 
 ```typescript
-// types/modal.ts
-export interface ResponsiveModalConfig {
-  mobileFullScreen?: boolean;
-  tabletWidth?: string;
-  desktopWidth?: string;
-  maxHeight?: string;
-  mobilePadding?: string;
-  desktopPadding?: string;
-}
+const modalSizeClasses = {
+  sm: "max-w-sm",
+  md: "max-w-md md:max-w-lg",
+  lg: "max-w-lg md:max-w-2xl",
+  xl: "max-w-xl md:max-w-4xl",
+};
+```
+
+### Grid Column Mapping
+
+```typescript
+const gridColumnClasses = {
+  talent: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
+  opportunities: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
+  stats: "grid-cols-1 md:grid-cols-2 lg:grid-cols-4",
+  works: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
+};
 ```
