@@ -311,17 +311,17 @@
 
 ## Testing Sign-off
 
-**Tester**: ******\_\_\_\_******
-**Date**: ******\_\_\_\_******
-**Device Tested**: ******\_\_\_\_******
-**Screen Size**: ******\_\_\_\_******
-**Input Methods Tested**: ******\_\_\_\_******
+**Tester**: **\*\***\_\_\_\_**\*\***
+**Date**: **\*\***\_\_\_\_**\*\***
+**Device Tested**: **\*\***\_\_\_\_**\*\***
+**Screen Size**: **\*\***\_\_\_\_**\*\***
+**Input Methods Tested**: **\*\***\_\_\_\_**\*\***
 **Overall Rating**: ⭐⭐⭐⭐⭐
 **Touch Experience**: ⭐⭐⭐⭐⭐
 **Keyboard/Mouse Experience**: ⭐⭐⭐⭐⭐
 **Performance**: ⭐⭐⭐⭐⭐
-**Critical Issues Found**: ******\_\_\_\_******
-**Enhancement Opportunities**: ******\_\_\_\_******
+**Critical Issues Found**: **\*\***\_\_\_\_**\*\***
+**Enhancement Opportunities**: **\*\***\_\_\_\_**\*\***
 
 ---
 

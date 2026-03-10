@@ -297,12 +297,12 @@
 
 ## Testing Sign-off
 
-**Tester**: ******\_\_\_\_******
-**Date**: ******\_\_\_\_******
-**Device Tested**: ******\_\_\_\_******
+**Tester**: **\*\***\_\_\_\_**\*\***
+**Date**: **\*\***\_\_\_\_**\*\***
+**Device Tested**: **\*\***\_\_\_\_**\*\***
 **Overall Rating**: ⭐⭐⭐⭐⭐
-**Critical Issues Found**: ******\_\_\_\_******
-**Recommendations**: ******\_\_\_\_******
+**Critical Issues Found**: **\*\***\_\_\_\_**\*\***
+**Recommendations**: **\*\***\_\_\_\_**\*\***
 
 ---
 
