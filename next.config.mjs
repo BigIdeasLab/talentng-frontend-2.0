@@ -20,6 +20,11 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "cdn.builder.io",
+        pathname: "/api/v1/image/**",
+      },
+      {
+        protocol: "https",
         hostname: "picsum.photos",
       },
     ],

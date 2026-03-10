@@ -505,10 +505,14 @@ function Avatar({
 }) {
   if (avatarUrl) {
     return (
-      <img
+      <Image
         src={avatarUrl}
         alt={initials}
+        width={40}
+        height={40}
         className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+        loading="lazy"
+        sizes="40px"
       />
     );
   }
@@ -583,11 +587,15 @@ function TalentCard({ talent }: { talent: (typeof talents)[0] }) {
       {/* Portfolio Images */}
       <div className="flex gap-2">
         {talent.images.map((src, i) => (
-          <img
+          <Image
             key={i}
             src={src}
             alt=""
+            width={200}
+            height={144}
             className="flex-1 h-36 object-cover rounded-lg min-w-0"
+            loading="lazy"
+            sizes="(max-width: 768px) 33vw, 200px"
           />
         ))}
       </div>
@@ -665,8 +673,8 @@ function PlatformMockup({ images, bg }: { images: string[]; bg: string }) {
         width={1200}
         height={800}
         className="w-full h-auto object-contain"
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
-        priority
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 600px"
+        loading="lazy"
       />
     </div>
   );
@@ -999,9 +1007,9 @@ export default function LandingPage() {
             ))}
           </div>
 
-          {/* Talent cards grid */}
+          {/* Talent cards grid - show only first 4 initially */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            {talents.map((talent) => (
+            {talents.slice(0, 4).map((talent) => (
               <TalentCard key={talent.id} talent={talent} />
             ))}
           </div>
