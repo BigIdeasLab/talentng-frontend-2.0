@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface HideOnTabletProps {
   children: React.ReactNode;
@@ -9,11 +9,9 @@ interface HideOnTabletProps {
  * Wrapper component that hides its children on tablet viewports (768px - 1023px)
  * Shows content on mobile and desktop viewports
  */
-export function HideOnTablet({ children, className = '' }: HideOnTabletProps) {
+export function HideOnTablet({ children, className = "" }: HideOnTabletProps) {
   return (
-    <div className={`block md:hidden lg:block ${className}`}>
-      {children}
-    </div>
+    <div className={`block md:hidden lg:block ${className}`}>{children}</div>
   );
 }
 

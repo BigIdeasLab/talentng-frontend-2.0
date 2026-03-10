@@ -25,30 +25,30 @@ export class ScreenReaderManager {
    * Setup ARIA live regions for announcements
    */
   private setupLiveRegions() {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     // Create assertive live region for urgent announcements
-    this.liveRegion = document.createElement('div');
-    this.liveRegion.setAttribute('aria-live', 'assertive');
-    this.liveRegion.setAttribute('aria-atomic', 'true');
-    this.liveRegion.setAttribute('class', 'sr-only');
-    this.liveRegion.style.position = 'absolute';
-    this.liveRegion.style.left = '-10000px';
-    this.liveRegion.style.width = '1px';
-    this.liveRegion.style.height = '1px';
-    this.liveRegion.style.overflow = 'hidden';
+    this.liveRegion = document.createElement("div");
+    this.liveRegion.setAttribute("aria-live", "assertive");
+    this.liveRegion.setAttribute("aria-atomic", "true");
+    this.liveRegion.setAttribute("class", "sr-only");
+    this.liveRegion.style.position = "absolute";
+    this.liveRegion.style.left = "-10000px";
+    this.liveRegion.style.width = "1px";
+    this.liveRegion.style.height = "1px";
+    this.liveRegion.style.overflow = "hidden";
     document.body.appendChild(this.liveRegion);
 
     // Create polite live region for non-urgent announcements
-    this.politeRegion = document.createElement('div');
-    this.politeRegion.setAttribute('aria-live', 'polite');
-    this.politeRegion.setAttribute('aria-atomic', 'true');
-    this.politeRegion.setAttribute('class', 'sr-only');
-    this.politeRegion.style.position = 'absolute';
-    this.politeRegion.style.left = '-10000px';
-    this.politeRegion.style.width = '1px';
-    this.politeRegion.style.height = '1px';
-    this.politeRegion.style.overflow = 'hidden';
+    this.politeRegion = document.createElement("div");
+    this.politeRegion.setAttribute("aria-live", "polite");
+    this.politeRegion.setAttribute("aria-atomic", "true");
+    this.politeRegion.setAttribute("class", "sr-only");
+    this.politeRegion.style.position = "absolute";
+    this.politeRegion.style.left = "-10000px";
+    this.politeRegion.style.width = "1px";
+    this.politeRegion.style.height = "1px";
+    this.politeRegion.style.overflow = "hidden";
     document.body.appendChild(this.politeRegion);
   }
 
@@ -60,8 +60,8 @@ export class ScreenReaderManager {
     if (!region) return;
 
     // Clear previous message
-    region.textContent = '';
-    
+    region.textContent = "";
+
     // Add new message after a brief delay to ensure it's announced
     setTimeout(() => {
       region.textContent = message;
@@ -69,7 +69,7 @@ export class ScreenReaderManager {
 
     // Clear message after announcement to avoid repetition
     setTimeout(() => {
-      region.textContent = '';
+      region.textContent = "";
     }, 1000);
   }
 
@@ -84,7 +84,7 @@ export class ScreenReaderManager {
    * Announce modal/drawer state changes
    */
   announceModalState(isOpen: boolean, modalName: string) {
-    const state = isOpen ? 'opened' : 'closed';
+    const state = isOpen ? "opened" : "closed";
     this.announce(`${modalName} ${state}`, true);
   }
 
@@ -99,9 +99,9 @@ export class ScreenReaderManager {
    * Announce loading states
    */
   announceLoading(isLoading: boolean, context?: string) {
-    const message = isLoading 
-      ? `Loading${context ? ` ${context}` : ''}...`
-      : `Loading complete${context ? ` for ${context}` : ''}`;
+    const message = isLoading
+      ? `Loading${context ? ` ${context}` : ""}...`
+      : `Loading complete${context ? ` for ${context}` : ""}`;
     this.announce(message, false);
   }
 
@@ -109,7 +109,7 @@ export class ScreenReaderManager {
    * Announce search results
    */
   announceSearchResults(count: number, query?: string) {
-    const message = query 
+    const message = query
       ? `Found ${count} results for "${query}"`
       : `Found ${count} results`;
     this.announce(message, false);
@@ -118,7 +118,11 @@ export class ScreenReaderManager {
   /**
    * Announce filter changes
    */
-  announceFilterChange(filterName: string, value: string, resultCount?: number) {
+  announceFilterChange(
+    filterName: string,
+    value: string,
+    resultCount?: number,
+  ) {
     let message = `Filter ${filterName} set to ${value}`;
     if (resultCount !== undefined) {
       message += `. ${resultCount} results found`;
@@ -133,62 +137,62 @@ export class ScreenReaderManager {
 export const MOBILE_ARIA_ATTRIBUTES = {
   // Navigation elements
   navigation: {
-    'role': 'navigation',
-    'aria-label': 'Main navigation',
+    role: "navigation",
+    "aria-label": "Main navigation",
   },
   mobileMenu: {
-    'role': 'navigation',
-    'aria-label': 'Mobile navigation menu',
+    role: "navigation",
+    "aria-label": "Mobile navigation menu",
   },
   breadcrumb: {
-    'role': 'navigation',
-    'aria-label': 'Breadcrumb navigation',
+    role: "navigation",
+    "aria-label": "Breadcrumb navigation",
   },
 
   // Interactive elements
   button: {
-    'role': 'button',
-    'tabIndex': 0,
+    role: "button",
+    tabIndex: 0,
   },
   link: {
-    'role': 'link',
+    role: "link",
   },
   menuItem: {
-    'role': 'menuitem',
-    'tabIndex': -1,
+    role: "menuitem",
+    tabIndex: -1,
   },
 
   // Form elements
   searchInput: {
-    'role': 'searchbox',
-    'aria-label': 'Search',
+    role: "searchbox",
+    "aria-label": "Search",
   },
   combobox: {
-    'role': 'combobox',
-    'aria-expanded': 'false',
-    'aria-haspopup': 'listbox',
+    role: "combobox",
+    "aria-expanded": "false",
+    "aria-haspopup": "listbox",
   },
 
   // Content regions
   main: {
-    'role': 'main',
-    'aria-label': 'Main content',
+    role: "main",
+    "aria-label": "Main content",
   },
   complementary: {
-    'role': 'complementary',
+    role: "complementary",
   },
   banner: {
-    'role': 'banner',
+    role: "banner",
   },
 
   // Status and alerts
   status: {
-    'role': 'status',
-    'aria-live': 'polite',
+    role: "status",
+    "aria-live": "polite",
   },
   alert: {
-    'role': 'alert',
-    'aria-live': 'assertive',
+    role: "alert",
+    "aria-live": "assertive",
   },
 } as const;
 
@@ -200,23 +204,23 @@ export const screenReaderText = {
    * Create screen reader only text
    */
   srOnly: (text: string) => ({
-    className: 'sr-only',
+    className: "sr-only",
     children: text,
   }),
 
   /**
    * Create expanded state text for screen readers
    */
-  expandedState: (isExpanded: boolean, itemName: string) => 
-    `${itemName} ${isExpanded ? 'expanded' : 'collapsed'}`,
+  expandedState: (isExpanded: boolean, itemName: string) =>
+    `${itemName} ${isExpanded ? "expanded" : "collapsed"}`,
 
   /**
    * Create loading state text for screen readers
    */
   loadingState: (isLoading: boolean, context?: string) =>
-    isLoading 
-      ? `Loading${context ? ` ${context}` : ''}...`
-      : `Loading complete${context ? ` for ${context}` : ''}`,
+    isLoading
+      ? `Loading${context ? ` ${context}` : ""}...`
+      : `Loading complete${context ? ` for ${context}` : ""}`,
 
   /**
    * Create count text for screen readers
@@ -241,18 +245,23 @@ export function useScreenReader() {
   const manager = ScreenReaderManager.getInstance();
 
   return {
-    announce: (message: string, urgent = false) => manager.announce(message, urgent),
-    announceNavigation: (destination: string) => manager.announceNavigation(destination),
-    announceModalState: (isOpen: boolean, modalName: string) => 
+    announce: (message: string, urgent = false) =>
+      manager.announce(message, urgent),
+    announceNavigation: (destination: string) =>
+      manager.announceNavigation(destination),
+    announceModalState: (isOpen: boolean, modalName: string) =>
       manager.announceModalState(isOpen, modalName),
-    announceFormError: (fieldName: string, error: string) => 
+    announceFormError: (fieldName: string, error: string) =>
       manager.announceFormError(fieldName, error),
-    announceLoading: (isLoading: boolean, context?: string) => 
+    announceLoading: (isLoading: boolean, context?: string) =>
       manager.announceLoading(isLoading, context),
-    announceSearchResults: (count: number, query?: string) => 
+    announceSearchResults: (count: number, query?: string) =>
       manager.announceSearchResults(count, query),
-    announceFilterChange: (filterName: string, value: string, resultCount?: number) => 
-      manager.announceFilterChange(filterName, value, resultCount),
+    announceFilterChange: (
+      filterName: string,
+      value: string,
+      resultCount?: number,
+    ) => manager.announceFilterChange(filterName, value, resultCount),
   };
 }
 
@@ -282,12 +291,11 @@ export const mobileScreenReaderOptimizations = {
   /**
    * Create navigation announcements for mobile
    */
-  navigationAnnouncement: (from: string, to: string) => 
+  navigationAnnouncement: (from: string, to: string) =>
     `Navigated from ${from} to ${to}`,
 
   /**
    * Create gesture hints for mobile screen readers
    */
-  gestureHint: (gesture: string, action: string) => 
-    `${gesture} to ${action}`,
+  gestureHint: (gesture: string, action: string) => `${gesture} to ${action}`,
 };

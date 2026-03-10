@@ -110,15 +110,15 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
         {(title || description) && (
           <div className="mb-4 pr-12">
             {title && (
-              <h2
-                id="modal-title"
-                className="text-lg font-semibold text-black"
-              >
+              <h2 id="modal-title" className="text-lg font-semibold text-black">
                 {title}
               </h2>
             )}
             {description && (
-              <p id="modal-description" className="text-base md:text-sm text-gray-600 mt-1">
+              <p
+                id="modal-description"
+                className="text-base md:text-sm text-gray-600 mt-1"
+              >
                 {description}
               </p>
             )}
@@ -202,7 +202,10 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
               </h2>
             )}
             {description && (
-              <p id="modal-description" className="text-base md:text-sm text-gray-600 mt-1">
+              <p
+                id="modal-description"
+                className="text-base md:text-sm text-gray-600 mt-1"
+              >
                 {description}
               </p>
             )}

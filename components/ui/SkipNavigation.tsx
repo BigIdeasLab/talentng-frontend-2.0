@@ -1,7 +1,7 @@
 "use client";
 
-import React from 'react';
-import { cn } from '@/lib/utils';
+import React from "react";
+import { cn } from "@/lib/utils";
 
 interface SkipNavigationProps {
   /**
@@ -21,9 +21,9 @@ interface SkipNavigationProps {
  * Default skip navigation links
  */
 const DEFAULT_SKIP_LINKS = [
-  { href: '#main-content', label: 'Skip to main content' },
-  { href: '#navigation', label: 'Skip to navigation' },
-  { href: '#footer', label: 'Skip to footer' },
+  { href: "#main-content", label: "Skip to main content" },
+  { href: "#navigation", label: "Skip to navigation" },
+  { href: "#footer", label: "Skip to footer" },
 ];
 
 /**
@@ -35,8 +35,8 @@ export const SkipNavigation: React.FC<SkipNavigationProps> = ({
   className,
 }) => {
   return (
-    <nav 
-      className={cn('skip-navigation', className)}
+    <nav
+      className={cn("skip-navigation", className)}
       aria-label="Skip navigation"
     >
       {links.map((link, index) => (
@@ -50,7 +50,7 @@ export const SkipNavigation: React.FC<SkipNavigationProps> = ({
             if (target) {
               e.preventDefault();
               (target as HTMLElement).focus();
-              (target as HTMLElement).scrollIntoView({ behavior: 'smooth' });
+              (target as HTMLElement).scrollIntoView({ behavior: "smooth" });
             }
           }}
         >
@@ -67,21 +67,21 @@ export const SkipNavigation: React.FC<SkipNavigationProps> = ({
 export function useSkipNavigation() {
   React.useEffect(() => {
     // Ensure main content area is focusable
-    const mainContent = document.getElementById('main-content');
-    if (mainContent && !mainContent.hasAttribute('tabindex')) {
-      mainContent.setAttribute('tabindex', '-1');
+    const mainContent = document.getElementById("main-content");
+    if (mainContent && !mainContent.hasAttribute("tabindex")) {
+      mainContent.setAttribute("tabindex", "-1");
     }
 
     // Ensure navigation area is focusable
-    const navigation = document.getElementById('navigation');
-    if (navigation && !navigation.hasAttribute('tabindex')) {
-      navigation.setAttribute('tabindex', '-1');
+    const navigation = document.getElementById("navigation");
+    if (navigation && !navigation.hasAttribute("tabindex")) {
+      navigation.setAttribute("tabindex", "-1");
     }
 
     // Ensure footer is focusable
-    const footer = document.getElementById('footer');
-    if (footer && !footer.hasAttribute('tabindex')) {
-      footer.setAttribute('tabindex', '-1');
+    const footer = document.getElementById("footer");
+    if (footer && !footer.hasAttribute("tabindex")) {
+      footer.setAttribute("tabindex", "-1");
     }
   }, []);
 }
@@ -94,15 +94,15 @@ interface MainContentProps {
   className?: string;
 }
 
-export const MainContent: React.FC<MainContentProps> = ({ 
-  children, 
-  className 
+export const MainContent: React.FC<MainContentProps> = ({
+  children,
+  className,
 }) => {
   return (
     <main
       id="main-content"
       tabIndex={-1}
-      className={cn('focus:outline-none', className)}
+      className={cn("focus:outline-none", className)}
       role="main"
       aria-label="Main content"
     >
@@ -119,15 +119,15 @@ interface NavigationWrapperProps {
   className?: string;
 }
 
-export const NavigationWrapper: React.FC<NavigationWrapperProps> = ({ 
-  children, 
-  className 
+export const NavigationWrapper: React.FC<NavigationWrapperProps> = ({
+  children,
+  className,
 }) => {
   return (
     <nav
       id="navigation"
       tabIndex={-1}
-      className={cn('focus:outline-none', className)}
+      className={cn("focus:outline-none", className)}
       role="navigation"
       aria-label="Main navigation"
     >
@@ -144,15 +144,15 @@ interface FooterWrapperProps {
   className?: string;
 }
 
-export const FooterWrapper: React.FC<FooterWrapperProps> = ({ 
-  children, 
-  className 
+export const FooterWrapper: React.FC<FooterWrapperProps> = ({
+  children,
+  className,
 }) => {
   return (
     <footer
       id="footer"
       tabIndex={-1}
-      className={cn('focus:outline-none', className)}
+      className={cn("focus:outline-none", className)}
       role="contentinfo"
       aria-label="Footer"
     >

@@ -2,11 +2,11 @@
 
 ## Breakpoints
 
-| Viewport | Size | Tailwind | Hook |
-|----------|------|----------|------|
-| Mobile | < 768px | `(default)`, `sm:` | `useIsMobile()` |
-| Tablet | 768px - 1023px | `md:` | `useIsTablet()` |
-| Desktop | ≥ 1024px | `lg:`, `xl:`, `2xl:` | `!useIsMobile() && !useIsTablet()` |
+| Viewport | Size           | Tailwind             | Hook                               |
+| -------- | -------------- | -------------------- | ---------------------------------- |
+| Mobile   | < 768px        | `(default)`, `sm:`   | `useIsMobile()`                    |
+| Tablet   | 768px - 1023px | `md:`                | `useIsTablet()`                    |
+| Desktop  | ≥ 1024px       | `lg:`, `xl:`, `2xl:` | `!useIsMobile() && !useIsTablet()` |
 
 ## Common Patterns
 
@@ -151,19 +151,29 @@
 
 ```css
 /* Hide on mobile */
-.hide-mobile { @apply hidden md:block; }
+.hide-mobile {
+  @apply hidden md:block;
+}
 
 /* Show only on mobile */
-.mobile-only { @apply block md:hidden; }
+.mobile-only {
+  @apply block md:hidden;
+}
 
 /* Show only on tablet */
-.tablet-only { @apply hidden md:block lg:hidden; }
+.tablet-only {
+  @apply hidden md:block lg:hidden;
+}
 
 /* Show only on desktop */
-.desktop-only { @apply hidden lg:block; }
+.desktop-only {
+  @apply hidden lg:block;
+}
 
 /* Hide on desktop */
-.hide-desktop { @apply block lg:hidden; }
+.hide-desktop {
+  @apply block lg:hidden;
+}
 ```
 
 ## Hook Usage
@@ -205,7 +215,7 @@ const HeavyComponent = lazy(() => import('./HeavyComponent'));
 
 ```typescript
 // In tests
-import { testBreakpoints } from '@/tests/utils/responsive-testing';
+import { testBreakpoints } from "@/tests/utils/responsive-testing";
 
 testBreakpoints((breakpoint) => {
   it(`renders correctly on ${breakpoint}`, () => {
@@ -217,6 +227,7 @@ testBreakpoints((breakpoint) => {
 ## Common Mistakes to Avoid
 
 ❌ **Don't:**
+
 ```typescript
 // Using fixed pixel values
 <div className="w-[320px]">
@@ -229,6 +240,7 @@ if (isMobile) { // isMobile might be undefined initially
 ```
 
 ✅ **Do:**
+
 ```typescript
 // Use responsive classes
 <div className="w-full md:w-auto">
@@ -251,8 +263,8 @@ console.log({
   breakpoint: useBreakpoint(),
   viewport: {
     width: window.innerWidth,
-    height: window.innerHeight
-  }
+    height: window.innerHeight,
+  },
 });
 ```
 

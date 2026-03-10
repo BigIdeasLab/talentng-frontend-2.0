@@ -237,7 +237,11 @@ export function EmployerNotifications({
                 if (target.closest("button")) {
                   return;
                 }
-                handleNotificationClick(notification.id, formatted.action, false);
+                handleNotificationClick(
+                  notification.id,
+                  formatted.action,
+                  false,
+                );
               }}
               role="button"
               tabIndex={0}

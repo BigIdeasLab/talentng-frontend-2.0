@@ -1,13 +1,13 @@
-import React, { useState, useCallback } from 'react';
-import { 
-  VirtualScrollList, 
-  VirtualApplicantList, 
+import React, { useState, useCallback } from "react";
+import {
+  VirtualScrollList,
+  VirtualApplicantList,
   VirtualOpportunityList,
   VirtualNotificationList,
   type ApplicantListItem,
   type OpportunityListItem,
-  type NotificationListItem
-} from './VirtualScrollList';
+  type NotificationListItem,
+} from "./VirtualScrollList";
 
 export default function VirtualScrollListExample() {
   // Generate sample data
@@ -16,17 +16,36 @@ export default function VirtualScrollListExample() {
       id: `applicant-${i}`,
       name: `Applicant ${i + 1}`,
       email: `applicant${i + 1}@example.com`,
-      status: ['pending', 'approved', 'rejected'][i % 3] as any,
+      status: ["pending", "approved", "rejected"][i % 3] as any,
       appliedAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
-      avatar: i % 3 === 0 ? `https://picsum.photos/40/40?random=${i}` : undefined,
+      avatar:
+        i % 3 === 0 ? `https://picsum.photos/40/40?random=${i}` : undefined,
     }));
   };
 
   const generateOpportunities = (count: number): OpportunityListItem[] => {
-    const titles = ['Software Engineer', 'Product Manager', 'Designer', 'Data Scientist', 'DevOps Engineer'];
-    const companies = ['Tech Corp', 'Startup Inc', 'Big Company', 'Innovation Labs', 'Digital Agency'];
-    const locations = ['Remote', 'New York', 'San Francisco', 'London', 'Berlin'];
-    const types = ['Full-time', 'Part-time', 'Contract', 'Internship'];
+    const titles = [
+      "Software Engineer",
+      "Product Manager",
+      "Designer",
+      "Data Scientist",
+      "DevOps Engineer",
+    ];
+    const companies = [
+      "Tech Corp",
+      "Startup Inc",
+      "Big Company",
+      "Innovation Labs",
+      "Digital Agency",
+    ];
+    const locations = [
+      "Remote",
+      "New York",
+      "San Francisco",
+      "London",
+      "Berlin",
+    ];
+    const types = ["Full-time", "Part-time", "Contract", "Internship"];
 
     return Array.from({ length: count }, (_, i) => ({
       id: `opportunity-${i}`,
@@ -35,19 +54,31 @@ export default function VirtualScrollListExample() {
       location: locations[i % locations.length],
       type: types[i % types.length],
       postedAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
-      salary: i % 2 === 0 ? `$${60000 + i * 1000} - $${80000 + i * 1000}` : undefined,
+      salary:
+        i % 2 === 0 ? `$${60000 + i * 1000} - $${80000 + i * 1000}` : undefined,
     }));
   };
 
   const generateNotifications = (count: number): NotificationListItem[] => {
-    const types: ('info' | 'success' | 'warning' | 'error')[] = ['info', 'success', 'warning', 'error'];
-    const titles = ['New Application', 'Interview Scheduled', 'Profile Updated', 'Payment Processed', 'System Alert'];
+    const types: ("info" | "success" | "warning" | "error")[] = [
+      "info",
+      "success",
+      "warning",
+      "error",
+    ];
+    const titles = [
+      "New Application",
+      "Interview Scheduled",
+      "Profile Updated",
+      "Payment Processed",
+      "System Alert",
+    ];
     const messages = [
-      'You have a new application for the Software Engineer position',
-      'Your interview has been scheduled for tomorrow at 2 PM',
-      'Your profile information has been successfully updated',
-      'Your payment of $99 has been processed successfully',
-      'System maintenance is scheduled for tonight',
+      "You have a new application for the Software Engineer position",
+      "Your interview has been scheduled for tomorrow at 2 PM",
+      "Your profile information has been successfully updated",
+      "Your payment of $99 has been processed successfully",
+      "System maintenance is scheduled for tonight",
     ];
 
     return Array.from({ length: count }, (_, i) => ({
@@ -65,20 +96,34 @@ export default function VirtualScrollListExample() {
   const [notifications] = useState(() => generateNotifications(200));
 
   const handleApplicantClick = useCallback((applicant: ApplicantListItem) => {
-    console.log('Clicked applicant:', applicant);
+    console.log("Clicked applicant:", applicant);
   }, []);
 
-  const handleOpportunityClick = useCallback((opportunity: OpportunityListItem) => {
-    console.log('Clicked opportunity:', opportunity);
-  }, []);
+  const handleOpportunityClick = useCallback(
+    (opportunity: OpportunityListItem) => {
+      console.log("Clicked opportunity:", opportunity);
+    },
+    [],
+  );
 
-  const handleNotificationClick = useCallback((notification: NotificationListItem) => {
-    console.log('Clicked notification:', notification);
-  }, []);
+  const handleNotificationClick = useCallback(
+    (notification: NotificationListItem) => {
+      console.log("Clicked notification:", notification);
+    },
+    [],
+  );
 
   // Custom render function for basic virtual list
   const renderCustomItem = useCallback(
-    ({ index, style, data }: { index: number; style: React.CSSProperties; data: any[] }) => (
+    ({
+      index,
+      style,
+      data,
+    }: {
+      index: number;
+      style: React.CSSProperties;
+      data: any[];
+    }) => (
       <div
         style={style}
         className="flex items-center p-4 border-b border-gray-200 hover:bg-gray-50"
@@ -96,10 +141,13 @@ export default function VirtualScrollListExample() {
         </div>
       </div>
     ),
-    []
+    [],
   );
 
-  const customItems = Array.from({ length: 100 }, (_, i) => ({ id: i, name: `Item ${i}` }));
+  const customItems = Array.from({ length: 100 }, (_, i) => ({
+    id: i,
+    name: `Item ${i}`,
+  }));
 
   return (
     <div className="p-6 space-y-8">
@@ -108,8 +156,9 @@ export default function VirtualScrollListExample() {
           Virtual Scroll List Examples
         </h1>
         <p className="text-gray-600 mb-8">
-          These examples demonstrate virtual scrolling for improved performance with large lists on mobile devices.
-          Only visible items are rendered, significantly reducing memory usage and improving scroll performance.
+          These examples demonstrate virtual scrolling for improved performance
+          with large lists on mobile devices. Only visible items are rendered,
+          significantly reducing memory usage and improving scroll performance.
         </p>
       </div>
 
@@ -135,7 +184,8 @@ export default function VirtualScrollListExample() {
           Virtual Applicant List (1,000 applicants)
         </h2>
         <p className="text-sm text-gray-600 mb-4">
-          Click on any applicant to see the interaction. Notice how smooth the scrolling is even with 1,000 items.
+          Click on any applicant to see the interaction. Notice how smooth the
+          scrolling is even with 1,000 items.
         </p>
         <VirtualApplicantList
           applicants={applicants}
@@ -150,7 +200,8 @@ export default function VirtualScrollListExample() {
           Virtual Opportunity List (500 opportunities)
         </h2>
         <p className="text-sm text-gray-600 mb-4">
-          Each opportunity shows different information including salary when available.
+          Each opportunity shows different information including salary when
+          available.
         </p>
         <VirtualOpportunityList
           opportunities={opportunities}
@@ -165,7 +216,8 @@ export default function VirtualScrollListExample() {
           Virtual Notification List (200 notifications)
         </h2>
         <p className="text-sm text-gray-600 mb-4">
-          Notifications show different types and read/unread states. Unread notifications have a blue background.
+          Notifications show different types and read/unread states. Unread
+          notifications have a blue background.
         </p>
         <VirtualNotificationList
           notifications={notifications}
@@ -183,8 +235,12 @@ export default function VirtualScrollListExample() {
           <li>• Only visible items are rendered in the DOM</li>
           <li>• Smooth scrolling performance regardless of list size</li>
           <li>• Reduced memory usage on mobile devices</li>
-          <li>• Optimized overscan count for mobile (3 items vs 5 on desktop)</li>
-          <li>• Support for infinite loading with react-window-infinite-loader</li>
+          <li>
+            • Optimized overscan count for mobile (3 items vs 5 on desktop)
+          </li>
+          <li>
+            • Support for infinite loading with react-window-infinite-loader
+          </li>
         </ul>
       </div>
 

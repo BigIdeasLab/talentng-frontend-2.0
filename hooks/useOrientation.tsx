@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-export type OrientationType = 'portrait' | 'landscape';
+export type OrientationType = "portrait" | "landscape";
 
 interface OrientationState {
   orientation: OrientationType;
@@ -16,26 +16,27 @@ interface OrientationState {
  */
 export function useOrientation() {
   const [orientationState, setOrientationState] = useState<OrientationState>({
-    orientation: 'portrait',
+    orientation: "portrait",
     angle: 0,
     isChanging: false,
   });
 
   useEffect(() => {
     // Check if we're in a browser environment
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return;
     }
 
     // Get initial orientation
     const getOrientation = (): OrientationType => {
       if (window.screen?.orientation) {
-        return window.screen.orientation.angle === 0 || window.screen.orientation.angle === 180
-          ? 'portrait'
-          : 'landscape';
+        return window.screen.orientation.angle === 0 ||
+          window.screen.orientation.angle === 180
+          ? "portrait"
+          : "landscape";
       }
       // Fallback for older browsers
-      return window.innerHeight > window.innerWidth ? 'portrait' : 'landscape';
+      return window.innerHeight > window.innerWidth ? "portrait" : "landscape";
     };
 
     const getAngle = (): number => {
@@ -57,7 +58,7 @@ export function useOrientation() {
 
     const handleOrientationChange = () => {
       // Set changing state immediately
-      setOrientationState(prev => ({
+      setOrientationState((prev) => ({
         ...prev,
         isChanging: true,
       }));
@@ -79,23 +80,32 @@ export function useOrientation() {
 
     // Listen for orientation changes
     if (window.screen?.orientation) {
-      window.screen.orientation.addEventListener('change', handleOrientationChange);
+      window.screen.orientation.addEventListener(
+        "change",
+        handleOrientationChange,
+      );
     } else {
       // Fallback for older browsers
-      window.addEventListener('orientationchange', handleOrientationChange);
-      window.addEventListener('resize', handleOrientationChange);
+      window.addEventListener("orientationchange", handleOrientationChange);
+      window.addEventListener("resize", handleOrientationChange);
     }
 
     return () => {
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
-      
+
       if (window.screen?.orientation) {
-        window.screen.orientation.removeEventListener('change', handleOrientationChange);
+        window.screen.orientation.removeEventListener(
+          "change",
+          handleOrientationChange,
+        );
       } else {
-        window.removeEventListener('orientationchange', handleOrientationChange);
-        window.removeEventListener('resize', handleOrientationChange);
+        window.removeEventListener(
+          "orientationchange",
+          handleOrientationChange,
+        );
+        window.removeEventListener("resize", handleOrientationChange);
       }
     };
   }, []);
@@ -108,7 +118,7 @@ export function useOrientation() {
  */
 export function useIsLandscape(): boolean {
   const { orientation } = useOrientation();
-  return orientation === 'landscape';
+  return orientation === "landscape";
 }
 
 /**
@@ -116,5 +126,5 @@ export function useIsLandscape(): boolean {
  */
 export function useIsPortrait(): boolean {
   const { orientation } = useOrientation();
-  return orientation === 'portrait';
+  return orientation === "portrait";
 }

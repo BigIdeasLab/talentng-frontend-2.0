@@ -3,8 +3,8 @@
  * These components are loaded only when the route is accessed, reducing the initial bundle size.
  */
 
-import React from 'react';
-import { LazyWrapper, DefaultLazyFallback } from '@/lib/utils/lazy-loading';
+import React from "react";
+import { LazyWrapper, DefaultLazyFallback } from "@/lib/utils/lazy-loading";
 
 // Page-specific loading fallback
 const PageLazyFallback: React.FC = () => (
@@ -17,48 +17,48 @@ const PageLazyFallback: React.FC = () => (
 );
 
 // Dashboard pages
-export const LazyDashboardPage = React.lazy(() =>
-  import('@/app/(business)/dashboard/page')
+export const LazyDashboardPage = React.lazy(
+  () => import("@/app/(business)/dashboard/page"),
 );
 
-export const LazyDiscoverTalentPage = React.lazy(() =>
-  import('@/app/(business)/discover-talent/page')
+export const LazyDiscoverTalentPage = React.lazy(
+  () => import("@/app/(business)/discover-talent/page"),
 );
 
-export const LazyOpportunitiesPage = React.lazy(() =>
-  import('@/app/(business)/opportunities/page')
+export const LazyOpportunitiesPage = React.lazy(
+  () => import("@/app/(business)/opportunities/page"),
 );
 
-export const LazyApplicantsPage = React.lazy(() =>
-  import('@/app/(business)/applicants/page')
+export const LazyApplicantsPage = React.lazy(
+  () => import("@/app/(business)/applicants/page"),
 );
 
-export const LazyHiredTalentsPage = React.lazy(() =>
-  import('@/app/(business)/applicants/hired-talents/page')
+export const LazyHiredTalentsPage = React.lazy(
+  () => import("@/app/(business)/applicants/hired-talents/page"),
 );
 
-export const LazyMentorshipPage = React.lazy(() =>
-  import('@/app/(business)/mentorship/page')
+export const LazyMentorshipPage = React.lazy(
+  () => import("@/app/(business)/mentorship/page"),
 );
 
-export const LazyApplicationsPage = React.lazy(() =>
-  import('@/app/(business)/applications/page')
+export const LazyApplicationsPage = React.lazy(
+  () => import("@/app/(business)/applications/page"),
 );
 
-export const LazyCalendarPage = React.lazy(() =>
-  import('@/app/(business)/calendar/page')
+export const LazyCalendarPage = React.lazy(
+  () => import("@/app/(business)/calendar/page"),
 );
 
-export const LazySessionsPage = React.lazy(() =>
-  import('@/app/(business)/sessions/page')
+export const LazySessionsPage = React.lazy(
+  () => import("@/app/(business)/sessions/page"),
 );
 
-export const LazyInterviewsPage = React.lazy(() =>
-  import('@/app/(business)/interviews/page')
+export const LazyInterviewsPage = React.lazy(
+  () => import("@/app/(business)/interviews/page"),
 );
 
-export const LazyProfilePage = React.lazy(() =>
-  import('@/app/(business)/profile/page')
+export const LazyProfilePage = React.lazy(
+  () => import("@/app/(business)/profile/page"),
 );
 
 // Wrapper components with proper fallbacks

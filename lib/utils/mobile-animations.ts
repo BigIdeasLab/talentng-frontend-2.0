@@ -7,22 +7,22 @@
  * Detect if the user prefers reduced motion
  */
 export function prefersReducedMotion(): boolean {
-  if (typeof window === 'undefined') return false;
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 /**
  * Detect if the device is likely low-end based on hardware concurrency
  */
 export function isLowEndDevice(): boolean {
-  if (typeof window === 'undefined') return false;
-  
+  if (typeof window === "undefined") return false;
+
   // Check hardware concurrency (number of CPU cores)
   const cores = navigator.hardwareConcurrency || 4;
-  
+
   // Check memory (if available)
   const memory = (navigator as any).deviceMemory;
-  
+
   // Consider device low-end if:
   // - Less than 4 CPU cores
   // - Less than 4GB RAM (if available)
@@ -43,22 +43,22 @@ export function getOptimizedDuration(baseDuration: number): number {
  */
 export const mobileAnimations = {
   // Reduced complexity animations for mobile
-  fadeIn: 'animate-in fade-in duration-300',
-  fadeOut: 'animate-out fade-out duration-200',
-  slideInFromBottom: 'animate-in slide-in-from-bottom-4 duration-300',
-  slideOutToBottom: 'animate-out slide-out-to-bottom-4 duration-200',
-  slideInFromRight: 'animate-in slide-in-from-right-4 duration-300',
-  slideOutToRight: 'animate-out slide-out-to-right-4 duration-200',
-  
+  fadeIn: "animate-in fade-in duration-300",
+  fadeOut: "animate-out fade-out duration-200",
+  slideInFromBottom: "animate-in slide-in-from-bottom-4 duration-300",
+  slideOutToBottom: "animate-out slide-out-to-bottom-4 duration-200",
+  slideInFromRight: "animate-in slide-in-from-right-4 duration-300",
+  slideOutToRight: "animate-out slide-out-to-right-4 duration-200",
+
   // Simple scale animations (GPU-accelerated)
-  scaleIn: 'animate-in zoom-in-95 duration-200',
-  scaleOut: 'animate-out zoom-out-95 duration-150',
-  
+  scaleIn: "animate-in zoom-in-95 duration-200",
+  scaleOut: "animate-out zoom-out-95 duration-150",
+
   // Spinner animation (essential, always enabled)
-  spin: 'animate-spin',
-  
+  spin: "animate-spin",
+
   // Pulse for loading states
-  pulse: 'animate-pulse',
+  pulse: "animate-pulse",
 } as const;
 
 /**
@@ -69,19 +69,19 @@ export function getMobileOptimizedAnimation(
   options: {
     respectReducedMotion?: boolean;
     respectLowEndDevice?: boolean;
-  } = {}
+  } = {},
 ): string {
   const { respectReducedMotion = true, respectLowEndDevice = true } = options;
-  
+
   // Always allow essential animations like spin and pulse
-  const essentialAnimations = ['spin', 'pulse'];
+  const essentialAnimations = ["spin", "pulse"];
   const isEssential = essentialAnimations.includes(animationType);
-  
+
   if (!isEssential) {
     if (respectReducedMotion && prefersReducedMotion()) {
-      return ''; // No animation
+      return ""; // No animation
     }
-    
+
     if (respectLowEndDevice && isLowEndDevice()) {
       // Return simpler animation or no animation for complex ones
       const simpleAlternatives: Record<string, string> = {
@@ -90,11 +90,13 @@ export function getMobileOptimizedAnimation(
         slideInFromRight: mobileAnimations.fadeIn,
         slideOutToRight: mobileAnimations.fadeOut,
       };
-      
-      return simpleAlternatives[animationType] || mobileAnimations[animationType];
+
+      return (
+        simpleAlternatives[animationType] || mobileAnimations[animationType]
+      );
     }
   }
-  
+
   return mobileAnimations[animationType];
 }
 
@@ -104,7 +106,7 @@ export function getMobileOptimizedAnimation(
 export function useMobileOptimizedAnimation() {
   const reducedMotion = prefersReducedMotion();
   const lowEndDevice = isLowEndDevice();
-  
+
   return {
     reducedMotion,
     lowEndDevice,
@@ -122,32 +124,32 @@ export function useMobileOptimizedAnimation() {
 export const performantAnimationStyles = {
   // Use transform instead of changing layout properties
   slideUp: {
-    transform: 'translateY(0)',
-    transition: 'transform 0.3s ease-out',
+    transform: "translateY(0)",
+    transition: "transform 0.3s ease-out",
   },
   slideDown: {
-    transform: 'translateY(100%)',
-    transition: 'transform 0.3s ease-out',
+    transform: "translateY(100%)",
+    transition: "transform 0.3s ease-out",
   },
-  
+
   // Use opacity for fade effects
   fadeVisible: {
     opacity: 1,
-    transition: 'opacity 0.3s ease-out',
+    transition: "opacity 0.3s ease-out",
   },
   fadeHidden: {
     opacity: 0,
-    transition: 'opacity 0.2s ease-out',
+    transition: "opacity 0.2s ease-out",
   },
-  
+
   // Use scale for size changes
   scaleNormal: {
-    transform: 'scale(1)',
-    transition: 'transform 0.2s ease-out',
+    transform: "scale(1)",
+    transition: "transform 0.2s ease-out",
   },
   scalePressed: {
-    transform: 'scale(0.98)',
-    transition: 'transform 0.1s ease-out',
+    transform: "scale(0.98)",
+    transition: "transform 0.1s ease-out",
   },
 } as const;
 
@@ -155,12 +157,12 @@ export const performantAnimationStyles = {
  * Disable animations globally for low-end devices
  */
 export function injectMobileAnimationOptimizations() {
-  if (typeof document === 'undefined') return;
-  
+  if (typeof document === "undefined") return;
+
   const shouldDisableAnimations = prefersReducedMotion() || isLowEndDevice();
-  
+
   if (shouldDisableAnimations) {
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.textContent = `
       /* Disable non-essential animations on low-end devices */
       *:not(.animate-spin):not(.animate-pulse) {

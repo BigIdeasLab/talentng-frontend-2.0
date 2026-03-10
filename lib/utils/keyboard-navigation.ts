@@ -36,33 +36,34 @@ export class KeyboardNavigationManager {
     if (!this.isTabletMode) return;
 
     const focusableSelectors = [
-      'button:not([disabled])',
-      'input:not([disabled])',
-      'select:not([disabled])',
-      'textarea:not([disabled])',
-      'a[href]',
+      "button:not([disabled])",
+      "input:not([disabled])",
+      "select:not([disabled])",
+      "textarea:not([disabled])",
+      "a[href]",
       '[tabindex]:not([tabindex="-1"])',
       '[role="button"]:not([disabled])',
       '[role="link"]',
       '[role="menuitem"]',
       '[role="tab"]',
-    ].join(', ');
+    ].join(", ");
 
     this.focusableElements = Array.from(
-      container.querySelectorAll(focusableSelectors)
+      container.querySelectorAll(focusableSelectors),
     ) as HTMLElement[];
 
     // Filter out hidden elements (but be more lenient for test environments)
-    this.focusableElements = this.focusableElements.filter(
-      (el) => {
-        // In test environments, offsetParent might be null even for visible elements
-        const isHidden = el.hasAttribute('aria-hidden') || 
-                        el.style.display === 'none' ||
-                        el.style.visibility === 'hidden' ||
-                        (el.offsetParent === null && el.style.display !== '' && el.style.visibility !== '');
-        return !isHidden;
-      }
-    );
+    this.focusableElements = this.focusableElements.filter((el) => {
+      // In test environments, offsetParent might be null even for visible elements
+      const isHidden =
+        el.hasAttribute("aria-hidden") ||
+        el.style.display === "none" ||
+        el.style.visibility === "hidden" ||
+        (el.offsetParent === null &&
+          el.style.display !== "" &&
+          el.style.visibility !== "");
+      return !isHidden;
+    });
   }
 
   /**
@@ -73,7 +74,7 @@ export class KeyboardNavigationManager {
 
     this.currentFocusIndex = 0;
     const element = this.focusableElements[0];
-    if (element && typeof element.focus === 'function') {
+    if (element && typeof element.focus === "function") {
       element.focus();
       return true;
     }
@@ -88,7 +89,7 @@ export class KeyboardNavigationManager {
 
     this.currentFocusIndex = this.focusableElements.length - 1;
     const element = this.focusableElements[this.currentFocusIndex];
-    if (element && typeof element.focus === 'function') {
+    if (element && typeof element.focus === "function") {
       element.focus();
       return true;
     }
@@ -101,9 +102,10 @@ export class KeyboardNavigationManager {
   focusNext(): boolean {
     if (!this.isTabletMode || this.focusableElements.length === 0) return false;
 
-    this.currentFocusIndex = (this.currentFocusIndex + 1) % this.focusableElements.length;
+    this.currentFocusIndex =
+      (this.currentFocusIndex + 1) % this.focusableElements.length;
     const element = this.focusableElements[this.currentFocusIndex];
-    if (element && typeof element.focus === 'function') {
+    if (element && typeof element.focus === "function") {
       element.focus();
       return true;
     }
@@ -116,12 +118,12 @@ export class KeyboardNavigationManager {
   focusPrevious(): boolean {
     if (!this.isTabletMode || this.focusableElements.length === 0) return false;
 
-    this.currentFocusIndex = 
-      this.currentFocusIndex <= 0 
-        ? this.focusableElements.length - 1 
+    this.currentFocusIndex =
+      this.currentFocusIndex <= 0
+        ? this.focusableElements.length - 1
         : this.currentFocusIndex - 1;
     const element = this.focusableElements[this.currentFocusIndex];
-    if (element && typeof element.focus === 'function') {
+    if (element && typeof element.focus === "function") {
       element.focus();
       return true;
     }
@@ -138,20 +140,20 @@ export class KeyboardNavigationManager {
 
   private setupEventListeners() {
     // Global keyboard event handling for enhanced navigation
-    document.addEventListener('keydown', (event) => {
+    document.addEventListener("keydown", (event) => {
       if (!this.isTabletMode) return;
 
       // Enhanced arrow key navigation for tablets
-      if (event.key === 'ArrowDown' && event.altKey) {
+      if (event.key === "ArrowDown" && event.altKey) {
         event.preventDefault();
         this.focusNext();
-      } else if (event.key === 'ArrowUp' && event.altKey) {
+      } else if (event.key === "ArrowUp" && event.altKey) {
         event.preventDefault();
         this.focusPrevious();
-      } else if (event.key === 'Home' && event.ctrlKey) {
+      } else if (event.key === "Home" && event.ctrlKey) {
         event.preventDefault();
         this.focusFirst();
-      } else if (event.key === 'End' && event.ctrlKey) {
+      } else if (event.key === "End" && event.ctrlKey) {
         event.preventDefault();
         this.focusLast();
       }
@@ -164,11 +166,14 @@ export class KeyboardNavigationManager {
  */
 export const TABLET_FOCUS_STYLES = {
   // Enhanced focus ring for tablet visibility
-  focusRing: "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+  focusRing:
+    "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
   // Larger focus ring for better visibility on tablets
-  largeFocusRing: "focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-offset-2",
+  largeFocusRing:
+    "focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-offset-2",
   // High contrast focus for accessibility
-  highContrastFocus: "focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 focus:bg-yellow-100",
+  highContrastFocus:
+    "focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 focus:bg-yellow-100",
 } as const;
 
 /**
@@ -179,7 +184,7 @@ export const keyboardHandlers = {
    * Handle Enter and Space key activation
    */
   handleActivation: (callback: () => void) => (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       callback();
     }
@@ -189,7 +194,7 @@ export const keyboardHandlers = {
    * Handle Escape key for closing modals/drawers
    */
   handleEscape: (callback: () => void) => (event: React.KeyboardEvent) => {
-    if (event.key === 'Escape') {
+    if (event.key === "Escape") {
       event.preventDefault();
       callback();
     }
@@ -198,29 +203,31 @@ export const keyboardHandlers = {
   /**
    * Handle arrow key navigation in lists/grids
    */
-  handleArrowNavigation: (
-    onUp?: () => void,
-    onDown?: () => void,
-    onLeft?: () => void,
-    onRight?: () => void
-  ) => (event: React.KeyboardEvent) => {
-    switch (event.key) {
-      case 'ArrowUp':
-        event.preventDefault();
-        onUp?.();
-        break;
-      case 'ArrowDown':
-        event.preventDefault();
-        onDown?.();
-        break;
-      case 'ArrowLeft':
-        event.preventDefault();
-        onLeft?.();
-        break;
-      case 'ArrowRight':
-        event.preventDefault();
-        onRight?.();
-        break;
-    }
-  },
+  handleArrowNavigation:
+    (
+      onUp?: () => void,
+      onDown?: () => void,
+      onLeft?: () => void,
+      onRight?: () => void,
+    ) =>
+    (event: React.KeyboardEvent) => {
+      switch (event.key) {
+        case "ArrowUp":
+          event.preventDefault();
+          onUp?.();
+          break;
+        case "ArrowDown":
+          event.preventDefault();
+          onDown?.();
+          break;
+        case "ArrowLeft":
+          event.preventDefault();
+          onLeft?.();
+          break;
+        case "ArrowRight":
+          event.preventDefault();
+          onRight?.();
+          break;
+      }
+    },
 };

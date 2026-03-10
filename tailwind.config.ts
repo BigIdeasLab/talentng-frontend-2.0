@@ -27,35 +27,35 @@ export default {
       fontSize: {
         // Responsive typography scale
         // Mobile-first approach with responsive scaling
-        'heading-1': ['2rem', { lineHeight: '2.25rem' }], // 32px mobile -> 3.5rem (56px) desktop
-        'heading-2': ['1.75rem', { lineHeight: '2rem' }], // 28px mobile -> 2.75rem (44px) desktop  
-        'heading-3': ['1.5rem', { lineHeight: '1.75rem' }], // 24px mobile -> 2.5rem (40px) desktop
-        'heading-4': ['1.25rem', { lineHeight: '1.5rem' }], // 20px mobile -> 1.875rem (30px) desktop
-        'heading-5': ['1.125rem', { lineHeight: '1.375rem' }], // 18px mobile -> 1.5rem (24px) desktop
-        'heading-6': ['1rem', { lineHeight: '1.25rem' }], // 16px mobile -> 1.25rem (20px) desktop
-        'body-lg': ['1.125rem', { lineHeight: '1.75rem' }], // 18px
-        'body-base': ['1rem', { lineHeight: '1.5rem' }], // 16px - minimum for mobile readability
-        'body-sm': ['0.875rem', { lineHeight: '1.25rem' }], // 14px
-        'caption': ['0.75rem', { lineHeight: '1rem' }], // 12px
+        "heading-1": ["2rem", { lineHeight: "2.25rem" }], // 32px mobile -> 3.5rem (56px) desktop
+        "heading-2": ["1.75rem", { lineHeight: "2rem" }], // 28px mobile -> 2.75rem (44px) desktop
+        "heading-3": ["1.5rem", { lineHeight: "1.75rem" }], // 24px mobile -> 2.5rem (40px) desktop
+        "heading-4": ["1.25rem", { lineHeight: "1.5rem" }], // 20px mobile -> 1.875rem (30px) desktop
+        "heading-5": ["1.125rem", { lineHeight: "1.375rem" }], // 18px mobile -> 1.5rem (24px) desktop
+        "heading-6": ["1rem", { lineHeight: "1.25rem" }], // 16px mobile -> 1.25rem (20px) desktop
+        "body-lg": ["1.125rem", { lineHeight: "1.75rem" }], // 18px
+        "body-base": ["1rem", { lineHeight: "1.5rem" }], // 16px - minimum for mobile readability
+        "body-sm": ["0.875rem", { lineHeight: "1.25rem" }], // 14px
+        caption: ["0.75rem", { lineHeight: "1rem" }], // 12px
       },
       spacing: {
         // Responsive spacing scale
         // Mobile-optimized spacing that scales up on larger screens
-        'mobile-xs': '0.5rem', // 8px
-        'mobile-sm': '0.75rem', // 12px  
-        'mobile-base': '1rem', // 16px
-        'mobile-lg': '1.5rem', // 24px
-        'mobile-xl': '2rem', // 32px
-        'tablet-xs': '0.75rem', // 12px
-        'tablet-sm': '1rem', // 16px
-        'tablet-base': '1.5rem', // 24px
-        'tablet-lg': '2rem', // 32px
-        'tablet-xl': '3rem', // 48px
-        'desktop-xs': '1rem', // 16px
-        'desktop-sm': '1.5rem', // 24px
-        'desktop-base': '2rem', // 32px
-        'desktop-lg': '3rem', // 48px
-        'desktop-xl': '4rem', // 64px
+        "mobile-xs": "0.5rem", // 8px
+        "mobile-sm": "0.75rem", // 12px
+        "mobile-base": "1rem", // 16px
+        "mobile-lg": "1.5rem", // 24px
+        "mobile-xl": "2rem", // 32px
+        "tablet-xs": "0.75rem", // 12px
+        "tablet-sm": "1rem", // 16px
+        "tablet-base": "1.5rem", // 24px
+        "tablet-lg": "2rem", // 32px
+        "tablet-xl": "3rem", // 48px
+        "desktop-xs": "1rem", // 16px
+        "desktop-sm": "1.5rem", // 24px
+        "desktop-base": "2rem", // 32px
+        "desktop-lg": "3rem", // 48px
+        "desktop-xl": "4rem", // 64px
       },
       colors: {
         // Talent.ng brand colors

@@ -23,7 +23,7 @@ describe("SwipeableNotificationItem", () => {
     render(
       <SwipeableNotificationItem onDismiss={mockOnDismiss}>
         <div>Test notification content</div>
-      </SwipeableNotificationItem>
+      </SwipeableNotificationItem>,
     );
 
     expect(screen.getByText("Test notification content")).toBeInTheDocument();
@@ -31,9 +31,12 @@ describe("SwipeableNotificationItem", () => {
 
   it("applies custom className", () => {
     const { container } = render(
-      <SwipeableNotificationItem onDismiss={mockOnDismiss} className="custom-class">
+      <SwipeableNotificationItem
+        onDismiss={mockOnDismiss}
+        className="custom-class"
+      >
         <div>Test content</div>
-      </SwipeableNotificationItem>
+      </SwipeableNotificationItem>,
     );
 
     expect(container.firstChild).toHaveClass("custom-class");
@@ -43,7 +46,7 @@ describe("SwipeableNotificationItem", () => {
     const { container } = render(
       <SwipeableNotificationItem onDismiss={mockOnDismiss}>
         <div>Test content</div>
-      </SwipeableNotificationItem>
+      </SwipeableNotificationItem>,
     );
 
     expect(container.firstChild).toHaveClass("relative", "overflow-hidden");
@@ -53,7 +56,7 @@ describe("SwipeableNotificationItem", () => {
     render(
       <SwipeableNotificationItem onDismiss={mockOnDismiss}>
         <div data-testid="notification-content">Test content</div>
-      </SwipeableNotificationItem>
+      </SwipeableNotificationItem>,
     );
 
     const content = screen.getByTestId("notification-content");
@@ -64,7 +67,7 @@ describe("SwipeableNotificationItem", () => {
     render(
       <SwipeableNotificationItem onDismiss={mockOnDismiss} enabled={false}>
         <div>Test content</div>
-      </SwipeableNotificationItem>
+      </SwipeableNotificationItem>,
     );
 
     // Should still render but swipe functionality would be disabled
@@ -75,7 +78,7 @@ describe("SwipeableNotificationItem", () => {
     render(
       <SwipeableNotificationItem onDismiss={mockOnDismiss} threshold={150}>
         <div>Test content</div>
-      </SwipeableNotificationItem>
+      </SwipeableNotificationItem>,
     );
 
     expect(screen.getByText("Test content")).toBeInTheDocument();
@@ -85,7 +88,7 @@ describe("SwipeableNotificationItem", () => {
     render(
       <SwipeableNotificationItem>
         <div>Test content</div>
-      </SwipeableNotificationItem>
+      </SwipeableNotificationItem>,
     );
 
     expect(screen.getByText("Test content")).toBeInTheDocument();

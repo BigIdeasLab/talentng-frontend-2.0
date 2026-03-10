@@ -33,7 +33,7 @@ interface SwipeableNotificationItemProps {
 /**
  * SwipeableNotificationItem wraps notification items with swipe-to-dismiss functionality.
  * Provides visual feedback during swipe and smooth animations.
- * 
+ *
  * @example
  * ```tsx
  * <SwipeableNotificationItem onDismiss={() => deleteNotification(id)}>
@@ -54,14 +54,17 @@ export function SwipeableNotificationItem({
   const [showDeleteIcon, setShowDeleteIcon] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const handleSwipeMove = useCallback((deltaX: number, deltaY: number, progress: number) => {
-    // Only respond to horizontal swipes
-    if (Math.abs(deltaX) < Math.abs(deltaY)) return;
+  const handleSwipeMove = useCallback(
+    (deltaX: number, deltaY: number, progress: number) => {
+      // Only respond to horizontal swipes
+      if (Math.abs(deltaX) < Math.abs(deltaY)) return;
 
-    setTransform(deltaX);
-    setOpacity(1 - Math.abs(progress) * 0.3); // Fade out slightly during swipe
-    setShowDeleteIcon(Math.abs(deltaX) > threshold * 0.5); // Show delete icon at 50% threshold
-  }, [threshold]);
+      setTransform(deltaX);
+      setOpacity(1 - Math.abs(progress) * 0.3); // Fade out slightly during swipe
+      setShowDeleteIcon(Math.abs(deltaX) > threshold * 0.5); // Show delete icon at 50% threshold
+    },
+    [threshold],
+  );
 
   const handleSwipeEnd = useCallback(() => {
     if (!isAnimating) {
@@ -70,26 +73,30 @@ export function SwipeableNotificationItem({
       setTransform(0);
       setOpacity(1);
       setShowDeleteIcon(false);
-      
+
       // Remove animation flag after transition
       setTimeout(() => setIsAnimating(false), 300);
     }
   }, [isAnimating]);
 
-  const handleSwipe = useCallback((direction: "left" | "right" | "up" | "down") => {
-    if (direction === "left" || direction === "right") {
-      // Animate out before dismissing
-      setIsAnimating(true);
-      const dismissDirection = direction === "left" ? -window.innerWidth : window.innerWidth;
-      setTransform(dismissDirection);
-      setOpacity(0);
-      
-      // Call onDismiss after animation completes
-      setTimeout(() => {
-        onDismiss?.();
-      }, 300);
-    }
-  }, [onDismiss]);
+  const handleSwipe = useCallback(
+    (direction: "left" | "right" | "up" | "down") => {
+      if (direction === "left" || direction === "right") {
+        // Animate out before dismissing
+        setIsAnimating(true);
+        const dismissDirection =
+          direction === "left" ? -window.innerWidth : window.innerWidth;
+        setTransform(dismissDirection);
+        setOpacity(0);
+
+        // Call onDismiss after animation completes
+        setTimeout(() => {
+          onDismiss?.();
+        }, 300);
+      }
+    },
+    [onDismiss],
+  );
 
   const swipeHandlers = useSwipeGesture({
     threshold,
@@ -100,22 +107,24 @@ export function SwipeableNotificationItem({
     enabled,
   });
 
-  const setRefs = useCallback((el: HTMLDivElement | null) => {
-    (containerRef as any).current = el;
-    (swipeHandlers.ref as any).current = el;
-  }, [swipeHandlers.ref]);
+  const setRefs = useCallback(
+    (el: HTMLDivElement | null) => {
+      (containerRef as any).current = el;
+      (swipeHandlers.ref as any).current = el;
+    },
+    [swipeHandlers.ref],
+  );
 
   return (
     <div
       ref={setRefs}
-      className={cn(
-        "relative overflow-hidden",
-        className
-      )}
+      className={cn("relative overflow-hidden", className)}
       style={{
         transform: `translateX(${transform}px)`,
         opacity,
-        transition: isAnimating ? "transform 0.3s ease-out, opacity 0.3s ease-out" : "none",
+        transition: isAnimating
+          ? "transform 0.3s ease-out, opacity 0.3s ease-out"
+          : "none",
       }}
     >
       {/* Delete icon background - shows during swipe */}
@@ -123,7 +132,7 @@ export function SwipeableNotificationItem({
         <div
           className={cn(
             "absolute inset-y-0 flex items-center justify-center w-16 transition-opacity duration-200",
-            transform > 0 ? "left-0 bg-red-500" : "right-0 bg-red-500"
+            transform > 0 ? "left-0 bg-red-500" : "right-0 bg-red-500",
           )}
           style={{
             opacity: Math.min(Math.abs(transform) / threshold, 1),
@@ -134,9 +143,7 @@ export function SwipeableNotificationItem({
       )}
 
       {/* Notification content */}
-      <div className="relative bg-white">
-        {children}
-      </div>
+      <div className="relative bg-white">{children}</div>
     </div>
   );
 }

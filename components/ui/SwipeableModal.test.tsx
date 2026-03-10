@@ -23,7 +23,7 @@ describe("SwipeableModal", () => {
     render(
       <SwipeableModal isOpen={true} onClose={mockOnClose}>
         <div>Modal content</div>
-      </SwipeableModal>
+      </SwipeableModal>,
     );
 
     expect(screen.getByText("Modal content")).toBeInTheDocument();
@@ -33,7 +33,7 @@ describe("SwipeableModal", () => {
     render(
       <SwipeableModal isOpen={false} onClose={mockOnClose}>
         <div>Modal content</div>
-      </SwipeableModal>
+      </SwipeableModal>,
     );
 
     expect(screen.queryByText("Modal content")).not.toBeInTheDocument();
@@ -43,7 +43,7 @@ describe("SwipeableModal", () => {
     const { container } = render(
       <SwipeableModal isOpen={true} onClose={mockOnClose} isMobile={true}>
         <div>Modal content</div>
-      </SwipeableModal>
+      </SwipeableModal>,
     );
 
     const modal = container.firstChild as HTMLElement;
@@ -54,18 +54,28 @@ describe("SwipeableModal", () => {
     const { container } = render(
       <SwipeableModal isOpen={true} onClose={mockOnClose} isMobile={false}>
         <div>Modal content</div>
-      </SwipeableModal>
+      </SwipeableModal>,
     );
 
     const modal = container.firstChild as HTMLElement;
-    expect(modal).toHaveClass("left-[600px]", "top-0", "bottom-0", "right-0", "z-50");
+    expect(modal).toHaveClass(
+      "left-[600px]",
+      "top-0",
+      "bottom-0",
+      "right-0",
+      "z-50",
+    );
   });
 
   it("applies custom className", () => {
     const { container } = render(
-      <SwipeableModal isOpen={true} onClose={mockOnClose} className="custom-modal">
+      <SwipeableModal
+        isOpen={true}
+        onClose={mockOnClose}
+        className="custom-modal"
+      >
         <div>Modal content</div>
-      </SwipeableModal>
+      </SwipeableModal>,
     );
 
     expect(container.firstChild).toHaveClass("custom-modal");
@@ -75,7 +85,7 @@ describe("SwipeableModal", () => {
     const { container } = render(
       <SwipeableModal isOpen={true} onClose={mockOnClose}>
         <div>Modal content</div>
-      </SwipeableModal>
+      </SwipeableModal>,
     );
 
     const modal = container.firstChild as HTMLElement;
@@ -85,13 +95,9 @@ describe("SwipeableModal", () => {
 
   it("can be configured with different swipe directions", () => {
     render(
-      <SwipeableModal 
-        isOpen={true} 
-        onClose={mockOnClose} 
-        swipeDirection="left"
-      >
+      <SwipeableModal isOpen={true} onClose={mockOnClose} swipeDirection="left">
         <div>Modal content</div>
-      </SwipeableModal>
+      </SwipeableModal>,
     );
 
     expect(screen.getByText("Modal content")).toBeInTheDocument();
@@ -99,13 +105,9 @@ describe("SwipeableModal", () => {
 
   it("can be disabled", () => {
     render(
-      <SwipeableModal 
-        isOpen={true} 
-        onClose={mockOnClose} 
-        swipeEnabled={false}
-      >
+      <SwipeableModal isOpen={true} onClose={mockOnClose} swipeEnabled={false}>
         <div>Modal content</div>
-      </SwipeableModal>
+      </SwipeableModal>,
     );
 
     expect(screen.getByText("Modal content")).toBeInTheDocument();
@@ -113,13 +115,9 @@ describe("SwipeableModal", () => {
 
   it("accepts custom threshold", () => {
     render(
-      <SwipeableModal 
-        isOpen={true} 
-        onClose={mockOnClose} 
-        threshold={150}
-      >
+      <SwipeableModal isOpen={true} onClose={mockOnClose} threshold={150}>
         <div>Modal content</div>
-      </SwipeableModal>
+      </SwipeableModal>,
     );
 
     expect(screen.getByText("Modal content")).toBeInTheDocument();

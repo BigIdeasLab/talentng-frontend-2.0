@@ -3,12 +3,18 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { useSwipeGesture } from "./useSwipeGesture";
 
 // Mock touch events
-const createTouchEvent = (type: string, touches: Array<{ clientX: number; clientY: number }>) => {
+const createTouchEvent = (
+  type: string,
+  touches: Array<{ clientX: number; clientY: number }>,
+) => {
   const event = new TouchEvent(type, {
-    touches: touches.map(touch => ({
-      clientX: touch.clientX,
-      clientY: touch.clientY,
-    } as Touch)),
+    touches: touches.map(
+      (touch) =>
+        ({
+          clientX: touch.clientX,
+          clientY: touch.clientY,
+        }) as Touch,
+    ),
     bubbles: true,
     cancelable: true,
   });
@@ -36,7 +42,7 @@ describe("useSwipeGesture", () => {
         onSwipe,
         direction: "horizontal",
         threshold: 100,
-      })
+      }),
     );
 
     // Set up the element reference
@@ -46,12 +52,16 @@ describe("useSwipeGesture", () => {
 
     // Simulate touch start
     act(() => {
-      result.current.onTouchStart(createTouchEvent("touchstart", [{ clientX: 200, clientY: 100 }]));
+      result.current.onTouchStart(
+        createTouchEvent("touchstart", [{ clientX: 200, clientY: 100 }]),
+      );
     });
 
     // Simulate touch move (swipe left)
     act(() => {
-      result.current.onTouchMove(createTouchEvent("touchmove", [{ clientX: 50, clientY: 100 }]));
+      result.current.onTouchMove(
+        createTouchEvent("touchmove", [{ clientX: 50, clientY: 100 }]),
+      );
     });
 
     // Simulate touch end
@@ -69,7 +79,7 @@ describe("useSwipeGesture", () => {
         onSwipe,
         direction: "horizontal",
         threshold: 100,
-      })
+      }),
     );
 
     act(() => {
@@ -78,12 +88,16 @@ describe("useSwipeGesture", () => {
 
     // Touch start
     act(() => {
-      result.current.onTouchStart(createTouchEvent("touchstart", [{ clientX: 50, clientY: 100 }]));
+      result.current.onTouchStart(
+        createTouchEvent("touchstart", [{ clientX: 50, clientY: 100 }]),
+      );
     });
 
     // Touch move (swipe right)
     act(() => {
-      result.current.onTouchMove(createTouchEvent("touchmove", [{ clientX: 200, clientY: 100 }]));
+      result.current.onTouchMove(
+        createTouchEvent("touchmove", [{ clientX: 200, clientY: 100 }]),
+      );
     });
 
     // Touch end
@@ -101,7 +115,7 @@ describe("useSwipeGesture", () => {
         onSwipe,
         direction: "vertical",
         threshold: 100,
-      })
+      }),
     );
 
     act(() => {
@@ -110,12 +124,16 @@ describe("useSwipeGesture", () => {
 
     // Touch start
     act(() => {
-      result.current.onTouchStart(createTouchEvent("touchstart", [{ clientX: 100, clientY: 50 }]));
+      result.current.onTouchStart(
+        createTouchEvent("touchstart", [{ clientX: 100, clientY: 50 }]),
+      );
     });
 
     // Touch move (swipe down)
     act(() => {
-      result.current.onTouchMove(createTouchEvent("touchmove", [{ clientX: 100, clientY: 200 }]));
+      result.current.onTouchMove(
+        createTouchEvent("touchmove", [{ clientX: 100, clientY: 200 }]),
+      );
     });
 
     // Touch end
@@ -133,7 +151,7 @@ describe("useSwipeGesture", () => {
         onSwipeMove,
         direction: "horizontal",
         threshold: 100,
-      })
+      }),
     );
 
     act(() => {
@@ -142,12 +160,16 @@ describe("useSwipeGesture", () => {
 
     // Touch start
     act(() => {
-      result.current.onTouchStart(createTouchEvent("touchstart", [{ clientX: 100, clientY: 100 }]));
+      result.current.onTouchStart(
+        createTouchEvent("touchstart", [{ clientX: 100, clientY: 100 }]),
+      );
     });
 
     // Touch move
     act(() => {
-      result.current.onTouchMove(createTouchEvent("touchmove", [{ clientX: 150, clientY: 100 }]));
+      result.current.onTouchMove(
+        createTouchEvent("touchmove", [{ clientX: 150, clientY: 100 }]),
+      );
     });
 
     expect(onSwipeMove).toHaveBeenCalledWith(50, 0, 0.5);
@@ -161,7 +183,7 @@ describe("useSwipeGesture", () => {
         direction: "horizontal",
         threshold: 100,
         velocityThreshold: 1.0, // Set high velocity threshold to prevent velocity-based triggering
-      })
+      }),
     );
 
     act(() => {
@@ -170,7 +192,9 @@ describe("useSwipeGesture", () => {
 
     // Touch start
     act(() => {
-      result.current.onTouchStart(createTouchEvent("touchstart", [{ clientX: 100, clientY: 100 }]));
+      result.current.onTouchStart(
+        createTouchEvent("touchstart", [{ clientX: 100, clientY: 100 }]),
+      );
     });
 
     // Advance time to ensure low velocity
@@ -180,7 +204,9 @@ describe("useSwipeGesture", () => {
 
     // Touch move (small distance)
     act(() => {
-      result.current.onTouchMove(createTouchEvent("touchmove", [{ clientX: 130, clientY: 100 }]));
+      result.current.onTouchMove(
+        createTouchEvent("touchmove", [{ clientX: 130, clientY: 100 }]),
+      );
     });
 
     // Touch end
@@ -199,7 +225,7 @@ describe("useSwipeGesture", () => {
         direction: "horizontal",
         threshold: 100,
         velocityThreshold: 0.5,
-      })
+      }),
     );
 
     act(() => {
@@ -208,7 +234,9 @@ describe("useSwipeGesture", () => {
 
     // Touch start
     act(() => {
-      result.current.onTouchStart(createTouchEvent("touchstart", [{ clientX: 100, clientY: 100 }]));
+      result.current.onTouchStart(
+        createTouchEvent("touchstart", [{ clientX: 100, clientY: 100 }]),
+      );
     });
 
     // Advance time slightly to simulate fast swipe
@@ -218,7 +246,9 @@ describe("useSwipeGesture", () => {
 
     // Touch move (small distance but fast)
     act(() => {
-      result.current.onTouchMove(createTouchEvent("touchmove", [{ clientX: 150, clientY: 100 }]));
+      result.current.onTouchMove(
+        createTouchEvent("touchmove", [{ clientX: 150, clientY: 100 }]),
+      );
     });
 
     // Touch end
@@ -237,7 +267,7 @@ describe("useSwipeGesture", () => {
         direction: "horizontal",
         threshold: 100,
         enabled: false,
-      })
+      }),
     );
 
     act(() => {
@@ -246,12 +276,16 @@ describe("useSwipeGesture", () => {
 
     // Touch start
     act(() => {
-      result.current.onTouchStart(createTouchEvent("touchstart", [{ clientX: 100, clientY: 100 }]));
+      result.current.onTouchStart(
+        createTouchEvent("touchstart", [{ clientX: 100, clientY: 100 }]),
+      );
     });
 
     // Touch move
     act(() => {
-      result.current.onTouchMove(createTouchEvent("touchmove", [{ clientX: 250, clientY: 100 }]));
+      result.current.onTouchMove(
+        createTouchEvent("touchmove", [{ clientX: 250, clientY: 100 }]),
+      );
     });
 
     // Touch end
@@ -270,7 +304,7 @@ describe("useSwipeGesture", () => {
         onSwipeStart,
         onSwipeEnd,
         direction: "horizontal",
-      })
+      }),
     );
 
     act(() => {
@@ -279,7 +313,9 @@ describe("useSwipeGesture", () => {
 
     // Touch start
     act(() => {
-      result.current.onTouchStart(createTouchEvent("touchstart", [{ clientX: 100, clientY: 100 }]));
+      result.current.onTouchStart(
+        createTouchEvent("touchstart", [{ clientX: 100, clientY: 100 }]),
+      );
     });
 
     expect(onSwipeStart).toHaveBeenCalled();

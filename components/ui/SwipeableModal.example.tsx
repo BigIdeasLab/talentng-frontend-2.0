@@ -5,13 +5,15 @@ import { X } from "lucide-react";
 export default function SwipeableModalExample() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [swipeDirection, setSwipeDirection] = useState<"up" | "down" | "left" | "right">("down");
+  const [swipeDirection, setSwipeDirection] = useState<
+    "up" | "down" | "left" | "right"
+  >("down");
 
   return (
     <div className="p-8 space-y-4">
       <div className="max-w-md mx-auto space-y-4">
         <h2 className="text-xl font-semibold">Swipeable Modal Example</h2>
-        
+
         <div className="space-y-2">
           <label className="flex items-center gap-2">
             <input
@@ -21,9 +23,11 @@ export default function SwipeableModalExample() {
             />
             Mobile Mode
           </label>
-          
+
           <div>
-            <label className="block text-sm font-medium mb-1">Swipe Direction:</label>
+            <label className="block text-sm font-medium mb-1">
+              Swipe Direction:
+            </label>
             <select
               value={swipeDirection}
               onChange={(e) => setSwipeDirection(e.target.value as any)}
@@ -61,21 +65,24 @@ export default function SwipeableModalExample() {
             <X size={20} />
           </button>
         </div>
-        
+
         <div className="p-4 space-y-4">
           <p className="text-gray-700">
-            This modal can be dismissed by swiping in the {swipeDirection} direction.
+            This modal can be dismissed by swiping in the {swipeDirection}{" "}
+            direction.
           </p>
-          
+
           <div className="bg-blue-50 p-3 rounded">
             <p className="text-sm text-blue-800">
-              <strong>Try it:</strong> Swipe {swipeDirection} to close this modal, 
-              or use the close button above.
+              <strong>Try it:</strong> Swipe {swipeDirection} to close this
+              modal, or use the close button above.
             </p>
           </div>
-          
+
           <div className="space-y-2 text-sm text-gray-600">
-            <p><strong>Current settings:</strong></p>
+            <p>
+              <strong>Current settings:</strong>
+            </p>
             <ul className="list-disc list-inside space-y-1">
               <li>Mobile mode: {isMobile ? "On" : "Off"}</li>
               <li>Swipe direction: {swipeDirection}</li>
@@ -83,7 +90,7 @@ export default function SwipeableModalExample() {
             </ul>
           </div>
         </div>
-        
+
         <div className="p-4 border-t">
           <button
             onClick={() => setIsOpen(false)}

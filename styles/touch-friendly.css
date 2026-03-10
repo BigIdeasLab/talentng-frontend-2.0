@@ -6,8 +6,12 @@
   /* Card hover effects - optimized for mobile performance */
   .card-hover:hover {
     transform: translateY(-2px); /* Reduced from -4px */
-    box-shadow: 0 8px 20px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    box-shadow:
+      0 8px 20px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transition:
+      transform 0.2s ease-out,
+      box-shadow 0.2s ease-out;
   }
 
   /* Button hover effects */
@@ -62,8 +66,12 @@
   /* Card active effects - optimized */
   .card-hover:active {
     transform: translateY(-2px); /* Reduced from -4px */
-    box-shadow: 0 8px 20px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+    box-shadow:
+      0 8px 20px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transition:
+      transform 0.1s ease-out,
+      box-shadow 0.1s ease-out;
   }
 
   /* Button active effects */
@@ -124,7 +132,10 @@
 
 /* Common transition for all interactive elements - optimized for mobile */
 .interactive-element {
-  transition: transform 0.15s ease-out, opacity 0.15s ease-out, background-color 0.15s ease-out;
+  transition:
+    transform 0.15s ease-out,
+    opacity 0.15s ease-out,
+    background-color 0.15s ease-out;
 }
 
 /* Tooltip alternatives for touch devices */
@@ -133,7 +144,7 @@
   .tooltip-hover {
     display: none;
   }
-  
+
   /* Show tap-to-reveal tooltips instead */
   .tooltip-touch {
     display: block;
@@ -144,7 +155,7 @@
   .tooltip-hover {
     display: block;
   }
-  
+
   .tooltip-touch {
     display: none;
   }
@@ -157,7 +168,7 @@
     /* Touch-optimized dropdown styling */
     padding: 8px 0;
   }
-  
+
   .dropdown-item {
     min-height: 44px;
     display: flex;
@@ -168,7 +179,7 @@
 
 /* Focus styles for keyboard navigation */
 .focus-visible:focus-visible {
-  outline: 2px solid #5C30FF;
+  outline: 2px solid #5c30ff;
   outline-offset: 2px;
 }
 
@@ -177,7 +188,7 @@
   .touch-spacing > * + * {
     margin-top: 8px;
   }
-  
+
   .touch-spacing-horizontal > * + * {
     margin-left: 8px;
   }

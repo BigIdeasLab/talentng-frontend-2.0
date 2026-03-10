@@ -551,22 +551,30 @@ function TalentCard({ talent }: { talent: (typeof talents)[0] }) {
         <div className="flex flex-wrap items-center gap-4 mt-1">
           <div className="flex items-center gap-2">
             <LocationIcon />
-            <span className="text-[#525866] text-sm truncate">{talent.location}</span>
+            <span className="text-[#525866] text-sm truncate">
+              {talent.location}
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <WorkIcon />
-            <span className="text-[#525866] text-sm truncate">{talent.hired}</span>
+            <span className="text-[#525866] text-sm truncate">
+              {talent.hired}
+            </span>
           </div>
           {talent.showEarned && (
             <div className="flex items-center gap-2">
               <DollarIcon />
-              <span className="text-[#525866] text-sm truncate">{talent.earned}</span>
+              <span className="text-[#525866] text-sm truncate">
+                {talent.earned}
+              </span>
             </div>
           )}
           {talent.showTag && (
             <div className="flex items-center gap-2">
               <PenToolIcon />
-              <span className="text-[#525866] text-sm truncate">{talent.tag}</span>
+              <span className="text-[#525866] text-sm truncate">
+                {talent.tag}
+              </span>
             </div>
           )}
         </div>

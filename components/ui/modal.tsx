@@ -58,7 +58,9 @@ export const Modal: React.FC<ModalProps> = ({
               <h2 className="text-lg font-semibold text-black">{title}</h2>
             )}
             {description && (
-              <p className="text-base md:text-sm text-gray-600 mt-1">{description}</p>
+              <p className="text-base md:text-sm text-gray-600 mt-1">
+                {description}
+              </p>
             )}
           </div>
         )}

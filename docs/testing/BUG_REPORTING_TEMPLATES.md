@@ -34,22 +34,23 @@ This document provides standardized templates for reporting bugs found during ma
 **Feature Area**: [Navigation/Forms/Tables/Modals/etc.]
 **User Type**: [All users/Specific role/Guest users]
 
-**Description**: 
+**Description**:
 [Detailed description of the issue, including what the user was trying to accomplish]
 
 **Steps to Reproduce**:
+
 1. [First step]
 2. [Second step]
 3. [Third step]
 4. [Continue as needed]
 
-**Expected Result**: 
+**Expected Result**:
 [What should happen according to the design/requirements]
 
-**Actual Result**: 
+**Actual Result**:
 [What actually happens]
 
-**Workaround**: 
+**Workaround**:
 [If any workaround exists, describe it here]
 
 ### Environmental Factors
@@ -95,18 +96,21 @@ This document provides standardized templates for reporting bugs found during ma
 #### Common Small Phone Issues
 
 **Layout Issues**:
+
 - [ ] Content extends beyond screen boundaries
 - [ ] Horizontal scrolling required
 - [ ] Overlapping elements
 - [ ] Text too small to read comfortably
 
 **Touch Interaction Issues**:
+
 - [ ] Touch targets smaller than 44x44px
 - [ ] Insufficient spacing between touch targets
 - [ ] Accidental touches due to poor spacing
 - [ ] Difficulty selecting small elements
 
 **Navigation Issues**:
+
 - [ ] Hamburger menu not accessible
 - [ ] Mobile drawer doesn't open/close properly
 - [ ] Navigation items too small or crowded
@@ -127,12 +131,14 @@ This document provides standardized templates for reporting bugs found during ma
 #### Common Large Phone Issues
 
 **Layout Issues**:
+
 - [ ] Poor utilization of larger screen space
 - [ ] Elements too spread out or too cramped
 - [ ] Inconsistent spacing or alignment
 - [ ] Landscape mode layout problems
 
 **Reachability Issues**:
+
 - [ ] Important actions too far from thumb reach
 - [ ] No consideration for one-handed use
 - [ ] Critical buttons in hard-to-reach areas
@@ -153,18 +159,21 @@ This document provides standardized templates for reporting bugs found during ma
 #### Common Tablet Issues
 
 **Layout Issues**:
+
 - [ ] Sidebar doesn't collapse/expand properly
 - [ ] Modals are inappropriately sized
 - [ ] Poor multi-column layout implementation
 - [ ] Inconsistent spacing for tablet screens
 
 **Input Method Issues**:
+
 - [ ] Touch interactions don't work properly
 - [ ] Keyboard navigation is broken
 - [ ] Mouse hover states missing or incorrect
 - [ ] Stylus input not recognized
 
 **Responsive Behavior Issues**:
+
 - [ ] Incorrect breakpoint behavior
 - [ ] Elements don't adapt to tablet screen size
 - [ ] Desktop features missing on large tablets
@@ -239,24 +248,28 @@ This document provides standardized templates for reporting bugs found during ma
 ### Severity Levels
 
 **Blocker**:
+
 - Application crashes or becomes unusable
 - Data loss or corruption
 - Security vulnerabilities
 - Complete feature failure
 
 **Major**:
+
 - Significant functionality impaired
 - Poor user experience for core features
 - Accessibility barriers for disabled users
 - Performance issues affecting usability
 
 **Minor**:
+
 - Cosmetic issues that don't affect functionality
 - Minor usability improvements
 - Edge case scenarios
 - Non-critical feature enhancements
 
 **Trivial**:
+
 - Typos or minor text issues
 - Very minor visual inconsistencies
 - Suggestions for improvement
@@ -265,24 +278,28 @@ This document provides standardized templates for reporting bugs found during ma
 ### Priority Levels
 
 **Critical**:
+
 - Must be fixed before release
 - Affects core business functionality
 - Legal or compliance requirements
 - Affects large number of users
 
 **High**:
+
 - Should be fixed in current release cycle
 - Affects important user workflows
 - Impacts user satisfaction significantly
 - Affects specific user segments
 
 **Medium**:
+
 - Can be scheduled for future release
 - Minor impact on user experience
 - Affects edge cases or rare scenarios
 - Enhancement opportunities
 
 **Low**:
+
 - Nice to have improvements
 - Very minor issues
 - Future consideration items
@@ -307,12 +324,14 @@ This document provides standardized templates for reporting bugs found during ma
 ### Status Definitions
 
 **Open Statuses**:
+
 - **New**: Recently reported, not yet reviewed
 - **Confirmed**: Issue confirmed and reproducible
 - **Assigned**: Assigned to specific developer
 - **In Progress**: Actively being worked on
 
 **Closed Statuses**:
+
 - **Fixed**: Issue resolved with code changes
 - **Won't Fix**: Issue acknowledged but won't be addressed
 - **Duplicate**: Same as another reported issue
@@ -350,11 +369,11 @@ This document provides standardized templates for reporting bugs found during ma
 ```json
 {
   "fields": {
-    "project": {"key": "MOBILE"},
+    "project": { "key": "MOBILE" },
     "summary": "[Device] Brief description of issue",
     "description": "Detailed description with steps to reproduce",
-    "issuetype": {"name": "Bug"},
-    "priority": {"name": "High"},
+    "issuetype": { "name": "Bug" },
+    "priority": { "name": "High" },
     "labels": ["mobile", "responsive", "device-testing"],
     "customfield_device": "iPhone 14 Pro Max",
     "customfield_os": "iOS 16.5",
@@ -370,38 +389,43 @@ This document provides standardized templates for reporting bugs found during ma
 ---
 name: Mobile Device Bug Report
 about: Report a bug found during mobile device testing
-title: '[DEVICE] Brief description'
+title: "[DEVICE] Brief description"
 labels: bug, mobile, device-testing
-assignees: ''
+assignees: ""
 ---
 
 ## Device Information
-- **Device**: 
-- **OS**: 
-- **Browser**: 
-- **Screen Size**: 
-- **Network**: 
+
+- **Device**:
+- **OS**:
+- **Browser**:
+- **Screen Size**:
+- **Network**:
 
 ## Bug Description
-**Summary**: 
+
+**Summary**:
 
 **Steps to Reproduce**:
-1. 
-2. 
-3. 
 
-**Expected**: 
-**Actual**: 
+1.
+2.
+3.
+
+**Expected**:
+**Actual**:
 
 ## Evidence
+
 - [ ] Screenshot attached
 - [ ] Screen recording available
 - [ ] Console logs included
 
 ## Impact
-- **Severity**: 
-- **User Impact**: 
-- **Accessibility Impact**: 
+
+- **Severity**:
+- **User Impact**:
+- **Accessibility Impact**:
 ```
 
 This comprehensive bug reporting system ensures that all issues found during manual device testing are properly documented, tracked, and resolved efficiently.

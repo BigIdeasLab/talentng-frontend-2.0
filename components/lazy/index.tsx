@@ -4,19 +4,19 @@
  */
 
 // Lazy loading utilities
-export * from '@/lib/utils/lazy-loading';
+export * from "@/lib/utils/lazy-loading";
 
 // Lazy modals
-export * from './LazyModals';
+export * from "./LazyModals";
 
 // Lazy charts
-export * from './LazyCharts';
+export * from "./LazyCharts";
 
 // Lazy drawers
-export * from './LazyDrawers';
+export * from "./LazyDrawers";
 
 // Lazy below-fold components
-export * from './LazyBelowFold';
+export * from "./LazyBelowFold";
 
 // Lazy pages
-export * from './LazyPages';
+export * from "./LazyPages";

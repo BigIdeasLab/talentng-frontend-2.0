@@ -51,7 +51,7 @@ interface TouchData {
 
 /**
  * Custom hook for handling swipe gestures on touch devices
- * 
+ *
  * @example
  * ```tsx
  * const swipeHandlers = useSwipeGesture({
@@ -65,7 +65,7 @@ interface TouchData {
  *     setOpacity(1 - Math.abs(progress));
  *   }
  * });
- * 
+ *
  * return <div {...swipeHandlers}>Swipeable content</div>;
  * ```
  */
@@ -114,13 +114,17 @@ export function useSwipeGesture({
       const deltaY = touch.clientY - touchData.startY;
 
       // Calculate progress (0 to 1) based on threshold
-      const distance = direction === "horizontal" ? Math.abs(deltaX) : Math.abs(deltaY);
+      const distance =
+        direction === "horizontal" ? Math.abs(deltaX) : Math.abs(deltaY);
       const progress = Math.min(distance / threshold, 1);
 
       // Prevent default scrolling if we're swiping in the detected direction
       if (direction === "horizontal" && Math.abs(deltaX) > Math.abs(deltaY)) {
         e.preventDefault();
-      } else if (direction === "vertical" && Math.abs(deltaY) > Math.abs(deltaX)) {
+      } else if (
+        direction === "vertical" &&
+        Math.abs(deltaY) > Math.abs(deltaX)
+      ) {
         e.preventDefault();
       }
 
@@ -149,7 +153,7 @@ export function useSwipeGesture({
       if (direction === "horizontal") {
         const distance = Math.abs(deltaX);
         const velocity = velocityX;
-        
+
         if (distance >= threshold || velocity >= velocityThreshold) {
           swipeDetected = true;
           swipeDirection = deltaX > 0 ? "right" : "left";
@@ -157,7 +161,7 @@ export function useSwipeGesture({
       } else {
         const distance = Math.abs(deltaY);
         const velocity = velocityY;
-        
+
         if (distance >= threshold || velocity >= velocityThreshold) {
           swipeDetected = true;
           swipeDirection = deltaY > 0 ? "down" : "up";
@@ -180,7 +184,9 @@ export function useSwipeGesture({
     const element = elementRef.current;
     if (!element || !enabled) return;
 
-    element.addEventListener("touchstart", handleTouchStart, { passive: false });
+    element.addEventListener("touchstart", handleTouchStart, {
+      passive: false,
+    });
     element.addEventListener("touchmove", handleTouchMove, { passive: false });
     element.addEventListener("touchend", handleTouchEnd, { passive: true });
 

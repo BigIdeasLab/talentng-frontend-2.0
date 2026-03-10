@@ -27,9 +27,15 @@ describe("SessionCard", () => {
     render(<SessionCard {...defaultProps} />);
 
     expect(screen.getByText("John Doe")).toBeInTheDocument();
-    expect(screen.getByText("Software Engineer at Tech Corp")).toBeInTheDocument();
+    expect(
+      screen.getByText("Software Engineer at Tech Corp"),
+    ).toBeInTheDocument();
     expect(screen.getByText("Career Development")).toBeInTheDocument();
-    expect(screen.getByText("Looking forward to discussing career growth strategies")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Looking forward to discussing career growth strategies",
+      ),
+    ).toBeInTheDocument();
     expect(screen.getByText("Mon Jan 15, 2:00 PM")).toBeInTheDocument();
     expect(screen.getByText("60 mins")).toBeInTheDocument();
   });
@@ -59,7 +65,7 @@ describe("SessionCard", () => {
         status="upcoming"
         onReschedule={onReschedule}
         onCancel={onCancel}
-      />
+      />,
     );
 
     expect(screen.getByText("Reschedule")).toBeInTheDocument();
@@ -75,7 +81,7 @@ describe("SessionCard", () => {
         {...defaultProps}
         status="upcoming"
         onReschedule={onReschedule}
-      />
+      />,
     );
 
     await user.click(screen.getByText("Reschedule"));
@@ -87,11 +93,7 @@ describe("SessionCard", () => {
     const onCancel = vi.fn();
 
     render(
-      <SessionCard
-        {...defaultProps}
-        status="upcoming"
-        onCancel={onCancel}
-      />
+      <SessionCard {...defaultProps} status="upcoming" onCancel={onCancel} />,
     );
 
     await user.click(screen.getByText("Cancel"));
@@ -108,7 +110,7 @@ describe("SessionCard", () => {
         status="in_progress"
         endTime={pastEndTime}
         onComplete={onComplete}
-      />
+      />,
     );
 
     expect(screen.getByText("Complete")).toBeInTheDocument();
@@ -122,10 +124,12 @@ describe("SessionCard", () => {
         {...defaultProps}
         status="pending_completion"
         onDispute={onDispute}
-      />
+      />,
     );
 
-    expect(screen.getByText("Waiting for mentee confirmation")).toBeInTheDocument();
+    expect(
+      screen.getByText("Waiting for mentee confirmation"),
+    ).toBeInTheDocument();
     expect(screen.getByText("Dispute")).toBeInTheDocument();
   });
 
@@ -143,7 +147,7 @@ describe("SessionCard", () => {
   it("displays mentee initials when no avatar provided", () => {
     const menteeWithoutAvatar = { ...mockMentee, avatar: undefined };
     render(<SessionCard {...defaultProps} mentee={menteeWithoutAvatar} />);
-    
+
     expect(screen.getByText("JD")).toBeInTheDocument();
   });
 
@@ -158,12 +162,12 @@ describe("SessionCard", () => {
           status="upcoming"
           onReschedule={onReschedule}
           onCancel={onCancel}
-        />
+        />,
       );
 
       const rescheduleButton = screen.getByText("Reschedule");
       const cancelButton = screen.getByText("Cancel");
-      
+
       // Check that buttons exist and are rendered
       expect(rescheduleButton).toBeInTheDocument();
       expect(cancelButton).toBeInTheDocument();
@@ -179,7 +183,7 @@ describe("SessionCard", () => {
           status="upcoming"
           onReschedule={onReschedule}
           onCancel={onCancel}
-        />
+        />,
       );
 
       // Check that the button container has flex-col class for mobile stacking

@@ -5,14 +5,25 @@ export default function TouchFriendlyTooltipExample() {
   return (
     <div className="p-8 space-y-8">
       <div>
-        <h2 className="text-2xl font-bold mb-4">Touch-Friendly Tooltip Examples</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          Touch-Friendly Tooltip Examples
+        </h2>
         <p className="text-gray-600 mb-6">
           These tooltips adapt to the device type:
         </p>
         <ul className="text-sm text-gray-600 mb-8 space-y-1">
-          <li>• <strong>Desktop/Hover devices:</strong> Show on hover, hide on mouse leave</li>
-          <li>• <strong>Touch devices:</strong> Show on tap, hide on tap again or after delay</li>
-          <li>• <strong>Touch devices:</strong> Touch and hold shows tooltip, releases after 2 seconds</li>
+          <li>
+            • <strong>Desktop/Hover devices:</strong> Show on hover, hide on
+            mouse leave
+          </li>
+          <li>
+            • <strong>Touch devices:</strong> Show on tap, hide on tap again or
+            after delay
+          </li>
+          <li>
+            • <strong>Touch devices:</strong> Touch and hold shows tooltip,
+            releases after 2 seconds
+          </li>
         </ul>
       </div>
 
@@ -55,17 +66,22 @@ export default function TouchFriendlyTooltipExample() {
                 <span className="text-blue-600 underline cursor-pointer">
                   advanced analytics
                 </span>
-              </TouchFriendlyTooltip>
-              {" "}that help you understand your users better.
+              </TouchFriendlyTooltip>{" "}
+              that help you understand your users better.
             </p>
           </div>
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold mb-3">Form Field with Tooltip</h3>
+          <h3 className="text-lg font-semibold mb-3">
+            Form Field with Tooltip
+          </h3>
           <div className="max-w-md">
             <div className="flex items-center gap-2 mb-2">
-              <label htmlFor="email" className="text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="text-sm font-medium text-gray-700"
+              >
                 Email Address
               </label>
               <TouchFriendlyTooltip content="We'll use this email to send you important updates and notifications">
@@ -84,16 +100,18 @@ export default function TouchFriendlyTooltipExample() {
         <div>
           <h3 className="text-lg font-semibold mb-3">Multiple Tooltips</h3>
           <div className="flex flex-wrap gap-3">
-            {["Feature A", "Feature B", "Feature C", "Feature D"].map((feature, index) => (
-              <TouchFriendlyTooltip
-                key={feature}
-                content={`${feature} provides powerful capabilities for your workflow`}
-              >
-                <div className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg cursor-pointer transition-colors">
-                  {feature}
-                </div>
-              </TouchFriendlyTooltip>
-            ))}
+            {["Feature A", "Feature B", "Feature C", "Feature D"].map(
+              (feature, index) => (
+                <TouchFriendlyTooltip
+                  key={feature}
+                  content={`${feature} provides powerful capabilities for your workflow`}
+                >
+                  <div className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg cursor-pointer transition-colors">
+                    {feature}
+                  </div>
+                </TouchFriendlyTooltip>
+              ),
+            )}
           </div>
         </div>
       </div>

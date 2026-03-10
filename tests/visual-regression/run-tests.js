@@ -2,16 +2,16 @@
 
 /**
  * Visual Regression Test Runner
- * 
+ *
  * This script provides a convenient way to run visual regression tests
  * with different configurations and options.
  */
 
-const { spawn } = require('child_process');
-const path = require('path');
+const { spawn } = require("child_process");
+const path = require("path");
 
 const args = process.argv.slice(2);
-const command = args[0] || 'help';
+const command = args[0] || "help";
 
 const commands = {
   help: () => {
@@ -48,43 +48,43 @@ Examples:
   },
 
   all: () => runPlaywright([]),
-  auth: () => runPlaywright(['auth.spec.ts']),
-  dashboard: () => runPlaywright(['dashboard.spec.ts']),
-  opportunities: () => runPlaywright(['opportunities.spec.ts']),
-  applicants: () => runPlaywright(['applicants.spec.ts']),
-  profiles: () => runPlaywright(['profiles.spec.ts']),
-  modals: () => runPlaywright(['modals.spec.ts']),
-  navigation: () => runPlaywright(['navigation.spec.ts']),
-  components: () => runPlaywright(['responsive-components.spec.ts']),
-  
-  mobile: () => runPlaywright(['--grep', 'mobile']),
-  tablet: () => runPlaywright(['--grep', 'tablet']),
-  desktop: () => runPlaywright(['--grep', 'desktop']),
-  
-  update: () => runPlaywright(['--update-snapshots']),
-  ui: () => runPlaywright(['--ui']),
-  debug: () => runPlaywright(['--debug']),
-  headed: () => runPlaywright(['--headed']),
+  auth: () => runPlaywright(["auth.spec.ts"]),
+  dashboard: () => runPlaywright(["dashboard.spec.ts"]),
+  opportunities: () => runPlaywright(["opportunities.spec.ts"]),
+  applicants: () => runPlaywright(["applicants.spec.ts"]),
+  profiles: () => runPlaywright(["profiles.spec.ts"]),
+  modals: () => runPlaywright(["modals.spec.ts"]),
+  navigation: () => runPlaywright(["navigation.spec.ts"]),
+  components: () => runPlaywright(["responsive-components.spec.ts"]),
+
+  mobile: () => runPlaywright(["--grep", "mobile"]),
+  tablet: () => runPlaywright(["--grep", "tablet"]),
+  desktop: () => runPlaywright(["--grep", "desktop"]),
+
+  update: () => runPlaywright(["--update-snapshots"]),
+  ui: () => runPlaywright(["--ui"]),
+  debug: () => runPlaywright(["--debug"]),
+  headed: () => runPlaywright(["--headed"]),
 };
 
 function runPlaywright(playwrightArgs) {
   const additionalArgs = args.slice(1);
   const allArgs = [...playwrightArgs, ...additionalArgs];
-  
-  console.log(`Running: npx playwright test ${allArgs.join(' ')}`);
-  
-  const child = spawn('npx', ['playwright', 'test', ...allArgs], {
-    stdio: 'inherit',
+
+  console.log(`Running: npx playwright test ${allArgs.join(" ")}`);
+
+  const child = spawn("npx", ["playwright", "test", ...allArgs], {
+    stdio: "inherit",
     shell: true,
-    cwd: path.resolve(__dirname, '../..')
+    cwd: path.resolve(__dirname, "../.."),
   });
-  
-  child.on('close', (code) => {
+
+  child.on("close", (code) => {
     process.exit(code);
   });
-  
-  child.on('error', (error) => {
-    console.error('Error running Playwright:', error);
+
+  child.on("error", (error) => {
+    console.error("Error running Playwright:", error);
     process.exit(1);
   });
 }

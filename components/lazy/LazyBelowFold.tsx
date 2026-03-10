@@ -3,8 +3,8 @@
  * Uses Intersection Observer to load content only when it comes into view.
  */
 
-import React from 'react';
-import { LazyOnView } from '@/lib/utils/lazy-loading';
+import React from "react";
+import { LazyOnView } from "@/lib/utils/lazy-loading";
 
 interface LazyBelowFoldProps {
   children: React.ReactNode;
@@ -20,10 +20,12 @@ interface LazyBelowFoldProps {
   once?: boolean;
 }
 
-const DefaultBelowFoldFallback: React.FC<{ height?: string | number }> = ({ height }) => (
-  <div 
+const DefaultBelowFoldFallback: React.FC<{ height?: string | number }> = ({
+  height,
+}) => (
+  <div
     className="flex items-center justify-center bg-gray-50 rounded-lg"
-    style={{ height: height || '200px' }}
+    style={{ height: height || "200px" }}
   >
     <div className="flex flex-col items-center gap-2">
       <div className="animate-pulse bg-gray-200 rounded-full h-8 w-8"></div>
@@ -43,14 +45,12 @@ export const LazyBelowFold: React.FC<LazyBelowFoldProps> = ({
   height,
   once = true,
 }) => {
-  const defaultFallback = fallback || <DefaultBelowFoldFallback height={height} />;
+  const defaultFallback = fallback || (
+    <DefaultBelowFoldFallback height={height} />
+  );
 
   return (
-    <LazyOnView
-      fallback={defaultFallback}
-      className={className}
-      once={once}
-    >
+    <LazyOnView fallback={defaultFallback} className={className} once={once}>
       {children}
     </LazyOnView>
   );

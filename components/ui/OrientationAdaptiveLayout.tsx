@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useIsLandscape, useOrientation } from '@/hooks/useOrientation';
-import { useIsMobile } from '@/hooks/useIsMobile';
-import { cn } from '@/lib/utils';
+import React from "react";
+import { useIsLandscape, useOrientation } from "@/hooks/useOrientation";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { cn } from "@/lib/utils";
 
 interface OrientationAdaptiveLayoutProps {
   children: React.ReactNode;
@@ -46,16 +46,16 @@ export function OrientationAdaptiveLayout({
 
     if (isChanging) {
       // Add transition classes during orientation change
-      baseClasses.push('transition-all duration-300 ease-in-out');
+      baseClasses.push("transition-all duration-300 ease-in-out");
     }
 
     if (isLandscape) {
       baseClasses.push(landscapeClassName);
-      
+
       if (isMobile) {
         baseClasses.push(mobileLandscapeClassName);
         if (enableMobileLandscapeTabletBehavior) {
-          baseClasses.push('mobile-landscape-tablet-layout');
+          baseClasses.push("mobile-landscape-tablet-layout");
         }
       } else {
         baseClasses.push(tabletLandscapeClassName);
@@ -63,7 +63,7 @@ export function OrientationAdaptiveLayout({
     } else {
       baseClasses.push(portraitClassName);
       if (isMobile) {
-        baseClasses.push('portrait-mobile-single-column');
+        baseClasses.push("portrait-mobile-single-column");
       }
     }
 
@@ -118,7 +118,7 @@ export function OrientationAdaptiveGrid({
   const isMobile = useIsMobile();
 
   const getGridClasses = () => {
-    const baseClasses = ['grid', 'gap-4'];
+    const baseClasses = ["grid", "gap-4"];
 
     if (isMobile) {
       if (isLandscape) {
@@ -179,9 +179,9 @@ export function OrientationAdaptiveModal({
 
     if (isMobile) {
       if (isLandscape && tabletSizingLandscape) {
-        baseClasses.push('mobile-landscape-modal');
+        baseClasses.push("mobile-landscape-modal");
       } else if (!isLandscape && fullScreenPortrait) {
-        baseClasses.push('portrait-mobile-modal');
+        baseClasses.push("portrait-mobile-modal");
       }
     }
 

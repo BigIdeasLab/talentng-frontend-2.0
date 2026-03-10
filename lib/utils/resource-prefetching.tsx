@@ -3,9 +3,9 @@
  * Prefetches critical resources for mobile navigation and data loading.
  */
 
-import React from 'react';
-import { useRouter } from 'next/navigation';
-import { useIsMobile } from '@/hooks/useIsMobile';
+import React from "react";
+import { useRouter } from "next/navigation";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 /**
  * Configuration for resource prefetching
@@ -26,7 +26,7 @@ interface PrefetchConfig {
   /**
    * Priority of the prefetch request
    */
-  priority?: 'high' | 'low' | 'auto';
+  priority?: "high" | "low" | "auto";
 }
 
 /**
@@ -36,23 +36,23 @@ const DEFAULT_PREFETCH_CONFIG: PrefetchConfig = {
   enableOnMobile: true,
   delay: 100,
   onlyOnIdle: true,
-  priority: 'low',
+  priority: "low",
 };
 
 /**
  * Hook for prefetching Next.js routes
  */
-export function usePrefetchRoute(
-  href: string,
-  config: PrefetchConfig = {}
-) {
+export function usePrefetchRoute(href: string, config: PrefetchConfig = {}) {
   const router = useRouter();
   const isMobile = useIsMobile();
-  const { enableOnMobile, delay, onlyOnIdle, priority } = { ...DEFAULT_PREFETCH_CONFIG, ...config };
-  
+  const { enableOnMobile, delay, onlyOnIdle, priority } = {
+    ...DEFAULT_PREFETCH_CONFIG,
+    ...config,
+  };
+
   const prefetch = React.useCallback(() => {
     if (!enableOnMobile && isMobile) return;
-    
+
     const doPrefetch = () => {
       try {
         router.prefetch(href);
@@ -60,9 +60,9 @@ export function usePrefetchRoute(
         console.warn(`Failed to prefetch route: ${href}`, error);
       }
     };
-    
+
     if (delay && delay > 0) {
-      if (onlyOnIdle && 'requestIdleCallback' in window) {
+      if (onlyOnIdle && "requestIdleCallback" in window) {
         window.requestIdleCallback(() => {
           setTimeout(doPrefetch, delay);
         });
@@ -73,7 +73,7 @@ export function usePrefetchRoute(
       doPrefetch();
     }
   }, [router, href, enableOnMobile, isMobile, delay, onlyOnIdle]);
-  
+
   return prefetch;
 }
 
@@ -82,31 +82,34 @@ export function usePrefetchRoute(
  */
 export function usePrefetchData<T>(
   fetchFn: () => Promise<T>,
-  config: PrefetchConfig = {}
+  config: PrefetchConfig = {},
 ) {
   const isMobile = useIsMobile();
-  const { enableOnMobile, delay, onlyOnIdle } = { ...DEFAULT_PREFETCH_CONFIG, ...config };
+  const { enableOnMobile, delay, onlyOnIdle } = {
+    ...DEFAULT_PREFETCH_CONFIG,
+    ...config,
+  };
   const [prefetchedData, setPrefetchedData] = React.useState<T | null>(null);
   const [isPrefetching, setIsPrefetching] = React.useState(false);
-  
+
   const prefetch = React.useCallback(() => {
     if (!enableOnMobile && isMobile) return;
     if (isPrefetching || prefetchedData) return;
-    
+
     const doPrefetch = async () => {
       setIsPrefetching(true);
       try {
         const data = await fetchFn();
         setPrefetchedData(data);
       } catch (error) {
-        console.warn('Failed to prefetch data:', error);
+        console.warn("Failed to prefetch data:", error);
       } finally {
         setIsPrefetching(false);
       }
     };
-    
+
     if (delay && delay > 0) {
-      if (onlyOnIdle && 'requestIdleCallback' in window) {
+      if (onlyOnIdle && "requestIdleCallback" in window) {
         window.requestIdleCallback(() => {
           setTimeout(doPrefetch, delay);
         });
@@ -116,8 +119,16 @@ export function usePrefetchData<T>(
     } else {
       doPrefetch();
     }
-  }, [fetchFn, enableOnMobile, isMobile, delay, onlyOnIdle, isPrefetching, prefetchedData]);
-  
+  }, [
+    fetchFn,
+    enableOnMobile,
+    isMobile,
+    delay,
+    onlyOnIdle,
+    isPrefetching,
+    prefetchedData,
+  ]);
+
   return { prefetch, prefetchedData, isPrefetching };
 }
 
@@ -137,23 +148,23 @@ export const PrefetchOnInteraction: React.FC<PrefetchOnInteractionProps> = ({
   onPrefetch,
   config = {},
 }) => {
-  const prefetchRoute = usePrefetchRoute(href || '', config);
+  const prefetchRoute = usePrefetchRoute(href || "", config);
   const [hasPrefetched, setHasPrefetched] = React.useState(false);
-  
+
   const handleInteraction = React.useCallback(() => {
     if (hasPrefetched) return;
-    
+
     setHasPrefetched(true);
-    
+
     if (href) {
       prefetchRoute();
     }
-    
+
     if (onPrefetch) {
       onPrefetch();
     }
   }, [href, prefetchRoute, onPrefetch, hasPrefetched]);
-  
+
   return React.cloneElement(children, {
     onMouseEnter: handleInteraction,
     onFocus: handleInteraction,
@@ -177,42 +188,42 @@ export const PrefetchOnView: React.FC<PrefetchOnViewProps> = ({
   href,
   onPrefetch,
   config = {},
-  rootMargin = '100px',
+  rootMargin = "100px",
 }) => {
   const ref = React.useRef<HTMLDivElement>(null);
-  const prefetchRoute = usePrefetchRoute(href || '', config);
+  const prefetchRoute = usePrefetchRoute(href || "", config);
   const [hasPrefetched, setHasPrefetched] = React.useState(false);
-  
+
   React.useEffect(() => {
     const element = ref.current;
     if (!element || hasPrefetched) return;
-    
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !hasPrefetched) {
           setHasPrefetched(true);
-          
+
           if (href) {
             prefetchRoute();
           }
-          
+
           if (onPrefetch) {
             onPrefetch();
           }
-          
+
           observer.unobserve(element);
         }
       },
-      { rootMargin }
+      { rootMargin },
     );
-    
+
     observer.observe(element);
-    
+
     return () => {
       observer.unobserve(element);
     };
   }, [href, prefetchRoute, onPrefetch, hasPrefetched, rootMargin]);
-  
+
   return <div ref={ref}>{children}</div>;
 };
 
@@ -220,16 +231,16 @@ export const PrefetchOnView: React.FC<PrefetchOnViewProps> = ({
  * Prefetch critical routes for the application
  */
 export function prefetchCriticalRoutes() {
-  if (typeof window === 'undefined') return;
-  
+  if (typeof window === "undefined") return;
+
   const criticalRoutes = [
-    '/dashboard',
-    '/opportunities',
-    '/applicants',
-    '/profile',
-    '/calendar',
+    "/dashboard",
+    "/opportunities",
+    "/applicants",
+    "/profile",
+    "/calendar",
   ];
-  
+
   const prefetchRoute = (href: string) => {
     try {
       // Use Next.js router prefetch if available
@@ -237,8 +248,8 @@ export function prefetchCriticalRoutes() {
         (window as any).next.router.prefetch(href);
       } else {
         // Fallback to link prefetch
-        const link = document.createElement('link');
-        link.rel = 'prefetch';
+        const link = document.createElement("link");
+        link.rel = "prefetch";
         link.href = href;
         document.head.appendChild(link);
       }
@@ -246,9 +257,9 @@ export function prefetchCriticalRoutes() {
       console.warn(`Failed to prefetch route: ${href}`, error);
     }
   };
-  
+
   // Prefetch routes with idle callback
-  if ('requestIdleCallback' in window) {
+  if ("requestIdleCallback" in window) {
     window.requestIdleCallback(() => {
       criticalRoutes.forEach((route, index) => {
         setTimeout(() => prefetchRoute(route), index * 100);
@@ -268,29 +279,29 @@ export function prefetchCriticalRoutes() {
  * Prefetch critical API endpoints
  */
 export function prefetchCriticalData() {
-  if (typeof window === 'undefined') return;
-  
+  if (typeof window === "undefined") return;
+
   const criticalEndpoints = [
-    '/api/dashboard',
-    '/api/notifications',
-    '/api/profile',
+    "/api/dashboard",
+    "/api/notifications",
+    "/api/profile",
   ];
-  
+
   const prefetchEndpoint = async (endpoint: string) => {
     try {
       // Use fetch with cache to prefetch data
       await fetch(endpoint, {
-        method: 'GET',
-        cache: 'force-cache',
-        priority: 'low',
+        method: "GET",
+        cache: "force-cache",
+        priority: "low",
       } as RequestInit);
     } catch (error) {
       console.warn(`Failed to prefetch endpoint: ${endpoint}`, error);
     }
   };
-  
+
   // Prefetch data with idle callback
-  if ('requestIdleCallback' in window) {
+  if ("requestIdleCallback" in window) {
     window.requestIdleCallback(() => {
       criticalEndpoints.forEach((endpoint, index) => {
         setTimeout(() => prefetchEndpoint(endpoint), index * 200);
@@ -309,26 +320,28 @@ export function prefetchCriticalData() {
 /**
  * Hook for initializing resource prefetching
  */
-export function useResourcePrefetching(options: {
-  prefetchRoutes?: boolean;
-  prefetchData?: boolean;
-  enableOnMobile?: boolean;
-} = {}) {
+export function useResourcePrefetching(
+  options: {
+    prefetchRoutes?: boolean;
+    prefetchData?: boolean;
+    enableOnMobile?: boolean;
+  } = {},
+) {
   const {
     prefetchRoutes = true,
     prefetchData = true,
     enableOnMobile = true,
   } = options;
-  
+
   const isMobile = useIsMobile();
-  
+
   React.useEffect(() => {
     if (!enableOnMobile && isMobile) return;
-    
+
     if (prefetchRoutes) {
       prefetchCriticalRoutes();
     }
-    
+
     if (prefetchData) {
       prefetchCriticalData();
     }
@@ -340,15 +353,15 @@ export function useResourcePrefetching(options: {
  */
 export function withPrefetching<T extends { href?: string }>(
   Component: React.ComponentType<T>,
-  config: PrefetchConfig = {}
+  config: PrefetchConfig = {},
 ) {
   return React.forwardRef<any, T>((props, ref) => {
     const { href } = props;
-    
+
     if (!href) {
       return <Component {...(props as T)} ref={ref as any} />;
     }
-    
+
     return (
       <PrefetchOnInteraction href={href} config={config}>
         <Component {...(props as T)} ref={ref as any} />
@@ -381,30 +394,30 @@ export function preloadImages(srcs: string[]): Promise<void[]> {
  */
 export function useImagePreloading(
   images: string[],
-  config: { enableOnMobile?: boolean; delay?: number } = {}
+  config: { enableOnMobile?: boolean; delay?: number } = {},
 ) {
   const { enableOnMobile = false, delay = 0 } = config;
   const isMobile = useIsMobile();
   const [loadedImages, setLoadedImages] = React.useState<string[]>([]);
-  
+
   React.useEffect(() => {
     if (!enableOnMobile && isMobile) return;
-    
+
     const preload = async () => {
       try {
         await preloadImages(images);
         setLoadedImages(images);
       } catch (error) {
-        console.warn('Failed to preload images:', error);
+        console.warn("Failed to preload images:", error);
       }
     };
-    
+
     if (delay > 0) {
       setTimeout(preload, delay);
     } else {
       preload();
     }
   }, [images, enableOnMobile, isMobile, delay]);
-  
+
   return loadedImages;
 }

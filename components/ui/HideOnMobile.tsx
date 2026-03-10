@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface HideOnMobileProps {
   children: React.ReactNode;
@@ -9,12 +9,8 @@ interface HideOnMobileProps {
  * Wrapper component that hides its children on mobile viewports (< 768px)
  * Shows content on tablet and desktop viewports (≥ 768px)
  */
-export function HideOnMobile({ children, className = '' }: HideOnMobileProps) {
-  return (
-    <div className={`hidden md:block ${className}`}>
-      {children}
-    </div>
-  );
+export function HideOnMobile({ children, className = "" }: HideOnMobileProps) {
+  return <div className={`hidden md:block ${className}`}>{children}</div>;
 }
 
 export default HideOnMobile;

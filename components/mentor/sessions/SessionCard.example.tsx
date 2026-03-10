@@ -13,10 +13,13 @@ export default function SessionCardExample() {
     <div className="p-8 bg-gray-50 min-h-screen">
       <div className="max-w-4xl mx-auto space-y-8">
         <div>
-          <h2 className="text-2xl font-bold mb-4">Session Card - Responsive Examples</h2>
+          <h2 className="text-2xl font-bold mb-4">
+            Session Card - Responsive Examples
+          </h2>
           <p className="text-gray-600 mb-6">
-            Resize your browser to see how the session cards adapt to different screen sizes.
-            On mobile (&lt;768px), action buttons stack vertically with full width and 44px minimum height.
+            Resize your browser to see how the session cards adapt to different
+            screen sizes. On mobile (&lt;768px), action buttons stack vertically
+            with full width and 44px minimum height.
           </p>
         </div>
 
@@ -40,7 +43,9 @@ export default function SessionCardExample() {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-3">In Progress Session (Ended)</h3>
+            <h3 className="text-lg font-semibold mb-3">
+              In Progress Session (Ended)
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <SessionCard
                 id="2"
@@ -143,11 +148,17 @@ export default function SessionCardExample() {
         </div>
 
         <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-          <h3 className="font-semibold mb-2">Mobile Responsiveness Features:</h3>
+          <h3 className="font-semibold mb-2">
+            Mobile Responsiveness Features:
+          </h3>
           <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
             <li>Action buttons stack vertically on mobile with full width</li>
-            <li>Minimum 44px touch target height for all interactive elements</li>
-            <li>Session details display as flexible pills that wrap naturally</li>
+            <li>
+              Minimum 44px touch target height for all interactive elements
+            </li>
+            <li>
+              Session details display as flexible pills that wrap naturally
+            </li>
             <li>Status text centers on mobile for better readability</li>
             <li>Meeting links show copy button for easy sharing on mobile</li>
           </ul>

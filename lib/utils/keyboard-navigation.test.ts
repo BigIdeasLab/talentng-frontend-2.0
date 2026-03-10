@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { KeyboardNavigationManager, keyboardHandlers } from "./keyboard-navigation";
+import {
+  KeyboardNavigationManager,
+  keyboardHandlers,
+} from "./keyboard-navigation";
 
 describe("KeyboardNavigationManager", () => {
   let manager: KeyboardNavigationManager;
@@ -9,7 +12,7 @@ describe("KeyboardNavigationManager", () => {
     // Reset the singleton instance
     (KeyboardNavigationManager as any).instance = undefined;
     manager = KeyboardNavigationManager.getInstance();
-    
+
     // Create mock container with focusable elements
     mockContainer = document.createElement("div");
     mockContainer.innerHTML = `
@@ -136,12 +139,12 @@ describe("keyboardHandlers", () => {
     const mockDown = vi.fn();
     const mockLeft = vi.fn();
     const mockRight = vi.fn();
-    
+
     const handler = keyboardHandlers.handleArrowNavigation(
       mockUp,
       mockDown,
       mockLeft,
-      mockRight
+      mockRight,
     );
 
     // Test all arrow keys

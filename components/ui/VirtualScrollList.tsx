@@ -3,12 +3,12 @@
  * Uses react-window to render only visible items, improving performance for large lists.
  */
 
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from "react";
 // @ts-ignore - react-window types may not be fully compatible
-import { FixedSizeList, VariableSizeList } from 'react-window';
+import { FixedSizeList, VariableSizeList } from "react-window";
 // @ts-ignore
-import InfiniteLoader from 'react-window-infinite-loader';
-import { useIsMobile } from '@/hooks/useIsMobile';
+import InfiniteLoader from "react-window-infinite-loader";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface VirtualScrollListProps<T> {
   /**
@@ -34,7 +34,11 @@ interface VirtualScrollListProps<T> {
   /**
    * Render function for each item
    */
-  renderItem: (props: { index: number; style: React.CSSProperties; data: T[] }) => React.ReactElement;
+  renderItem: (props: {
+    index: number;
+    style: React.CSSProperties;
+    data: T[];
+  }) => React.ReactElement;
   /**
    * Function to load more items (for infinite scrolling)
    */
@@ -69,7 +73,7 @@ export function VirtualScrollList<T>({
   itemHeight = 60,
   getItemHeight,
   height,
-  width = '100%',
+  width = "100%",
   renderItem,
   loadMoreItems,
   hasNextPage = false,
@@ -79,7 +83,7 @@ export function VirtualScrollList<T>({
   variableSize = false,
 }: VirtualScrollListProps<T>) {
   const isMobile = useIsMobile();
-  
+
   // Optimize overscan count for mobile devices
   const optimizedOverscanCount = useMemo(() => {
     if (overscanCount !== undefined) return overscanCount;
@@ -92,9 +96,12 @@ export function VirtualScrollList<T>({
   }, [items.length, hasNextPage]);
 
   // Check if an item is loaded
-  const isItemLoaded = useCallback((index: number) => {
-    return !!items[index];
-  }, [items]);
+  const isItemLoaded = useCallback(
+    (index: number) => {
+      return !!items[index];
+    },
+    [items],
+  );
 
   // Render item with loading state
   const renderItemWithLoading = useCallback(
@@ -111,13 +118,13 @@ export function VirtualScrollList<T>({
 
       return renderItem({ index, style, data: items });
     },
-    [items, renderItem]
+    [items, renderItem],
   );
 
   // For infinite scrolling
   if (loadMoreItems) {
     const InfiniteList = variableSize ? VariableSizeList : FixedSizeList;
-    
+
     return (
       <div className={className}>
         <InfiniteLoader
@@ -146,7 +153,7 @@ export function VirtualScrollList<T>({
 
   // Regular virtual list
   const ListComponent = variableSize ? VariableSizeList : FixedSizeList;
-  
+
   return (
     <div className={className}>
       <ListComponent
@@ -193,9 +200,17 @@ export const VirtualApplicantList: React.FC<VirtualApplicantListProps> = ({
   isLoading,
 }) => {
   const renderApplicant = useCallback(
-    ({ index, style, data }: { index: number; style: React.CSSProperties; data: ApplicantListItem[] }) => {
+    ({
+      index,
+      style,
+      data,
+    }: {
+      index: number;
+      style: React.CSSProperties;
+      data: ApplicantListItem[];
+    }) => {
       const applicant = data[index];
-      
+
       return (
         <div
           style={style}
@@ -219,18 +234,18 @@ export const VirtualApplicantList: React.FC<VirtualApplicantListProps> = ({
             <p className="text-sm font-medium text-gray-900 truncate">
               {applicant.name}
             </p>
-            <p className="text-sm text-gray-500 truncate">
-              {applicant.email}
-            </p>
+            <p className="text-sm text-gray-500 truncate">{applicant.email}</p>
           </div>
           <div className="flex-shrink-0 text-right">
-            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-              applicant.status === 'pending' 
-                ? 'bg-yellow-100 text-yellow-800'
-                : applicant.status === 'approved'
-                ? 'bg-green-100 text-green-800'
-                : 'bg-red-100 text-red-800'
-            }`}>
+            <span
+              className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                applicant.status === "pending"
+                  ? "bg-yellow-100 text-yellow-800"
+                  : applicant.status === "approved"
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800"
+              }`}
+            >
               {applicant.status}
             </span>
             <p className="text-xs text-gray-500 mt-1">
@@ -240,7 +255,7 @@ export const VirtualApplicantList: React.FC<VirtualApplicantListProps> = ({
         </div>
       );
     },
-    [onApplicantClick]
+    [onApplicantClick],
   );
 
   return (
@@ -274,7 +289,10 @@ interface VirtualOpportunityListProps {
   opportunities: OpportunityListItem[];
   height: number;
   onOpportunityClick: (opportunity: OpportunityListItem) => void;
-  loadMoreOpportunities?: (startIndex: number, stopIndex: number) => Promise<void>;
+  loadMoreOpportunities?: (
+    startIndex: number,
+    stopIndex: number,
+  ) => Promise<void>;
   hasNextPage?: boolean;
   isLoading?: boolean;
 }
@@ -288,9 +306,17 @@ export const VirtualOpportunityList: React.FC<VirtualOpportunityListProps> = ({
   isLoading,
 }) => {
   const renderOpportunity = useCallback(
-    ({ index, style, data }: { index: number; style: React.CSSProperties; data: OpportunityListItem[] }) => {
+    ({
+      index,
+      style,
+      data,
+    }: {
+      index: number;
+      style: React.CSSProperties;
+      data: OpportunityListItem[];
+    }) => {
       const opportunity = data[index];
-      
+
       return (
         <div
           style={style}
@@ -322,7 +348,7 @@ export const VirtualOpportunityList: React.FC<VirtualOpportunityListProps> = ({
         </div>
       );
     },
-    [onOpportunityClick]
+    [onOpportunityClick],
   );
 
   return (
@@ -346,7 +372,7 @@ export interface NotificationListItem {
   id: string;
   title: string;
   message: string;
-  type: 'info' | 'success' | 'warning' | 'error';
+  type: "info" | "success" | "warning" | "error";
   createdAt: string;
   read: boolean;
 }
@@ -355,12 +381,17 @@ interface VirtualNotificationListProps {
   notifications: NotificationListItem[];
   height: number;
   onNotificationClick: (notification: NotificationListItem) => void;
-  loadMoreNotifications?: (startIndex: number, stopIndex: number) => Promise<void>;
+  loadMoreNotifications?: (
+    startIndex: number,
+    stopIndex: number,
+  ) => Promise<void>;
   hasNextPage?: boolean;
   isLoading?: boolean;
 }
 
-export const VirtualNotificationList: React.FC<VirtualNotificationListProps> = ({
+export const VirtualNotificationList: React.FC<
+  VirtualNotificationListProps
+> = ({
   notifications,
   height,
   onNotificationClick,
@@ -369,35 +400,47 @@ export const VirtualNotificationList: React.FC<VirtualNotificationListProps> = (
   isLoading,
 }) => {
   const renderNotification = useCallback(
-    ({ index, style, data }: { index: number; style: React.CSSProperties; data: NotificationListItem[] }) => {
+    ({
+      index,
+      style,
+      data,
+    }: {
+      index: number;
+      style: React.CSSProperties;
+      data: NotificationListItem[];
+    }) => {
       const notification = data[index];
-      
+
       const typeColors = {
-        info: 'bg-blue-100 text-blue-800',
-        success: 'bg-green-100 text-green-800',
-        warning: 'bg-yellow-100 text-yellow-800',
-        error: 'bg-red-100 text-red-800',
+        info: "bg-blue-100 text-blue-800",
+        success: "bg-green-100 text-green-800",
+        warning: "bg-yellow-100 text-yellow-800",
+        error: "bg-red-100 text-red-800",
       };
-      
+
       return (
         <div
           style={style}
           className={`flex items-start p-4 border-b border-gray-200 hover:bg-gray-50 cursor-pointer ${
-            !notification.read ? 'bg-blue-50' : ''
+            !notification.read ? "bg-blue-50" : ""
           }`}
           onClick={() => onNotificationClick(notification)}
         >
-          <div className={`flex-shrink-0 w-2 h-2 rounded-full mt-2 ${
-            !notification.read ? 'bg-blue-500' : 'bg-gray-300'
-          }`} />
+          <div
+            className={`flex-shrink-0 w-2 h-2 rounded-full mt-2 ${
+              !notification.read ? "bg-blue-500" : "bg-gray-300"
+            }`}
+          />
           <div className="ml-3 flex-1 min-w-0">
             <div className="flex items-center justify-between">
               <h4 className="text-sm font-medium text-gray-900 truncate">
                 {notification.title}
               </h4>
-              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                typeColors[notification.type]
-              }`}>
+              <span
+                className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                  typeColors[notification.type]
+                }`}
+              >
                 {notification.type}
               </span>
             </div>
@@ -411,7 +454,7 @@ export const VirtualNotificationList: React.FC<VirtualNotificationListProps> = (
         </div>
       );
     },
-    [onNotificationClick]
+    [onNotificationClick],
   );
 
   return (

@@ -31,7 +31,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       {/* Mobile Header */}
       {isMobile && (
         <header className="bg-white border-b px-4 py-3 flex items-center justify-between lg:hidden">
-          <HamburgerMenuButton 
+          <HamburgerMenuButton
             isOpen={mobileNavOpen}
             onClick={() => setMobileNavOpen(!mobileNavOpen)}
           />
@@ -99,7 +99,7 @@ export function NavigationItems({ onItemClick }: NavigationItemsProps) {
       >
         Dashboard
       </NavItem>
-      
+
       <NavItem
         href="/opportunities"
         icon={BriefcaseIcon}
@@ -111,7 +111,7 @@ export function NavigationItems({ onItemClick }: NavigationItemsProps) {
         {/* Show badge on mobile */}
         {isMobile && <Badge count={5} />}
       </NavItem>
-      
+
       <NavItem
         href="/applicants"
         icon={UsersIcon}
@@ -222,7 +222,7 @@ export function OpportunitiesTable() {
         </div>
         <StatusBadge status={opportunity.status} />
       </div>
-      
+
       <div className="grid grid-cols-2 gap-4 text-sm">
         <div>
           <span className="text-gray-500">Location:</span>
@@ -233,7 +233,7 @@ export function OpportunitiesTable() {
           <span className="ml-1 text-gray-900">{opportunity.budget}</span>
         </div>
       </div>
-      
+
       <div className="flex items-center justify-between">
         <span className="text-sm text-gray-500">
           {opportunity.applicants} applicants
@@ -267,7 +267,7 @@ import { useBreakpoint } from "@/hooks/useBreakpoint";
 
 export function TalentGrid({ talents }: { talents: Talent[] }) {
   const breakpoint = useBreakpoint();
-  
+
   // Adjust columns based on content density
   const getColumns = () => {
     switch (breakpoint) {
@@ -289,8 +289,8 @@ export function TalentGrid({ talents }: { talents: Talent[] }) {
   return (
     <ResponsiveGrid columns={getColumns()} gap={6}>
       {talents.map((talent) => (
-        <TalentCard 
-          key={talent.id} 
+        <TalentCard
+          key={talent.id}
           talent={talent}
           compact={breakpoint === "md"} // Compact view on tablet
         />
@@ -352,7 +352,7 @@ export function ContactForm() {
         <input
           type="email"
           className="w-full px-3 py-2 border rounded-md min-h-[44px] focus:ring-2 focus:ring-blue-500"
-          {...register("email", { 
+          {...register("email", {
             required: "Email is required",
             pattern: {
               value: /^\S+@\S+$/i,
@@ -421,7 +421,7 @@ export function MultiStepForm() {
           </span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
-          <div 
+          <div
             className="bg-blue-600 h-2 rounded-full transition-all duration-300"
             style={{ width: `${(currentStep / totalSteps) * 100}%` }}
           />
@@ -462,10 +462,10 @@ export function MultiStepForm() {
               onClick={() => setCurrentStep(i + 1)}
               className={`
                 w-3 h-3 rounded-full transition-colors
-                ${currentStep === i + 1 
-                  ? 'bg-blue-600' 
-                  : currentStep > i + 1 
-                    ? 'bg-green-600' 
+                ${currentStep === i + 1
+                  ? 'bg-blue-600'
+                  : currentStep > i + 1
+                    ? 'bg-green-600'
                     : 'bg-gray-300'
                 }
               `}
@@ -647,7 +647,7 @@ export function DashboardLayout() {
             {isMobile ? "Overview" : "Welcome back! Here's what's happening."}
           </p>
         </div>
-        
+
         {!isMobile && (
           <div className="flex space-x-3">
             <button className="btn-secondary">
@@ -733,7 +733,7 @@ export function DashboardLayout() {
             )}
           </div>
         </div>
-        
+
         <div className="divide-y">
           {recentActivity.slice(0, isMobile ? 3 : 5).map((activity) => (
             <ActivityItem
@@ -743,7 +743,7 @@ export function DashboardLayout() {
             />
           ))}
         </div>
-        
+
         {isMobile && (
           <div className="p-4 border-t">
             <button className="w-full btn-secondary min-h-[44px]">

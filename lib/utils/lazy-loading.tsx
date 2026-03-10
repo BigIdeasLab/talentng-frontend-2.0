@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense } from "react";
 
 /**
  * Utility for creating lazy-loaded components with proper error boundaries
@@ -47,24 +47,22 @@ export const ChartLazyFallback: React.FC = () => (
 /**
  * Wrapper component for lazy-loaded components with Suspense
  */
-export const LazyWrapper: React.FC<LazyComponentProps> = ({ 
-  fallback = <DefaultLazyFallback />, 
-  children 
-}) => (
-  <Suspense fallback={fallback}>
-    {children}
-  </Suspense>
-);
+export const LazyWrapper: React.FC<LazyComponentProps> = ({
+  fallback = <DefaultLazyFallback />,
+  children,
+}) => <Suspense fallback={fallback}>{children}</Suspense>;
 
 /**
  * Higher-order component for creating lazy-loaded components
  */
 export function withLazyLoading<T extends Record<string, any>>(
   Component: React.ComponentType<T>,
-  fallback?: React.ReactNode
+  fallback?: React.ReactNode,
 ) {
-  const LazyComponent = React.lazy(() => Promise.resolve({ default: Component }));
-  
+  const LazyComponent = React.lazy(() =>
+    Promise.resolve({ default: Component }),
+  );
+
   return React.forwardRef<any, T>((props, ref) => (
     <LazyWrapper fallback={fallback}>
       <LazyComponent {...props} ref={ref} />
@@ -76,7 +74,7 @@ export function withLazyLoading<T extends Record<string, any>>(
  * Utility for lazy loading modals with proper fallback
  */
 export function createLazyModal<T extends Record<string, any>>(
-  importFn: () => Promise<any>
+  importFn: () => Promise<any>,
 ) {
   const LazyModal = React.lazy(async () => {
     const module = await importFn();
@@ -85,16 +83,17 @@ export function createLazyModal<T extends Record<string, any>>(
       return { default: module.default };
     }
     // If it's a named export, find the first exported component
-    const componentName = Object.keys(module).find(key => 
-      typeof module[key] === 'function' || 
-      (typeof module[key] === 'object' && module[key].$$typeof)
+    const componentName = Object.keys(module).find(
+      (key) =>
+        typeof module[key] === "function" ||
+        (typeof module[key] === "object" && module[key].$$typeof),
     );
     if (componentName) {
       return { default: module[componentName] };
     }
     return module;
   });
-  
+
   return React.forwardRef<any, T>((props, ref) => (
     <LazyWrapper fallback={<ModalLazyFallback />}>
       <LazyModal {...props} ref={ref} />
@@ -106,7 +105,7 @@ export function createLazyModal<T extends Record<string, any>>(
  * Utility for lazy loading charts with proper fallback
  */
 export function createLazyChart<T extends Record<string, any>>(
-  importFn: () => Promise<any>
+  importFn: () => Promise<any>,
 ) {
   const LazyChart = React.lazy(async () => {
     const module = await importFn();
@@ -115,16 +114,17 @@ export function createLazyChart<T extends Record<string, any>>(
       return { default: module.default };
     }
     // If it's a named export, find the first exported component
-    const componentName = Object.keys(module).find(key => 
-      typeof module[key] === 'function' || 
-      (typeof module[key] === 'object' && module[key].$$typeof)
+    const componentName = Object.keys(module).find(
+      (key) =>
+        typeof module[key] === "function" ||
+        (typeof module[key] === "object" && module[key].$$typeof),
     );
     if (componentName) {
       return { default: module[componentName] };
     }
     return module;
   });
-  
+
   return React.forwardRef<any, T>((props, ref) => (
     <LazyWrapper fallback={<ChartLazyFallback />}>
       <LazyChart {...props} ref={ref} />
@@ -138,7 +138,7 @@ export function createLazyChart<T extends Record<string, any>>(
  */
 export function useIntersectionObserver(
   ref: React.RefObject<Element>,
-  options: IntersectionObserverInit = {}
+  options: IntersectionObserverInit = {},
 ) {
   const [isIntersecting, setIsIntersecting] = React.useState(false);
   const [hasIntersected, setHasIntersected] = React.useState(false);
@@ -156,9 +156,9 @@ export function useIntersectionObserver(
       },
       {
         threshold: 0.1,
-        rootMargin: '50px',
+        rootMargin: "50px",
         ...options,
-      }
+      },
     );
 
     observer.observe(element);

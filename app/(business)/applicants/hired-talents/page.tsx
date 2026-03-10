@@ -8,7 +8,10 @@ import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
 import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
 import { useToast } from "@/hooks";
-import { LazyRecommendationModal, LazyHiredTalentFilterModal } from "@/components/lazy";
+import {
+  LazyRecommendationModal,
+  LazyHiredTalentFilterModal,
+} from "@/components/lazy";
 import type { HiredTalentFilterState } from "@/components/employer/applicants/HiredTalentFilterModal";
 import {
   getTalentRecommendationsByUserId,
@@ -403,7 +406,9 @@ export default function HiredTalentsPage() {
               <LazyHiredTalentFilterModal
                 isOpen={isFilterOpen}
                 onClose={() => setIsFilterOpen(false)}
-                onApply={(newFilters: HiredTalentFilterState) => setFilters(newFilters)}
+                onApply={(newFilters: HiredTalentFilterState) =>
+                  setFilters(newFilters)
+                }
                 initialFilters={filters}
                 availableLocations={availableLocations}
               />

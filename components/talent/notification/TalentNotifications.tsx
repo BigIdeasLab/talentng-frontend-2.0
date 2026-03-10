@@ -68,7 +68,9 @@ export function TalentNotifications({
     return (
       <div className="flex items-center justify-center h-full bg-gray-50">
         <div className="text-center">
-          <p className="text-gray-600 text-sm md:text-sm">No notifications yet</p>
+          <p className="text-gray-600 text-sm md:text-sm">
+            No notifications yet
+          </p>
           <p className="text-gray-500 text-sm md:text-xs mt-1">
             You'll see notifications here when you have new updates
           </p>

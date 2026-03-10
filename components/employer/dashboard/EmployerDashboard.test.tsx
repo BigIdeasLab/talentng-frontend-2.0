@@ -4,9 +4,9 @@ import { EmployerDashboard } from "./EmployerDashboard";
 import { useRecruiterDashboard } from "@/hooks/useRecruiterDashboard";
 
 // Mock window.matchMedia
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -30,8 +30,18 @@ vi.mock("@/hooks/useOrientationState", () => ({
 }));
 
 vi.mock("@/components/ui/OrientationAdaptiveLayout", () => ({
-  OrientationAdaptiveGrid: ({ children, className }: any) => <div className={className}>{children}</div>,
-  OrientationAdaptiveLayout: ({ children, className, landscapeClassName }: any) => <div className={`${className ?? ""} ${landscapeClassName ?? ""}`}>{children}</div>,
+  OrientationAdaptiveGrid: ({ children, className }: any) => (
+    <div className={className}>{children}</div>
+  ),
+  OrientationAdaptiveLayout: ({
+    children,
+    className,
+    landscapeClassName,
+  }: any) => (
+    <div className={`${className ?? ""} ${landscapeClassName ?? ""}`}>
+      {children}
+    </div>
+  ),
 }));
 
 // Mock the hook
@@ -145,9 +155,7 @@ describe("EmployerDashboard - Responsive Layout", () => {
     const { container } = render(<EmployerDashboard />);
 
     // Find the stat cards container (rendered by mocked OrientationAdaptiveGrid with className="flex-shrink-0")
-    const statsContainer = container.querySelector(
-      ".flex-shrink-0",
-    );
+    const statsContainer = container.querySelector(".flex-shrink-0");
     expect(statsContainer).toBeInTheDocument();
   });
 

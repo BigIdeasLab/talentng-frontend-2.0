@@ -11,12 +11,15 @@ import { QuickActions } from "./QuickActions";
 import { WelcomeHeader } from "./WelcomeHeader";
 import { useRecruiterDashboard } from "@/hooks/useRecruiterDashboard";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
-import { OrientationAdaptiveGrid, OrientationAdaptiveLayout } from "@/components/ui/OrientationAdaptiveLayout";
-import { 
-  mobileOptimizedMemo, 
-  useMobileOptimizedMemo, 
+import {
+  OrientationAdaptiveGrid,
+  OrientationAdaptiveLayout,
+} from "@/components/ui/OrientationAdaptiveLayout";
+import {
+  mobileOptimizedMemo,
+  useMobileOptimizedMemo,
   useMobileOptimizedCallback,
-  MobileLazyRender 
+  MobileLazyRender,
 } from "@/lib/utils/mobile-performance";
 import { useOrientationScrollPreservation } from "@/hooks/useOrientationState";
 
@@ -65,42 +68,55 @@ const EmployerDashboard = mobileOptimizedMemo(function EmployerDashboard() {
   console.log("Recruiter Dashboard Data:", data);
 
   // Memoized format function
-  const formatChange = useMobileOptimizedCallback((value: number, isPercent: boolean): string => {
-    const sign = value >= 0 ? "+" : "";
-    return isPercent ? `${sign}${value}%` : `${sign}${value}`;
-  }, []);
+  const formatChange = useMobileOptimizedCallback(
+    (value: number, isPercent: boolean): string => {
+      const sign = value >= 0 ? "+" : "";
+      return isPercent ? `${sign}${value}%` : `${sign}${value}`;
+    },
+    [],
+  );
 
   // Memoize formatted stats to prevent unnecessary re-calculations
-  const formattedStats = useMobileOptimizedMemo(() => {
-    if (!data) return null;
-    
-    return {
-      totalApplicants: {
-        value: data.totalApplicants?.value ?? 0,
-        change: formatChange(data.totalApplicants?.change ?? 0, true),
-        changeType: (data.totalApplicants?.change ?? 0) >= 0 ? "positive" : "negative",
-      },
-      activeOpportunities: {
-        value: data.activeOpportunities?.value ?? 0,
-        change: formatChange(data.activeOpportunities?.change ?? 0, false),
-        changeType: (data.activeOpportunities?.change ?? 0) >= 0 ? "positive" : "negative",
-      },
-      hiredThisMonth: {
-        value: data.hiredThisMonth?.value ?? 0,
-        change: formatChange(data.hiredThisMonth?.change ?? 0, true),
-        changeType: (data.hiredThisMonth?.change ?? 0) >= 0 ? "positive" : "negative",
-      },
-      pendingReviews: {
-        value: data.pendingReviews?.value ?? 0,
-        change: formatChange(data.pendingReviews?.change ?? 0, false),
-        changeType: (data.pendingReviews?.change ?? 0) >= 0 ? "positive" : "negative",
-      },
-    };
-  }, [data, formatChange], {
-    // On mobile, only recalculate if data reference changes
-    simplifyOnMobile: true,
-    mobileDeps: [data]
-  });
+  const formattedStats = useMobileOptimizedMemo(
+    () => {
+      if (!data) return null;
+
+      return {
+        totalApplicants: {
+          value: data.totalApplicants?.value ?? 0,
+          change: formatChange(data.totalApplicants?.change ?? 0, true),
+          changeType:
+            (data.totalApplicants?.change ?? 0) >= 0 ? "positive" : "negative",
+        },
+        activeOpportunities: {
+          value: data.activeOpportunities?.value ?? 0,
+          change: formatChange(data.activeOpportunities?.change ?? 0, false),
+          changeType:
+            (data.activeOpportunities?.change ?? 0) >= 0
+              ? "positive"
+              : "negative",
+        },
+        hiredThisMonth: {
+          value: data.hiredThisMonth?.value ?? 0,
+          change: formatChange(data.hiredThisMonth?.change ?? 0, true),
+          changeType:
+            (data.hiredThisMonth?.change ?? 0) >= 0 ? "positive" : "negative",
+        },
+        pendingReviews: {
+          value: data.pendingReviews?.value ?? 0,
+          change: formatChange(data.pendingReviews?.change ?? 0, false),
+          changeType:
+            (data.pendingReviews?.change ?? 0) >= 0 ? "positive" : "negative",
+        },
+      };
+    },
+    [data, formatChange],
+    {
+      // On mobile, only recalculate if data reference changes
+      simplifyOnMobile: true,
+      mobileDeps: [data],
+    },
+  );
 
   const handleRetry = useMobileOptimizedCallback(() => {
     window.location.reload();
@@ -160,7 +176,9 @@ const EmployerDashboard = mobileOptimizedMemo(function EmployerDashboard() {
           href="/applicants"
           change={{
             value: formattedStats.totalApplicants.change,
-            type: formattedStats.totalApplicants.changeType as "positive" | "negative",
+            type: formattedStats.totalApplicants.changeType as
+              | "positive"
+              | "negative",
           }}
         />
         <StatsCard
@@ -173,7 +191,9 @@ const EmployerDashboard = mobileOptimizedMemo(function EmployerDashboard() {
           href="/opportunities"
           change={{
             value: formattedStats.activeOpportunities.change,
-            type: formattedStats.activeOpportunities.changeType as "positive" | "negative",
+            type: formattedStats.activeOpportunities.changeType as
+              | "positive"
+              | "negative",
           }}
         />
         <StatsCard
@@ -186,7 +206,9 @@ const EmployerDashboard = mobileOptimizedMemo(function EmployerDashboard() {
           href="/applicants/hired-talents"
           change={{
             value: formattedStats.hiredThisMonth.change,
-            type: formattedStats.hiredThisMonth.changeType as "positive" | "negative",
+            type: formattedStats.hiredThisMonth.changeType as
+              | "positive"
+              | "negative",
           }}
         />
         <StatsCard
@@ -199,7 +221,9 @@ const EmployerDashboard = mobileOptimizedMemo(function EmployerDashboard() {
           href="/applicants"
           change={{
             value: formattedStats.pendingReviews.change,
-            type: formattedStats.pendingReviews.changeType as "positive" | "negative",
+            type: formattedStats.pendingReviews.changeType as
+              | "positive"
+              | "negative",
           }}
         />
       </OrientationAdaptiveGrid>

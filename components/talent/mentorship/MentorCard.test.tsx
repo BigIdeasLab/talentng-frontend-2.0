@@ -21,7 +21,9 @@ describe("MentorCard", () => {
 
     expect(screen.getByText("Jane Smith")).toBeInTheDocument();
     expect(screen.getByText("Senior Product Manager")).toBeInTheDocument();
-    expect(screen.getByText("Tech Innovations • San Francisco, CA")).toBeInTheDocument();
+    expect(
+      screen.getByText("Tech Innovations • San Francisco, CA"),
+    ).toBeInTheDocument();
     expect(screen.getByText("4.8")).toBeInTheDocument();
     expect(screen.getByText("(25)")).toBeInTheDocument();
   });
@@ -41,11 +43,7 @@ describe("MentorCard", () => {
 
   it("renders without company and location", () => {
     render(
-      <MentorCard
-        {...defaultProps}
-        company={undefined}
-        location={undefined}
-      />
+      <MentorCard {...defaultProps} company={undefined} location={undefined} />,
     );
 
     expect(screen.queryByText(/Tech Innovations/)).not.toBeInTheDocument();
@@ -65,7 +63,10 @@ describe("MentorCard", () => {
   it("has book session link with correct href", () => {
     render(<MentorCard {...defaultProps} />);
     const bookButton = screen.getByText("Book Session").closest("a");
-    expect(bookButton).toHaveAttribute("href", "/mentorship/mentor-1?book=true");
+    expect(bookButton).toHaveAttribute(
+      "href",
+      "/mentorship/mentor-1?book=true",
+    );
   });
 
   it("has view profile link with correct href", () => {
@@ -88,7 +89,7 @@ describe("MentorCard", () => {
       // Find the icon button link
       const links = container.querySelectorAll("a");
       const iconButton = Array.from(links).find((link) =>
-        link.className.includes("min-w-[44px]")
+        link.className.includes("min-w-[44px]"),
       );
       expect(iconButton).toBeTruthy();
       expect(iconButton?.className).toContain("min-h-[44px]");
@@ -110,7 +111,7 @@ describe("MentorCard", () => {
         <MentorCard
           {...defaultProps}
           expertise={["Product Strategy", "User Research"]}
-        />
+        />,
       );
 
       expect(screen.getByText("Product Strategy")).toBeInTheDocument();
@@ -123,7 +124,7 @@ describe("MentorCard", () => {
         <MentorCard
           {...defaultProps}
           expertise={["Skill 1", "Skill 2", "Skill 3", "Skill 4"]}
-        />
+        />,
       );
 
       expect(screen.getByText("Skill 1")).toBeInTheDocument();

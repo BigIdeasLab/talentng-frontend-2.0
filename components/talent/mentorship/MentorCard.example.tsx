@@ -56,17 +56,19 @@ export default function MentorCardExample() {
     <div className="p-8 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto space-y-8">
         <div>
-          <h2 className="text-2xl font-bold mb-4">Mentor Card - Responsive Grid</h2>
+          <h2 className="text-2xl font-bold mb-4">
+            Mentor Card - Responsive Grid
+          </h2>
           <p className="text-gray-600 mb-6">
-            Resize your browser to see how the mentor cards adapt to different screen sizes:
+            Resize your browser to see how the mentor cards adapt to different
+            screen sizes:
             <br />
             • Mobile (&lt;640px): 1 column
             <br />
             • Tablet (640px-1024px): 2 columns
             <br />
             • Desktop (1024px-1280px): 3 columns
-            <br />
-            • Large Desktop (&gt;1280px): 4 columns
+            <br />• Large Desktop (&gt;1280px): 4 columns
           </p>
         </div>
 
@@ -78,7 +80,9 @@ export default function MentorCardExample() {
 
         <div className="mt-8 space-y-6">
           <div>
-            <h3 className="text-lg font-semibold mb-3">Mentor Without Rating</h3>
+            <h3 className="text-lg font-semibold mb-3">
+              Mentor Without Rating
+            </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               <MentorCard
                 id="5"
@@ -95,7 +99,9 @@ export default function MentorCardExample() {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-3">Mentor Without Company/Location</h3>
+            <h3 className="text-lg font-semibold mb-3">
+              Mentor Without Company/Location
+            </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               <MentorCard
                 id="6"
@@ -110,7 +116,9 @@ export default function MentorCardExample() {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-3">Mentor With Many Expertise Areas</h3>
+            <h3 className="text-lg font-semibold mb-3">
+              Mentor With Many Expertise Areas
+            </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               <MentorCard
                 id="7"
@@ -135,14 +143,24 @@ export default function MentorCardExample() {
         </div>
 
         <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-          <h3 className="font-semibold mb-2">Mobile Responsiveness Features:</h3>
+          <h3 className="font-semibold mb-2">
+            Mobile Responsiveness Features:
+          </h3>
           <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
-            <li>Responsive grid adapts from 1 to 4 columns based on screen size</li>
+            <li>
+              Responsive grid adapts from 1 to 4 columns based on screen size
+            </li>
             <li>Touch-friendly buttons with minimum 44px height and width</li>
-            <li>Responsive image sizing with proper srcset for optimal loading</li>
-            <li>Expertise tags wrap naturally and show "+N" for additional skills</li>
+            <li>
+              Responsive image sizing with proper srcset for optimal loading
+            </li>
+            <li>
+              Expertise tags wrap naturally and show "+N" for additional skills
+            </li>
             <li>Card hover effects work on both mouse and touch devices</li>
-            <li>All text truncates properly to prevent overflow on small screens</li>
+            <li>
+              All text truncates properly to prevent overflow on small screens
+            </li>
           </ul>
         </div>
       </div>

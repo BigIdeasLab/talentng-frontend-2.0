@@ -4,7 +4,10 @@ import * as React from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TOUCH_TARGET } from "@/lib/constants/touch-targets";
-import { keyboardHandlers, TABLET_FOCUS_STYLES } from "@/lib/utils/keyboard-navigation";
+import {
+  keyboardHandlers,
+  TABLET_FOCUS_STYLES,
+} from "@/lib/utils/keyboard-navigation";
 import { useIsTablet } from "@/hooks/useIsTablet";
 import { mobileScreenReaderOptimizations } from "@/lib/utils/screen-reader";
 
@@ -56,10 +59,11 @@ export function HamburgerMenuButton({
   const isTablet = useIsTablet();
 
   // Optimize aria label for mobile screen readers
-  const optimizedAriaLabel = mobileScreenReaderOptimizations.optimizeButtonLabel(
-    ariaLabel,
-    isOpen ? "currently open" : "currently closed"
-  );
+  const optimizedAriaLabel =
+    mobileScreenReaderOptimizations.optimizeButtonLabel(
+      ariaLabel,
+      isOpen ? "currently open" : "currently closed",
+    );
 
   return (
     <button
@@ -77,7 +81,9 @@ export function HamburgerMenuButton({
         // Hover state (for devices that support it)
         "hover:bg-gray-100",
         // Enhanced focus state for tablet keyboard navigation
-        isTablet ? TABLET_FOCUS_STYLES.largeFocusRing : TABLET_FOCUS_STYLES.focusRing,
+        isTablet
+          ? TABLET_FOCUS_STYLES.largeFocusRing
+          : TABLET_FOCUS_STYLES.focusRing,
         // Ensure proper z-index for mobile header
         "relative z-10",
         className,

@@ -11,7 +11,7 @@ export default function SwipeableNotificationItemExample() {
       unread: true,
     },
     {
-      id: "2", 
+      id: "2",
       title: "Interview Scheduled",
       message: "Interview with Sarah Smith scheduled for tomorrow",
       time: "1 hour ago",
@@ -21,13 +21,13 @@ export default function SwipeableNotificationItemExample() {
       id: "3",
       title: "Profile Updated",
       message: "Your profile has been successfully updated",
-      time: "3 hours ago", 
+      time: "3 hours ago",
       unread: false,
     },
   ]);
 
   const handleDismiss = (id: string) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
   };
 
   return (
@@ -36,7 +36,7 @@ export default function SwipeableNotificationItemExample() {
         <h2 className="text-lg font-semibold">Swipeable Notifications</h2>
         <p className="text-sm text-gray-600">Swipe left or right to dismiss</p>
       </div>
-      
+
       <div className="divide-y">
         {notifications.map((notification) => (
           <SwipeableNotificationItem
@@ -49,22 +49,28 @@ export default function SwipeableNotificationItemExample() {
               )}
               <div className="flex-1 min-w-0">
                 <p className="text-sm break-words">
-                  <span className={notification.unread ? "font-semibold" : "font-medium"}>
+                  <span
+                    className={
+                      notification.unread ? "font-semibold" : "font-medium"
+                    }
+                  >
                     {notification.title}
                   </span>{" "}
                   <span className="text-gray-600">{notification.message}</span>
                 </p>
-                <p className="text-xs text-gray-500 mt-1 truncate">{notification.time}</p>
+                <p className="text-xs text-gray-500 mt-1 truncate">
+                  {notification.time}
+                </p>
               </div>
             </div>
           </SwipeableNotificationItem>
         ))}
       </div>
-      
+
       {notifications.length === 0 && (
         <div className="p-8 text-center text-gray-500">
           <p>All notifications dismissed!</p>
-          <button 
+          <button
             onClick={() => window.location.reload()}
             className="mt-2 text-blue-600 hover:text-blue-700"
           >

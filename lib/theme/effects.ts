@@ -6,4 +6,5 @@ export const sidebarItemBase =
 
 export const sidebarItemActive = "border-l-2 font-medium text-black";
 
-export const sidebarItemInactive = "text-[#525866] active:bg-gray-50 hover:hover:bg-gray-50";
+export const sidebarItemInactive =
+  "text-[#525866] active:bg-gray-50 hover:hover:bg-gray-50";

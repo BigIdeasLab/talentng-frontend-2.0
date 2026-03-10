@@ -1,38 +1,43 @@
-import { render } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
-import { HideOnTablet } from './HideOnTablet';
+import { render } from "@testing-library/react";
+import { describe, it, expect } from "vitest";
+import { HideOnTablet } from "./HideOnTablet";
 
-describe('HideOnTablet', () => {
-  it('renders children with correct visibility classes', () => {
+describe("HideOnTablet", () => {
+  it("renders children with correct visibility classes", () => {
     const { container } = render(
       <HideOnTablet>
         <div data-testid="content">Test content</div>
-      </HideOnTablet>
+      </HideOnTablet>,
     );
 
     const wrapper = container.firstChild as HTMLElement;
-    expect(wrapper).toHaveClass('block', 'md:hidden', 'lg:block');
+    expect(wrapper).toHaveClass("block", "md:hidden", "lg:block");
   });
 
-  it('applies custom className', () => {
+  it("applies custom className", () => {
     const { container } = render(
       <HideOnTablet className="custom-class">
         <div>Test content</div>
-      </HideOnTablet>
+      </HideOnTablet>,
     );
 
     const wrapper = container.firstChild as HTMLElement;
-    expect(wrapper).toHaveClass('block', 'md:hidden', 'lg:block', 'custom-class');
+    expect(wrapper).toHaveClass(
+      "block",
+      "md:hidden",
+      "lg:block",
+      "custom-class",
+    );
   });
 
-  it('renders children content', () => {
+  it("renders children content", () => {
     const { getByTestId } = render(
       <HideOnTablet>
         <div data-testid="content">Test content</div>
-      </HideOnTablet>
+      </HideOnTablet>,
     );
 
-    expect(getByTestId('content')).toBeInTheDocument();
-    expect(getByTestId('content')).toHaveTextContent('Test content');
+    expect(getByTestId("content")).toBeInTheDocument();
+    expect(getByTestId("content")).toHaveTextContent("Test content");
   });
 });

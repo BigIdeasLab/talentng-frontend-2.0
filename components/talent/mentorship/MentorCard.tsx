@@ -64,7 +64,10 @@ export function MentorCard({
       <div className="flex flex-col gap-1.5 flex-1 px-1 pb-2">
         {/* Profile Info */}
         <div className="flex flex-col gap-2.5">
-          <Link href={`/mentorship/${id}`} className="flex flex-col gap-1.5 active:scale-[0.98] transition-transform">
+          <Link
+            href={`/mentorship/${id}`}
+            className="flex flex-col gap-1.5 active:scale-[0.98] transition-transform"
+          >
             <h3 className="font-inter-tight text-[15px] font-semibold leading-tight text-black group-hover:text-black/60 transition-colors line-clamp-1">
               {name}
             </h3>

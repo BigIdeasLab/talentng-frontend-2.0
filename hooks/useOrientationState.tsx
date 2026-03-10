@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { useOrientation } from './useOrientation';
+import { useState, useEffect, useRef } from "react";
+import { useOrientation } from "./useOrientation";
 
 /**
  * Hook to preserve state during orientation changes
@@ -12,7 +12,7 @@ export function useOrientationState<T>(
   options?: {
     preserveOnChange?: boolean;
     resetDelay?: number;
-  }
+  },
 ) {
   const { isChanging } = useOrientation();
   const [state, setState] = useState<T>(initialState);
@@ -39,13 +39,15 @@ export function useOrientationState<T>(
 /**
  * Hook to preserve scroll position during orientation changes
  */
-export function useOrientationScrollPreservation(elementRef?: React.RefObject<HTMLElement>) {
+export function useOrientationScrollPreservation(
+  elementRef?: React.RefObject<HTMLElement>,
+) {
   const { isChanging } = useOrientation();
   const scrollPositionRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const element = elementRef?.current || window;
-    
+
     if (isChanging) {
       // Store scroll position when orientation starts changing
       if (element === window) {
@@ -63,7 +65,10 @@ export function useOrientationScrollPreservation(elementRef?: React.RefObject<HT
       // Restore scroll position after orientation change
       const timeoutId = setTimeout(() => {
         if (element === window) {
-          window.scrollTo(scrollPositionRef.current.x, scrollPositionRef.current.y);
+          window.scrollTo(
+            scrollPositionRef.current.x,
+            scrollPositionRef.current.y,
+          );
         } else if (element instanceof HTMLElement) {
           element.scrollLeft = scrollPositionRef.current.x;
           element.scrollTop = scrollPositionRef.current.y;
@@ -80,14 +85,16 @@ export function useOrientationScrollPreservation(elementRef?: React.RefObject<HT
 /**
  * Hook to preserve form state during orientation changes
  */
-export function useOrientationFormState<T extends Record<string, any>>(initialFormState: T) {
+export function useOrientationFormState<T extends Record<string, any>>(
+  initialFormState: T,
+) {
   const [formState, setFormState] = useOrientationState(initialFormState, {
     preserveOnChange: true,
     resetDelay: 100,
   });
 
   const updateFormField = (field: keyof T, value: any) => {
-    setFormState(prev => ({
+    setFormState((prev) => ({
       ...prev,
       [field]: value,
     }));

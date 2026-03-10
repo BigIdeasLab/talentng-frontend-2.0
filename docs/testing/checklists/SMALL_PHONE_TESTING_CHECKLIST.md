@@ -1,6 +1,7 @@
 # Small Phone Testing Checklist (< 375px width)
 
 ## Device Specifications
+
 - **Target Devices**: iPhone SE, Samsung Galaxy S22, Google Pixel 7
 - **Screen Width**: < 375px
 - **Key Constraints**: Limited screen real estate, one-handed usage priority
@@ -8,6 +9,7 @@
 ## Pre-Testing Setup
 
 ### Device Configuration
+
 - [ ] Device is fully charged or connected to power
 - [ ] Latest OS version installed
 - [ ] Browser cache cleared
@@ -16,6 +18,7 @@
 - [ ] Screen recording capability enabled
 
 ### Network Setup
+
 - [ ] WiFi connection tested and stable
 - [ ] 4G/LTE connection available for testing
 - [ ] Network throttling tools configured
@@ -24,6 +27,7 @@
 ## Core Navigation Testing
 
 ### Mobile Drawer Navigation
+
 - [ ] **Hamburger Menu Visibility**: Menu icon is clearly visible in top-left corner
 - [ ] **Tap Target Size**: Hamburger button is minimum 44x44px
 - [ ] **Drawer Animation**: Smooth slide-in animation from left side
@@ -38,6 +42,7 @@
 - [ ] **Body Scroll**: Body scroll is prevented when drawer is open
 
 ### Header and Status Bar
+
 - [ ] **Header Layout**: Header content fits within screen width
 - [ ] **Logo/Branding**: Logo scales appropriately for small screens
 - [ ] **Action Buttons**: Header buttons have adequate touch targets
@@ -46,6 +51,7 @@
 ## Modal and Dialog Testing
 
 ### Full-Screen Modal Behavior
+
 - [ ] **Full-Screen Rendering**: All modals render as full-screen overlays
 - [ ] **Close Button**: Close button positioned in top-right corner (44x44px)
 - [ ] **Content Scrolling**: Modal content scrolls when exceeding screen height
@@ -55,6 +61,7 @@
 - [ ] **Touch Feedback**: All interactive elements provide visual feedback
 
 ### Specific Modal Types
+
 - [ ] **Filter Modals**: ApplicantFilterModal, OpportunitiesFilterModal render full-screen
 - [ ] **Form Modals**: ScheduleInterviewModal, HireApplicationModal work correctly
 - [ ] **Notification Modal**: NotificationsModal displays as full-screen overlay
@@ -63,6 +70,7 @@
 ## Data Display Testing
 
 ### Table to Card Transformation
+
 - [ ] **Card Layout**: Tables transform into card-based layouts
 - [ ] **Data Visibility**: All essential data is visible in card format
 - [ ] **Label Display**: Table headers appear as labels within cards
@@ -72,12 +80,14 @@
 - [ ] **Scrolling**: Card list scrolls smoothly
 
 ### Specific Table Testing
+
 - [ ] **ApplicantsTable**: Transforms to applicant cards with all data
 - [ ] **OpportunitiesTable**: Shows opportunity cards with key information
 - [ ] **SessionsTable**: Displays session information in card format
 - [ ] **InterviewsTable**: Interview data is accessible in mobile view
 
 ### Grid Layout Testing
+
 - [ ] **Single Column**: All grids display as single-column layouts
 - [ ] **Card Sizing**: Cards maintain appropriate aspect ratios
 - [ ] **Content Hierarchy**: Important information remains prominent
@@ -86,6 +96,7 @@
 ## Form Testing
 
 ### Form Layout and Usability
+
 - [ ] **Vertical Stacking**: All form fields stack vertically
 - [ ] **Full Width**: Input fields expand to full container width
 - [ ] **Touch Targets**: Input fields are minimum 44px height
@@ -95,6 +106,7 @@
 - [ ] **Keyboard Navigation**: Tab order is logical and functional
 
 ### Specific Form Testing
+
 - [ ] **Login Form**: Username/password fields are easily accessible
 - [ ] **Registration Form**: All signup fields work correctly
 - [ ] **Profile Forms**: Edit profile forms adapt to mobile layout
@@ -102,6 +114,7 @@
 - [ ] **Filter Forms**: Search and filter forms work in mobile modals
 
 ### Input Field Testing
+
 - [ ] **Text Inputs**: Standard text fields are properly sized
 - [ ] **Dropdowns**: Select dropdowns have touch-friendly options
 - [ ] **Date Pickers**: Date selection works well on touch devices
@@ -111,6 +124,7 @@
 ## Touch Interaction Testing
 
 ### Touch Target Validation
+
 - [ ] **Button Sizes**: All buttons meet 44x44px minimum requirement
 - [ ] **Link Targets**: Text links have adequate touch areas
 - [ ] **Icon Buttons**: Icon-only buttons are large enough to tap
@@ -118,6 +132,7 @@
 - [ ] **Form Controls**: All form inputs have proper touch targets
 
 ### Touch Feedback and Responsiveness
+
 - [ ] **Visual Feedback**: Tapped elements show immediate visual response
 - [ ] **Active States**: Buttons show active state during touch
 - [ ] **Hover Alternatives**: Hover-only interactions have touch alternatives
@@ -125,6 +140,7 @@
 - [ ] **Touch Delay**: No noticeable delay between touch and response
 
 ### Gesture Testing
+
 - [ ] **Swipe Navigation**: Swipe gestures work where implemented
 - [ ] **Pull to Refresh**: Refresh gestures work on applicable pages
 - [ ] **Scroll Behavior**: Scrolling is smooth and natural
@@ -133,6 +149,7 @@
 ## Typography and Readability
 
 ### Text Sizing and Legibility
+
 - [ ] **Body Text**: Minimum 16px font size for body content
 - [ ] **Heading Hierarchy**: Headings scale appropriately for mobile
 - [ ] **Button Text**: Button labels remain readable at mobile sizes
@@ -140,6 +157,7 @@
 - [ ] **Error Text**: Error messages are clearly visible
 
 ### Text Layout and Spacing
+
 - [ ] **Line Height**: Adequate line spacing for readability
 - [ ] **Text Wrapping**: Long text wraps properly without overflow
 - [ ] **Truncation**: Text truncation works where implemented
@@ -148,18 +166,21 @@
 ## Performance Testing
 
 ### Loading Performance
+
 - [ ] **Initial Load**: Page loads within 3 seconds on 4G
 - [ ] **Image Loading**: Images load progressively without layout shift
 - [ ] **Lazy Loading**: Below-fold content loads as needed
 - [ ] **Bundle Size**: JavaScript bundle size is optimized for mobile
 
 ### Runtime Performance
+
 - [ ] **Scrolling**: Smooth scrolling without frame drops
 - [ ] **Animations**: Animations are smooth and don't cause jank
 - [ ] **Memory Usage**: No memory leaks during extended use
 - [ ] **Battery Impact**: Reasonable battery consumption during use
 
 ### Network Conditions
+
 - [ ] **WiFi Performance**: Optimal performance on fast connection
 - [ ] **4G Performance**: Acceptable performance on mobile data
 - [ ] **3G Fallback**: Usable experience on slower connections
@@ -168,12 +189,14 @@
 ## Orientation Testing
 
 ### Portrait Mode (Primary)
+
 - [ ] **Layout Stability**: All layouts work correctly in portrait
 - [ ] **Content Visibility**: All content is accessible without horizontal scroll
 - [ ] **Navigation**: Mobile navigation works perfectly in portrait
 - [ ] **Form Usability**: Forms are easy to complete in portrait mode
 
 ### Landscape Mode
+
 - [ ] **Layout Adaptation**: Layout adapts appropriately to landscape
 - [ ] **Tablet-like Behavior**: Uses tablet layouts where appropriate
 - [ ] **Keyboard Handling**: On-screen keyboard doesn't obscure content
@@ -182,18 +205,21 @@
 ## Accessibility Testing
 
 ### Screen Reader Compatibility
+
 - [ ] **VoiceOver (iOS)**: All elements announced correctly
 - [ ] **TalkBack (Android)**: Navigation flow is logical
 - [ ] **ARIA Labels**: Interactive elements have proper labels
 - [ ] **Focus Management**: Focus moves logically through interface
 
 ### Visual Accessibility
+
 - [ ] **Color Contrast**: All text meets WCAG AA standards
 - [ ] **Focus Indicators**: Keyboard focus is clearly visible
 - [ ] **Text Scaling**: Layout works with 200% text scaling
 - [ ] **Color Independence**: Information isn't conveyed by color alone
 
 ### Motor Accessibility
+
 - [ ] **Touch Targets**: All targets accommodate motor impairments
 - [ ] **Gesture Alternatives**: Alternative methods for gesture-based actions
 - [ ] **Timeout Handling**: Adequate time for completing actions
@@ -201,24 +227,28 @@
 ## Page-Specific Testing
 
 ### Authentication Pages
+
 - [ ] **Login Page**: Form fits screen, inputs are accessible
 - [ ] **Registration**: Multi-step signup works on small screens
 - [ ] **Password Reset**: Password recovery flow is mobile-friendly
 - [ ] **Email Verification**: Verification pages display correctly
 
 ### Dashboard Pages
+
 - [ ] **Stat Cards**: Statistics display in single-column layout
 - [ ] **Charts**: Charts scale to fit screen width
 - [ ] **Navigation**: Dashboard navigation is accessible
 - [ ] **Quick Actions**: Primary actions are easily accessible
 
 ### Profile Pages
+
 - [ ] **Profile View**: Profile information displays clearly
 - [ ] **Profile Edit**: Editing forms work well on small screens
 - [ ] **Image Upload**: Profile picture upload is touch-friendly
 - [ ] **Settings**: Account settings are accessible and functional
 
 ### Data Pages
+
 - [ ] **Opportunities**: Job listings display as cards
 - [ ] **Applicants**: Candidate information is accessible
 - [ ] **Calendar**: Calendar view works in mobile format
@@ -227,6 +257,7 @@
 ## Bug Documentation
 
 ### Issue Tracking Template
+
 **Device**: [iPhone SE / Galaxy S22 / Pixel 7]
 **Screen Size**: [375x667 / 360x740 / 360x800]
 **Browser**: [Safari / Chrome]
@@ -238,6 +269,7 @@
 **Screenshot**: [Attach if applicable]
 
 ### Common Issues to Watch For
+
 - [ ] **Touch Target Issues**: Buttons too small or poorly spaced
 - [ ] **Layout Overflow**: Content extending beyond screen boundaries
 - [ ] **Text Readability**: Text too small or poor contrast
@@ -248,6 +280,7 @@
 ## Success Criteria
 
 ### Must-Have Requirements
+
 - [ ] All core functionality accessible and usable
 - [ ] Touch targets meet accessibility guidelines
 - [ ] No horizontal scrolling required
@@ -255,6 +288,7 @@
 - [ ] Navigation is intuitive and efficient
 
 ### Optimal Experience Goals
+
 - [ ] Smooth, native-like interactions
 - [ ] Fast loading and responsive performance
 - [ ] Excellent one-handed usability
@@ -263,12 +297,12 @@
 
 ## Testing Sign-off
 
-**Tester**: ________________
-**Date**: ________________
-**Device Tested**: ________________
+**Tester**: ******\_\_\_\_******
+**Date**: ******\_\_\_\_******
+**Device Tested**: ******\_\_\_\_******
 **Overall Rating**: ⭐⭐⭐⭐⭐
-**Critical Issues Found**: ________________
-**Recommendations**: ________________
+**Critical Issues Found**: ******\_\_\_\_******
+**Recommendations**: ******\_\_\_\_******
 
 ---
 

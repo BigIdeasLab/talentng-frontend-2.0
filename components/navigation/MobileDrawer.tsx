@@ -15,8 +15,14 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useIsLandscape } from "@/hooks/useOrientation";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useTabletKeyboardContainer } from "@/hooks/useTabletKeyboardNavigation";
-import { keyboardHandlers, TABLET_FOCUS_STYLES } from "@/lib/utils/keyboard-navigation";
-import { useScreenReader, MOBILE_ARIA_ATTRIBUTES } from "@/lib/utils/screen-reader";
+import {
+  keyboardHandlers,
+  TABLET_FOCUS_STYLES,
+} from "@/lib/utils/keyboard-navigation";
+import {
+  useScreenReader,
+  MOBILE_ARIA_ATTRIBUTES,
+} from "@/lib/utils/screen-reader";
 
 interface MobileDrawerProps {
   /**
@@ -76,7 +82,8 @@ export function MobileDrawer({
 }: MobileDrawerProps) {
   const isLandscape = useIsLandscape();
   const isMobile = useIsMobile();
-  const { containerRef, isTabletMode } = useTabletKeyboardContainer<HTMLDivElement>();
+  const { containerRef, isTabletMode } =
+    useTabletKeyboardContainer<HTMLDivElement>();
   const { announceModalState } = useScreenReader();
 
   // Announce drawer state changes for screen readers
@@ -95,12 +102,15 @@ export function MobileDrawer({
   };
 
   // Enhanced keyboard navigation for tablets
-  const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
-    if (isTabletMode) {
-      // Handle Escape key to close drawer
-      keyboardHandlers.handleEscape(onClose)(event);
-    }
-  }, [isTabletMode, onClose]);
+  const handleKeyDown = React.useCallback(
+    (event: React.KeyboardEvent) => {
+      if (isTabletMode) {
+        // Handle Escape key to close drawer
+        keyboardHandlers.handleEscape(onClose)(event);
+      }
+    },
+    [isTabletMode, onClose],
+  );
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>

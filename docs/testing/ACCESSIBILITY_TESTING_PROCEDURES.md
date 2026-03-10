@@ -11,6 +11,7 @@ This document provides comprehensive accessibility testing procedures for valida
 #### iOS VoiceOver Testing
 
 **Setup Procedure:**
+
 1. **Enable VoiceOver**: Settings > Accessibility > VoiceOver > On
 2. **Configure Speech Rate**: Adjust to comfortable speed for testing
 3. **Enable Rotor**: Configure rotor for efficient navigation
@@ -18,6 +19,7 @@ This document provides comprehensive accessibility testing procedures for valida
 5. **Test with Eyes Closed**: Simulate real user experience
 
 **VoiceOver Gestures:**
+
 - **Single Tap**: Select item
 - **Double Tap**: Activate item
 - **Swipe Right**: Next item
@@ -26,6 +28,7 @@ This document provides comprehensive accessibility testing procedures for valida
 - **Rotor**: Rotate two fingers to change navigation mode
 
 **Testing Checklist:**
+
 - [ ] **Navigation Announcement**: All navigation items announced clearly
 - [ ] **Button Labels**: All buttons have descriptive labels
 - [ ] **Form Fields**: Input fields announced with labels and types
@@ -38,6 +41,7 @@ This document provides comprehensive accessibility testing procedures for valida
 #### Android TalkBack Testing
 
 **Setup Procedure:**
+
 1. **Enable TalkBack**: Settings > Accessibility > TalkBack > On
 2. **Configure Settings**: Adjust speech rate and verbosity
 3. **Enable Explore by Touch**: For gesture navigation
@@ -45,6 +49,7 @@ This document provides comprehensive accessibility testing procedures for valida
 5. **Test Navigation**: Verify logical reading order
 
 **TalkBack Gestures:**
+
 - **Single Tap**: Explore by touch
 - **Double Tap**: Activate item
 - **Swipe Right**: Next item
@@ -53,6 +58,7 @@ This document provides comprehensive accessibility testing procedures for valida
 - **Swipe Down then Right**: Last item
 
 **Testing Checklist:**
+
 - [ ] **Content Reading**: All content read in logical order
 - [ ] **Interactive Elements**: All buttons and links announced
 - [ ] **Form Navigation**: Efficient form field navigation
@@ -66,6 +72,7 @@ This document provides comprehensive accessibility testing procedures for valida
 #### Tablet Keyboard Testing
 
 **Test Scenarios:**
+
 - External Bluetooth keyboard
 - On-screen keyboard navigation
 - Keyboard shortcuts
@@ -73,6 +80,7 @@ This document provides comprehensive accessibility testing procedures for valida
 - Tab order validation
 
 **Testing Checklist:**
+
 - [ ] **Tab Order**: Logical tab sequence through all interactive elements
 - [ ] **Focus Indicators**: Clear visual focus indicators on all elements
 - [ ] **Skip Links**: Skip navigation links work properly
@@ -85,6 +93,7 @@ This document provides comprehensive accessibility testing procedures for valida
 #### Focus Management Testing
 
 **Key Areas to Test:**
+
 - [ ] **Page Load**: Focus starts at logical first element
 - [ ] **Modal Opening**: Focus moves to modal content
 - [ ] **Modal Closing**: Focus returns to trigger element
@@ -97,17 +106,20 @@ This document provides comprehensive accessibility testing procedures for valida
 #### Color Contrast Testing
 
 **WCAG AA Requirements:**
+
 - Normal text: 4.5:1 contrast ratio
 - Large text (18pt+): 3:1 contrast ratio
 - Non-text elements: 3:1 contrast ratio
 
 **Testing Tools:**
+
 - WebAIM Contrast Checker
 - Colour Contrast Analyser
 - Chrome DevTools Accessibility panel
 - Lighthouse accessibility audit
 
 **Testing Procedure:**
+
 1. **Automated Scanning**: Use tools to identify contrast issues
 2. **Manual Verification**: Verify critical color combinations
 3. **Different Lighting**: Test in various lighting conditions
@@ -115,6 +127,7 @@ This document provides comprehensive accessibility testing procedures for valida
 5. **Color Blindness**: Test with color blindness simulators
 
 **Testing Checklist:**
+
 - [ ] **Text Contrast**: All text meets minimum contrast ratios
 - [ ] **Button Contrast**: Button text and backgrounds meet standards
 - [ ] **Icon Contrast**: Icons and symbols have adequate contrast
@@ -125,11 +138,13 @@ This document provides comprehensive accessibility testing procedures for valida
 #### Text Scaling Testing
 
 **Test Scenarios:**
+
 - 100% text size (baseline)
 - 150% text size
 - 200% text size (maximum requirement)
 
 **Testing Procedure:**
+
 1. **System Settings**: Use device text scaling settings
 2. **Browser Zoom**: Test browser zoom functionality
 3. **Layout Integrity**: Ensure layouts don't break
@@ -137,6 +152,7 @@ This document provides comprehensive accessibility testing procedures for valida
 5. **Interaction Testing**: Ensure all interactions still work
 
 **Testing Checklist:**
+
 - [ ] **Layout Preservation**: Layouts remain functional at 200% scale
 - [ ] **Text Readability**: All text remains readable when scaled
 - [ ] **Button Accessibility**: Buttons remain tappable when scaled
@@ -149,11 +165,13 @@ This document provides comprehensive accessibility testing procedures for valida
 #### Touch Target Testing
 
 **WCAG Requirements:**
+
 - Minimum 44x44px touch targets
 - Adequate spacing between targets
 - Alternative input methods
 
 **Testing Procedure:**
+
 1. **Target Measurement**: Measure all interactive elements
 2. **Spacing Verification**: Check spacing between adjacent targets
 3. **One-Handed Testing**: Test reachability with one hand
@@ -161,6 +179,7 @@ This document provides comprehensive accessibility testing procedures for valida
 5. **Alternative Methods**: Test keyboard alternatives
 
 **Testing Checklist:**
+
 - [ ] **Button Sizes**: All buttons meet 44x44px minimum
 - [ ] **Link Targets**: Text links have adequate touch areas
 - [ ] **Form Controls**: All form inputs have proper touch targets
@@ -171,6 +190,7 @@ This document provides comprehensive accessibility testing procedures for valida
 #### Gesture Accessibility
 
 **Testing Areas:**
+
 - [ ] **Essential Functions**: No essential functions require complex gestures
 - [ ] **Alternative Methods**: Keyboard/button alternatives for gestures
 - [ ] **Gesture Tolerance**: Gestures work with imprecise movements
@@ -182,6 +202,7 @@ This document provides comprehensive accessibility testing procedures for valida
 #### Content Clarity Testing
 
 **Testing Focus:**
+
 - [ ] **Clear Language**: Simple, clear language used throughout
 - [ ] **Consistent Navigation**: Navigation patterns are consistent
 - [ ] **Error Prevention**: Clear instructions prevent errors
@@ -191,6 +212,7 @@ This document provides comprehensive accessibility testing procedures for valida
 #### Attention and Focus Testing
 
 **Testing Areas:**
+
 - [ ] **Distraction Management**: Minimal distracting elements
 - [ ] **Auto-playing Content**: No auto-playing audio/video
 - [ ] **Animation Control**: Option to disable non-essential animations
@@ -202,49 +224,52 @@ This document provides comprehensive accessibility testing procedures for valida
 #### Testing Tools Integration
 
 **Lighthouse Accessibility Audit:**
+
 ```javascript
 // Automated accessibility testing with Lighthouse
-const lighthouse = require('lighthouse');
-const chromeLauncher = require('chrome-launcher');
+const lighthouse = require("lighthouse");
+const chromeLauncher = require("chrome-launcher");
 
 async function runAccessibilityAudit(url) {
-  const chrome = await chromeLauncher.launch({chromeFlags: ['--headless']});
+  const chrome = await chromeLauncher.launch({ chromeFlags: ["--headless"] });
   const options = {
-    logLevel: 'info',
-    output: 'json',
-    onlyCategories: ['accessibility'],
+    logLevel: "info",
+    output: "json",
+    onlyCategories: ["accessibility"],
     port: chrome.port,
   };
-  
+
   const runnerResult = await lighthouse(url, options);
   await chrome.kill();
-  
-  const accessibilityScore = runnerResult.lhr.categories.accessibility.score * 100;
+
+  const accessibilityScore =
+    runnerResult.lhr.categories.accessibility.score * 100;
   console.log(`Accessibility Score: ${accessibilityScore}`);
-  
+
   return runnerResult.lhr;
 }
 ```
 
 **axe-core Integration:**
+
 ```javascript
 // axe-core accessibility testing
-const axe = require('axe-core');
+const axe = require("axe-core");
 
 async function runAxeTest() {
   const results = await axe.run();
-  
+
   if (results.violations.length > 0) {
-    console.log('Accessibility violations found:');
-    results.violations.forEach(violation => {
+    console.log("Accessibility violations found:");
+    results.violations.forEach((violation) => {
       console.log(`- ${violation.description}`);
       console.log(`  Impact: ${violation.impact}`);
       console.log(`  Elements: ${violation.nodes.length}`);
     });
   } else {
-    console.log('No accessibility violations found');
+    console.log("No accessibility violations found");
   }
-  
+
   return results;
 }
 ```
@@ -252,6 +277,7 @@ async function runAxeTest() {
 #### Continuous Accessibility Testing
 
 **CI/CD Integration:**
+
 ```yaml
 # GitHub Actions accessibility testing
 name: Accessibility Tests
@@ -265,7 +291,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18'
+          node-version: "18"
       - name: Install dependencies
         run: npm ci
       - name: Build application
@@ -285,6 +311,7 @@ jobs:
 #### iOS Accessibility Features
 
 **VoiceOver Testing:**
+
 - [ ] **Gesture Navigation**: All VoiceOver gestures work correctly
 - [ ] **Rotor Navigation**: Rotor provides efficient navigation options
 - [ ] **Custom Actions**: Custom actions available where appropriate
@@ -292,6 +319,7 @@ jobs:
 - [ ] **Language Detection**: Correct language detection for content
 
 **Additional iOS Features:**
+
 - [ ] **Switch Control**: Compatible with Switch Control navigation
 - [ ] **Voice Control**: Works with Voice Control commands
 - [ ] **Zoom**: Compatible with iOS Zoom feature
@@ -301,6 +329,7 @@ jobs:
 #### Android Accessibility Features
 
 **TalkBack Testing:**
+
 - [ ] **Gesture Navigation**: TalkBack gestures function properly
 - [ ] **Reading Controls**: Reading controls work as expected
 - [ ] **Custom Labels**: Custom content labels where needed
@@ -308,6 +337,7 @@ jobs:
 - [ ] **Navigation Shortcuts**: Efficient navigation shortcuts available
 
 **Additional Android Features:**
+
 - [ ] **Select to Speak**: Compatible with Select to Speak
 - [ ] **Live Caption**: Works with Live Caption feature
 - [ ] **Sound Amplifier**: Compatible with Sound Amplifier
@@ -319,18 +349,21 @@ jobs:
 #### User Journey Testing
 
 **Authentication Flow:**
+
 1. **Landing Page**: Screen reader announces page purpose
 2. **Login Form**: Form fields properly labeled and announced
 3. **Error Handling**: Login errors announced clearly
 4. **Success**: Successful login announced and focus managed
 
 **Dashboard Navigation:**
+
 1. **Page Load**: Dashboard content announced in logical order
 2. **Navigation**: Sidebar navigation accessible via keyboard/screen reader
 3. **Content Areas**: Main content areas properly labeled
 4. **Interactive Elements**: All buttons and links accessible
 
 **Form Completion:**
+
 1. **Form Structure**: Form structure clear to screen readers
 2. **Field Navigation**: Efficient navigation between fields
 3. **Validation**: Real-time validation accessible
@@ -339,11 +372,13 @@ jobs:
 #### Error Scenario Testing
 
 **Network Errors:**
+
 - [ ] **Connection Loss**: Clear announcement of connection issues
 - [ ] **Timeout Errors**: Timeout messages accessible
 - [ ] **Retry Options**: Retry mechanisms accessible
 
 **Form Errors:**
+
 - [ ] **Validation Errors**: Field-specific errors announced
 - [ ] **Error Summary**: Error summary available at form top
 - [ ] **Error Recovery**: Clear guidance for fixing errors
@@ -353,6 +388,7 @@ jobs:
 #### Test Report Template
 
 **Accessibility Test Report:**
+
 - **Date**: [Testing date]
 - **Tester**: [Tester name and role]
 - **Device**: [Device model and OS version]
@@ -362,6 +398,7 @@ jobs:
 - **Overall Score**: [Accessibility score/rating]
 
 **Findings Summary:**
+
 - **Critical Issues**: [Issues preventing access]
 - **Major Issues**: [Issues significantly impacting usability]
 - **Minor Issues**: [Issues with minor impact]
@@ -370,6 +407,7 @@ jobs:
 #### Issue Documentation Template
 
 **Accessibility Issue:**
+
 - **Issue ID**: [Unique identifier]
 - **WCAG Criterion**: [Specific WCAG guideline violated]
 - **Severity**: [Critical/High/Medium/Low]
@@ -388,12 +426,14 @@ jobs:
 #### WCAG 2.1 AA Compliance
 
 **Level A Requirements:**
+
 - [ ] All images have alt text
 - [ ] Content is keyboard accessible
 - [ ] No seizure-inducing content
 - [ ] Page has proper headings structure
 
 **Level AA Requirements:**
+
 - [ ] Color contrast meets 4.5:1 ratio
 - [ ] Text can be resized to 200%
 - [ ] Content is meaningful without CSS
@@ -402,18 +442,21 @@ jobs:
 #### User Experience Goals
 
 **Screen Reader Users:**
+
 - [ ] Efficient navigation through content
 - [ ] Clear understanding of page structure
 - [ ] Easy completion of key tasks
 - [ ] Minimal cognitive load
 
 **Keyboard Users:**
+
 - [ ] All functionality accessible via keyboard
 - [ ] Logical tab order throughout interface
 - [ ] Clear focus indicators
 - [ ] Efficient navigation shortcuts
 
 **Motor Impairment Users:**
+
 - [ ] Large enough touch targets
 - [ ] Adequate spacing between elements
 - [ ] Alternative input methods available

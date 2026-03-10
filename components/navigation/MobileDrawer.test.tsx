@@ -16,7 +16,11 @@ vi.mock("@/hooks/useIsTablet", () => ({
 }));
 
 vi.mock("@/hooks/useOrientation", () => ({
-  useOrientation: () => ({ orientation: "portrait", angle: 0, isChanging: false }),
+  useOrientation: () => ({
+    orientation: "portrait",
+    angle: 0,
+    isChanging: false,
+  }),
   useIsLandscape: () => false,
   useIsPortrait: () => true,
 }));

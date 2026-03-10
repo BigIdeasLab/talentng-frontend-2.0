@@ -17,11 +17,11 @@ describe("TouchFriendlyTooltip", () => {
 
   it("should render children", () => {
     mockUseIsTouchDevice.mockReturnValue(false);
-    
+
     render(
       <TouchFriendlyTooltip content="Test tooltip">
         <button>Test Button</button>
-      </TouchFriendlyTooltip>
+      </TouchFriendlyTooltip>,
     );
 
     expect(screen.getByText("Test Button")).toBeInTheDocument();
@@ -29,11 +29,11 @@ describe("TouchFriendlyTooltip", () => {
 
   it("should not show tooltip on hover for touch devices", () => {
     mockUseIsTouchDevice.mockReturnValue(true);
-    
+
     render(
       <TouchFriendlyTooltip content="Test tooltip">
         <button>Test Button</button>
-      </TouchFriendlyTooltip>
+      </TouchFriendlyTooltip>,
     );
 
     const button = screen.getByText("Test Button");
@@ -45,11 +45,11 @@ describe("TouchFriendlyTooltip", () => {
 
   it("should apply custom className", () => {
     mockUseIsTouchDevice.mockReturnValue(false);
-    
+
     const { container } = render(
       <TouchFriendlyTooltip content="Test tooltip" className="custom-class">
         <button>Test Button</button>
-      </TouchFriendlyTooltip>
+      </TouchFriendlyTooltip>,
     );
 
     expect(container.firstChild).toHaveClass("custom-class");

@@ -1,6 +1,9 @@
 import { renderHook, act } from "@testing-library/react";
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { useTabletKeyboardNavigation, useTabletKeyboardContainer } from "./useTabletKeyboardNavigation";
+import {
+  useTabletKeyboardNavigation,
+  useTabletKeyboardContainer,
+} from "./useTabletKeyboardNavigation";
 import { useIsTablet } from "./useIsTablet";
 
 // Mock the useIsTablet hook
@@ -84,7 +87,7 @@ describe("useTabletKeyboardContainer", () => {
 
     // Create a mock container element
     const mockContainer = document.createElement("div");
-    
+
     act(() => {
       // Simulate setting the ref
       (result.current.containerRef as any).current = mockContainer;

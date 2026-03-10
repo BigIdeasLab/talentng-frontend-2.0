@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface HideOnDesktopProps {
   children: React.ReactNode;
@@ -9,12 +9,11 @@ interface HideOnDesktopProps {
  * Wrapper component that hides its children on desktop viewports (≥ 1024px)
  * Shows content on mobile and tablet viewports (< 1024px)
  */
-export function HideOnDesktop({ children, className = '' }: HideOnDesktopProps) {
-  return (
-    <div className={`block lg:hidden ${className}`}>
-      {children}
-    </div>
-  );
+export function HideOnDesktop({
+  children,
+  className = "",
+}: HideOnDesktopProps) {
+  return <div className={`block lg:hidden ${className}`}>{children}</div>;
 }
 
 export default HideOnDesktop;

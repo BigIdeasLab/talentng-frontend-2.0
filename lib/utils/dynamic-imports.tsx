@@ -3,8 +3,8 @@
  * These utilities help reduce bundle size by loading components only when needed.
  */
 
-import React from 'react';
-import dynamic from 'next/dynamic';
+import React from "react";
+import dynamic from "next/dynamic";
 
 /**
  * Options for dynamic component loading
@@ -34,12 +34,9 @@ const DefaultDynamicLoading = () => (
  */
 export function createDynamicComponent<T extends Record<string, any>>(
   importFn: () => Promise<{ default: React.ComponentType<T> }>,
-  options: DynamicComponentOptions = {}
+  options: DynamicComponentOptions = {},
 ) {
-  const {
-    loading = DefaultDynamicLoading,
-    ssr = true,
-  } = options;
+  const { loading = DefaultDynamicLoading, ssr = true } = options;
 
   return dynamic(importFn, {
     loading,
@@ -51,7 +48,7 @@ export function createDynamicComponent<T extends Record<string, any>>(
  * Create a dynamic modal component (typically no SSR needed)
  */
 export function createDynamicModal<T extends Record<string, any>>(
-  importFn: () => Promise<{ default: React.ComponentType<T> }>
+  importFn: () => Promise<{ default: React.ComponentType<T> }>,
 ) {
   return createDynamicComponent(importFn, {
     ssr: false,
@@ -71,7 +68,7 @@ export function createDynamicModal<T extends Record<string, any>>(
  * Create a dynamic chart component (no SSR needed for charts)
  */
 export function createDynamicChart<T extends Record<string, any>>(
-  importFn: () => Promise<{ default: React.ComponentType<T> }>
+  importFn: () => Promise<{ default: React.ComponentType<T> }>,
 ) {
   return createDynamicComponent(importFn, {
     ssr: false,
@@ -90,7 +87,7 @@ export function createDynamicChart<T extends Record<string, any>>(
  * Create a dynamic table component
  */
 export function createDynamicTable<T extends Record<string, any>>(
-  importFn: () => Promise<{ default: React.ComponentType<T> }>
+  importFn: () => Promise<{ default: React.ComponentType<T> }>,
 ) {
   return createDynamicComponent(importFn, {
     loading: () => (
@@ -109,9 +106,9 @@ export function createDynamicTable<T extends Record<string, any>>(
  */
 export function preloadComponent(importFn: () => Promise<any>) {
   // Only preload on client side
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     // Use requestIdleCallback if available, otherwise setTimeout
-    if ('requestIdleCallback' in window) {
+    if ("requestIdleCallback" in window) {
       window.requestIdleCallback(() => {
         importFn().catch(() => {
           // Ignore preload errors
@@ -153,7 +150,7 @@ interface PreloadOnViewProps {
 export const PreloadOnView: React.FC<PreloadOnViewProps> = ({
   importFn,
   children,
-  rootMargin = '100px',
+  rootMargin = "100px",
 }) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const [hasPreloaded, setHasPreloaded] = React.useState(false);
@@ -170,7 +167,7 @@ export const PreloadOnView: React.FC<PreloadOnViewProps> = ({
           observer.unobserve(element);
         }
       },
-      { rootMargin }
+      { rootMargin },
     );
 
     observer.observe(element);

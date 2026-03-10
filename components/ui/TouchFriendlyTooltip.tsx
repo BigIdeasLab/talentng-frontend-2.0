@@ -65,7 +65,7 @@ export function TouchFriendlyTooltip({
       >
         {children}
       </div>
-      
+
       {isVisible && (
         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-50">
           <div className="bg-gray-900 text-white text-sm rounded-lg px-3 py-2 whitespace-nowrap">
@@ -74,7 +74,7 @@ export function TouchFriendlyTooltip({
           </div>
         </div>
       )}
-      
+
       {/* Invisible overlay to close tooltip on touch devices */}
       {isVisible && isTouchDevice && (
         <div

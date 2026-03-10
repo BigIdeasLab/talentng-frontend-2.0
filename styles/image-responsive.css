@@ -50,7 +50,7 @@
     max-width: 100%;
     height: auto;
   }
-  
+
   .profile-image {
     width: clamp(60px, 15vw, 110px);
     height: clamp(60px, 15vw, 110px);
@@ -60,18 +60,39 @@
 /* Prevent layout shift during image loading */
 .image-loading {
   background-color: #f3f4f6;
-  background-image: linear-gradient(45deg, transparent 25%, rgba(255,255,255,.2) 25%, rgba(255,255,255,.2) 75%, transparent 75%, transparent),
-                    linear-gradient(45deg, transparent 25%, rgba(255,255,255,.2) 25%, rgba(255,255,255,.2) 75%, transparent 75%, transparent);
+  background-image:
+    linear-gradient(
+      45deg,
+      transparent 25%,
+      rgba(255, 255, 255, 0.2) 25%,
+      rgba(255, 255, 255, 0.2) 75%,
+      transparent 75%,
+      transparent
+    ),
+    linear-gradient(
+      45deg,
+      transparent 25%,
+      rgba(255, 255, 255, 0.2) 25%,
+      rgba(255, 255, 255, 0.2) 75%,
+      transparent 75%,
+      transparent
+    );
   background-size: 20px 20px;
-  background-position: 0 0, 10px 10px;
+  background-position:
+    0 0,
+    10px 10px;
   animation: loading-shimmer 1.5s infinite linear;
 }
 
 @keyframes loading-shimmer {
   0% {
-    background-position: 0 0, 10px 10px;
+    background-position:
+      0 0,
+      10px 10px;
   }
   100% {
-    background-position: 20px 20px, 30px 30px;
+    background-position:
+      20px 20px,
+      30px 30px;
   }
 }

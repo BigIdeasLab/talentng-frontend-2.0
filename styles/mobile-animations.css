@@ -13,7 +13,7 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  
+
   /* Keep essential loading animations */
   .animate-spin,
   .animate-pulse {
@@ -156,7 +156,7 @@
   .mobile-hover-lift {
     transition: transform 0.2s ease-out;
   }
-  
+
   .mobile-hover-lift:hover {
     transform: translateY(-2px);
   }
@@ -171,12 +171,12 @@
   .mobile-slide-out-right {
     animation-duration: 0.2s;
   }
-  
+
   .mobile-scale-in,
   .mobile-scale-out {
     animation-duration: 0.15s;
   }
-  
+
   /* Disable complex hover effects on low-end devices */
   .mobile-hover-lift:hover {
     transform: none;

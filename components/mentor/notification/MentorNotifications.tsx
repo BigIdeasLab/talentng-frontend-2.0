@@ -68,7 +68,9 @@ export function MentorNotifications({
     return (
       <div className="flex items-center justify-center h-full bg-gray-50">
         <div className="text-center">
-          <p className="text-gray-600 text-sm md:text-sm">No notifications yet</p>
+          <p className="text-gray-600 text-sm md:text-sm">
+            No notifications yet
+          </p>
           <p className="text-gray-500 text-sm md:text-xs mt-1">
             You'll see mentorship and learning-related notifications here
           </p>
@@ -237,7 +239,11 @@ export function MentorNotifications({
                 if (target.closest("button")) {
                   return;
                 }
-                handleNotificationClick(notification.id, formatted.action, false);
+                handleNotificationClick(
+                  notification.id,
+                  formatted.action,
+                  false,
+                );
               }}
               role="button"
               tabIndex={0}

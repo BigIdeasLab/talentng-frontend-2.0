@@ -5,7 +5,9 @@ This directory contains comprehensive documentation for the responsive design sy
 ## 📚 Documentation Files
 
 ### [Responsive Behavior Guide](./RESPONSIVE_BEHAVIOR_GUIDE.md)
+
 The main comprehensive guide covering:
+
 - Breakpoint strategy and semantic viewports
 - Core responsive hooks (`useIsMobile`, `useIsTablet`, `useBreakpoint`)
 - Responsive components (`ResponsiveTable`, `ResponsiveGrid`, `ResponsiveModal`, etc.)
@@ -14,7 +16,9 @@ The main comprehensive guide covering:
 - Best practices and performance considerations
 
 ### [Component Examples](./COMPONENT_EXAMPLES.md)
+
 Practical, copy-paste ready examples showing:
+
 - Navigation implementations (mobile drawer, responsive sidebars)
 - Data display patterns (responsive tables, grids)
 - Form layouts (multi-column forms, multi-step forms)
@@ -22,7 +26,9 @@ Practical, copy-paste ready examples showing:
 - Complete page layouts (dashboard, listing pages)
 
 ### [Quick Reference](./QUICK_REFERENCE.md)
+
 Fast lookup reference for:
+
 - Breakpoint definitions and hook usage
 - Common CSS patterns and utility classes
 - Touch target requirements
@@ -38,44 +44,50 @@ Fast lookup reference for:
 ## 🔧 Key Concepts
 
 ### Breakpoint Strategy
+
 - **Mobile**: < 768px (Tailwind: default, `sm:`)
 - **Tablet**: 768px - 1023px (Tailwind: `md:`)
 - **Desktop**: ≥ 1024px (Tailwind: `lg:`, `xl:`, `2xl:`)
 
 ### Core Hooks
+
 ```typescript
-const isMobile = useIsMobile();    // < 768px
-const isTablet = useIsTablet();    // 768px - 1023px  
+const isMobile = useIsMobile(); // < 768px
+const isTablet = useIsTablet(); // 768px - 1023px
 const breakpoint = useBreakpoint(); // "xs" | "sm" | "md" | "lg" | "xl" | "2xl"
 ```
 
 ### Touch Standards
+
 - **Minimum tap target**: 44x44px (WCAG 2.1 Level AAA)
 - **Minimum spacing**: 8px between interactive elements
 - **Visual feedback**: Active states for all touch interactions
 
 ## 🧩 Core Components
 
-| Component | Purpose | Mobile Behavior |
-|-----------|---------|-----------------|
-| `ResponsiveTable` | Data tables | Transforms to card layout |
-| `ResponsiveGrid` | Grid layouts | 1 → 2 → 3+ columns |
-| `ResponsiveModal` | Modals/dialogs | Full-screen overlay |
-| `MobileDrawer` | Navigation | Slide-out from left |
-| `ResponsiveFormField` | Form inputs | Vertical stacking |
-| `ResponsiveFormButtons` | Button groups | Vertical stacking |
+| Component               | Purpose        | Mobile Behavior           |
+| ----------------------- | -------------- | ------------------------- |
+| `ResponsiveTable`       | Data tables    | Transforms to card layout |
+| `ResponsiveGrid`        | Grid layouts   | 1 → 2 → 3+ columns        |
+| `ResponsiveModal`       | Modals/dialogs | Full-screen overlay       |
+| `MobileDrawer`          | Navigation     | Slide-out from left       |
+| `ResponsiveFormField`   | Form inputs    | Vertical stacking         |
+| `ResponsiveFormButtons` | Button groups  | Vertical stacking         |
 
 ## 📱 Testing
 
 ### Visual Regression Tests
+
 ```bash
 npm run test:visual
 ```
 
 ### Manual Device Testing
+
 See [Manual Device Testing Guide](../testing/MANUAL_DEVICE_TESTING_GUIDE.md)
 
 ### Browser DevTools
+
 1. Open DevTools (F12)
 2. Toggle device toolbar (Ctrl+Shift+M)
 3. Test different viewport sizes
@@ -107,5 +119,5 @@ For questions about responsive implementation:
 
 ---
 
-*Last updated: March 2026*
-*Version: 1.0.0*
+_Last updated: March 2026_
+_Version: 1.0.0_

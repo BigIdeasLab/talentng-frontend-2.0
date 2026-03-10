@@ -54,9 +54,7 @@ function renderWithQueryClient(component: React.ReactElement) {
   });
 
   return render(
-    <QueryClientProvider client={queryClient}>
-      {component}
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{component}</QueryClientProvider>,
   );
 }
 
@@ -73,7 +71,7 @@ describe("TalentSettings - Responsive Design", () => {
     renderWithQueryClient(<TalentSettings />);
 
     expect(
-      await screen.findByText("Manage your account settings and preferences")
+      await screen.findByText("Manage your account settings and preferences"),
     ).toBeInTheDocument();
   });
 
@@ -81,7 +79,8 @@ describe("TalentSettings - Responsive Design", () => {
     renderWithQueryClient(<TalentSettings />);
 
     // Use getAllByText for "Profile Visibility" since it appears twice
-    const profileVisibilityElements = await screen.findAllByText("Profile Visibility");
+    const profileVisibilityElements =
+      await screen.findAllByText("Profile Visibility");
     expect(profileVisibilityElements.length).toBeGreaterThan(0);
     expect(screen.getByText("Notification Preferences")).toBeInTheDocument();
     expect(screen.getByText("Security")).toBeInTheDocument();
@@ -92,7 +91,7 @@ describe("TalentSettings - Responsive Design", () => {
     renderWithQueryClient(<TalentSettings />);
 
     const saveButtons = await screen.findAllByText("Save Changes");
-    
+
     // Check that buttons have responsive width classes
     saveButtons.forEach((button) => {
       expect(button).toHaveClass("w-full");
@@ -129,7 +128,7 @@ describe("TalentSettings - Responsive Design", () => {
 
     // Check for responsive flex classes on action rows
     const actionRows = container.querySelectorAll(
-      ".flex.flex-col.md\\:flex-row"
+      ".flex.flex-col.md\\:flex-row",
     );
     expect(actionRows.length).toBeGreaterThan(0);
   });

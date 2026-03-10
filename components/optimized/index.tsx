@@ -4,10 +4,10 @@
  */
 
 // Dynamic import utilities
-export * from '@/lib/utils/dynamic-imports';
+export * from "@/lib/utils/dynamic-imports";
 
 // Lazy components (already implemented)
-export * from '@/components/lazy/LazyCharts';
-export * from '@/components/lazy/LazyModals';
-export * from '@/components/lazy/LazyPages';
-export * from '@/components/lazy/LazyBelowFold';
+export * from "@/components/lazy/LazyCharts";
+export * from "@/components/lazy/LazyModals";
+export * from "@/components/lazy/LazyPages";
+export * from "@/components/lazy/LazyBelowFold";

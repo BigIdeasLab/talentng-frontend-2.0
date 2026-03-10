@@ -1,4 +1,4 @@
-import { Page, expect } from '@playwright/test';
+import { Page, expect } from "@playwright/test";
 
 export interface ViewportConfig {
   name: string;
@@ -7,9 +7,9 @@ export interface ViewportConfig {
 }
 
 export const VIEWPORTS: Record<string, ViewportConfig> = {
-  mobile: { name: 'mobile', width: 375, height: 812 },
-  tablet: { name: 'tablet', width: 768, height: 1024 },
-  desktop: { name: 'desktop', width: 1280, height: 720 },
+  mobile: { name: "mobile", width: 375, height: 812 },
+  tablet: { name: "tablet", width: 768, height: 1024 },
+  desktop: { name: "desktop", width: 1280, height: 720 },
 };
 
 /**
@@ -17,11 +17,11 @@ export const VIEWPORTS: Record<string, ViewportConfig> = {
  */
 export async function waitForPageStable(page: Page) {
   // Wait for network to be idle
-  await page.waitForLoadState('networkidle');
-  
+  await page.waitForLoadState("networkidle");
+
   // Wait for any animations to complete
   await page.waitForTimeout(500);
-  
+
   // Wait for fonts to load
   await page.evaluate(() => document.fonts.ready);
 }
@@ -49,34 +49,37 @@ export async function hideDynamicContent(page: Page) {
         transition-duration: 0s !important;
         transition-delay: 0s !important;
       }
-    `
+    `,
   });
 }
 
 /**
  * Mock authentication for test pages
  */
-export async function mockAuthentication(page: Page, userType: 'employer' | 'talent' | 'mentor' = 'employer') {
+export async function mockAuthentication(
+  page: Page,
+  userType: "employer" | "talent" | "mentor" = "employer",
+) {
   await page.addInitScript((userType) => {
     // Mock localStorage auth data
-    localStorage.setItem('auth-token', 'mock-token');
-    localStorage.setItem('user-type', userType);
-    localStorage.setItem('user-id', 'mock-user-id');
-    
+    localStorage.setItem("auth-token", "mock-token");
+    localStorage.setItem("user-type", userType);
+    localStorage.setItem("user-id", "mock-user-id");
+
     // Mock user data
     const mockUser = {
-      id: 'mock-user-id',
-      email: 'test@example.com',
-      name: 'Test User',
+      id: "mock-user-id",
+      email: "test@example.com",
+      name: "Test User",
       type: userType,
       profile: {
-        firstName: 'Test',
-        lastName: 'User',
-        avatar: '/placeholder-avatar.jpg'
-      }
+        firstName: "Test",
+        lastName: "User",
+        avatar: "/placeholder-avatar.jpg",
+      },
     };
-    
-    localStorage.setItem('user-data', JSON.stringify(mockUser));
+
+    localStorage.setItem("user-data", JSON.stringify(mockUser));
   }, userType);
 }
 
@@ -84,16 +87,16 @@ export async function mockAuthentication(page: Page, userType: 'employer' | 'tal
  * Take a full page screenshot with consistent naming
  */
 export async function takeResponsiveScreenshot(
-  page: Page, 
-  testName: string, 
+  page: Page,
+  testName: string,
   viewport: ViewportConfig,
   options?: {
     fullPage?: boolean;
     clip?: { x: number; y: number; width: number; height: number };
-  }
+  },
 ) {
   const screenshotName = `${testName}-${viewport.name}.png`;
-  
+
   await expect(page).toHaveScreenshot(screenshotName, {
     fullPage: options?.fullPage ?? true,
     clip: options?.clip,
@@ -107,24 +110,24 @@ export async function takeResponsiveScreenshot(
  * Navigate to a page and prepare it for screenshot
  */
 export async function navigateAndPrepare(
-  page: Page, 
-  url: string, 
+  page: Page,
+  url: string,
   options?: {
     waitForSelector?: string;
     mockAuth?: boolean;
-    userType?: 'employer' | 'talent' | 'mentor';
-  }
+    userType?: "employer" | "talent" | "mentor";
+  },
 ) {
   if (options?.mockAuth) {
     await mockAuthentication(page, options.userType);
   }
-  
+
   await page.goto(url);
-  
+
   if (options?.waitForSelector) {
     await page.waitForSelector(options.waitForSelector);
   }
-  
+
   await waitForPageStable(page);
   await hideDynamicContent(page);
 }
@@ -140,25 +143,28 @@ export async function testPageResponsive(
   options?: {
     waitForSelector?: string;
     mockAuth?: boolean;
-    userType?: 'employer' | 'talent' | 'mentor';
+    userType?: "employer" | "talent" | "mentor";
     fullPage?: boolean;
     interactions?: (page: Page) => Promise<void>;
-  }
+  },
 ) {
-  await page.setViewportSize({ width: viewport.width, height: viewport.height });
-  
+  await page.setViewportSize({
+    width: viewport.width,
+    height: viewport.height,
+  });
+
   await navigateAndPrepare(page, url, {
     waitForSelector: options?.waitForSelector,
     mockAuth: options?.mockAuth,
     userType: options?.userType,
   });
-  
+
   // Perform any custom interactions
   if (options?.interactions) {
     await options.interactions(page);
     await waitForPageStable(page);
   }
-  
+
   await takeResponsiveScreenshot(page, testName, viewport, {
     fullPage: options?.fullPage,
   });

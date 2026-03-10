@@ -60,9 +60,7 @@ function renderWithQueryClient(component: React.ReactElement) {
   });
 
   return render(
-    <QueryClientProvider client={queryClient}>
-      {component}
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{component}</QueryClientProvider>,
   );
 }
 
@@ -79,7 +77,7 @@ describe("MentorSettings - Responsive Design", () => {
     renderWithQueryClient(<MentorSettings />);
 
     expect(
-      await screen.findByText("Manage your mentor profile and preferences")
+      await screen.findByText("Manage your mentor profile and preferences"),
     ).toBeInTheDocument();
   });
 
@@ -87,7 +85,8 @@ describe("MentorSettings - Responsive Design", () => {
     renderWithQueryClient(<MentorSettings />);
 
     // Use getAllByText for "Profile Visibility" since it appears twice
-    const profileVisibilityElements = await screen.findAllByText("Profile Visibility");
+    const profileVisibilityElements =
+      await screen.findAllByText("Profile Visibility");
     expect(profileVisibilityElements.length).toBeGreaterThan(0);
     expect(screen.getByText("Session Settings")).toBeInTheDocument();
     expect(screen.getByText("Notification Preferences")).toBeInTheDocument();
@@ -99,7 +98,7 @@ describe("MentorSettings - Responsive Design", () => {
     renderWithQueryClient(<MentorSettings />);
 
     const saveButtons = await screen.findAllByText("Save Changes");
-    
+
     // Check that buttons have responsive width classes
     saveButtons.forEach((button) => {
       expect(button).toHaveClass("w-full");
@@ -148,7 +147,7 @@ describe("MentorSettings - Responsive Design", () => {
 
     // Check for responsive flex classes on action rows
     const actionRows = container.querySelectorAll(
-      ".flex.flex-col.md\\:flex-row"
+      ".flex.flex-col.md\\:flex-row",
     );
     expect(actionRows.length).toBeGreaterThan(0);
   });

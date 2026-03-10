@@ -1,6 +1,7 @@
 # Tablet Testing Checklist (768px - 1024px+)
 
 ## Device Specifications
+
 - **Small Tablets**: iPad Mini, Galaxy Tab A8 (768px - 900px)
 - **Large Tablets**: iPad Pro, Galaxy Tab S8+ (> 900px)
 - **Key Focus**: Hybrid mobile/desktop experience, touch and mouse support
@@ -8,6 +9,7 @@
 ## Pre-Testing Setup
 
 ### Device Configuration
+
 - [ ] Device is fully charged or connected to power
 - [ ] Latest OS version installed
 - [ ] Browser cache cleared
@@ -18,6 +20,7 @@
 - [ ] Mouse/trackpad available for testing (if applicable)
 
 ### Input Method Testing Setup
+
 - [ ] Touch-only interaction testing ready
 - [ ] Keyboard + touch testing ready
 - [ ] Mouse/trackpad + touch testing ready
@@ -26,6 +29,7 @@
 ## Navigation System Testing
 
 ### Sidebar Behavior (768px - 1024px)
+
 - [ ] **Collapsed Sidebar**: Sidebar shows icons only on small tablets
 - [ ] **Icon Visibility**: All navigation icons are clearly visible
 - [ ] **Icon Touch Targets**: Icons have adequate touch targets (44x44px minimum)
@@ -34,6 +38,7 @@
 - [ ] **Responsive Transition**: Smooth transition between collapsed and full sidebar
 
 ### Full Sidebar Behavior (> 1024px)
+
 - [ ] **Full Sidebar**: Complete sidebar with icons and labels on large tablets
 - [ ] **Label Readability**: All navigation labels are clearly readable
 - [ ] **Hierarchy**: Navigation hierarchy is clear and logical
@@ -41,6 +46,7 @@
 - [ ] **Scroll Behavior**: Sidebar scrolls appropriately if content exceeds height
 
 ### Hybrid Navigation Testing
+
 - [ ] **Touch Navigation**: All navigation works with touch input
 - [ ] **Keyboard Navigation**: Tab navigation works through sidebar items
 - [ ] **Mouse Navigation**: Hover states and click interactions work properly
@@ -49,6 +55,7 @@
 ## Modal and Dialog Testing
 
 ### Tablet Modal Sizing (768px - 1024px)
+
 - [ ] **90% Width**: Modals render at 90% of screen width
 - [ ] **Centered Position**: Modals are properly centered on screen
 - [ ] **Max Height**: Modals don't exceed screen height
@@ -57,12 +64,14 @@
 - [ ] **Close Button**: Close button is accessible and properly sized
 
 ### Large Tablet Modal Behavior (> 1024px)
+
 - [ ] **Fixed Width**: Modals use appropriate fixed widths
 - [ ] **Desktop-like Behavior**: Modals behave similarly to desktop experience
 - [ ] **Content Layout**: Content layouts are optimized for larger modal sizes
 - [ ] **Form Layouts**: Forms can use multi-column layouts appropriately
 
 ### Modal Interaction Testing
+
 - [ ] **Touch Interactions**: All modal interactions work with touch
 - [ ] **Keyboard Interactions**: Modal navigation works with keyboard
 - [ ] **Mouse Interactions**: Click and hover interactions work properly
@@ -72,6 +81,7 @@
 ## Data Display Testing
 
 ### Table Responsiveness
+
 - [ ] **Horizontal Scrolling**: Tables scroll horizontally on small tablets
 - [ ] **Essential Columns**: Most important columns remain visible
 - [ ] **Sticky Columns**: First column remains sticky during horizontal scroll
@@ -79,6 +89,7 @@
 - [ ] **Scroll Indicators**: Clear indication of scrollable content
 
 ### Enhanced Table Features
+
 - [ ] **Column Resizing**: Columns can be resized where appropriate
 - [ ] **Sorting**: Column sorting works with both touch and mouse
 - [ ] **Row Selection**: Row selection works with various input methods
@@ -86,6 +97,7 @@
 - [ ] **Keyboard Navigation**: Arrow key navigation through table cells
 
 ### Grid Layout Testing
+
 - [ ] **Two-Column Layout**: Grids display in 2 columns on small tablets
 - [ ] **Three+ Column Layout**: Grids show 3-4 columns on large tablets
 - [ ] **Card Sizing**: Cards are appropriately sized for tablet viewing
@@ -95,6 +107,7 @@
 ## Form Testing
 
 ### Form Layout Optimization
+
 - [ ] **Multi-Column Forms**: Forms use 2-column layouts where appropriate
 - [ ] **Field Sizing**: Input fields are optimally sized for tablet screens
 - [ ] **Label Positioning**: Labels positioned optimally (inline or above)
@@ -102,6 +115,7 @@
 - [ ] **Validation Display**: Error messages display clearly with adequate space
 
 ### Input Method Testing
+
 - [ ] **Touch Input**: All form fields work with touch input
 - [ ] **Keyboard Input**: Physical keyboard input works properly
 - [ ] **On-Screen Keyboard**: Virtual keyboard doesn't obscure fields
@@ -109,6 +123,7 @@
 - [ ] **Copy/Paste**: Copy and paste functionality works correctly
 
 ### Advanced Form Features
+
 - [ ] **Drag and Drop**: File upload via drag and drop works
 - [ ] **Multi-Select**: Multi-select controls work with various input methods
 - [ ] **Date Pickers**: Date/time pickers are optimized for tablet use
@@ -118,6 +133,7 @@
 ## Touch and Mouse Interaction Testing
 
 ### Touch Interaction Optimization
+
 - [ ] **Touch Targets**: All interactive elements meet 44x44px minimum
 - [ ] **Touch Feedback**: Visual feedback on touch interactions
 - [ ] **Gesture Support**: Swipe, pinch, and other gestures work appropriately
@@ -125,6 +141,7 @@
 - [ ] **Touch Precision**: Precise touch interactions for detailed work
 
 ### Mouse/Trackpad Support
+
 - [ ] **Hover States**: Hover effects work on supported devices
 - [ ] **Right-Click**: Context menus appear on right-click where appropriate
 - [ ] **Cursor Changes**: Cursor changes appropriately over interactive elements
@@ -132,6 +149,7 @@
 - [ ] **Drag Operations**: Drag and drop operations work with mouse
 
 ### Hybrid Input Testing
+
 - [ ] **Touch + Keyboard**: Combination of touch and keyboard works well
 - [ ] **Mouse + Touch**: Switching between mouse and touch is seamless
 - [ ] **Stylus Support**: Apple Pencil/S Pen support where applicable
@@ -140,6 +158,7 @@
 ## Performance Testing
 
 ### Tablet-Specific Performance
+
 - [ ] **Rendering Performance**: Smooth rendering on tablet displays
 - [ ] **Animation Performance**: 60fps animations on high-refresh displays
 - [ ] **Memory Usage**: Efficient memory usage with tablet multitasking
@@ -147,6 +166,7 @@
 - [ ] **Thermal Performance**: No overheating during extended use
 
 ### Multitasking Performance
+
 - [ ] **Split Screen**: Performance maintained in split-screen mode
 - [ ] **Background Apps**: Performance with other apps running
 - [ ] **Memory Management**: Efficient memory management during multitasking
@@ -155,18 +175,21 @@
 ## Orientation Testing
 
 ### Portrait Mode Testing
+
 - [ ] **Layout Adaptation**: Layouts work well in portrait orientation
 - [ ] **Content Visibility**: All content accessible without horizontal scroll
 - [ ] **Navigation**: Navigation systems work properly in portrait
 - [ ] **Modal Behavior**: Modals display appropriately in portrait
 
 ### Landscape Mode Testing
+
 - [ ] **Enhanced Layouts**: Landscape mode provides enhanced layouts
 - [ ] **Desktop-like Experience**: More desktop-like experience in landscape
 - [ ] **Sidebar Behavior**: Sidebar behavior optimized for landscape
 - [ ] **Content Utilization**: Better utilization of horizontal space
 
 ### Orientation Change Testing
+
 - [ ] **Smooth Transitions**: Smooth transitions between orientations
 - [ ] **State Preservation**: User state preserved during orientation changes
 - [ ] **Layout Reflow**: Content reflows appropriately
@@ -175,6 +198,7 @@
 ## Accessibility Testing
 
 ### Keyboard Accessibility
+
 - [ ] **Tab Navigation**: Logical tab order throughout interface
 - [ ] **Focus Indicators**: Clear focus indicators on all interactive elements
 - [ ] **Keyboard Shortcuts**: Keyboard shortcuts work where implemented
@@ -182,6 +206,7 @@
 - [ ] **Modal Navigation**: Keyboard navigation within modals
 
 ### Screen Reader Testing
+
 - [ ] **VoiceOver (iOS)**: Proper VoiceOver support on iPad
 - [ ] **TalkBack (Android)**: TalkBack works correctly on Android tablets
 - [ ] **ARIA Labels**: All interactive elements have proper ARIA labels
@@ -189,6 +214,7 @@
 - [ ] **Content Structure**: Logical content structure for screen readers
 
 ### Visual Accessibility
+
 - [ ] **Color Contrast**: WCAG AA compliance (4.5:1 ratio)
 - [ ] **Text Scaling**: Support for text scaling up to 200%
 - [ ] **High Contrast**: High contrast mode support where available
@@ -198,6 +224,7 @@
 ## Page-Specific Testing
 
 ### Dashboard Pages
+
 - [ ] **Widget Layouts**: Dashboard widgets optimized for tablet screens
 - [ ] **Chart Sizing**: Charts utilize tablet screen space effectively
 - [ ] **Information Density**: Appropriate information density for tablets
@@ -205,6 +232,7 @@
 - [ ] **Multi-Column Layouts**: Effective use of multi-column layouts
 
 ### Data-Heavy Pages
+
 - [ ] **List Views**: Enhanced list views with more information visible
 - [ ] **Search Interfaces**: Advanced search interfaces work well
 - [ ] **Filter Options**: More filter options accessible simultaneously
@@ -212,6 +240,7 @@
 - [ ] **Detail Views**: Enhanced detail views with more information
 
 ### Content Creation Pages
+
 - [ ] **Form Layouts**: Content creation forms optimized for tablets
 - [ ] **Rich Text Editing**: Rich text editors work well with touch/stylus
 - [ ] **Media Upload**: Enhanced media upload and management
@@ -221,6 +250,7 @@
 ## Cross-Platform Testing
 
 ### iOS Tablet Testing (iPad)
+
 - [ ] **Safari Compatibility**: Full compatibility with Safari
 - [ ] **iOS Gestures**: iOS-specific gestures work properly
 - [ ] **Multitasking**: iPad multitasking features work correctly
@@ -228,6 +258,7 @@
 - [ ] **Keyboard Shortcuts**: iPad keyboard shortcuts work
 
 ### Android Tablet Testing
+
 - [ ] **Chrome Compatibility**: Full compatibility with Chrome
 - [ ] **Android Gestures**: Android-specific gestures work properly
 - [ ] **Multi-Window**: Android multi-window support
@@ -237,6 +268,7 @@
 ## Bug Documentation for Tablets
 
 ### Issue Tracking Template
+
 **Device**: [iPad Mini / iPad Pro / Galaxy Tab A8 / Galaxy Tab S8+]
 **Screen Size**: [744x1133 / 834x1194 / 800x1280 / 876x1400]
 **Browser**: [Safari / Chrome / Samsung Internet]
@@ -251,6 +283,7 @@
 **Input Method Impact**: [Which input methods are affected?]
 
 ### Tablet-Specific Issues to Watch For
+
 - [ ] **Sidebar Behavior**: Incorrect sidebar collapse/expand behavior
 - [ ] **Modal Sizing**: Inappropriate modal sizing for tablet screens
 - [ ] **Touch Target Issues**: Touch targets too small for tablet use
@@ -261,6 +294,7 @@
 ## Success Criteria
 
 ### Must-Have Requirements
+
 - [ ] Excellent experience with touch-only interaction
 - [ ] Proper keyboard and mouse support where available
 - [ ] Appropriate layout adaptations for tablet screen sizes
@@ -268,6 +302,7 @@
 - [ ] Full accessibility compliance
 
 ### Optimal Experience Goals
+
 - [ ] Best-in-class tablet experience leveraging device capabilities
 - [ ] Seamless multi-input method support
 - [ ] Enhanced productivity features for tablet users
@@ -276,17 +311,17 @@
 
 ## Testing Sign-off
 
-**Tester**: ________________
-**Date**: ________________
-**Device Tested**: ________________
-**Screen Size**: ________________
-**Input Methods Tested**: ________________
+**Tester**: ******\_\_\_\_******
+**Date**: ******\_\_\_\_******
+**Device Tested**: ******\_\_\_\_******
+**Screen Size**: ******\_\_\_\_******
+**Input Methods Tested**: ******\_\_\_\_******
 **Overall Rating**: ⭐⭐⭐⭐⭐
 **Touch Experience**: ⭐⭐⭐⭐⭐
 **Keyboard/Mouse Experience**: ⭐⭐⭐⭐⭐
 **Performance**: ⭐⭐⭐⭐⭐
-**Critical Issues Found**: ________________
-**Enhancement Opportunities**: ________________
+**Critical Issues Found**: ******\_\_\_\_******
+**Enhancement Opportunities**: ******\_\_\_\_******
 
 ---
 

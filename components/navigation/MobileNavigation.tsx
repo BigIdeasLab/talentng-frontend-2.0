@@ -17,7 +17,10 @@ import { cn } from "@/lib/utils";
 import { ProfileSwitcher } from "@/components/layouts/ProfileSwitcher";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { TOUCH_TARGET } from "@/lib/constants/touch-targets";
-import { PrefetchOnInteraction, usePrefetchRoute } from "@/lib/utils/resource-prefetching";
+import {
+  PrefetchOnInteraction,
+  usePrefetchRoute,
+} from "@/lib/utils/resource-prefetching";
 
 interface MobileNavigationProps {
   activeRole: "talent" | "recruiter" | "mentor";
@@ -249,7 +252,7 @@ export function MobileNavigation({
             }
 
             return (
-              <PrefetchOnInteraction 
+              <PrefetchOnInteraction
                 href={item.href}
                 config={{ enableOnMobile: true, delay: 0 }}
               >
@@ -329,7 +332,7 @@ export function MobileNavigation({
               }
 
               return (
-                <PrefetchOnInteraction 
+                <PrefetchOnInteraction
                   href={item.href}
                   config={{ enableOnMobile: true, delay: 0 }}
                 >

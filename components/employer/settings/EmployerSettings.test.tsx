@@ -52,9 +52,7 @@ function renderWithQueryClient(component: React.ReactElement) {
   });
 
   return render(
-    <QueryClientProvider client={queryClient}>
-      {component}
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{component}</QueryClientProvider>,
   );
 }
 
@@ -71,7 +69,7 @@ describe("EmployerSettings - Responsive Design", () => {
     renderWithQueryClient(<EmployerSettings />);
 
     expect(
-      await screen.findByText("Manage your recruiter preferences and account")
+      await screen.findByText("Manage your recruiter preferences and account"),
     ).toBeInTheDocument();
   });
 
@@ -88,7 +86,7 @@ describe("EmployerSettings - Responsive Design", () => {
     renderWithQueryClient(<EmployerSettings />);
 
     const saveButtons = await screen.findAllByText("Save Changes");
-    
+
     // Check that buttons have responsive width classes
     saveButtons.forEach((button) => {
       expect(button).toHaveClass("w-full");
@@ -125,7 +123,7 @@ describe("EmployerSettings - Responsive Design", () => {
 
     // Check for responsive flex classes on action rows
     const actionRows = container.querySelectorAll(
-      ".flex.flex-col.md\\:flex-row"
+      ".flex.flex-col.md\\:flex-row",
     );
     expect(actionRows.length).toBeGreaterThan(0);
   });

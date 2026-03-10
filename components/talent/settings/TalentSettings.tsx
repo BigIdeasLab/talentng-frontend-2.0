@@ -404,7 +404,12 @@ export function TalentSettings() {
                     </p>
                   </div>
                 </div>
-                <Button variant="outline" size="sm" className="w-full md:w-auto min-h-[44px]" asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full md:w-auto min-h-[44px]"
+                  asChild
+                >
                   <a href="/profile/edit">Change</a>
                 </Button>
               </div>

@@ -21,7 +21,7 @@ The responsive system uses Tailwind CSS's default breakpoint system with semanti
 ### Breakpoint Definitions
 
 | Breakpoint | Min Width | Max Width | Device Target | Tailwind Prefix | Semantic Name |
-|------------|-----------|-----------|---------------|-----------------|---------------|
+| ---------- | --------- | --------- | ------------- | --------------- | ------------- |
 | xs         | 0px       | 639px     | Small phones  | (none)          | Mobile        |
 | sm         | 640px     | 767px     | Large phones  | `sm:`           | Mobile        |
 | md         | 768px     | 1023px    | Tablets       | `md:`           | Tablet        |
@@ -32,7 +32,7 @@ The responsive system uses Tailwind CSS's default breakpoint system with semanti
 ### Semantic Viewports
 
 - **Mobile Viewport**: < 768px (xs + sm breakpoints)
-- **Tablet Viewport**: 768px - 1023px (md breakpoint)  
+- **Tablet Viewport**: 768px - 1023px (md breakpoint)
 - **Desktop Viewport**: ≥ 1024px (lg+ breakpoints)
 
 ### Implementation Constants
@@ -52,6 +52,7 @@ export const TAILWIND_BREAKPOINTS = {
   "2xl": 1536,
 } as const;
 ```
+
 ## Core Responsive Hooks
 
 The application provides three core hooks for responsive behavior detection:
@@ -65,7 +66,7 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 
 function MyComponent() {
   const isMobile = useIsMobile();
-  
+
   return (
     <div>
       {isMobile ? (
@@ -79,6 +80,7 @@ function MyComponent() {
 ```
 
 **Features:**
+
 - Returns `boolean` (initially `undefined` for SSR compatibility)
 - Uses `window.matchMedia` for efficient breakpoint detection
 - Automatically updates on viewport changes
@@ -93,7 +95,7 @@ import { useIsTablet } from "@/hooks/useIsTablet";
 
 function MyComponent() {
   const isTablet = useIsTablet();
-  
+
   return (
     <div className={isTablet ? "tablet-layout" : "mobile-or-desktop-layout"}>
       Content
@@ -103,6 +105,7 @@ function MyComponent() {
 ```
 
 **Features:**
+
 - Returns `boolean` for viewport between 768px and 1023px
 - SSR-compatible with `undefined` initial state
 - Reactive to viewport changes
@@ -117,7 +120,7 @@ import { useBreakpoint } from "@/hooks/useBreakpoint";
 
 function MyComponent() {
   const breakpoint = useBreakpoint();
-  
+
   const getColumns = () => {
     switch (breakpoint) {
       case "xs":
@@ -133,7 +136,7 @@ function MyComponent() {
         return 1;
     }
   };
-  
+
   return (
     <div className={`grid grid-cols-${getColumns()}`}>
       Content
@@ -143,10 +146,12 @@ function MyComponent() {
 ```
 
 **Features:**
+
 - Returns `Breakpoint` type: `"xs" | "sm" | "md" | "lg" | "xl" | "2xl"`
 - Uses multiple `matchMedia` queries for accuracy
 - Provides granular control over responsive behavior
 - SSR-compatible
+
 ## Responsive Components
 
 ### ResponsiveTable Component
@@ -181,14 +186,14 @@ function UsersTable() {
       accessor: (user) => user.name,
     },
     {
-      key: "email", 
+      key: "email",
       label: "Email",
       essential: true,
       accessor: (user) => user.email,
     },
     {
       key: "role",
-      label: "Role", 
+      label: "Role",
       essential: false, // Hidden on tablet
       accessor: (user) => user.role,
     },
@@ -254,6 +259,7 @@ const customMobileRenderer = (user: User, index: number) => (
   mobileCardRenderer={customMobileRenderer}
 />
 ```
+
 ### ResponsiveGrid Component
 
 Adapts grid layouts to viewport size with configurable column counts.
@@ -261,7 +267,7 @@ Adapts grid layouts to viewport size with configurable column counts.
 #### Responsive Behavior
 
 - **Mobile (< 768px)**: Single column layout
-- **Tablet (768px - 1023px)**: Two column layout  
+- **Tablet (768px - 1023px)**: Two column layout
 - **Desktop (≥ 1024px)**: Three or four columns (configurable)
 
 #### Usage Example
@@ -295,10 +301,10 @@ function TalentGrid() {
 
 ```typescript
 interface ResponsiveGridProps {
-  columns?: 3 | 4;           // Desktop columns (default: 3)
+  columns?: 3 | 4; // Desktop columns (default: 3)
   children: React.ReactNode; // Grid items
-  className?: string;        // Additional styling
-  gap?: 2 | 3 | 4 | 6 | 8;  // Gap size (default: 4)
+  className?: string; // Additional styling
+  gap?: 2 | 3 | 4 | 6 | 8; // Gap size (default: 4)
 }
 ```
 
@@ -331,16 +337,16 @@ function EditUserModal() {
       <form className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1">Name</label>
-          <input 
-            type="text" 
-            className="w-full px-3 py-2 border rounded-md min-h-[44px]" 
+          <input
+            type="text"
+            className="w-full px-3 py-2 border rounded-md min-h-[44px]"
           />
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Email</label>
-          <input 
-            type="email" 
-            className="w-full px-3 py-2 border rounded-md min-h-[44px]" 
+          <input
+            type="email"
+            className="w-full px-3 py-2 border rounded-md min-h-[44px]"
           />
         </div>
       </form>
@@ -361,10 +367,11 @@ interface ResponsiveModalProps {
   footer?: React.ReactNode;
   size?: "sm" | "md" | "lg";
   closeOnBackdrop?: boolean;
-  swipeEnabled?: boolean;        // Default: true
+  swipeEnabled?: boolean; // Default: true
   swipeDirection?: "up" | "down" | "left" | "right"; // Default: "down"
 }
 ```
+
 ### MobileDrawer Component
 
 Provides mobile-optimized navigation with slide-out drawer functionality.
@@ -377,15 +384,15 @@ import { HamburgerMenuButton } from "@/components/navigation/HamburgerMenuButton
 
 function MobileNavigation() {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   return (
     <>
-      <HamburgerMenuButton 
+      <HamburgerMenuButton
         isOpen={isOpen}
         onClick={() => setIsOpen(!isOpen)}
         className="lg:hidden" // Only show on mobile/tablet
       />
-      
+
       <MobileDrawer
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
@@ -402,7 +409,7 @@ function MobileNavigation() {
             Applicants
           </NavItem>
         </nav>
-        
+
         <div className="mt-auto">
           <ProfileSwitcher />
         </div>
@@ -512,8 +519,8 @@ All interactive elements must meet minimum touch target standards:
 ```typescript
 // lib/constants/touch-targets.ts
 export const TOUCH_TARGET = {
-  minSize: 44,    // pixels - WCAG 2.1 Level AAA standard
-  minSpacing: 8,  // pixels - minimum space between targets
+  minSize: 44, // pixels - WCAG 2.1 Level AAA standard
+  minSpacing: 8, // pixels - minimum space between targets
 } as const;
 ```
 
@@ -604,7 +611,7 @@ function NotificationList() {
           }}
           rightAction={{
             icon: TrashIcon,
-            color: "red", 
+            color: "red",
             label: "Delete"
           }}
         >
@@ -652,13 +659,13 @@ import { useIsTouchDevice } from "@/hooks/useIsTouchDevice";
 
 function InteractiveCard() {
   const isTouchDevice = useIsTouchDevice();
-  
+
   return (
-    <div 
+    <div
       className={`
         card p-4 rounded-lg border
-        ${isTouchDevice 
-          ? 'active:bg-gray-50' 
+        ${isTouchDevice
+          ? 'active:bg-gray-50'
           : 'hover:bg-gray-50 hover:shadow-md'
         }
       `}
@@ -689,13 +696,13 @@ function InteractiveCard() {
 ### Utility Components
 
 ```typescript
-import { 
-  HideOnMobile, 
-  HideOnTablet, 
+import {
+  HideOnMobile,
+  HideOnTablet,
   HideOnDesktop,
   ShowOnMobile,
   ShowOnTablet,
-  ShowOnDesktop 
+  ShowOnDesktop
 } from "@/components/ui/ResponsiveVisibility";
 
 function ResponsiveLayout() {
@@ -707,17 +714,17 @@ function ResponsiveLayout() {
           <DesktopSidebar />
         </HideOnTablet>
       </HideOnMobile>
-      
+
       {/* Mobile hamburger - only on mobile */}
       <ShowOnMobile>
         <HamburgerMenuButton />
       </ShowOnMobile>
-      
+
       {/* Tablet collapsed sidebar */}
       <ShowOnTablet>
         <CollapsedSidebar />
       </ShowOnTablet>
-      
+
       {/* Detailed descriptions - hidden on mobile */}
       <div className="space-y-4">
         <h2>Statistics</h2>
@@ -739,16 +746,16 @@ function ResponsiveLayout() {
 const visibilityClasses = {
   // Hide on mobile, show on tablet+
   hideOnMobile: "hidden md:block",
-  
+
   // Show only on mobile
   mobileOnly: "block md:hidden",
-  
+
   // Show only on tablet
   tabletOnly: "hidden md:block lg:hidden",
-  
+
   // Show only on desktop
   desktopOnly: "hidden lg:block",
-  
+
   // Hide on desktop, show on mobile/tablet
   hideOnDesktop: "block lg:hidden",
 };
@@ -765,12 +772,12 @@ const visibilityClasses = {
 
 ```typescript
 import { useIsMobile, useIsTablet } from "@/hooks";
-import { 
-  ResponsiveTable, 
-  ResponsiveGrid, 
+import {
+  ResponsiveTable,
+  ResponsiveGrid,
   ResponsiveModal,
   MobileDrawer,
-  HamburgerMenuButton 
+  HamburgerMenuButton
 } from "@/components/ui";
 
 function OpportunitiesPage() {
@@ -785,19 +792,19 @@ function OpportunitiesPage() {
       {isMobile && (
         <>
           <header className="bg-white border-b px-4 py-3 flex items-center justify-between">
-            <HamburgerMenuButton 
+            <HamburgerMenuButton
               isOpen={mobileNavOpen}
               onClick={() => setMobileNavOpen(!mobileNavOpen)}
             />
             <h1 className="text-lg font-semibold">Opportunities</h1>
-            <button 
+            <button
               onClick={() => setFilterModalOpen(true)}
               className="min-h-[44px] min-w-[44px] p-2 rounded-md"
             >
               <FilterIcon className="w-5 h-5" />
             </button>
           </header>
-          
+
           <MobileDrawer
             isOpen={mobileNavOpen}
             onClose={() => setMobileNavOpen(false)}
@@ -825,7 +832,7 @@ function OpportunitiesPage() {
               className="w-full min-h-[44px] px-4 py-2 border rounded-md"
             />
           </div>
-          
+
           {/* Desktop filters */}
           <div className="hidden md:flex space-x-2">
             <FilterButton>Location</FilterButton>
@@ -838,8 +845,8 @@ function OpportunitiesPage() {
         {isMobile ? (
           <ResponsiveGrid columns={1}>
             {opportunities.map((opportunity) => (
-              <OpportunityCard 
-                key={opportunity.id} 
+              <OpportunityCard
+                key={opportunity.id}
                 opportunity={opportunity}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
@@ -874,7 +881,7 @@ function OpportunitiesPage() {
 ```typescript
 function Dashboard() {
   const isMobile = useIsMobile();
-  
+
   return (
     <div className="space-y-6">
       {/* Stats Grid */}
@@ -915,7 +922,7 @@ function Dashboard() {
             showLegend={!isMobile}
           />
         </div>
-        
+
         <div className="bg-white p-6 rounded-lg border">
           <h3 className="text-lg font-semibold mb-4">Hiring Pipeline</h3>
           <ResponsiveChart
@@ -931,7 +938,7 @@ function Dashboard() {
         <div className="p-6 border-b">
           <h3 className="text-lg font-semibold">Recent Activity</h3>
         </div>
-        
+
         <ResponsiveTable
           data={recentActivity}
           columns={activityColumns}
@@ -996,7 +1003,7 @@ const HeavyChart = lazy(() => import("./HeavyChart"));
 
 function Dashboard() {
   const isMobile = useIsMobile();
-  
+
   return (
     <div>
       {isMobile ? (
@@ -1022,7 +1029,7 @@ Use semantic breakpoints consistently:
 const useResponsiveColumns = () => {
   const isMobile = useIsMobile();
   const isTablet = useIsTablet();
-  
+
   if (isMobile) return 1;
   if (isTablet) return 2;
   return 3;
@@ -1038,7 +1045,7 @@ Preserve accessibility across all breakpoints:
 
 ```typescript
 // ✅ Good - Maintains ARIA labels
-<button 
+<button
   className="min-h-[44px] min-w-[44px] p-2"
   aria-label="Close modal"
 >
@@ -1078,12 +1085,12 @@ Handle responsive hook edge cases:
 ```typescript
 function MyComponent() {
   const isMobile = useIsMobile();
-  
+
   // Handle SSR/initial render
   if (isMobile === undefined) {
     return <LoadingSkeleton />;
   }
-  
+
   return isMobile ? <MobileView /> : <DesktopView />;
 }
 ```
@@ -1107,5 +1114,5 @@ For questions about responsive behavior implementation:
 
 ---
 
-*Last updated: March 2026*
-*Version: 1.0.0*
+_Last updated: March 2026_
+_Version: 1.0.0_

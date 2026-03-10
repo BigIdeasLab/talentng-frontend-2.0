@@ -46,7 +46,7 @@ interface SwipeableModalProps {
 /**
  * SwipeableModal provides swipe-to-dismiss functionality for modal sheets.
  * Supports different swipe directions and provides smooth animations.
- * 
+ *
  * @example
  * ```tsx
  * <SwipeableModal
@@ -88,7 +88,8 @@ export function SwipeableModal({
       if (!swipeEnabled) return;
 
       // Only respond to swipes in the configured direction
-      const isHorizontal = swipeDirection === "left" || swipeDirection === "right";
+      const isHorizontal =
+        swipeDirection === "left" || swipeDirection === "right";
       const isVertical = swipeDirection === "up" || swipeDirection === "down";
 
       if (isHorizontal && Math.abs(deltaX) < Math.abs(deltaY)) return;
@@ -96,7 +97,7 @@ export function SwipeableModal({
 
       // Apply transform based on swipe direction
       let newTransform = { x: 0, y: 0 };
-      
+
       if (swipeDirection === "down" && deltaY > 0) {
         newTransform.y = deltaY;
       } else if (swipeDirection === "up" && deltaY < 0) {
@@ -108,12 +109,12 @@ export function SwipeableModal({
       }
 
       setTransform(newTransform);
-      
+
       // Fade out slightly during swipe
       const fadeProgress = Math.min(progress, 1);
       setOpacity(1 - fadeProgress * 0.3);
     },
-    [swipeEnabled, swipeDirection]
+    [swipeEnabled, swipeDirection],
   );
 
   const handleSwipeEnd = useCallback(() => {
@@ -122,7 +123,7 @@ export function SwipeableModal({
       setIsAnimating(true);
       setTransform({ x: 0, y: 0 });
       setOpacity(1);
-      
+
       // Remove animation flag after transition
       setTimeout(() => setIsAnimating(false), 300);
     }
@@ -134,9 +135,9 @@ export function SwipeableModal({
 
       // Animate out before closing
       setIsAnimating(true);
-      
+
       let dismissTransform = { x: 0, y: 0 };
-      
+
       switch (direction) {
         case "down":
           dismissTransform.y = window.innerHeight;
@@ -151,21 +152,24 @@ export function SwipeableModal({
           dismissTransform.x = -window.innerWidth;
           break;
       }
-      
+
       setTransform(dismissTransform);
       setOpacity(0);
-      
+
       // Call onClose after animation completes
       setTimeout(() => {
         onClose();
       }, 300);
     },
-    [swipeEnabled, swipeDirection, onClose]
+    [swipeEnabled, swipeDirection, onClose],
   );
 
   const swipeHandlers = useSwipeGesture({
     threshold,
-    direction: swipeDirection === "left" || swipeDirection === "right" ? "horizontal" : "vertical",
+    direction:
+      swipeDirection === "left" || swipeDirection === "right"
+        ? "horizontal"
+        : "vertical",
     onSwipe: handleSwipe,
     onSwipeMove: handleSwipeMove,
     onSwipeEnd: handleSwipeEnd,
@@ -174,10 +178,13 @@ export function SwipeableModal({
 
   if (!isOpen) return null;
 
-  const setRefs = useCallback((el: HTMLDivElement | null) => {
-    (containerRef as any).current = el;
-    (swipeHandlers.ref as any).current = el;
-  }, [swipeHandlers.ref]);
+  const setRefs = useCallback(
+    (el: HTMLDivElement | null) => {
+      (containerRef as any).current = el;
+      (swipeHandlers.ref as any).current = el;
+    },
+    [swipeHandlers.ref],
+  );
 
   return (
     <div
@@ -187,7 +194,7 @@ export function SwipeableModal({
         isMobile
           ? "inset-0 z-[51]"
           : "left-[600px] top-0 bottom-0 right-0 border-l border-gray-200 z-50",
-        className
+        className,
       )}
       style={{
         transform: `translate(${transform.x}px, ${transform.y}px)`,

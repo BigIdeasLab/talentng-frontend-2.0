@@ -20,7 +20,7 @@ export function useIsTouchDevice(): boolean | undefined {
 
     // Use media query to detect hover capability
     const mediaQuery = window.matchMedia("(hover: none)");
-    
+
     // Set initial value after mount (for SSR compatibility)
     setIsTouchDevice(mediaQuery.matches);
 

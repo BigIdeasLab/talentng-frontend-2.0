@@ -3,9 +3,9 @@ import { render, screen } from "@testing-library/react";
 import CalendarPage from "./page";
 
 // Mock window.matchMedia for responsive hooks
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -18,8 +18,8 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 // Mock requestIdleCallback
-if (!('requestIdleCallback' in window)) {
-  Object.defineProperty(window, 'requestIdleCallback', {
+if (!("requestIdleCallback" in window)) {
+  Object.defineProperty(window, "requestIdleCallback", {
     writable: true,
     value: vi.fn().mockImplementation((cb: () => void) => setTimeout(cb, 0)),
   });
@@ -132,8 +132,6 @@ describe("CalendarPage - Responsive Design", () => {
     await screen.findByText("Calendar");
 
     // Check for empty state
-    expect(
-      await screen.findByText("No upcoming events"),
-    ).toBeInTheDocument();
+    expect(await screen.findByText("No upcoming events")).toBeInTheDocument();
   });
 });
