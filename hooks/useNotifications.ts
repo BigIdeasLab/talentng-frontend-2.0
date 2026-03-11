@@ -32,24 +32,27 @@ export function useNotifications(
           userId: user.id,
           recipientRole,
         });
-        
+
         // Log mentor notifications specifically
         if (recipientRole === "mentor" || recipientRole === "talent") {
-          console.log(`🧑‍🏫 FETCHED ${recipientRole?.toUpperCase()} NOTIFICATIONS:`, {
-            userId: user.id,
-            recipientRole,
-            count: fetchedNotifications.length,
-            unreadCount: fetchedNotifications.filter(n => !n.readAt).length,
-            notifications: fetchedNotifications.map(n => ({
-              id: n.id,
-              type: n.type,
-              title: n.payload?.title,
-              isRead: !!n.readAt,
-              createdAt: n.createdAt
-            }))
-          });
+          console.log(
+            `🧑‍🏫 FETCHED ${recipientRole?.toUpperCase()} NOTIFICATIONS:`,
+            {
+              userId: user.id,
+              recipientRole,
+              count: fetchedNotifications.length,
+              unreadCount: fetchedNotifications.filter((n) => !n.readAt).length,
+              notifications: fetchedNotifications.map((n) => ({
+                id: n.id,
+                type: n.type,
+                title: n.payload?.title,
+                isRead: !!n.readAt,
+                createdAt: n.createdAt,
+              })),
+            },
+          );
         }
-        
+
         setNotifications(fetchedNotifications);
       } catch (err) {
         const errorMessage =
@@ -90,27 +93,30 @@ export function useNotifications(
   /**
    * Mark a specific notification as read
    */
-  const markAsRead = useCallback(async (notificationId: string) => {
-    try {
-      console.log("🧑‍🏫 MARKING NOTIFICATION AS READ:", {
-        notificationId,
-        recipientRole,
-        timestamp: new Date().toISOString()
-      });
-      
-      const updated = await markNotificationAsRead(notificationId);
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === notificationId ? updated : n)),
-      );
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error
-          ? err.message
-          : "Failed to mark notification as read.";
-      setError(errorMessage);
-      console.error("Error marking notification as read:", err);
-    }
-  }, [recipientRole]);
+  const markAsRead = useCallback(
+    async (notificationId: string) => {
+      try {
+        console.log("🧑‍🏫 MARKING NOTIFICATION AS READ:", {
+          notificationId,
+          recipientRole,
+          timestamp: new Date().toISOString(),
+        });
+
+        const updated = await markNotificationAsRead(notificationId);
+        setNotifications((prev) =>
+          prev.map((n) => (n.id === notificationId ? updated : n)),
+        );
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error
+            ? err.message
+            : "Failed to mark notification as read.";
+        setError(errorMessage);
+        console.error("Error marking notification as read:", err);
+      }
+    },
+    [recipientRole],
+  );
 
   /**
    * Mark all notifications as read

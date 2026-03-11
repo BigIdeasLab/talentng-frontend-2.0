@@ -42,21 +42,21 @@ export function MentorNotifications({
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
     setAllNotifications(combined);
-    
+
     // Log mentor notifications
     if (combined.length > 0) {
       console.log("🧑‍🏫 MENTOR NOTIFICATIONS:", {
         totalCount: combined.length,
-        unreadCount: combined.filter(n => !n.readAt).length,
-        notifications: combined.map(n => ({
+        unreadCount: combined.filter((n) => !n.readAt).length,
+        notifications: combined.map((n) => ({
           id: n.id,
           type: n.type,
           title: n.payload?.title,
           message: n.payload?.message,
           isRead: !!n.readAt,
           createdAt: n.createdAt,
-          deliveryStatus: n.deliveryStatus
-        }))
+          deliveryStatus: n.deliveryStatus,
+        })),
       });
     }
   }, [mentorNotifications, generalNotifications]);
@@ -207,15 +207,16 @@ export function MentorNotifications({
   ) => {
     console.log("🧑‍🏫 MENTOR NOTIFICATION CLICKED:", {
       notificationId,
-      action: action ? {
-        label: action.label,
-        route: action.route,
-        type: action.type
-      } : null,
+      action: action
+        ? {
+            label: action.label,
+            route: action.route,
+          }
+        : null,
       isActionButton,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-    
+
     await markAsRead(notificationId);
     onNotificationRead?.();
 

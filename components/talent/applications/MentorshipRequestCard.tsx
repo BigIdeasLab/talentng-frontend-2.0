@@ -159,7 +159,13 @@ export function MentorshipRequestCard({ request }: MentorshipRequestCardProps) {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    window.open(request.location, '_blank', 'noopener,noreferrer');
+                    if (request.location) {
+                      window.open(
+                        request.location,
+                        "_blank",
+                        "noopener,noreferrer",
+                      );
+                    }
                   }}
                   className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#EFF6FF] hover:bg-[#DBEAFE] transition-colors"
                 >

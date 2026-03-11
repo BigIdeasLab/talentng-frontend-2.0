@@ -406,7 +406,7 @@ export function TalentEditProfile() {
       setIsSuccess(true);
       setShowSuccessModal(true);
       setHasUnsavedChanges(false);
-      
+
       // Navigate back to profile after successful save
       setTimeout(() => {
         router.push("/profile");

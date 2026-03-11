@@ -25,25 +25,26 @@ export function NotificationsModal({
 }: NotificationsModalProps) {
   const { activeRole } = useProfile();
   const router = useRouter();
-  
+
   // Get notifications based on role
   const { markAsRead, notifications: roleNotifications } = useNotifications(
     (activeRole || "talent") as "talent" | "recruiter" | "mentor" | "general",
   );
   const { notifications: generalNotifications } = useNotifications("general");
-  
+
   // Combine notifications for mentor (who uses both mentor and general)
-  const allNotifications = activeRole === "mentor" 
-    ? [
-        ...roleNotifications,
-        ...generalNotifications.filter(
-          (gn) => !roleNotifications.some((rn) => rn.id === gn.id),
-        ),
-      ].sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      )
-    : roleNotifications;
+  const allNotifications =
+    activeRole === "mentor"
+      ? [
+          ...roleNotifications,
+          ...generalNotifications.filter(
+            (gn) => !roleNotifications.some((rn) => rn.id === gn.id),
+          ),
+        ].sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        )
+      : roleNotifications;
 
   const isMobile = useIsMobile();
 

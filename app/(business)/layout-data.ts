@@ -33,7 +33,6 @@ const mapRecommendationToUI = (apiRec: any) => ({
 
 export async function getBusinessLayoutData() {
   try {
-
     // Fetch all profiles in parallel on server
     // Note: Some profiles may not exist (404), which is expected and handled gracefully
     const [talentProfile, recruiterProfile, mentorProfile] = await Promise.all([
