@@ -1,6 +1,7 @@
 # Dependency Cleanup Recommendations
 
 ## ✅ REMOVED (68 packages)
+
 - `@react-three/drei` - 3D graphics library (not used)
 - `@react-three/fiber` - React renderer for Three.js (not used)
 - `three` - 3D graphics library (not used)
@@ -17,6 +18,7 @@
 These Radix UI components may not be used in your codebase. Check if you need them:
 
 ### Likely Unused:
+
 - `@radix-ui/react-context-menu` - Right-click context menus
 - `@radix-ui/react-menubar` - Menu bars (like File, Edit, View)
 - `@radix-ui/react-navigation-menu` - Complex navigation menus
@@ -29,6 +31,7 @@ These Radix UI components may not be used in your codebase. Check if you need th
 - `@radix-ui/react-progress` - Progress bars
 
 ### Other Libraries to Review:
+
 - `embla-carousel-react` - Carousel/slider component
 - `vaul` - Drawer component library
 - `cmdk` - Command menu (Cmd+K style)
@@ -65,6 +68,7 @@ npm run grep-search "react-resizable-panels"
 ## ⚠️ KEEP THESE (Actively Used)
 
 These are essential and should NOT be removed:
+
 - `@radix-ui/react-dialog` - Modals/dialogs
 - `@radix-ui/react-dropdown-menu` - Dropdown menus
 - `@radix-ui/react-popover` - Popovers
@@ -97,12 +101,14 @@ These are essential and should NOT be removed:
 ## 📈 PERFORMANCE IMPACT
 
 **Already achieved:**
+
 - Removed 68 packages
 - Reduced node_modules size by ~15-20MB
 - Faster npm install times
 - Smaller bundle size potential
 
 **Potential additional savings:**
+
 - Each unused Radix UI component: ~100-500KB
 - embla-carousel: ~200KB
 - vaul: ~50KB
