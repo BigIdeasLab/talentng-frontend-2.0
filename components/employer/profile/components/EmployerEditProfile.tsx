@@ -994,6 +994,11 @@ export function EmployerEditProfile() {
       setIsSuccess(true);
       setShowSuccessModal(true);
       setHasUnsavedChanges(false);
+      
+      // Navigate back to profile after successful save
+      setTimeout(() => {
+        router.push("/profile");
+      }, 1500);
     } catch (error) {
       console.error("Error saving profile:", error);
       setModalMessage("Failed to save profile. Please try again.");

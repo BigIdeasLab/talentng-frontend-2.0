@@ -55,8 +55,6 @@ function formatChange(value: number, isPercent: boolean): string {
 export function EmployerDashboard() {
   const { data, isLoading, isPending, error } = useRecruiterDashboard();
 
-  console.log("Recruiter Dashboard Data:", data);
-
   if (isLoading || isPending) {
     return <DashboardSkeleton />;
   }

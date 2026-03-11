@@ -177,6 +177,7 @@ export function mapUIToAPI(uiData: UIProfileData): APIProfileData {
       linkedin: uiData.social.linkedin || undefined,
       github: uiData.social.github || undefined,
       portfolio: uiData.social.portfolio || undefined,
+      website: uiData.social.website || undefined,
       ...Object.fromEntries(
         (uiData.social.customLinks || [])
           .filter((l) => l.name && l.url)
@@ -191,6 +192,7 @@ export function mapUIToAPI(uiData: UIProfileData): APIProfileData {
       linkedin: uiData.social.linkedin || undefined,
       github: uiData.social.github || undefined,
       portfolio: uiData.social.portfolio || undefined,
+      website: uiData.social.website || undefined,
       ...Object.fromEntries(
         (uiData.social.customLinks || [])
           .filter((l) => l.name && l.url)

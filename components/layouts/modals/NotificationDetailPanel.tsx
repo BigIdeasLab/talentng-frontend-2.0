@@ -71,8 +71,8 @@ export function NotificationDetailPanel({
   const payload = notification.payload as
     | InAppNotificationPayload
     | Record<string, any>;
-  const title = (payload.title as string) || "Notification";
-  const message = (payload.message as string) || "";
+  const title = payload.title as string;
+  const message = payload.message as string;
   const payloadType = (payload as InAppNotificationPayload).type || "info";
   const timestamp = formatDistanceToNow(new Date(notification.createdAt), {
     addSuffix: true,
@@ -242,27 +242,6 @@ export function NotificationDetailPanel({
           <span>🕐</span>
           <span>{timestamp}</span>
         </div>
-
-        {/* Metadata display */}
-        {metadata && (
-          <div className={`${colors.bg} rounded-lg p-4 mb-4`}>
-            <h5 className="text-sm font-semibold text-gray-900 mb-2">
-              Related Information
-            </h5>
-            <div className="space-y-1 text-sm text-gray-700">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Type:</span>
-                <span className="font-medium capitalize">
-                  {metadata.relatedType}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">ID:</span>
-                <span className="font-mono text-xs">{metadata.relatedId}</span>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Action button */}
         {action && (

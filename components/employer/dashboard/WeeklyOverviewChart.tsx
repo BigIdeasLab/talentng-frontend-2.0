@@ -45,15 +45,6 @@ export function WeeklyOverviewChart({ data }: WeeklyOverviewChartProps) {
     yAxisMax,
   ];
 
-  console.log(
-    "WeeklyOverviewChart - data:",
-    data,
-    "maxValue:",
-    maxValue,
-    "yAxisMax:",
-    yAxisMax,
-  );
-
   return (
     <div className="flex flex-col items-start gap-4 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white w-full">
       <div className="flex flex-col items-start gap-1 self-stretch flex-shrink-0">

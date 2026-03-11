@@ -23,26 +23,43 @@ export function MentorNotifications({
   const router = useRouter();
   const [allNotifications, setAllNotifications] = useState<any[]>([]);
   const {
-    notifications: talentNotifications,
+    notifications: mentorNotifications,
     loading,
     error,
     markAsRead,
-  } = useNotifications("talent");
+  } = useNotifications("mentor");
   const { notifications: generalNotifications } = useNotifications("general");
 
-  // Combine talent and general notifications
+  // Combine mentor and general notifications
   useEffect(() => {
     const combined = [
-      ...talentNotifications,
+      ...mentorNotifications,
       ...generalNotifications.filter(
-        (gn) => !talentNotifications.some((tn) => tn.id === gn.id),
+        (gn) => !mentorNotifications.some((mn) => mn.id === gn.id),
       ),
     ].sort(
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
     setAllNotifications(combined);
-  }, [talentNotifications, generalNotifications]);
+    
+    // Log mentor notifications
+    if (combined.length > 0) {
+      console.log("🧑‍🏫 MENTOR NOTIFICATIONS:", {
+        totalCount: combined.length,
+        unreadCount: combined.filter(n => !n.readAt).length,
+        notifications: combined.map(n => ({
+          id: n.id,
+          type: n.type,
+          title: n.payload?.title,
+          message: n.payload?.message,
+          isRead: !!n.readAt,
+          createdAt: n.createdAt,
+          deliveryStatus: n.deliveryStatus
+        }))
+      });
+    }
+  }, [mentorNotifications, generalNotifications]);
 
   if (loading) {
     return <MentorNotificationsSkeleton />;
@@ -160,8 +177,8 @@ export function MentorNotifications({
     const payload = notification.payload as
       | InAppNotificationPayload
       | Record<string, any>;
-    const title = (payload.title as string) || "Notification";
-    const message = (payload.message as string) || "";
+    const title = payload.title as string;
+    const message = payload.message as string;
     const payloadType = (payload as InAppNotificationPayload).type || "info";
     const timestamp = formatDistanceToNow(new Date(notification.createdAt), {
       addSuffix: true,
@@ -188,6 +205,17 @@ export function MentorNotifications({
     action?: InAppNotificationPayload["action"],
     isActionButton: boolean = false,
   ) => {
+    console.log("🧑‍🏫 MENTOR NOTIFICATION CLICKED:", {
+      notificationId,
+      action: action ? {
+        label: action.label,
+        route: action.route,
+        type: action.type
+      } : null,
+      isActionButton,
+      timestamp: new Date().toISOString()
+    });
+    
     await markAsRead(notificationId);
     onNotificationRead?.();
 

@@ -32,9 +32,10 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   // Map active role to recipient role for notifications
   const getRecipientRole = (
     role: string | null,
-  ): "talent" | "recruiter" | "general" => {
+  ): "talent" | "recruiter" | "mentor" | "general" => {
     if (role === "recruiter") return "recruiter";
-    if (role === "talent" || role === "mentor") return "talent";
+    if (role === "talent") return "talent";
+    if (role === "mentor") return "mentor";
     return "general";
   };
 

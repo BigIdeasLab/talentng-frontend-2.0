@@ -16,9 +16,6 @@ export function GlobalErrorHandler() {
         if (error?.isRoleMismatch) {
           if (error.actualRole) {
             // Auto-sync frontend role with backend role if they mismatched
-            console.log(
-              `Auto-syncing role to ${error.actualRole} from backend error`,
-            );
             setActiveRole(error.actualRole);
             localStorage.setItem("activeRole", error.actualRole);
             document.cookie = `activeRole=${error.actualRole}; path=/; max-age=31536000; SameSite=Lax`;

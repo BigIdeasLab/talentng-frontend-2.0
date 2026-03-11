@@ -155,18 +155,19 @@ export function MentorshipRequestCard({ request }: MentorshipRequestCardProps) {
           {request.location &&
             (isLocationUrl ? (
               <div className="flex items-center gap-1">
-                <a
-                  href={request.location}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.open(request.location, '_blank', 'noopener,noreferrer');
+                  }}
                   className="flex items-center gap-1.5 px-3 py-2 rounded-[24px] bg-[#EFF6FF] hover:bg-[#DBEAFE] transition-colors"
                 >
                   <Video className="w-3 h-3 text-[#2563EB]" />
                   <span className="text-[12px] font-medium font-inter-tight text-[#2563EB] leading-[12.6px]">
                     Join Meeting
                   </span>
-                </a>
+                </button>
                 <button
                   onClick={handleCopyLink}
                   className="flex items-center justify-center w-8 h-8 rounded-[24px] bg-[#EFF6FF] hover:bg-[#DBEAFE] transition-colors"

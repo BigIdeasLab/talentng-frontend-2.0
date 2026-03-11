@@ -204,7 +204,7 @@ export default function SessionsPage() {
 
   // Subscribe to real-time updates
   useNotificationSocket({
-    recipientRole: "mentor" as any,
+    recipientRole: "mentor",
     onMentorUpdate: () => {
       fetchSessions(); // Refresh without showing full loading state handles it
     },

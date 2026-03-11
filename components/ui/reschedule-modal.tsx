@@ -37,15 +37,16 @@ export function RescheduleModal({
   const [selectedTime, setSelectedTime] = useState<number | null>(null);
   const [isFetching, setIsFetching] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
-  
-  const { getCachedAvailability, prefetchAvailability } = useAvailabilityPrefetch();
+
+  const { getCachedAvailability, prefetchAvailability } =
+    useAvailabilityPrefetch();
 
   useEffect(() => {
     if (!isOpen || !mentorId) return;
 
     // First, try to get cached data
     const cached = getCachedAvailability(mentorId);
-    
+
     if (cached && !cached.isExpired && cached.data.length > 0) {
       // Use cached data immediately
       setAvailability(cached.data);
@@ -58,7 +59,7 @@ export function RescheduleModal({
     async function fetchSlots() {
       setIsFetching(true);
       setFetchError(null);
-      
+
       try {
         const data = await prefetchAvailability(mentorId);
         setAvailability(data || []);

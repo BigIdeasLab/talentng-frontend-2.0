@@ -22,7 +22,10 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
   const [isHireModalOpen, setIsHireModalOpen] = useState(false);
   const { toast } = useToast();
   const { data: opportunitiesRaw, isLoading: opportunitiesLoading } =
-    useRecruiterOpportunitiesQuery({ status: "active" });
+    useRecruiterOpportunitiesQuery({ 
+      status: "active",
+      talentId: profile.userId // Pass the talent ID to check application status
+    });
 
   const sendInvitationMutation = useSendInvitations();
   const opportunities = opportunitiesRaw?.data || [];

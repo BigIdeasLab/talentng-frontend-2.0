@@ -328,8 +328,6 @@ export function OpportunityPreview() {
         ...draftData,
       };
 
-      console.log("finalData ready:", finalData);
-
       if (isEditMode && opportunityId) {
         await updateMutation.mutateAsync({
           id: opportunityId,

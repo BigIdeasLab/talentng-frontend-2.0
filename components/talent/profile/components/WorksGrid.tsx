@@ -45,7 +45,6 @@ export function WorksGrid({
     if (showLoading) setLoading(true);
     try {
       const gallery = await getGalleryItems();
-      console.log("[WorksGrid] fetched gallery:", gallery);
       setDisplayItems(gallery);
       onItemsLoaded?.(gallery);
     } catch (err) {
@@ -65,7 +64,7 @@ export function WorksGrid({
   }, [refreshTrigger]);
 
   useEffect(() => {
-    console.log("[WorksGrid] displayItems changed:", displayItems);
+    // Effect logic here if needed
   }, [displayItems]);
 
   const handleDelete = (itemId: string) => {
@@ -148,11 +147,6 @@ export function WorksGrid({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[10px] gap-y-[20px]">
           {displayItems.map((item) => {
             const imageUrl = item.images?.[0] || (item as any).url;
-            console.log("[WorksGrid] rendering item:", item.id, {
-              title: item.title,
-              imageUrl,
-              item,
-            });
             if (!imageUrl) return null;
 
             return (

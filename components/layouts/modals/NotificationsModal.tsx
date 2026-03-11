@@ -25,9 +25,26 @@ export function NotificationsModal({
 }: NotificationsModalProps) {
   const { activeRole } = useProfile();
   const router = useRouter();
-  const { markAsRead, notifications } = useNotifications(
-    (activeRole || "talent") as "talent" | "recruiter" | "general",
+  
+  // Get notifications based on role
+  const { markAsRead, notifications: roleNotifications } = useNotifications(
+    (activeRole || "talent") as "talent" | "recruiter" | "mentor" | "general",
   );
+  const { notifications: generalNotifications } = useNotifications("general");
+  
+  // Combine notifications for mentor (who uses both mentor and general)
+  const allNotifications = activeRole === "mentor" 
+    ? [
+        ...roleNotifications,
+        ...generalNotifications.filter(
+          (gn) => !roleNotifications.some((rn) => rn.id === gn.id),
+        ),
+      ].sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      )
+    : roleNotifications;
+
   const isMobile = useIsMobile();
 
   // State management for selected notification
@@ -41,14 +58,14 @@ export function NotificationsModal({
    */
   useEffect(() => {
     if (selectedNotificationId) {
-      const notificationExists = notifications.some(
+      const notificationExists = allNotifications.some(
         (n) => n.id === selectedNotificationId,
       );
       if (!notificationExists) {
         setSelectedNotificationId(null);
       }
     }
-  }, [notifications, selectedNotificationId]);
+  }, [allNotifications, selectedNotificationId]);
 
   /**
    * Handle notification selection
@@ -82,9 +99,9 @@ export function NotificationsModal({
 
   if (!isOpen) return null;
 
-  // Find the selected notification from the notifications list
+  // Find the selected notification from the combined notifications list
   const selectedNotification = selectedNotificationId
-    ? notifications.find((n) => n.id === selectedNotificationId) || null
+    ? allNotifications.find((n) => n.id === selectedNotificationId) || null
     : null;
 
   const renderNotifications = () => {

@@ -361,12 +361,12 @@ export function ProfileSwitcher() {
                 }}
               />
               <div className="min-w-0">
-                <div className="text-[13px] font-normal text-black font-inter-tight truncate">
+                <div className="text-[13px] font-normal text-black font-inter-tight truncate text-left">
                   {displayProfile
                     ? getDisplayName(activeRole, displayProfile)
                     : cachedName || getDisplayName(activeRole, displayProfile)}
                 </div>
-                <div className="text-[11px] text-[rgba(0,0,0,0.30)] font-inter-tight truncate">
+                <div className="text-[11px] text-[rgba(0,0,0,0.30)] font-inter-tight truncate text-left">
                   {getRoleLabel(activeRole)}
                 </div>
               </div>
@@ -390,12 +390,12 @@ export function ProfileSwitcher() {
               }}
             />
             <div className="flex flex-col gap-[2px] min-w-0">
-              <div className="text-[12px] font-normal text-black font-inter-tight truncate">
+              <div className="text-[12px] font-normal text-black font-inter-tight truncate text-left">
                 {displayProfile
                   ? getDisplayName(activeRole, displayProfile)
                   : cachedName || getDisplayName(activeRole, displayProfile)}
               </div>
-              <div className="text-[11px] font-light text-[#525866] font-inter-tight truncate">
+              <div className="text-[11px] font-light text-[#525866] font-inter-tight truncate text-left">
                 {getRoleLabel(activeRole)}
               </div>
             </div>
@@ -455,10 +455,10 @@ export function ProfileSwitcher() {
                           }}
                         />
                         <div className="flex flex-col gap-[2px] text-left min-w-0">
-                          <div className="text-[12px] font-normal text-black font-inter-tight truncate">
+                          <div className="text-[12px] font-normal text-black font-inter-tight truncate text-left">
                             {displayName}
                           </div>
-                          <div className="text-[11px] font-light text-[#525866] font-inter-tight truncate">
+                          <div className="text-[11px] font-light text-[#525866] font-inter-tight truncate text-left">
                             {getRoleLabel(role)}
                           </div>
                         </div>

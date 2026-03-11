@@ -59,10 +59,6 @@ export function useProfileData() {
       const jwtActiveRole: string | null =
         decoded?.act || decoded?.activeRole || decoded?.active_role || null;
 
-      console.log(
-        `[useProfileData] JWT → act: ${jwtActiveRole}, roles: [${jwtRoles.join(", ")}]`,
-      );
-
       // ── Step 2: Determine user roles ─────────────────────────────────────
       // PRIORITY:
       // 1. User object roles (freshest after onboarding - queryClient.setQueryData is immediate)
@@ -112,9 +108,6 @@ export function useProfileData() {
 
       // Sync active role to context, localStorage and cookie if it changed
       if (currentActiveRole && currentActiveRole !== activeRoleRef.current) {
-        console.log(
-          `[useProfileData] Syncing activeRole: context=${activeRoleRef.current} → ${currentActiveRole}`,
-        );
         setActiveRole(currentActiveRole);
         localStorage.setItem("activeRole", currentActiveRole);
         document.cookie = `activeRole=${currentActiveRole}; path=/; max-age=31536000; SameSite=Lax`;
@@ -151,9 +144,6 @@ export function useProfileData() {
 
       // ── Step 5: Fetch FULL profile for the active role ───────────────────
       // This enriches the active profile with data not included in /users/me.
-      console.log(
-        `[useProfileData] Fetching full profile for active role: ${currentActiveRole}`,
-      );
 
       let activeProfileData = null;
       if (currentActiveRole === "talent") {
