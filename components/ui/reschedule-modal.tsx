@@ -6,6 +6,7 @@ import { Calendar, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { getMentorBookingSlots } from "@/lib/api/mentorship";
+import { useAvailabilityPrefetch } from "@/hooks/useAvailabilityPrefetch";
 
 interface AvailabilityDay {
   date: string;
@@ -35,68 +36,35 @@ export function RescheduleModal({
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
   const [selectedTime, setSelectedTime] = useState<number | null>(null);
   const [isFetching, setIsFetching] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  
+  const { getCachedAvailability, prefetchAvailability } = useAvailabilityPrefetch();
 
   useEffect(() => {
     if (!isOpen || !mentorId) return;
 
+    // First, try to get cached data
+    const cached = getCachedAvailability(mentorId);
+    
+    if (cached && !cached.isExpired && cached.data.length > 0) {
+      // Use cached data immediately
+      setAvailability(cached.data);
+      setIsFetching(false);
+      setFetchError(null);
+      return;
+    }
+
+    // If no cache or expired, fetch fresh data
     async function fetchSlots() {
       setIsFetching(true);
+      setFetchError(null);
+      
       try {
-        const now = new Date();
-        const startDate = format(now, "yyyy-MM-dd");
-        const endDate = format(addDays(now, 14), "yyyy-MM-dd");
-
-        const data = await getMentorBookingSlots(mentorId, {
-          startDate,
-          endDate,
-        });
-
-        const raw = data as unknown as Record<string, unknown>;
-        const flatSlots = (
-          (raw?.slots ?? raw?.availableSlots ?? []) as {
-            date: string;
-            startTime: string;
-            endTime: string;
-          }[]
-        ).filter((s) => s.date);
-
-        const todayStr = format(now, "yyyy-MM-dd");
-
-        // Filter to only include future slots (including today's future slots)
-        const futureSlots = flatSlots.filter((s) => {
-          if (s.date < todayStr) {
-            return false;
-          }
-          if (s.date === todayStr) {
-            // For today, only include slots that haven't started yet
-            const slotTime = new Date(`${s.date}T${s.startTime}`);
-            return slotTime > now;
-          }
-          return true;
-        });
-
-        const grouped = new Map<
-          string,
-          { startTime: string; endTime: string }[]
-        >();
-        for (const slot of futureSlots) {
-          const existing = grouped.get(slot.date) || [];
-          existing.push({ startTime: slot.startTime, endTime: slot.endTime });
-          grouped.set(slot.date, existing);
-        }
-
-        const transformed: AvailabilityDay[] = Array.from(
-          grouped.entries(),
-        ).map(([dateStr, slots]) => ({
-          date: format(new Date(dateStr + "T00:00:00"), "MMM dd"),
-          day: format(new Date(dateStr + "T00:00:00"), "EEE"),
-          fullDate: dateStr,
-          slots,
-        }));
-
-        setAvailability(transformed);
+        const data = await prefetchAvailability(mentorId);
+        setAvailability(data || []);
       } catch (error) {
         console.error("Error fetching slots:", error);
+        setFetchError("Failed to load available slots. Please try again.");
         setAvailability([]);
       } finally {
         setIsFetching(false);
@@ -104,7 +72,7 @@ export function RescheduleModal({
     }
 
     fetchSlots();
-  }, [isOpen, mentorId]);
+  }, [isOpen, mentorId, getCachedAvailability, prefetchAvailability]);
 
   const handleClose = () => {
     onClose();
@@ -131,6 +99,23 @@ export function RescheduleModal({
     }
   };
 
+  const retryFetch = () => {
+    setFetchError(null);
+    setIsFetching(true);
+    prefetchAvailability(mentorId)
+      .then((data) => {
+        setAvailability(data || []);
+      })
+      .catch((error) => {
+        console.error("Error retrying fetch:", error);
+        setFetchError("Failed to load available slots. Please try again.");
+        setAvailability([]);
+      })
+      .finally(() => {
+        setIsFetching(false);
+      });
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={handleClose} size="sm">
       <div className="flex flex-col">
@@ -150,14 +135,44 @@ export function RescheduleModal({
         </p>
 
         {isFetching ? (
-          <div className="flex flex-col items-center justify-center py-10">
-            <Loader2
-              className="h-6 w-6 animate-spin"
-              style={{ color: accentColor }}
-            />
-            <p className="mt-2 font-inter-tight text-[13px] text-[#525866]">
-              Loading available slots...
+          <div className="flex flex-col gap-4">
+            {/* Date skeleton */}
+            <div className="flex flex-col gap-2">
+              <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
+              <div className="grid grid-cols-4 gap-2">
+                {[...Array(8)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-[52px] bg-gray-100 rounded-lg animate-pulse"
+                  />
+                ))}
+              </div>
+            </div>
+            {/* Time skeleton */}
+            <div className="flex flex-col gap-2">
+              <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
+              <div className="flex flex-wrap gap-2">
+                {[...Array(6)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-9 w-20 bg-gray-100 rounded-lg animate-pulse"
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : fetchError ? (
+          <div className="py-10 text-center">
+            <p className="font-inter-tight text-[13px] text-red-500 mb-3">
+              {fetchError}
             </p>
+            <Button
+              onClick={retryFetch}
+              variant="outline"
+              className="rounded-[30px] border-[#E1E4EA] px-4 py-2 font-inter-tight text-[13px]"
+            >
+              Try Again
+            </Button>
           </div>
         ) : availability.length === 0 ? (
           <p className="py-10 text-center font-inter-tight text-[13px] text-[#A3A3A3]">

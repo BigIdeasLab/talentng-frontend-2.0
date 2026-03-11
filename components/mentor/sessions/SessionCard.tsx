@@ -11,6 +11,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import { useAvailabilityPrefetch } from "@/hooks/useAvailabilityPrefetch";
 
 interface Mentee {
   id: string;
@@ -31,6 +32,7 @@ export type SessionStatus =
 interface SessionCardProps {
   id: string;
   mentee: Mentee;
+  mentorId?: string; // Add mentorId for prefetching
   topic: string;
   message?: string;
   date: string;
@@ -102,6 +104,7 @@ const statusConfig = {
 export function SessionCard({
   id,
   mentee,
+  mentorId,
   topic,
   message,
   date,
@@ -117,6 +120,7 @@ export function SessionCard({
   const [copied, setCopied] = useState(false);
   const isSessionEnded = endTime ? new Date() > new Date(endTime) : false;
   const config = statusConfig[status];
+  const { schedulePreload, cancelPreload } = useAvailabilityPrefetch();
 
   const menteeInitials = mentee.name
     .split(" ")
@@ -261,6 +265,8 @@ export function SessionCard({
             <>
               <button
                 onClick={() => onReschedule?.(id)}
+                onMouseEnter={() => mentorId && schedulePreload(mentorId)}
+                onMouseLeave={() => mentorId && cancelPreload(mentorId)}
                 className="flex items-center gap-1 px-4 py-2 h-8 bg-[#181B25] hover:bg-[#2a2d39] rounded-[40px] transition-colors"
               >
                 <Clock className="w-4 h-4 text-white" />
