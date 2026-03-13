@@ -3,6 +3,7 @@
 ## Problem Solved
 
 Previously, IP addresses for mobile testing were **hardcoded** in multiple places:
+
 - `.env` file had `http://192.168.64.1:3000/api/v1`
 - Documentation referenced `http://192.168.1.137:8080`
 - Manual updates required when network changed
@@ -29,7 +30,7 @@ Created **dynamic IP detection** with automated setup scripts:
 ```json
 {
   "dev:mobile": "node scripts/setup-mobile-env.js && npm run dev",
-  "mobile:setup": "node scripts/setup-mobile-env.js", 
+  "mobile:setup": "node scripts/setup-mobile-env.js",
   "mobile:ip": "node scripts/get-local-ip.js"
 }
 ```
@@ -37,11 +38,13 @@ Created **dynamic IP detection** with automated setup scripts:
 ## Usage
 
 ### Automatic Setup (Recommended)
+
 ```bash
 npm run dev:mobile
 ```
 
 ### Manual Steps
+
 ```bash
 # Check current IP
 npm run mobile:ip

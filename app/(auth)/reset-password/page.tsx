@@ -28,7 +28,10 @@ import {
 } from "@/components/ui/form";
 import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
 import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
-import { RateLimitNotification, useRateLimitHandler } from "@/components/ui/RateLimitNotification";
+import {
+  RateLimitNotification,
+  useRateLimitHandler,
+} from "@/components/ui/RateLimitNotification";
 
 const resetPasswordSchema = z.object({
   resetCode: z
@@ -48,8 +51,9 @@ type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
 const ResetPassword = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { rateLimitError, isRateLimited, handleError, clearRateLimit } = useRateLimitHandler();
-  
+  const { rateLimitError, isRateLimited, handleError, clearRateLimit } =
+    useRateLimitHandler();
+
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -99,7 +103,7 @@ const ResetPassword = () => {
     onError: (error: any) => {
       // Check if this is a rate limiting error
       const isRateLimit = handleError(error);
-      
+
       if (!isRateLimit) {
         // Handle specific error messages from backend for non-rate-limit errors
         if (error.message && error.message.includes("Invalid reset code")) {
@@ -119,7 +123,7 @@ const ResetPassword = () => {
       toast.error("Email is missing. Please request a new reset code.");
       return;
     }
-    
+
     // Clear any existing rate limit errors and form errors when user retries
     clearRateLimit();
     setError("");
@@ -190,7 +194,7 @@ const ResetPassword = () => {
                     >
                       {/* Rate Limit Notification */}
                       {isRateLimited && (
-                        <RateLimitNotification 
+                        <RateLimitNotification
                           error={rateLimitError}
                           onRetryEnabled={clearRateLimit}
                           className="mb-3"

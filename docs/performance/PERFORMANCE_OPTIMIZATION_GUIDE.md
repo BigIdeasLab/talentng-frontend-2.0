@@ -7,23 +7,27 @@ This guide outlines performance optimization strategies implemented in the mobil
 ## 🚀 Current Optimizations
 
 ### 1. Dependency Cleanup
+
 - **Removed 88 unused packages** (~20-25MB saved)
 - **Bundle size reduction** of 3-8MB potential
 - **Faster installs** by 20-25%
 
 ### 2. Code Splitting & Lazy Loading
+
 - **Route-based splitting** with Next.js automatic code splitting
 - **Component lazy loading** for modals, charts, and heavy components
 - **Intersection observer** for below-the-fold content
 - **Dynamic imports** for non-critical features
 
 ### 3. Mobile-Specific Optimizations
+
 - **Reduced animation complexity** on mobile devices
 - **Simplified memoization** for mobile to save memory
 - **Touch-optimized interactions** with proper debouncing
 - **Virtual scrolling** for long lists
 
 ### 4. Bundle Optimization
+
 - **Webpack chunk splitting** for better caching
 - **Package import optimization** for tree-shaking
 - **Vendor chunk separation** (React, UI libs, charts)
@@ -32,17 +36,19 @@ This guide outlines performance optimization strategies implemented in the mobil
 ## 📊 Performance Monitoring
 
 ### Core Web Vitals Targets
+
 - **First Contentful Paint (FCP)**: < 1.8s
 - **Largest Contentful Paint (LCP)**: < 2.5s
 - **First Input Delay (FID)**: < 100ms
 - **Cumulative Layout Shift (CLS)**: < 0.1
 
 ### Monitoring Tools
+
 ```typescript
 import { PerformanceMonitor } from "@/components/performance/PerformanceMonitor";
 
 // Add to your app root
-<PerformanceMonitor 
+<PerformanceMonitor
   enabled={true}
   onMetrics={(metrics) => {
     // Send to analytics
@@ -55,6 +61,7 @@ import { PerformanceMonitor } from "@/components/performance/PerformanceMonitor"
 ### 1. Component Optimization
 
 #### Use Mobile-Optimized Memoization
+
 ```typescript
 import { useMobileOptimizedMemo } from "@/lib/utils/mobile-performance";
 
@@ -63,12 +70,13 @@ const expensiveValue = useMobileOptimizedMemo(
   [data],
   {
     simplifyOnMobile: true,
-    mobileDeps: [data.id] // Simplified deps for mobile
-  }
+    mobileDeps: [data.id], // Simplified deps for mobile
+  },
 );
 ```
 
 #### Implement Lazy Loading
+
 ```typescript
 import { LazyOnView } from "@/lib/utils/lazy-loading";
 
@@ -78,6 +86,7 @@ import { LazyOnView } from "@/lib/utils/lazy-loading";
 ```
 
 #### Use Virtual Scrolling for Long Lists
+
 ```typescript
 import { VirtualScrollList } from "@/components/ui/VirtualScrollList";
 
@@ -91,6 +100,7 @@ import { VirtualScrollList } from "@/components/ui/VirtualScrollList";
 ### 2. Image Optimization
 
 #### Use Next.js Image Component
+
 ```typescript
 import Image from "next/image";
 
@@ -106,14 +116,16 @@ import Image from "next/image";
 ```
 
 #### Responsive Image Sizing
+
 ```typescript
 // Serve appropriate sizes based on viewport
-sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw";
 ```
 
 ### 3. Animation Optimization
 
 #### Use Mobile-Optimized Animations
+
 ```typescript
 import { MobileOptimizedAnimation } from "@/components/ui/MobileOptimizedAnimation";
 
@@ -127,6 +139,7 @@ import { MobileOptimizedAnimation } from "@/components/ui/MobileOptimizedAnimati
 ```
 
 #### CSS Transform Animations
+
 ```css
 /* Prefer transforms over layout-triggering properties */
 .animate-slide {
@@ -142,11 +155,13 @@ import { MobileOptimizedAnimation } from "@/components/ui/MobileOptimizedAnimati
 ### 4. Bundle Size Management
 
 #### Check Bundle Size Regularly
+
 ```bash
 npm run build:analyze
 ```
 
 #### Import Only What You Need
+
 ```typescript
 // ❌ Don't import entire libraries
 import * as Icons from "lucide-react";
@@ -156,6 +171,7 @@ import { Search, User, Settings } from "lucide-react";
 ```
 
 #### Use Dynamic Imports for Heavy Components
+
 ```typescript
 const HeavyChart = dynamic(() => import("./HeavyChart"), {
   loading: () => <ChartSkeleton />,
@@ -166,18 +182,20 @@ const HeavyChart = dynamic(() => import("./HeavyChart"), {
 ## 📱 Mobile-Specific Optimizations
 
 ### 1. Touch Interactions
+
 - **44px minimum tap targets**
 - **8px minimum spacing** between interactive elements
 - **Debounced touch handlers** to prevent double-taps
 - **Visual feedback** on touch interactions
 
 ### 2. Memory Management
+
 ```typescript
 // Use mobile-optimized memoization
 const memoizedValue = useMobileOptimizedMemo(
   () => expensiveComputation(),
   deps,
-  { simplifyOnMobile: true }
+  { simplifyOnMobile: true },
 );
 
 // Monitor memory usage in development
@@ -185,30 +203,33 @@ const memoryInfo = useMemoryMonitor();
 ```
 
 ### 3. Network Optimization
+
 ```typescript
 // Prefetch critical resources
 import { usePrefetchRoute } from "@/lib/utils/resource-prefetching";
 
 usePrefetchRoute("/dashboard", {
   enableOnMobile: true,
-  priority: "high"
+  priority: "high",
 });
 ```
 
 ## 🔧 Development Tools
 
 ### 1. Performance Monitoring
+
 ```typescript
 import { useRenderPerformance } from "@/components/performance/PerformanceMonitor";
 
 function MyComponent() {
   const { renderCount, measureRender } = useRenderPerformance("MyComponent");
-  
+
   // Component logic
 }
 ```
 
 ### 2. Bundle Analysis
+
 ```bash
 # Analyze bundle size
 npm run build:analyze
@@ -218,6 +239,7 @@ npm run audit:all
 ```
 
 ### 3. Performance Testing
+
 ```bash
 # Run visual regression tests
 npm run test:visual
@@ -229,13 +251,16 @@ npm run test -- --grep "performance"
 ## 📈 Performance Metrics
 
 ### Current Benchmarks
+
 - **Initial bundle size**: ~500KB (gzipped)
 - **Time to Interactive**: < 3s on 3G
 - **First Contentful Paint**: < 1.5s
 - **Mobile Lighthouse score**: 90+
 
 ### Monitoring Dashboard
+
 Track these metrics in production:
+
 - Core Web Vitals
 - Bundle size over time
 - Page load times by device type
@@ -245,6 +270,7 @@ Track these metrics in production:
 ## 🚨 Performance Alerts
 
 ### Red Flags
+
 - Bundle size increase > 10%
 - LCP > 2.5s
 - FID > 100ms
@@ -252,6 +278,7 @@ Track these metrics in production:
 - Memory usage > 80%
 
 ### Action Items
+
 1. **Immediate**: Investigate and fix critical performance regressions
 2. **Weekly**: Review bundle analyzer reports
 3. **Monthly**: Audit dependencies for unused packages
@@ -260,6 +287,7 @@ Track these metrics in production:
 ## 🎯 Future Optimizations
 
 ### Planned Improvements
+
 1. **Service Worker** for offline functionality
 2. **Resource hints** for critical resources
 3. **Edge caching** for API responses
@@ -267,6 +295,7 @@ Track these metrics in production:
 5. **WebP/AVIF** image formats
 
 ### Experimental Features
+
 - **React Server Components** for reduced client bundle
 - **Streaming SSR** for faster perceived performance
 - **Selective hydration** for critical components only
@@ -274,11 +303,13 @@ Track these metrics in production:
 ## 📚 Resources
 
 ### Tools
+
 - [Next.js Bundle Analyzer](https://www.npmjs.com/package/@next/bundle-analyzer)
 - [Lighthouse CI](https://github.com/GoogleChrome/lighthouse-ci)
 - [Web Vitals](https://web.dev/vitals/)
 
 ### Documentation
+
 - [Next.js Performance](https://nextjs.org/docs/advanced-features/measuring-performance)
 - [React Performance](https://react.dev/learn/render-and-commit)
 - [Web Performance](https://web.dev/performance/)

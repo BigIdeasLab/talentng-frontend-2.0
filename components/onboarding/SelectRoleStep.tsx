@@ -135,7 +135,9 @@ export const SelectRoleStep = ({
                 return (
                   <button
                     key={role.id}
-                    onClick={() => !isDisabled && setSelectedRole(role.id as Role)}
+                    onClick={() =>
+                      !isDisabled && setSelectedRole(role.id as Role)
+                    }
                     disabled={isDisabled}
                     className={`flex flex-col overflow-hidden transition-all rounded-[10px] relative flex-shrink-0 w-[200px] ${
                       isDisabled
@@ -212,7 +214,9 @@ export const SelectRoleStep = ({
               return (
                 <button
                   key={role.id}
-                  onClick={() => !isDisabled && setSelectedRole(role.id as Role)}
+                  onClick={() =>
+                    !isDisabled && setSelectedRole(role.id as Role)
+                  }
                   disabled={isDisabled}
                   className={`flex flex-col overflow-hidden transition-all rounded-[10px] relative ${
                     isDisabled

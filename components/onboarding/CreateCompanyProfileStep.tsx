@@ -128,7 +128,7 @@ export const CreateCompanyProfileStep = ({
                 />
               </div>
             </form>
-            
+
             {/* Continue Button */}
             <div className="flex justify-center pt-6">
               <button
@@ -137,7 +137,11 @@ export const CreateCompanyProfileStep = ({
                 disabled={isLoading}
                 className="px-8 py-2 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-11 flex items-center justify-center w-full md:w-auto"
               >
-                {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Continue"}
+                {isLoading ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  "Continue"
+                )}
               </button>
             </div>
           </div>

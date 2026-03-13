@@ -47,7 +47,9 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
         // First Contentful Paint
         const fcpObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries();
-          const fcpEntry = entries.find((entry) => entry.name === "first-contentful-paint");
+          const fcpEntry = entries.find(
+            (entry) => entry.name === "first-contentful-paint",
+          );
           if (fcpEntry) {
             metrics.fcp = fcpEntry.startTime;
             metricsRef.current.fcp = fcpEntry.startTime;
@@ -70,7 +72,8 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
           const fidEntry = entries[0] as any; // FID entries have processingStart
           if (fidEntry && fidEntry.processingStart) {
             metrics.fid = fidEntry.processingStart - fidEntry.startTime;
-            metricsRef.current.fid = fidEntry.processingStart - fidEntry.startTime;
+            metricsRef.current.fid =
+              fidEntry.processingStart - fidEntry.startTime;
           }
         });
 
@@ -123,21 +126,42 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
     // Report metrics after a delay to ensure all are collected
     const reportTimer = setTimeout(() => {
       const finalMetrics = { ...metricsRef.current };
-      
+
       if (logToConsole) {
-        console.group(`🚀 Performance Metrics ${isMobile ? "(Mobile)" : "(Desktop)"}`);
-        console.log("First Contentful Paint (FCP):", finalMetrics.fcp ? `${finalMetrics.fcp.toFixed(2)}ms` : "N/A");
-        console.log("Largest Contentful Paint (LCP):", finalMetrics.lcp ? `${finalMetrics.lcp.toFixed(2)}ms` : "N/A");
-        console.log("First Input Delay (FID):", finalMetrics.fid ? `${finalMetrics.fid.toFixed(2)}ms` : "N/A");
-        console.log("Cumulative Layout Shift (CLS):", finalMetrics.cls ? finalMetrics.cls.toFixed(4) : "N/A");
-        console.log("Time to First Byte (TTFB):", finalMetrics.ttfb ? `${finalMetrics.ttfb.toFixed(2)}ms` : "N/A");
-        
+        console.group(
+          `🚀 Performance Metrics ${isMobile ? "(Mobile)" : "(Desktop)"}`,
+        );
+        console.log(
+          "First Contentful Paint (FCP):",
+          finalMetrics.fcp ? `${finalMetrics.fcp.toFixed(2)}ms` : "N/A",
+        );
+        console.log(
+          "Largest Contentful Paint (LCP):",
+          finalMetrics.lcp ? `${finalMetrics.lcp.toFixed(2)}ms` : "N/A",
+        );
+        console.log(
+          "First Input Delay (FID):",
+          finalMetrics.fid ? `${finalMetrics.fid.toFixed(2)}ms` : "N/A",
+        );
+        console.log(
+          "Cumulative Layout Shift (CLS):",
+          finalMetrics.cls ? finalMetrics.cls.toFixed(4) : "N/A",
+        );
+        console.log(
+          "Time to First Byte (TTFB):",
+          finalMetrics.ttfb ? `${finalMetrics.ttfb.toFixed(2)}ms` : "N/A",
+        );
+
         // Performance recommendations
         if (finalMetrics.lcp && finalMetrics.lcp > 2500) {
-          console.warn("⚠️ LCP is slow (>2.5s). Consider optimizing images and critical resources.");
+          console.warn(
+            "⚠️ LCP is slow (>2.5s). Consider optimizing images and critical resources.",
+          );
         }
         if (finalMetrics.fid && finalMetrics.fid > 100) {
-          console.warn("⚠️ FID is slow (>100ms). Consider reducing JavaScript execution time.");
+          console.warn(
+            "⚠️ FID is slow (>100ms). Consider reducing JavaScript execution time.",
+          );
         }
         if (finalMetrics.cls && finalMetrics.cls > 0.1) {
           console.warn("⚠️ CLS is high (>0.1). Consider fixing layout shifts.");
@@ -171,10 +195,10 @@ export function useRenderPerformance(componentName: string) {
 
   React.useEffect(() => {
     const renderTime = performance.now() - renderStartTime.current;
-    
+
     if (process.env.NODE_ENV === "development" && renderTime > 16) {
       console.warn(
-        `🐌 Slow render: ${componentName} took ${renderTime.toFixed(2)}ms (render #${renderCount.current})`
+        `🐌 Slow render: ${componentName} took ${renderTime.toFixed(2)}ms (render #${renderCount.current})`,
       );
     }
   });
@@ -201,7 +225,10 @@ export function useMemoryMonitor(intervalMs: number = 5000) {
   }>({});
 
   React.useEffect(() => {
-    if (process.env.NODE_ENV !== "development" || typeof window === "undefined") {
+    if (
+      process.env.NODE_ENV !== "development" ||
+      typeof window === "undefined"
+    ) {
       return;
     }
 
@@ -217,7 +244,8 @@ export function useMemoryMonitor(intervalMs: number = 5000) {
         });
 
         // Warn if memory usage is high
-        const usagePercent = (memory.usedJSHeapSize / memory.jsHeapSizeLimit) * 100;
+        const usagePercent =
+          (memory.usedJSHeapSize / memory.jsHeapSizeLimit) * 100;
         if (usagePercent > 80) {
           console.warn(`🧠 High memory usage: ${usagePercent.toFixed(1)}%`);
         }

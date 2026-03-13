@@ -489,7 +489,7 @@ export const CompanyProfileStep = ({
                 />
               </div>
             </form>
-            
+
             {/* Continue Button */}
             <div className="flex justify-center pt-6">
               <button

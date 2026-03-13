@@ -3,6 +3,7 @@
 ## ✅ REMOVED (88 packages)
 
 ### Previously Removed:
+
 - `@react-three/drei` - 3D graphics library (not used)
 - `@react-three/fiber` - React renderer for Three.js (not used)
 - `three` - 3D graphics library (not used)
@@ -10,6 +11,7 @@
 - `@vitest/ui` - Visual UI for Vitest (not actively used)
 
 ### Recently Removed (Performance & Cleanup Branch):
+
 - `@radix-ui/react-context-menu` - Right-click context menus (not used)
 - `@radix-ui/react-menubar` - Menu bars (not used)
 - `@radix-ui/react-navigation-menu` - Complex navigation menus (not used)
@@ -65,6 +67,7 @@ These are essential and should NOT be removed:
 - Reduced security surface area
 
 **Bundle Size Optimization:**
+
 - Eliminated unused Radix UI components (~3-5MB potential savings)
 - Removed unused carousel library (~200KB)
 - Removed unused drawer library (~50KB)
@@ -72,6 +75,7 @@ These are essential and should NOT be removed:
 - Removed unused resizable panels (~150KB)
 
 **Development Experience Improvements:**
+
 - Faster dependency installation
 - Cleaner package.json
 - Reduced TypeScript compilation overhead

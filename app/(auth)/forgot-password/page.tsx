@@ -22,7 +22,10 @@ import {
 } from "@/components/ui/form";
 import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
 import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
-import { RateLimitNotification, useRateLimitHandler } from "@/components/ui/RateLimitNotification";
+import {
+  RateLimitNotification,
+  useRateLimitHandler,
+} from "@/components/ui/RateLimitNotification";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
@@ -32,8 +35,9 @@ type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 
 const ForgotPassword = () => {
   const router = useRouter();
-  const { rateLimitError, isRateLimited, handleError, clearRateLimit } = useRateLimitHandler();
-  
+  const { rateLimitError, isRateLimited, handleError, clearRateLimit } =
+    useRateLimitHandler();
+
   const form = useForm<ForgotPasswordFormValues>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
@@ -52,7 +56,7 @@ const ForgotPassword = () => {
     onError: (error: any) => {
       // Check if this is a rate limiting error
       const isRateLimit = handleError(error);
-      
+
       if (!isRateLimit) {
         // Handle non-rate-limit errors with toast
         const message =
@@ -113,7 +117,7 @@ const ForgotPassword = () => {
                     >
                       {/* Rate Limit Notification */}
                       {isRateLimited && (
-                        <RateLimitNotification 
+                        <RateLimitNotification
                           error={rateLimitError}
                           onRetryEnabled={clearRateLimit}
                           className="mb-2"

@@ -3,7 +3,7 @@
  * Generates and manages unique device IDs for multi-device session tracking
  */
 
-import { generateUUID } from '@/lib/utils/uuid';
+import { generateUUID } from "@/lib/utils/uuid";
 
 /**
  * Get or create a unique device ID (persisted in localStorage)

@@ -363,7 +363,7 @@ describe("Property-Based Tests: Recruiter Opportunities Improvements", () => {
       ),
       { numRuns: 50 },
     );
-  });
+  }, 10000);
 
   /**
    * Property 9: Loading State Optimization

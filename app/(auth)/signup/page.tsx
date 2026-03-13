@@ -23,7 +23,10 @@ import {
 } from "@/components/ui/form";
 import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
 import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
-import { RateLimitNotification, useRateLimitHandler } from "@/components/ui/RateLimitNotification";
+import {
+  RateLimitNotification,
+  useRateLimitHandler,
+} from "@/components/ui/RateLimitNotification";
 
 const signUpSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -45,7 +48,8 @@ const Signup = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
-  const { rateLimitError, isRateLimited, handleError, clearRateLimit } = useRateLimitHandler();
+  const { rateLimitError, isRateLimited, handleError, clearRateLimit } =
+    useRateLimitHandler();
 
   const passwordChecks = {
     length: password.length >= 8,
@@ -76,7 +80,7 @@ const Signup = () => {
     onError: (error: any) => {
       // Check if this is a rate limiting error
       const isRateLimit = handleError(error);
-      
+
       if (!isRateLimit) {
         // Handle other types of errors with toast
         const message = error.message || "An error occurred. Please try again.";
@@ -138,7 +142,7 @@ const Signup = () => {
                     >
                       {/* Rate Limit Notification */}
                       {isRateLimited && rateLimitError && (
-                        <RateLimitNotification 
+                        <RateLimitNotification
                           error={rateLimitError}
                           onRetryEnabled={clearRateLimit}
                           className="mb-2"

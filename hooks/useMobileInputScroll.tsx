@@ -20,9 +20,12 @@ export const useMobileInputScroll = () => {
   useEffect(() => {
     const handleFocus = (event: FocusEvent) => {
       const target = event.target as HTMLElement;
-      
+
       // Only handle input elements on mobile
-      if (!target || !['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) {
+      if (
+        !target ||
+        !["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)
+      ) {
         return;
       }
 
@@ -37,16 +40,16 @@ export const useMobileInputScroll = () => {
         const viewportHeight = window.innerHeight;
         const keyboardHeight = viewportHeight * 0.4; // Estimate keyboard height
         const availableHeight = viewportHeight - keyboardHeight;
-        
+
         // Calculate desired position (input should be in upper third of available space)
         const desiredTop = availableHeight * 0.25;
-        
+
         if (rect.top > desiredTop || rect.bottom > availableHeight) {
           const scrollOffset = rect.top - desiredTop;
-          
+
           window.scrollBy({
             top: scrollOffset,
-            behavior: 'smooth'
+            behavior: "smooth",
           });
         }
       }, 300); // Wait for keyboard animation
@@ -63,12 +66,12 @@ export const useMobileInputScroll = () => {
     };
 
     // Add event listeners to document
-    document.addEventListener('focusin', handleFocus);
-    document.addEventListener('focusout', handleBlur);
+    document.addEventListener("focusin", handleFocus);
+    document.addEventListener("focusout", handleBlur);
 
     return () => {
-      document.removeEventListener('focusin', handleFocus);
-      document.removeEventListener('focusout', handleBlur);
+      document.removeEventListener("focusin", handleFocus);
+      document.removeEventListener("focusout", handleBlur);
     };
   }, []);
 

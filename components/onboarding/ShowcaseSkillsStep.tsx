@@ -554,7 +554,7 @@ export const ShowcaseSkillsStep = ({
                 )}
               </div>
             </form>
-            
+
             {/* Complete Button */}
             <div className="flex justify-center pt-6">
               <button

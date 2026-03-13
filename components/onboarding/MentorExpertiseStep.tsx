@@ -617,7 +617,7 @@ export const MentorExpertiseStep = ({
                 )}
               </div>
             </form>
-            
+
             {/* Complete Button */}
             <div className="flex justify-center pt-6">
               <button

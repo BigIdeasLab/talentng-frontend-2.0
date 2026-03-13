@@ -15,6 +15,7 @@ npm run dev:mobile
 ```
 
 This will:
+
 1. Automatically detect your local IP address
 2. Update the `.env` file with the correct API URL
 3. Start the development server with network access
@@ -60,6 +61,7 @@ After running the setup, you'll see output like:
 ```
 
 **Steps:**
+
 1. Ensure your phone is on the same Wi-Fi network
 2. Open your phone's browser
 3. Navigate to the Frontend URL shown in the setup output
@@ -70,17 +72,20 @@ After running the setup, you'll see output like:
 ### Common Issues
 
 **1. Connection Refused**
+
 - Ensure Windows Firewall allows Node.js connections
 - Check if antivirus is blocking the connection
 - Verify both devices are on the same network
 
 **2. Firewall Configuration (Windows)**
+
 ```cmd
 # Allow Node.js through Windows Firewall
 netsh advfirewall firewall add rule name="Node.js Server" dir=in action=allow protocol=TCP localport=8080
 ```
 
 **3. Alternative: Use ngrok for External Access**
+
 ```bash
 # Install ngrok globally
 npm install -g ngrok
@@ -94,6 +99,7 @@ This creates a public URL you can access from anywhere.
 ## 📋 Testing Checklist
 
 ### Responsive Design Testing
+
 - [ ] **Mobile Portrait** (< 768px width)
   - Navigation drawer opens/closes
   - Tables convert to cards
@@ -116,6 +122,7 @@ This creates a public URL you can access from anywhere.
   - Desktop-like experience
 
 ### Touch Interaction Testing
+
 - [ ] **Tap Targets**
   - All buttons are easily tappable
   - Minimum 44px touch targets
@@ -132,6 +139,7 @@ This creates a public URL you can access from anywhere.
   - Form validation works properly
 
 ### Performance Testing
+
 - [ ] **Loading Speed**
   - Initial page load < 3 seconds
   - Navigation feels responsive
@@ -145,15 +153,19 @@ This creates a public URL you can access from anywhere.
 ## 🔍 Browser Developer Tools on Mobile
 
 ### iOS Safari
+
 1. Enable Web Inspector: Settings > Safari > Advanced > Web Inspector
 2. Connect to Mac and use Safari Developer Tools
 
 ### Android Chrome
+
 1. Enable USB Debugging in Developer Options
 2. Connect to computer and use Chrome DevTools
 
 ### Alternative: Use Browser DevTools
+
 Most mobile browsers have built-in developer tools:
+
 - **Chrome Mobile**: Menu > More Tools > Developer Tools
 - **Firefox Mobile**: Menu > Settings > Developer Tools
 
@@ -173,6 +185,7 @@ The app includes built-in performance monitoring:
 ## 🎯 Testing Scenarios
 
 ### Critical User Flows
+
 1. **Authentication**
    - Login on mobile
    - Signup process
@@ -194,6 +207,7 @@ The app includes built-in performance monitoring:
    - Dashboard interactions
 
 ### Device-Specific Testing
+
 - **Small Phones** (320px - 375px): iPhone SE, older Android
 - **Standard Phones** (375px - 414px): iPhone 12/13, Pixel
 - **Large Phones** (414px+): iPhone Pro Max, Galaxy Note
