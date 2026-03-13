@@ -181,6 +181,30 @@ describe("ResponsiveFormButtons", () => {
     expect(button).toHaveClass("md:w-auto");
   });
 
+  it("adds full width classes when fullWidth is true", () => {
+    render(
+      <ResponsiveFormButtons fullWidth>
+        <Button data-testid="btn">Submit</Button>
+      </ResponsiveFormButtons>,
+    );
+
+    const button = screen.getByTestId("btn");
+    expect(button).toHaveClass("w-full");
+    expect(button).not.toHaveClass("md:w-auto");
+  });
+
+  it("applies default responsive width when fullWidth is false", () => {
+    render(
+      <ResponsiveFormButtons fullWidth={false}>
+        <Button data-testid="btn">Submit</Button>
+      </ResponsiveFormButtons>,
+    );
+
+    const button = screen.getByTestId("btn");
+    expect(button).toHaveClass("w-full");
+    expect(button).toHaveClass("md:w-auto");
+  });
+
   it("adds minimum height class to button children", () => {
     render(
       <ResponsiveFormButtons>
@@ -404,5 +428,17 @@ describe("ResponsiveFormButtons layout patterns", () => {
     expect(screen.getByTestId("back")).toBeInTheDocument();
     expect(screen.getByTestId("save")).toBeInTheDocument();
     expect(screen.getByTestId("next")).toBeInTheDocument();
+  });
+
+  it("supports single full-width button pattern", () => {
+    render(
+      <ResponsiveFormButtons fullWidth>
+        <Button data-testid="continue">Continue</Button>
+      </ResponsiveFormButtons>,
+    );
+
+    const button = screen.getByTestId("continue");
+    expect(button).toHaveClass("w-full");
+    expect(button).not.toHaveClass("md:w-auto");
   });
 });

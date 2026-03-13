@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/form";
 import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
 import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
+import { RateLimitNotification, useRateLimitHandler } from "@/components/ui/RateLimitNotification";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
@@ -31,6 +32,8 @@ type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 
 const ForgotPassword = () => {
   const router = useRouter();
+  const { rateLimitError, isRateLimited, handleError, clearRateLimit } = useRateLimitHandler();
+  
   const form = useForm<ForgotPasswordFormValues>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
@@ -47,13 +50,21 @@ const ForgotPassword = () => {
       );
     },
     onError: (error: any) => {
-      const message =
-        error.message || "Failed to send reset link. Please try again.";
-      toast.error(message);
+      // Check if this is a rate limiting error
+      const isRateLimit = handleError(error);
+      
+      if (!isRateLimit) {
+        // Handle non-rate-limit errors with toast
+        const message =
+          error.message || "Failed to send reset link. Please try again.";
+        toast.error(message);
+      }
     },
   });
 
   const handleSubmit = (data: ForgotPasswordFormValues) => {
+    // Clear any existing rate limit errors when user retries
+    clearRateLimit();
     mutation.mutate(data);
   };
 
@@ -67,9 +78,9 @@ const ForgotPassword = () => {
       />
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-6 md:py-8 lg:py-12 md:px-6 lg:px-8 overflow-hidden">
+      <div className="relative z-10 min-h-screen flex items-start md:items-center justify-center px-4 py-6 md:py-8 lg:py-12 md:px-6 lg:px-8 overflow-hidden">
         <div className="w-full max-w-5xl max-h-full">
-          <div className="bg-white rounded-[20px] md:rounded-[30px] shadow-lg overflow-hidden min-h-[500px] md:h-[600px] flex flex-col">
+          <div className="bg-white rounded-[20px] md:rounded-[30px] shadow-lg overflow-hidden min-h-[500px] md:h-[600px] flex flex-col mt-4 md:mt-0">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
               {/* Left Side - Logo */}
               <div className="hidden md:flex flex-col items-center justify-center p-8 lg:p-12 bg-white min-h-[400px] md:min-h-auto">
@@ -100,6 +111,15 @@ const ForgotPassword = () => {
                       onSubmit={form.handleSubmit(handleSubmit)}
                       className="flex flex-col gap-3 w-full"
                     >
+                      {/* Rate Limit Notification */}
+                      {isRateLimited && (
+                        <RateLimitNotification 
+                          error={rateLimitError}
+                          onRetryEnabled={clearRateLimit}
+                          className="mb-2"
+                        />
+                      )}
+
                       {/* Email Field */}
                       <ResponsiveFormField fullWidth>
                         <label className="text-xs md:text-sm font-medium text-black">
@@ -128,12 +148,14 @@ const ForgotPassword = () => {
                       <ResponsiveFormButtons>
                         <Button
                           type="submit"
-                          disabled={mutation.isPending}
+                          disabled={mutation.isPending || isRateLimited}
                           style={{ backgroundColor: COLORS.primary }}
                           className="h-[48px] rounded-[10px] text-white font-semibold text-sm md:text-base hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {mutation.isPending ? (
                             <Loader2 size={18} className="animate-spin" />
+                          ) : isRateLimited ? (
+                            "Please Wait..."
                           ) : (
                             "Send Reset Code"
                           )}
@@ -141,7 +163,7 @@ const ForgotPassword = () => {
 
                         <Link
                           href="/login"
-                          className="h-[48px] rounded-[10px] bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-800 font-medium text-sm md:text-base transition-colors"
+                          className="px-4 py-2 h-10 md:h-[48px] rounded-[10px] bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-800 font-medium text-sm md:text-base transition-colors"
                         >
                           Cancel
                         </Link>

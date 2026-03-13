@@ -71,7 +71,7 @@ export function createRoleBasedPage(
 
     if (!selectedComponent) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="min-h-screen flex items-start md:items-center justify-center bg-white pt-16 md:pt-0">
           <div className="text-center">
             <p className="text-gray-600">No component found for role: {role}</p>
           </div>

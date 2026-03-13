@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/form";
 import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
 import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
+import { RateLimitNotification, useRateLimitHandler } from "@/components/ui/RateLimitNotification";
 
 const signUpSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -44,6 +45,7 @@ const Signup = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
+  const { rateLimitError, isRateLimited, handleError, clearRateLimit } = useRateLimitHandler();
 
   const passwordChecks = {
     length: password.length >= 8,
@@ -72,8 +74,15 @@ const Signup = () => {
       );
     },
     onError: (error: any) => {
-      const message = error.message || "An error occurred. Please try again.";
-      toast.error(message);
+      // Check if this is a rate limiting error
+      const isRateLimit = handleError(error);
+      
+      if (!isRateLimit) {
+        // Handle other types of errors with toast
+        const message = error.message || "An error occurred. Please try again.";
+        toast.error(message);
+      }
+      // Rate limit errors are handled by the RateLimitNotification component
     },
   });
 
@@ -95,9 +104,9 @@ const Signup = () => {
       />
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-6 md:py-8 lg:py-12 md:px-6 lg:px-8 overflow-hidden">
+      <div className="relative z-10 min-h-screen flex items-start md:items-center justify-center px-4 py-6 md:py-8 lg:py-12 md:px-6 lg:px-8 overflow-hidden">
         <div className="w-full max-w-5xl max-h-full">
-          <div className="bg-white rounded-[20px] md:rounded-[30px] shadow-lg overflow-hidden min-h-[500px] md:h-[600px] flex flex-col">
+          <div className="bg-white rounded-[20px] md:rounded-[30px] shadow-lg overflow-hidden min-h-[500px] md:h-[600px] flex flex-col mt-4 md:mt-0">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
               {/* Left Side - Logo */}
               <div className="hidden md:flex flex-col items-center justify-center p-8 lg:p-12 bg-white overflow-hidden">
@@ -127,6 +136,15 @@ const Signup = () => {
                       onSubmit={form.handleSubmit(onSubmit)}
                       className="flex flex-col gap-2"
                     >
+                      {/* Rate Limit Notification */}
+                      {isRateLimited && rateLimitError && (
+                        <RateLimitNotification 
+                          error={rateLimitError}
+                          onRetryEnabled={clearRateLimit}
+                          className="mb-2"
+                        />
+                      )}
+
                       {/* Email Field */}
                       <ResponsiveFormField fullWidth>
                         <label className="text-xs md:text-sm font-medium text-black">
@@ -306,15 +324,17 @@ const Signup = () => {
                       </ResponsiveFormField>
 
                       {/* Continue Button */}
-                      <ResponsiveFormButtons>
+                      <ResponsiveFormButtons fullWidth>
                         <Button
                           type="submit"
-                          disabled={mutation.isPending}
+                          disabled={mutation.isPending || isRateLimited}
                           style={{ backgroundColor: COLORS.primary }}
                           className="h-[48px] rounded-[10px] text-white font-semibold text-sm md:text-base hover:opacity-90 disabled:opacity-50"
                         >
                           {mutation.isPending ? (
                             <Loader2 size={18} className="animate-spin" />
+                          ) : isRateLimited ? (
+                            "Please Wait..."
                           ) : (
                             "Continue"
                           )}

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import type { ApplicationInterview } from "@/lib/api/applications/types";
+import { copyToClipboard } from "@/lib/utils/clipboard";
 
 interface TalentInterviewCardProps {
   interview: ApplicationInterview;
@@ -76,9 +77,11 @@ export function TalentInterviewCard({
     e.stopPropagation();
     if (interview.meetingLink) {
       try {
-        await navigator.clipboard.writeText(interview.meetingLink);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        const success = await copyToClipboard(interview.meetingLink);
+        if (success) {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        }
       } catch (err) {
         console.error("Failed to copy link:", err);
       }

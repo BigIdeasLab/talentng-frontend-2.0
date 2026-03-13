@@ -237,6 +237,22 @@ const apiClient = async <T>(
         );
       }
 
+      // Handle rate limiting errors (429)
+      if (response.status === 429) {
+        const error = new Error(errorMessage);
+        (error as any).status = 429;
+        (error as any).isRateLimit = true;
+        (error as any).data = errorData;
+        
+        // Try to extract retry-after header
+        const retryAfter = response.headers.get('retry-after');
+        if (retryAfter) {
+          (error as any).retryAfter = parseInt(retryAfter, 10);
+        }
+        
+        throw error;
+      }
+
       // Handle specific error types with user-friendly messages
       if (
         errorMessage.includes("Transaction already closed") ||

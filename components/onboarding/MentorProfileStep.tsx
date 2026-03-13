@@ -6,7 +6,6 @@ import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import statesCitiesData from "@/lib/data/states-cities.json";
 import { useCheckUsernameAvailability } from "@/hooks/useUserApi";
 import { useToast } from "@/hooks";
-import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
 import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
 
 type MentorProfileFormData = {
@@ -237,26 +236,17 @@ export const MentorProfileStep = ({
         <img
           src="/logo.png"
           alt="TalentNG Logo"
-          className="w-16 h-auto rounded-[3.457px] shadow-[0.777px_0.777px_24.66px_0_rgba(0,0,0,0.25)]"
+          className="w-16 h-auto rounded-[3.457px]"
         />
 
-        {/* Buttons */}
-        <ResponsiveFormButtons align="end">
-          <button
-            type="button"
-            onClick={onBack}
-            className="px-5 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-11"
-          >
-            Back
-          </button>
-          <button
-            type="submit"
-            onClick={handleSubmit}
-            className="px-5 py-2 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-11"
-          >
-            Continue
-          </button>
-        </ResponsiveFormButtons>
+        {/* Back Button */}
+        <button
+          type="button"
+          onClick={onBack}
+          className="px-4 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-10 md:px-5 md:py-2 md:text-sm md:h-11"
+        >
+          Back
+        </button>
       </div>
 
       {/* Main Content Grid */}
@@ -466,6 +456,17 @@ export const MentorProfileStep = ({
                 />
               </div>
             </form>
+            
+            {/* Continue Button */}
+            <div className="flex justify-center pt-6">
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                className="px-8 py-2 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-11 w-full md:w-auto"
+              >
+                Continue
+              </button>
+            </div>
           </div>
         </div>
 

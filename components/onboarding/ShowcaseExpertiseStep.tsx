@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { MentorExpertiseData } from "@/lib/types/onboarding";
-import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
 import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
 
 export const ShowcaseExpertiseStep = ({
@@ -43,25 +42,16 @@ export const ShowcaseExpertiseStep = ({
         <img
           src="/logo.png"
           alt="TalentNG Logo"
-          className="w-16 h-auto rounded-[3.457px] shadow-[0.777px_0.777px_24.66px_0_rgba(0,0,0,0.25)]"
+          className="w-16 h-auto rounded-[3.457px]"
         />
-        <ResponsiveFormButtons align="end">
-          <button
-            type="button"
-            onClick={onBack}
-            className="px-5 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-11"
-          >
-            Back
-          </button>
-          <button
-            type="submit"
-            onClick={handleSubmit}
-            disabled={isLoading}
-            className="px-5 py-2 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-11 disabled:bg-gray-500 disabled:cursor-not-allowed flex items-center justify-center"
-          >
-            {isLoading ? <Loader2 className="animate-spin" /> : "Continue"}
-          </button>
-        </ResponsiveFormButtons>
+        {/* Back Button */}
+        <button
+          type="button"
+          onClick={onBack}
+          className="px-4 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-10 md:px-5 md:py-2 md:text-sm md:h-11"
+        >
+          Back
+        </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-0 flex-1 overflow-hidden">
         <div className="flex flex-col justify-start p-6 md:p-10 md:pr-6 md:pl-12 bg-white overflow-y-auto scrollbar-hidden">
@@ -130,6 +120,18 @@ export const ShowcaseExpertiseStep = ({
                 />
               </div>
             </form>
+            
+            {/* Continue Button */}
+            <div className="flex justify-center pt-6">
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                disabled={isLoading}
+                className="px-8 py-2 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-11 flex items-center justify-center w-full md:w-auto"
+              >
+                {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Continue"}
+              </button>
+            </div>
           </div>
         </div>
         <div className="hidden md:flex flex-col items-center justify-center p-6 md:p-10 md:pl-6 bg-white h-full">

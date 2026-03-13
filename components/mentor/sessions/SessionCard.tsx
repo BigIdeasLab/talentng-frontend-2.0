@@ -11,6 +11,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import { copyToClipboard } from "@/lib/utils/clipboard";
 
 interface Mentee {
   id: string;
@@ -128,9 +129,11 @@ export function SessionCard({
     e.stopPropagation();
     if (location && /^https?:\/\//i.test(location)) {
       try {
-        await navigator.clipboard.writeText(location);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        const success = await copyToClipboard(location);
+        if (success) {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        }
       } catch (err) {
         console.error("Failed to copy link:", err);
       }

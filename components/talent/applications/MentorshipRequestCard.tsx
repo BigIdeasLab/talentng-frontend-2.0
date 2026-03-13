@@ -6,6 +6,7 @@ import { Calendar, Clock, MapPin, Video, Copy, Check } from "lucide-react";
 import Link from "next/link";
 import type { MentorshipRequest } from "@/lib/api/mentorship/types";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import { copyToClipboard } from "@/lib/utils/clipboard";
 
 interface MentorshipRequestCardProps {
   request: MentorshipRequest;
@@ -58,9 +59,11 @@ export function MentorshipRequestCard({ request }: MentorshipRequestCardProps) {
     e.stopPropagation();
     if (request.location && isLocationUrl) {
       try {
-        await navigator.clipboard.writeText(request.location);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        const success = await copyToClipboard(request.location);
+        if (success) {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        }
       } catch (err) {
         console.error("Failed to copy link:", err);
       }

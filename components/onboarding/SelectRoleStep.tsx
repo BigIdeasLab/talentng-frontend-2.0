@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Role } from "@/lib/types/onboarding";
 import { Check } from "lucide-react";
-import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
 
 const CheckIcon = () => (
   <svg
@@ -84,28 +83,26 @@ export const SelectRoleStep = ({
   return (
     <div className="relative h-full flex flex-col">
       {/* Top Bar with Logo and Back Button */}
-      <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 flex-shrink-0 bg-white">
+      <div className="flex items-center justify-between px-4 md:px-6 py-4 md:py-4 flex-shrink-0 bg-white">
         {/* Logo */}
         <img
           src="/logo.png"
           alt="TalentNG Logo"
-          className="w-16 h-auto rounded-[3.457px] shadow-[0.777px_0.777px_24.66px_0_rgba(0,0,0,0.25)]"
+          className="w-16 h-auto rounded-[3.457px]"
         />
 
         {/* Back Button */}
-        <ResponsiveFormButtons align="end">
-          <button
-            type="button"
-            onClick={onBack}
-            className="px-5 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-11"
-          >
-            Back
-          </button>
-        </ResponsiveFormButtons>
+        <button
+          type="button"
+          onClick={onBack}
+          className="px-4 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-10 md:px-5 md:py-2 md:text-sm md:h-11"
+        >
+          Back
+        </button>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col gap-3 px-5 md:px-8 py-3 justify-center items-center overflow-y-auto">
+      <div className="flex-1 flex flex-col gap-4 px-5 md:px-8 py-4 justify-start md:justify-center items-center overflow-y-auto">
         {/* Header */}
         <div className="flex flex-col gap-1.5 text-center w-full flex-shrink-0">
           <div className="flex items-center justify-center gap-2">
@@ -127,78 +124,159 @@ export const SelectRoleStep = ({
           </p>
         </div>
 
-        {/* Role Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full max-w-[640px] flex-shrink-0">
-          {roles.map((role) => {
-            const completed = isRoleCompleted(role.id);
-            const isDisabled = completed || isLoadingRoles;
-            return (
-              <button
-                key={role.id}
-                onClick={() => !isDisabled && setSelectedRole(role.id as Role)}
-                disabled={isDisabled}
-                className={`flex flex-col overflow-hidden transition-all rounded-[10px] relative ${
-                  isDisabled
-                    ? "opacity-50 cursor-not-allowed"
-                    : selectedRole === role.id
-                      ? "ring-2 ring-[#5C30FF]"
-                      : "hover:shadow-md"
-                }`}
-                title={
-                  isLoadingRoles
-                    ? "Loading your profile information..."
-                    : completed
-                      ? `You're already onboarded as ${role.label}`
-                      : ""
-                }
-              >
-                {/* Image */}
-                <div className="relative w-full aspect-square bg-[#E3E3E3] overflow-hidden">
-                  <img
-                    src={role.image}
-                    alt={role.label}
-                    className="w-full h-full object-cover"
-                  />
-
-                  {/* Loading or Completed Badge */}
-                  {(completed || isLoadingRoles) && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                      <div className="flex flex-col items-center gap-1">
-                        {isLoadingRoles ? (
-                          <>
-                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                            <span className="text-white text-xs font-medium">
-                              Loading...
-                            </span>
-                          </>
-                        ) : (
-                          <>
-                            <CheckIcon />
-                            <span className="text-white text-xs font-medium">
-                              Completed
-                            </span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Label */}
-                <div className="bg-white py-3 px-2 flex items-center justify-center">
-                  <span
-                    className={`text-sm font-medium font-[Inter_Tight] ${completed ? "text-gray-500 line-through" : "text-black"}`}
+        {/* Role Cards - Horizontal Scroll on Mobile */}
+        <div className="w-full max-w-[640px] flex-shrink-0 mt-2">
+          {/* Mobile: Horizontal Scroll */}
+          <div className="md:hidden">
+            <div className="flex gap-3 overflow-x-auto pb-2 px-1 scrollbar-hidden pt-2">
+              {roles.map((role) => {
+                const completed = isRoleCompleted(role.id);
+                const isDisabled = completed || isLoadingRoles;
+                return (
+                  <button
+                    key={role.id}
+                    onClick={() => !isDisabled && setSelectedRole(role.id as Role)}
+                    disabled={isDisabled}
+                    className={`flex flex-col overflow-hidden transition-all rounded-[10px] relative flex-shrink-0 w-[200px] ${
+                      isDisabled
+                        ? "opacity-50 cursor-not-allowed"
+                        : selectedRole === role.id
+                          ? "ring-2 ring-[#5C30FF] ring-offset-2"
+                          : "hover:shadow-md"
+                    }`}
+                    title={
+                      isLoadingRoles
+                        ? "Loading your profile information..."
+                        : completed
+                          ? `You're already onboarded as ${role.label}`
+                          : ""
+                    }
                   >
-                    {role.label}
-                  </span>
-                </div>
-              </button>
-            );
-          })}
+                    {/* Image */}
+                    <div className="relative w-full aspect-square bg-[#E3E3E3] overflow-hidden">
+                      <img
+                        src={role.image}
+                        alt={role.label}
+                        className="w-full h-full object-cover"
+                      />
+
+                      {/* Loading or Completed Badge */}
+                      {(completed || isLoadingRoles) && (
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                          <div className="flex flex-col items-center gap-1">
+                            {isLoadingRoles ? (
+                              <>
+                                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                <span className="text-white text-xs font-medium">
+                                  Loading...
+                                </span>
+                              </>
+                            ) : (
+                              <>
+                                <CheckIcon />
+                                <span className="text-white text-xs font-medium">
+                                  Completed
+                                </span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Label */}
+                    <div className="bg-white py-3 px-2 flex items-center justify-center">
+                      <span
+                        className={`text-sm font-medium font-[Inter_Tight] text-center ${completed ? "text-gray-500 line-through" : "text-black"}`}
+                      >
+                        {role.label}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+            {/* Scroll Indicator */}
+            <div className="flex justify-center mt-2">
+              <p className="text-xs text-gray-400 font-[Inter_Tight]">
+                ← Scroll to see all roles →
+              </p>
+            </div>
+          </div>
+
+          {/* Desktop: Grid Layout */}
+          <div className="hidden md:grid grid-cols-3 gap-3">
+            {roles.map((role) => {
+              const completed = isRoleCompleted(role.id);
+              const isDisabled = completed || isLoadingRoles;
+              return (
+                <button
+                  key={role.id}
+                  onClick={() => !isDisabled && setSelectedRole(role.id as Role)}
+                  disabled={isDisabled}
+                  className={`flex flex-col overflow-hidden transition-all rounded-[10px] relative ${
+                    isDisabled
+                      ? "opacity-50 cursor-not-allowed"
+                      : selectedRole === role.id
+                        ? "ring-2 ring-[#5C30FF] ring-offset-2"
+                        : "hover:shadow-md"
+                  }`}
+                  title={
+                    isLoadingRoles
+                      ? "Loading your profile information..."
+                      : completed
+                        ? `You're already onboarded as ${role.label}`
+                        : ""
+                  }
+                >
+                  {/* Image */}
+                  <div className="relative w-full aspect-square bg-[#E3E3E3] overflow-hidden">
+                    <img
+                      src={role.image}
+                      alt={role.label}
+                      className="w-full h-full object-cover"
+                    />
+
+                    {/* Loading or Completed Badge */}
+                    {(completed || isLoadingRoles) && (
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                        <div className="flex flex-col items-center gap-1">
+                          {isLoadingRoles ? (
+                            <>
+                              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                              <span className="text-white text-xs font-medium">
+                                Loading...
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <CheckIcon />
+                              <span className="text-white text-xs font-medium">
+                                Completed
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Label */}
+                  <div className="bg-white py-3 px-2 flex items-center justify-center">
+                    <span
+                      className={`text-sm font-medium font-[Inter_Tight] ${completed ? "text-gray-500 line-through" : "text-black"}`}
+                    >
+                      {role.label}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Continue Button */}
-        <div className="flex justify-center pt-2 flex-shrink-0">
+        <div className="flex justify-center pt-4 flex-shrink-0">
           <Button
             onClick={() => selectedRole && onNext(selectedRole)}
             disabled={!selectedRole}

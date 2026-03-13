@@ -7,8 +7,9 @@ import { useCheckUsernameAvailability } from "@/hooks/useUserApi";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import statesCitiesData from "@/lib/data/states-cities.json";
 import { useToast } from "@/hooks";
-import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
 import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
+import { MobileFormLayout } from "@/components/forms/MobileFormLayout";
+import { useMobileInputScroll } from "@/hooks/useMobileInputScroll";
 
 type UsernameStatus = "idle" | "checking" | "available" | "taken" | "invalid";
 
@@ -28,6 +29,10 @@ export const CreateProfileStep = ({
   currentUsername?: string;
 }) => {
   const { toast } = useToast();
+  const { registerInput } = useMobileInputScroll();
+  
+  // Mobile flow state: 'form' or 'image'
+  const [mobileStep, setMobileStep] = useState<'form' | 'image'>('form');
 
   // Parse location into state and city if provided
   const parseLocation = (location: string) => {
@@ -207,6 +212,12 @@ export const CreateProfileStep = ({
       }
     }
 
+    // On mobile, first show image upload step
+    if (window.innerWidth < 768 && mobileStep === 'form') {
+      setMobileStep('image');
+      return;
+    }
+
     // Build location string from state and city
     const location =
       formData.city && formData.state
@@ -229,6 +240,129 @@ export const CreateProfileStep = ({
       : "Your Name";
   const displayBio = formData.bio || "Your Bio";
 
+  // Handle mobile back button
+  const handleMobileBack = () => {
+    if (mobileStep === 'image') {
+      setMobileStep('form');
+    } else {
+      onBack();
+    }
+  };
+
+  // Mobile Image Upload Step Component
+  const MobileImageStep = () => (
+    <div className="flex flex-col justify-center items-center p-6 bg-white h-full">
+      <div className="flex flex-col gap-8 w-full max-w-sm">
+        {/* Header */}
+        <div className="flex flex-col gap-1 text-center">
+          <p className="text-[13px] text-[#919191] font-light font-[Inter_Tight] leading-[120%] capitalize">
+            Step 2/3
+          </p>
+          <h2 className="text-[22px] text-black font-medium font-[Inter_Tight] leading-[105%]">
+            Upload Profile Picture
+          </h2>
+          <p className="text-[15px] text-[#666] font-normal font-[Inter_Tight] mt-2">
+            Add a profile picture to complete your profile
+          </p>
+        </div>
+
+        {/* Image Upload Area */}
+        <div
+          className={`w-full h-64 flex flex-col items-center justify-center rounded-[18px] bg-[#F5F5F5] relative overflow-hidden cursor-pointer transition-colors border-2 border-dashed ${
+            isDragging
+              ? "bg-[#E0E0E0] border-purple-600"
+              : "border-[#D9D9D9]"
+          }`}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onClick={() =>
+            document.getElementById("profile-image-input")?.click()
+          }
+        >
+          {imagePreview ? (
+            <img
+              src={imagePreview}
+              alt="Profile preview"
+              className="w-full h-full object-cover rounded-[16px]"
+            />
+          ) : (
+            <>
+              {/* Upload Icon Circle */}
+              <div className="w-20 h-20 rounded-full bg-[#D9D9D9] flex items-center justify-center mb-4">
+                <svg
+                  className="w-12 h-12"
+                  viewBox="0 0 74 74"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M15.4167 64.75C13.7208 64.75 12.2696 64.1467 11.063 62.9401C9.85639 61.7335 9.25206 60.2812 9.25 58.5833V15.4167C9.25 13.7208 9.85433 12.2696 11.063 11.063C12.2717 9.85639 13.7229 9.25206 15.4167 9.25H58.5833C60.2792 9.25 61.7314 9.85433 62.9401 11.063C64.1488 12.2717 64.7521 13.7229 64.75 15.4167V58.5833C64.75 60.2792 64.1467 61.7314 62.9401 62.9401C61.7335 64.1488 60.2812 64.7521 58.5833 64.75H15.4167ZM18.5 52.4167H55.5L43.9375 37L34.6875 49.3333L27.75 40.0833L18.5 52.4167Z"
+                    fill="white"
+                  />
+                </svg>
+              </div>
+
+              {/* Upload Text */}
+              <div className="flex flex-col items-center gap-3 text-center px-4">
+                <div className="text-[#404040] text-[16px] font-medium font-[Inter_Tight] leading-[105%]">
+                  Upload Profile Picture
+                </div>
+                <div className="text-[#919191] text-[14px] font-light font-[Inter_Tight] leading-[120%]">
+                  Tap to select or drag and drop image here
+                </div>
+              </div>
+            </>
+          )}
+          <input
+            id="profile-image-input"
+            type="file"
+            accept="image/*"
+            onChange={handleFileInput}
+            className="hidden"
+          />
+        </div>
+
+        {/* Profile Preview */}
+        <div className="bg-[#F8F8F8] rounded-[12px] p-4 text-center">
+          <div className="text-black text-[18px] font-medium font-[Inter_Tight] leading-[105%] mb-2">
+            {displayName}
+          </div>
+          <div className="text-[#919191] text-[14px] font-light font-[Inter_Tight] leading-[120%]">
+            {displayBio}
+          </div>
+        </div>
+
+        {/* Continue Button */}
+        <button
+          type="button"
+          onClick={handleSubmit}
+          className="w-full px-5 py-3 bg-[#5C30FF] text-white rounded-[10px] text-sm font-medium font-[Inter_Tight] hover:bg-[#4a1fe5] transition-colors h-12"
+        >
+          Continue
+        </button>
+      </div>
+    </div>
+  );
+
+  // Create continue button component
+  const continueButton = (
+    <button
+      type="submit"
+      onClick={handleSubmit}
+      className="w-full px-5 py-3 bg-[#5C30FF] text-white rounded-[10px] text-sm font-medium font-[Inter_Tight] hover:bg-[#4a1fe5] transition-colors h-12 disabled:opacity-50"
+      disabled={
+        !isAddingRole && 
+        (usernameStatus === "checking" || 
+         usernameStatus === "taken" || 
+         usernameStatus === "invalid" ||
+         usernameStatus === "idle")
+      }
+    >
+      Continue
+    </button>
+  );
+
   return (
     <div className="relative h-full flex flex-col">
       {/* Top Bar with Logo and Buttons */}
@@ -237,45 +371,47 @@ export const CreateProfileStep = ({
         <img
           src="/logo.png"
           alt="TalentNG Logo"
-          className="w-16 h-auto rounded-[3.457px] shadow-[0.777px_0.777px_24.66px_0_rgba(0,0,0,0.25)]"
+          className="w-16 h-auto rounded-[3.457px]"
         />
 
-        {/* Buttons */}
-        <ResponsiveFormButtons align="end">
-          <button
-            type="button"
-            onClick={onBack}
-            className="px-5 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-11"
-          >
-            Back
-          </button>
-          <button
-            type="submit"
-            onClick={handleSubmit}
-            className="px-5 py-2 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-11"
-          >
-            Continue
-          </button>
-        </ResponsiveFormButtons>
+        {/* Back Button */}
+        <button
+          type="button"
+          onClick={handleMobileBack}
+          className="px-4 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-10 md:px-5 md:py-2 md:text-sm md:h-11"
+        >
+          Back
+        </button>
       </div>
+
+      {/* Mobile Image Step */}
+      {mobileStep === 'image' && (
+        <div className="md:hidden flex-1">
+          <MobileImageStep />
+        </div>
+      )}
+
+      {/* Main Content Grid - Form Step */}
+      {mobileStep === 'form' && (
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-0 flex-1 overflow-hidden border">
-        {/* Left side - Form */}
-        <div className="flex flex-col justify-start p-6 md:p-10 md:pr-6 md:pl-12 bg-white overflow-y-auto scrollbar-hidden">
-          <div className="flex flex-col gap-8">
-            {/* Header */}
-            <div className="flex flex-col gap-1 flex-shrink-0">
-              <p className="text-[13px] text-[#919191] font-light font-[Inter_Tight] leading-[120%] capitalize">
-                Step 2/3
-              </p>
-              <h2 className="text-[22px] text-black font-medium font-[Inter_Tight] leading-[105%]">
-                Create your profile
-              </h2>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr] gap-0 flex-1 overflow-hidden">
+          {/* Left side - Form */}
+          <div className="flex flex-col justify-start p-6 md:p-10 md:pr-6 md:pl-12 bg-white overflow-y-auto scrollbar-hidden">
+            <div className="flex flex-col gap-8">
+              {/* Header */}
+              <div className="flex flex-col gap-1 flex-shrink-0">
+                <p className="text-[13px] text-[#919191] font-light font-[Inter_Tight] leading-[120%] capitalize">
+                  Step 2/3
+                </p>
+                <h2 className="text-[22px] text-black font-medium font-[Inter_Tight] leading-[105%]">
+                  Create your profile
+                </h2>
+              </div>
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="flex flex-col gap-[13px]">
+              {/* Form */}
+              <form onSubmit={handleSubmit} className="flex flex-col gap-[13px]">
               {/* First Name */}
               <div className="flex flex-col gap-[13px]">
                 <label className="text-[15px] font-normal text-black font-[Inter_Tight]">
@@ -465,12 +601,30 @@ export const CreateProfileStep = ({
                   className="rounded-[10px] border-0 bg-[#F5F5F5] placeholder:text-[#99A0AE] text-[15px] font-[Inter_Tight] px-[15px] py-[21px] resize-none focus:ring-2 focus:ring-purple-600 focus:outline-none"
                 />
               </div>
-            </form>
+              </form>
+              
+              {/* Continue Button */}
+              <div className="flex justify-center pt-6">
+                <button
+                  type="submit"
+                  onClick={handleSubmit}
+                  className="px-8 py-2 bg-[#5C30FF] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#4a1fe5] transition-colors h-11 w-full md:w-auto"
+                  disabled={
+                    !isAddingRole && 
+                    (usernameStatus === "checking" || 
+                     usernameStatus === "taken" || 
+                     usernameStatus === "invalid" ||
+                     usernameStatus === "idle")
+                  }
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* Right side - Profile Preview */}
-        <div className="hidden md:flex flex-col items-center justify-center p-6 md:p-10 md:pl-6 bg-white relative overflow-visible h-full">
+          {/* Right side - Profile Preview (Desktop Only) */}
+          <div className="hidden md:flex flex-col items-center justify-center p-6 md:p-10 md:pl-6 bg-white relative overflow-visible h-full">
           <div className="w-full h-full flex items-center justify-center">
             <div className="relative w-full max-w-[290px] h-[350px]">
               {/* Background decorative cards */}
@@ -597,7 +751,7 @@ export const CreateProfileStep = ({
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

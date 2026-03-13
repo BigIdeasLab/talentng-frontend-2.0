@@ -3,6 +3,8 @@
  * Generates and manages unique device IDs for multi-device session tracking
  */
 
+import { generateUUID } from '@/lib/utils/uuid';
+
 /**
  * Get or create a unique device ID (persisted in localStorage)
  */
@@ -11,7 +13,7 @@ export function getOrCreateDeviceId(): string {
 
   if (!deviceId) {
     // Generate a new device ID (UUID v4)
-    deviceId = crypto.randomUUID();
+    deviceId = generateUUID();
     localStorage.setItem("deviceId", deviceId);
   }
 

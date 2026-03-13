@@ -8,7 +8,7 @@ import { LazyWrapper, DefaultLazyFallback } from "@/lib/utils/lazy-loading";
 
 // Page-specific loading fallback
 const PageLazyFallback: React.FC = () => (
-  <div className="min-h-screen bg-white flex items-center justify-center">
+  <div className="min-h-screen bg-white flex items-start md:items-center justify-center pt-16 md:pt-0">
     <div className="flex flex-col items-center gap-4">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
       <span className="text-sm text-gray-600">Loading page...</span>

@@ -4,7 +4,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { Loader2, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { MentorExpertiseData } from "@/lib/types/onboarding";
-import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
 import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
 
 type MentorExpertiseFormData = {
@@ -303,32 +302,18 @@ export const MentorExpertiseStep = ({
         <img
           src="/logo.png"
           alt="TalentNG Logo"
-          className="w-16 h-auto rounded-[3.457px] shadow-[0.777px_0.777px_24.66px_0_rgba(0,0,0,0.25)]"
+          className="w-16 h-auto rounded-[3.457px]"
         />
 
-        {/* Buttons */}
-        <ResponsiveFormButtons align="end">
-          <button
-            type="button"
-            onClick={onBack}
-            className="px-5 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-11"
-            disabled={isLoading}
-          >
-            Back
-          </button>
-          <button
-            type="submit"
-            onClick={handleSubmit}
-            className="px-5 py-2 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-11 flex items-center justify-center"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
-            ) : (
-              "Complete"
-            )}
-          </button>
-        </ResponsiveFormButtons>
+        {/* Back Button */}
+        <button
+          type="button"
+          onClick={onBack}
+          className="px-4 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-10 md:px-5 md:py-2 md:text-sm md:h-11"
+          disabled={isLoading}
+        >
+          Back
+        </button>
       </div>
 
       {/* Main Content Grid */}
@@ -632,6 +617,22 @@ export const MentorExpertiseStep = ({
                 )}
               </div>
             </form>
+            
+            {/* Complete Button */}
+            <div className="flex justify-center pt-6">
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                className="px-8 py-2 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-11 flex items-center justify-center w-full md:w-auto"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  "Complete"
+                )}
+              </button>
+            </div>
           </div>
         </div>
 

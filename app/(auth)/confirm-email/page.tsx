@@ -129,9 +129,9 @@ const ConfirmEmailPage = () => {
       />
 
       {/* Content */}
-      <div className="relative z-10 h-screen flex items-center justify-center px-3 py-3 md:px-4 lg:px-6 overflow-hidden">
+      <div className="relative z-10 h-screen flex items-start md:items-center justify-center px-3 py-3 md:px-4 lg:px-6 overflow-hidden">
         <div className="w-full max-w-5xl max-h-full">
-          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden h-[600px] flex flex-col">
+          <div className="bg-white rounded-[30px] shadow-lg overflow-hidden h-[600px] flex flex-col mt-4 md:mt-0">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
               {/* Left Side - Logo */}
               <div className="hidden md:flex flex-col items-center justify-center p-8 lg:p-12 bg-white overflow-hidden">

@@ -17,6 +17,7 @@ import {
 import Link from "next/link";
 import type { MentorshipSession } from "@/lib/api/mentorship/types";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
+import { copyToClipboard } from "@/lib/utils/clipboard";
 
 interface TalentSessionCardProps {
   session: MentorshipSession;
@@ -139,9 +140,11 @@ export function TalentSessionCard({
     e.stopPropagation();
     if (meetingLink) {
       try {
-        await navigator.clipboard.writeText(meetingLink);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        const success = await copyToClipboard(meetingLink);
+        if (success) {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        }
       } catch (err) {
         console.error("Failed to copy link:", err);
       }

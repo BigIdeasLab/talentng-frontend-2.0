@@ -14,6 +14,8 @@ export interface ResponsiveFormButtonsProps {
   reverseOnMobile?: boolean;
   /** Gap size between buttons (default: 2) */
   gap?: 2 | 3 | 4 | 6;
+  /** Whether buttons should be full width on all screen sizes (default: false) */
+  fullWidth?: boolean;
 }
 
 /**
@@ -25,6 +27,7 @@ export interface ResponsiveFormButtonsProps {
  * - Ensures 44px minimum button height for touch targets
  * - Configurable alignment and spacing
  * - Optional button order reversal on mobile
+ * - Optional full width on all screen sizes
  *
  * Requirements: 6.7, 18.1
  *
@@ -51,6 +54,13 @@ export interface ResponsiveFormButtonsProps {
  *   <Button type="submit">Submit</Button>
  * </ResponsiveFormButtons>
  * ```
+ *
+ * @example With full width on all screen sizes
+ * ```tsx
+ * <ResponsiveFormButtons fullWidth>
+ *   <Button type="submit">Continue</Button>
+ * </ResponsiveFormButtons>
+ * ```
  */
 export function ResponsiveFormButtons({
   children,
@@ -58,6 +68,7 @@ export function ResponsiveFormButtons({
   align = "end",
   reverseOnMobile = false,
   gap = 2,
+  fullWidth = false,
 }: ResponsiveFormButtonsProps) {
   const containerClasses = cn(
     // Base layout - flex container
@@ -94,8 +105,8 @@ export function ResponsiveFormButtons({
     // Add responsive width classes to button elements
     return React.cloneElement(child, {
       className: cn(
-        // Full width on mobile, auto width on desktop
-        "w-full md:w-auto",
+        // Full width on mobile, conditional width on desktop based on fullWidth prop
+        fullWidth ? "w-full" : "w-full md:w-auto",
         // Ensure minimum height for touch targets (44px)
         "min-h-[44px]",
         child.props.className,

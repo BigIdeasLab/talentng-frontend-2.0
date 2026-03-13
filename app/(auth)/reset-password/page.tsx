@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/form";
 import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
 import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
+import { RateLimitNotification, useRateLimitHandler } from "@/components/ui/RateLimitNotification";
 
 const resetPasswordSchema = z.object({
   resetCode: z
@@ -47,6 +48,8 @@ type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
 const ResetPassword = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { rateLimitError, isRateLimited, handleError, clearRateLimit } = useRateLimitHandler();
+  
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -94,15 +97,20 @@ const ResetPassword = () => {
       }
     },
     onError: (error: any) => {
-      // Handle specific error messages from backend
-      if (error.message && error.message.includes("Invalid reset code")) {
-        setError("Invalid code");
-      } else if (error.message && error.message.includes("expired")) {
-        setError("Code expired");
+      // Check if this is a rate limiting error
+      const isRateLimit = handleError(error);
+      
+      if (!isRateLimit) {
+        // Handle specific error messages from backend for non-rate-limit errors
+        if (error.message && error.message.includes("Invalid reset code")) {
+          setError("Invalid code");
+        } else if (error.message && error.message.includes("expired")) {
+          setError("Code expired");
+        }
+        toast.error(
+          error.message || "Failed to reset password. Please try again.",
+        );
       }
-      toast.error(
-        error.message || "Failed to reset password. Please try again.",
-      );
     },
   });
 
@@ -111,6 +119,9 @@ const ResetPassword = () => {
       toast.error("Email is missing. Please request a new reset code.");
       return;
     }
+    
+    // Clear any existing rate limit errors and form errors when user retries
+    clearRateLimit();
     setError("");
     mutation.mutate(data);
   };
@@ -127,9 +138,9 @@ const ResetPassword = () => {
       />
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-6 md:py-8 lg:py-12 md:px-6 lg:px-8 overflow-hidden">
+      <div className="relative z-10 min-h-screen flex items-start md:items-center justify-center px-4 py-6 md:py-8 lg:py-12 md:px-6 lg:px-8 overflow-hidden">
         <div className="w-full max-w-5xl max-h-full">
-          <div className="bg-white rounded-[20px] md:rounded-[30px] shadow-lg overflow-hidden min-h-[500px] md:h-[600px] flex flex-col">
+          <div className="bg-white rounded-[20px] md:rounded-[30px] shadow-lg overflow-hidden min-h-[500px] md:h-[600px] flex flex-col mt-4 md:mt-0">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0 h-full">
               {/* Left Side - Logo */}
               <div className="hidden md:flex flex-col items-center justify-center p-8 lg:p-12 bg-white overflow-hidden">
@@ -177,6 +188,15 @@ const ResetPassword = () => {
                       onSubmit={form.handleSubmit(handleSubmit)}
                       className="flex flex-col gap-2"
                     >
+                      {/* Rate Limit Notification */}
+                      {isRateLimited && (
+                        <RateLimitNotification 
+                          error={rateLimitError}
+                          onRetryEnabled={clearRateLimit}
+                          className="mb-3"
+                        />
+                      )}
+
                       {/* Reset Code Field */}
                       <FormField
                         control={form.control}
@@ -363,20 +383,23 @@ const ResetPassword = () => {
                       </ResponsiveFormField>
 
                       {/* Reset Button */}
-                      <ResponsiveFormButtons>
+                      <ResponsiveFormButtons fullWidth>
                         <Button
                           type="submit"
                           disabled={
                             mutation.isPending ||
                             !email ||
                             !isPasswordValid ||
-                            resetCode.length !== 6
+                            resetCode.length !== 6 ||
+                            isRateLimited
                           }
                           style={{ backgroundColor: COLORS.primary }}
                           className="h-[48px] rounded-[10px] text-white font-semibold text-sm md:text-base hover:opacity-90 disabled:opacity-50"
                         >
                           {mutation.isPending ? (
                             <Loader2 size={18} className="animate-spin" />
+                          ) : isRateLimited ? (
+                            "Please Wait..."
                           ) : (
                             "Reset Password"
                           )}
