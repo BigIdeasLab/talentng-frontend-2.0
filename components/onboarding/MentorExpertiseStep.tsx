@@ -305,15 +305,32 @@ export const MentorExpertiseStep = ({
           className="w-16 h-auto rounded-[3.457px]"
         />
 
-        {/* Back Button */}
-        <button
-          type="button"
-          onClick={onBack}
-          className="px-4 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-10 md:px-5 md:py-2 md:text-sm md:h-11"
-          disabled={isLoading}
-        >
-          Back
-        </button>
+        {/* Buttons */}
+        <div className="flex items-center gap-3">
+          {/* Back Button */}
+          <button
+            type="button"
+            onClick={onBack}
+            className="px-4 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-10 md:px-5 md:py-2 md:text-sm md:h-11"
+            disabled={isLoading}
+          >
+            Back
+          </button>
+
+          {/* Complete Button - Desktop/Tablet Only */}
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            disabled={isLoading}
+            className="hidden md:flex px-4 py-2 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-10 md:px-5 md:py-2 md:text-sm md:h-11 items-center justify-center"
+          >
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              "Complete"
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Main Content Grid */}
@@ -450,9 +467,14 @@ export const MentorExpertiseStep = ({
                     onFocus={() =>
                       setShowExpertiseSuggestions(expertiseInput.length > 0)
                     }
-                    onBlur={() =>
-                      setTimeout(() => setShowExpertiseSuggestions(false), 200)
-                    }
+                    onBlur={() => {
+                      // Add expertise if there's input
+                      if (expertiseInput.trim()) {
+                        handleAddExpertise(expertiseInput);
+                      }
+                      // Hide suggestions after a delay
+                      setTimeout(() => setShowExpertiseSuggestions(false), 200);
+                    }}
                     onKeyDown={handleExpertiseKeyDown}
                     placeholder="Type an expertise and press Enter..."
                     disabled={formData.expertise.length >= 10}
@@ -518,9 +540,14 @@ export const MentorExpertiseStep = ({
                     onFocus={() =>
                       setShowStackSuggestions(stackInput.length > 0)
                     }
-                    onBlur={() =>
-                      setTimeout(() => setShowStackSuggestions(false), 200)
-                    }
+                    onBlur={() => {
+                      // Add stack item if there's input
+                      if (stackInput.trim()) {
+                        handleAddStack(stackInput);
+                      }
+                      // Hide suggestions after a delay
+                      setTimeout(() => setShowStackSuggestions(false), 200);
+                    }}
                     onKeyDown={handleStackKeyDown}
                     placeholder="Type a tool name and press Enter..."
                     disabled={formData.stack.length >= 10}
@@ -618,12 +645,12 @@ export const MentorExpertiseStep = ({
               </div>
             </form>
 
-            {/* Complete Button */}
-            <div className="flex justify-center pt-6">
+            {/* Complete Button - Mobile Only */}
+            <div className="flex justify-center pt-6 md:hidden">
               <button
                 type="submit"
                 onClick={handleSubmit}
-                className="px-8 py-2 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-11 flex items-center justify-center w-full md:w-auto"
+                className="px-8 py-2 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-11 flex items-center justify-center w-full"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -642,7 +669,7 @@ export const MentorExpertiseStep = ({
             <div className="relative w-full max-w-[290px] h-[350px] flex items-start justify-center">
               {/* Purple Star */}
               <svg
-                className="absolute -left-12 top-24 w-16 h-16 lg:w-24 lg:h-24 z-40"
+                className="absolute top-20 w-16 h-16 md:-left-8 lg:-left-12 lg:w-24 lg:h-24 z-40"
                 viewBox="0 0 131 131"
                 fill="none"
               >

@@ -284,7 +284,7 @@ export const SelectRoleStep = ({
           <Button
             onClick={() => selectedRole && onNext(selectedRole)}
             disabled={!selectedRole}
-            className="px-8 py-2 h-11 rounded-[10px] bg-[#5C30FF] hover:bg-[#4a1fe5] text-white font-medium text-sm font-[Inter_Tight] disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="px-8 py-2 h-11 rounded-[10px] bg-[#222] hover:bg-[#333] text-white font-medium text-sm font-[Inter_Tight] disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             Continue
           </Button>

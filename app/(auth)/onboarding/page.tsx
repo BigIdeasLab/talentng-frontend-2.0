@@ -13,6 +13,7 @@ import { CompanyProfileStep } from "@/components/onboarding/CompanyProfileStep";
 import { CompanyDetailsStep } from "@/components/onboarding/CompanyDetailsStep";
 import { MentorProfileStep } from "@/components/onboarding/MentorProfileStep";
 import { MentorExpertiseStep } from "@/components/onboarding/MentorExpertiseStep";
+import { OnboardingSuccessStep } from "@/components/onboarding/OnboardingSuccessStep";
 import { useCompleteOnboarding } from "@/hooks/useUserApi";
 import { useToast, useAuth } from "@/hooks";
 import { useTokenRefresh } from "@/hooks/useTokenRefresh";
@@ -159,14 +160,8 @@ const OnboardingPage = () => {
         refetchUser();
       }
 
-      // If adding a role, redirect with the new role selected
-      if (isAddingRole) {
-        const newRole =
-          selectedRole === "employer" ? "recruiter" : selectedRole;
-        router.push(`/dashboard?switchRole=${newRole}`);
-      } else {
-        router.push("/dashboard");
-      }
+      // Show success page instead of immediate redirect
+      setCurrentStep(4);
     } catch (error: any) {
       let errorMessage = "An unknown error occurred.";
 
@@ -274,18 +269,8 @@ const OnboardingPage = () => {
         refetchUser();
       }
 
-      // Get the role value for redirect
-      let redirectRole = selectedRole;
-      if (selectedRole === "employer") {
-        redirectRole = "recruiter";
-      }
-
-      // If adding a role, redirect with the new role selected
-      if (isAddingRole) {
-        router.push(`/dashboard?switchRole=${redirectRole}`);
-      } else {
-        router.push("/dashboard");
-      }
+      // Show success page instead of immediate redirect
+      setCurrentStep(4);
     } catch (error: any) {
       let errorMessage = "An unknown error occurred.";
 
@@ -410,18 +395,8 @@ const OnboardingPage = () => {
         refetchUser();
       }
 
-      // Get the role value for redirect
-      let redirectRole = selectedRole;
-      if (selectedRole === "employer") {
-        redirectRole = "recruiter";
-      }
-
-      // If adding a role, redirect with the new role selected
-      if (isAddingRole) {
-        router.push(`/dashboard?switchRole=${redirectRole}`);
-      } else {
-        router.push("/dashboard");
-      }
+      // Show success page instead of immediate redirect
+      setCurrentStep(4);
     } catch (error: any) {
       // Extract error message, handling both Error objects and API error responses
       let errorMessage = "An unknown error occurred.";
@@ -581,6 +556,16 @@ const OnboardingPage = () => {
             ) : (
               renderStepThree()
             )}
+          </div>
+        )}
+        {currentStep === 4 && (
+          <div className="h-full flex flex-col overflow-hidden">
+            <OnboardingSuccessStep
+              profileData={selectedRole === "employer" ? companyData : selectedRole === "mentor" ? mentorData : profileData}
+              profileImage={profileImage || undefined}
+              selectedRole={selectedRole === "recruiter" ? "employer" : selectedRole!}
+              isAddingRole={isAddingRole}
+            />
           </div>
         )}
       </div>

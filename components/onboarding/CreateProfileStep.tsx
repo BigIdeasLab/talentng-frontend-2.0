@@ -280,7 +280,7 @@ export const CreateProfileStep = ({
                 fill="#F6BC3F"
               />
             </svg>
-            
+
             {/* User Logo Badge */}
             <div className="absolute top-4 -right-6 w-[60px] h-[60px] z-30">
               <img
@@ -289,7 +289,7 @@ export const CreateProfileStep = ({
                 className="w-full h-full object-cover object-center rounded-full"
               />
             </div>
-            
+
             {/* Stack of cards - Background layers */}
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-full flex flex-col items-center">
               {/* Back card */}
@@ -392,30 +392,12 @@ export const CreateProfileStep = ({
         <button
           type="button"
           onClick={handleSubmit}
-          className="w-full px-5 py-3 bg-[#5C30FF] text-white rounded-[10px] text-sm font-medium font-[Inter_Tight] hover:bg-[#4a1fe5] transition-colors h-12"
+          className="w-full px-5 py-3 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-12"
         >
           Continue
         </button>
       </div>
     </div>
-  );
-
-  // Create continue button component
-  const continueButton = (
-    <button
-      type="submit"
-      onClick={handleSubmit}
-      className="w-full px-5 py-3 bg-[#5C30FF] text-white rounded-[10px] text-sm font-medium font-[Inter_Tight] hover:bg-[#4a1fe5] transition-colors h-12 disabled:opacity-50"
-      disabled={
-        !isAddingRole &&
-        (usernameStatus === "checking" ||
-          usernameStatus === "taken" ||
-          usernameStatus === "invalid" ||
-          usernameStatus === "idle")
-      }
-    >
-      Continue
-    </button>
   );
 
   return (
@@ -429,14 +411,26 @@ export const CreateProfileStep = ({
           className="w-16 h-auto rounded-[3.457px]"
         />
 
-        {/* Back Button */}
-        <button
-          type="button"
-          onClick={handleMobileBack}
-          className="px-4 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-10 md:px-5 md:py-2 md:text-sm md:h-11"
-        >
-          Back
-        </button>
+        {/* Buttons */}
+        <div className="flex items-center gap-3">
+          {/* Back Button */}
+          <button
+            type="button"
+            onClick={handleMobileBack}
+            className="px-4 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-10 md:px-5 md:py-2 md:text-sm md:h-11"
+          >
+            Back
+          </button>
+
+          {/* Continue Button - Desktop/Tablet Only */}
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            className="hidden md:flex px-4 py-2 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-10 md:px-5 md:py-2 md:text-sm md:h-11 items-center justify-center"
+          >
+            Continue
+          </button>
+        </div>
       </div>
 
       {/* Mobile Image Step */}
@@ -661,19 +655,12 @@ export const CreateProfileStep = ({
                 </div>
               </form>
 
-              {/* Continue Button */}
-              <div className="flex justify-center pt-6">
+              {/* Continue Button - Mobile Only */}
+              <div className="flex justify-center pt-6 md:hidden">
                 <button
                   type="submit"
                   onClick={handleSubmit}
-                  className="px-8 py-2 bg-[#5C30FF] text-white rounded-[10px] text-sm font-medium font-[Inter_Tight] hover:bg-[#4a1fe5] transition-colors h-11 w-full"
-                  disabled={
-                    !isAddingRole &&
-                    (usernameStatus === "checking" ||
-                      usernameStatus === "taken" ||
-                      usernameStatus === "invalid" ||
-                      usernameStatus === "idle")
-                  }
+                  className="px-8 py-2 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-11 w-full"
                 >
                   Continue
                 </button>

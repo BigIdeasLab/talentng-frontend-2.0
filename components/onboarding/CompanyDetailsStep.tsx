@@ -101,15 +101,32 @@ export const CompanyDetailsStep = ({
           className="w-16 h-auto rounded-[3.457px]"
         />
 
-        {/* Back Button */}
-        <button
-          type="button"
-          onClick={onBack}
-          className="px-4 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-10 md:px-5 md:py-2 md:text-sm md:h-11"
-          disabled={isLoading}
-        >
-          Back
-        </button>
+        {/* Buttons */}
+        <div className="flex items-center gap-3">
+          {/* Back Button */}
+          <button
+            type="button"
+            onClick={onBack}
+            className="px-4 py-2 bg-[#A9A9A9] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#999] transition-colors h-10 md:px-5 md:py-2 md:text-sm md:h-11"
+            disabled={isLoading}
+          >
+            Back
+          </button>
+
+          {/* Complete Button - Desktop/Tablet Only */}
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            disabled={isLoading}
+            className="hidden md:flex px-4 py-2 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-10 md:px-5 md:py-2 md:text-sm md:h-11 items-center justify-center"
+          >
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              "Complete"
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Main Content Grid */}
@@ -232,12 +249,12 @@ export const CompanyDetailsStep = ({
               </div>
             </form>
 
-            {/* Complete Button */}
-            <div className="flex justify-center pt-6">
+            {/* Complete Button - Mobile Only */}
+            <div className="flex justify-center pt-6 md:hidden">
               <button
                 type="submit"
                 onClick={handleSubmit}
-                className="px-8 py-2 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-11 flex items-center justify-center w-full md:w-auto"
+                className="px-8 py-2 bg-[#222] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#333] transition-colors h-11 flex items-center justify-center w-full"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -257,7 +274,7 @@ export const CompanyDetailsStep = ({
             <div className="relative w-full max-w-[290px] h-[350px] flex items-start justify-center">
               {/* Blue Star */}
               <svg
-                className="absolute -left-12 top-24 w-16 h-16 lg:w-24 lg:h-24 z-40"
+                className="absolute top-20 w-16 h-16 md:-left-8 lg:-left-12 lg:w-24 lg:h-24 z-40"
                 viewBox="0 0 131 131"
                 fill="none"
               >
