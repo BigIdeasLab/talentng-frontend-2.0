@@ -16,7 +16,7 @@
  *    - Mobile (< 1024px): Stacked vertically (1 column)
  *    - Desktop (≥ 1024px): Side-by-side with 5:3 ratio
  *    - Classes: `grid grid-cols-1 lg:grid-cols-[5fr_3fr] gap-4`
- *    - WeeklyOverviewChart: Responsive height `h-[300px] md:h-[400px]`
+ *    - WeeklyOverviewChart: Responsive height `h-[240px] md:h-[270px]`
  *    - HiringPipeline: Full width on mobile, adapts to grid on desktop
  *
  * 3. Opportunities & Activity Section:
@@ -104,7 +104,7 @@ export default function EmployerDashboardExample() {
  * - Change indicator: `md:hidden lg:flex` (hidden on tablet)
  *
  * WeeklyOverviewChart:
- * - Container: `w-full h-[300px] md:h-[400px]`
+ * - Container: `w-full h-[240px] md:h-[270px]`
  * - Uses ResponsiveContainer from Recharts
  *
  * TopOpportunities:

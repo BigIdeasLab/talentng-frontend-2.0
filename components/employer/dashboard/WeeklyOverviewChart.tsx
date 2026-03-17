@@ -97,7 +97,7 @@ const WeeklyOverviewChart = mobileOptimizedMemo(
           </p>
         </div>
 
-        <div className="w-full h-[300px] md:h-[400px]">
+        <div className="w-full h-[240px] md:h-[270px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={chartData}
