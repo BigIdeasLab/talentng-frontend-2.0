@@ -163,8 +163,8 @@ export function EmployerNotifications({
     const payload = notification.payload as
       | InAppNotificationPayload
       | Record<string, any>;
-    const title = (payload.title as string) || "Notification";
-    const message = (payload.message as string) || "";
+    const title = payload.title as string;
+    const message = payload.message as string;
     const payloadType = (payload as InAppNotificationPayload).type || "info";
     const timestamp = formatDistanceToNow(new Date(notification.createdAt), {
       addSuffix: true,

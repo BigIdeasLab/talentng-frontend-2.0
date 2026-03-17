@@ -33,14 +33,10 @@ export function useSwitchRoleParam(): void {
 
     // Wait until context has loaded the roles and confirms the user has this role
     if (!userRoles.includes(roleToSwitch)) {
-      console.log(
-        `[useSwitchRoleParam] Waiting for role "${roleToSwitch}" to appear in context. Current roles: [${userRoles.join(", ")}]`,
-      );
       return;
     }
 
     switchedRef.current = true;
-    console.log(`[useSwitchRoleParam] Switching to role: ${roleToSwitch}`);
 
     switchRole(roleToSwitch)
       .then(() => {

@@ -83,7 +83,7 @@ export function MentorProfile({
   const socialLinks = {
     twitter: profileData.links?.twitter || "",
     instagram: profileData.links?.instagram || "",
-    linkedin: profileData.links?.linkedIn || "",
+    linkedin: profileData.links?.linkedIn || profileData.links?.linkedin || "",
     website: profileData.links?.website || "",
     customLinks,
   };

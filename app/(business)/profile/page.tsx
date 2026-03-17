@@ -86,6 +86,25 @@ export default function ProfilePage() {
               recruiterData?.links?.linkedin ||
               "",
             website: recruiterData?.links?.website || "",
+            customLinks: Object.entries(recruiterData?.links || {})
+              .filter(
+                ([key, value]) =>
+                  ![
+                    "twitter",
+                    "instagram",
+                    "linkedin",
+                    "linkedIn",
+                    "website",
+                  ].includes(key) &&
+                  value &&
+                  typeof value === "string",
+              )
+              .map(([key, value]) => ({
+                name: key
+                  .replace(/_/g, " ")
+                  .replace(/\b\w/g, (l) => l.toUpperCase()),
+                url: value as string,
+              })),
           }}
           completionPercentage={completionPercentage}
           aboutData={{

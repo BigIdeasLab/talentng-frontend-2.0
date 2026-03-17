@@ -22,12 +22,12 @@ interface NotificationStreamEvent {
     count?: number;
     unread?: number;
     notificationId?: string;
-    recipientRole?: "talent" | "recruiter" | "general";
+    recipientRole?: "talent" | "recruiter" | "mentor" | "general";
   };
 }
 
 interface UseNotificationSocketProps {
-  recipientRole?: "talent" | "recruiter" | "general";
+  recipientRole?: "talent" | "recruiter" | "mentor" | "general";
   onCountUpdate?: (unread: number, total: number) => void;
   onNotificationCreated?: (notificationId: string) => void;
   onNotificationRead?: (notificationId: string) => void;

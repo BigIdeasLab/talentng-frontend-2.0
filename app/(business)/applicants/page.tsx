@@ -108,12 +108,6 @@ export default function ApplicantsPage() {
     // Only update if response has actually changed
     if (response && response !== lastProcessedDataRef.current) {
       lastProcessedDataRef.current = response;
-      console.log("=== APPLICANTS PAGE DEBUG ===");
-      console.log("Raw API Response:", JSON.stringify(response, null, 2));
-      console.log("Applicants count:", response.data?.length);
-      console.log("Pagination:", response.pagination);
-      console.log("isRoleReady:", isRoleReady, "activeRole:", activeRole);
-      console.log("============================");
       const mapped = mapApplicationsToUI(response.data || []);
       setDisplayedApplicants(mapped);
       if (isInitialLoad && !isLoading && !isPending) {

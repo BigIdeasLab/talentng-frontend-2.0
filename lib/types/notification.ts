@@ -81,5 +81,5 @@ export interface GetNotificationsFilters {
   type?: NotificationType;
   deliveryStatus?: DeliveryStatus;
   read?: boolean;
-  recipientRole?: "talent" | "recruiter" | "general";
+  recipientRole?: "talent" | "recruiter" | "mentor" | "general";
 }

@@ -62,7 +62,7 @@ export function MentorUpcoming() {
 
   // Subscribe to real-time updates for the feed
   useNotificationSocket({
-    recipientRole: "mentor" as any,
+    recipientRole: "mentor",
     onMentorUpdate: () => {
       fetchData(false); // Refresh without full loading state
     },

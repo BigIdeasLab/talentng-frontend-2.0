@@ -21,7 +21,7 @@ const JOB_STATUS_TABS = [
   { id: "all", label: "All" },
   { id: "applied", label: "Applied" },
   { id: "shortlisted", label: "Shortlisted" },
-  { id: "interview", label: "Interview" },
+  { id: "invited", label: "Invited" },
   { id: "hired", label: "Hired" },
   { id: "rejected", label: "Rejected" },
 ];

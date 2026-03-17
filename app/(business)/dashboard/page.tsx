@@ -28,9 +28,6 @@ export default function DashboardPage() {
           const jwtActiveRole = decoded?.act || decoded?.activeRole;
 
           if (jwtActiveRole && jwtActiveRole !== activeRole) {
-            console.log(
-              `Fixing Dashboard mismatch: context=${activeRole}, token=${jwtActiveRole}`,
-            );
             setActiveRole(jwtActiveRole);
           }
         } catch (_e) {

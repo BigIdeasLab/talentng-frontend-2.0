@@ -115,6 +115,7 @@ export interface GetOpportunitiesParams {
   offset?: number;
   sortBy?: "createdAt" | "applicationCount" | "title" | "price" | "minBudget";
   sortOrder?: "asc" | "desc";
+  talentId?: string; // For checking talent-specific application status
 }
 
 export interface ReopenOpportunityResponse {
