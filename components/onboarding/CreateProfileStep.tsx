@@ -266,68 +266,125 @@ export const CreateProfileStep = ({
           </p>
         </div>
 
-        {/* Image Upload Area */}
-        <div
-          className={`w-full h-64 flex flex-col items-center justify-center rounded-[18px] bg-[#F5F5F5] relative overflow-hidden cursor-pointer transition-colors border-2 border-dashed ${
-            isDragging ? "bg-[#E0E0E0] border-purple-600" : "border-[#D9D9D9]"
-          }`}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          onClick={() =>
-            document.getElementById("profile-image-input")?.click()
-          }
-        >
-          {imagePreview ? (
-            <img
-              src={imagePreview}
-              alt="Profile preview"
-              className="w-full h-full object-cover rounded-[16px]"
-            />
-          ) : (
-            <>
-              {/* Upload Icon Circle */}
-              <div className="w-20 h-20 rounded-full bg-[#D9D9D9] flex items-center justify-center mb-4">
-                <svg
-                  className="w-12 h-12"
-                  viewBox="0 0 74 74"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M15.4167 64.75C13.7208 64.75 12.2696 64.1467 11.063 62.9401C9.85639 61.7335 9.25206 60.2812 9.25 58.5833V15.4167C9.25 13.7208 9.85433 12.2696 11.063 11.063C12.2717 9.85639 13.7229 9.25206 15.4167 9.25H58.5833C60.2792 9.25 61.7314 9.85433 62.9401 11.063C64.1488 12.2717 64.7521 13.7229 64.75 15.4167V58.5833C64.75 60.2792 64.1467 61.7314 62.9401 62.9401C61.7335 64.1488 60.2812 64.7521 58.5833 64.75H15.4167ZM18.5 52.4167H55.5L43.9375 37L34.6875 49.3333L27.75 40.0833L18.5 52.4167Z"
-                    fill="white"
+        {/* Desktop-style Profile Card Preview */}
+        <div className="w-full flex items-center justify-center">
+          <div className="relative w-full max-w-[290px] h-[350px]">
+            {/* Yellow Star */}
+            <svg
+              className="absolute -left-8 top-20 w-16 h-16 sm:w-20 sm:h-20 z-40"
+              viewBox="0 0 131 131"
+              fill="none"
+            >
+              <path
+                d="M65.3129 0L75.4732 55.1526L130.626 65.3129L75.4732 75.4732L65.3129 130.626L55.1526 75.4732L0 65.3129L55.1526 55.1526L65.3129 0Z"
+                fill="#F6BC3F"
+              />
+            </svg>
+            
+            {/* User Logo Badge */}
+            <div className="absolute top-4 -right-6 w-[60px] h-[60px] z-30">
+              <img
+                src="/logo-2.png"
+                alt="Profile"
+                className="w-full h-full object-cover object-center rounded-full"
+              />
+            </div>
+            
+            {/* Stack of cards - Background layers */}
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-full flex flex-col items-center">
+              {/* Back card */}
+              <div className="absolute -bottom-4 w-[203px] h-[33px] rounded-[39.5px] bg-[#ECECEC]"></div>
+              {/* Middle card */}
+              <div className="absolute bottom-[-2px] w-[247px] h-[39px] rounded-[39.5px] bg-[#E0E0E0]"></div>
+            </div>
+
+            {/* Back Card - Green Profile Card */}
+            <div className="absolute w-full h-[328px] top-0 left-0 rounded-[21px] bg-[#008B47] shadow-[1.79px_0_21.48px_rgba(0,0,0,0.25)] overflow-hidden z-10">
+              {/* Decorative striped pattern */}
+              <div className="absolute left-[-13px] top-[185px] w-[277px] h-[162px] flex gap-[16px] rotate-[20.779deg] overflow-hidden">
+                {Array.from({ length: 18 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-[8.14px] h-[162px] bg-[#03964E] flex-shrink-0"
                   />
-                </svg>
+                ))}
               </div>
 
-              {/* Upload Text */}
-              <div className="flex flex-col items-center gap-3 text-center px-4">
-                <div className="text-[#404040] text-[16px] font-medium font-[Inter_Tight] leading-[105%]">
-                  Upload Profile Picture
+              {/* Status badge */}
+              <div className="absolute bottom-[12px] left-[98px] text-white text-[13.4px] font-normal font-[Inter_Tight] leading-[120%] capitalize">
+                Status: Available
+              </div>
+            </div>
+
+            {/* Front Card - White Upload Card */}
+            <div className="absolute w-full h-[289px] top-0 left-0 rounded-[21px] bg-white z-20 flex flex-col shadow-sm">
+              {/* Profile Picture Upload Area */}
+              <div
+                className={`flex-1 flex flex-col items-center justify-center rounded-[18.7px] bg-[#F5F5F5] m-[8.4px] relative overflow-hidden cursor-pointer transition-colors ${
+                  isDragging
+                    ? "bg-[#E0E0E0] border-2 border-dashed border-purple-600"
+                    : ""
+                }`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() =>
+                  document.getElementById("profile-image-input")?.click()
+                }
+              >
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    alt="Profile preview"
+                    className="w-full h-full object-cover rounded-[18.7px]"
+                  />
+                ) : (
+                  <>
+                    {/* Upload Icon Circle */}
+                    <div className="w-[87px] h-[87px] rounded-full bg-[#D9D9D9] flex items-center justify-center mb-[11px]">
+                      <svg
+                        className="w-[52px] h-[52px]"
+                        viewBox="0 0 74 74"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M15.4167 64.75C13.7208 64.75 12.2696 64.1467 11.063 62.9401C9.85639 61.7335 9.25206 60.2812 9.25 58.5833V15.4167C9.25 13.7208 9.85433 12.2696 11.063 11.063C12.2717 9.85639 13.7229 9.25206 15.4167 9.25H58.5833C60.2792 9.25 61.7314 9.85433 62.9401 11.063C64.1488 12.2717 64.7521 13.7229 64.75 15.4167V58.5833C64.75 60.2792 64.1467 61.7314 62.9401 62.9401C61.7335 64.1488 60.2812 64.7521 58.5833 64.75H15.4167ZM18.5 52.4167H55.5L43.9375 37L34.6875 49.3333L27.75 40.0833L18.5 52.4167Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </div>
+
+                    {/* Upload Text */}
+                    <div className="flex flex-col items-center gap-[11px] text-center px-2">
+                      <div className="text-[#404040] text-[13.3px] font-medium font-[Inter_Tight] leading-[105%]">
+                        Upload Profile Picture
+                      </div>
+                      <div className="text-[#919191] text-[10.5px] font-light font-[Inter_Tight] leading-[120%] capitalize">
+                        Tap to select or drag and drop
+                      </div>
+                    </div>
+                  </>
+                )}
+                <input
+                  id="profile-image-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileInput}
+                  className="hidden"
+                />
+              </div>
+
+              {/* Name and Bio Preview on White Card */}
+              <div className="flex flex-col justify-center gap-[11px] px-[15px] pb-[15px] pt-0 h-[64px]">
+                <div className="text-black text-[16.3px] font-medium font-[Inter_Tight] leading-[105%]">
+                  {displayName}
                 </div>
-                <div className="text-[#919191] text-[14px] font-light font-[Inter_Tight] leading-[120%]">
-                  Tap to select or drag and drop image here
+                <div className="text-[#919191] text-[13px] font-light font-[Inter_Tight] leading-[120%] capitalize truncate">
+                  {displayBio}
                 </div>
               </div>
-            </>
-          )}
-          <input
-            id="profile-image-input"
-            type="file"
-            accept="image/*"
-            onChange={handleFileInput}
-            className="hidden"
-          />
-        </div>
-
-        {/* Profile Preview */}
-        <div className="bg-[#F8F8F8] rounded-[12px] p-4 text-center">
-          <div className="text-black text-[18px] font-medium font-[Inter_Tight] leading-[105%] mb-2">
-            {displayName}
-          </div>
-          <div className="text-[#919191] text-[14px] font-light font-[Inter_Tight] leading-[120%]">
-            {displayBio}
+            </div>
           </div>
         </div>
 
@@ -609,7 +666,7 @@ export const CreateProfileStep = ({
                 <button
                   type="submit"
                   onClick={handleSubmit}
-                  className="px-8 py-2 bg-[#5C30FF] text-white rounded-[60px] text-sm font-medium font-[Inter_Tight] hover:bg-[#4a1fe5] transition-colors h-11 w-full md:w-auto"
+                  className="px-8 py-2 bg-[#5C30FF] text-white rounded-[10px] text-sm font-medium font-[Inter_Tight] hover:bg-[#4a1fe5] transition-colors h-11 w-full"
                   disabled={
                     !isAddingRole &&
                     (usernameStatus === "checking" ||
@@ -636,7 +693,7 @@ export const CreateProfileStep = ({
                 <div className="relative w-[290px] h-[350px]">
                   {/* Yellow Star */}
                   <svg
-                    className="absolute -left-12 top-24 w-16 h-16 lg:w-24 lg:h-24 z-40"
+                    className="absolute top-20 w-16 h-16 md:-left-8 lg:-left-12 lg:w-24 lg:h-24 z-40"
                     viewBox="0 0 131 131"
                     fill="none"
                   >
