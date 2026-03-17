@@ -31,7 +31,8 @@ export const OnboardingSuccessStep = ({
   // Auto redirect after showing success (5 minutes)
   useEffect(() => {
     const redirectTimer = setTimeout(() => {
-      const redirectRole = selectedRole === "employer" ? "recruiter" : selectedRole;
+      const redirectRole =
+        selectedRole === "employer" ? "recruiter" : selectedRole;
       if (isAddingRole) {
         router.push(`/dashboard?switchRole=${redirectRole}`);
       } else {
@@ -53,33 +54,35 @@ export const OnboardingSuccessStep = ({
         cardColor: "#1E5BA8",
         stripeColor: "#2A6BA8",
         statusText: "Hiring Now",
-        statusPosition: "left-[78px]"
+        statusPosition: "left-[78px]",
       };
     } else if (selectedRole === "mentor") {
       return {
-        name: profileData?.firstName && profileData?.lastName 
-          ? `${profileData.firstName} ${profileData.lastName}` 
-          : "Mentor Name",
+        name:
+          profileData?.firstName && profileData?.lastName
+            ? `${profileData.firstName} ${profileData.lastName}`
+            : "Mentor Name",
         bio: profileData?.bio || "Mentor Bio",
         role: "Mentor",
         starColor: "#805DFF",
         cardColor: "#805DFF",
         stripeColor: "#6C45FF",
         statusText: "Status: Available",
-        statusPosition: "left-[78px]"
+        statusPosition: "left-[78px]",
       };
     } else {
       return {
-        name: profileData?.firstName && profileData?.lastName 
-          ? `${profileData.firstName} ${profileData.lastName}` 
-          : "Your Name",
+        name:
+          profileData?.firstName && profileData?.lastName
+            ? `${profileData.firstName} ${profileData.lastName}`
+            : "Your Name",
         bio: profileData?.bio || "Your Bio",
         role: "Talent",
         starColor: "#F6BC3F",
         cardColor: "#008B47",
         stripeColor: "#03964E",
         statusText: "Status: Available",
-        statusPosition: "left-[98px]"
+        statusPosition: "left-[98px]",
       };
     }
   };
@@ -105,7 +108,9 @@ export const OnboardingSuccessStep = ({
             Welcome Onboard!
           </h1>
           <p className="text-[14px] md:text-[16px] text-[#666] font-normal font-[Inter_Tight]">
-            {isAddingRole ? `Your ${displayData.role} role has been added successfully` : 'Your profile has been created successfully'}
+            {isAddingRole
+              ? `Your ${displayData.role} role has been added successfully`
+              : "Your profile has been created successfully"}
           </p>
         </div>
 
@@ -123,7 +128,7 @@ export const OnboardingSuccessStep = ({
                 fill={displayData.starColor}
               />
             </svg>
-            
+
             {/* User Logo Badge */}
             <div className="absolute top-4 -right-6 md:-right-8 w-[60px] h-[60px] md:w-[70px] md:h-[70px] z-30">
               <img
@@ -132,7 +137,7 @@ export const OnboardingSuccessStep = ({
                 className="w-full h-full object-cover object-center rounded-full"
               />
             </div>
-            
+
             {/* Stack of cards - Background layers */}
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-full flex flex-col items-center z-0">
               <div className="absolute -bottom-4 w-[203px] h-[33px] rounded-[39.5px] bg-[#ECECEC]"></div>
@@ -140,7 +145,7 @@ export const OnboardingSuccessStep = ({
             </div>
 
             {/* Back Card - Role-specific colored card */}
-            <div 
+            <div
               className="absolute w-[290px] h-[328px] top-0 left-0 rounded-[21px] shadow-[1.79px_0_21.48px_rgba(0,0,0,0.25)] overflow-hidden z-10"
               style={{ backgroundColor: displayData.cardColor }}
             >
@@ -156,7 +161,9 @@ export const OnboardingSuccessStep = ({
               </div>
 
               {/* Status badge */}
-              <div className={`absolute bottom-[12px] ${displayData.statusPosition} text-white text-[13.4px] font-normal font-[Inter_Tight] leading-[120%] capitalize`}>
+              <div
+                className={`absolute bottom-[12px] ${displayData.statusPosition} text-white text-[13.4px] font-normal font-[Inter_Tight] leading-[120%] capitalize`}
+              >
                 {displayData.statusText}
               </div>
             </div>
@@ -215,11 +222,16 @@ export const OnboardingSuccessStep = ({
         <div className="text-center">
           <div className="flex items-center justify-center gap-3 mb-2">
             <div className="w-2 h-2 bg-[#5C30FF] rounded-full animate-pulse"></div>
-            <div className="w-2 h-2 bg-[#5C30FF] rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-            <div className="w-2 h-2 bg-[#5C30FF] rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+            <div
+              className="w-2 h-2 bg-[#5C30FF] rounded-full animate-pulse"
+              style={{ animationDelay: "0.2s" }}
+            ></div>
+            <div
+              className="w-2 h-2 bg-[#5C30FF] rounded-full animate-pulse"
+              style={{ animationDelay: "0.4s" }}
+            ></div>
           </div>
         </div>
-
       </div>
     </div>
   );

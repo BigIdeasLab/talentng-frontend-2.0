@@ -68,7 +68,7 @@ export const ShowcaseExpertiseStep = ({
           alt="TalentNG Logo"
           className="w-16 h-auto rounded-[3.457px]"
         />
-        
+
         {/* Buttons */}
         <div className="flex items-center gap-3">
           {/* Back Button */}

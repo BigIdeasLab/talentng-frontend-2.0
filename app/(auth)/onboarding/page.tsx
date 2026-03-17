@@ -561,9 +561,17 @@ const OnboardingPage = () => {
         {currentStep === 4 && (
           <div className="h-full flex flex-col overflow-hidden">
             <OnboardingSuccessStep
-              profileData={selectedRole === "employer" ? companyData : selectedRole === "mentor" ? mentorData : profileData}
+              profileData={
+                selectedRole === "employer"
+                  ? companyData
+                  : selectedRole === "mentor"
+                    ? mentorData
+                    : profileData
+              }
               profileImage={profileImage || undefined}
-              selectedRole={selectedRole === "recruiter" ? "employer" : selectedRole!}
+              selectedRole={
+                selectedRole === "recruiter" ? "employer" : selectedRole!
+              }
               isAddingRole={isAddingRole}
             />
           </div>
