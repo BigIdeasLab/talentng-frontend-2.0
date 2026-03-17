@@ -18,7 +18,8 @@ export const useMobileInputScroll = () => {
   };
 
   useEffect(() => {
-    const handleFocus = (event: FocusEvent) => {
+    // eslint-disable-next-line no-undef
+    const handleFocus = (event: Event) => {
       const target = event.target as HTMLElement;
 
       // Only handle input elements on mobile
