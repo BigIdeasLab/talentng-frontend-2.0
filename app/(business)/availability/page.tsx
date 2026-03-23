@@ -87,7 +87,8 @@ export default function AvailabilityPage() {
   const [savedSlots, setSavedSlots] = useState<Set<string>>(new Set()); // Track what's saved in backend
   const [sessionDuration, setSessionDuration] = useState("60");
   const [bufferTime, setBufferTime] = useState("15");
-  const [minAdvanceBookingMinutes, setMinAdvanceBookingMinutes] = useState("30");
+  const [minAdvanceBookingMinutes, setMinAdvanceBookingMinutes] =
+    useState("30");
   const [defaultMeetingLink, setDefaultMeetingLink] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -120,7 +121,9 @@ export default function AvailabilityPage() {
       }
 
       if (response.minAdvanceBookingMinutes !== undefined) {
-        setMinAdvanceBookingMinutes(response.minAdvanceBookingMinutes.toString());
+        setMinAdvanceBookingMinutes(
+          response.minAdvanceBookingMinutes.toString(),
+        );
       }
 
       if (response.defaultMeetingLink) {
@@ -520,7 +523,10 @@ export default function AvailabilityPage() {
                 </label>
                 <div className="group relative">
                   <Info className="h-3 w-3 text-[#B2B2B2] cursor-help" />
-                  <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal" style={{ zIndex: 9999 }}>
+                  <div
+                    className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal"
+                    style={{ zIndex: 9999 }}
+                  >
                     Length of each mentorship session
                   </div>
                 </div>
@@ -554,7 +560,10 @@ export default function AvailabilityPage() {
                 </label>
                 <div className="group relative">
                   <Info className="h-3 w-3 text-[#B2B2B2] cursor-help" />
-                  <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal" style={{ zIndex: 9999 }}>
+                  <div
+                    className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal"
+                    style={{ zIndex: 9999 }}
+                  >
                     Time between sessions to prepare or rest
                   </div>
                 </div>
@@ -584,7 +593,10 @@ export default function AvailabilityPage() {
                 </label>
                 <div className="group relative">
                   <Info className="h-3 w-3 text-[#B2B2B2] cursor-help" />
-                  <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal" style={{ zIndex: 9999 }}>
+                  <div
+                    className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal"
+                    style={{ zIndex: 9999 }}
+                  >
                     Minimum time before a session can be booked
                   </div>
                 </div>
@@ -616,8 +628,12 @@ export default function AvailabilityPage() {
                 </label>
                 <div className="group relative">
                   <Info className="h-3 w-3 text-[#B2B2B2] cursor-help" />
-                  <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-56 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal" style={{ zIndex: 9999 }}>
-                    Default video call link sent to mentees (Google Meet, Zoom, etc.)
+                  <div
+                    className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-56 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal"
+                    style={{ zIndex: 9999 }}
+                  >
+                    Default video call link sent to mentees (Google Meet, Zoom,
+                    etc.)
                   </div>
                 </div>
               </div>

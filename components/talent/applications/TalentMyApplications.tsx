@@ -317,14 +317,16 @@ export function TalentMyApplications() {
                 title={
                   searchQuery
                     ? "No applications match your search"
-                    : jobStatusFilter !== "all" || appliedFilters.dateRange !== "all"
+                    : jobStatusFilter !== "all" ||
+                        appliedFilters.dateRange !== "all"
                       ? "No applications match your filters"
                       : "No job applications yet"
                 }
                 description={
                   searchQuery
                     ? "Try adjusting your search query"
-                    : jobStatusFilter !== "all" || appliedFilters.dateRange !== "all"
+                    : jobStatusFilter !== "all" ||
+                        appliedFilters.dateRange !== "all"
                       ? "Try adjusting your filters"
                       : "Start applying to jobs to see your applications here"
                 }
@@ -345,14 +347,16 @@ export function TalentMyApplications() {
               title={
                 searchQuery
                   ? "No requests match your search"
-                  : mentorshipStatusFilter !== "all" || appliedFilters.dateRange !== "all"
+                  : mentorshipStatusFilter !== "all" ||
+                      appliedFilters.dateRange !== "all"
                     ? "No requests match your filters"
                     : "No mentorship requests yet"
               }
               description={
                 searchQuery
                   ? "Try adjusting your search query"
-                  : mentorshipStatusFilter !== "all" || appliedFilters.dateRange !== "all"
+                  : mentorshipStatusFilter !== "all" ||
+                      appliedFilters.dateRange !== "all"
                     ? "Try adjusting your filters"
                     : "Find mentors and send request to see them here"
               }

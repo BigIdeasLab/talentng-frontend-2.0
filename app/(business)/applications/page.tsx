@@ -482,32 +482,32 @@ export default function ApplicationsPage() {
                 <div className="col-span-1 lg:col-span-2">
                   <EmptyState
                     title={
-                    searchQuery.trim()
-                      ? "No requests match your search"
-                      : dateRange && dateRange !== "all"
-                        ? "No requests match your filters"
-                        : filter === "pending"
-                          ? "No pending requests"
-                          : filter === "accepted"
-                            ? "No accepted requests"
-                            : filter === "rejected"
-                              ? "No rejected requests"
-                              : "No requests match your filters"
-                  }
-                  description={
-                    searchQuery.trim()
-                      ? "Try adjusting your search query"
-                      : dateRange && dateRange !== "all"
-                        ? "Try adjusting your date range"
-                        : filter === "pending"
-                          ? "New mentorship requests will appear here"
-                          : filter === "accepted"
-                            ? "Accepted requests will appear here"
-                            : filter === "rejected"
-                              ? "Rejected requests will appear here"
-                              : "Mentorship requests will appear here as they come in"
-                  }
-                />
+                      searchQuery.trim()
+                        ? "No requests match your search"
+                        : dateRange && dateRange !== "all"
+                          ? "No requests match your filters"
+                          : filter === "pending"
+                            ? "No pending requests"
+                            : filter === "accepted"
+                              ? "No accepted requests"
+                              : filter === "rejected"
+                                ? "No rejected requests"
+                                : "No requests match your filters"
+                    }
+                    description={
+                      searchQuery.trim()
+                        ? "Try adjusting your search query"
+                        : dateRange && dateRange !== "all"
+                          ? "Try adjusting your date range"
+                          : filter === "pending"
+                            ? "New mentorship requests will appear here"
+                            : filter === "accepted"
+                              ? "Accepted requests will appear here"
+                              : filter === "rejected"
+                                ? "Rejected requests will appear here"
+                                : "Mentorship requests will appear here as they come in"
+                    }
+                  />
                 </div>
               ) : (
                 filteredRequests.map((request) => (

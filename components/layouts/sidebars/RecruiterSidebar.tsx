@@ -258,7 +258,11 @@ export function RecruiterSidebar({
 }: SidebarProps) {
   const pathname = usePathname();
   const { currentProfile, currentProfileUI } = useProfile();
-  const menuItems = getMenuItems(notificationCount, upcomingCount, applicantsCount);
+  const menuItems = getMenuItems(
+    notificationCount,
+    upcomingCount,
+    applicantsCount,
+  );
 
   const handleNotificationClick = (e: React.MouseEvent) => {
     e.preventDefault();

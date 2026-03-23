@@ -155,7 +155,9 @@ export function MentorProfile({
 
             {activeTab === "sessions" && <MentorSessionSection />}
 
-            {activeTab === "reviews" && <MentorReviewsSection mentorId={profileData?.id} />}
+            {activeTab === "reviews" && (
+              <MentorReviewsSection mentorId={profileData?.id} />
+            )}
           </div>
         </div>
       </main>

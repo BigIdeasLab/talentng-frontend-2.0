@@ -100,7 +100,7 @@ function TalentUpcoming() {
     useState(false);
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [isActionLoading, setIsActionLoading] = useState(false);
-  
+
   // Success modal states
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [successModalConfig, setSuccessModalConfig] = useState({
@@ -163,9 +163,12 @@ function TalentUpcoming() {
         if (dateRange === "past" || dateRange === "needs-review") {
           console.log("🕐 PAST EVENTS DETAILS:", {
             totalPastEvents: res.items?.length || res.data?.length || 0,
-            sessions: (res.items || res.data || []).filter((item: any) => item.type === "session"),
+            sessions: (res.items || res.data || []).filter(
+              (item: any) => item.type === "session",
+            ),
             completedSessions: (res.items || res.data || []).filter(
-              (item: any) => item.type === "session" && item.status === "completed"
+              (item: any) =>
+                item.type === "session" && item.status === "completed",
             ),
             fullResponse: res,
           });
@@ -180,7 +183,7 @@ function TalentUpcoming() {
             (item: any) =>
               item.type === "session" &&
               item.status === "completed" &&
-              !item.hasReview
+              !item.hasReview,
           );
           console.log("🔍 NEEDS REVIEW FILTER:", {
             totalFiltered: items.length,
@@ -202,7 +205,7 @@ function TalentUpcoming() {
               (item: any) =>
                 item.type === "session" &&
                 item.status === "completed" &&
-                !item.hasReview
+                !item.hasReview,
             ).length;
             setNeedsReviewCount(needsReview);
           } catch (error) {
@@ -215,7 +218,7 @@ function TalentUpcoming() {
             (item: any) =>
               item.type === "session" &&
               item.status === "completed" &&
-              !item.hasReview
+              !item.hasReview,
           ).length;
           setNeedsReviewCount(needsReview);
         }
@@ -452,10 +455,10 @@ function TalentUpcoming() {
     console.log("🎯 MAPPED SESSIONS:", {
       dateRangeFilter: dateRange,
       totalMapped: upcomingItems.length,
-      sessions: upcomingItems.filter(item => item.type === "session"),
+      sessions: upcomingItems.filter((item) => item.type === "session"),
       sessionsWithReviewStatus: upcomingItems
-        .filter(item => item.type === "session")
-        .map(item => ({
+        .filter((item) => item.type === "session")
+        .map((item) => ({
           id: item.session?.id,
           status: item.session?.status,
           hasReview: item.session?.hasReview,

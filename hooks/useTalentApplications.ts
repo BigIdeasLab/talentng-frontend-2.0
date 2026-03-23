@@ -41,7 +41,9 @@ export function useSubmitApplication() {
       // Invalidate talent's own applications
       queryClient.invalidateQueries({ queryKey: ["applications", "talent"] });
       // Invalidate recruiter's applications so they see the new application immediately
-      queryClient.invalidateQueries({ queryKey: ["applications", "recruiter"] });
+      queryClient.invalidateQueries({
+        queryKey: ["applications", "recruiter"],
+      });
     },
   });
 }

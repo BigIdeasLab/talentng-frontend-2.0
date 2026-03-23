@@ -56,7 +56,9 @@ export function MentorGrid({
           <EmptyState
             icon={Users}
             title={emptyTitle || "No mentors match your search"}
-            description={emptyDescription || "Try adjusting your filters or search query"}
+            description={
+              emptyDescription || "Try adjusting your filters or search query"
+            }
           />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4 pb-6">

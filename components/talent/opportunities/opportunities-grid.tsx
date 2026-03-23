@@ -64,7 +64,10 @@ export function OpportunitiesGrid({
               <EmptyState
                 icon={Briefcase}
                 title={emptyTitle || "No opportunities match your search"}
-                description={emptyDescription || "Try adjusting your filters or search query"}
+                description={
+                  emptyDescription ||
+                  "Try adjusting your filters or search query"
+                }
               />
             </div>
           )}

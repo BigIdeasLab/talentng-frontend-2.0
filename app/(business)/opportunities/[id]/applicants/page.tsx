@@ -8,7 +8,10 @@ import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SearchInput } from "@/components/ui/search-input";
-import { useRecruiterApplicationsQuery, useUpdateApplicationStatus } from "@/hooks/useRecruiterApplications";
+import {
+  useRecruiterApplicationsQuery,
+  useUpdateApplicationStatus,
+} from "@/hooks/useRecruiterApplications";
 import { useRecruiterOpportunityQuery } from "@/hooks/useRecruiterOpportunities";
 import type { Application } from "@/lib/api/applications";
 import {
@@ -73,12 +76,13 @@ export default function OpportunityApplicantsPage() {
     dateRange: "all",
   });
   const [applicants, setApplicants] = useState<MappedApplicant[]>([]);
-  
+
   // Hire modal state
   const [hireModalOpen, setHireModalOpen] = useState(false);
-  const [selectedApplicant, setSelectedApplicant] = useState<MappedApplicant | null>(null);
+  const [selectedApplicant, setSelectedApplicant] =
+    useState<MappedApplicant | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
-  
+
   const updateStatusMutation = useUpdateApplicationStatus();
   const {
     data: opportunity,
@@ -116,7 +120,7 @@ export default function OpportunityApplicantsPage() {
       // Get the latest interview status if application is shortlisted
       const latestInterview = app.interviews?.[0];
       const interviewStatus = latestInterview?.status;
-      
+
       return {
         id: app.id,
         userId: app.userId,
@@ -228,13 +232,13 @@ export default function OpportunityApplicantsPage() {
 
     return result;
   }, [applicants, searchQuery, filters, sortBy]);
-  
+
   // Handle hire button click
   const handleHireClick = (applicant: MappedApplicant) => {
     setSelectedApplicant(applicant);
     setHireModalOpen(true);
   };
-  
+
   // Handle hire submission
   const handleHire = async (applicationId: string, message: string) => {
     try {
@@ -245,7 +249,8 @@ export default function OpportunityApplicantsPage() {
       setHireModalOpen(false);
       setShowSuccess(true);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to hire talent";
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to hire talent";
       toast({
         title: "Error",
         description: errorMessage,
@@ -596,7 +601,9 @@ export default function OpportunityApplicantsPage() {
                                 applicant.interviewStatus
                               ].bg;
                             }
-                            return statusDisplayMap[applicant.status as keyof typeof statusDisplayMap].bg;
+                            return statusDisplayMap[
+                              applicant.status as keyof typeof statusDisplayMap
+                            ].bg;
                           })(),
                         }}
                       >
@@ -620,7 +627,9 @@ export default function OpportunityApplicantsPage() {
                                   applicant.interviewStatus
                                 ].text;
                               }
-                              return statusDisplayMap[applicant.status as keyof typeof statusDisplayMap].text;
+                              return statusDisplayMap[
+                                applicant.status as keyof typeof statusDisplayMap
+                              ].text;
                             })(),
                           }}
                         >
@@ -641,7 +650,9 @@ export default function OpportunityApplicantsPage() {
                                 applicant.interviewStatus
                               ].label;
                             }
-                            return statusDisplayMap[applicant.status as keyof typeof statusDisplayMap].label;
+                            return statusDisplayMap[
+                              applicant.status as keyof typeof statusDisplayMap
+                            ].label;
                           })()}
                         </span>
                       </div>
@@ -695,7 +706,7 @@ export default function OpportunityApplicantsPage() {
           )}
         </div>
       </div>
-      
+
       {/* Hire Modal */}
       {selectedApplicant && (
         <HireApplicationModal
@@ -708,7 +719,7 @@ export default function OpportunityApplicantsPage() {
           onHire={handleHire}
         />
       )}
-      
+
       {/* Success Modal */}
       <SuccessModal
         isOpen={showSuccess}

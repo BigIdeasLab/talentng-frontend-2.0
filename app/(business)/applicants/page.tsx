@@ -10,7 +10,10 @@ import { useRequireRole } from "@/hooks/useRequireRole";
 import { useProfile } from "@/hooks/useProfile";
 import { PageLoadingState } from "@/lib/page-utils";
 import { ApplicantsSkeleton } from "@/components/employer/applicants/ApplicantsSkeleton";
-import { useRecruiterApplicationsQuery, useUpdateApplicationStatus } from "@/hooks/useRecruiterApplications";
+import {
+  useRecruiterApplicationsQuery,
+  useUpdateApplicationStatus,
+} from "@/hooks/useRecruiterApplications";
 import {
   mapApplicationsToUI,
   type MappedApplicant,
@@ -61,12 +64,13 @@ export default function ApplicantsPage() {
   >([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const lastProcessedDataRef = useRef<any>(null);
-  
+
   // Hire modal state
   const [hireModalOpen, setHireModalOpen] = useState(false);
-  const [selectedApplicant, setSelectedApplicant] = useState<MappedApplicant | null>(null);
+  const [selectedApplicant, setSelectedApplicant] =
+    useState<MappedApplicant | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
-  
+
   const updateStatusMutation = useUpdateApplicationStatus();
 
   // Only fetch when the active role is confirmed as recruiter
@@ -163,13 +167,13 @@ export default function ApplicantsPage() {
 
   // Server already handles all filtering — use results directly
   const filteredApplicants = displayedApplicants;
-  
+
   // Handle hire button click
   const handleHireClick = (applicant: MappedApplicant) => {
     setSelectedApplicant(applicant);
     setHireModalOpen(true);
   };
-  
+
   // Handle hire submission
   const handleHire = async (applicationId: string, message: string) => {
     try {
@@ -180,7 +184,8 @@ export default function ApplicantsPage() {
       setHireModalOpen(false);
       setShowSuccess(true);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to hire talent";
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to hire talent";
       toast({
         title: "Error",
         description: errorMessage,
@@ -644,7 +649,7 @@ export default function ApplicantsPage() {
           </div>
         </div>
       </div>
-      
+
       {/* Hire Modal */}
       {selectedApplicant && (
         <HireApplicationModal
@@ -657,7 +662,7 @@ export default function ApplicantsPage() {
           onHire={handleHire}
         />
       )}
-      
+
       {/* Success Modal */}
       <SuccessModal
         isOpen={showSuccess}

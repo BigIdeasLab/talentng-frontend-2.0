@@ -10,7 +10,10 @@ import { TalentSidebar } from "@/components/layouts/sidebars/TalentSidebar";
 import { RecruiterSidebar } from "@/components/layouts/sidebars/RecruiterSidebar";
 import { MentorSidebar } from "@/components/layouts/sidebars/MentorSidebar";
 import { getTalentUpcomingCount } from "@/lib/api/talent";
-import { getRecruiterInterviewsCount, getRecruiterApplicationsCount } from "@/lib/api/applications";
+import {
+  getRecruiterInterviewsCount,
+  getRecruiterApplicationsCount,
+} from "@/lib/api/applications";
 import { getMentorSessionsCount } from "@/lib/api/mentorship";
 import { MobileSidebar } from "@/components/talent/profile/components/MobileSidebar";
 import { LoadingScreen } from "@/components/layouts/LoadingScreen";

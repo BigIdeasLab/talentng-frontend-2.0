@@ -15,12 +15,18 @@ function ReviewCard({ review }: { review: SessionReview }) {
   if (!review.mentee || !review.mentee.name) {
     return null;
   }
-  
+
   // Generate a color based on the reviewer's name
   const getAvatarColor = (name: string) => {
     const colors = [
-      "#FF6B6B", "#E0BBE4", "#A8E6A3", "#FFB347", 
-      "#6B8E23", "#4A90E2", "#F4C430", "#FF69B4"
+      "#FF6B6B",
+      "#E0BBE4",
+      "#A8E6A3",
+      "#FFB347",
+      "#6B8E23",
+      "#4A90E2",
+      "#F4C430",
+      "#FF69B4",
     ];
     const index = name.charCodeAt(0) % colors.length;
     return colors[index];
@@ -42,7 +48,11 @@ function ReviewCard({ review }: { review: SessionReview }) {
             {/* Avatar */}
             <div
               className="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0"
-              style={{ backgroundColor: review.mentee.avatar ? 'transparent' : getAvatarColor(review.mentee.name) }}
+              style={{
+                backgroundColor: review.mentee.avatar
+                  ? "transparent"
+                  : getAvatarColor(review.mentee.name),
+              }}
             >
               {review.mentee.avatar ? (
                 <img
