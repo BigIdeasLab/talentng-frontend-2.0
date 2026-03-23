@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/hooks";
@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { getRoleColors } from "@/lib/theme/role-colors";
+import { cn } from "@/lib/utils";
 
 const CaretIcon = () => (
   <svg
@@ -165,6 +166,7 @@ const LogoutIcon = () => (
 
 export function ProfileSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const router = useRouter();
   const { user, logout } = useAuth();
   const {
@@ -179,6 +181,18 @@ export function ProfileSwitcher() {
     initialProfileAvatar,
     isLoading,
   } = useProfile();
+
+  // Check if screen is mobile
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint
+    };
+    
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
 
   // Restore last active role when switching roles
   const handleSwitchRole = async (role: string) => {
@@ -375,11 +389,11 @@ export function ProfileSwitcher() {
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          side="right"
+          side={isMobile ? "bottom" : "right"}
           align="start"
-          className="w-[220px] rounded-lg bg-white border-0 shadow-lg"
-          sideOffset={31}
-          alignOffset={-14}
+          className="w-[230px] rounded-lg bg-white border-0 shadow-lg"
+          sideOffset={isMobile ? 8 : 31}
+          alignOffset={isMobile ? -10 : -14}
         >
           {/* Profile Info */}
           <div className="flex items-center gap-[8px] px-[14px] py-[10px]">

@@ -73,7 +73,7 @@ export function createDynamicChart<T extends Record<string, any>>(
   return createDynamicComponent(importFn, {
     ssr: false,
     loading: () => (
-      <div className="w-full h-[240px] md:h-[270px] bg-gray-100 rounded-lg flex items-center justify-center">
+      <div className="w-full h-[200px] md:h-[220px] bg-gray-100 rounded-lg flex items-center justify-center">
         <div className="flex flex-col items-center gap-2">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900"></div>
           <span className="text-sm text-gray-600">Loading chart...</span>

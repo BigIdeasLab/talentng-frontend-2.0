@@ -9,6 +9,7 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
+import * as SheetPrimitive from "@radix-ui/react-dialog";
 import { cn } from "@/lib/utils";
 import { TOUCH_TARGET } from "@/lib/constants/touch-targets";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
@@ -115,12 +116,14 @@ export function MobileDrawer({
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetPortal>
-        <SheetOverlay />
-        <SheetContent
-          side="left"
+        {/* Custom lighter overlay */}
+        <SheetOverlay className="bg-black/20" />
+        <SheetPrimitive.Content
           className={cn(
             // Base styles
-            "fixed inset-y-0 left-0 z-50 h-full bg-white p-0 shadow-lg",
+            "fixed left-0 z-40 h-full bg-white p-0 shadow-lg",
+            // Position below header (header height is approximately 64px)
+            "top-16 inset-y-16",
             // Orientation-adaptive width
             getDrawerWidth(),
             // Animation styles
@@ -155,7 +158,7 @@ export function MobileDrawer({
           >
             {children}
           </div>
-        </SheetContent>
+        </SheetPrimitive.Content>
       </SheetPortal>
     </Sheet>
   );

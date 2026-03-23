@@ -67,7 +67,7 @@ export const LazyDashboardChart: React.FC<{
     height="300px"
     className={className}
     fallback={
-      <div className="w-full h-[240px] md:h-[270px] bg-gray-50 rounded-lg flex items-center justify-center">
+      <div className="w-full h-[200px] md:h-[220px] bg-gray-50 rounded-lg flex items-center justify-center">
         <div className="flex flex-col items-center gap-2">
           <div className="animate-pulse bg-gray-200 rounded-full h-6 w-6"></div>
           <span className="text-sm text-gray-500">Loading chart...</span>

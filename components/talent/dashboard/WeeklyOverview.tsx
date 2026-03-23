@@ -58,7 +58,7 @@ export function WeeklyOverview({ data }: WeeklyOverviewProps) {
           </div>
         </div>
       </div>
-      <div className="w-full h-[240px] md:h-[270px]">
+      <div className="w-full h-[200px] md:h-[220px]">
         <ChartContainer config={chartConfig} className="w-full h-full">
           <AreaChart
             data={data}

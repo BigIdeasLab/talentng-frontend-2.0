@@ -72,6 +72,6 @@ export default function TalentDashboardExample() {
  * - Stat Cards: grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3
  * - Charts: grid grid-cols-1 lg:grid-cols-[5fr_3fr] gap-4
  * - Content: grid grid-cols-1 lg:grid-cols-2 gap-4
- * - Chart Height: h-[240px] md:h-[270px]
+ * - Chart Height: h-[200px] md:h-[220px]
  * - Chart Width: w-full (always full container width)
  */

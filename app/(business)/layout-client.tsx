@@ -180,49 +180,26 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
 
       {/* Mobile Header with Hamburger Menu */}
       <div
-        className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-[#E1E4EA]"
+        className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-[#E1E4EA] relative z-50"
         suppressHydrationWarning
       >
+        {/* Logo and Brand Name - Left */}
+        <div className="flex items-center gap-2">
+          <img
+            src="/logo.png"
+            alt="TalentNG"
+            className="h-10 w-auto"
+          />
+          <span className="font-medium text-[18px] text-black font-inter-tight">
+            TalentNG
+          </span>
+        </div>
+        
+        {/* Hamburger Menu Button - Right */}
         <HamburgerMenuButton
           isOpen={isMobileDrawerOpen}
           onClick={() => setIsMobileDrawerOpen(!isMobileDrawerOpen)}
         />
-        <div className="font-medium text-[18px] text-black font-inter-tight">
-          TalentNG
-        </div>
-        {/* Notification badge in mobile header */}
-        <button
-          onClick={() => setIsNotificationsOpen(true)}
-          className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          aria-label="Open notifications"
-        >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12 6.44V9.77M12.02 2C8.34 2 5.36 4.98 5.36 8.66V10.76C5.36 11.44 5.08 12.46 4.73 13.04L3.46 15.16C2.68 16.47 3.22 17.93 4.66 18.41C9.44 20 14.61 20 19.39 18.41C20.74 17.96 21.32 16.38 20.59 15.16L19.32 13.04C18.97 12.46 18.69 11.43 18.69 10.76V8.66C18.68 5 15.68 2 12.02 2Z"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeMiterlimit="10"
-              strokeLinecap="round"
-            />
-            <path
-              d="M15.33 18.82C15.33 20.65 13.83 22.15 12 22.15C11.09 22.15 10.25 21.77 9.65 21.17C9.05 20.57 8.67 19.73 8.67 18.82"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeMiterlimit="10"
-            />
-          </svg>
-          {totalUnreadCount > 0 && (
-            <span className="absolute top-1 right-1 flex items-center justify-center w-5 h-5 text-xs font-semibold text-white bg-red-600 rounded-full">
-              {totalUnreadCount}
-            </span>
-          )}
-        </button>
       </div>
 
       {/* Mobile Drawer */}
