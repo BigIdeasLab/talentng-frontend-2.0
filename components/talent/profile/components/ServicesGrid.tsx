@@ -7,8 +7,7 @@ import { useToast } from "@/hooks";
 import { EmptyState } from "./EmptyState";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { SuccessModal } from "@/components/ui/success-modal";
-import { useMyServices } from "@/hooks/useTalentApi";
-import { deleteService } from "@/lib/api/talent";
+import { useMyServices, useDeleteService } from "@/hooks/useTalentApi";
 import type { Service } from "@/lib/api/talent";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
@@ -43,6 +42,7 @@ export function ServicesGrid({
     isLoading: hookIsLoading,
     error: hookError,
   } = useMyServices();
+  const deleteServiceMutation = useDeleteService();
   const [services, setServices] = useState<Service[]>(cachedServices);
   const [isLoading, setIsLoading] = useState(
     parentIsLoading && cachedServices.length === 0,
@@ -65,7 +65,7 @@ export function ServicesGrid({
 
     setDeletingId(serviceId);
     try {
-      await deleteService(serviceId);
+      await deleteServiceMutation.mutateAsync(serviceId);
       setServices((prev) => prev.filter((s) => s.id !== serviceId));
       setShowDeleteSuccess(true);
       onServiceDeleted?.();
@@ -221,10 +221,10 @@ export function ServicesGrid({
                     </button>
                     <button
                       onClick={() => handleDelete(service.id)}
-                      disabled={deletingId === service.id}
+                      disabled={deleteServiceMutation.isPending && deletingId === service.id}
                       className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50 flex items-center gap-2"
                     >
-                      {deletingId === service.id ? (
+                      {deleteServiceMutation.isPending && deletingId === service.id ? (
                         <>
                           <Loader className="w-3 h-3 animate-spin" />
                           Deleting...

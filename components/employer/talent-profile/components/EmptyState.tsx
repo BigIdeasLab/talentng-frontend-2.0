@@ -6,7 +6,7 @@ import { Plus } from "lucide-react";
 interface EmptyStateProps {
   title: string;
   description: string;
-  buttonText: string;
+  buttonText?: string;
   onButtonClick?: () => void;
 }
 

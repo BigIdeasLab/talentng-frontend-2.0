@@ -195,17 +195,21 @@ export function ServiceDetailView({
               )}
 
               {/* Get in Touch Button */}
-              <button 
+              <button
                 onClick={() => {
                   if (talentEmail) {
-                    const subject = encodeURIComponent(`Service Inquiry: ${service.title}`);
+                    const subject = encodeURIComponent(
+                      `Service Inquiry: ${service.title}`,
+                    );
                     const body = encodeURIComponent(
-                      `Hello ${talentName || 'there'},\n\nI hope this email finds you well. I came across your service "${service.title}" on TalentNG and I'm very interested in learning more about it.\n\n${service.about ? `Service Details:\n${service.about}\n\n` : ''}${service.price ? `Listed Price: ${service.price}\n\n` : ''}I would love to discuss:\n• Project requirements and scope\n• Timeline and availability\n• Any additional details about your service\n\nPlease let me know when you're available for a brief discussion. I'm looking forward to potentially working together.\n\nBest regards`
+                      `Hello ${talentName || "there"},\n\nI hope this email finds you well. I came across your service "${service.title}" on TalentNG and I'm very interested in learning more about it.\n\n${service.about ? `Service Details:\n${service.about}\n\n` : ""}${service.price ? `Listed Price: ${service.price}\n\n` : ""}I would love to discuss:\n• Project requirements and scope\n• Timeline and availability\n• Any additional details about your service\n\nPlease let me know when you're available for a brief discussion. I'm looking forward to potentially working together.\n\nBest regards`,
                     );
                     window.location.href = `mailto:${talentEmail}?subject=${subject}&body=${body}`;
                   } else {
                     // Fallback - show a helpful message
-                    alert('To contact this talent, please use the platform\'s messaging system or contact support for assistance.');
+                    alert(
+                      "To contact this talent, please use the platform's messaging system or contact support for assistance.",
+                    );
                   }
                 }}
                 className="flex h-8 px-4 py-2 items-center gap-1 rounded-[42px] bg-[#181B25] hover:bg-[#2a2d38] transition-colors self-start"

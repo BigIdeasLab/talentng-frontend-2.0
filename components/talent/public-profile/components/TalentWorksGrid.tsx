@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import type { GalleryItem } from "@/lib/api/talent/types";
+import { EmptyState } from "./EmptyState";
 
 interface TalentWorksGridProps {
   gallery: GalleryItem[];
@@ -14,9 +15,10 @@ export function TalentWorksGrid({
 }: TalentWorksGridProps) {
   if (!gallery || gallery.length === 0) {
     return (
-      <div className="flex items-center justify-center p-[25px] min-h-[400px]">
-        <p className="text-gray-500">No portfolio items yet</p>
-      </div>
+      <EmptyState
+        title="No Portfolio Items"
+        description="This talent hasn't uploaded any portfolio items yet."
+      />
     );
   }
 
@@ -26,9 +28,10 @@ export function TalentWorksGrid({
 
   if (itemsWithImages.length === 0) {
     return (
-      <div className="flex items-center justify-center p-[25px] min-h-[400px]">
-        <p className="text-gray-500">No portfolio items yet</p>
-      </div>
+      <EmptyState
+        title="No Portfolio Items"
+        description="This talent hasn't uploaded any portfolio items yet."
+      />
     );
   }
 

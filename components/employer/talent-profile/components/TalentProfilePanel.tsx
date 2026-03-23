@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin, Briefcase, Users, DollarSign } from "lucide-react";
+import { MapPin, Briefcase, Users, Eye } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import type { TalentProfile } from "@/lib/api/talent/types";
@@ -140,13 +140,13 @@ export function TalentProfilePanel({
               </div>
             )}
 
-            {/* Earnings */}
-            {(profile.earnings || profile.stats?.earnings) && (
+            {/* Profile Views */}
+            {(profile.views !== undefined || profile.stats?.views !== undefined) && (
               <div className="flex justify-between items-center w-full">
                 <div className="flex items-center gap-[6px]">
-                  <DollarSign className="w-[18px] h-[18px] text-[#525866]" />
+                  <Eye className="w-[18px] h-[18px] text-[#525866]" />
                   <span className="text-[12px] font-normal text-black font-inter-tight">
-                    {profile.earnings || profile.stats?.earnings}
+                    {profile.views || profile.stats?.views || 0} Views
                   </span>
                 </div>
               </div>

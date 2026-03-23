@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { EmptyState } from "./EmptyState";
 
 interface RecommendationData {
   id: string;
@@ -21,9 +22,10 @@ export function TalentRecommendationsGrid({
 }: TalentRecommendationsGridProps) {
   if (!recommendations || recommendations.length === 0) {
     return (
-      <div className="flex items-center justify-center p-[25px] min-h-[400px]">
-        <p className="text-gray-500">No recommendations yet</p>
-      </div>
+      <EmptyState
+        title="No Recommendations"
+        description="This talent hasn't received any recommendations yet."
+      />
     );
   }
 
