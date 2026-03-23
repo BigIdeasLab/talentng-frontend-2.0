@@ -464,8 +464,19 @@ export default function HiredTalentsPage() {
         {/* Talents Grid */}
         {filteredTalents.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12">
-            <p className="font-inter-tight text-[15px] font-normal text-black/30">
-              No hired talents found
+            <p className="font-inter-tight text-[15px] font-medium text-gray-600 mb-1.5">
+              {searchQuery.trim()
+                ? "No hired talents found"
+                : filters.location || filters.dateRange !== "all"
+                  ? "No hired talents found"
+                  : "No hired talents yet"}
+            </p>
+            <p className="font-inter-tight text-[13px] text-gray-500">
+              {searchQuery.trim()
+                ? "Try adjusting your search query"
+                : filters.location || filters.dateRange !== "all"
+                  ? "Try adjusting your filters"
+                  : "Talents you hire will appear here"}
             </p>
           </div>
         ) : (

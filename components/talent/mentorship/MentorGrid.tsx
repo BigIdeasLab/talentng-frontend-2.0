@@ -22,6 +22,8 @@ interface MentorGridProps {
   currentPage?: number;
   totalPages?: number;
   totalMentors?: number;
+  emptyTitle?: string;
+  emptyDescription?: string;
 }
 
 export function MentorGrid({
@@ -33,6 +35,8 @@ export function MentorGrid({
   currentPage = 1,
   totalPages = 1,
   totalMentors,
+  emptyTitle,
+  emptyDescription,
 }: MentorGridProps) {
   const displayCount = totalMentors ?? mentors.length;
   return (
@@ -48,8 +52,11 @@ export function MentorGrid({
       <div className="flex-1 overflow-y-auto scrollbar-styled px-[25px] py-[16px]">
         {mentors.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 bg-[#FAFAFA] rounded-xl border border-dashed border-[#E1E4EA]">
+            <p className="font-inter-tight text-[15px] font-medium text-gray-600 mb-1.5">
+              {emptyTitle || "No mentors found"}
+            </p>
             <p className="font-inter-tight text-[13px] text-gray-500">
-              No mentors found. Try adjusting your filters.
+              {emptyDescription || "Try adjusting your filters or search query"}
             </p>
           </div>
         ) : (

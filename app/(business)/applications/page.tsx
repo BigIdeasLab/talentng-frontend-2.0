@@ -302,24 +302,10 @@ export default function ApplicationsPage() {
         <div className="h-full overflow-y-auto p-4 md:p-6">
           {/* Request Cards */}
           {isLoading && !isInitialLoad ? (
-            // Show previous data with loading indicator in search bar
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
+            // Show previous data with loading overlay while fetching
+            <div className={`grid grid-cols-1 lg:grid-cols-2 gap-[7px] transition-opacity duration-200 ${isLoading ? "opacity-50" : "opacity-100"}`}>
               {filteredRequests.length === 0 ? (
-                <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
-                  <p className="font-inter-tight text-[14px] text-[#525866]">
-                    {searchQuery.trim()
-                      ? "Try adjusting your search query"
-                      : dateRange && dateRange !== "all"
-                        ? "Try adjusting your date range"
-                        : filter === "pending"
-                          ? "No pending requests"
-                          : filter === "accepted"
-                            ? "No accepted requests"
-                            : filter === "rejected"
-                              ? "No rejected requests"
-                              : "No requests found"}
-                  </p>
-                </div>
+                <ApplicationsSkeleton />
               ) : (
                 filteredRequests.map((request) => (
                   <div

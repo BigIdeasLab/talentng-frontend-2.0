@@ -167,8 +167,19 @@ export function MentorUpcoming() {
           ) : upcomingItems.length === 0 ? (
             <EmptyState
               icon={Calendar}
-              title="No upcoming sessions"
-              description="You have no upcoming mentorship sessions scheduled"
+              title={
+                searchQuery.trim() ||
+                (appliedFilters && appliedFilters.dateRange !== "all")
+                  ? "No sessions found"
+                  : "No upcoming sessions"
+              }
+              description={
+                searchQuery.trim()
+                  ? "Try adjusting your search query"
+                  : appliedFilters && appliedFilters.dateRange !== "all"
+                    ? "Try adjusting your filters"
+                    : "You have no upcoming mentorship sessions scheduled"
+              }
             />
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">

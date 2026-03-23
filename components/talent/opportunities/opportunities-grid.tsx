@@ -2,7 +2,6 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { OpportunityCard } from "./opportunity-card";
-import { EmptyState } from "./empty-state";
 import type { OpportunitiesGridProps } from "./types";
 
 interface OpportunitiesGridExtendedProps extends OpportunitiesGridProps {
@@ -14,6 +13,8 @@ interface OpportunitiesGridExtendedProps extends OpportunitiesGridProps {
   currentPage?: number;
   totalPages?: number;
   totalOpportunities?: number;
+  emptyTitle?: string;
+  emptyDescription?: string;
 }
 
 export function OpportunitiesGrid({
@@ -26,6 +27,8 @@ export function OpportunitiesGrid({
   currentPage = 1,
   totalPages = 1,
   totalOpportunities,
+  emptyTitle,
+  emptyDescription,
 }: OpportunitiesGridExtendedProps) {
   const displayCount = totalOpportunities ?? opportunities.length;
 
@@ -55,7 +58,14 @@ export function OpportunitiesGrid({
               />
             ))
           ) : (
-            <EmptyState />
+            <div className="col-span-1 lg:col-span-2 flex flex-col items-center justify-center py-12">
+              <p className="text-[15px] font-medium text-gray-600 mb-1.5">
+                {emptyTitle || "No opportunities found"}
+              </p>
+              <p className="text-[13px] text-gray-500">
+                {emptyDescription || "Try adjusting your filters or search query"}
+              </p>
+            </div>
           )}
         </div>
       </div>
