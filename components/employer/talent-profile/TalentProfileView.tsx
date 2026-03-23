@@ -69,12 +69,16 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
         profile={profile}
         onHireClick={() => setIsHireModalOpen(true)}
         completionPercentage={profile.stats?.completionPercentage || 0}
-        socialLinks={profile.socialLinks ? {
-          telegram: profile.socialLinks.telegram || undefined,
-          twitter: profile.socialLinks.twitter || undefined,
-          instagram: profile.socialLinks.instagram || undefined,
-          linkedin: profile.socialLinks.linkedin || undefined,
-        } : undefined}
+        socialLinks={
+          profile.socialLinks
+            ? {
+                telegram: profile.socialLinks.telegram || undefined,
+                twitter: profile.socialLinks.twitter || undefined,
+                instagram: profile.socialLinks.instagram || undefined,
+                linkedin: profile.socialLinks.linkedin || undefined,
+              }
+            : undefined
+        }
       />
 
       {/* Main Content Area */}
@@ -86,16 +90,16 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
         <div className="flex-1 overflow-y-auto scrollbar-styled">
           {/* Portfolio/Works Tab */}
           {activeTab === "works" && (
-            <TalentWorksGrid 
-              gallery={profile.gallery || []} 
+            <TalentWorksGrid
+              gallery={profile.gallery || []}
               onItemClick={setSelectedWork}
             />
           )}
 
           {/* Services Tab */}
           {activeTab === "services" && (
-            <TalentServicesGrid 
-              services={profile.services || []} 
+            <TalentServicesGrid
+              services={profile.services || []}
               onServiceClick={setSelectedService}
             />
           )}
@@ -117,9 +121,9 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
                     About {profile.fullName || "User"}
                   </h2>
                   <div className="flex flex-col gap-3 text-[13px] font-normal text-black font-inter-tight leading-[22px]">
-                    {profile.bio
-                      .split("\n")
-                      .map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+                    {profile.bio.split("\n").map((paragraph, index) => (
+                      <p key={index}>{paragraph}</p>
+                    ))}
                   </div>
                 </div>
               )}
@@ -185,10 +189,13 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
                         Member Since
                       </div>
                       <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px]">
-                        {new Date(profile.createdAt).toLocaleDateString("en-US", {
-                          month: "long",
-                          year: "numeric"
-                        })}
+                        {new Date(profile.createdAt).toLocaleDateString(
+                          "en-US",
+                          {
+                            month: "long",
+                            year: "numeric",
+                          },
+                        )}
                       </div>
                     </div>
                   )}
@@ -196,32 +203,31 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
               </div>
 
               {/* Work Experience */}
-              {profile.workExperience &&
-                profile.workExperience.length > 0 && (
+              {profile.workExperience && profile.workExperience.length > 0 && (
+                <div className="flex flex-col gap-4">
+                  <h2 className="text-lg font-semibold text-black font-inter-tight">
+                    Work Experience
+                  </h2>
                   <div className="flex flex-col gap-4">
-                    <h2 className="text-lg font-semibold text-black font-inter-tight">
-                      Work Experience
-                    </h2>
-                    <div className="flex flex-col gap-4">
-                      {profile.workExperience.map((exp, idx) => (
-                        <div
-                          key={exp.id || `exp-${idx}`}
-                          className="flex flex-col gap-2 px-3 py-3 rounded-[8px] border border-[#E1E4EA]"
-                        >
-                          <div className="text-[14px] font-semibold text-black font-inter-tight">
-                            {exp.role}
-                          </div>
-                          <div className="text-[13px] font-normal text-black/70 font-inter-tight">
-                            {exp.company}
-                          </div>
-                          <div className="text-[12px] font-normal text-black/50 font-inter-tight">
-                            {exp.duration}
-                          </div>
+                    {profile.workExperience.map((exp, idx) => (
+                      <div
+                        key={exp.id || `exp-${idx}`}
+                        className="flex flex-col gap-2 px-3 py-3 rounded-[8px] border border-[#E1E4EA]"
+                      >
+                        <div className="text-[14px] font-semibold text-black font-inter-tight">
+                          {exp.role}
                         </div>
-                      ))}
-                    </div>
+                        <div className="text-[13px] font-normal text-black/70 font-inter-tight">
+                          {exp.company}
+                        </div>
+                        <div className="text-[12px] font-normal text-black/50 font-inter-tight">
+                          {exp.duration}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                )}
+                </div>
+              )}
 
               {/* Education */}
               {profile.education && profile.education.length > 0 && (
@@ -281,7 +287,9 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
             id: selectedWork.id,
             title: selectedWork.title,
             description: selectedWork.description || "",
-            images: selectedWork.images || [(selectedWork as any).url].filter(Boolean),
+            images:
+              selectedWork.images ||
+              [(selectedWork as any).url].filter(Boolean),
             createdAt: selectedWork.createdAt,
           }}
           onClose={() => setSelectedWork(null)}

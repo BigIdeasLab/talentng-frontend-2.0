@@ -12,7 +12,10 @@ interface TalentServicesGridProps {
 
 const PLACEHOLDER_IMAGE = "/galleryplaceholder.jpg";
 
-export function TalentServicesGrid({ services, onServiceClick }: TalentServicesGridProps) {
+export function TalentServicesGrid({
+  services,
+  onServiceClick,
+}: TalentServicesGridProps) {
   if (!services || services.length === 0) {
     return (
       <EmptyState

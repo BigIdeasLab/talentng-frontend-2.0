@@ -11,13 +11,8 @@ export default function TalentProfilePage() {
   const params = useParams();
   const userId = params.userId as string;
   const isRecruiter = useRequireRole(["recruiter"]);
-  
-  const {
-    data: profile,
-    isLoading,
-    error,
-    isError,
-  } = useTalentProfile(userId);
+
+  const { data: profile, isLoading, error, isError } = useTalentProfile(userId);
 
   // Show loading state while fetching or retrying
   if (isLoading) {

@@ -138,7 +138,8 @@ export function TalentProfilePanel({
             )}
 
             {/* Profile Views */}
-            {(profile.views !== undefined || profile.stats?.views !== undefined) && (
+            {(profile.views !== undefined ||
+              profile.stats?.views !== undefined) && (
               <div className="flex justify-between items-center w-full">
                 <div className="flex items-center gap-[6px]">
                   <Eye className="w-[18px] h-[18px] text-[#525866]" />

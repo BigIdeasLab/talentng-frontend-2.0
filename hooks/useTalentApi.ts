@@ -76,7 +76,7 @@ export function useDashboardStats() {
 
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: updateProfile,
     onSuccess: () => {
@@ -89,7 +89,7 @@ export function useUpdateProfile() {
 
 export function useUpdateProfileImage() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: updateProfileImage,
     onSuccess: () => {
@@ -102,7 +102,7 @@ export function useUpdateProfileImage() {
 
 export function useUpdateCoverImage() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: updateCoverImage,
     onSuccess: () => {
@@ -137,7 +137,7 @@ export function useMyServices() {
 
 export function useCreateService() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: createService,
     onSuccess: () => {
@@ -151,7 +151,7 @@ export function useCreateService() {
 
 export function useUpdateService() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateServiceInput }) =>
       updateService(id, data),
@@ -166,7 +166,7 @@ export function useUpdateService() {
 
 export function useDeleteService() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: deleteService,
     onSuccess: () => {
@@ -207,7 +207,7 @@ export function useAddServiceReview() {
  */
 export function useUploadGalleryImages() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (files: File[]) => uploadGalleryImages(files),
     onSuccess: () => {
@@ -219,7 +219,7 @@ export function useUploadGalleryImages() {
 
 export function useDeleteGalleryItem() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: deleteGalleryItem,
     onSuccess: () => {

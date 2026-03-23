@@ -25,7 +25,10 @@ export function ProfileLoadingState() {
             {/* Details Container Skeleton */}
             <div className="flex flex-col items-start gap-[10px] w-full">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="flex justify-between items-center w-full">
+                <div
+                  key={i}
+                  className="flex justify-between items-center w-full"
+                >
                   <div className="flex items-center gap-[6px]">
                     <div className="w-[18px] h-[18px] bg-gray-200 rounded animate-pulse" />
                     <div className="h-3 bg-gray-200 rounded animate-pulse w-20" />
@@ -89,7 +92,7 @@ export function ProfileLoadingState() {
               <div key={i} className="flex flex-col space-y-3">
                 {/* Image Skeleton */}
                 <div className="w-full aspect-[4/3] bg-gray-200 rounded-lg animate-pulse" />
-                
+
                 {/* Content Skeleton */}
                 <div className="space-y-2">
                   <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4" />
