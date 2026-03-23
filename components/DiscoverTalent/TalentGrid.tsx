@@ -52,7 +52,8 @@ export function TalentGrid({
                 {emptyTitle || "No talents found"}
               </p>
               <p className="text-[13px] text-gray-500">
-                {emptyDescription || "Try adjusting your filters or search query"}
+                {emptyDescription ||
+                  "Try adjusting your filters or search query"}
               </p>
             </div>
           )}

@@ -112,6 +112,7 @@ export interface MentorshipSession {
   status: SessionStatus;
   notes: string | null;
   message?: string | null;
+  hasReview?: boolean; // Indicates if the session has been reviewed by the mentee
   mentor: {
     id: string;
     name?: string;

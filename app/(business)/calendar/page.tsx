@@ -118,7 +118,7 @@ function TalentUpcoming() {
           q: searchQuery || undefined,
           dateRange:
             dateRange && dateRange !== "all"
-              ? (dateRange as "today" | "week" | "month")
+              ? (dateRange as "today" | "week" | "month" | "past")
               : undefined,
           type: (filter === "interviews"
             ? "interview"
@@ -349,6 +349,7 @@ function TalentUpcoming() {
             startTime: item.scheduledAt || item.startTime,
             topic: item.topic || item.title,
             meetingLink: item.meetingLink,
+            hasReview: item.hasReview, // Include hasReview field from backend
             mentor: {
               // Backend now returns mentor profile ID in mentorId field
               id: item.mentorId,
@@ -359,7 +360,14 @@ function TalentUpcoming() {
         }),
   }));
 
-  upcomingItems.sort((a, b) => a.date.getTime() - b.date.getTime());
+  upcomingItems.sort((a, b) => {
+    // For past events, sort newest first (descending)
+    if (dateRange === "past") {
+      return b.date.getTime() - a.date.getTime();
+    }
+    // For upcoming events, sort oldest first (ascending)
+    return a.date.getTime() - b.date.getTime();
+  });
 
   // Server already handles filtering by type, so we just display all items
   const filteredItems = upcomingItems;
@@ -394,6 +402,7 @@ function TalentUpcoming() {
               { value: "today", label: "Today" },
               { value: "week", label: "This Week" },
               { value: "month", label: "This Month" },
+              { value: "past", label: "Past" },
             ].map((option) => (
               <button
                 key={option.value}
@@ -469,7 +478,9 @@ function TalentUpcoming() {
               }
               description={
                 searchQuery || dateRange !== "all"
-                  ? "Try adjusting your filters or search query"
+                  ? dateRange === "past"
+                    ? "No past events found. Try adjusting your search query."
+                    : "Try adjusting your filters or search query"
                   : filter === "interviews"
                     ? "You have no upcoming interviews"
                     : filter === "sessions"

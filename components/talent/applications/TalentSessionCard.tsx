@@ -343,7 +343,7 @@ export function TalentSessionCard({
           {/* Completed - Show Leave Review button if not reviewed */}
           {session.status === "completed" && (
             <>
-              {!(session as any).hasReview ? (
+              {!session.hasReview ? (
                 <button
                   onClick={() => onLeaveReview?.(session.id)}
                   className="flex items-center gap-1 px-4 py-2 h-8 hover:opacity-80 rounded-[40px] transition-colors"

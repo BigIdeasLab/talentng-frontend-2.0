@@ -303,7 +303,9 @@ export default function ApplicationsPage() {
           {/* Request Cards */}
           {isLoading && !isInitialLoad ? (
             // Show previous data with loading overlay while fetching
-            <div className={`grid grid-cols-1 lg:grid-cols-2 gap-[7px] transition-opacity duration-200 ${isLoading ? "opacity-50" : "opacity-100"}`}>
+            <div
+              className={`grid grid-cols-1 lg:grid-cols-2 gap-[7px] transition-opacity duration-200 ${isLoading ? "opacity-50" : "opacity-100"}`}
+            >
               {filteredRequests.length === 0 ? (
                 <ApplicationsSkeleton />
               ) : (

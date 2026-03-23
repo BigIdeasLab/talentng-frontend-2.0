@@ -287,8 +287,10 @@ export function OpportunitiesClient({
                         (appliedFilters.categories?.length ?? 0) > 0 ||
                         (appliedFilters.experienceLevels?.length ?? 0) > 0 ||
                         appliedFilters.location ||
-                        (appliedFilters.minBudget && appliedFilters.minBudget > 0) ||
-                        (appliedFilters.maxBudget && appliedFilters.maxBudget > 0))
+                        (appliedFilters.minBudget &&
+                          appliedFilters.minBudget > 0) ||
+                        (appliedFilters.maxBudget &&
+                          appliedFilters.maxBudget > 0))
                     ? "No opportunities found"
                     : activeFilter === "applied"
                       ? "No applied opportunities yet"
@@ -302,8 +304,10 @@ export function OpportunitiesClient({
                         (appliedFilters.categories?.length ?? 0) > 0 ||
                         (appliedFilters.experienceLevels?.length ?? 0) > 0 ||
                         appliedFilters.location ||
-                        (appliedFilters.minBudget && appliedFilters.minBudget > 0) ||
-                        (appliedFilters.maxBudget && appliedFilters.maxBudget > 0))
+                        (appliedFilters.minBudget &&
+                          appliedFilters.minBudget > 0) ||
+                        (appliedFilters.maxBudget &&
+                          appliedFilters.maxBudget > 0))
                     ? "Try adjusting your filters"
                     : activeFilter === "applied"
                       ? "Opportunities you apply to will appear here"
