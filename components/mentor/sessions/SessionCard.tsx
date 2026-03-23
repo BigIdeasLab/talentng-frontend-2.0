@@ -150,10 +150,11 @@ export function SessionCard({
           <div className="flex items-center gap-2">
             {(() => {
               const rawAvatar = mentee.avatar || "";
-              const safeAvatar = rawAvatar && !rawAvatar.includes('builder.io') 
-                ? rawAvatar 
-                : null;
-              
+              const safeAvatar =
+                rawAvatar && !rawAvatar.includes("builder.io")
+                  ? rawAvatar
+                  : null;
+
               return safeAvatar ? (
                 <img
                   src={safeAvatar}

@@ -55,9 +55,10 @@ function mapApiRequest(request: ApiMentorshipRequest): MentorshipRequest {
         request.mentee.username ||
         "Unknown",
       avatar: (() => {
-        const rawAvatar = request.mentee.profileImageUrl || request.mentee.avatar || "";
-        return rawAvatar && !rawAvatar.includes('builder.io') 
-          ? rawAvatar 
+        const rawAvatar =
+          request.mentee.profileImageUrl || request.mentee.avatar || "";
+        return rawAvatar && !rawAvatar.includes("builder.io")
+          ? rawAvatar
           : undefined;
       })(),
       title: request.mentee.headline || "",

@@ -78,8 +78,8 @@ export function MentorshipRequestCard({ request }: MentorshipRequestCardProps) {
             <img
               src={(() => {
                 const rawAvatar = mentor.profileImageUrl || mentor.avatar || "";
-                return rawAvatar && !rawAvatar.includes('builder.io') 
-                  ? rawAvatar 
+                return rawAvatar && !rawAvatar.includes("builder.io")
+                  ? rawAvatar
                   : "/default.png";
               })()}
               alt={mentor.fullName || mentor.name || "Mentor"}

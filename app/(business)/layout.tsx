@@ -11,9 +11,9 @@ export default async function AppLayout({
   const initialRole = cookieStore.get("activeRole")?.value ?? "";
   const initialProfileName = cookieStore.get("profileName")?.value ?? "";
   let initialProfileAvatar = cookieStore.get("profileAvatar")?.value ?? "";
-  
+
   // Filter out builder.io URLs from cached avatar as additional safety measure
-  if (initialProfileAvatar && initialProfileAvatar.includes('builder.io')) {
+  if (initialProfileAvatar && initialProfileAvatar.includes("builder.io")) {
     initialProfileAvatar = "";
   }
 

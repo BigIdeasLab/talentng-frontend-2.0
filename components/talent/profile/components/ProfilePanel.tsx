@@ -122,8 +122,8 @@ export function ProfilePanel({
           <img
             src={(() => {
               const rawUrl = user?.profileImageUrl || "";
-              return rawUrl && !rawUrl.includes('builder.io') 
-                ? rawUrl 
+              return rawUrl && !rawUrl.includes("builder.io")
+                ? rawUrl
                 : "/default.png";
             })()}
             alt={user?.fullName || "Profile"}

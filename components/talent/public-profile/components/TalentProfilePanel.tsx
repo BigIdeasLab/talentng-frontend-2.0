@@ -35,8 +35,8 @@ export function TalentProfilePanel({
           <img
             src={(() => {
               const rawUrl = profile.profileImageUrl || "";
-              return rawUrl && !rawUrl.includes('builder.io') 
-                ? rawUrl 
+              return rawUrl && !rawUrl.includes("builder.io")
+                ? rawUrl
                 : "/default.png";
             })()}
             alt={profile.fullName || "Profile"}

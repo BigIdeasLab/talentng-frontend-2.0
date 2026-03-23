@@ -32,10 +32,12 @@ interface MentorDisplay {
 
 function mapApiMentorToDisplay(mentor: Record<string, unknown>): MentorDisplay {
   // Get the image URL and ensure it's a local asset
-  const rawImageUrl = (mentor.profileImageUrl as string) || (mentor.avatar as string) || "";
-  const imageUrl = rawImageUrl && !rawImageUrl.includes('builder.io') 
-    ? rawImageUrl 
-    : "/default.png";
+  const rawImageUrl =
+    (mentor.profileImageUrl as string) || (mentor.avatar as string) || "";
+  const imageUrl =
+    rawImageUrl && !rawImageUrl.includes("builder.io")
+      ? rawImageUrl
+      : "/default.png";
 
   return {
     id: (mentor.id as string) || "",

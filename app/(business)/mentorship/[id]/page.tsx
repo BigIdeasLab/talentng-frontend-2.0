@@ -308,8 +308,8 @@ export default function MentorDetailPage() {
                     style={{
                       backgroundImage: `url(${(() => {
                         const rawAvatar = mentor.avatar || "";
-                        return rawAvatar && !rawAvatar.includes('builder.io') 
-                          ? rawAvatar 
+                        return rawAvatar && !rawAvatar.includes("builder.io")
+                          ? rawAvatar
                           : "/default.png";
                       })()})`,
                     }}
@@ -836,10 +836,11 @@ export default function MentorDetailPage() {
                             <div className="relative w-10 h-10 rounded-full overflow-hidden bg-gradient-to-b from-purple-400 to-purple-600">
                               {(() => {
                                 const rawAvatar = review.mentee.avatar || "";
-                                const safeAvatar = rawAvatar && !rawAvatar.includes('builder.io') 
-                                  ? rawAvatar 
-                                  : null;
-                                
+                                const safeAvatar =
+                                  rawAvatar && !rawAvatar.includes("builder.io")
+                                    ? rawAvatar
+                                    : null;
+
                                 return safeAvatar ? (
                                   <Image
                                     src={safeAvatar}

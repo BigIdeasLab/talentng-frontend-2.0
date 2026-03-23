@@ -89,8 +89,8 @@ export function MenteeSessionCard({
               <Image
                 src={(() => {
                   const rawAvatar = mentor.avatar || "";
-                  return rawAvatar && !rawAvatar.includes('builder.io') 
-                    ? rawAvatar 
+                  return rawAvatar && !rawAvatar.includes("builder.io")
+                    ? rawAvatar
                     : "/default.png";
                 })()}
                 alt={mentor.name}

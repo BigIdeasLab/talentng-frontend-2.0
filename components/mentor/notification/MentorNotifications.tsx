@@ -42,7 +42,6 @@ export function MentorNotifications({
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
     setAllNotifications(combined);
-
   }, [mentorNotifications, generalNotifications]);
 
   if (loading) {

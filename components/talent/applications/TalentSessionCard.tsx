@@ -102,12 +102,13 @@ export function TalentSessionCard({
   const status = STATUS_CONFIG[session.status] || STATUS_CONFIG.pending;
   const mentor = session.mentor;
   const mentorName = mentor.fullName || mentor.name || "Unknown Mentor";
-  
+
   // Filter out builder.io URLs and use local fallback
   const rawMentorAvatar = mentor.profileImageUrl || mentor.avatar || "";
-  const mentorAvatar = rawMentorAvatar && !rawMentorAvatar.includes('builder.io') 
-    ? rawMentorAvatar 
-    : "/default.png";
+  const mentorAvatar =
+    rawMentorAvatar && !rawMentorAvatar.includes("builder.io")
+      ? rawMentorAvatar
+      : "/default.png";
 
   const rawDate = session.startTime || session.scheduledAt || session.createdAt;
   const scheduledDate = new Date(rawDate);

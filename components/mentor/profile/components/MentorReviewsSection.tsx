@@ -51,19 +51,23 @@ function ReviewCard({ review }: { review: SessionReview }) {
               style={{
                 backgroundColor: (() => {
                   const rawAvatar = review.mentee.avatar || "";
-                  const safeAvatar = rawAvatar && !rawAvatar.includes('builder.io') 
-                    ? rawAvatar 
-                    : null;
-                  return safeAvatar ? "transparent" : getAvatarColor(review.mentee.name);
+                  const safeAvatar =
+                    rawAvatar && !rawAvatar.includes("builder.io")
+                      ? rawAvatar
+                      : null;
+                  return safeAvatar
+                    ? "transparent"
+                    : getAvatarColor(review.mentee.name);
                 })(),
               }}
             >
               {(() => {
                 const rawAvatar = review.mentee.avatar || "";
-                const safeAvatar = rawAvatar && !rawAvatar.includes('builder.io') 
-                  ? rawAvatar 
-                  : null;
-                
+                const safeAvatar =
+                  rawAvatar && !rawAvatar.includes("builder.io")
+                    ? rawAvatar
+                    : null;
+
                 return safeAvatar ? (
                   <img
                     src={safeAvatar}

@@ -245,7 +245,7 @@ export function ProfileSwitcher() {
     if (profile.personal?.profileImageUrl) {
       const url = profile.personal.profileImageUrl;
       // Filter out builder.io URLs
-      if (url.includes('builder.io')) {
+      if (url.includes("builder.io")) {
         return DEFAULT_AVATAR;
       }
       return url;
@@ -255,7 +255,7 @@ export function ProfileSwitcher() {
     if (profile.profileImageUrl) {
       const url = profile.profileImageUrl;
       // Filter out builder.io URLs
-      if (url.includes('builder.io')) {
+      if (url.includes("builder.io")) {
         return DEFAULT_AVATAR;
       }
       return url;
@@ -265,7 +265,7 @@ export function ProfileSwitcher() {
     if (profile.profile_image_url) {
       const url = profile.profile_image_url;
       // Filter out builder.io URLs
-      if (url.includes('builder.io')) {
+      if (url.includes("builder.io")) {
         return DEFAULT_AVATAR;
       }
       return url;
@@ -286,11 +286,11 @@ export function ProfileSwitcher() {
   // Get current active profile image (use cache while loading)
   const getCurrentProfileImageUrl = (): string => {
     const url = getProfileImageUrl(activeRole, displayProfile);
-    
+
     if (url === DEFAULT_AVATAR && cachedAvatar) {
       return cachedAvatar;
     }
-    
+
     return url;
   };
 
