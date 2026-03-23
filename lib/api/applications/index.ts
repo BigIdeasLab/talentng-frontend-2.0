@@ -331,6 +331,16 @@ export const getRecruiterInterviewsCount = async (): Promise<{
   return apiClient<{ count: number }>("/recruiter/interviews/count");
 };
 
+/**
+ * Get recruiter applicants count for badges
+ * GET /recruiter/applications/count
+ */
+export const getRecruiterApplicationsCount = async (): Promise<{
+  count: number;
+}> => {
+  return apiClient<{ count: number }>("/recruiter/applications/count");
+};
+
 // Export types
 export type {
   Application,

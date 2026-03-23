@@ -168,10 +168,11 @@ export function MentorUpcoming() {
             <EmptyState
               icon={Calendar}
               title={
-                searchQuery.trim() ||
-                (appliedFilters && appliedFilters.dateRange !== "all")
-                  ? "No sessions found"
-                  : "No upcoming sessions"
+                searchQuery.trim()
+                  ? "No sessions match your search"
+                  : appliedFilters && appliedFilters.dateRange !== "all"
+                    ? "No sessions match your filters"
+                    : "No upcoming sessions"
               }
               description={
                 searchQuery.trim()

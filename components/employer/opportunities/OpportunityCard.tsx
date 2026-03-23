@@ -84,6 +84,8 @@ export function OpportunityCard({
 
   const applicants: Application[] = response?.data || [];
   const displayApplicants = applicants.slice(0, 3);
+  // Use fresh count from applicants query, fallback to opportunity count
+  const applicantsCount = applicants.length || opportunity.applicantsCount;
   const isLoading = isMutationLoading; // Mapping for compatibility with existing UI disabled states
 
   const handleCardClick = (e: React.MouseEvent) => {
@@ -574,7 +576,7 @@ export function OpportunityCard({
           </div>
           <p className="text-xs font-medium font-inter-tight">
             <span className="text-black">
-              {opportunity.applicantsCount} talents already applied to this
+              {applicantsCount} talents already applied to this
               opportunity.{" "}
             </span>
             <span className="text-[#E39B00] underline">View</span>
@@ -619,7 +621,7 @@ export function OpportunityCard({
             </div>
             <p className="text-xs font-medium font-inter-tight">
               <span className="text-black">
-                {opportunity.applicantsCount} talents applied.{" "}
+                {applicantsCount} talents applied.{" "}
               </span>
               <span className="text-[#E39B00] underline">View</span>
             </p>

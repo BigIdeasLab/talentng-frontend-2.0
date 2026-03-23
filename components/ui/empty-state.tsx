@@ -21,7 +21,7 @@ export function EmptyState({
   action,
 }: EmptyStateProps) {
   return (
-    <div className="flex w-full flex-col items-center justify-center gap-7 py-12 min-h-[320px]">
+    <div className="flex w-full h-full flex-col items-center justify-center gap-7 py-12 min-h-[400px]">
       {/* Icon or Illustration */}
       {Icon ? (
         <Icon className="w-16 h-16 text-gray-300" />

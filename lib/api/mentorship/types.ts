@@ -204,6 +204,7 @@ export interface AvailabilitySlot {
 export interface SetAvailabilityInput {
   sessionDuration: number;
   bufferTime?: number;
+  minAdvanceBookingMinutes?: number;
   timezone?: string;
   defaultMeetingLink?: string;
   slots: AvailabilitySlot[];
@@ -213,6 +214,7 @@ export interface MentorAvailabilityResponse {
   mentorId?: string;
   sessionDuration: number;
   bufferTime?: number;
+  minAdvanceBookingMinutes?: number;
   timezone: string;
   defaultMeetingLink?: string | null;
   slots: AvailabilitySlot[];

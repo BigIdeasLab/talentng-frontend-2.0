@@ -1,69 +1,39 @@
 "use client";
 
-import Image from "next/image";
+import { useEffect, useState } from "react";
+import { getMentorReviews } from "@/lib/api/mentorship";
+import type { SessionReview } from "@/lib/api/mentorship";
+import { EmptyState } from "@/components/ui/empty-state";
+import { MessageSquare } from "lucide-react";
 
-interface Review {
-  id: string;
-  name: string;
-  date: string;
-  avatar: string;
-  text: string;
+interface MentorReviewsSectionProps {
+  mentorId?: string;
 }
 
-// Sample reviews data from Figma design
-const sampleReviews: Review[] = [
-  {
-    id: "1",
-    name: "Marcus Lee",
-    date: "May 22, 2025",
-    avatar: "#FF6B6B", // Red tones
-    text: "Marcus spearheaded the redesign of our mobile app, introducing a fresh interface that increased user engagement by 30%.",
-  },
-  {
-    id: "2",
-    name: "Nina Patel",
-    date: "Jun 5, 2025",
-    avatar: "#E0BBE4", // Lavender
-    text: "Nina's innovative approach to data visualization in reports enhanced decision-making across teams, making complex data accessible.",
-  },
-  {
-    id: "3",
-    name: "Omar Khan",
-    date: "Jul 10, 2025",
-    avatar: "#A8E6A3", // Mint green
-    text: "Omar developed a new AI feature for our customer support chatbot, reducing response times by half and improving user satisfaction.",
-  },
-  {
-    id: "4",
-    name: "Lila Chen",
-    date: "Aug 18, 2025",
-    avatar: "#FFB347", // Orange
-    text: "Lila led a workshop series that increased design team collaboration and created a shared vision for our upcoming product lines.",
-  },
-  {
-    id: "5",
-    name: "Rajesh Gupta",
-    date: "Sep 30, 2025",
-    avatar: "#6B8E23", // Olive
-    text: "Rajesh's focus on accessibility in our web applications ensured compliance with new regulations and improved usability for all customers.",
-  },
-  {
-    id: "6",
-    name: "Sofia Martinez",
-    date: "Oct 11, 2025",
-    avatar: "#4A90E2", // Blue
-    text: "Sofia initiated a user research program that provided key insights, directly influencing our product roadmap for the next year.",
-  },
-  {
-    id: "7",
-    name: "David Bryant",
-    date: "Nov 20, 2025",
-    avatar: "#F4C430", // Gold
-    text: "David's creative direction on our branding project revitalized our identity, resulting in a 40% increase in brand recall among target audiences.",
-  },
-];
+function ReviewCard({ review }: { review: SessionReview }) {
+  // Safety check for mentee data
+  if (!review.mentee || !review.mentee.name) {
+    return null;
+  }
+  
+  // Generate a color based on the reviewer's name
+  const getAvatarColor = (name: string) => {
+    const colors = [
+      "#FF6B6B", "#E0BBE4", "#A8E6A3", "#FFB347", 
+      "#6B8E23", "#4A90E2", "#F4C430", "#FF69B4"
+    ];
+    const index = name.charCodeAt(0) % colors.length;
+    return colors[index];
+  };
 
-function ReviewCard({ review }: { review: Review }) {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
   return (
     <div className="flex flex-col items-start gap-3 p-2.5 sm:p-[12px_10px] rounded-[12px] border border-[#E1E4EA] bg-white">
       <div className="flex flex-col items-start gap-[5px] w-full">
@@ -72,23 +42,48 @@ function ReviewCard({ review }: { review: Review }) {
             {/* Avatar */}
             <div
               className="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0"
-              style={{ backgroundColor: review.avatar }}
+              style={{ backgroundColor: review.mentee.avatar ? 'transparent' : getAvatarColor(review.mentee.name) }}
             >
-              <div className="w-full h-full flex items-center justify-center text-white text-[11px] font-semibold">
-                {review.name.charAt(0)}
-              </div>
+              {review.mentee.avatar ? (
+                <img
+                  src={review.mentee.avatar}
+                  alt={review.mentee.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-white text-[11px] font-semibold">
+                  {review.mentee.name.charAt(0)}
+                </div>
+              )}
             </div>
 
             {/* Name and Date */}
             <div className="flex flex-col items-start gap-[7px]">
               <div className="text-[13px] font-medium leading-normal font-inter-tight text-black">
-                {review.name}
+                {review.mentee.name}
               </div>
-              <div
-                className="text-[12px] font-light leading-normal font-inter-tight"
-                style={{ color: "rgba(0, 0, 0, 0.30)" }}
-              >
-                {review.date}
+              <div className="flex items-center gap-2">
+                <div
+                  className="text-[12px] font-light leading-normal font-inter-tight"
+                  style={{ color: "rgba(0, 0, 0, 0.30)" }}
+                >
+                  {formatDate(review.createdAt)}
+                </div>
+                {/* Rating Stars */}
+                <div className="flex items-center gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <svg
+                      key={i}
+                      width="12"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      fill={i < review.rating ? "#FFD700" : "#E1E4EA"}
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M6 1L7.545 4.13L11 4.635L8.5 7.07L9.09 10.51L6 8.885L2.91 10.51L3.5 7.07L1 4.635L4.455 4.13L6 1Z" />
+                    </svg>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -96,19 +91,75 @@ function ReviewCard({ review }: { review: Review }) {
       </div>
 
       {/* Review Text */}
-      <div className="text-[12px] font-normal leading-4 font-inter-tight text-[#525866] w-full">
-        {review.text}
-      </div>
+      {review.comment && (
+        <div className="text-[12px] font-normal leading-4 font-inter-tight text-[#525866] w-full">
+          {review.comment}
+        </div>
+      )}
     </div>
   );
 }
 
-export function MentorReviewsSection() {
+export function MentorReviewsSection({ mentorId }: MentorReviewsSectionProps) {
+  const [reviews, setReviews] = useState<SessionReview[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!mentorId) {
+      setIsLoading(false);
+      return;
+    }
+
+    const fetchReviews = async () => {
+      try {
+        setIsLoading(true);
+        const response = await getMentorReviews(mentorId, { limit: 20 });
+        setReviews(response.data || []);
+      } catch (err) {
+        console.error("Error fetching reviews:", err);
+        setError("Failed to load reviews");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, [mentorId]);
+
+  if (isLoading) {
+    return (
+      <div className="w-full flex items-center justify-center py-12">
+        <div className="text-sm text-gray-500">Loading reviews...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full flex items-center justify-center py-12">
+        <div className="text-sm text-red-500">{error}</div>
+      </div>
+    );
+  }
+
+  if (reviews.length === 0) {
+    return (
+      <div className="w-full">
+        <EmptyState
+          icon={MessageSquare}
+          title="No reviews yet"
+          description="Reviews from mentees will appear here after completed sessions"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="w-full">
       {/* Grid container - 1 column on mobile, 2 columns on desktop */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-        {sampleReviews.map((review) => (
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 lg:gap-4">
+        {reviews.map((review) => (
           <ReviewCard key={review.id} review={review} />
         ))}
       </div>

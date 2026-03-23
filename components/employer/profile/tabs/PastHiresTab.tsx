@@ -245,7 +245,7 @@ export function PastHiresTab() {
                 <p className="text-[13px] text-[rgba(0,0,0,0.30)] font-inter-tight">
                   {pastHires.length === 0
                     ? "No hired talents yet"
-                    : "No talents found matching your search"}
+                    : "No talents match your search"}
                 </p>
               </div>
             )}

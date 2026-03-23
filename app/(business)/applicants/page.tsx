@@ -10,7 +10,7 @@ import { useRequireRole } from "@/hooks/useRequireRole";
 import { useProfile } from "@/hooks/useProfile";
 import { PageLoadingState } from "@/lib/page-utils";
 import { ApplicantsSkeleton } from "@/components/employer/applicants/ApplicantsSkeleton";
-import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
+import { useRecruiterApplicationsQuery, useUpdateApplicationStatus } from "@/hooks/useRecruiterApplications";
 import {
   mapApplicationsToUI,
   type MappedApplicant,
@@ -19,6 +19,9 @@ import {
   ApplicantFilterModal,
   type ApplicantFilterState,
 } from "@/components/employer/applicants/ApplicantFilterModal";
+import { HireApplicationModal } from "@/components/employer/applicants/HireApplicationModal";
+import { SuccessModal } from "@/components/ui/success-modal";
+import { useToast } from "@/hooks";
 
 // Map status to UI display - Recruiter View
 const statusDisplayMap = {
@@ -41,6 +44,7 @@ const interviewStatusDisplayMap = {
 
 export default function ApplicantsPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const { activeRole, isLoading: isProfileLoading } = useProfile();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<string>("all");
@@ -57,6 +61,13 @@ export default function ApplicantsPage() {
   >([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const lastProcessedDataRef = useRef<any>(null);
+  
+  // Hire modal state
+  const [hireModalOpen, setHireModalOpen] = useState(false);
+  const [selectedApplicant, setSelectedApplicant] = useState<MappedApplicant | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+  
+  const updateStatusMutation = useUpdateApplicationStatus();
 
   // Only fetch when the active role is confirmed as recruiter
   const isRoleReady = !isProfileLoading && activeRole === "recruiter";
@@ -152,6 +163,32 @@ export default function ApplicantsPage() {
 
   // Server already handles all filtering — use results directly
   const filteredApplicants = displayedApplicants;
+  
+  // Handle hire button click
+  const handleHireClick = (applicant: MappedApplicant) => {
+    setSelectedApplicant(applicant);
+    setHireModalOpen(true);
+  };
+  
+  // Handle hire submission
+  const handleHire = async (applicationId: string, message: string) => {
+    try {
+      await updateStatusMutation.mutateAsync({
+        applicationId,
+        status: "hired",
+      });
+      setHireModalOpen(false);
+      setShowSuccess(true);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to hire talent";
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
 
   if (!hasAccess) {
     return <PageLoadingState message="Checking access..." />;
@@ -316,7 +353,23 @@ export default function ApplicantsPage() {
             {filteredApplicants.length === 0 ? (
               <EmptyState
                 icon={Users}
-                title="No applicants found"
+                title={
+                  searchQuery.trim()
+                    ? "No applicants match your search"
+                    : filters.status.length > 0 ||
+                        filters.location ||
+                        filters.dateRange !== "all"
+                      ? "No applicants match your filters"
+                      : activeTab === "hired"
+                        ? "No hired talents yet"
+                        : activeTab === "rejected"
+                          ? "No rejected applicants"
+                          : activeTab === "shortlisted"
+                            ? "No shortlisted applicants yet"
+                            : activeTab === "applied"
+                              ? "No applicants in review"
+                              : "No applicants match your search"
+                }
                 description={
                   searchQuery.trim()
                     ? "Try adjusting your search query"
@@ -325,13 +378,13 @@ export default function ApplicantsPage() {
                         filters.dateRange !== "all"
                       ? "Try adjusting your filters"
                       : activeTab === "hired"
-                        ? "You haven't hired any talents yet"
+                        ? "Talents you hire will appear here"
                         : activeTab === "rejected"
-                          ? "You haven't rejected any applicants"
+                          ? "Rejected applicants will appear here"
                           : activeTab === "shortlisted"
-                            ? "You haven't shortlisted any applicants yet"
+                            ? "Shortlisted applicants will appear here"
                             : activeTab === "applied"
-                              ? "No applicants are currently in review"
+                              ? "Applicants in review will appear here"
                               : "When candidates apply to opportunities, they'll appear here"
                 }
               />
@@ -527,9 +580,7 @@ export default function ApplicantsPage() {
                           applicant.status !== "hired" &&
                           applicant.status !== "invited" && (
                             <button
-                              onClick={() =>
-                                router.push(`/applicants/${applicant.id}`)
-                              }
+                              onClick={() => handleHireClick(applicant)}
                               style={{
                                 backgroundColor: "#0D9F5C",
                                 borderColor: "#0D9F5C",
@@ -593,6 +644,28 @@ export default function ApplicantsPage() {
           </div>
         </div>
       </div>
+      
+      {/* Hire Modal */}
+      {selectedApplicant && (
+        <HireApplicationModal
+          isOpen={hireModalOpen}
+          onClose={() => setHireModalOpen(false)}
+          applicantName={selectedApplicant.name}
+          jobTitle={selectedApplicant.opportunity.title}
+          companyName="TalentNG"
+          applicationId={selectedApplicant.id}
+          onHire={handleHire}
+        />
+      )}
+      
+      {/* Success Modal */}
+      <SuccessModal
+        isOpen={showSuccess}
+        onClose={() => setShowSuccess(false)}
+        title="Talent Hired!"
+        description="The talent has been successfully hired and notified."
+        accentColor="#0D9F5C"
+      />
     </div>
   );
 }

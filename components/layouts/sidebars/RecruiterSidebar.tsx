@@ -20,6 +20,7 @@ interface SidebarProps {
   onNotificationClick?: () => void;
   notificationCount?: number;
   upcomingCount?: number;
+  applicantsCount?: number;
 }
 
 interface MenuItem {
@@ -205,6 +206,7 @@ const otherItems: Omit<MenuItem, "badge">[] = [
 const getMenuItems = (
   notificationCount?: number,
   upcomingCount?: number,
+  applicantsCount?: number,
 ): MenuItem[] => [
   {
     id: "dashboard",
@@ -229,6 +231,7 @@ const getMenuItems = (
     label: "Applicants",
     icon: <WorkIcon />,
     href: "/applicants",
+    badge: applicantsCount,
   },
   {
     id: "interviews",
@@ -251,10 +254,11 @@ export function RecruiterSidebar({
   onNotificationClick,
   notificationCount = 0,
   upcomingCount = 0,
+  applicantsCount = 0,
 }: SidebarProps) {
   const pathname = usePathname();
   const { currentProfile, currentProfileUI } = useProfile();
-  const menuItems = getMenuItems(notificationCount, upcomingCount);
+  const menuItems = getMenuItems(notificationCount, upcomingCount, applicantsCount);
 
   const handleNotificationClick = (e: React.MouseEvent) => {
     e.preventDefault();

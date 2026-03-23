@@ -168,16 +168,16 @@ export function DiscoverTalentClient({
           totalTalents={pagination?.total}
           emptyTitle={
             searchQuery.trim()
-              ? "No talents found"
+              ? "No talents match your search"
               : filters &&
                   ((filters.skills && filters.skills.length > 0) ||
                     (filters.stack && filters.stack.length > 0) ||
                     filters.location ||
                     filters.availability ||
                     filters.headline)
-                ? "No talents found"
+                ? "No talents match your filters"
                 : selectedCategory !== "All"
-                  ? "No talents found"
+                  ? "No talents match your search"
                   : "No talents yet"
           }
           emptyDescription={
@@ -191,7 +191,7 @@ export function DiscoverTalentClient({
                     filters.headline)
                 ? "Try adjusting your filters"
                 : selectedCategory !== "All"
-                  ? `No talents found in the "${selectedCategory}" category`
+                  ? `No talents match your search in the "${selectedCategory}" category`
                   : "Talents will appear here as they join the platform"
           }
         />

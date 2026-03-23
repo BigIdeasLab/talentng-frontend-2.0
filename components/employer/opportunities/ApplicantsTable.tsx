@@ -351,7 +351,7 @@ export function ApplicantsTable({
       {filteredAndSortedApplicants.length === 0 && (
         <div className="px-3 py-9 text-center">
           <p className="font-inter-tight text-[13px] text-gray-500">
-            No applicants found
+            No applicants match your search
           </p>
         </div>
       )}

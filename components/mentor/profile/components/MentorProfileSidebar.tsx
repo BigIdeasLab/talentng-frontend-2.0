@@ -154,7 +154,7 @@ export function MentorProfileSidebar({
                 </svg>
                 <span className="text-[13px] font-normal text-black font-inter-tight">
                   {avgRating !== null && avgRating !== undefined
-                    ? avgRating.toFixed(1)
+                    ? Number(avgRating).toFixed(1)
                     : "N/A"}{" "}
                   Rating
                 </span>

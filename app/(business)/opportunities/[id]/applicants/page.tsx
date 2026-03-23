@@ -8,23 +8,34 @@ import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SearchInput } from "@/components/ui/search-input";
-import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
+import { useRecruiterApplicationsQuery, useUpdateApplicationStatus } from "@/hooks/useRecruiterApplications";
 import { useRecruiterOpportunityQuery } from "@/hooks/useRecruiterOpportunities";
 import type { Application } from "@/lib/api/applications";
 import {
   ApplicantFilterModal,
   type ApplicantFilterState,
 } from "@/components/employer/applicants/ApplicantFilterModal";
+import { HireApplicationModal } from "@/components/employer/applicants/HireApplicationModal";
+import { SuccessModal } from "@/components/ui/success-modal";
+import { useToast } from "@/hooks";
 
-const statusDisplayMap: Record<
-  string,
-  { label: string; bg: string; text: string }
-> = {
-  invited: { label: "Invited", bg: "#E0E7FF", text: "#4F46E5" },
-  applied: { label: "In Review", bg: "#DBE9FE", text: "#5C30FF" },
-  shortlisted: { label: "Shortlisted", bg: "#FEF3C7", text: "#92400D" },
-  rejected: { label: "Rejected", bg: "#FEE2E1", text: "#991B1B" },
-  hired: { label: "Hired", bg: "#D1FAE5", text: "#076046" },
+// Map status to UI display - Recruiter View
+const statusDisplayMap = {
+  applied: { label: "New Application", bg: "#FEF3C7", text: "#D97706" },
+  invited: { label: "Invited", bg: "#DBEAFE", text: "#2563EB" },
+  shortlisted: { label: "Shortlisted", bg: "#F3E8FF", text: "#7C3AED" },
+  hired: { label: "Hired", bg: "#ECFDF3", text: "#059669" },
+  rejected: { label: "Rejected", bg: "#FEF2F2", text: "#DC2626" },
+};
+
+// Map interview status to UI display
+const interviewStatusDisplayMap = {
+  scheduled: { label: "Interview Scheduled", bg: "#EFF6FF", text: "#2563EB" },
+  rescheduled: {
+    label: "Interview Rescheduled",
+    bg: "#FEF3C7",
+    text: "#D97706",
+  },
 };
 
 interface MappedApplicant {
@@ -43,10 +54,12 @@ interface MappedApplicant {
   dateApplied: string;
   createdAt: string;
   status: string;
+  interviewStatus?: "scheduled" | "rescheduled" | "completed" | "cancelled";
 }
 
 export default function OpportunityApplicantsPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const params = useParams();
   const opportunityId = params.id as string;
   const hasAccess = useRequireRole(["recruiter"]);
@@ -60,6 +73,13 @@ export default function OpportunityApplicantsPage() {
     dateRange: "all",
   });
   const [applicants, setApplicants] = useState<MappedApplicant[]>([]);
+  
+  // Hire modal state
+  const [hireModalOpen, setHireModalOpen] = useState(false);
+  const [selectedApplicant, setSelectedApplicant] = useState<MappedApplicant | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+  
+  const updateStatusMutation = useUpdateApplicationStatus();
   const {
     data: opportunity,
     isLoading: isOppLoading,
@@ -92,27 +112,34 @@ export default function OpportunityApplicantsPage() {
   const mapApplicationsToUI = (
     applications: Application[],
   ): MappedApplicant[] => {
-    return applications.map((app) => ({
-      id: app.id,
-      userId: app.userId,
-      name: app.user.talentProfile.fullName,
-      avatar: app.user.talentProfile.profileImageUrl,
-      role: app.user.talentProfile.headline,
-      hires: app.user.talentProfile.hiredCount,
-      skills: app.user.talentProfile.skills || [],
-      opportunity: {
-        title: app.opportunity.title,
-        type: app.opportunity.type,
-      },
-      location: app.user.talentProfile.location,
-      dateApplied: new Date(app.createdAt).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      }),
-      createdAt: app.createdAt,
-      status: app.status,
-    }));
+    return applications.map((app) => {
+      // Get the latest interview status if application is shortlisted
+      const latestInterview = app.interviews?.[0];
+      const interviewStatus = latestInterview?.status;
+      
+      return {
+        id: app.id,
+        userId: app.userId,
+        name: app.user.talentProfile.fullName,
+        avatar: app.user.talentProfile.profileImageUrl,
+        role: app.user.talentProfile.headline,
+        hires: app.user.talentProfile.hiredCount,
+        skills: app.user.talentProfile.skills || [],
+        opportunity: {
+          title: app.opportunity.title,
+          type: app.opportunity.type,
+        },
+        location: app.user.talentProfile.location,
+        dateApplied: new Date(app.createdAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        }),
+        createdAt: app.createdAt,
+        status: app.status,
+        interviewStatus,
+      };
+    });
   };
 
   // Extract available filter options from applicants data
@@ -136,6 +163,7 @@ export default function OpportunityApplicantsPage() {
     return count;
   };
 
+  // Server already handles all filtering — use results directly
   const filteredApplicants = useMemo(() => {
     let result = applicants;
 
@@ -200,6 +228,32 @@ export default function OpportunityApplicantsPage() {
 
     return result;
   }, [applicants, searchQuery, filters, sortBy]);
+  
+  // Handle hire button click
+  const handleHireClick = (applicant: MappedApplicant) => {
+    setSelectedApplicant(applicant);
+    setHireModalOpen(true);
+  };
+  
+  // Handle hire submission
+  const handleHire = async (applicationId: string, message: string) => {
+    try {
+      await updateStatusMutation.mutateAsync({
+        applicationId,
+        status: "hired",
+      });
+      setHireModalOpen(false);
+      setShowSuccess(true);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to hire talent";
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
 
   if (!hasAccess) {
     return <PageLoadingState message="Checking access..." />;
@@ -408,8 +462,16 @@ export default function OpportunityApplicantsPage() {
           {filteredApplicants.length === 0 ? (
             <EmptyState
               icon={Users}
-              title="No applicants yet"
-              description="When candidates apply to this opportunity, they'll appear here"
+              title={
+                searchQuery || getFilterCount() > 0
+                  ? "No applicants match your filters"
+                  : "No applicants yet"
+              }
+              description={
+                searchQuery || getFilterCount() > 0
+                  ? "Try adjusting your search or filters"
+                  : "When candidates apply to this opportunity, they'll appear here"
+              }
             />
           ) : (
             <>
@@ -517,17 +579,70 @@ export default function OpportunityApplicantsPage() {
                       <div
                         className="flex items-center justify-center px-[20px] py-1 rounded-[50px]"
                         style={{
-                          backgroundColor:
-                            statusDisplayMap[applicant.status].bg,
+                          backgroundColor: (() => {
+                            if (
+                              applicant.status === "shortlisted" &&
+                              applicant.interviewStatus === "cancelled"
+                            ) {
+                              return statusDisplayMap["applied"].bg;
+                            }
+                            if (
+                              applicant.status === "shortlisted" &&
+                              applicant.interviewStatus &&
+                              (applicant.interviewStatus === "scheduled" ||
+                                applicant.interviewStatus === "rescheduled")
+                            ) {
+                              return interviewStatusDisplayMap[
+                                applicant.interviewStatus
+                              ].bg;
+                            }
+                            return statusDisplayMap[applicant.status as keyof typeof statusDisplayMap].bg;
+                          })(),
                         }}
                       >
                         <span
                           className="font-inter-tight text-[11px] font-semibold text-center leading-tight"
                           style={{
-                            color: statusDisplayMap[applicant.status].text,
+                            color: (() => {
+                              if (
+                                applicant.status === "shortlisted" &&
+                                applicant.interviewStatus === "cancelled"
+                              ) {
+                                return statusDisplayMap["applied"].text;
+                              }
+                              if (
+                                applicant.status === "shortlisted" &&
+                                applicant.interviewStatus &&
+                                (applicant.interviewStatus === "scheduled" ||
+                                  applicant.interviewStatus === "rescheduled")
+                              ) {
+                                return interviewStatusDisplayMap[
+                                  applicant.interviewStatus
+                                ].text;
+                              }
+                              return statusDisplayMap[applicant.status as keyof typeof statusDisplayMap].text;
+                            })(),
                           }}
                         >
-                          {statusDisplayMap[applicant.status].label}
+                          {(() => {
+                            if (
+                              applicant.status === "shortlisted" &&
+                              applicant.interviewStatus === "cancelled"
+                            ) {
+                              return statusDisplayMap["applied"].label;
+                            }
+                            if (
+                              applicant.status === "shortlisted" &&
+                              applicant.interviewStatus &&
+                              (applicant.interviewStatus === "scheduled" ||
+                                applicant.interviewStatus === "rescheduled")
+                            ) {
+                              return interviewStatusDisplayMap[
+                                applicant.interviewStatus
+                              ].label;
+                            }
+                            return statusDisplayMap[applicant.status as keyof typeof statusDisplayMap].label;
+                          })()}
                         </span>
                       </div>
                     </div>
@@ -550,9 +665,10 @@ export default function OpportunityApplicantsPage() {
                         applicant.status !== "hired" &&
                         applicant.status !== "invited" && (
                           <button
+                            onClick={() => handleHireClick(applicant)}
                             style={{
-                              backgroundColor: "#5C30FF",
-                              borderColor: "#5C30FF",
+                              backgroundColor: "#0D9F5C",
+                              borderColor: "#0D9F5C",
                             }}
                             className="flex items-center justify-center h-8 px-[20px] py-[12px] rounded-[50px] border hover:opacity-90 transition-colors flex-shrink-0"
                           >
@@ -579,6 +695,28 @@ export default function OpportunityApplicantsPage() {
           )}
         </div>
       </div>
+      
+      {/* Hire Modal */}
+      {selectedApplicant && (
+        <HireApplicationModal
+          isOpen={hireModalOpen}
+          onClose={() => setHireModalOpen(false)}
+          applicantName={selectedApplicant.name}
+          jobTitle={selectedApplicant.opportunity.title}
+          companyName="TalentNG"
+          applicationId={selectedApplicant.id}
+          onHire={handleHire}
+        />
+      )}
+      
+      {/* Success Modal */}
+      <SuccessModal
+        isOpen={showSuccess}
+        onClose={() => setShowSuccess(false)}
+        title="Talent Hired!"
+        description="The talent has been successfully hired and notified."
+        accentColor="#0D9F5C"
+      />
     </div>
   );
 }

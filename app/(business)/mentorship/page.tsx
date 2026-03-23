@@ -314,15 +314,15 @@ export default function MentorshipPage() {
                 totalMentors={pagination?.total}
                 emptyTitle={
                   searchQuery.trim()
-                    ? "No mentors found"
+                    ? "No mentors match your search"
                     : appliedFilters &&
                         (appliedFilters.expertise.length > 0 ||
                           appliedFilters.headlines.length > 0 ||
                           appliedFilters.languages.length > 0 ||
                           appliedFilters.location)
-                      ? "No mentors found"
+                      ? "No mentors match your filters"
                       : activeCategory && activeCategory !== ""
-                        ? "No mentors found"
+                        ? "No mentors match your search"
                         : "No mentors yet"
                 }
                 emptyDescription={
@@ -335,7 +335,7 @@ export default function MentorshipPage() {
                           appliedFilters.location)
                       ? "Try adjusting your filters"
                       : activeCategory && activeCategory !== ""
-                        ? `No mentors found in the "${activeCategory}" category`
+                        ? `No mentors match your search in the "${activeCategory}" category`
                         : "Mentors will appear here as they join the platform"
                 }
               />
