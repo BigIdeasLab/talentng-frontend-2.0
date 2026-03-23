@@ -558,7 +558,7 @@ export function MentorSettings() {
           {/* Account */}
           <SettingsSection title="Account" description="Manage your account">
             <div className="space-y-4">
-              <div className="flex items-center justify-between py-3 border-b border-[#E1E4EA]">
+              <div className="flex items-center py-3 border-b border-[#E1E4EA]">
                 <div className="flex items-center gap-3">
                   <User className="w-5 h-5 text-[#B2B2B2]" />
                   <div>
@@ -570,9 +570,6 @@ export function MentorSettings() {
                     </p>
                   </div>
                 </div>
-                <Button variant="outline" size="sm" asChild>
-                  <a href="/profile/edit">Change</a>
-                </Button>
               </div>
 
               <div className="flex items-center justify-between py-3 border-b border-[#E1E4EA]">
