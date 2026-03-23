@@ -120,7 +120,12 @@ export function ProfilePanel({
             />
           </svg>
           <img
-            src={user?.profileImageUrl || "/lucas-gouvea.jpg"}
+            src={(() => {
+              const rawUrl = user?.profileImageUrl || "";
+              return rawUrl && !rawUrl.includes('builder.io') 
+                ? rawUrl 
+                : "/default.png";
+            })()}
             alt={user?.fullName || "Profile"}
             className="absolute rounded-full object-cover"
             style={{

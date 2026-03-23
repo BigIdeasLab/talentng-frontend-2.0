@@ -63,7 +63,12 @@ export function MentorSessionCard({ session }: MentorSessionCardProps) {
   const status = STATUS_CONFIG[session.status] || STATUS_CONFIG.pending;
   const mentee = session.mentee;
   const menteeName = mentee.fullName || mentee.name || "Unknown Mentee";
-  const menteeAvatar = mentee.profileImageUrl || mentee.avatar || null;
+  
+  // Filter out builder.io URLs and use local fallback
+  const rawMenteeAvatar = mentee.profileImageUrl || mentee.avatar || "";
+  const menteeAvatar = rawMenteeAvatar && !rawMenteeAvatar.includes('builder.io') 
+    ? rawMenteeAvatar 
+    : "/default.png";
 
   const rawDate = session.startTime || session.scheduledAt || session.createdAt;
   const scheduledDate = new Date(rawDate);
@@ -91,7 +96,7 @@ export function MentorSessionCard({ session }: MentorSessionCardProps) {
         {/* Header */}
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2">
-            {menteeAvatar ? (
+            {menteeAvatar !== "/default.png" ? (
               <img
                 src={menteeAvatar}
                 alt={menteeName}

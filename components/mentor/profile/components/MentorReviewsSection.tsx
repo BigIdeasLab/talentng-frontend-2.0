@@ -49,22 +49,33 @@ function ReviewCard({ review }: { review: SessionReview }) {
             <div
               className="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0"
               style={{
-                backgroundColor: review.mentee.avatar
-                  ? "transparent"
-                  : getAvatarColor(review.mentee.name),
+                backgroundColor: (() => {
+                  const rawAvatar = review.mentee.avatar || "";
+                  const safeAvatar = rawAvatar && !rawAvatar.includes('builder.io') 
+                    ? rawAvatar 
+                    : null;
+                  return safeAvatar ? "transparent" : getAvatarColor(review.mentee.name);
+                })(),
               }}
             >
-              {review.mentee.avatar ? (
-                <img
-                  src={review.mentee.avatar}
-                  alt={review.mentee.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-white text-[11px] font-semibold">
-                  {review.mentee.name.charAt(0)}
-                </div>
-              )}
+              {(() => {
+                const rawAvatar = review.mentee.avatar || "";
+                const safeAvatar = rawAvatar && !rawAvatar.includes('builder.io') 
+                  ? rawAvatar 
+                  : null;
+                
+                return safeAvatar ? (
+                  <img
+                    src={safeAvatar}
+                    alt={review.mentee.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-white text-[11px] font-semibold">
+                    {review.mentee.name.charAt(0)}
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Name and Date */}

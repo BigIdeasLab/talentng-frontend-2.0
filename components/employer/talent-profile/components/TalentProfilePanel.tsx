@@ -35,7 +35,12 @@ export function TalentProfilePanel({
         {/* Profile Picture with Completion Badge */}
         <div className="relative w-[110px] h-[110px]">
           <img
-            src={profile.profileImageUrl || "/lucas-gouvea.jpg"}
+            src={(() => {
+              const rawUrl = profile.profileImageUrl || "";
+              return rawUrl && !rawUrl.includes('builder.io') 
+                ? rawUrl 
+                : "/default.png";
+            })()}
             alt={profile.fullName || "Profile"}
             className="w-full h-full object-cover rounded-full p-2"
           />

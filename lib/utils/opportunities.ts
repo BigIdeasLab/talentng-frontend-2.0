@@ -2,7 +2,7 @@
  * Opportunity utilities for formatting and transforming data
  */
 
-import type { OpportunityCard } from "@/types/opportunities";
+import type { OpportunityCard } from "@/lib/types/opportunities";
 import type { Opportunity } from "@/lib/api/opportunities/types";
 
 export const formatDate = (isoDate?: string): string => {

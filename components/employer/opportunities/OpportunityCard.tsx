@@ -22,7 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { OpportunityCardProps } from "@/lib/types";
-import { TYPE_CONFIG } from "@/types/opportunities";
+import { TYPE_CONFIG } from "@/lib/types/opportunities";
 
 // Opportunity Status Color Configuration
 const OPPORTUNITY_STATUS_CONFIG: Record<

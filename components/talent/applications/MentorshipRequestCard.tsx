@@ -75,28 +75,16 @@ export function MentorshipRequestCard({ request }: MentorshipRequestCardProps) {
       <div className="flex flex-col gap-3.5 px-4 pt-4 pb-3">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2">
-            {mentor.avatar || mentor.profileImageUrl ? (
-              <img
-                src={mentor.profileImageUrl || mentor.avatar || ""}
-                alt={mentor.fullName || mentor.name || "Mentor"}
-                className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-              />
-            ) : (
-              <div
-                className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: ROLE_COLORS.mentor.light }}
-              >
-                <span
-                  className="text-[12px] font-semibold font-inter-tight"
-                  style={{ color: ROLE_COLORS.mentor.dark }}
-                >
-                  {(mentor.fullName || mentor.name || "M")
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
-                </span>
-              </div>
-            )}
+            <img
+              src={(() => {
+                const rawAvatar = mentor.profileImageUrl || mentor.avatar || "";
+                return rawAvatar && !rawAvatar.includes('builder.io') 
+                  ? rawAvatar 
+                  : "/default.png";
+              })()}
+              alt={mentor.fullName || mentor.name || "Mentor"}
+              className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+            />
             <div className="flex flex-col gap-1">
               <span className="text-[13px] font-medium font-inter-tight text-black">
                 {mentor.fullName || mentor.name || "Unknown Mentor"}

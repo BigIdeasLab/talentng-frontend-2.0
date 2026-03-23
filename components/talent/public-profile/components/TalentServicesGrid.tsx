@@ -8,8 +8,7 @@ interface TalentServicesGridProps {
   services: Service[];
 }
 
-const PLACEHOLDER_IMAGE =
-  "https://api.builder.io/api/v1/image/assets/TEMP/006e1249db9b7d609ae3b3246ecaa7c825dfa329?width=518";
+const PLACEHOLDER_IMAGE = "/galleryplaceholder.jpg";
 
 export function TalentServicesGrid({ services }: TalentServicesGridProps) {
   if (!services || services.length === 0) {

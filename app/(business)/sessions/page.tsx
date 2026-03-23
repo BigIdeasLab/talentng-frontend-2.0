@@ -74,7 +74,13 @@ function mapSession(session: any): SessionView {
 
   const menteeName =
     mentee.fullName || mentee.name || mentee.username || "Unknown";
-  const menteeAvatar = mentee.profileImageUrl || mentee.avatar || undefined;
+  
+  // Filter out builder.io URLs and use local fallback
+  const rawMenteeAvatar = mentee.profileImageUrl || mentee.avatar || "";
+  const menteeAvatar = rawMenteeAvatar && !rawMenteeAvatar.includes('builder.io') 
+    ? rawMenteeAvatar 
+    : undefined;
+    
   const menteeHeadline = mentee.headline || mentor.headline || undefined;
 
   const duration =

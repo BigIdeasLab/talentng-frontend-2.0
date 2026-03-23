@@ -134,12 +134,18 @@ function getProfileDisplayName(role: string, profile: any): string {
 }
 
 function getProfileAvatarUrl(profile: any): string {
-  return (
+  const imageUrl = 
     profile?.personal?.profileImageUrl ||
     profile?.profileImageUrl ||
     profile?.profile_image_url ||
-    "/default.png"
-  );
+    "/default.png";
+  
+  // Filter out builder.io URLs before storing in cookie
+  if (imageUrl && imageUrl.includes('builder.io')) {
+    return "/default.png";
+  }
+  
+  return imageUrl;
 }
 
 interface ProfileProviderProps {

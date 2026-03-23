@@ -102,7 +102,12 @@ export function TalentSessionCard({
   const status = STATUS_CONFIG[session.status] || STATUS_CONFIG.pending;
   const mentor = session.mentor;
   const mentorName = mentor.fullName || mentor.name || "Unknown Mentor";
-  const mentorAvatar = mentor.profileImageUrl || mentor.avatar || null;
+  
+  // Filter out builder.io URLs and use local fallback
+  const rawMentorAvatar = mentor.profileImageUrl || mentor.avatar || "";
+  const mentorAvatar = rawMentorAvatar && !rawMentorAvatar.includes('builder.io') 
+    ? rawMentorAvatar 
+    : "/default.png";
 
   const rawDate = session.startTime || session.scheduledAt || session.createdAt;
   const scheduledDate = new Date(rawDate);
@@ -154,28 +159,11 @@ export function TalentSessionCard({
         {/* Header */}
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2">
-            {mentorAvatar ? (
-              <img
-                src={mentorAvatar}
-                alt={mentorName}
-                className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-              />
-            ) : (
-              <div
-                className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: ROLE_COLORS.mentor.light }}
-              >
-                <span
-                  className="text-[12px] font-semibold font-inter-tight"
-                  style={{ color: ROLE_COLORS.mentor.dark }}
-                >
-                  {mentorName
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
-                </span>
-              </div>
-            )}
+            <img
+              src={mentorAvatar}
+              alt={mentorName}
+              className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+            />
             <div className="flex flex-col gap-1">
               <span className="text-[13px] font-medium font-inter-tight text-black">
                 {mentorName}

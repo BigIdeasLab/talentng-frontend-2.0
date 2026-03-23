@@ -237,21 +237,38 @@ export function ProfileSwitcher() {
 
   // Get profile image URL safely
   const getProfileImageUrl = (role: string, profile: any): string => {
-    if (!profile) return DEFAULT_AVATAR;
+    if (!profile) {
+      return DEFAULT_AVATAR;
+    }
 
     // Check UI format first (personal.profileImageUrl) - used for currentProfileUI
     if (profile.personal?.profileImageUrl) {
-      return profile.personal.profileImageUrl;
+      const url = profile.personal.profileImageUrl;
+      // Filter out builder.io URLs
+      if (url.includes('builder.io')) {
+        return DEFAULT_AVATAR;
+      }
+      return url;
     }
 
     // Check camelCase at root level
     if (profile.profileImageUrl) {
-      return profile.profileImageUrl;
+      const url = profile.profileImageUrl;
+      // Filter out builder.io URLs
+      if (url.includes('builder.io')) {
+        return DEFAULT_AVATAR;
+      }
+      return url;
     }
 
     // Check snake_case (legacy API response format)
     if (profile.profile_image_url) {
-      return profile.profile_image_url;
+      const url = profile.profile_image_url;
+      // Filter out builder.io URLs
+      if (url.includes('builder.io')) {
+        return DEFAULT_AVATAR;
+      }
+      return url;
     }
 
     return DEFAULT_AVATAR;
@@ -269,7 +286,11 @@ export function ProfileSwitcher() {
   // Get current active profile image (use cache while loading)
   const getCurrentProfileImageUrl = (): string => {
     const url = getProfileImageUrl(activeRole, displayProfile);
-    if (url === DEFAULT_AVATAR && cachedAvatar) return cachedAvatar;
+    
+    if (url === DEFAULT_AVATAR && cachedAvatar) {
+      return cachedAvatar;
+    }
+    
     return url;
   };
 

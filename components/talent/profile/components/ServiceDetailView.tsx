@@ -10,8 +10,7 @@ interface ServiceDetailViewProps {
   onClose: () => void;
 }
 
-const PLACEHOLDER_IMAGE =
-  "https://api.builder.io/api/v1/image/assets/TEMP/780f63b8b0d88ebedad122515b826af8f4ef2c7a?width=1334";
+const PLACEHOLDER_IMAGE = "/galleryplaceholder.jpg";
 
 export function ServiceDetailView({
   service,

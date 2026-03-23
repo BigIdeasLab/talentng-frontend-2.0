@@ -31,14 +31,17 @@ interface MentorDisplay {
 }
 
 function mapApiMentorToDisplay(mentor: Record<string, unknown>): MentorDisplay {
+  // Get the image URL and ensure it's a local asset
+  const rawImageUrl = (mentor.profileImageUrl as string) || (mentor.avatar as string) || "";
+  const imageUrl = rawImageUrl && !rawImageUrl.includes('builder.io') 
+    ? rawImageUrl 
+    : "/default.png";
+
   return {
     id: (mentor.id as string) || "",
     name: (mentor.fullName as string) || (mentor.name as string) || "",
     title: (mentor.headline as string) || (mentor.title as string) || "",
-    imageUrl:
-      (mentor.profileImageUrl as string) ||
-      (mentor.avatar as string) ||
-      "/default.png",
+    imageUrl,
     rating: Number(mentor.avgRating || mentor.rating || 0),
     totalReviews: (mentor.totalReviews as number) || 0,
     expertise: (mentor.expertise as string[]) || [],

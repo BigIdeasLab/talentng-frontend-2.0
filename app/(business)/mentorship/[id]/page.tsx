@@ -306,7 +306,12 @@ export default function MentorDetailPage() {
                   <div
                     className="w-full h-full rounded-full bg-cover bg-center"
                     style={{
-                      backgroundImage: `url(${mentor.avatar || "/default.png"})`,
+                      backgroundImage: `url(${(() => {
+                        const rawAvatar = mentor.avatar || "";
+                        return rawAvatar && !rawAvatar.includes('builder.io') 
+                          ? rawAvatar 
+                          : "/default.png";
+                      })()})`,
                     }}
                   />
                 </div>
@@ -829,18 +834,25 @@ export default function MentorDetailPage() {
                         >
                           <div className="flex items-center gap-2.5">
                             <div className="relative w-10 h-10 rounded-full overflow-hidden bg-gradient-to-b from-purple-400 to-purple-600">
-                              {review.mentee.avatar ? (
-                                <Image
-                                  src={review.mentee.avatar}
-                                  alt={review.mentee.name}
-                                  fill
-                                  className="object-cover"
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center text-white text-sm font-semibold">
-                                  {review.mentee.name.charAt(0)}
-                                </div>
-                              )}
+                              {(() => {
+                                const rawAvatar = review.mentee.avatar || "";
+                                const safeAvatar = rawAvatar && !rawAvatar.includes('builder.io') 
+                                  ? rawAvatar 
+                                  : null;
+                                
+                                return safeAvatar ? (
+                                  <Image
+                                    src={safeAvatar}
+                                    alt={review.mentee.name}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center text-white text-sm font-semibold">
+                                    {review.mentee.name.charAt(0)}
+                                  </div>
+                                );
+                              })()}
                             </div>
                             <div className="flex flex-col">
                               <h3 className="font-inter-tight text-[13px] font-semibold text-black">

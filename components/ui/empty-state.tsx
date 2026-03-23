@@ -27,7 +27,7 @@ export function EmptyState({
         <Icon className="w-16 h-16 text-gray-300" />
       ) : (
         <Image
-          src="https://api.builder.io/api/v1/image/assets/TEMP/5b68bbcc9e62784e98d154af2628e5ba9b8066c3?width=432"
+          src="/empty-state/5b68bbcc9e62784e98d154af2628e5ba9b8066c3.png"
           alt="Empty state"
           width={160}
           height={160}
