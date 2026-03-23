@@ -107,7 +107,6 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
         .catch(console.error);
       getRecruiterApplicationsCount()
         .then((res) => {
-          console.log("[Layout] Applicants count fetched:", res.count);
           setRecruiterApplicantsCount(res.count);
         })
         .catch((error) => {

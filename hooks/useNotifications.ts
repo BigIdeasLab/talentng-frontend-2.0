@@ -33,26 +33,6 @@ export function useNotifications(
           recipientRole,
         });
 
-        // Log mentor notifications specifically
-        if (recipientRole === "mentor" || recipientRole === "talent") {
-          console.log(
-            `🧑‍🏫 FETCHED ${recipientRole?.toUpperCase()} NOTIFICATIONS:`,
-            {
-              userId: user.id,
-              recipientRole,
-              count: fetchedNotifications.length,
-              unreadCount: fetchedNotifications.filter((n) => !n.readAt).length,
-              notifications: fetchedNotifications.map((n) => ({
-                id: n.id,
-                type: n.type,
-                title: n.payload?.title,
-                isRead: !!n.readAt,
-                createdAt: n.createdAt,
-              })),
-            },
-          );
-        }
-
         setNotifications(fetchedNotifications);
       } catch (err) {
         const errorMessage =
@@ -96,12 +76,6 @@ export function useNotifications(
   const markAsRead = useCallback(
     async (notificationId: string) => {
       try {
-        console.log("🧑‍🏫 MARKING NOTIFICATION AS READ:", {
-          notificationId,
-          recipientRole,
-          timestamp: new Date().toISOString(),
-        });
-
         const updated = await markNotificationAsRead(notificationId);
         setNotifications((prev) =>
           prev.map((n) => (n.id === notificationId ? updated : n)),

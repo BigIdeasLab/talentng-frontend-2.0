@@ -140,39 +140,10 @@ function TalentUpcoming() {
           offset: currentPage * 20,
         };
 
-        console.log("📅 Calendar API Request:", {
-          dateRange,
-          filter,
-          searchQuery,
-          apiParams,
-        });
-
         const res = await getTalentUpcoming(apiParams);
-
-        console.log("📅 Calendar API Response:", {
-          dateRange,
-          totalItems: res.items?.length || res.data?.length || 0,
-          pagination: res.pagination,
-          firstItem: (res.items || res.data)?.[0],
-        });
 
         // Discard stale responses
         if (currentFetchId !== fetchIdRef.current) return;
-
-        // Debug: Log the response when fetching past events
-        if (dateRange === "past" || dateRange === "needs-review") {
-          console.log("🕐 PAST EVENTS DETAILS:", {
-            totalPastEvents: res.items?.length || res.data?.length || 0,
-            sessions: (res.items || res.data || []).filter(
-              (item: any) => item.type === "session",
-            ),
-            completedSessions: (res.items || res.data || []).filter(
-              (item: any) =>
-                item.type === "session" && item.status === "completed",
-            ),
-            fullResponse: res,
-          });
-        }
 
         // Backend returns 'items' not 'data'
         let items = res.items || res.data || [];
@@ -185,10 +156,6 @@ function TalentUpcoming() {
               item.status === "completed" &&
               !item.hasReview,
           );
-          console.log("🔍 NEEDS REVIEW FILTER:", {
-            totalFiltered: items.length,
-            filteredSessions: items,
-          });
         }
 
         // Always calculate needs review count (fetch from past events if not already fetched)
@@ -449,23 +416,6 @@ function TalentUpcoming() {
           } as any,
         }),
   }));
-
-  // Log session mapping for debugging
-  if (dateRange === "past" || dateRange === "needs-review") {
-    console.log("🎯 MAPPED SESSIONS:", {
-      dateRangeFilter: dateRange,
-      totalMapped: upcomingItems.length,
-      sessions: upcomingItems.filter((item) => item.type === "session"),
-      sessionsWithReviewStatus: upcomingItems
-        .filter((item) => item.type === "session")
-        .map((item) => ({
-          id: item.session?.id,
-          status: item.session?.status,
-          hasReview: item.session?.hasReview,
-          topic: item.session?.topic,
-        })),
-    });
-  }
 
   upcomingItems.sort((a, b) => {
     // For past events, sort newest first (descending)

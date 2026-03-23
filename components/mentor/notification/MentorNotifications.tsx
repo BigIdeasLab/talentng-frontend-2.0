@@ -43,22 +43,6 @@ export function MentorNotifications({
     );
     setAllNotifications(combined);
 
-    // Log mentor notifications
-    if (combined.length > 0) {
-      console.log("🧑‍🏫 MENTOR NOTIFICATIONS:", {
-        totalCount: combined.length,
-        unreadCount: combined.filter((n) => !n.readAt).length,
-        notifications: combined.map((n) => ({
-          id: n.id,
-          type: n.type,
-          title: n.payload?.title,
-          message: n.payload?.message,
-          isRead: !!n.readAt,
-          createdAt: n.createdAt,
-          deliveryStatus: n.deliveryStatus,
-        })),
-      });
-    }
   }, [mentorNotifications, generalNotifications]);
 
   if (loading) {
@@ -205,18 +189,6 @@ export function MentorNotifications({
     action?: InAppNotificationPayload["action"],
     isActionButton: boolean = false,
   ) => {
-    console.log("🧑‍🏫 MENTOR NOTIFICATION CLICKED:", {
-      notificationId,
-      action: action
-        ? {
-            label: action.label,
-            route: action.route,
-          }
-        : null,
-      isActionButton,
-      timestamp: new Date().toISOString(),
-    });
-
     await markAsRead(notificationId);
     onNotificationRead?.();
 
