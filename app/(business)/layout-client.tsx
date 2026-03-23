@@ -185,16 +185,12 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
       >
         {/* Logo and Brand Name - Left */}
         <div className="flex items-center gap-2">
-          <img
-            src="/logo.png"
-            alt="TalentNG"
-            className="h-10 w-auto"
-          />
+          <img src="/logo.png" alt="TalentNG" className="h-10 w-auto" />
           <span className="font-medium text-[18px] text-black font-inter-tight">
             TalentNG
           </span>
         </div>
-        
+
         {/* Hamburger Menu Button - Right */}
         <HamburgerMenuButton
           isOpen={isMobileDrawerOpen}
