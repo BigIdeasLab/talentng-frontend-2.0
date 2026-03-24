@@ -49,17 +49,16 @@ export function TalentGrid({
             ))}
           </ResponsiveGrid>
         ) : (
-            <div className="col-span-full flex flex-col items-center justify-center py-12">
-              <p className="text-[15px] font-medium text-gray-600 mb-1.5">
-                {emptyTitle || "No talents found"}
-              </p>
-              <p className="text-[13px] text-gray-500">
-                {emptyDescription ||
-                  "Try adjusting your filters or search query"}
-              </p>
-            </div>
-          )}
-        </div>
+          <div className="col-span-full flex flex-col items-center justify-center py-12">
+            <p className="text-[15px] font-medium text-gray-600 mb-1.5">
+              {emptyTitle || "No talents found"}
+            </p>
+            <p className="text-[13px] text-gray-500">
+              {emptyDescription || "Try adjusting your filters or search query"}
+            </p>
+          </div>
+        )}
+      </div>
 
       {/* Pagination Controls */}
       <div className="flex-shrink-0 px-[25px] py-[16px] border-t border-[#E1E4EA] flex items-center justify-between">
