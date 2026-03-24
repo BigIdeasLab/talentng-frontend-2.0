@@ -233,7 +233,7 @@ export function EmployerOpportunities() {
             {filteredOpportunities.length === 0 ? (
               <EmptyState
                 icon={Briefcase}
-                title="No opportunities found"
+                title="No opportunities match your search"
                 description={
                   searchQuery.trim()
                     ? "Try adjusting your search query"

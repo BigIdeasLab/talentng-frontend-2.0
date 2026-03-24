@@ -182,8 +182,7 @@ export function OpportunityPreview() {
 
   // Get company logo from profile
   const getCompanyLogo = (): string => {
-    const DEFAULT_LOGO =
-      "https://api.builder.io/api/v1/image/assets/TEMP/ac611f16c20ce30fd01ad9af988e5821beb576eb?width=180";
+    const DEFAULT_LOGO = "/default.png";
 
     if (!displayProfile) {
       return DEFAULT_LOGO;

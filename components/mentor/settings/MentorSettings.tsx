@@ -109,6 +109,7 @@ export function MentorSettings() {
   const [session, setSession] = useState({
     sessionDuration: 60,
     bufferTime: 15,
+    minAdvanceBookingMinutes: 30,
     advanceBookingDays: 14,
     cancellationPolicy: "24hours",
     autoAccept: false,
@@ -132,6 +133,7 @@ export function MentorSettings() {
       setSession({
         sessionDuration: settings.sessionDuration,
         bufferTime: settings.bufferTime,
+        minAdvanceBookingMinutes: settings.minAdvanceBookingMinutes ?? 30,
         advanceBookingDays: settings.advanceBookingDays,
         cancellationPolicy: settings.cancellationPolicy,
         autoAccept: settings.autoAccept,
@@ -168,6 +170,7 @@ export function MentorSettings() {
     saveSettings.mutate({
       sessionDuration: session.sessionDuration,
       bufferTime: session.bufferTime,
+      minAdvanceBookingMinutes: session.minAdvanceBookingMinutes,
       advanceBookingDays: session.advanceBookingDays,
       cancellationPolicy: session.cancellationPolicy,
       autoAccept: session.autoAccept,
@@ -323,6 +326,28 @@ export function MentorSettings() {
                   min={0}
                   max={60}
                 />
+              </div>
+              <div>
+                <Label className="text-[12px] font-medium font-inter-tight text-[#525866] flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  Minimum notice before booking
+                </Label>
+                <select
+                  value={session.minAdvanceBookingMinutes}
+                  onChange={(e) =>
+                    setSession((prev) => ({
+                      ...prev,
+                      minAdvanceBookingMinutes: parseInt(e.target.value),
+                    }))
+                  }
+                  className="mt-1 w-full h-[38px] px-3 rounded-[8px] border border-[#E1E4EA] bg-white text-[13px] font-inter-tight"
+                >
+                  <option value={0}>No minimum</option>
+                  <option value={15}>15 minutes</option>
+                  <option value={30}>30 minutes</option>
+                  <option value={60}>1 hour</option>
+                  <option value={120}>2 hours</option>
+                </select>
               </div>
               <div>
                 <Label className="text-[12px] font-medium font-inter-tight text-[#525866]">
@@ -558,7 +583,7 @@ export function MentorSettings() {
           {/* Account */}
           <SettingsSection title="Account" description="Manage your account">
             <div className="space-y-4">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between py-3 border-b border-[#E1E4EA] gap-3">
+              <div className="flex items-center py-3 border-b border-[#E1E4EA]">
                 <div className="flex items-center gap-3">
                   <User className="w-5 h-5 text-[#B2B2B2]" />
                   <div>
@@ -570,14 +595,6 @@ export function MentorSettings() {
                     </p>
                   </div>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full md:w-auto min-h-[44px]"
-                  asChild
-                >
-                  <a href="/profile/edit">Change</a>
-                </Button>
               </div>
 
               <div className="flex flex-col md:flex-row md:items-center md:justify-between py-3 border-b border-[#E1E4EA] gap-3">

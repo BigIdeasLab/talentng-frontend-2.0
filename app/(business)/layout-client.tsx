@@ -10,7 +10,10 @@ import { TalentSidebar } from "@/components/layouts/sidebars/TalentSidebar";
 import { RecruiterSidebar } from "@/components/layouts/sidebars/RecruiterSidebar";
 import { MentorSidebar } from "@/components/layouts/sidebars/MentorSidebar";
 import { getTalentUpcomingCount } from "@/lib/api/talent";
-import { getRecruiterInterviewsCount } from "@/lib/api/applications";
+import {
+  getRecruiterInterviewsCount,
+  getRecruiterApplicationsCount,
+} from "@/lib/api/applications";
 import { getMentorSessionsCount } from "@/lib/api/mentorship";
 import { MobileDrawer } from "@/components/navigation/MobileDrawer";
 import { HamburgerMenuButton } from "@/components/navigation/HamburgerMenuButton";
@@ -28,6 +31,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   const [totalUnreadCount, setTotalUnreadCount] = useState(0);
   const [talentUpcomingCount, setTalentUpcomingCount] = useState(0);
   const [recruiterUpcomingCount, setRecruiterUpcomingCount] = useState(0);
+  const [recruiterApplicantsCount, setRecruiterApplicantsCount] = useState(0);
   const [mentorUpcomingCount, setMentorUpcomingCount] = useState(0);
   const { activeRole, isLoading, roleSwitchRequired, triggerRoleSwitch } =
     useProfile();
@@ -79,6 +83,10 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
       // Update recruiter upcoming badge count from SSE
       setRecruiterUpcomingCount(count);
     },
+    onRecruiterApplicantsUpdate: (count: number) => {
+      // Update recruiter applicants badge count from SSE
+      setRecruiterApplicantsCount(count);
+    },
     onMentorUpdate: (count) => {
       // Update mentor upcoming badge count from SSE
       setMentorUpcomingCount(count);
@@ -100,6 +108,15 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
       getRecruiterInterviewsCount()
         .then((res) => setRecruiterUpcomingCount(res.count))
         .catch(console.error);
+      getRecruiterApplicationsCount()
+        .then((res) => {
+          setRecruiterApplicantsCount(res.count);
+        })
+        .catch((error) => {
+          console.error("[Layout] Failed to fetch applicants count:", error);
+          // If endpoint doesn't exist, set to 0 silently
+          setRecruiterApplicantsCount(0);
+        });
     } else if (activeRole === "mentor") {
       getMentorSessionsCount()
         .then((res) => setMentorUpcomingCount(res.count))
@@ -141,6 +158,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
             onNotificationClick={() => setIsNotificationsOpen(true)}
             notificationCount={totalUnreadCount}
             upcomingCount={recruiterUpcomingCount}
+            applicantsCount={recruiterApplicantsCount}
           />
         );
       case "mentor":

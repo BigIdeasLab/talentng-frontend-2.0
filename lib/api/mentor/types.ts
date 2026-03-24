@@ -123,6 +123,7 @@ export interface MentorSettings {
   // Session settings
   sessionDuration: number;
   bufferTime: number;
+  minAdvanceBookingMinutes: number;
   advanceBookingDays: number;
   cancellationPolicy: string;
   autoAccept: boolean;

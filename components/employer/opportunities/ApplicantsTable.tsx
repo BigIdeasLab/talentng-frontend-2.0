@@ -307,8 +307,8 @@ export function ApplicantsTable({
         </div>
       </div>
 
-      {/* Action buttons for mobile */}
-      <div className="pt-2 border-t border-[#E1E4EA] flex items-center gap-1.5">
+      {/* Action buttons */}
+      <div className="flex items-center gap-1.5">
         <button className="flex-1 px-3 py-1.5 bg-[#181B25] text-white rounded-full font-inter-tight text-[11px] font-medium hover:bg-[#2a2d35] transition-colors">
           View Profile
         </button>
@@ -331,10 +331,9 @@ export function ApplicantsTable({
       <ResponsiveTable
         data={filteredAndSortedApplicants}
         columns={columns}
+        actions={actions}
         mobileCardRenderer={mobileCardRenderer}
-        emptyMessage="No applicants found"
-        keyExtractor={(applicant) => applicant.id}
-        showRowNumbers={true}
+        emptyMessage="No applicants match your search"
       />
 
       {/* Hire Modal */}

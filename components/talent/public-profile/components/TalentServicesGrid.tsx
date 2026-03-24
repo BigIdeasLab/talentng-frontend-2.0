@@ -3,20 +3,25 @@
 import Image from "next/image";
 import { Briefcase, Star } from "lucide-react";
 import type { Service } from "@/lib/api/talent/types";
+import { EmptyState } from "./EmptyState";
 
 interface TalentServicesGridProps {
   services: Service[];
+  onServiceClick?: (service: Service) => void;
 }
 
-const PLACEHOLDER_IMAGE =
-  "https://api.builder.io/api/v1/image/assets/TEMP/006e1249db9b7d609ae3b3246ecaa7c825dfa329?width=518";
+const PLACEHOLDER_IMAGE = "/galleryplaceholder.jpg";
 
-export function TalentServicesGrid({ services }: TalentServicesGridProps) {
+export function TalentServicesGrid({
+  services,
+  onServiceClick,
+}: TalentServicesGridProps) {
   if (!services || services.length === 0) {
     return (
-      <div className="flex items-center justify-center p-[25px] min-h-[400px]">
-        <p className="text-gray-500">No services offered yet</p>
-      </div>
+      <EmptyState
+        title="No Services Available"
+        description="This talent hasn't created any services yet."
+      />
     );
   }
 
@@ -27,6 +32,7 @@ export function TalentServicesGrid({ services }: TalentServicesGridProps) {
           <div
             key={service.id || `service-${idx}`}
             className="group flex flex-col items-start gap-[8px] text-left hover:opacity-80 transition-opacity cursor-pointer"
+            onClick={() => onServiceClick?.(service)}
           >
             {/* Service Image */}
             <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-100">

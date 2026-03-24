@@ -279,6 +279,40 @@ export function OpportunitiesClient({
               currentPage={pagination?.currentPage || 1}
               totalPages={pagination?.totalPages || 1}
               totalOpportunities={pagination?.total}
+              emptyTitle={
+                searchQuery.trim()
+                  ? "No opportunities match your search"
+                  : appliedFilters &&
+                      (appliedFilters.skills?.length > 0 ||
+                        (appliedFilters.categories?.length ?? 0) > 0 ||
+                        (appliedFilters.experienceLevels?.length ?? 0) > 0 ||
+                        appliedFilters.location ||
+                        (appliedFilters.minBudget &&
+                          appliedFilters.minBudget > 0) ||
+                        (appliedFilters.maxBudget &&
+                          appliedFilters.maxBudget > 0))
+                    ? "No opportunities match your filters"
+                    : activeFilter === "applied"
+                      ? "No applied opportunities yet"
+                      : "No opportunities yet"
+              }
+              emptyDescription={
+                searchQuery.trim()
+                  ? "Try adjusting your search query"
+                  : appliedFilters &&
+                      (appliedFilters.skills?.length > 0 ||
+                        (appliedFilters.categories?.length ?? 0) > 0 ||
+                        (appliedFilters.experienceLevels?.length ?? 0) > 0 ||
+                        appliedFilters.location ||
+                        (appliedFilters.minBudget &&
+                          appliedFilters.minBudget > 0) ||
+                        (appliedFilters.maxBudget &&
+                          appliedFilters.maxBudget > 0))
+                    ? "Try adjusting your filters"
+                    : activeFilter === "applied"
+                      ? "Opportunities you apply to will appear here"
+                      : "Available opportunities will appear here"
+              }
             />
           )}
         </div>

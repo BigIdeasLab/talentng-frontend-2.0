@@ -45,7 +45,9 @@ export function useRecruiterApplicationsQuery(
   return useQuery({
     queryKey: ["applications", "recruiter", params],
     queryFn: () => getRecruiterApplications(params),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 30 * 1000, // 30 seconds - reduced from 5 minutes for fresher data
+    refetchOnWindowFocus: true, // Refetch when user returns to the tab
+    refetchOnMount: true, // Always refetch when component mounts
     enabled: options.enabled ?? true,
   });
 }

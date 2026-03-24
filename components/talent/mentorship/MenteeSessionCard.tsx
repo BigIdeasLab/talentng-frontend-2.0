@@ -85,22 +85,19 @@ export function MenteeSessionCard({
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             {/* Avatar */}
-            {mentor.avatar ? (
-              <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-full">
-                <Image
-                  src={mentor.avatar}
-                  alt={mentor.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            ) : (
-              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#F5F3FF]">
-                <span className="font-inter-tight text-[14px] font-semibold text-[#5C30FF]">
-                  {mentorInitials}
-                </span>
-              </div>
-            )}
+            <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-full">
+              <Image
+                src={(() => {
+                  const rawAvatar = mentor.avatar || "";
+                  return rawAvatar && !rawAvatar.includes("builder.io")
+                    ? rawAvatar
+                    : "/default.png";
+                })()}
+                alt={mentor.name}
+                fill
+                className="object-cover"
+              />
+            </div>
             {/* Mentor Info */}
             <div>
               <h3 className="font-inter-tight text-[15px] font-semibold text-black">

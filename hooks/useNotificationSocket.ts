@@ -18,6 +18,7 @@ interface NotificationStreamEvent {
       | "notification_read"
       | "upcoming_updated"
       | "recruiter_interviews_updated"
+      | "recruiter_applicants_updated"
       | "mentor_sessions_updated";
     count?: number;
     unread?: number;
@@ -33,6 +34,7 @@ interface UseNotificationSocketProps {
   onNotificationRead?: (notificationId: string) => void;
   onUpcomingUpdate?: (count: number) => void;
   onRecruiterUpdate?: (count: number) => void;
+  onRecruiterApplicantsUpdate?: (count: number) => void;
   onMentorUpdate?: (count: number) => void;
   enabled?: boolean;
 }
@@ -57,6 +59,7 @@ export function useNotificationSocket({
   onNotificationRead,
   onUpcomingUpdate,
   onRecruiterUpdate,
+  onRecruiterApplicantsUpdate,
   onMentorUpdate,
   enabled = true,
 }: UseNotificationSocketProps) {
@@ -143,6 +146,11 @@ export function useNotificationSocket({
                   onRecruiterUpdate?.(count);
                 }
                 break;
+              case "recruiter_applicants_updated":
+                if (count !== undefined) {
+                  onRecruiterApplicantsUpdate?.(count);
+                }
+                break;
               case "mentor_sessions_updated":
                 if (count !== undefined) {
                   onMentorUpdate?.(count);
@@ -194,6 +202,7 @@ export function useNotificationSocket({
     onNotificationRead,
     onUpcomingUpdate,
     onRecruiterUpdate,
+    onRecruiterApplicantsUpdate,
     onMentorUpdate,
   ]);
 

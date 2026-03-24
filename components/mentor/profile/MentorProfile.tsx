@@ -130,7 +130,7 @@ export function MentorProfile({
         {/* Content Area with scroll */}
         <div className="flex-1 overflow-y-auto px-4 lg:px-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
           <div
-            className={`max-w-full lg:max-w-[560px] flex flex-col gap-4 md:gap-6 lg:gap-7 ${activeTab === "about" ? "pt-4 md:pt-5 lg:pt-8 pb-4 md:pb-5 lg:pb-12" : "py-4 md:py-5 lg:py-12"}`}
+            className={`flex flex-col gap-6 lg:gap-7 max-w-full ${activeTab === "about" ? "pt-5 lg:pt-8 pb-5 lg:pb-12" : "py-5 lg:py-12"}`}
           >
             {activeTab === "about" && (
               <>
@@ -155,7 +155,9 @@ export function MentorProfile({
 
             {activeTab === "sessions" && <MentorSessionSection />}
 
-            {activeTab === "reviews" && <MentorReviewsSection />}
+            {activeTab === "reviews" && (
+              <MentorReviewsSection mentorId={profileData?.id} />
+            )}
           </div>
         </div>
       </main>

@@ -39,7 +39,7 @@ export type {
   OpportunityCardProps,
   FormSection,
   OpportunitiesFilters,
-} from "@/types/opportunities";
+} from "@/lib/types/opportunities";
 
 export interface TypeConfig {
   label: string;

@@ -6,7 +6,7 @@ import { Plus } from "lucide-react";
 interface EmptyStateProps {
   title: string;
   description: string;
-  buttonText: string;
+  buttonText?: string;
   onButtonClick?: () => void;
 }
 
@@ -20,7 +20,7 @@ export function EmptyState({
     <div className="flex w-full h-full min-h-[320px] flex-col items-center justify-center gap-[28px] py-[30px]">
       {/* Illustration */}
       <Image
-        src="https://api.builder.io/api/v1/image/assets/TEMP/5b68bbcc9e62784e98d154af2628e5ba9b8066c3?width=432"
+        src="/empty-state/5b68bbcc9e62784e98d154af2628e5ba9b8066c3.png"
         alt="Empty state illustration"
         width={184}
         height={184}

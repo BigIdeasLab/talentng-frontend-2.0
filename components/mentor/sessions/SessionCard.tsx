@@ -147,22 +147,30 @@ export function SessionCard({
         {/* Header - Avatar + Info + Status Badge */}
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2">
-            {mentee.avatar ? (
-              <img
-                src={mentee.avatar}
-                alt={mentee.name}
-                className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-              />
-            ) : (
-              <div className="w-8 h-8 rounded-full bg-[#FDF2F8] flex items-center justify-center flex-shrink-0">
-                <span
-                  className="text-[12px] font-semibold font-inter-tight"
-                  style={{ color: ROLE_COLORS.mentor.dark }}
-                >
-                  {menteeInitials}
-                </span>
-              </div>
-            )}
+            {(() => {
+              const rawAvatar = mentee.avatar || "";
+              const safeAvatar =
+                rawAvatar && !rawAvatar.includes("builder.io")
+                  ? rawAvatar
+                  : null;
+
+              return safeAvatar ? (
+                <img
+                  src={safeAvatar}
+                  alt={mentee.name}
+                  className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-[#FDF2F8] flex items-center justify-center flex-shrink-0">
+                  <span
+                    className="text-[12px] font-semibold font-inter-tight"
+                    style={{ color: ROLE_COLORS.mentor.dark }}
+                  >
+                    {menteeInitials}
+                  </span>
+                </div>
+              );
+            })()}
             <div className="flex flex-col gap-1">
               <span className="text-[13px] font-medium font-inter-tight text-black">
                 {mentee.name}

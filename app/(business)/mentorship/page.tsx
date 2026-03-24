@@ -31,14 +31,19 @@ interface MentorDisplay {
 }
 
 function mapApiMentorToDisplay(mentor: Record<string, unknown>): MentorDisplay {
+  // Get the image URL and ensure it's a local asset
+  const rawImageUrl =
+    (mentor.profileImageUrl as string) || (mentor.avatar as string) || "";
+  const imageUrl =
+    rawImageUrl && !rawImageUrl.includes("builder.io")
+      ? rawImageUrl
+      : "/default.png";
+
   return {
     id: (mentor.id as string) || "",
     name: (mentor.fullName as string) || (mentor.name as string) || "",
     title: (mentor.headline as string) || (mentor.title as string) || "",
-    imageUrl:
-      (mentor.profileImageUrl as string) ||
-      (mentor.avatar as string) ||
-      "/default.png",
+    imageUrl,
     rating: Number(mentor.avgRating || mentor.rating || 0),
     totalReviews: (mentor.totalReviews as number) || 0,
     expertise: (mentor.expertise as string[]) || [],
@@ -312,6 +317,32 @@ export default function MentorshipPage() {
                 currentPage={pagination?.page || 1}
                 totalPages={pagination?.totalPages || 1}
                 totalMentors={pagination?.total}
+                emptyTitle={
+                  searchQuery.trim()
+                    ? "No mentors match your search"
+                    : appliedFilters &&
+                        (appliedFilters.expertise.length > 0 ||
+                          appliedFilters.headlines.length > 0 ||
+                          appliedFilters.languages.length > 0 ||
+                          appliedFilters.location)
+                      ? "No mentors match your filters"
+                      : activeCategory && activeCategory !== ""
+                        ? "No mentors match your search"
+                        : "No mentors yet"
+                }
+                emptyDescription={
+                  searchQuery.trim()
+                    ? "Try adjusting your search query"
+                    : appliedFilters &&
+                        (appliedFilters.expertise.length > 0 ||
+                          appliedFilters.headlines.length > 0 ||
+                          appliedFilters.languages.length > 0 ||
+                          appliedFilters.location)
+                      ? "Try adjusting your filters"
+                      : activeCategory && activeCategory !== ""
+                        ? `No mentors match your search in the "${activeCategory}" category`
+                        : "Mentors will appear here as they join the platform"
+                }
               />
             </div>
           )}

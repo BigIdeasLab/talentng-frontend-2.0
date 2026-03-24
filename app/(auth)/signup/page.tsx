@@ -363,7 +363,7 @@ const Signup = () => {
                     className="w-full h-[48px] rounded-[10px] bg-gray-100 hover:bg-gray-200 flex items-center justify-center gap-2 transition-colors text-xs md:text-sm"
                   >
                     <img
-                      src="https://api.builder.io/api/v1/image/assets/TEMP/c63e31bf35331749ef1f00a4fbaca3a3a5899b7a?width=28"
+                      src="/google-icon.svg"
                       alt="Google"
                       className="w-[14px] h-[14px]"
                     />
@@ -378,7 +378,7 @@ const Signup = () => {
                     className="w-full h-[48px] rounded-[10px] bg-gray-100 hover:bg-gray-200 flex items-center justify-center gap-2 transition-colors text-xs md:text-sm"
                   >
                     <img
-                      src="https://api.builder.io/api/v1/image/assets/TEMP/e1e698cf881cba1b63fb95d130a383ba36c4abee?width=34"
+                      src="/apple-icon.svg"
                       alt="Apple"
                       className="w-[17px] h-[17px]"
                     />

@@ -517,7 +517,7 @@ export async function updateTalentSettings(
  */
 export async function getTalentUpcoming(params?: {
   q?: string;
-  dateRange?: "today" | "week" | "month";
+  dateRange?: "today" | "week" | "month" | "past";
   type?: "interview" | "session";
   limit?: number;
   offset?: number;

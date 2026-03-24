@@ -433,6 +433,8 @@ export function TalentProfile({
         <ServiceDetailView
           service={selectedService}
           onClose={() => setSelectedService(null)}
+          talentEmail={user?.email}
+          talentName={user?.fullName || profileData?.personal?.firstName}
         />
       )}
     </div>

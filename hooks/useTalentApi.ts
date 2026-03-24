@@ -6,7 +6,7 @@
  * caching, invalidation, and state management
  */
 
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getCurrentProfile,
   getTalentProfileByUserId,
@@ -53,7 +53,16 @@ export function useTalentProfile(userId: string) {
   return useQuery({
     queryKey: ["talent-profile", userId],
     queryFn: () => getTalentProfileByUserId(userId),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 30 * 1000, // 30 seconds instead of 5 minutes
+    retry: (failureCount, error: any) => {
+      // Don't retry on 404 (profile not found)
+      if (error?.status === 404) {
+        return false;
+      }
+      // Retry up to 2 times for other errors
+      return failureCount < 2;
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
   });
 }
 
@@ -66,20 +75,41 @@ export function useDashboardStats() {
 }
 
 export function useUpdateProfile() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: updateProfile,
+    onSuccess: () => {
+      // Invalidate current profile and talent profiles
+      queryClient.invalidateQueries({ queryKey: ["current-profile"] });
+      queryClient.invalidateQueries({ queryKey: ["talent-profile"] });
+    },
   });
 }
 
 export function useUpdateProfileImage() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: updateProfileImage,
+    onSuccess: () => {
+      // Invalidate current profile and talent profiles
+      queryClient.invalidateQueries({ queryKey: ["current-profile"] });
+      queryClient.invalidateQueries({ queryKey: ["talent-profile"] });
+    },
   });
 }
 
 export function useUpdateCoverImage() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: updateCoverImage,
+    onSuccess: () => {
+      // Invalidate current profile and talent profiles
+      queryClient.invalidateQueries({ queryKey: ["current-profile"] });
+      queryClient.invalidateQueries({ queryKey: ["talent-profile"] });
+    },
   });
 }
 
@@ -101,26 +131,50 @@ export function useMyServices() {
   return useQuery({
     queryKey: ["my-services"],
     queryFn: getMyServices,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 30 * 1000, // 30 seconds instead of 5 minutes
   });
 }
 
 export function useCreateService() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: createService,
+    onSuccess: () => {
+      // Invalidate and refetch services
+      queryClient.invalidateQueries({ queryKey: ["my-services"] });
+      // Also invalidate talent profiles since they include services
+      queryClient.invalidateQueries({ queryKey: ["talent-profile"] });
+    },
   });
 }
 
 export function useUpdateService() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateServiceInput }) =>
       updateService(id, data),
+    onSuccess: () => {
+      // Invalidate and refetch services
+      queryClient.invalidateQueries({ queryKey: ["my-services"] });
+      // Also invalidate talent profiles since they include services
+      queryClient.invalidateQueries({ queryKey: ["talent-profile"] });
+    },
   });
 }
 
 export function useDeleteService() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: deleteService,
+    onSuccess: () => {
+      // Invalidate and refetch services
+      queryClient.invalidateQueries({ queryKey: ["my-services"] });
+      // Also invalidate talent profiles since they include services
+      queryClient.invalidateQueries({ queryKey: ["talent-profile"] });
+    },
   });
 }
 
@@ -152,14 +206,26 @@ export function useAddServiceReview() {
  * Gallery Hooks
  */
 export function useUploadGalleryImages() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (files: File[]) => uploadGalleryImages(files),
+    onSuccess: () => {
+      // Invalidate talent profiles since they include gallery
+      queryClient.invalidateQueries({ queryKey: ["talent-profile"] });
+    },
   });
 }
 
 export function useDeleteGalleryItem() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: deleteGalleryItem,
+    onSuccess: () => {
+      // Invalidate talent profiles since they include gallery
+      queryClient.invalidateQueries({ queryKey: ["talent-profile"] });
+    },
   });
 }
 

@@ -23,6 +23,7 @@ const mockMentorSettings = {
   sessionDuration: 60,
   bufferTime: 15,
   advanceBookingDays: 14,
+  minAdvanceBookingMinutes: 60,
   cancellationPolicy: "24hours",
   autoAccept: false,
   emailNewRequests: true,

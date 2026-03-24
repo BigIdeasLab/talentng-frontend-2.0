@@ -239,6 +239,15 @@ export function MentorFilterModal({
                         }
                       }
                     }}
+                    onBlur={() => {
+                      if (
+                        headlineSearch.trim() &&
+                        !filters.headlines.includes(headlineSearch.trim())
+                      ) {
+                        toggleHeadline(headlineSearch.trim());
+                        setHeadlineSearch("");
+                      }
+                    }}
                     onFocus={() => setIsHeadlineOpen(true)}
                     className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
                   />
@@ -309,6 +318,15 @@ export function MentorFilterModal({
                           setExpertiseSearch("");
                           setIsExpertiseOpen(false);
                         }
+                      }
+                    }}
+                    onBlur={() => {
+                      if (
+                        expertiseSearch.trim() &&
+                        !filters.expertise.includes(expertiseSearch.trim())
+                      ) {
+                        toggleExpertise(expertiseSearch.trim());
+                        setExpertiseSearch("");
                       }
                     }}
                     onFocus={() => setIsExpertiseOpen(true)}
@@ -416,6 +434,15 @@ export function MentorFilterModal({
                           setLanguageSearch("");
                           setIsLanguageOpen(false);
                         }
+                      }
+                    }}
+                    onBlur={() => {
+                      if (
+                        languageSearch.trim() &&
+                        !filters.languages.includes(languageSearch.trim())
+                      ) {
+                        toggleLanguage(languageSearch.trim());
+                        setLanguageSearch("");
                       }
                     }}
                     onFocus={() => setIsLanguageOpen(true)}

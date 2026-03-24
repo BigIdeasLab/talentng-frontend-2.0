@@ -13,8 +13,7 @@ interface SimilarOpportunitiesSectionProps {
  * Convert Opportunity to DisplayOpportunity format
  */
 const convertToDisplayOpportunity = (opp: Opportunity): DisplayOpportunity => {
-  const DEFAULT_LOGO =
-    "https://api.builder.io/api/v1/image/assets/TEMP/ac611f16c20ce30fd01ad9af988e5821beb576eb?width=180";
+  const DEFAULT_LOGO = "/default.png";
 
   const formatDate = (isoDate?: string): string => {
     if (!isoDate) return "Recently";

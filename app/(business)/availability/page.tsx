@@ -19,7 +19,7 @@ import {
   setMyAvailability,
   type AvailabilitySlot,
 } from "@/lib/api/mentorship";
-import { Check, Clock, Zap } from "lucide-react";
+import { Check, Clock, Zap, Info } from "lucide-react";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { SuccessModal } from "@/components/ui/success-modal";
@@ -87,6 +87,8 @@ export default function AvailabilityPage() {
   const [savedSlots, setSavedSlots] = useState<Set<string>>(new Set()); // Track what's saved in backend
   const [sessionDuration, setSessionDuration] = useState("60");
   const [bufferTime, setBufferTime] = useState("15");
+  const [minAdvanceBookingMinutes, setMinAdvanceBookingMinutes] =
+    useState("30");
   const [defaultMeetingLink, setDefaultMeetingLink] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -116,6 +118,12 @@ export default function AvailabilityPage() {
 
       if (response.bufferTime !== undefined) {
         setBufferTime(response.bufferTime.toString());
+      }
+
+      if (response.minAdvanceBookingMinutes !== undefined) {
+        setMinAdvanceBookingMinutes(
+          response.minAdvanceBookingMinutes.toString(),
+        );
       }
 
       if (response.defaultMeetingLink) {
@@ -354,6 +362,7 @@ export default function AvailabilityPage() {
       await setMyAvailability({
         sessionDuration: parseInt(sessionDuration, 10),
         bufferTime: parseInt(bufferTime, 10),
+        minAdvanceBookingMinutes: parseInt(minAdvanceBookingMinutes, 10),
         defaultMeetingLink: defaultMeetingLink || undefined,
         slots: slotsArray,
       });
@@ -430,6 +439,21 @@ export default function AvailabilityPage() {
                 </span>
               </div>
             )}
+            <Button
+              onClick={handleSave}
+              disabled={isSaving || !hasChanges}
+              className="rounded-lg px-6 py-2 text-sm font-medium text-white hover:opacity-80 disabled:opacity-50"
+              style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
+            >
+              {isSaving ? (
+                <span className="flex items-center gap-2">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  Saving...
+                </span>
+              ) : (
+                "Save Availability"
+              )}
+            </Button>
           </div>
         </div>
       </div>
@@ -489,13 +513,24 @@ export default function AvailabilityPage() {
         </div>
 
         {/* Main Card */}
-        <div className="overflow-hidden rounded-xl border border-[#E1E4EA] bg-white shadow-sm">
+        <div className="rounded-xl border border-[#E1E4EA] bg-white shadow-sm">
           {/* Settings Bar */}
-          <div className="flex flex-col md:flex-row flex-wrap gap-4 border-b border-[#E1E4EA] bg-[#FAFAFA] px-5 py-4">
+          <div className="flex flex-wrap gap-4 border-b border-[#E1E4EA] bg-[#FAFAFA] px-5 py-4 overflow-visible relative">
             <div className="flex items-center gap-2">
-              <label className="text-xs font-medium text-[#525866]">
-                Duration
-              </label>
+              <div className="flex items-center gap-1">
+                <label className="text-xs font-medium text-[#525866]">
+                  Duration
+                </label>
+                <div className="group relative">
+                  <Info className="h-3 w-3 text-[#B2B2B2] cursor-help" />
+                  <div
+                    className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal"
+                    style={{ zIndex: 9999 }}
+                  >
+                    Length of each mentorship session
+                  </div>
+                </div>
+              </div>
               <Select
                 value={sessionDuration}
                 onValueChange={(v) => {
@@ -519,9 +554,20 @@ export default function AvailabilityPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <label className="text-xs font-medium text-[#525866]">
-                Buffer
-              </label>
+              <div className="flex items-center gap-1">
+                <label className="text-xs font-medium text-[#525866]">
+                  Buffer
+                </label>
+                <div className="group relative">
+                  <Info className="h-3 w-3 text-[#B2B2B2] cursor-help" />
+                  <div
+                    className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal"
+                    style={{ zIndex: 9999 }}
+                  >
+                    Time between sessions to prepare or rest
+                  </div>
+                </div>
+              </div>
               <Select
                 value={bufferTime}
                 onValueChange={(v) => {
@@ -540,33 +586,78 @@ export default function AvailabilityPage() {
               </Select>
             </div>
 
-            <div className="flex flex-col gap-1 flex-1 min-w-[200px]">
-              <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                <label className="text-xs font-medium text-[#525866]">
+                  Min. Notice
+                </label>
+                <div className="group relative">
+                  <Info className="h-3 w-3 text-[#B2B2B2] cursor-help" />
+                  <div
+                    className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal"
+                    style={{ zIndex: 9999 }}
+                  >
+                    Minimum time before a session can be booked
+                  </div>
+                </div>
+              </div>
+              <Select
+                value={minAdvanceBookingMinutes}
+                onValueChange={(v) => {
+                  setMinAdvanceBookingMinutes(v);
+                  setHasChanges(true);
+                }}
+              >
+                <SelectTrigger className="h-8 w-24 border-[#E1E4EA] bg-white text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="0">None</SelectItem>
+                  <SelectItem value="15">15 min</SelectItem>
+                  <SelectItem value="30">30 min</SelectItem>
+                  <SelectItem value="60">1 hour</SelectItem>
+                  <SelectItem value="120">2 hours</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <label className="text-xs font-medium text-[#525866]">
                   Meeting Link <span className="text-red-500">*</span>
                 </label>
-                <Input
-                  type="url"
-                  placeholder="https://meet.google.com/..."
-                  value={defaultMeetingLink}
-                  onChange={(e) => {
-                    setDefaultMeetingLink(e.target.value);
-                    setHasChanges(true);
-                    if (e.target.value.trim()) setMeetingLinkError(false);
-                  }}
-                  className={`h-10 md:h-8 w-full md:w-48 text-xs ${
-                    meetingLinkError
-                      ? "border-red-500 focus:ring-red-500"
-                      : "border-[#E1E4EA]"
-                  }`}
-                />
+                <div className="group relative">
+                  <Info className="h-3 w-3 text-[#B2B2B2] cursor-help" />
+                  <div
+                    className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-56 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal"
+                    style={{ zIndex: 9999 }}
+                  >
+                    Default video call link sent to mentees (Google Meet, Zoom,
+                    etc.)
+                  </div>
+                </div>
               </div>
-              {meetingLinkError && (
-                <span className="text-[10px] text-red-500">
-                  Meeting link is required
-                </span>
-              )}
+              <Input
+                type="url"
+                placeholder="https://meet.google.com/..."
+                value={defaultMeetingLink}
+                onChange={(e) => {
+                  setDefaultMeetingLink(e.target.value);
+                  setHasChanges(true);
+                  if (e.target.value.trim()) setMeetingLinkError(false);
+                }}
+                className={`h-8 w-64 border-[#E1E4EA] bg-white text-xs ${
+                  meetingLinkError
+                    ? "border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
+              />
             </div>
+            {meetingLinkError && (
+              <span className="text-[10px] text-red-500">
+                Meeting link is required
+              </span>
+            )}
           </div>
 
           {/* Grid View */}

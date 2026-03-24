@@ -166,6 +166,34 @@ export function DiscoverTalentClient({
           currentPage={pagination?.currentPage || 1}
           totalPages={pagination?.totalPages || 1}
           totalTalents={pagination?.total}
+          emptyTitle={
+            searchQuery.trim()
+              ? "No talents match your search"
+              : filters &&
+                  ((filters.skills && filters.skills.length > 0) ||
+                    (filters.stack && filters.stack.length > 0) ||
+                    filters.location ||
+                    filters.availability ||
+                    filters.headline)
+                ? "No talents match your filters"
+                : selectedCategory !== "All"
+                  ? "No talents match your search"
+                  : "No talents yet"
+          }
+          emptyDescription={
+            searchQuery.trim()
+              ? "Try adjusting your search query"
+              : filters &&
+                  ((filters.skills && filters.skills.length > 0) ||
+                    (filters.stack && filters.stack.length > 0) ||
+                    filters.location ||
+                    filters.availability ||
+                    filters.headline)
+                ? "Try adjusting your filters"
+                : selectedCategory !== "All"
+                  ? `No talents match your search in the "${selectedCategory}" category`
+                  : "Talents will appear here as they join the platform"
+          }
         />
       )}
     </div>

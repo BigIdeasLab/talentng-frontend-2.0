@@ -1,5 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { MentorCard } from "./MentorCard";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Users } from "lucide-react";
 
 interface Mentor {
   id: string;
@@ -22,6 +24,8 @@ interface MentorGridProps {
   currentPage?: number;
   totalPages?: number;
   totalMentors?: number;
+  emptyTitle?: string;
+  emptyDescription?: string;
 }
 
 export function MentorGrid({
@@ -33,6 +37,8 @@ export function MentorGrid({
   currentPage = 1,
   totalPages = 1,
   totalMentors,
+  emptyTitle,
+  emptyDescription,
 }: MentorGridProps) {
   const displayCount = totalMentors ?? mentors.length;
   return (
@@ -47,11 +53,13 @@ export function MentorGrid({
       {/* Grid Content (Scrollable) */}
       <div className="flex-1 overflow-y-auto scrollbar-styled px-[25px] py-[16px]">
         {mentors.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 bg-[#FAFAFA] rounded-xl border border-dashed border-[#E1E4EA]">
-            <p className="font-inter-tight text-[13px] text-gray-500">
-              No mentors found. Try adjusting your filters.
-            </p>
-          </div>
+          <EmptyState
+            icon={Users}
+            title={emptyTitle || "No mentors match your search"}
+            description={
+              emptyDescription || "Try adjusting your filters or search query"
+            }
+          />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4 pb-6">
             {mentors.map((mentor) => (

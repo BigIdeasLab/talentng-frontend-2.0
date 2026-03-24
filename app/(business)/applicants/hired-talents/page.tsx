@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { SearchInput } from "@/components/ui/search-input";
+import { EmptyState } from "@/components/ui/empty-state";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
 import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
@@ -465,11 +466,22 @@ export default function HiredTalentsPage() {
 
         {/* Talents Grid */}
         {filteredTalents.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12">
-            <p className="font-inter-tight text-[15px] font-normal text-black/30">
-              No hired talents found
-            </p>
-          </div>
+          <EmptyState
+            title={
+              searchQuery.trim()
+                ? "No hired talents match your search"
+                : filters.location || filters.dateRange !== "all"
+                  ? "No hired talents match your filters"
+                  : "No hired talents yet"
+            }
+            description={
+              searchQuery.trim()
+                ? "Try adjusting your search query"
+                : filters.location || filters.dateRange !== "all"
+                  ? "Try adjusting your filters"
+                  : "Talents you hire will appear here"
+            }
+          />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredTalents.map((talent) => (

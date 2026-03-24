@@ -1,47 +1,26 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { getTalentProfileByUserId } from "@/lib/api/talent";
-import type { TalentProfile } from "@/lib/api/talent/types";
+import { useTalentProfile } from "@/hooks";
 import { useRequireRole } from "@/hooks/useRequireRole";
-import { PageLoadingState } from "@/lib/page-utils";
+import { ProfileLoadingState } from "@/components/talent/profile/components/ProfileLoadingState";
 import { TalentProfileView as RecruiterTalentProfileView } from "@/components/employer/talent-profile/TalentProfileView";
 import { TalentProfileView as PublicTalentProfileView } from "@/components/talent/public-profile/TalentProfileView";
 
 export default function TalentProfilePage() {
   const params = useParams();
   const userId = params.userId as string;
-  const [profile, setProfile] = useState<TalentProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const isRecruiter = useRequireRole(["recruiter"]);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        setIsLoading(true);
-        const data = await getTalentProfileByUserId(userId);
-        setProfile(data);
-        setError(null);
-      } catch (err) {
-        console.error("Failed to fetch talent profile:", err);
-        setError(err instanceof Error ? err.message : "Failed to load profile");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const { data: profile, isLoading, error, isError } = useTalentProfile(userId);
 
-    if (userId) {
-      fetchProfile();
-    }
-  }, [userId]);
-
+  // Show loading state while fetching or retrying
   if (isLoading) {
-    return <PageLoadingState message="Loading talent profile..." />;
+    return <ProfileLoadingState />;
   }
 
-  if (error || !profile) {
+  // Only show error if query has actually failed (not during retries)
+  if (isError && error) {
     return (
       <div className="h-screen bg-white flex items-center justify-center p-4">
         <div className="text-center">
@@ -49,11 +28,16 @@ export default function TalentProfilePage() {
             Failed to load profile
           </h2>
           <p className="text-sm text-[#525866]">
-            {error || "Profile not found"}
+            {error?.message || "Profile not found"}
           </p>
         </div>
       </div>
     );
+  }
+
+  // Show loading if we don't have profile data yet (shouldn't happen with proper loading state)
+  if (!profile) {
+    return <ProfileLoadingState />;
   }
 
   // Show recruiter view if user has recruiter role

@@ -47,20 +47,17 @@ export const SelectRoleStep = ({
     {
       id: "talent",
       label: "As Talent",
-      image:
-        "https://api.builder.io/api/v1/image/assets/TEMP/611d63c0306f773058be10af29e0d55cc818b085?width=512",
+      image: "/role-selection/Talent.png",
     },
     {
       id: "employer",
       label: "Employer / Recruiter",
-      image:
-        "https://api.builder.io/api/v1/image/assets/TEMP/7e75bac5dec4ff1b9249b202c3cdc262e464ad7f?width=512",
+      image: "/role-selection/employer.png",
     },
     {
       id: "mentor",
       label: "Mentor",
-      image:
-        "https://api.builder.io/api/v1/image/assets/TEMP/6b5c4a37fa26679b6a2b05eb189a80f6bed5b713?width=512",
+      image: "/role-selection/mentor.png",
     },
   ];
 

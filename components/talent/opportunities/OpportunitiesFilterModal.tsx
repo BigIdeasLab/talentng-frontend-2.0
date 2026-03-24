@@ -375,6 +375,16 @@ export function OpportunitiesFilterModal({
                         }
                       }
                     }}
+                    onBlur={() => {
+                      // Add skill on blur if there's text and it's not already added
+                      if (
+                        skillSearch.trim() &&
+                        !filters.skills.includes(skillSearch.trim())
+                      ) {
+                        toggleSkill(skillSearch.trim());
+                        setSkillSearch("");
+                      }
+                    }}
                     onFocus={() => setIsSkillOpen(true)}
                     className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
                   />

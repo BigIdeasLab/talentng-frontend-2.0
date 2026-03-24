@@ -38,7 +38,12 @@ export function useSubmitApplication() {
   return useMutation({
     mutationFn: (data: ApplicationSubmission) => submitApplication(data),
     onSuccess: () => {
+      // Invalidate talent's own applications
       queryClient.invalidateQueries({ queryKey: ["applications", "talent"] });
+      // Invalidate recruiter's applications so they see the new application immediately
+      queryClient.invalidateQueries({
+        queryKey: ["applications", "recruiter"],
+      });
     },
   });
 }

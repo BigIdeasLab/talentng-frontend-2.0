@@ -315,18 +315,20 @@ export function TalentMyApplications() {
               <EmptyState
                 icon={Briefcase}
                 title={
-                  searchQuery ||
-                  jobStatusFilter !== "all" ||
-                  appliedFilters.dateRange !== "all"
-                    ? "No applications found"
-                    : "No job applications yet"
+                  searchQuery
+                    ? "No applications match your search"
+                    : jobStatusFilter !== "all" ||
+                        appliedFilters.dateRange !== "all"
+                      ? "No applications match your filters"
+                      : "No job applications yet"
                 }
                 description={
-                  searchQuery ||
-                  jobStatusFilter !== "all" ||
-                  appliedFilters.dateRange !== "all"
-                    ? "Try adjusting your filters or search query"
-                    : "Start applying to jobs to see your applications here"
+                  searchQuery
+                    ? "Try adjusting your search query"
+                    : jobStatusFilter !== "all" ||
+                        appliedFilters.dateRange !== "all"
+                      ? "Try adjusting your filters"
+                      : "Start applying to jobs to see your applications here"
                 }
               />
             ) : (
@@ -343,18 +345,20 @@ export function TalentMyApplications() {
             <EmptyState
               icon={Users}
               title={
-                searchQuery ||
-                mentorshipStatusFilter !== "all" ||
-                appliedFilters.dateRange !== "all"
-                  ? "No requests found"
-                  : "No mentorship requests yet"
+                searchQuery
+                  ? "No requests match your search"
+                  : mentorshipStatusFilter !== "all" ||
+                      appliedFilters.dateRange !== "all"
+                    ? "No requests match your filters"
+                    : "No mentorship requests yet"
               }
               description={
-                searchQuery ||
-                mentorshipStatusFilter !== "all" ||
-                appliedFilters.dateRange !== "all"
-                  ? "Try adjusting your filters or search query"
-                  : "Find mentors and send request to see them here"
+                searchQuery
+                  ? "Try adjusting your search query"
+                  : mentorshipStatusFilter !== "all" ||
+                      appliedFilters.dateRange !== "all"
+                    ? "Try adjusting your filters"
+                    : "Find mentors and send request to see them here"
               }
             />
           ) : (

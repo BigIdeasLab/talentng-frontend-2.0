@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
 import { Check, X, Clock, Calendar, MapPin, Video } from "lucide-react";
 import { SearchInput } from "@/components/ui/search-input";
+import { EmptyState } from "@/components/ui/empty-state";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { useToast } from "@/hooks";
 import { useRequireRole } from "@/hooks/useRequireRole";
@@ -53,8 +54,13 @@ function mapApiRequest(request: ApiMentorshipRequest): MentorshipRequest {
         request.mentee.name ||
         request.mentee.username ||
         "Unknown",
-      avatar:
-        request.mentee.profileImageUrl || request.mentee.avatar || undefined,
+      avatar: (() => {
+        const rawAvatar =
+          request.mentee.profileImageUrl || request.mentee.avatar || "";
+        return rawAvatar && !rawAvatar.includes("builder.io")
+          ? rawAvatar
+          : undefined;
+      })(),
       title: request.mentee.headline || "",
       company: "",
     },
@@ -94,7 +100,10 @@ export default function ApplicationsPage() {
 
   const fetchRequests = useCallback(async () => {
     try {
-      setIsLoading(true);
+      // Only show loading skeleton on initial load, not on filter changes
+      if (isInitialLoad) {
+        setIsLoading(true);
+      }
       const [requestsResponse, countResponse] = await Promise.all([
         getMentorMentorshipRequests({
           ...(filter !== "all" ? { status: filter as RequestStatus } : {}),
@@ -302,24 +311,12 @@ export default function ApplicationsPage() {
         <div className="h-full overflow-y-auto p-4 md:p-6">
           {/* Request Cards */}
           {isLoading && !isInitialLoad ? (
-            // Show previous data with loading indicator in search bar
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
+            // Show previous data with loading overlay while fetching
+            <div
+              className={`grid grid-cols-1 lg:grid-cols-2 gap-[7px] transition-opacity duration-200 ${isLoading ? "opacity-50" : "opacity-100"}`}
+            >
               {filteredRequests.length === 0 ? (
-                <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
-                  <p className="font-inter-tight text-[14px] text-[#525866]">
-                    {searchQuery.trim()
-                      ? "Try adjusting your search query"
-                      : dateRange && dateRange !== "all"
-                        ? "Try adjusting your date range"
-                        : filter === "pending"
-                          ? "No pending requests"
-                          : filter === "accepted"
-                            ? "No accepted requests"
-                            : filter === "rejected"
-                              ? "No rejected requests"
-                              : "No requests found"}
-                  </p>
-                </div>
+                <ApplicationsSkeleton />
               ) : (
                 filteredRequests.map((request) => (
                   <div
@@ -487,20 +484,35 @@ export default function ApplicationsPage() {
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
               {filteredRequests.length === 0 ? (
-                <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
-                  <p className="font-inter-tight text-[14px] text-[#525866]">
-                    {searchQuery.trim()
-                      ? "Try adjusting your search query"
-                      : dateRange && dateRange !== "all"
-                        ? "Try adjusting your date range"
-                        : filter === "pending"
-                          ? "No pending requests"
-                          : filter === "accepted"
-                            ? "No accepted requests"
-                            : filter === "rejected"
-                              ? "No rejected requests"
-                              : "No requests found"}
-                  </p>
+                <div className="col-span-1 lg:col-span-2">
+                  <EmptyState
+                    title={
+                      searchQuery.trim()
+                        ? "No requests match your search"
+                        : dateRange && dateRange !== "all"
+                          ? "No requests match your filters"
+                          : filter === "pending"
+                            ? "No pending requests"
+                            : filter === "accepted"
+                              ? "No accepted requests"
+                              : filter === "rejected"
+                                ? "No rejected requests"
+                                : "No requests match your filters"
+                    }
+                    description={
+                      searchQuery.trim()
+                        ? "Try adjusting your search query"
+                        : dateRange && dateRange !== "all"
+                          ? "Try adjusting your date range"
+                          : filter === "pending"
+                            ? "New mentorship requests will appear here"
+                            : filter === "accepted"
+                              ? "Accepted requests will appear here"
+                              : filter === "rejected"
+                                ? "Rejected requests will appear here"
+                                : "Mentorship requests will appear here as they come in"
+                    }
+                  />
                 </div>
               ) : (
                 filteredRequests.map((request) => (

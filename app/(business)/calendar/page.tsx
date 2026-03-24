@@ -24,6 +24,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { RescheduleModal } from "@/components/ui/reschedule-modal";
 import { ReviewModal } from "@/components/ui/review-modal";
+import { SuccessModal } from "@/components/ui/success-modal";
 import { RecruiterUpcoming } from "@/components/employer/upcoming/RecruiterUpcoming";
 import { LoadingScreen } from "@/components/layouts/LoadingScreen";
 import { useRouter } from "next/navigation";
@@ -84,6 +85,7 @@ function TalentUpcoming() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [dateRange, setDateRange] = useState<string>("all");
+  const [needsReviewCount, setNeedsReviewCount] = useState(0);
   const [totalCounts, setTotalCounts] = useState({
     all: 0,
     interviews: 0,
@@ -104,6 +106,13 @@ function TalentUpcoming() {
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [isActionLoading, setIsActionLoading] = useState(false);
 
+  // Success modal states
+  const [successModalOpen, setSuccessModalOpen] = useState(false);
+  const [successModalConfig, setSuccessModalConfig] = useState({
+    title: "",
+    description: "",
+  });
+
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(0);
@@ -122,9 +131,11 @@ function TalentUpcoming() {
         const apiParams = {
           q: searchQuery || undefined,
           dateRange:
-            dateRange && dateRange !== "all"
-              ? (dateRange as "today" | "week" | "month")
-              : undefined,
+            dateRange && dateRange !== "all" && dateRange !== "needs-review"
+              ? (dateRange as "today" | "week" | "month" | "past")
+              : dateRange === "needs-review"
+                ? ("past" as const)
+                : undefined,
           type: (filter === "interviews"
             ? "interview"
             : filter === "sessions"
@@ -140,7 +151,49 @@ function TalentUpcoming() {
         if (currentFetchId !== fetchIdRef.current) return;
 
         // Backend returns 'items' not 'data'
-        const items = res.items || res.data || [];
+        let items = res.items || res.data || [];
+
+        // Filter for "needs-review": only show completed sessions without reviews
+        if (dateRange === "needs-review") {
+          items = items.filter(
+            (item: any) =>
+              item.type === "session" &&
+              item.status === "completed" &&
+              !item.hasReview,
+          );
+        }
+
+        // Always calculate needs review count (fetch from past events if not already fetched)
+        if (dateRange !== "needs-review" && dateRange !== "past") {
+          // Fetch past events to get the count
+          try {
+            const pastRes = await getTalentUpcoming({
+              dateRange: "past",
+              type: "session",
+              limit: 100, // Get enough to count
+            });
+            const pastItems = pastRes.items || pastRes.data || [];
+            const needsReview = pastItems.filter(
+              (item: any) =>
+                item.type === "session" &&
+                item.status === "completed" &&
+                !item.hasReview,
+            ).length;
+            setNeedsReviewCount(needsReview);
+          } catch (error) {
+            console.error("Failed to fetch needs review count:", error);
+          }
+        } else {
+          // Calculate from current items if we're already viewing past/needs-review
+          const allItems = res.items || res.data || [];
+          const needsReview = allItems.filter(
+            (item: any) =>
+              item.type === "session" &&
+              item.status === "completed" &&
+              !item.hasReview,
+          ).length;
+          setNeedsReviewCount(needsReview);
+        }
         setItems(items);
         setDisplayedItems(items);
         setPagination(res.pagination || null);
@@ -209,13 +262,14 @@ function TalentUpcoming() {
     try {
       setIsActionLoading(true);
       await cancelSession(selectedSessionId);
-      toast({
-        title: "Session cancelled",
-        description: "The session has been cancelled successfully",
-      });
       setCancelModalOpen(false);
       setSelectedSessionId(null);
       await fetchData(false);
+      setSuccessModalConfig({
+        title: "Session Cancelled",
+        description: "The session has been cancelled successfully",
+      });
+      setSuccessModalOpen(true);
     } catch (error) {
       toast({
         title: "Error",
@@ -246,13 +300,14 @@ function TalentUpcoming() {
         newStartTime: `${date}T${startTime}`,
         newEndTime: `${date}T${endTime}`,
       });
-      toast({
-        title: "Session rescheduled",
-        description: "The session has been rescheduled successfully",
-      });
       setRescheduleModalOpen(false);
       setSelectedSessionId(null);
       await fetchData(false);
+      setSuccessModalConfig({
+        title: "Session Rescheduled",
+        description: "The session has been rescheduled successfully",
+      });
+      setSuccessModalOpen(true);
     } catch (error) {
       toast({
         title: "Error",
@@ -274,13 +329,14 @@ function TalentUpcoming() {
     try {
       setIsActionLoading(true);
       await confirmSessionCompletion(selectedSessionId);
-      toast({
-        title: "Session completed",
-        description: "Thank you for confirming the session completion",
-      });
       setConfirmCompletionModalOpen(false);
       setSelectedSessionId(null);
       await fetchData(false);
+      setSuccessModalConfig({
+        title: "Session Completed",
+        description: "Thank you for confirming the session completion",
+      });
+      setSuccessModalOpen(true);
     } catch (error) {
       toast({
         title: "Error",
@@ -302,13 +358,14 @@ function TalentUpcoming() {
     try {
       setIsActionLoading(true);
       await createSessionReview(selectedSessionId, { rating, comment });
-      toast({
-        title: "Review submitted",
-        description: "Thank you for your feedback!",
-      });
       setReviewModalOpen(false);
       setSelectedSessionId(null);
       await fetchData(false);
+      setSuccessModalConfig({
+        title: "Review Submitted",
+        description: "Thank you for your feedback!",
+      });
+      setSuccessModalOpen(true);
     } catch (error) {
       toast({
         title: "Error",
@@ -354,6 +411,7 @@ function TalentUpcoming() {
             startTime: item.scheduledAt || item.startTime,
             topic: item.topic || item.title,
             meetingLink: item.meetingLink,
+            hasReview: item.hasReview, // Include hasReview field from backend
             mentor: {
               // Backend now returns mentor profile ID in mentorId field
               id: item.mentorId,
@@ -364,7 +422,14 @@ function TalentUpcoming() {
         }),
   }));
 
-  upcomingItems.sort((a, b) => a.date.getTime() - b.date.getTime());
+  upcomingItems.sort((a, b) => {
+    // For past events, sort newest first (descending)
+    if (dateRange === "past") {
+      return b.date.getTime() - a.date.getTime();
+    }
+    // For upcoming events, sort oldest first (ascending)
+    return a.date.getTime() - b.date.getTime();
+  });
 
   // Server already handles filtering by type, so we just display all items
   const filteredItems = upcomingItems;
@@ -395,21 +460,28 @@ function TalentUpcoming() {
           {/* Date Range Filter Buttons */}
           <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hide">
             {[
-              { value: "all", label: "All Time" },
+              { value: "all", label: "Upcoming" },
               { value: "today", label: "Today" },
               { value: "week", label: "This Week" },
               { value: "month", label: "This Month" },
+              { value: "needs-review", label: "Needs Review" },
+              { value: "past", label: "Past" },
             ].map((option) => (
               <button
                 key={option.value}
                 onClick={() => setDateRange(option.value)}
-                className={`min-h-[44px] md:h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors text-[13px] font-normal font-inter-tight border ${
+                className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors text-[13px] font-normal font-inter-tight border relative ${
                   dateRange === option.value
                     ? "bg-[#8463FF0D] border-[#8463FF] text-[#8463FF]"
                     : "bg-[#F5F5F5] hover:bg-gray-100 text-black border-transparent"
                 }`}
               >
                 {option.label}
+                {option.value === "needs-review" && needsReviewCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[#EF4444] text-white text-[10px] min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full font-medium">
+                    {needsReviewCount}
+                  </span>
+                )}
               </button>
             ))}
           </div>
@@ -474,18 +546,26 @@ function TalentUpcoming() {
             <EmptyState
               icon={Calendar}
               title={
-                searchQuery || dateRange !== "all"
-                  ? "No events found"
-                  : "No upcoming events"
+                searchQuery
+                  ? "No events match your search"
+                  : dateRange !== "all"
+                    ? "No events match your filters"
+                    : "No upcoming events"
               }
               description={
-                searchQuery || dateRange !== "all"
-                  ? "Try adjusting your filters or search query"
-                  : filter === "interviews"
-                    ? "You have no upcoming interviews"
-                    : filter === "sessions"
-                      ? "You have no upcoming mentorship sessions"
-                      : "You have no upcoming interviews or sessions"
+                searchQuery
+                  ? "Try adjusting your search query"
+                  : dateRange !== "all"
+                    ? dateRange === "past"
+                      ? "Try adjusting your filters"
+                      : dateRange === "needs-review"
+                        ? "No completed sessions need review. All sessions have been reviewed!"
+                        : "Try adjusting your filters"
+                    : filter === "interviews"
+                      ? "You have no upcoming interviews"
+                      : filter === "sessions"
+                        ? "You have no upcoming mentorship sessions"
+                        : "You have no upcoming interviews or sessions"
               }
             />
           ) : (
@@ -607,6 +687,15 @@ function TalentUpcoming() {
         onClose={() => setReviewModalOpen(false)}
         onConfirm={confirmLeaveReview}
         isLoading={isActionLoading}
+        accentColor={ROLE_COLORS.talent.dark}
+      />
+
+      {/* Success Modal */}
+      <SuccessModal
+        isOpen={successModalOpen}
+        onClose={() => setSuccessModalOpen(false)}
+        title={successModalConfig.title}
+        description={successModalConfig.description}
         accentColor={ROLE_COLORS.talent.dark}
       />
     </div>

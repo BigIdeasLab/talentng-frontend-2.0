@@ -38,70 +38,8 @@ interface OpportunitiesGridProps {
   onApplicationSubmitted?: (opportunityId: string) => void;
 }
 
-const defaultOpportunities: Opportunity[] = [
-  {
-    id: "1",
-    companyName: "Ifeoma Chijioke",
-    companyLogo:
-      "https://api.builder.io/api/v1/image/assets/TEMP/01cb677bd95bceffde4832706067054e07742b6d?width=80",
-    date: "Nov 16",
-    type: "internship",
-    title: "Art Director / Senior Art Director Intern",
-    skills: [
-      "Mobile App Design",
-      "User Research",
-      "Visual Design",
-      "Wireframing",
-    ],
-    rate: "$250 / Month",
-  },
-  {
-    id: "2",
-    companyName: "Spotify",
-    companyLogo:
-      "https://api.builder.io/api/v1/image/assets/TEMP/b0bfb6c564a4b6600d88fa72ebf8eaa9de3ecb0c?width=80",
-    date: "Dec 01",
-    type: "job_listing",
-    title: "Product Designer",
-    skills: ["Web Design", "User Testing", "Interaction Design", "Prototyping"],
-    rate: "$85/hr",
-  },
-  {
-    id: "3",
-    companyName: "Jumia",
-    companyLogo:
-      "https://api.builder.io/api/v1/image/assets/TEMP/a49ff6e7c4095ef84092ad9c082a315acb23b74f?width=80",
-    date: "Nov 16",
-    type: "internship",
-    title: "Mobile App Designer",
-    skills: [
-      "Mobile App Design",
-      "User Research",
-      "Visual Design",
-      "Wireframing",
-    ],
-    rate: "$250 / Month",
-  },
-  {
-    id: "4",
-    companyName: "Ifeoma Chijioke",
-    companyLogo:
-      "https://api.builder.io/api/v1/image/assets/TEMP/01cb677bd95bceffde4832706067054e07742b6d?width=80",
-    date: "Nov 16",
-    type: "internship",
-    title: "Art Director / Senior Art Director Intern",
-    skills: [
-      "Mobile App Design",
-      "User Research",
-      "Visual Design",
-      "Wireframing",
-    ],
-    rate: "$250 / Month",
-  },
-];
-
 export function OpportunitiesGrid({
-  opportunities = defaultOpportunities,
+  opportunities = [],
   isLoading = false,
   onRemove,
   onApply,

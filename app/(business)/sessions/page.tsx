@@ -26,6 +26,8 @@ import type {
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { SessionsSkeleton } from "@/components/mentor/sessions/SessionsSkeleton";
 import { useNotificationSocket } from "@/hooks/useNotificationSocket";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Calendar } from "lucide-react";
 
 interface SessionView {
   id: string;
@@ -72,7 +74,14 @@ function mapSession(session: any): SessionView {
 
   const menteeName =
     mentee.fullName || mentee.name || mentee.username || "Unknown";
-  const menteeAvatar = mentee.profileImageUrl || mentee.avatar || undefined;
+
+  // Filter out builder.io URLs and use local fallback
+  const rawMenteeAvatar = mentee.profileImageUrl || mentee.avatar || "";
+  const menteeAvatar =
+    rawMenteeAvatar && !rawMenteeAvatar.includes("builder.io")
+      ? rawMenteeAvatar
+      : undefined;
+
   const menteeHeadline = mentee.headline || mentor.headline || undefined;
 
   const duration =
@@ -431,20 +440,34 @@ export default function SessionsPage() {
             // Show previous data with loading indicator in search bar
             <div className="grid grid-cols-1 md:grid-cols-2 gap-[7px]">
               {filteredSessions.length === 0 ? (
-                <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
-                  <p className="font-inter-tight text-[14px] text-[#525866]">
-                    {searchQuery.trim()
-                      ? "Try adjusting your search query"
-                      : dateRange && dateRange !== "all"
-                        ? "Try adjusting your date range"
+                <div className="col-span-1 lg:col-span-2">
+                  <EmptyState
+                    icon={Calendar}
+                    title={
+                      searchQuery.trim() || (dateRange && dateRange !== "all")
+                        ? "No sessions match your search"
                         : activeTab === "completed"
                           ? "No completed sessions yet"
                           : activeTab === "cancelled"
                             ? "No cancelled sessions"
                             : activeTab === "upcoming"
                               ? "No upcoming sessions"
-                              : "No sessions found"}
-                  </p>
+                              : "No sessions match your search"
+                    }
+                    description={
+                      searchQuery.trim()
+                        ? "Try adjusting your search query"
+                        : dateRange && dateRange !== "all"
+                          ? "Try adjusting your date range"
+                          : activeTab === "completed"
+                            ? "Completed sessions will appear here"
+                            : activeTab === "cancelled"
+                              ? "Cancelled sessions will appear here"
+                              : activeTab === "upcoming"
+                                ? "Your upcoming sessions will appear here"
+                                : "Sessions will appear here"
+                    }
+                  />
                 </div>
               ) : (
                 filteredSessions.map((session) => (
@@ -462,20 +485,34 @@ export default function SessionsPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-[7px]">
               {filteredSessions.length === 0 ? (
-                <div className="rounded-xl border border-[#E1E4EA] bg-white px-6 py-12 text-center">
-                  <p className="font-inter-tight text-[14px] text-[#525866]">
-                    {searchQuery.trim()
-                      ? "Try adjusting your search query"
-                      : dateRange && dateRange !== "all"
-                        ? "Try adjusting your date range"
+                <div className="col-span-1 lg:col-span-2">
+                  <EmptyState
+                    icon={Calendar}
+                    title={
+                      searchQuery.trim() || (dateRange && dateRange !== "all")
+                        ? "No sessions match your search"
                         : activeTab === "completed"
                           ? "No completed sessions yet"
                           : activeTab === "cancelled"
                             ? "No cancelled sessions"
                             : activeTab === "upcoming"
                               ? "No upcoming sessions"
-                              : "No sessions found"}
-                  </p>
+                              : "No sessions match your search"
+                    }
+                    description={
+                      searchQuery.trim()
+                        ? "Try adjusting your search query"
+                        : dateRange && dateRange !== "all"
+                          ? "Try adjusting your date range"
+                          : activeTab === "completed"
+                            ? "Completed sessions will appear here"
+                            : activeTab === "cancelled"
+                              ? "Cancelled sessions will appear here"
+                              : activeTab === "upcoming"
+                                ? "Your upcoming sessions will appear here"
+                                : "Sessions will appear here"
+                    }
+                  />
                 </div>
               ) : (
                 filteredSessions.map((session) => (

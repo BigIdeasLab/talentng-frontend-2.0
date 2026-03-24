@@ -6,7 +6,7 @@ import { Bookmark, Check } from "lucide-react";
 import { ApplicationStatusBanner } from "./application-status-banner";
 import { ApplicationModal } from "./application-modal";
 import type { DisplayOpportunity } from "./types";
-import { TYPE_CONFIG } from "@/types/opportunities";
+import { TYPE_CONFIG } from "@/lib/types/opportunities";
 import {
   useSaveOpportunity,
   useUnsaveOpportunity,

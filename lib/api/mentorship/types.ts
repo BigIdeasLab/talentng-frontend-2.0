@@ -112,6 +112,7 @@ export interface MentorshipSession {
   status: SessionStatus;
   notes: string | null;
   message?: string | null;
+  hasReview?: boolean; // Indicates if the session has been reviewed by the mentee
   mentor: {
     id: string;
     name?: string;
@@ -203,6 +204,7 @@ export interface AvailabilitySlot {
 export interface SetAvailabilityInput {
   sessionDuration: number;
   bufferTime?: number;
+  minAdvanceBookingMinutes?: number;
   timezone?: string;
   defaultMeetingLink?: string;
   slots: AvailabilitySlot[];
@@ -212,6 +214,7 @@ export interface MentorAvailabilityResponse {
   mentorId?: string;
   sessionDuration: number;
   bufferTime?: number;
+  minAdvanceBookingMinutes?: number;
   timezone: string;
   defaultMeetingLink?: string | null;
   slots: AvailabilitySlot[];
