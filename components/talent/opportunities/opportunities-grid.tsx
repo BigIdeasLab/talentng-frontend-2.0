@@ -44,8 +44,8 @@ export function OpportunitiesGrid({
         </p>
       </div>
 
-      {/* Grid */}
-      <div className="flex-1 overflow-y-auto scrollbar-styled px-[25px] py-[16px]">
+      {/* Grid - overflow on desktop only, mobile relies on parent scroll */}
+      <div className="flex-1 md:overflow-y-auto scrollbar-styled px-[25px] py-[16px]">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px] pb-8">
           {opportunities.length > 0 ? (
             opportunities.map((opportunity) => (

@@ -166,22 +166,23 @@ export function OpportunityCard({
 
         {/* Footer Section */}
         <div className="flex flex-col items-start gap-2 w-full px-2.5 border-t border-[#E1E4EA] cursor-default">
-          <div className="flex items-center justify-between w-full py-2.5">
-            {isVolunteer ? (
-              /* Learn More Button for Volunteer */
-              <div className="flex items-center justify-end w-full h-8">
-                <button
-                  onClick={handleCardClick}
-                  className="flex items-center gap-2 px-4 py-2 h-8 border-[0.822px] rounded-[40px] hover:opacity-80 transition-colors"
-                  style={{ backgroundColor: primary, borderColor: primary }}
-                >
-                  <span className="text-[12px] font-medium font-inter-tight text-white text-center">
-                    Learn More
-                  </span>
-                </button>
-              </div>
-            ) : (
-              <>
+          {isVolunteer ? (
+            /* Learn More Button for Volunteer */
+            <div className="flex items-center justify-end w-full py-2.5">
+              <button
+                onClick={handleCardClick}
+                className="flex items-center gap-2 px-4 py-2 h-8 border-[0.822px] rounded-[40px] hover:opacity-80 transition-colors"
+                style={{ backgroundColor: primary, borderColor: primary }}
+              >
+                <span className="text-[12px] font-medium font-inter-tight text-white text-center">
+                  Learn More
+                </span>
+              </button>
+            </div>
+          ) : (
+            <>
+              {/* Desktop: Budget and Actions side by side */}
+              <div className="hidden md:flex items-center justify-between w-full py-2.5">
                 {/* Budget */}
                 <div className="flex items-center gap-1.5 flex-wrap">
                   <span className="text-[15px] font-medium font-inter-tight text-black">
@@ -262,9 +263,93 @@ export function OpportunityCard({
                     </span>
                   </button>
                 </div>
-              </>
-            )}
-          </div>
+              </div>
+
+              {/* Mobile: Budget on top, Actions below */}
+              <div className="flex md:hidden flex-col gap-2 w-full py-2.5">
+                {/* Budget */}
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-[15px] font-medium font-inter-tight text-black">
+                    {opportunity.priceMode === "fixed" ||
+                    (!!opportunity.price && !opportunity.minBudget) ? (
+                      <>₦{Number(opportunity.price || "0").toLocaleString()}</>
+                    ) : (
+                      <>
+                        ₦{Number(opportunity.minBudget || "0").toLocaleString()}{" "}
+                        - ₦
+                        {Number(opportunity.maxBudget || "0").toLocaleString()}
+                      </>
+                    )}
+                    {opportunity.paymentType && (
+                      <span>
+                        /
+                        {opportunity.paymentType === "hourly"
+                          ? "hr"
+                          : opportunity.paymentType === "weekly"
+                            ? "wk"
+                            : "mo"}
+                      </span>
+                    )}
+                  </span>
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center justify-end gap-2">
+                  {/* Save Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleToggleSave();
+                    }}
+                    disabled={isSavingLoading}
+                    className={`flex items-center gap-2 px-4 py-2 h-8 rounded-[40px] transition-colors ${
+                      isSaved
+                        ? "hover:opacity-80"
+                        : "bg-[#181B25] hover:bg-[#2a2d39]"
+                    } ${isSavingLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+                    style={isSaved ? { backgroundColor: primary } : undefined}
+                  >
+                    <Bookmark
+                      className={`w-4 h-4 ${isSaved ? "fill-white" : ""} text-white`}
+                    />
+                    <span className="text-[12px] font-medium font-inter-tight text-white text-center">
+                      {isSaved ? "Saved" : "Save"}
+                    </span>
+                  </button>
+
+                  {/* Apply Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!isApplied) setShowApplicationModal(true);
+                    }}
+                    disabled={isApplied}
+                    className={`flex items-center gap-2 px-4 py-2 h-8 border-[0.822px] rounded-[40px] transition-colors ${
+                      isApplied
+                        ? "bg-gray-200 border-gray-200 cursor-not-allowed"
+                        : "hover:opacity-80"
+                    }`}
+                    style={
+                      !isApplied
+                        ? { backgroundColor: primary, borderColor: primary }
+                        : undefined
+                    }
+                  >
+                    <Check
+                      className={`w-4 h-4 ${isApplied ? "text-gray-600" : "text-white"}`}
+                    />
+                    <span
+                      className={`text-[12px] font-medium font-inter-tight text-center ${
+                        isApplied ? "text-gray-600" : "text-white"
+                      }`}
+                    >
+                      {isApplied ? "Applied" : "Apply"}
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
 

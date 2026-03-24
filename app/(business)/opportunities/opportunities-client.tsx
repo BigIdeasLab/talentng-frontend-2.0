@@ -1,8 +1,11 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import { SlidersHorizontal } from "lucide-react";
 import { TalentOpportunitiesHeader } from "@/components/talent/opportunities/header";
 import { OpportunitiesGrid } from "@/components/talent/opportunities/opportunities-grid";
+import { FilterTabs } from "@/components/talent/opportunities/filter-tabs";
+import { SearchInput } from "@/components/ui/search-input";
 import {
   OpportunitiesFilterModal,
   type OpportunitiesFilterState,
@@ -17,6 +20,7 @@ import { getOpportunitiesData } from "./server-data";
 import { useProfile } from "@/hooks";
 import { RoleColorProvider } from "@/lib/theme/RoleColorContext";
 import { ErrorState } from "@/components/ui/error-state";
+import { MobileProgressiveHeader, type MobileProgressiveHeaderRef } from "@/components/talent/opportunities/MobileProgressiveHeader";
 
 interface OpportunitiesClientProps {
   initialOpportunities: OpportunityData[];
@@ -56,6 +60,7 @@ export function OpportunitiesClient({
   const [error, setError] = useState<string | null>(initialError);
   const isInitialLoadRef = useRef(true);
   const fetchIdRef = useRef(0);
+  const mobileScrollRef = useRef<MobileProgressiveHeaderRef>(null);
 
   useEffect(() => {
     // Wait for role to be resolved and only fetch for talent/mentor
@@ -181,11 +186,15 @@ export function OpportunitiesClient({
 
   const handleNextPage = () => {
     fetchOpportunitiesWithFilters(offset + LIMIT);
+    // Scroll to top on mobile
+    mobileScrollRef.current?.scrollToTop();
   };
 
   const handlePreviousPage = () => {
     if (offset > 0) {
       fetchOpportunitiesWithFilters(offset - LIMIT);
+      // Scroll to top on mobile
+      mobileScrollRef.current?.scrollToTop();
     }
   };
 
@@ -225,8 +234,8 @@ export function OpportunitiesClient({
   return (
     <RoleColorProvider role={activeRole}>
       <div className="h-screen overflow-x-hidden bg-white flex flex-col">
-        {/* Header */}
-        <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+        {/* Desktop: Static header */}
+        <div className="hidden md:block w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
           <TalentOpportunitiesHeader
             searchQuery={searchQuery}
             onSearchChange={handleSearch}
@@ -256,8 +265,134 @@ export function OpportunitiesClient({
           />
         </div>
 
-        {/* Grid Container */}
-        <div className="flex-1 overflow-hidden">
+        {/* Mobile: Progressive header with scroll behavior */}
+        <div className="md:hidden flex-1 flex flex-col overflow-hidden">
+          <MobileProgressiveHeader
+            ref={mobileScrollRef}
+            header={
+              <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA]">
+                {/* Title */}
+                <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px] mb-[19px]">
+                  Opportunities
+                </h1>
+
+                {/* Search Bar and Filter */}
+                <div className="flex items-center gap-[8px]">
+                  <div className="flex-1">
+                    <SearchInput
+                      value={searchQuery}
+                      onChange={handleSearch}
+                      onSearch={handleSearch}
+                      placeholder="Search opportunities, skills..."
+                      isLoading={isLoading}
+                      debounceDelay={400}
+                    />
+                  </div>
+                  <div className="relative flex-shrink-0">
+                    <button
+                      onClick={() => setIsFilterOpen(true)}
+                      className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] transition-colors ${
+                        getFilterCount() > 0
+                          ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
+                          : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
+                      }`}
+                    >
+                      <SlidersHorizontal className="w-[15px] h-[15px]" />
+                      <span className="text-[13px] font-normal font-inter-tight">
+                        Filter
+                      </span>
+                      {getFilterCount() > 0 && (
+                        <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                          {getFilterCount()}
+                        </span>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+            tabs={
+              <div className="w-full px-[25px] py-[12px]">
+                <FilterTabs 
+                  activeFilter={activeFilter} 
+                  onFilterChange={handleFilterChange} 
+                />
+              </div>
+            }
+          >
+            {isLoading && <OpportunitiesGridSkeleton />}
+            {error && !isLoading && (
+              <div className="flex items-center justify-center py-8">
+                <ErrorState
+                  title="Error loading opportunities"
+                  message={error}
+                  onRetry={() => window.location.reload()}
+                />
+              </div>
+            )}
+            {!isLoading && !error && (
+              <OpportunitiesGrid
+                opportunities={opportunities as DisplayOpportunity[]}
+                onApplicationSubmitted={handleApplicationSubmitted}
+                onNextPage={handleNextPage}
+                onPreviousPage={handlePreviousPage}
+                hasNextPage={pagination?.hasNextPage || false}
+                hasPreviousPage={pagination?.hasPreviousPage || false}
+                currentPage={pagination?.currentPage || 1}
+                totalPages={pagination?.totalPages || 1}
+                totalOpportunities={pagination?.total}
+                emptyTitle={
+                  searchQuery.trim()
+                    ? "No opportunities match your search"
+                    : appliedFilters &&
+                        (appliedFilters.skills?.length > 0 ||
+                          (appliedFilters.categories?.length ?? 0) > 0 ||
+                          (appliedFilters.experienceLevels?.length ?? 0) > 0 ||
+                          appliedFilters.location ||
+                          (appliedFilters.minBudget &&
+                            appliedFilters.minBudget > 0) ||
+                          (appliedFilters.maxBudget &&
+                            appliedFilters.maxBudget > 0))
+                      ? "No opportunities match your filters"
+                      : activeFilter === "applied"
+                        ? "No applied opportunities yet"
+                        : "No opportunities yet"
+                }
+                emptyDescription={
+                  searchQuery.trim()
+                    ? "Try adjusting your search query"
+                    : appliedFilters &&
+                        (appliedFilters.skills?.length > 0 ||
+                          (appliedFilters.categories?.length ?? 0) > 0 ||
+                          (appliedFilters.experienceLevels?.length ?? 0) > 0 ||
+                          appliedFilters.location ||
+                          (appliedFilters.minBudget &&
+                            appliedFilters.minBudget > 0) ||
+                          (appliedFilters.maxBudget &&
+                            appliedFilters.maxBudget > 0))
+                      ? "Try adjusting your filters"
+                      : activeFilter === "applied"
+                        ? "Opportunities you apply to will appear here"
+                        : "Available opportunities will appear here"
+                }
+              />
+            )}
+          </MobileProgressiveHeader>
+          <OpportunitiesFilterModal
+            isOpen={isFilterOpen}
+            onClose={() => setIsFilterOpen(false)}
+            onApply={(filters) => {
+              setAppliedFilters(filters);
+              setIsFilterOpen(false);
+              fetchOpportunitiesWithFilters(0, undefined, undefined, filters);
+            }}
+            availableSkills={[]}
+            initialFilters={appliedFilters || undefined}
+          />
+        </div>
+
+        {/* Desktop: Grid Container */}
+        <div className="hidden md:block flex-1 overflow-hidden">
           {isLoading && <OpportunitiesGridSkeleton />}
           {error && !isLoading && (
             <div className="flex-1 flex items-center justify-center">
