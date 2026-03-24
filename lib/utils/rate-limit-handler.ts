@@ -13,7 +13,7 @@ export interface RateLimitInfo {
 
 /**
  * Parse rate limiting error and extract useful information
- * Based on actual backend rate limiting configuration from API_RATE_LIMITS.md
+ * Based on actual backend rate limiting configuration from docs/API_RATE_LIMITS.md
  */
 export function parseRateLimitError(error: any): RateLimitInfo {
   const status = error.status || error.response?.status;
