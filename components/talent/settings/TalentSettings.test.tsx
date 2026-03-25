@@ -103,7 +103,9 @@ describe("TalentSettings - Responsive Design", () => {
   it("applies responsive classes to account action buttons", async () => {
     renderWithQueryClient(<TalentSettings />);
 
-    const changeButton = await screen.findByRole("link", { name: /change/i });
+    const changeButton = await screen.findByRole("button", {
+      name: /change password/i,
+    });
     const signOutButton = screen.getByRole("button", { name: /sign out/i });
     const deleteButton = screen.getByRole("button", { name: /delete/i });
 

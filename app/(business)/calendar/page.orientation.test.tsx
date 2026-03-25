@@ -192,7 +192,7 @@ describe("Calendar Page - Orientation Tests", () => {
     });
 
     // Check that date range filters are present
-    expect(screen.getByText("All Time")).toBeInTheDocument();
+    expect(screen.getByText("Upcoming")).toBeInTheDocument();
     expect(screen.getByText("Today")).toBeInTheDocument();
     expect(screen.getByText("This Week")).toBeInTheDocument();
     expect(screen.getByText("This Month")).toBeInTheDocument();
