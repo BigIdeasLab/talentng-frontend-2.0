@@ -87,7 +87,9 @@ describe("ApplicantsTable", () => {
       />,
     );
 
-    expect(screen.getByText("No applicants match your search")).toBeInTheDocument();
+    expect(
+      screen.getByText("No applicants match your search"),
+    ).toBeInTheDocument();
   });
 
   it("renders applicants data", () => {
@@ -127,7 +129,9 @@ describe("ApplicantsTable", () => {
       />,
     );
 
-    expect(screen.getByText("No applicants match your search")).toBeInTheDocument();
+    expect(
+      screen.getByText("No applicants match your search"),
+    ).toBeInTheDocument();
   });
 
   it("sorts applicants by newest", () => {
@@ -185,7 +189,9 @@ describe("ApplicantsTable", () => {
       />,
     );
 
-    expect(screen.getByText("No applicants match your search")).toBeInTheDocument();
+    expect(
+      screen.getByText("No applicants match your search"),
+    ).toBeInTheDocument();
   });
 
   it("applies location filter", () => {
@@ -203,7 +209,9 @@ describe("ApplicantsTable", () => {
       />,
     );
 
-    expect(screen.getByText("No applicants match your search")).toBeInTheDocument();
+    expect(
+      screen.getByText("No applicants match your search"),
+    ).toBeInTheDocument();
   });
 
   it("displays opportunity title in columns", () => {
