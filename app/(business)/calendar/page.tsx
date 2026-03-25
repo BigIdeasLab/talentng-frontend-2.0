@@ -623,7 +623,12 @@ function TalentUpcoming() {
               </div>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setCurrentPage(currentPage - 1)}
+                  onClick={() => {
+                    setCurrentPage(currentPage - 1);
+                    if (window.innerWidth < 768) {
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }
+                  }}
                   disabled={!pagination.hasPreviousPage}
                   className="min-h-[44px] px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
                 >
@@ -633,7 +638,12 @@ function TalentUpcoming() {
                   Page {pagination.currentPage} of {pagination.totalPages}
                 </span>
                 <button
-                  onClick={() => setCurrentPage(currentPage + 1)}
+                  onClick={() => {
+                    setCurrentPage(currentPage + 1);
+                    if (window.innerWidth < 768) {
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }
+                  }}
                   disabled={!pagination.hasNextPage}
                   className="min-h-[44px] px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
                 >

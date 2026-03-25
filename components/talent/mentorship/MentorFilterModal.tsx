@@ -193,18 +193,35 @@ export function MentorFilterModal({
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 z-40 bg-black/5"
+        className="fixed inset-0 z-40 bg-black/20 md:bg-black/5"
         onClick={handleApplyFilter}
       />
 
       {/* Modal Content */}
       <div
-        className="absolute top-full right-0 z-50 mt-2 w-[245px]"
+        className={`
+          fixed z-50 bg-white
+          md:absolute md:top-full md:right-0 md:mt-2 md:w-[245px] md:rounded-[12px] md:shadow-[0_0_15px_0_rgba(0,0,0,0.15)]
+          top-16 left-0 right-0 bottom-0 md:top-auto md:left-auto md:right-0 md:bottom-auto
+        `}
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex flex-col gap-[12px] rounded-[12px] bg-white shadow-[0_0_15px_0_rgba(0,0,0,0.15)] p-[12px_8px] max-h-[90vh]">
-          <div className="flex flex-col gap-[12px] overflow-y-auto max-h-[420px] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        {/* Mobile Header */}
+        <div className="md:hidden flex items-center justify-between p-4 border-b border-[#E1E4EA] bg-white sticky top-0 z-10">
+          <h2 className="text-lg font-semibold text-black font-inter-tight">
+            Filter Mentors
+          </h2>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <X className="w-5 h-5 text-gray-600" />
+          </button>
+        </div>
+
+        <div className="flex flex-col gap-[12px] p-4 md:p-[12px_8px] max-h-[calc(100vh-8rem)] md:max-h-[90vh] overflow-y-auto">
+          <div className="flex flex-col gap-[12px] md:gap-[12px] md:overflow-y-auto md:max-h-[70vh] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {/* Headlines Dropdown */}
             <div className="flex flex-col gap-[8px] w-full" ref={headlineRef}>
               <div className="flex justify-between items-center">
@@ -550,8 +567,29 @@ export function MentorFilterModal({
               )}
             </div>
           </div>
-          {/* Action Buttons */}
-          <div className="flex items-center gap-[4px]">
+
+          {/* Mobile Footer - Sticky at bottom */}
+          <div className="md:hidden sticky bottom-0 left-0 right-0 bg-white border-t border-[#E1E4EA] p-4 flex gap-3">
+            <button
+              onClick={handleClearFilter}
+              className="flex-1 flex items-center justify-center px-4 py-3 rounded-[8px] border border-[#E1E4EA] bg-white hover:bg-gray-50 transition-colors"
+            >
+              <span className="text-sm font-medium text-black font-inter-tight">
+                Clear All
+              </span>
+            </button>
+            <button
+              onClick={handleApplyFilter}
+              className="flex-1 flex items-center justify-center px-4 py-3 rounded-[8px] bg-[#8463FF] border border-[#8463FF] hover:opacity-90 transition-opacity"
+            >
+              <span className="text-sm font-medium text-white font-inter-tight">
+                Apply Filters
+              </span>
+            </button>
+          </div>
+
+          {/* Desktop Buttons - Hidden on mobile */}
+          <div className="hidden md:flex items-center gap-[4px]">
             <button
               onClick={handleClearFilter}
               className="flex-1 flex items-center justify-center px-4 py-[13px] border border-[#E1E4EA] rounded-[8px] bg-white"

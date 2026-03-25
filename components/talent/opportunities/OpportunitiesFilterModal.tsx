@@ -278,7 +278,7 @@ export function OpportunitiesFilterModal({
           </button>
         </div>
 
-        <div className="flex flex-col gap-[12px] p-[12px_8px] md:p-[12px_8px] max-h-[calc(100vh-8rem)] md:max-h-[90vh] overflow-y-auto">
+        <div className="flex flex-col gap-[12px] p-4 md:p-[12px_8px] max-h-[calc(100vh-8rem)] md:max-h-[90vh] overflow-y-auto">
           <div className="flex flex-col gap-[12px] md:gap-[12px] md:overflow-y-auto md:max-h-[70vh] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {/* Category Dropdown */}
             <div className="flex flex-col gap-[8px] w-full" ref={categoryRef}>

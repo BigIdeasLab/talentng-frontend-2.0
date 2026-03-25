@@ -359,7 +359,7 @@ export function TalentProfile({
                 companyName:
                   opp.postedBy?.recruiterProfile?.company || opp.company,
                 companyLogo:
-                  opp.postedBy?.recruiterProfile?.profileImageUrl || opp.logo,
+                  opp.logo || opp.postedBy?.recruiterProfile?.profileImageUrl,
                 date: new Date(opp.createdAt).toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",

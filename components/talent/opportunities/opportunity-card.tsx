@@ -47,7 +47,15 @@ export function OpportunityCard({
   const isVolunteer = opportunity.type === "Volunteer";
 
   const handleCardClick = () => {
-    router.push(`/opportunities/${opportunity.id}`);
+    const params = new URLSearchParams();
+    if (opportunity.appliedAs?.length) {
+      params.set("appliedAs", opportunity.appliedAs.join(","));
+    }
+    if (opportunity.saved) {
+      params.set("saved", "1");
+    }
+    const qs = params.toString();
+    router.push(`/opportunities/${opportunity.id}${qs ? `?${qs}` : ""}`);
   };
 
   // Sync isApplied and isSaved when opportunity prop changes or role changes
@@ -85,7 +93,15 @@ export function OpportunityCard({
           {/* Header Section */}
           <div className="flex items-center justify-between w-full">
             {/* Profile */}
-            <div className="flex items-center gap-2">
+            <div
+              className="flex items-center gap-2 hover:opacity-70 transition-opacity"
+              onClick={(e) => {
+                if (opportunity.postedById) {
+                  e.stopPropagation();
+                  router.push(`/recruiter/${opportunity.postedById}`);
+                }
+              }}
+            >
               {opportunity.companyLogo ? (
                 <div
                   className="w-8 h-8 rounded-full bg-cover bg-center flex-shrink-0 border border-black/5"

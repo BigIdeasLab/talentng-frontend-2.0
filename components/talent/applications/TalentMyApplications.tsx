@@ -159,9 +159,18 @@ export function TalentMyApplications() {
       if (currentFetchId !== fetchIdRef.current) return;
 
       const data = Array.isArray(response) ? response : response?.data || [];
-      const paginationData = Array.isArray(response)
-        ? null
-        : response?.meta || null;
+      const meta = Array.isArray(response) ? null : response?.meta || null;
+      
+      // Transform meta to match pagination format expected by UI
+      const paginationData = meta ? {
+        total: meta.total,
+        limit: meta.limit,
+        offset: (meta.page - 1) * meta.limit,
+        currentPage: meta.page,
+        totalPages: meta.totalPages,
+        hasNextPage: meta.page < meta.totalPages,
+        hasPreviousPage: meta.page > 1,
+      } : null;
 
       setMentorshipRequests(data);
       setDisplayedMentorshipRequests(data);
@@ -205,54 +214,270 @@ export function TalentMyApplications() {
     activeTab === "jobs" ? jobStatusFilter : mentorshipStatusFilter;
   const setStatusFilter =
     activeTab === "jobs" ? setJobStatusFilter : setMentorshipStatusFilter;
-  const currentPagination =
-    activeTab === "jobs" ? jobPagination : mentorshipPagination;
+  
+  // Get base pagination or create fallback when items exist but no pagination data
+  const basePagination = activeTab === "jobs" ? jobPagination : mentorshipPagination;
+  const itemsExist = activeTab === "jobs" 
+    ? filteredJobApplications.length > 0 
+    : filteredMentorshipRequests.length > 0;
+  
+  // Always show pagination if items exist, even if API doesn't return pagination data
+  const currentPagination = basePagination || (itemsExist ? {
+    total: activeTab === "jobs" ? filteredJobApplications.length : filteredMentorshipRequests.length,
+    limit: 20,
+    offset: 0,
+    currentPage: 1,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPreviousPage: false,
+  } : null);
+  
   const currentPage =
     activeTab === "jobs" ? jobCurrentPage : mentorshipCurrentPage;
   const setCurrentPage =
     activeTab === "jobs" ? setJobCurrentPage : setMentorshipCurrentPage;
 
   return (
-    <div className="h-screen overflow-x-hidden bg-white flex flex-col">
-      {/* Header */}
-      <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
-        <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px] mb-[19px]">
-          My Applications
-        </h1>
+    <>
+      {/* Desktop Layout */}
+      <div className="hidden md:flex h-screen overflow-x-hidden bg-white flex-col">
+        {/* Header */}
+        <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+          <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px] mb-[19px]">
+            My Applications
+          </h1>
 
-        {/* Top Tab Switch */}
-        <div className="flex items-center gap-2 mb-[19px]">
-          <button
-            onClick={() => setActiveTab("jobs")}
-            className={`flex items-center gap-2 px-4 py-2 h-10 rounded-[8px] transition-all active:scale-95 ${
-              activeTab === "jobs"
-                ? "bg-[#5C30FF] text-white font-medium active:bg-[#4a24d6]"
-                : "text-[#525866] font-normal hover:text-black hover:bg-gray-50 active:bg-gray-100"
-            }`}
-          >
-            <Briefcase className="w-4 h-4" />
-            <span className="text-[13px] font-inter-tight">
-              Job Applications
-            </span>
-          </button>
-          <button
-            onClick={() => setActiveTab("mentorship")}
-            className={`flex items-center gap-2 px-4 py-2 h-10 rounded-[8px] transition-all active:scale-95 ${
-              activeTab === "mentorship"
-                ? "bg-[#5C30FF] text-white font-medium active:bg-[#4a24d6]"
-                : "text-[#525866] font-normal hover:text-black hover:bg-gray-50 active:bg-gray-100"
-            }`}
-          >
-            <Users className="w-4 h-4" />
-            <span className="text-[13px] font-inter-tight">
-              Mentorship Requests
-            </span>
-          </button>
+          {/* Top Tab Switch */}
+          <div className="flex items-center gap-2 mb-[19px]">
+            <button
+              onClick={() => setActiveTab("jobs")}
+              className={`flex items-center gap-2 px-4 py-2 h-10 rounded-[8px] transition-all active:scale-95 ${
+                activeTab === "jobs"
+                  ? "bg-[#5C30FF] text-white font-medium active:bg-[#4a24d6]"
+                  : "text-[#525866] font-normal hover:text-black hover:bg-gray-50 active:bg-gray-100"
+              }`}
+            >
+              <Briefcase className="w-4 h-4" />
+              <span className="text-[13px] font-inter-tight">
+                Job Applications
+              </span>
+            </button>
+            <button
+              onClick={() => setActiveTab("mentorship")}
+              className={`flex items-center gap-2 px-4 py-2 h-10 rounded-[8px] transition-all active:scale-95 ${
+                activeTab === "mentorship"
+                  ? "bg-[#5C30FF] text-white font-medium active:bg-[#4a24d6]"
+                  : "text-[#525866] font-normal hover:text-black hover:bg-gray-50 active:bg-gray-100"
+              }`}
+            >
+              <Users className="w-4 h-4" />
+              <span className="text-[13px] font-inter-tight">
+                Mentorship Requests
+              </span>
+            </button>
+          </div>
+
+          {/* Search Bar and Date Range Filters */}
+          <div className="flex flex-col md:flex-row md:items-center gap-[8px] mb-[19px]">
+            <div className="flex-1 md:max-w-[585px]">
+              <SearchInput
+                value={searchQuery}
+                onChange={setSearchQuery}
+                onSearch={setSearchQuery}
+                placeholder={`Search ${activeTab === "jobs" ? "jobs" : "mentorship requests"}...`}
+                debounceDelay={500}
+              />
+            </div>
+
+            {/* Date Range Filter Buttons */}
+            <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hide pb-1">
+              {[
+                { value: "all", label: "All Time" },
+                { value: "today", label: "Today" },
+                { value: "week", label: "This Week" },
+                { value: "month", label: "This Month" },
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => {
+                    setAppliedFilters({ dateRange: option.value });
+                  }}
+                  className={`h-[44px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors text-[13px] font-normal font-inter-tight border ${
+                    appliedFilters?.dateRange === option.value
+                      ? "bg-[#8463FF0D] border-[#8463FF] text-[#8463FF]"
+                      : "bg-[#F5F5F5] hover:bg-gray-100 text-black border-transparent"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Status Filter Tabs */}
+          <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
+            {statusTabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setStatusFilter(tab.id)}
+                className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors ${
+                  currentStatusFilter === tab.id
+                    ? "text-black font-medium border-b-2 border-black"
+                    : "text-black/30 font-medium hover:text-black/50"
+                }`}
+              >
+                <span className="text-[13px] font-inter-tight">
+                  {tab.label}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Search Bar and Date Range Filters */}
-        <div className="flex items-center gap-[8px] mb-[19px]">
-          <div className="flex-1 max-w-[585px]">
+        {/* Content */}
+        <div className="flex-1 overflow-hidden flex flex-col">
+          <div className="flex-1 overflow-y-auto p-4 md:p-6">
+            {isLoading ? (
+              <MyApplicationsSkeleton type={activeTab} />
+            ) : activeTab === "jobs" ? (
+              filteredJobApplications.length === 0 ? (
+                <EmptyState
+                  icon={Briefcase}
+                  title={
+                    searchQuery
+                      ? "No applications match your search"
+                      : jobStatusFilter !== "all" ||
+                          appliedFilters.dateRange !== "all"
+                        ? "No applications match your filters"
+                        : "No job applications yet"
+                  }
+                  description={
+                    searchQuery
+                      ? "Try adjusting your search query"
+                      : jobStatusFilter !== "all" ||
+                          appliedFilters.dateRange !== "all"
+                        ? "Try adjusting your filters"
+                        : "Start applying to jobs to see your applications here"
+                  }
+                />
+              ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
+                  {filteredJobApplications.map((application) => (
+                    <JobApplicationCard
+                      key={application.id}
+                      application={application}
+                    />
+                  ))}
+                </div>
+              )
+            ) : filteredMentorshipRequests.length === 0 ? (
+              <EmptyState
+                icon={Users}
+                title={
+                  searchQuery
+                    ? "No requests match your search"
+                    : mentorshipStatusFilter !== "all" ||
+                        appliedFilters.dateRange !== "all"
+                      ? "No requests match your filters"
+                      : "No mentorship requests yet"
+                }
+                description={
+                  searchQuery
+                    ? "Try adjusting your search query"
+                    : mentorshipStatusFilter !== "all" ||
+                        appliedFilters.dateRange !== "all"
+                      ? "Try adjusting your filters"
+                      : "Find mentors and send request to see them here"
+                }
+              />
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
+                {filteredMentorshipRequests.map((request) => (
+                  <MentorshipRequestCard key={request.id} request={request} />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Pagination - Fixed at bottom */}
+          {!isLoading && currentPagination && (
+            <div className="flex-shrink-0 px-4 md:px-6 py-4 border-t border-[#E1E4EA] bg-white">
+              <div className="flex items-center justify-between">
+                <div className="text-[13px] text-[#525866] font-inter-tight">
+                  Showing {currentPagination.offset + 1} to{" "}
+                  {Math.min(
+                    currentPagination.offset + currentPagination.limit,
+                    currentPagination.total,
+                  )}{" "}
+                  of {currentPagination.total}{" "}
+                  {activeTab === "jobs" ? "applications" : "requests"}
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    disabled={!currentPagination.hasPreviousPage}
+                    className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all"
+                  >
+                    Previous
+                  </button>
+                  <span className="text-[13px] text-[#525866] font-inter-tight">
+                    Page {currentPagination.currentPage} of{" "}
+                    {currentPagination.totalPages}
+                  </span>
+                  <button
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    disabled={!currentPagination.hasNextPage}
+                    className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile Layout with Progressive Header */}
+      <div className="md:hidden h-screen overflow-y-auto bg-white">
+        {/* Title and Tab Switch - Scrolls with content */}
+        <div className="w-full px-4 pt-[19px] pb-4">
+          <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px] mb-4">
+            My Applications
+          </h1>
+
+          {/* Top Tab Switch */}
+          <div className="flex items-center gap-2 mb-4">
+            <button
+              onClick={() => setActiveTab("jobs")}
+              className={`flex items-center gap-2 px-4 py-2 h-10 rounded-[8px] transition-all active:scale-95 ${
+                activeTab === "jobs"
+                  ? "bg-[#5C30FF] text-white font-medium active:bg-[#4a24d6]"
+                  : "text-[#525866] font-normal hover:text-black hover:bg-gray-50 active:bg-gray-100"
+              }`}
+            >
+              <Briefcase className="w-4 h-4" />
+              <span className="text-[13px] font-inter-tight">
+                Job Applications
+              </span>
+            </button>
+            <button
+              onClick={() => setActiveTab("mentorship")}
+              className={`flex items-center gap-2 px-4 py-2 h-10 rounded-[8px] transition-all active:scale-95 ${
+                activeTab === "mentorship"
+                  ? "bg-[#5C30FF] text-white font-medium active:bg-[#4a24d6]"
+                  : "text-[#525866] font-normal hover:text-black hover:bg-gray-50 active:bg-gray-100"
+              }`}
+            >
+              <Users className="w-4 h-4" />
+              <span className="text-[13px] font-inter-tight">
+                Mentorship Requests
+              </span>
+            </button>
+          </div>
+
+          {/* Search Bar */}
+          <div className="mb-4">
             <SearchInput
               value={searchQuery}
               onChange={setSearchQuery}
@@ -263,7 +488,7 @@ export function TalentMyApplications() {
           </div>
 
           {/* Date Range Filter Buttons */}
-          <div className="flex items-center gap-[6px]">
+          <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hide pb-1">
             {[
               { value: "all", label: "All Time" },
               { value: "today", label: "Today" },
@@ -287,27 +512,29 @@ export function TalentMyApplications() {
           </div>
         </div>
 
-        {/* Status Filter Tabs */}
-        <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
-          {statusTabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setStatusFilter(tab.id)}
-              className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors ${
-                currentStatusFilter === tab.id
-                  ? "text-black font-medium border-b-2 border-black"
-                  : "text-black/30 font-medium hover:text-black/50"
-              }`}
-            >
-              <span className="text-[13px] font-inter-tight">{tab.label}</span>
-            </button>
-          ))}
+        {/* Status Filter Tabs - Sticky */}
+        <div className="sticky top-0 z-10 bg-white border-b border-[#E1E4EA] px-4 py-2">
+          <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
+            {statusTabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setStatusFilter(tab.id)}
+                className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors ${
+                  currentStatusFilter === tab.id
+                    ? "text-black font-medium border-b-2 border-black"
+                    : "text-black/30 font-medium hover:text-black/50"
+                }`}
+              >
+                <span className="text-[13px] font-inter-tight">
+                  {tab.label}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-hidden flex flex-col">
-        <div className="flex-1 overflow-y-auto p-4 md:p-6">
+        {/* Content */}
+        <div className="p-4">
           {isLoading ? (
             <MyApplicationsSkeleton type={activeTab} />
           ) : activeTab === "jobs" ? (
@@ -332,7 +559,7 @@ export function TalentMyApplications() {
                 }
               />
             ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
+              <div className="grid grid-cols-1 gap-[7px]">
                 {filteredJobApplications.map((application) => (
                   <JobApplicationCard
                     key={application.id}
@@ -362,7 +589,7 @@ export function TalentMyApplications() {
               }
             />
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-[7px]">
+            <div className="grid grid-cols-1 gap-[7px]">
               {filteredMentorshipRequests.map((request) => (
                 <MentorshipRequestCard key={request.id} request={request} />
               ))}
@@ -370,11 +597,11 @@ export function TalentMyApplications() {
           )}
         </div>
 
-        {/* Pagination - Fixed at bottom */}
-        {!isLoading && currentPagination && currentPagination.total > 0 && (
-          <div className="flex-shrink-0 px-4 md:px-6 py-4 border-t border-[#E1E4EA] bg-white">
-            <div className="flex items-center justify-between">
-              <div className="text-[13px] text-[#525866] font-inter-tight">
+        {/* Pagination - Mobile */}
+        {!isLoading && currentPagination && (
+          <div className="px-4 py-4 border-t border-[#E1E4EA] bg-white">
+            <div className="flex flex-col gap-3">
+              <div className="text-[13px] text-[#525866] font-inter-tight text-center">
                 Showing {currentPagination.offset + 1} to{" "}
                 {Math.min(
                   currentPagination.offset + currentPagination.limit,
@@ -383,9 +610,12 @@ export function TalentMyApplications() {
                 of {currentPagination.total}{" "}
                 {activeTab === "jobs" ? "applications" : "requests"}
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center gap-2">
                 <button
-                  onClick={() => setCurrentPage(currentPage - 1)}
+                  onClick={() => {
+                    setCurrentPage(currentPage - 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
                   disabled={!currentPagination.hasPreviousPage}
                   className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all"
                 >
@@ -396,7 +626,10 @@ export function TalentMyApplications() {
                   {currentPagination.totalPages}
                 </span>
                 <button
-                  onClick={() => setCurrentPage(currentPage + 1)}
+                  onClick={() => {
+                    setCurrentPage(currentPage + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
                   disabled={!currentPagination.hasNextPage}
                   className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all"
                 >
@@ -407,6 +640,6 @@ export function TalentMyApplications() {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }

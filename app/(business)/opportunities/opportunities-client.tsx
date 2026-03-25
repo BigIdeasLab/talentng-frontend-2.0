@@ -20,19 +20,16 @@ import { getOpportunitiesData } from "./server-data";
 import { useProfile } from "@/hooks";
 import { RoleColorProvider } from "@/lib/theme/RoleColorContext";
 import { ErrorState } from "@/components/ui/error-state";
-import { MobileProgressiveHeader, type MobileProgressiveHeaderRef } from "@/components/talent/opportunities/MobileProgressiveHeader";
+import {
+  MobileProgressiveHeader,
+  type MobileProgressiveHeaderRef,
+} from "@/components/talent/opportunities/MobileProgressiveHeader";
 
 interface OpportunitiesClientProps {
   initialOpportunities: OpportunityData[];
   initialError: string | null;
   initialPagination?: any;
 }
-
-const convertFilterTypesToAPI = (types: string[]): string[] => {
-  // The new consolidated enum values are already in the correct format (PascalCase)
-  // Just pass them through directly
-  return types;
-};
 
 export function OpportunitiesClient({
   initialOpportunities,
@@ -57,6 +54,7 @@ export function OpportunitiesClient({
     useState<OpportunityData[]>(initialOpportunities);
   const [pagination, setPagination] = useState(initialPagination);
   const [isLoading, setIsLoading] = useState(initialOpportunities.length === 0);
+  const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(initialError);
   const isInitialLoadRef = useRef(true);
   const fetchIdRef = useRef(0);
@@ -66,6 +64,13 @@ export function OpportunitiesClient({
     // Wait for role to be resolved and only fetch for talent/mentor
     if (isRoleLoading || !activeRole) return;
     if (!isTalentOrMentor) return;
+
+    // Skip fetch if we already have initial opportunities (e.g., navigating back)
+    if (initialOpportunities.length > 0 && isInitialLoadRef.current) {
+      isInitialLoadRef.current = false;
+      return;
+    }
+
     fetchOpportunitiesWithFilters(0);
   }, [activeRole, isRoleLoading]);
 
@@ -82,6 +87,7 @@ export function OpportunitiesClient({
       if (isInitialLoadRef.current) {
         setIsLoading(true);
       }
+      setIsFetching(true);
       setError(null);
 
       const query = overrideSearchQuery ?? searchQuery;
@@ -133,11 +139,15 @@ export function OpportunitiesClient({
         setOffset(pageOffset);
         isInitialLoadRef.current = false;
       } catch (err) {
+        if (currentFetchId !== fetchIdRef.current) return;
         setError(
           err instanceof Error ? err.message : "Failed to fetch opportunities",
         );
       } finally {
-        setIsLoading(false);
+        if (currentFetchId === fetchIdRef.current) {
+          setIsLoading(false);
+          setIsFetching(false);
+        }
       }
     },
     [searchQuery, activeFilter, appliedFilters, currentProfileType],
@@ -313,15 +323,17 @@ export function OpportunitiesClient({
             }
             tabs={
               <div className="w-full px-[25px] py-[12px]">
-                <FilterTabs 
-                  activeFilter={activeFilter} 
-                  onFilterChange={handleFilterChange} 
+                <FilterTabs
+                  activeFilter={activeFilter}
+                  onFilterChange={handleFilterChange}
                 />
               </div>
             }
           >
-            {isLoading && <OpportunitiesGridSkeleton />}
-            {error && !isLoading && (
+            {(isLoading || (isFetching && opportunities.length === 0)) && (
+              <OpportunitiesGridSkeleton />
+            )}
+            {error && !isLoading && !isFetching && (
               <div className="flex items-center justify-center py-8">
                 <ErrorState
                   title="Error loading opportunities"
@@ -330,7 +342,88 @@ export function OpportunitiesClient({
                 />
               </div>
             )}
-            {!isLoading && !error && (
+            {!isLoading &&
+              !error &&
+              !(isFetching && opportunities.length === 0) && (
+                <OpportunitiesGrid
+                  opportunities={opportunities as DisplayOpportunity[]}
+                  onApplicationSubmitted={handleApplicationSubmitted}
+                  onNextPage={handleNextPage}
+                  onPreviousPage={handlePreviousPage}
+                  hasNextPage={pagination?.hasNextPage || false}
+                  hasPreviousPage={pagination?.hasPreviousPage || false}
+                  currentPage={pagination?.currentPage || 1}
+                  totalPages={pagination?.totalPages || 1}
+                  totalOpportunities={pagination?.total}
+                  emptyTitle={
+                    searchQuery.trim()
+                      ? "No opportunities match your search"
+                      : appliedFilters &&
+                          (appliedFilters.skills?.length > 0 ||
+                            (appliedFilters.categories?.length ?? 0) > 0 ||
+                            (appliedFilters.experienceLevels?.length ?? 0) >
+                              0 ||
+                            appliedFilters.location ||
+                            (appliedFilters.minBudget &&
+                              appliedFilters.minBudget > 0) ||
+                            (appliedFilters.maxBudget &&
+                              appliedFilters.maxBudget > 0))
+                        ? "No opportunities match your filters"
+                        : activeFilter === "applied"
+                          ? "No applied opportunities yet"
+                          : "No opportunities yet"
+                  }
+                  emptyDescription={
+                    searchQuery.trim()
+                      ? "Try adjusting your search query"
+                      : appliedFilters &&
+                          (appliedFilters.skills?.length > 0 ||
+                            (appliedFilters.categories?.length ?? 0) > 0 ||
+                            (appliedFilters.experienceLevels?.length ?? 0) >
+                              0 ||
+                            appliedFilters.location ||
+                            (appliedFilters.minBudget &&
+                              appliedFilters.minBudget > 0) ||
+                            (appliedFilters.maxBudget &&
+                              appliedFilters.maxBudget > 0))
+                        ? "Try adjusting your filters"
+                        : activeFilter === "applied"
+                          ? "Opportunities you apply to will appear here"
+                          : "Available opportunities will appear here"
+                  }
+                />
+              )}
+          </MobileProgressiveHeader>
+          <OpportunitiesFilterModal
+            isOpen={isFilterOpen}
+            onClose={() => setIsFilterOpen(false)}
+            onApply={(filters) => {
+              setAppliedFilters(filters);
+              setIsFilterOpen(false);
+              fetchOpportunitiesWithFilters(0, undefined, undefined, filters);
+            }}
+            availableSkills={[]}
+            initialFilters={appliedFilters || undefined}
+          />
+        </div>
+
+        {/* Desktop: Grid Container */}
+        <div className="hidden md:block flex-1 overflow-hidden">
+          {(isLoading || (isFetching && opportunities.length === 0)) && (
+            <OpportunitiesGridSkeleton />
+          )}
+          {error && !isLoading && !isFetching && (
+            <div className="flex-1 flex items-center justify-center">
+              <ErrorState
+                title="Error loading opportunities"
+                message={error}
+                onRetry={() => window.location.reload()}
+              />
+            </div>
+          )}
+          {!isLoading &&
+            !error &&
+            !(isFetching && opportunities.length === 0) && (
               <OpportunitiesGrid
                 opportunities={opportunities as DisplayOpportunity[]}
                 onApplicationSubmitted={handleApplicationSubmitted}
@@ -377,79 +470,6 @@ export function OpportunitiesClient({
                 }
               />
             )}
-          </MobileProgressiveHeader>
-          <OpportunitiesFilterModal
-            isOpen={isFilterOpen}
-            onClose={() => setIsFilterOpen(false)}
-            onApply={(filters) => {
-              setAppliedFilters(filters);
-              setIsFilterOpen(false);
-              fetchOpportunitiesWithFilters(0, undefined, undefined, filters);
-            }}
-            availableSkills={[]}
-            initialFilters={appliedFilters || undefined}
-          />
-        </div>
-
-        {/* Desktop: Grid Container */}
-        <div className="hidden md:block flex-1 overflow-hidden">
-          {isLoading && <OpportunitiesGridSkeleton />}
-          {error && !isLoading && (
-            <div className="flex-1 flex items-center justify-center">
-              <ErrorState
-                title="Error loading opportunities"
-                message={error}
-                onRetry={() => window.location.reload()}
-              />
-            </div>
-          )}
-          {!isLoading && !error && (
-            <OpportunitiesGrid
-              opportunities={opportunities as DisplayOpportunity[]}
-              onApplicationSubmitted={handleApplicationSubmitted}
-              onNextPage={handleNextPage}
-              onPreviousPage={handlePreviousPage}
-              hasNextPage={pagination?.hasNextPage || false}
-              hasPreviousPage={pagination?.hasPreviousPage || false}
-              currentPage={pagination?.currentPage || 1}
-              totalPages={pagination?.totalPages || 1}
-              totalOpportunities={pagination?.total}
-              emptyTitle={
-                searchQuery.trim()
-                  ? "No opportunities match your search"
-                  : appliedFilters &&
-                      (appliedFilters.skills?.length > 0 ||
-                        (appliedFilters.categories?.length ?? 0) > 0 ||
-                        (appliedFilters.experienceLevels?.length ?? 0) > 0 ||
-                        appliedFilters.location ||
-                        (appliedFilters.minBudget &&
-                          appliedFilters.minBudget > 0) ||
-                        (appliedFilters.maxBudget &&
-                          appliedFilters.maxBudget > 0))
-                    ? "No opportunities match your filters"
-                    : activeFilter === "applied"
-                      ? "No applied opportunities yet"
-                      : "No opportunities yet"
-              }
-              emptyDescription={
-                searchQuery.trim()
-                  ? "Try adjusting your search query"
-                  : appliedFilters &&
-                      (appliedFilters.skills?.length > 0 ||
-                        (appliedFilters.categories?.length ?? 0) > 0 ||
-                        (appliedFilters.experienceLevels?.length ?? 0) > 0 ||
-                        appliedFilters.location ||
-                        (appliedFilters.minBudget &&
-                          appliedFilters.minBudget > 0) ||
-                        (appliedFilters.maxBudget &&
-                          appliedFilters.maxBudget > 0))
-                    ? "Try adjusting your filters"
-                    : activeFilter === "applied"
-                      ? "Opportunities you apply to will appear here"
-                      : "Available opportunities will appear here"
-              }
-            />
-          )}
         </div>
       </div>
     </RoleColorProvider>

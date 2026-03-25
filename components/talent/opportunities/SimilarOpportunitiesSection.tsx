@@ -51,8 +51,9 @@ const convertToDisplayOpportunity = (opp: Opportunity): DisplayOpportunity => {
 
   return {
     id: opp.id,
+    postedById: opp.postedBy?.id || opp.postedById,
     companyName: opp.company || "Unknown Company",
-    companyLogo: opp.logo || DEFAULT_LOGO,
+    companyLogo: opp.logo || opp.postedBy?.recruiterProfile?.profileImageUrl || DEFAULT_LOGO,
     date: formatDate(opp.createdAt),
     type: opp.type || "job",
     title: opp.title,
@@ -84,7 +85,7 @@ export function SimilarOpportunitiesSection({
 
   return (
     <div className="flex flex-col gap-5 mt-8">
-      <h2 className="font-inter-tight text-[13px] font-medium text-black leading-[105%]">
+      <h2 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
         Similar Jobs
       </h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

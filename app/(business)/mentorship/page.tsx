@@ -9,7 +9,10 @@ import {
   MentorFilterModal,
   type MentorFilterState,
 } from "@/components/talent/mentorship/MentorFilterModal";
-import { MobileProgressiveHeader, type MobileProgressiveHeaderRef } from "@/components/talent/opportunities/MobileProgressiveHeader";
+import {
+  MobileProgressiveHeader,
+  type MobileProgressiveHeaderRef,
+} from "@/components/talent/opportunities/MobileProgressiveHeader";
 import { listMentors } from "@/lib/api/mentorship";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
@@ -355,7 +358,9 @@ export default function MentorshipPage() {
                 {CATEGORIES.map((cat) => (
                   <button
                     key={cat}
-                    onClick={() => handleCategoryChange(cat === "All" ? "" : cat)}
+                    onClick={() =>
+                      handleCategoryChange(cat === "All" ? "" : cat)
+                    }
                     className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors font-inter-tight text-[13px] ${
                       (activeCategory === "" && cat === "All") ||
                       activeCategory === cat
@@ -427,7 +432,7 @@ export default function MentorshipPage() {
       </div>
 
       {/* Desktop: Scrollable Content Area */}
-      <div className="hidden md:block flex-1 overflow-hidden flex flex-col">
+      <div className="hidden md:flex flex-1 overflow-hidden flex-col">
         <div className="flex-1 flex flex-col overflow-hidden">
           {mentorsLoading && !hasInitialLoaded ? (
             <MentorGridSkeleton />

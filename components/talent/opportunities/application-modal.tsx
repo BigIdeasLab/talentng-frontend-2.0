@@ -117,11 +117,25 @@ export function ApplicationModal({
         <div className="absolute inset-0 bg-black/50" onClick={handleClose} />
 
         {/* Modal */}
-        <div className="relative bg-white rounded-[17px] w-full max-w-[515px] mx-4 max-h-[95vh] overflow-y-auto shadow-[0_0_15px_0_rgba(0,0,0,0.15)]">
+        <div className="relative bg-white w-full h-full md:h-auto md:rounded-[17px] md:max-w-[515px] md:mx-4 md:max-h-[95vh] overflow-y-auto md:shadow-[0_0_15px_0_rgba(0,0,0,0.15)]">
+          {/* Mobile Header */}
+          <div className="md:hidden sticky top-0 z-10 bg-white border-b border-[#E1E4EA] px-4 py-4 flex items-center justify-between">
+            <h2 className="text-black font-inter-tight text-[15px] font-medium">
+              Apply with your TalentNG profile
+            </h2>
+            <button
+              onClick={handleClose}
+              disabled={isSubmitting}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors disabled:opacity-50"
+            >
+              <X className="w-5 h-5 text-gray-600" />
+            </button>
+          </div>
+
           {/* Content */}
           <div className="p-[20px_16px] flex flex-col items-center gap-[30px]">
-            {/* Title */}
-            <h2 className="w-full text-center text-black font-inter-tight text-[15px] font-medium leading-[15px] capitalize flex-shrink-0">
+            {/* Title - Desktop only */}
+            <h2 className="hidden md:block w-full text-center text-black font-inter-tight text-[15px] font-medium leading-[15px] capitalize flex-shrink-0">
               Apply with your TalentNG profile
             </h2>
 
@@ -271,7 +285,7 @@ export function ApplicationModal({
               <button
                 onClick={handleSubmit}
                 disabled={!isFormValid || isSubmitting}
-                className="w-full px-[160px] py-[18px] rounded-[20px] border text-white text-center font-inter-tight text-[13px] font-normal leading-normal hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+                className="w-full px-4 md:px-[160px] py-[18px] rounded-[20px] border text-white text-center font-inter-tight text-[13px] font-normal leading-normal hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
                 style={{ backgroundColor: primary, borderColor: primary }}
               >
                 {isSubmitting ? "Submitting..." : "Submit Application"}

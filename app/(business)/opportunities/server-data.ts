@@ -74,10 +74,11 @@ export async function getOpportunitiesData(params?: {
 
     const opportunities: OpportunityData[] = rawData.map((opp: any) => ({
       id: opp.id || "",
+      postedById: opp.postedBy?.id || opp.postedById || "",
       companyName:
         opp.postedBy?.recruiterProfile?.company || opp.company || "Company",
       companyLogo:
-        opp.postedBy?.recruiterProfile?.profileImageUrl || opp.logo || "",
+        opp.logo || opp.postedBy?.recruiterProfile?.profileImageUrl || "",
       date: formatDate(opp.createdAt),
       type: opp.type || "Job",
       title: opp.title || "",

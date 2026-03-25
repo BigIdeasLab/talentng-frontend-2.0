@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Loader, Upload } from "lucide-react";
 import { useRoleColors } from "@/lib/theme/RoleColorContext";
 import { getCurrentProfile, uploadGalleryImages } from "@/lib/api/talent";
+import { SuccessModal } from "@/components/ui/success-modal";
 import type { GalleryItem } from "@/lib/api/talent";
 import type { Project } from "./application-modal";
 
@@ -27,12 +28,7 @@ export function ProjectSelectionModal({
   const [projects, setProjects] = useState<GalleryItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [showUploadForm, setShowUploadForm] = useState(false);
-  const [uploadData, setUploadData] = useState({ title: "", description: "" });
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [uploadPreviews, setUploadPreviews] = useState<string[]>([]);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showUploadModal, setShowUploadModal] = useState(false);
 
   useEffect(() => {
     setTempSelected(selectedProjects);
@@ -82,80 +78,23 @@ export function ProjectSelectionModal({
     }
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+  const handleWorkUploaded = (newItem: GalleryItem) => {
+    // Add the newly uploaded gallery item
+    setProjects((prev) => [...prev, newItem]);
 
-    const fileArray = Array.from(files);
-    const validFiles: File[] = [];
-    const previews: string[] = [];
+    // Notify parent about uploaded work
+    onWorkUploaded?.(newItem);
 
-    for (const file of fileArray) {
-      if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
-        setError("Please select only image or video files");
-        continue;
-      }
-      validFiles.push(file);
-      previews.push(URL.createObjectURL(file));
-    }
+    // Auto-select the uploaded work (if space available)
+    const newProject: Project = {
+      id: newItem.id,
+      title: newItem.title,
+      image: newItem.images?.[0] || "",
+      tags: newItem.description ? [newItem.description] : [],
+    };
 
-    if (validFiles.length > 0) {
-      setSelectedFiles(validFiles);
-      setUploadPreviews(previews);
-      setError(null);
-    }
-  };
-
-  const handleUpload = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (selectedFiles.length === 0 || !uploadData.title.trim()) {
-      setError("Please provide a title and select at least one file");
-      return;
-    }
-
-    setIsUploading(true);
-    setError(null);
-    try {
-      const result = await uploadGalleryImages(
-        selectedFiles,
-        uploadData.title,
-        uploadData.description,
-      );
-
-      // Add the newly uploaded gallery item (ONE item with multiple images)
-      if (result.gallery && result.gallery.length > 0) {
-        const newItem = result.gallery[result.gallery.length - 1]; // Get the last item (newly created)
-        setProjects((prev) => [...prev, newItem]);
-
-        // Notify parent about uploaded work
-        onWorkUploaded?.(newItem);
-
-        // Auto-select the uploaded work (if space available)
-        const newProject: Project = {
-          id: newItem.id,
-          title: newItem.title,
-          image: newItem.images?.[0] || "", // Use first image as thumbnail
-          tags: newItem.description ? [newItem.description] : [],
-        };
-
-        if (tempSelected.length < 3) {
-          setTempSelected((prev) => [...prev, newProject]);
-        }
-      }
-
-      // Reset upload form
-      setSelectedFiles([]);
-      uploadPreviews.forEach((preview) => URL.revokeObjectURL(preview));
-      setUploadPreviews([]);
-      setUploadData({ title: "", description: "" });
-      setShowUploadForm(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Failed to upload work";
-      setError(message);
-    } finally {
-      setIsUploading(false);
+    if (tempSelected.length < 3) {
+      setTempSelected((prev) => [...prev, newProject]);
     }
   };
 
@@ -165,22 +104,19 @@ export function ProjectSelectionModal({
 
   const handleClose = () => {
     setTempSelected(selectedProjects); // Reset to original selection
-    setShowUploadForm(false);
-    setSelectedFiles([]);
-    uploadPreviews.forEach((preview) => URL.revokeObjectURL(preview));
-    setUploadPreviews([]);
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50" onClick={handleClose} />
+    <>
+      <div className={`fixed inset-0 z-[60] flex items-center justify-center ${showUploadModal ? 'pointer-events-none' : ''}`}>
+        {/* Backdrop */}
+        <div className="absolute inset-0 bg-black/50" onClick={handleClose} />
 
-      {/* Modal */}
-      <div className="relative bg-white rounded-[17px] w-full max-w-[515px] mx-4 max-h-[95vh] shadow-[0_0_15px_0_rgba(0,0,0,0.15)] flex flex-col overflow-hidden">
+        {/* Modal */}
+        <div className="relative bg-white w-full h-full md:h-auto md:rounded-[17px] md:max-w-[515px] md:mx-4 md:max-h-[95vh] md:shadow-[0_0_15px_0_rgba(0,0,0,0.15)] flex flex-col overflow-hidden pointer-events-auto">
         {/* Header */}
-        <div className="flex items-center justify-between px-[16px] pt-[20px] pb-[16px] flex-shrink-0">
+        <div className="flex items-center justify-between px-[16px] pt-[20px] pb-[16px] flex-shrink-0 border-b md:border-b-0 border-[#E1E4EA]">
           <button
             onClick={handleClose}
             className="p-0.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
@@ -220,180 +156,21 @@ export function ProjectSelectionModal({
         </div>
 
         {/* Upload Section */}
-        {!showUploadForm && (
-          <div className="px-[16px] pt-[16px] pb-[16px] flex-shrink-0">
-            <button
-              onClick={() => setShowUploadForm(true)}
-              disabled={isUploading}
-              className="w-full flex items-center justify-center gap-[8px] px-[12px] py-[12px] border border-dashed rounded-[8px] hover:opacity-80 transition-colors disabled:opacity-50"
-              style={{ borderColor: primary }}
-            >
-              <Upload size={16} style={{ color: primary }} />
-              <span
-                className="font-inter-tight text-[13px] font-medium"
-                style={{ color: primary }}
-              >
-                {projects.length === 0 ? "Upload Work" : "Upload More Works"}
-              </span>
-            </button>
-          </div>
-        )}
-
-        {showUploadForm && (
-          <form
-            onSubmit={handleUpload}
-            className="px-[16px] pt-[16px] pb-[16px] flex-shrink-0 border-b border-[#E1E4EA]"
+        <div className="px-[16px] pt-[16px] pb-[16px] flex-shrink-0">
+          <button
+            onClick={() => setShowUploadModal(true)}
+            className="w-full flex items-center justify-center gap-[8px] px-[12px] py-[12px] border border-dashed rounded-[8px] hover:opacity-80 transition-colors"
+            style={{ borderColor: primary }}
           >
-            <div className="flex flex-col gap-[18px]">
-              {uploadPreviews.length > 0 && (
-                <div className="w-full flex gap-[8px] overflow-x-auto">
-                  {uploadPreviews.map((preview, index) => (
-                    <div
-                      key={index}
-                      className="relative w-[100px] h-[100px] flex-shrink-0 rounded-[8px] overflow-hidden bg-gray-200"
-                    >
-                      <img
-                        src={preview}
-                        alt={`preview ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const newFiles = selectedFiles.filter(
-                            (_, i) => i !== index,
-                          );
-                          const newPreviews = uploadPreviews.filter(
-                            (_, i) => i !== index,
-                          );
-                          URL.revokeObjectURL(uploadPreviews[index]);
-                          setSelectedFiles(newFiles);
-                          setUploadPreviews(newPreviews);
-                        }}
-                        disabled={isUploading}
-                        className="absolute top-1 right-1 w-[20px] h-[20px] bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50"
-                      >
-                        <svg
-                          width="10"
-                          height="10"
-                          viewBox="0 0 15 15"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M10.7213 3.57324L3.5747 10.7198M10.7208 10.7203L3.57422 3.57375"
-                            stroke="#525866"
-                            strokeWidth="1.90588"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*,video/*"
-                multiple
-                onChange={handleFileSelect}
-                disabled={isUploading}
-                className="hidden"
-              />
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isUploading}
-                className="w-full px-[12px] py-[16px] border border-[#E1E4EA] rounded-[8px] text-[14px] text-[#525866] hover:opacity-80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {selectedFiles.length > 0
-                  ? `${selectedFiles.length} file${selectedFiles.length > 1 ? "s" : ""} selected`
-                  : "Select Files"}
-              </button>
-              <div className="flex flex-col gap-[10px]">
-                <label className="text-[#525866] font-inter-tight text-[14px] font-normal">
-                  Work Title
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  placeholder="Enter work title (applies to all selected files)"
-                  value={uploadData.title}
-                  onChange={(e) =>
-                    setUploadData((prev) => ({
-                      ...prev,
-                      title: e.target.value,
-                    }))
-                  }
-                  disabled={isUploading}
-                  className="w-full px-[12px] py-[12px] border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[14px] text-black placeholder:text-[#99A0AE] focus:outline-none disabled:bg-gray-50"
-                  onFocus={(e) => (e.currentTarget.style.borderColor = primary)}
-                  onBlur={(e) =>
-                    (e.currentTarget.style.borderColor = "#E1E4EA")
-                  }
-                />
-              </div>
-              <div className="flex flex-col gap-[10px]">
-                <label className="text-[#525866] font-inter-tight text-[14px] font-normal">
-                  Description (Optional)
-                </label>
-                <textarea
-                  name="description"
-                  placeholder="Add a description"
-                  value={uploadData.description}
-                  onChange={(e) =>
-                    setUploadData((prev) => ({
-                      ...prev,
-                      description: e.target.value,
-                    }))
-                  }
-                  disabled={isUploading}
-                  maxLength={100}
-                  className="w-full px-[12px] py-[12px] pb-[60px] border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[14px] text-black placeholder:text-[#99A0AE] resize-none focus:outline-none disabled:bg-gray-50"
-                  onFocus={(e) => (e.currentTarget.style.borderColor = primary)}
-                  onBlur={(e) =>
-                    (e.currentTarget.style.borderColor = "#E1E4EA")
-                  }
-                />
-              </div>
-              <div className="flex gap-[12px]">
-                <button
-                  type="submit"
-                  disabled={isUploading || selectedFiles.length === 0}
-                  className="flex-1 py-[16px] text-white rounded-[20px] font-inter-tight text-[13px] font-normal hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-[6px]"
-                  style={{ backgroundColor: primary }}
-                >
-                  {isUploading ? (
-                    <>
-                      <Loader size={14} className="animate-spin" />
-                      Uploading...
-                    </>
-                  ) : (
-                    `Upload as 1 Work ${selectedFiles.length > 1 ? `(${selectedFiles.length} files)` : ""}`
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowUploadForm(false);
-                    setSelectedFiles([]);
-                    uploadPreviews.forEach((preview) =>
-                      URL.revokeObjectURL(preview),
-                    );
-                    setUploadPreviews([]);
-                    if (fileInputRef.current) fileInputRef.current.value = "";
-                  }}
-                  disabled={isUploading}
-                  className="flex-1 py-[16px] border border-[#E1E4EA] rounded-[20px] text-[#525866] font-inter-tight text-[13px] font-normal hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </form>
-        )}
+            <Upload size={16} style={{ color: primary }} />
+            <span
+              className="font-inter-tight text-[13px] font-medium"
+              style={{ color: primary }}
+            >
+              {projects.length === 0 ? "Upload Work" : "Upload More Works"}
+            </span>
+          </button>
+        </div>
 
         {/* Projects List */}
         <div className="flex-1 overflow-y-auto px-[16px] pb-[16px] min-h-[350px]">
@@ -412,7 +189,7 @@ export function ProjectSelectionModal({
             </div>
           )}
 
-          {!isLoading && !error && projects.length === 0 && !showUploadForm && (
+          {!isLoading && !error && projects.length === 0 && (
             <div className="flex items-center justify-center h-full">
               <p className="text-sm text-[#525866]">No works added yet</p>
             </div>
@@ -566,7 +343,327 @@ export function ProjectSelectionModal({
             </button>
           </div>
         </div>
+        </div>
       </div>
+
+      {/* Upload Work Modal */}
+      <UploadWorkModal
+        isOpen={showUploadModal}
+        onClose={() => setShowUploadModal(false)}
+        onWorkUploaded={handleWorkUploaded}
+      />
+    </>
+  );
+}
+
+// Separate Upload Work Modal Component
+interface UploadWorkModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onWorkUploaded: (newItem: GalleryItem) => void;
+}
+
+function UploadWorkModal({
+  isOpen,
+  onClose,
+  onWorkUploaded,
+}: UploadWorkModalProps) {
+  const { primary } = useRoleColors();
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadData, setUploadData] = useState({ title: "", description: "" });
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [uploadPreviews, setUploadPreviews] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const fileArray = Array.from(files);
+    const validFiles: File[] = [];
+    const previews: string[] = [];
+
+    for (const file of fileArray) {
+      if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
+        setError("Please select only image or video files");
+        continue;
+      }
+      validFiles.push(file);
+      previews.push(URL.createObjectURL(file));
+    }
+
+    if (validFiles.length > 0) {
+      setSelectedFiles(validFiles);
+      setUploadPreviews(previews);
+      setError(null);
+    }
+  };
+
+  const handleUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedFiles.length === 0 || !uploadData.title.trim()) {
+      setError("Please provide a title and select at least one file");
+      return;
+    }
+
+    setIsUploading(true);
+    setError(null);
+    try {
+      const result = await uploadGalleryImages(
+        selectedFiles,
+        uploadData.title,
+        uploadData.description,
+      );
+
+      // Add the newly uploaded gallery item (ONE item with multiple images)
+      if (result.gallery && result.gallery.length > 0) {
+        const newItem = result.gallery[result.gallery.length - 1];
+        onWorkUploaded(newItem);
+      }
+
+      // Show success modal
+      setShowSuccess(true);
+      
+      // Auto-close success modal after 2 seconds
+      setTimeout(() => {
+        handleClose();
+      }, 2000);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Failed to upload work";
+      setError(message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleClose = () => {
+    setSelectedFiles([]);
+    uploadPreviews.forEach((preview) => URL.revokeObjectURL(preview));
+    setUploadPreviews([]);
+    setUploadData({ title: "", description: "" });
+    setError(null);
+    setShowSuccess(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[70] flex items-center justify-center">
+      {/* Backdrop - fully opaque to cover everything behind */}
+      <div className="absolute inset-0 bg-black/60" onClick={handleClose} />
+
+      {/* Modal */}
+      <div className="relative bg-white w-full h-full md:h-auto md:rounded-[17px] md:max-w-[515px] md:mx-4 md:min-h-[85vh] md:max-h-[95vh] md:shadow-[0_0_15px_0_rgba(0,0,0,0.15)] flex flex-col overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between px-[16px] pt-[20px] pb-[16px] flex-shrink-0 border-b border-[#E1E4EA]">
+          <button
+            onClick={handleClose}
+            disabled={isUploading}
+            className="p-0.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0 disabled:opacity-50"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M5.5 12.002H19"
+                stroke="#141B34"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M10.9999 18.002C10.9999 18.002 5.00001 13.583 5 12.0019C4.99999 10.4208 11 6.00195 11 6.00195"
+                stroke="#141B34"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+          <h2 className="text-black text-center font-inter-tight text-[15px] font-medium">
+            Upload Work
+          </h2>
+          <div className="w-[20px]" />
+        </div>
+
+        {/* Form Content */}
+        <form
+          onSubmit={handleUpload}
+          className="flex-1 overflow-y-auto px-[16px] pt-[20px] pb-[20px]"
+        >
+          <div className="flex flex-col gap-[18px]">
+            {error && (
+              <div className="p-2.5 bg-red-50 border border-red-200 rounded-[8px]">
+                <p className="text-[11px] text-red-600 font-inter-tight">
+                  {error}
+                </p>
+              </div>
+            )}
+
+            {uploadPreviews.length > 0 && (
+              <div className="w-full flex gap-[8px] overflow-x-auto">
+                {uploadPreviews.map((preview, index) => (
+                  <div
+                    key={index}
+                    className="relative w-[100px] h-[100px] flex-shrink-0 rounded-[8px] overflow-hidden bg-gray-200"
+                  >
+                    <img
+                      src={preview}
+                      alt={`preview ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const newFiles = selectedFiles.filter(
+                          (_, i) => i !== index,
+                        );
+                        const newPreviews = uploadPreviews.filter(
+                          (_, i) => i !== index,
+                        );
+                        URL.revokeObjectURL(uploadPreviews[index]);
+                        setSelectedFiles(newFiles);
+                        setUploadPreviews(newPreviews);
+                      }}
+                      disabled={isUploading}
+                      className="absolute top-1 right-1 w-[20px] h-[20px] bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50"
+                    >
+                      <svg
+                        width="10"
+                        height="10"
+                        viewBox="0 0 15 15"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M10.7213 3.57324L3.5747 10.7198M10.7208 10.7203L3.57422 3.57375"
+                          stroke="#525866"
+                          strokeWidth="1.90588"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*,video/*"
+              multiple
+              onChange={handleFileSelect}
+              disabled={isUploading}
+              className="hidden"
+            />
+
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading}
+              className="w-full px-[12px] py-[16px] border rounded-[8px] text-[14px] text-black hover:opacity-80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ borderColor: primary }}
+            >
+              {selectedFiles.length > 0
+                ? `${selectedFiles.length} file${selectedFiles.length > 1 ? "s" : ""} selected`
+                : "Click to Select Files"}
+            </button>
+
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-black font-inter-tight text-[14px] font-medium">
+                Work Title
+              </label>
+              <input
+                type="text"
+                name="title"
+                placeholder="Enter work title (applies to all selected files)"
+                value={uploadData.title}
+                onChange={(e) =>
+                  setUploadData((prev) => ({
+                    ...prev,
+                    title: e.target.value,
+                  }))
+                }
+                disabled={isUploading}
+                className="w-full px-[12px] py-[12px] border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[14px] text-black placeholder:text-[#99A0AE] focus:outline-none disabled:bg-gray-50"
+                onFocus={(e) => (e.currentTarget.style.borderColor = primary)}
+                onBlur={(e) => (e.currentTarget.style.borderColor = "#E1E4EA")}
+              />
+            </div>
+
+            <div className="flex flex-col gap-[10px]">
+              <label className="text-black font-inter-tight text-[14px] font-medium">
+                Description (Optional)
+              </label>
+              <textarea
+                name="description"
+                placeholder="Add a description"
+                value={uploadData.description}
+                onChange={(e) =>
+                  setUploadData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
+                disabled={isUploading}
+                maxLength={100}
+                className="w-full px-[12px] py-[12px] pb-[60px] border border-[#E1E4EA] rounded-[8px] font-inter-tight text-[14px] text-black placeholder:text-[#99A0AE] resize-none focus:outline-none disabled:bg-gray-50"
+                onFocus={(e) => (e.currentTarget.style.borderColor = primary)}
+                onBlur={(e) => (e.currentTarget.style.borderColor = "#E1E4EA")}
+              />
+            </div>
+          </div>
+        </form>
+
+        {/* Footer */}
+        <div className="px-[16px] pb-[20px] pt-[12px] border-t border-[#E1E4EA] flex gap-[12px] flex-shrink-0">
+          <button
+            type="button"
+            onClick={handleUpload}
+            disabled={isUploading || selectedFiles.length === 0 || !uploadData.title.trim()}
+            className="flex-1 py-[16px] text-white rounded-[20px] font-inter-tight text-[13px] font-normal hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-[6px]"
+            style={{ backgroundColor: primary }}
+          >
+            {isUploading ? (
+              <>
+                <Loader size={14} className="animate-spin" />
+                Uploading...
+              </>
+            ) : (
+              `Upload as 1 Work ${selectedFiles.length > 1 ? `(${selectedFiles.length} files)` : ""}`
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={handleClose}
+            disabled={isUploading}
+            className="flex-1 py-[16px] border border-[#E1E4EA] rounded-[20px] text-[#525866] font-inter-tight text-[13px] font-normal hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+
+      {/* Success Modal */}
+      <SuccessModal
+        isOpen={showSuccess}
+        onClose={handleClose}
+        title="Work Uploaded Successfully!"
+        description="Your work has been added to your portfolio"
+        accentColor={primary}
+        autoCloseDuration={2000}
+      />
     </div>
   );
 }

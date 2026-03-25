@@ -17,6 +17,7 @@ const protectedRoutes = [
   "/settings",
   "/notifications",
   "/projects",
+  "/recruiter",
   "/discover-talent",
   "/support",
   "/employer",

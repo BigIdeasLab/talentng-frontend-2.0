@@ -57,7 +57,7 @@ export const transformOpportunityToCard = (
     companyName:
       opp.postedBy?.recruiterProfile?.company || opp.company || "Company",
     companyLogo:
-      opp.postedBy?.recruiterProfile?.profileImageUrl || opp.logo || "",
+      opp.logo || opp.postedBy?.recruiterProfile?.profileImageUrl || "",
     date: formatDate(opp.createdAt),
     type: mapOpportunityType(opp.type),
     title: opp.title || "",

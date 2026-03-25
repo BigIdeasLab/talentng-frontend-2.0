@@ -163,6 +163,20 @@ export default function MentorDetailPage() {
     }
   }, [searchParams, isLoading, mentor]);
 
+  // Auto-open modal when both date and time are selected
+  useEffect(() => {
+    if (selectedDate !== null && selectedTime !== null && !isBookingModalOpen) {
+      setBookingStep("details");
+      setIsBookingModalOpen(true);
+    }
+  }, [selectedDate, selectedTime, isBookingModalOpen]);
+
+  const handleCloseModal = () => {
+    setIsBookingModalOpen(false);
+    setSelectedTime(null);
+    setHasSelectedSlot(false);
+  };
+
   if (!hasAccess) {
     return <PageLoadingState message="Checking access..." />;
   }
@@ -173,8 +187,8 @@ export default function MentorDetailPage() {
         <div className="flex-shrink-0 px-5 py-3 border-b border-[#E1E4EA]">
           <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
         </div>
-        <div className="flex-1 flex overflow-hidden">
-          <div className="w-[350px] flex-shrink-0 border-r border-[#E1E4EA] bg-white p-5">
+        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+          <div className="w-full lg:w-[350px] flex-shrink-0 lg:border-r border-[#E1E4EA] bg-white p-5">
             <div className="flex flex-col items-center gap-3">
               <div className="w-[113px] h-[113px] rounded-full bg-gray-200 animate-pulse" />
               <div className="h-5 w-40 bg-gray-200 rounded animate-pulse" />
@@ -270,34 +284,23 @@ export default function MentorDetailPage() {
 
   return (
     <div className="h-screen bg-white flex flex-col overflow-hidden">
-      {/* Back Button */}
-      <div className="flex-shrink-0 px-5 py-3 border-b border-[#E1E4EA]">
+      {/* Header */}
+      <div className="flex-shrink-0 px-5 py-3 border-b border-[#E1E4EA] flex items-center justify-between">
+        <h1 className="font-inter-tight text-[14px] font-medium text-black">
+          Mentor Details
+        </h1>
         <Link
           href="/mentorship"
-          className="flex items-center gap-1.5 text-[#A3A3A3] hover:text-black transition-colors w-fit"
+          className="px-4 py-1.5 border border-[#F5F5F5] rounded-full font-inter-tight text-[11px] font-normal text-black hover:bg-gray-50 transition-colors"
         >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M9.783 11.7826C9.71332 11.8525 9.63053 11.9079 9.53937 11.9458C9.4482 11.9837 9.35046 12.0031 9.25175 12.0031C9.15304 12.0031 9.0553 11.9837 8.96414 11.9458C8.87297 11.9079 8.79018 11.8525 8.7205 11.7826L5.7205 8.78255C5.65058 8.71287 5.5951 8.63008 5.55725 8.53891C5.5194 8.44775 5.49991 8.35001 5.49991 8.2513C5.49991 8.15259 5.5194 8.05485 5.55725 7.96369C5.5951 7.87252 5.65058 7.78973 5.7205 7.72005L8.7205 4.72005C8.8614 4.57915 9.0525 4.5 9.25175 4.5C9.45101 4.5 9.64211 4.57915 9.783 4.72005C9.9239 4.86095 10.0031 5.05204 10.0031 5.2513C10.0031 5.45056 9.9239 5.64165 9.783 5.78255L7.31488 8.25193L9.78488 10.7213C9.85449 10.7911 9.90966 10.8739 9.94724 10.965C9.98482 11.0561 10.0041 11.1538 10.0039 11.2523C10.0037 11.3509 9.98413 11.4484 9.94623 11.5394C9.90832 11.6304 9.85286 11.713 9.783 11.7826Z"
-              fill="currentColor"
-            />
-          </svg>
-          <span className="font-inter-tight text-[11px] font-normal">
-            Back to Mentorship
-          </span>
+          Back
         </Link>
       </div>
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
         {/* Left Sidebar */}
-        <div className="w-[350px] flex-shrink-0 border-r border-[#E1E4EA] bg-white flex flex-col">
-          <div className="flex-1 overflow-y-auto scrollbar-hidden px-4 py-7">
+        <div className="w-full lg:w-[350px] flex-shrink-0 lg:border-r border-[#E1E4EA] bg-white flex flex-col lg:overflow-hidden">
+          <div className="flex-1 lg:overflow-y-auto scrollbar-hidden px-4 py-7">
             <div className="flex flex-col gap-5">
               {/* Profile Section */}
               <div className="flex flex-col items-center gap-5">
@@ -696,9 +699,9 @@ export default function MentorDetailPage() {
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col lg:overflow-hidden">
           {/* Tabs */}
-          <div className="flex-shrink-0 border-b border-[#E1E4EA] bg-white px-6 pt-4">
+          <div className="flex-shrink-0 sticky top-[20px] z-10 lg:static border-b border-[#E1E4EA] bg-white px-4 lg:px-6 pt-4">
             <div className="flex items-center gap-6">
               {/* TODO: Re-enable "Reviews" and "Session" tabs when real data is available */}
               {(["Overview"] as TabType[]).map((tab) => (
@@ -718,7 +721,7 @@ export default function MentorDetailPage() {
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto scrollbar-hide px-6 py-5">
+          <div className="flex-1 overflow-y-auto scrollbar-hide px-4 lg:px-6 py-5">
             {activeTab === "Overview" && (
               <div className="max-w-[560px] flex flex-col gap-6 lg:gap-7">
                 {/* About Section */}
@@ -959,13 +962,12 @@ export default function MentorDetailPage() {
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/50"
-            onClick={() => setIsBookingModalOpen(false)}
+            onClick={handleCloseModal}
           />
 
           {/* Modal */}
           <div
-            className="relative bg-white rounded-2xl w-full max-w-[480px] mx-4 shadow-xl flex flex-col"
-            style={{ height: 480 }}
+            className="relative bg-white rounded-2xl md:rounded-2xl w-full md:max-w-[480px] md:mx-4 shadow-xl flex flex-col h-full md:h-[480px]"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-5 border-b border-[#E1E4EA]">
@@ -999,7 +1001,7 @@ export default function MentorDetailPage() {
                 </h2>
               </div>
               <button
-                onClick={() => setIsBookingModalOpen(false)}
+                onClick={handleCloseModal}
                 className="p-1 hover:bg-[#F5F5F5] rounded-lg transition-colors"
               >
                 <svg
@@ -1208,7 +1210,7 @@ export default function MentorDetailPage() {
                 {/* Footer */}
                 <div className="flex items-center gap-3 p-5 border-t border-[#E1E4EA]">
                   <button
-                    onClick={() => setIsBookingModalOpen(false)}
+                    onClick={handleCloseModal}
                     disabled={isSubmitting}
                     className="flex-1 h-[44px] rounded-full border border-[#E1E4EA] bg-white text-black font-inter-tight text-[13px] font-medium hover:bg-[#F5F5F5] transition-colors disabled:opacity-50"
                   >
@@ -1232,7 +1234,7 @@ export default function MentorDetailPage() {
                           scheduledDate: selectedSlot.fullDate,
                           scheduledTime: selectedTimeValue,
                         });
-                        setIsBookingModalOpen(false);
+                        handleCloseModal();
                         setSelectedTopic("");
                         setMessage("");
                         setShowSuccess(true);
