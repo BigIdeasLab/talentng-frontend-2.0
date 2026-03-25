@@ -53,7 +53,10 @@ const convertToDisplayOpportunity = (opp: Opportunity): DisplayOpportunity => {
     id: opp.id,
     postedById: opp.postedBy?.id || opp.postedById,
     companyName: opp.company || "Unknown Company",
-    companyLogo: opp.logo || opp.postedBy?.recruiterProfile?.profileImageUrl || DEFAULT_LOGO,
+    companyLogo:
+      opp.logo ||
+      opp.postedBy?.recruiterProfile?.profileImageUrl ||
+      DEFAULT_LOGO,
     date: formatDate(opp.createdAt),
     type: opp.type || "job",
     title: opp.title,

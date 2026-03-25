@@ -966,9 +966,7 @@ export default function MentorDetailPage() {
           />
 
           {/* Modal */}
-          <div
-            className="relative bg-white rounded-2xl md:rounded-2xl w-full md:max-w-[480px] md:mx-4 shadow-xl flex flex-col h-full md:h-[480px]"
-          >
+          <div className="relative bg-white rounded-2xl md:rounded-2xl w-full md:max-w-[480px] md:mx-4 shadow-xl flex flex-col h-full md:h-[480px]">
             {/* Header */}
             <div className="flex items-center justify-between p-5 border-b border-[#E1E4EA]">
               <div className="flex items-center gap-2">

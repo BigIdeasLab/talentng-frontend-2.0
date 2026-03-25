@@ -160,17 +160,19 @@ export function TalentMyApplications() {
 
       const data = Array.isArray(response) ? response : response?.data || [];
       const meta = Array.isArray(response) ? null : response?.meta || null;
-      
+
       // Transform meta to match pagination format expected by UI
-      const paginationData = meta ? {
-        total: meta.total,
-        limit: meta.limit,
-        offset: (meta.page - 1) * meta.limit,
-        currentPage: meta.page,
-        totalPages: meta.totalPages,
-        hasNextPage: meta.page < meta.totalPages,
-        hasPreviousPage: meta.page > 1,
-      } : null;
+      const paginationData = meta
+        ? {
+            total: meta.total,
+            limit: meta.limit,
+            offset: (meta.page - 1) * meta.limit,
+            currentPage: meta.page,
+            totalPages: meta.totalPages,
+            hasNextPage: meta.page < meta.totalPages,
+            hasPreviousPage: meta.page > 1,
+          }
+        : null;
 
       setMentorshipRequests(data);
       setDisplayedMentorshipRequests(data);
@@ -214,24 +216,33 @@ export function TalentMyApplications() {
     activeTab === "jobs" ? jobStatusFilter : mentorshipStatusFilter;
   const setStatusFilter =
     activeTab === "jobs" ? setJobStatusFilter : setMentorshipStatusFilter;
-  
+
   // Get base pagination or create fallback when items exist but no pagination data
-  const basePagination = activeTab === "jobs" ? jobPagination : mentorshipPagination;
-  const itemsExist = activeTab === "jobs" 
-    ? filteredJobApplications.length > 0 
-    : filteredMentorshipRequests.length > 0;
-  
+  const basePagination =
+    activeTab === "jobs" ? jobPagination : mentorshipPagination;
+  const itemsExist =
+    activeTab === "jobs"
+      ? filteredJobApplications.length > 0
+      : filteredMentorshipRequests.length > 0;
+
   // Always show pagination if items exist, even if API doesn't return pagination data
-  const currentPagination = basePagination || (itemsExist ? {
-    total: activeTab === "jobs" ? filteredJobApplications.length : filteredMentorshipRequests.length,
-    limit: 20,
-    offset: 0,
-    currentPage: 1,
-    totalPages: 1,
-    hasNextPage: false,
-    hasPreviousPage: false,
-  } : null);
-  
+  const currentPagination =
+    basePagination ||
+    (itemsExist
+      ? {
+          total:
+            activeTab === "jobs"
+              ? filteredJobApplications.length
+              : filteredMentorshipRequests.length,
+          limit: 20,
+          offset: 0,
+          currentPage: 1,
+          totalPages: 1,
+          hasNextPage: false,
+          hasPreviousPage: false,
+        }
+      : null);
+
   const currentPage =
     activeTab === "jobs" ? jobCurrentPage : mentorshipCurrentPage;
   const setCurrentPage =
