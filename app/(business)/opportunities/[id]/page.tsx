@@ -14,7 +14,9 @@ export default function OpportunityPage() {
   const id = params.id as string;
   const applicationId = searchParams.get("appId") || undefined;
   const appliedAsParam = searchParams.get("appliedAs");
-  const initialAppliedAs = appliedAsParam ? appliedAsParam.split(",") : undefined;
+  const initialAppliedAs = appliedAsParam
+    ? appliedAsParam.split(",")
+    : undefined;
   const initialSaved = searchParams.get("saved") === "1";
   const { activeRole, userRoles, isLoading: profileLoading } = useProfile();
 

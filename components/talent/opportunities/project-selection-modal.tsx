@@ -109,240 +109,242 @@ export function ProjectSelectionModal({
 
   return (
     <>
-      <div className={`fixed inset-0 z-[60] flex items-center justify-center ${showUploadModal ? 'pointer-events-none' : ''}`}>
+      <div
+        className={`fixed inset-0 z-[60] flex items-center justify-center ${showUploadModal ? "pointer-events-none" : ""}`}
+      >
         {/* Backdrop */}
         <div className="absolute inset-0 bg-black/50" onClick={handleClose} />
 
         {/* Modal */}
         <div className="relative bg-white w-full h-full md:h-auto md:rounded-[17px] md:max-w-[515px] md:mx-4 md:max-h-[95vh] md:shadow-[0_0_15px_0_rgba(0,0,0,0.15)] flex flex-col overflow-hidden pointer-events-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between px-[16px] pt-[20px] pb-[16px] flex-shrink-0 border-b md:border-b-0 border-[#E1E4EA]">
-          <button
-            onClick={handleClose}
-            className="p-0.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M5.5 12.002H19"
-                stroke="#141B34"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M10.9999 18.002C10.9999 18.002 5.00001 13.583 5 12.0019C4.99999 10.4208 11 6.00195 11 6.00195"
-                stroke="#141B34"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-          <div className="flex flex-col items-center gap-[4px]">
-            <h2 className="text-black text-center font-inter-tight text-[15px] font-medium leading-[15px] capitalize">
-              Select Up to 3 Projects
-            </h2>
-            <p className="text-[#99A0AE] text-center font-inter-tight text-[11px] font-normal">
-              Upload more works here if needed
-            </p>
-          </div>
-          <div className="w-[20px]" /> {/* Spacer for centering */}
-        </div>
-
-        {/* Upload Section */}
-        <div className="px-[16px] pt-[16px] pb-[16px] flex-shrink-0">
-          <button
-            onClick={() => setShowUploadModal(true)}
-            className="w-full flex items-center justify-center gap-[8px] px-[12px] py-[12px] border border-dashed rounded-[8px] hover:opacity-80 transition-colors"
-            style={{ borderColor: primary }}
-          >
-            <Upload size={16} style={{ color: primary }} />
-            <span
-              className="font-inter-tight text-[13px] font-medium"
-              style={{ color: primary }}
-            >
-              {projects.length === 0 ? "Upload Work" : "Upload More Works"}
-            </span>
-          </button>
-        </div>
-
-        {/* Projects List */}
-        <div className="flex-1 overflow-y-auto px-[16px] pb-[16px] min-h-[350px]">
-          {isLoading && (
-            <div className="flex items-center justify-center h-full">
-              <Loader
-                className="w-5 h-5 animate-spin"
-                style={{ color: primary }}
-              />
-            </div>
-          )}
-
-          {error && !isLoading && (
-            <div className="flex items-center justify-center h-full">
-              <p className="text-sm text-red-600">{error}</p>
-            </div>
-          )}
-
-          {!isLoading && !error && projects.length === 0 && (
-            <div className="flex items-center justify-center h-full">
-              <p className="text-sm text-[#525866]">No works added yet</p>
-            </div>
-          )}
-
-          {!isLoading && !error && projects.length > 0 && (
-            <div className="flex flex-col gap-[8px]">
-              {projects.map((galleryItem) => {
-                const isSelected = tempSelected.some(
-                  (p) => p.id === galleryItem.id,
-                );
-                const displayImages = galleryItem.images?.slice(0, 3) || [];
-                const hasMoreImages = (galleryItem.images?.length || 0) > 3;
-
-                return (
-                  <button
-                    key={galleryItem.id}
-                    onClick={() => handleToggleProject(galleryItem)}
-                    className={`p-[12px] border rounded-[8px] transition-all ${
-                      isSelected ? "" : "border-[#E1E4EA] hover:opacity-80"
-                    }`}
-                    style={
-                      isSelected
-                        ? {
-                            borderColor: primary,
-                            backgroundColor: `${primary}1A`,
-                          }
-                        : undefined
-                    }
-                  >
-                    <div className="flex items-start gap-[12px]">
-                      {/* Project Images */}
-                      <div className="flex-shrink-0">
-                        {displayImages.length === 1 ? (
-                          // Single image - show larger
-                          <img
-                            src={displayImages[0]}
-                            alt={galleryItem.title}
-                            className="w-[124px] h-[93px] object-cover rounded-[7px]"
-                          />
-                        ) : (
-                          // Multiple images - show grid
-                          <div className="w-[124px] h-[93px] grid grid-cols-2 gap-[2px]">
-                            {displayImages.map((img, idx) => (
-                              <div
-                                key={idx}
-                                className={`relative overflow-hidden rounded-[4px] ${
-                                  displayImages.length === 2
-                                    ? "col-span-1"
-                                    : idx === 0
-                                      ? "col-span-2"
-                                      : "col-span-1"
-                                }`}
-                              >
-                                <img
-                                  src={img}
-                                  alt={`${galleryItem.title} ${idx + 1}`}
-                                  className="w-full h-full object-cover"
-                                />
-                                {/* Show count badge on last image if more exist */}
-                                {idx === displayImages.length - 1 &&
-                                  hasMoreImages && (
-                                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                                      <span className="text-white font-inter-tight text-[11px] font-semibold">
-                                        +{galleryItem.images!.length - 3}
-                                      </span>
-                                    </div>
-                                  )}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Project Details */}
-                      <div className="flex-1 flex flex-col items-start gap-[12px] min-w-0">
-                        <h3 className="text-black font-inter-tight text-[15px] font-medium text-left line-clamp-2">
-                          {galleryItem.title}
-                        </h3>
-
-                        {/* Description as tag */}
-                        {galleryItem.description && (
-                          <div className="flex flex-wrap items-start gap-x-[4px] gap-y-[5px]">
-                            <div className="px-[10px] py-[9px] bg-[#F5F5F5] rounded-[24px]">
-                              <span className="text-black text-center font-inter-tight text-[11px] font-normal leading-[105%] line-clamp-1">
-                                {galleryItem.description}
-                              </span>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Image count indicator */}
-                        {(galleryItem.images?.length || 0) > 1 && (
-                          <div className="flex items-center gap-[4px]">
-                            <svg
-                              width="12"
-                              height="12"
-                              viewBox="0 0 12 12"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M10.5 3.75V8.25C10.5 9.075 9.825 9.75 9 9.75H3C2.175 9.75 1.5 9.075 1.5 8.25V3.75C1.5 2.925 2.175 2.25 3 2.25H9C9.825 2.25 10.5 2.925 10.5 3.75Z"
-                                stroke="#99A0AE"
-                                strokeWidth="0.75"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                              <path
-                                d="M4.125 5.25C4.53921 5.25 4.875 4.91421 4.875 4.5C4.875 4.08579 4.53921 3.75 4.125 3.75C3.71079 3.75 3.375 4.08579 3.375 4.5C3.375 4.91421 3.71079 5.25 4.125 5.25Z"
-                                fill="#99A0AE"
-                              />
-                              <path
-                                d="M10.5 6.75L8.25 4.5L3 9.75"
-                                stroke="#99A0AE"
-                                strokeWidth="0.75"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                            <span className="text-[#99A0AE] font-inter-tight text-[11px]">
-                              {galleryItem.images?.length || 0} image
-                              {(galleryItem.images?.length || 0) !== 1
-                                ? "s"
-                                : ""}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </div>
-
-        {/* Footer with selection info */}
-        <div className="px-[16px] pb-[20px] pt-[12px] border-t border-[#E1E4EA] flex-shrink-0">
-          <div className="flex items-center justify-between">
-            <p className="text-[#525866] font-inter-tight text-[12px]">
-              {tempSelected.length} of 3 projects selected
-            </p>
+          {/* Header */}
+          <div className="flex items-center justify-between px-[16px] pt-[20px] pb-[16px] flex-shrink-0 border-b md:border-b-0 border-[#E1E4EA]">
             <button
-              onClick={handleConfirm}
-              disabled={tempSelected.length === 0}
-              className="px-[26px] py-[10px] text-white rounded-[24px] font-inter-tight text-[13px] font-normal hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
-              style={{ backgroundColor: primary }}
+              onClick={handleClose}
+              className="p-0.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
             >
-              Confirm Selection
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M5.5 12.002H19"
+                  stroke="#141B34"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M10.9999 18.002C10.9999 18.002 5.00001 13.583 5 12.0019C4.99999 10.4208 11 6.00195 11 6.00195"
+                  stroke="#141B34"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+            <div className="flex flex-col items-center gap-[4px]">
+              <h2 className="text-black text-center font-inter-tight text-[15px] font-medium leading-[15px] capitalize">
+                Select Up to 3 Projects
+              </h2>
+              <p className="text-[#99A0AE] text-center font-inter-tight text-[11px] font-normal">
+                Upload more works here if needed
+              </p>
+            </div>
+            <div className="w-[20px]" /> {/* Spacer for centering */}
+          </div>
+
+          {/* Upload Section */}
+          <div className="px-[16px] pt-[16px] pb-[16px] flex-shrink-0">
+            <button
+              onClick={() => setShowUploadModal(true)}
+              className="w-full flex items-center justify-center gap-[8px] px-[12px] py-[12px] border border-dashed rounded-[8px] hover:opacity-80 transition-colors"
+              style={{ borderColor: primary }}
+            >
+              <Upload size={16} style={{ color: primary }} />
+              <span
+                className="font-inter-tight text-[13px] font-medium"
+                style={{ color: primary }}
+              >
+                {projects.length === 0 ? "Upload Work" : "Upload More Works"}
+              </span>
             </button>
           </div>
-        </div>
+
+          {/* Projects List */}
+          <div className="flex-1 overflow-y-auto px-[16px] pb-[16px] min-h-[350px]">
+            {isLoading && (
+              <div className="flex items-center justify-center h-full">
+                <Loader
+                  className="w-5 h-5 animate-spin"
+                  style={{ color: primary }}
+                />
+              </div>
+            )}
+
+            {error && !isLoading && (
+              <div className="flex items-center justify-center h-full">
+                <p className="text-sm text-red-600">{error}</p>
+              </div>
+            )}
+
+            {!isLoading && !error && projects.length === 0 && (
+              <div className="flex items-center justify-center h-full">
+                <p className="text-sm text-[#525866]">No works added yet</p>
+              </div>
+            )}
+
+            {!isLoading && !error && projects.length > 0 && (
+              <div className="flex flex-col gap-[8px]">
+                {projects.map((galleryItem) => {
+                  const isSelected = tempSelected.some(
+                    (p) => p.id === galleryItem.id,
+                  );
+                  const displayImages = galleryItem.images?.slice(0, 3) || [];
+                  const hasMoreImages = (galleryItem.images?.length || 0) > 3;
+
+                  return (
+                    <button
+                      key={galleryItem.id}
+                      onClick={() => handleToggleProject(galleryItem)}
+                      className={`p-[12px] border rounded-[8px] transition-all ${
+                        isSelected ? "" : "border-[#E1E4EA] hover:opacity-80"
+                      }`}
+                      style={
+                        isSelected
+                          ? {
+                              borderColor: primary,
+                              backgroundColor: `${primary}1A`,
+                            }
+                          : undefined
+                      }
+                    >
+                      <div className="flex items-start gap-[12px]">
+                        {/* Project Images */}
+                        <div className="flex-shrink-0">
+                          {displayImages.length === 1 ? (
+                            // Single image - show larger
+                            <img
+                              src={displayImages[0]}
+                              alt={galleryItem.title}
+                              className="w-[124px] h-[93px] object-cover rounded-[7px]"
+                            />
+                          ) : (
+                            // Multiple images - show grid
+                            <div className="w-[124px] h-[93px] grid grid-cols-2 gap-[2px]">
+                              {displayImages.map((img, idx) => (
+                                <div
+                                  key={idx}
+                                  className={`relative overflow-hidden rounded-[4px] ${
+                                    displayImages.length === 2
+                                      ? "col-span-1"
+                                      : idx === 0
+                                        ? "col-span-2"
+                                        : "col-span-1"
+                                  }`}
+                                >
+                                  <img
+                                    src={img}
+                                    alt={`${galleryItem.title} ${idx + 1}`}
+                                    className="w-full h-full object-cover"
+                                  />
+                                  {/* Show count badge on last image if more exist */}
+                                  {idx === displayImages.length - 1 &&
+                                    hasMoreImages && (
+                                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                        <span className="text-white font-inter-tight text-[11px] font-semibold">
+                                          +{galleryItem.images!.length - 3}
+                                        </span>
+                                      </div>
+                                    )}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Project Details */}
+                        <div className="flex-1 flex flex-col items-start gap-[12px] min-w-0">
+                          <h3 className="text-black font-inter-tight text-[15px] font-medium text-left line-clamp-2">
+                            {galleryItem.title}
+                          </h3>
+
+                          {/* Description as tag */}
+                          {galleryItem.description && (
+                            <div className="flex flex-wrap items-start gap-x-[4px] gap-y-[5px]">
+                              <div className="px-[10px] py-[9px] bg-[#F5F5F5] rounded-[24px]">
+                                <span className="text-black text-center font-inter-tight text-[11px] font-normal leading-[105%] line-clamp-1">
+                                  {galleryItem.description}
+                                </span>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Image count indicator */}
+                          {(galleryItem.images?.length || 0) > 1 && (
+                            <div className="flex items-center gap-[4px]">
+                              <svg
+                                width="12"
+                                height="12"
+                                viewBox="0 0 12 12"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M10.5 3.75V8.25C10.5 9.075 9.825 9.75 9 9.75H3C2.175 9.75 1.5 9.075 1.5 8.25V3.75C1.5 2.925 2.175 2.25 3 2.25H9C9.825 2.25 10.5 2.925 10.5 3.75Z"
+                                  stroke="#99A0AE"
+                                  strokeWidth="0.75"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                                <path
+                                  d="M4.125 5.25C4.53921 5.25 4.875 4.91421 4.875 4.5C4.875 4.08579 4.53921 3.75 4.125 3.75C3.71079 3.75 3.375 4.08579 3.375 4.5C3.375 4.91421 3.71079 5.25 4.125 5.25Z"
+                                  fill="#99A0AE"
+                                />
+                                <path
+                                  d="M10.5 6.75L8.25 4.5L3 9.75"
+                                  stroke="#99A0AE"
+                                  strokeWidth="0.75"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                              <span className="text-[#99A0AE] font-inter-tight text-[11px]">
+                                {galleryItem.images?.length || 0} image
+                                {(galleryItem.images?.length || 0) !== 1
+                                  ? "s"
+                                  : ""}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Footer with selection info */}
+          <div className="px-[16px] pb-[20px] pt-[12px] border-t border-[#E1E4EA] flex-shrink-0">
+            <div className="flex items-center justify-between">
+              <p className="text-[#525866] font-inter-tight text-[12px]">
+                {tempSelected.length} of 3 projects selected
+              </p>
+              <button
+                onClick={handleConfirm}
+                disabled={tempSelected.length === 0}
+                className="px-[26px] py-[10px] text-white rounded-[24px] font-inter-tight text-[13px] font-normal hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0"
+                style={{ backgroundColor: primary }}
+              >
+                Confirm Selection
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -425,7 +427,7 @@ function UploadWorkModal({
 
       // Show success modal
       setShowSuccess(true);
-      
+
       // Auto-close success modal after 2 seconds
       setTimeout(() => {
         handleClose();
@@ -631,7 +633,11 @@ function UploadWorkModal({
           <button
             type="button"
             onClick={handleUpload}
-            disabled={isUploading || selectedFiles.length === 0 || !uploadData.title.trim()}
+            disabled={
+              isUploading ||
+              selectedFiles.length === 0 ||
+              !uploadData.title.trim()
+            }
             className="flex-1 py-[16px] text-white rounded-[20px] font-inter-tight text-[13px] font-normal hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-[6px]"
             style={{ backgroundColor: primary }}
           >

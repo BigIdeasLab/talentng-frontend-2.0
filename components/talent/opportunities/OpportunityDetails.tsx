@@ -223,7 +223,11 @@ export function OpportunityDetails({
   const getCompanyLogo = (): string => {
     const DEFAULT_LOGO = "/default.png";
     // Try opportunity logo first, then postedBy recruiter profile image, then default
-    return opportunity.logo || opportunity.postedBy?.recruiterProfile?.profileImageUrl || DEFAULT_LOGO;
+    return (
+      opportunity.logo ||
+      opportunity.postedBy?.recruiterProfile?.profileImageUrl ||
+      DEFAULT_LOGO
+    );
   };
 
   const formatDate = (isoDate?: string): string => {
