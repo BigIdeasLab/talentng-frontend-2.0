@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { DeleteConfirmationModal } from "@/components/ui/delete-confirmation-modal";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import {
   getRecruiterSettings,
@@ -24,6 +25,9 @@ import {
 } from "@/lib/api/recruiter";
 import { getCurrentUser } from "@/lib/api/users";
 import { logoutAllDevices } from "@/lib/api/auth";
+import { changePassword } from "@/lib/api/auth";
+import { deleteRecruiterProfile } from "@/lib/api/users";
+import { useProfile } from "@/hooks/useProfile";
 import type { RecruiterSettings as RecruiterSettingsType } from "@/lib/api/recruiter/types";
 
 function SettingsSection({
@@ -81,10 +85,12 @@ function ToggleSetting({
 export function EmployerSettings() {
   const roleColors = ROLE_COLORS.recruiter;
   const queryClient = useQueryClient();
+  const { userRoles, switchRole } = useProfile();
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // Fetch settings from the API
   const {
@@ -131,14 +137,8 @@ export function EmployerSettings() {
     onError: () => toast.error("Failed to save settings"),
   });
 
-  const changePassword = useMutation({
-    mutationFn: async () => {
-      // Mocking password change as no endpoint exists yet
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      if (newPassword !== confirmPassword)
-        throw new Error("Passwords don't match");
-      return { success: true };
-    },
+  const changePasswordMutation = useMutation({
+    mutationFn: () => changePassword(currentPassword, newPassword),
     onSuccess: () => {
       toast.success("Password changed successfully");
       setCurrentPassword("");
@@ -147,6 +147,35 @@ export function EmployerSettings() {
     },
     onError: (error: any) =>
       toast.error(error.message || "Failed to change password"),
+  });
+
+  const deleteProfileMutation = useMutation({
+    mutationFn: deleteRecruiterProfile,
+    onSuccess: async () => {
+      toast.success("Recruiter profile deleted successfully");
+      
+      // Find the next available role to switch to
+      const remainingRoles = userRoles.filter(role => role !== 'recruiter' && role !== 'employer');
+      
+      if (remainingRoles.length > 0) {
+        // Switch to the first available role
+        const nextRole = remainingRoles[0];
+        try {
+          await switchRole(nextRole);
+          // Reload to clear stale state and redirect to new role's dashboard
+          window.location.href = "/dashboard";
+        } catch (error) {
+          console.error("Failed to switch role after deletion:", error);
+          // Fallback: just redirect to dashboard
+          window.location.href = "/dashboard";
+        }
+      } else {
+        // No remaining roles, redirect to onboarding to create a new profile
+        window.location.href = "/onboarding";
+      }
+    },
+    onError: (error: any) =>
+      toast.error(error.message || "Failed to delete recruiter profile"),
   });
 
   const handleLogoutAll = useMutation({
@@ -347,9 +376,15 @@ export function EmployerSettings() {
                   />
                 </div>
                 <Button
-                  onClick={() => changePassword.mutate()}
+                  onClick={() => {
+                    if (newPassword !== confirmPassword) {
+                      toast.error("Passwords don't match");
+                      return;
+                    }
+                    changePasswordMutation.mutate();
+                  }}
                   disabled={
-                    changePassword.isPending ||
+                    changePasswordMutation.isPending ||
                     !currentPassword ||
                     !newPassword ||
                     !confirmPassword
@@ -357,7 +392,7 @@ export function EmployerSettings() {
                   className="text-white hover:opacity-90 w-full md:w-auto min-h-[44px]"
                   style={{ backgroundColor: roleColors.primary }}
                 >
-                  {changePassword.isPending && (
+                  {changePasswordMutation.isPending && (
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   )}
                   <Shield className="w-4 h-4 mr-2" />
@@ -412,10 +447,10 @@ export function EmployerSettings() {
                   <Trash2 className="w-5 h-5 text-red-500" />
                   <div>
                     <p className="text-[13px] font-medium font-inter-tight text-red-600">
-                      Delete Account
+                      Delete Recruiter Profile
                     </p>
                     <p className="text-[12px] font-inter-tight text-[#525866]">
-                      Permanently delete your account and all data
+                      Permanently delete your recruiter profile and data
                     </p>
                   </div>
                 </div>
@@ -423,14 +458,29 @@ export function EmployerSettings() {
                   variant="outline"
                   size="sm"
                   className="text-red-600 border-red-200 hover:bg-red-50 w-full md:w-auto min-h-[44px]"
+                  onClick={() => setShowDeleteModal(true)}
+                  disabled={deleteProfileMutation.isPending}
                 >
-                  Delete
+                  {deleteProfileMutation.isPending ? "Deleting..." : "Delete"}
                 </Button>
               </div>
             </div>
           </SettingsSection>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={() => deleteProfileMutation.mutate()}
+        title="Delete Recruiter Profile"
+        description="This will permanently remove all your company data, job postings, applications, and candidate interactions. You can still use your other profiles if you have any. This action cannot be undone."
+        confirmationText="delete recruiter profile"
+        confirmText="Delete Profile"
+        cancelText="Cancel"
+        isLoading={deleteProfileMutation.isPending}
+      />
     </div>
   );
 }

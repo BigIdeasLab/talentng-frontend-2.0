@@ -31,5 +31,35 @@ export const completeOnboarding = async (formData: FormData): Promise<any> => {
   });
 };
 
+/**
+ * Delete user account completely
+ */
+export const deleteAccount = async (): Promise<void> => {
+  return apiClient<void>("/users/me", {
+    method: "DELETE",
+  });
+};
+
+/**
+ * Delete specific profile by role
+ */
+export const deleteTalentProfile = async (): Promise<void> => {
+  return apiClient<void>("/talent/me", {
+    method: "DELETE",
+  });
+};
+
+export const deleteMentorProfile = async (): Promise<void> => {
+  return apiClient<void>("/mentor/me", {
+    method: "DELETE",
+  });
+};
+
+export const deleteRecruiterProfile = async (): Promise<void> => {
+  return apiClient<void>("/recruiter/me", {
+    method: "DELETE",
+  });
+};
+
 // Export types
-export type { UsernameAvailability };
+export type { UsernameAvailability, DeleteAccountResponse };

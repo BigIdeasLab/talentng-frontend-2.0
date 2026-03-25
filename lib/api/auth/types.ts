@@ -26,5 +26,10 @@ export interface ResetPasswordRequest {
   newPassword: string;
 }
 
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
 // Re-export types from lib/types
 export type { User, LoginResponse };

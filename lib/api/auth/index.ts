@@ -121,6 +121,16 @@ export const createPassword = async (password: string): Promise<void> => {
   });
 };
 
+export const changePassword = async (
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> => {
+  return apiClient<void>("/auth/change-password", {
+    method: "POST",
+    body: { currentPassword, newPassword },
+  });
+};
+
 export const refreshAuthToken = async (): Promise<AuthResponse> => {
   const deviceId =
     typeof window !== "undefined" ? localStorage.getItem("deviceId") : null;
@@ -139,5 +149,6 @@ export type {
   AuthResponse,
   VerifyEmailRequest,
   ResetPasswordRequest,
+  ChangePasswordRequest,
   LoginResponse,
 };

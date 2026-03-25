@@ -6,3 +6,8 @@ export interface UsernameAvailability {
 export interface CheckUsernameParams {
   username: string;
 }
+
+export interface DeleteAccountResponse {
+  message: string;
+  deletedAt: string;
+}
