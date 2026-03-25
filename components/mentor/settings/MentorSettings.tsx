@@ -209,10 +209,10 @@ export function MentorSettings() {
     mutationFn: deleteMentorProfile,
     onSuccess: async () => {
       toast.success("Mentor profile deleted successfully");
-      
+
       // Find the next available role to switch to
-      const remainingRoles = userRoles.filter(role => role !== 'mentor');
-      
+      const remainingRoles = userRoles.filter((role) => role !== "mentor");
+
       if (remainingRoles.length > 0) {
         // Switch to the first available role
         const nextRole = remainingRoles[0];

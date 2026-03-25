@@ -67,7 +67,11 @@ export function DeleteConfirmationModal({
         {/* Confirmation Input */}
         <div className="w-full mb-6">
           <Label className="text-left block mb-2 font-inter-tight text-[12px] font-medium text-[#525866]">
-            Type <span className="font-mono bg-gray-100 px-1 rounded">{confirmationText}</span> to confirm:
+            Type{" "}
+            <span className="font-mono bg-gray-100 px-1 rounded">
+              {confirmationText}
+            </span>{" "}
+            to confirm:
           </Label>
           <Input
             value={inputValue}

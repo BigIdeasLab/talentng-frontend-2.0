@@ -154,10 +154,10 @@ export function TalentSettings() {
     mutationFn: deleteTalentProfile,
     onSuccess: async () => {
       toast.success("Talent profile deleted successfully");
-      
+
       // Find the next available role to switch to
-      const remainingRoles = userRoles.filter(role => role !== 'talent');
-      
+      const remainingRoles = userRoles.filter((role) => role !== "talent");
+
       if (remainingRoles.length > 0) {
         // Switch to the first available role
         const nextRole = remainingRoles[0];

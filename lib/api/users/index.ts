@@ -4,7 +4,7 @@
  */
 
 import apiClient from "@/lib/api";
-import type { UsernameAvailability } from "./types";
+import type { UsernameAvailability, DeleteAccountResponse } from "./types";
 import type { User } from "@/lib/types/auth";
 
 export const checkUsernameAvailability = async (

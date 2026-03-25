@@ -11,6 +11,7 @@ import type {
   AuthResponse,
   VerifyEmailRequest,
   ResetPasswordRequest,
+  ChangePasswordRequest,
   LoginResponse,
 } from "./types";
 

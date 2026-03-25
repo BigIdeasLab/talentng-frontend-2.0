@@ -153,10 +153,12 @@ export function EmployerSettings() {
     mutationFn: deleteRecruiterProfile,
     onSuccess: async () => {
       toast.success("Recruiter profile deleted successfully");
-      
+
       // Find the next available role to switch to
-      const remainingRoles = userRoles.filter(role => role !== 'recruiter' && role !== 'employer');
-      
+      const remainingRoles = userRoles.filter(
+        (role) => role !== "recruiter" && role !== "employer",
+      );
+
       if (remainingRoles.length > 0) {
         // Switch to the first available role
         const nextRole = remainingRoles[0];
