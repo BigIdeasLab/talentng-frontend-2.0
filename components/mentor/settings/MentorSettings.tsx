@@ -19,8 +19,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { DeleteConfirmationModal } from "@/components/ui/delete-confirmation-modal";
+import { ProfileEmailSection } from "@/components/profile-email";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
-import { getMentorSettings, updateMentorSettings } from "@/lib/api/mentor";
+import { 
+  getMentorSettings, 
+  updateMentorSettings,
+  updateMentorEmail,
+  verifyMentorEmail,
+  resendMentorVerification
+} from "@/lib/api/mentor";
 import { getCurrentUser } from "@/lib/api/users";
 import { logoutAllDevices } from "@/lib/api/auth";
 import { changePassword } from "@/lib/api/auth";
@@ -243,6 +250,58 @@ export function MentorSettings() {
     onError: () => toast.error("Failed to sign out from all devices"),
   });
 
+  // Email management mutations
+  const updateEmailMutation = useMutation({
+    mutationFn: updateMentorEmail,
+    onSuccess: () => {
+      toast.success("Email updated successfully. Please check your email for verification code.");
+      queryClient.invalidateQueries({ queryKey: ["mentorSettings"] });
+    },
+    onError: (error: any) => {
+      if (error.error === 'RATE_LIMITED') {
+        toast.error(error.message || "You can only update your email once every 7 days.");
+      } else if (error.error === 'DUPLICATE_EMAIL') {
+        toast.error("This email is already in use. Please choose a different email.");
+      } else {
+        toast.error(error.message || "Failed to update email");
+      }
+    },
+  });
+
+  const verifyEmailMutation = useMutation({
+    mutationFn: verifyMentorEmail,
+    onSuccess: () => {
+      toast.success("Email verified successfully!");
+      queryClient.invalidateQueries({ queryKey: ["mentorSettings"] });
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "Failed to verify email");
+    },
+  });
+
+  const resendCodeMutation = useMutation({
+    mutationFn: resendMentorVerification,
+    onSuccess: () => {
+      toast.success("Verification code sent to your email");
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "Failed to resend verification code");
+    },
+  });
+
+  // Email management handlers
+  const handleEmailUpdate = async (email: string) => {
+    await updateEmailMutation.mutateAsync(email);
+  };
+
+  const handleVerifyEmail = async (code: string) => {
+    await verifyEmailMutation.mutateAsync(code);
+  };
+
+  const handleResendCode = async () => {
+    await resendCodeMutation.mutateAsync();
+  };
+
   if (isLoading) {
     return (
       <div className="h-screen bg-white flex items-center justify-center">
@@ -311,6 +370,22 @@ export function MentorSettings() {
               </Button>
             </div>
           </SettingsSection>
+
+          {/* Profile Email */}
+          <ProfileEmailSection
+            role="mentor"
+            currentEmail={settings?.email}
+            emailVerified={settings?.emailVerified || false}
+            emailUpdatedAt={settings?.emailUpdatedAt}
+            mainAccountEmail={userData?.email || ""}
+            onEmailUpdate={handleEmailUpdate}
+            onVerifyEmail={handleVerifyEmail}
+            onResendCode={handleResendCode}
+            isLoading={updateEmailMutation.isPending || verifyEmailMutation.isPending || resendCodeMutation.isPending}
+            rateLimitedUntil={undefined} // This would come from API error response
+            roleColors={roleColors}
+            isInitialLoading={isLoading || !userData}
+          />
 
           {/* Session Settings */}
           <SettingsSection

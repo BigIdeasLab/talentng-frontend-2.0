@@ -303,6 +303,11 @@ export interface TalentSettings {
   // Push Notifications
   pushApplications: boolean;
   pushInterviews: boolean;
+
+  // Profile Email Settings
+  email?: string;
+  emailVerified: boolean;
+  emailUpdatedAt?: string;
 }
 
 export type UpdateTalentSettingsInput = Partial<TalentSettings>;

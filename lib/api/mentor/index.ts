@@ -216,3 +216,35 @@ export async function updateMentorSettings(
     body: data,
   });
 }
+
+/**
+ * Update Mentor Email
+ * PATCH /mentor/settings with email field
+ */
+export async function updateMentorEmail(email: string): Promise<MentorSettings> {
+  return apiClient<MentorSettings>("/mentor/settings", {
+    method: "PATCH",
+    body: { email },
+  });
+}
+
+/**
+ * Verify Mentor Email
+ * POST /mentor/verify-email
+ */
+export async function verifyMentorEmail(code: string): Promise<{ success: boolean; message?: string }> {
+  return apiClient<{ success: boolean; message?: string }>("/mentor/verify-email", {
+    method: "POST",
+    body: { verificationCode: code },
+  });
+}
+
+/**
+ * Resend Mentor Verification Code
+ * POST /mentor/resend-verification
+ */
+export async function resendMentorVerification(): Promise<void> {
+  return apiClient<void>("/mentor/resend-verification", {
+    method: "POST",
+  });
+}

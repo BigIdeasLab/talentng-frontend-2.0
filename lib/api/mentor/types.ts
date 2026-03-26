@@ -136,6 +136,10 @@ export interface MentorSettings {
   emailMarketing: boolean;
   pushNewRequests: boolean;
   pushSessionReminders: boolean;
+  // Profile Email Settings
+  email?: string;
+  emailVerified: boolean;
+  emailUpdatedAt?: string;
 }
 
 /**

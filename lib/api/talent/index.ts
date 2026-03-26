@@ -512,6 +512,38 @@ export async function updateTalentSettings(
 }
 
 /**
+ * Update Talent Email
+ * PATCH /talent/settings with email field
+ */
+export async function updateTalentEmail(email: string): Promise<TalentSettings> {
+  return apiClient<TalentSettings>("/talent/settings", {
+    method: "PATCH",
+    body: { email },
+  });
+}
+
+/**
+ * Verify Talent Email
+ * POST /talent/verify-email
+ */
+export async function verifyTalentEmail(code: string): Promise<{ success: boolean; message?: string }> {
+  return apiClient<{ success: boolean; message?: string }>("/talent/verify-email", {
+    method: "POST",
+    body: { verificationCode: code },
+  });
+}
+
+/**
+ * Resend Talent Verification Code
+ * POST /talent/resend-verification
+ */
+export async function resendTalentVerification(): Promise<void> {
+  return apiClient<void>("/talent/resend-verification", {
+    method: "POST",
+  });
+}
+
+/**
  * Get Unified Calendar Feed
  * GET /talent/calendar
  */

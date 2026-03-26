@@ -169,3 +169,35 @@ export async function updateRecruiterSettings(
     body: data,
   });
 }
+
+/**
+ * Update Recruiter Email
+ * PATCH /recruiter/settings with email field
+ */
+export async function updateRecruiterEmail(email: string): Promise<RecruiterSettings> {
+  return apiClient<RecruiterSettings>("/recruiter/settings", {
+    method: "PATCH",
+    body: { email },
+  });
+}
+
+/**
+ * Verify Recruiter Email
+ * POST /recruiter/verify-email
+ */
+export async function verifyRecruiterEmail(code: string): Promise<{ success: boolean; message?: string }> {
+  return apiClient<{ success: boolean; message?: string }>("/recruiter/verify-email", {
+    method: "POST",
+    body: { verificationCode: code },
+  });
+}
+
+/**
+ * Resend Recruiter Verification Code
+ * POST /recruiter/resend-verification
+ */
+export async function resendRecruiterVerification(): Promise<void> {
+  return apiClient<void>("/recruiter/resend-verification", {
+    method: "POST",
+  });
+}
