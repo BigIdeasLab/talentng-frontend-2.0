@@ -8,6 +8,7 @@ export interface CheckUsernameParams {
 }
 
 export interface DeleteAccountResponse {
-  message: string;
-  deletedAt: string;
+  accountDeleted: boolean;
+  message?: string;
+  deletedAt?: string;
 }

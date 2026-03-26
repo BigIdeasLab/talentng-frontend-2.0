@@ -43,20 +43,20 @@ export const deleteAccount = async (): Promise<void> => {
 /**
  * Delete specific profile by role
  */
-export const deleteTalentProfile = async (): Promise<void> => {
-  return apiClient<void>("/talent/me", {
+export const deleteTalentProfile = async (): Promise<DeleteAccountResponse> => {
+  return apiClient<DeleteAccountResponse>("/talent/me", {
     method: "DELETE",
   });
 };
 
-export const deleteMentorProfile = async (): Promise<void> => {
-  return apiClient<void>("/mentor/me", {
+export const deleteMentorProfile = async (): Promise<DeleteAccountResponse> => {
+  return apiClient<DeleteAccountResponse>("/mentor/me", {
     method: "DELETE",
   });
 };
 
-export const deleteRecruiterProfile = async (): Promise<void> => {
-  return apiClient<void>("/recruiter/me", {
+export const deleteRecruiterProfile = async (): Promise<DeleteAccountResponse> => {
+  return apiClient<DeleteAccountResponse>("/recruiter/me", {
     method: "DELETE",
   });
 };

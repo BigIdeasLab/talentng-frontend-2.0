@@ -214,7 +214,14 @@ export function MentorSettings() {
 
   const deleteProfileMutation = useMutation({
     mutationFn: deleteMentorProfile,
-    onSuccess: async () => {
+    onSuccess: async (result) => {
+      if (result.accountDeleted) {
+        // User account was soft-deleted — clear session and redirect to login
+        toast.info("Your account has been deleted as this was your last profile.");
+        window.location.href = "/login";
+        return;
+      }
+
       toast.success("Mentor profile deleted successfully");
 
       // Find the next available role to switch to

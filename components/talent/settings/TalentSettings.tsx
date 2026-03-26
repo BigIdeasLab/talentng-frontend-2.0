@@ -159,7 +159,14 @@ export function TalentSettings() {
 
   const deleteProfileMutation = useMutation({
     mutationFn: deleteTalentProfile,
-    onSuccess: async () => {
+    onSuccess: async (result) => {
+      if (result.accountDeleted) {
+        // User account was soft-deleted — clear session and redirect to login
+        toast.info("Your account has been deleted as this was your last profile.");
+        window.location.href = "/login";
+        return;
+      }
+
       toast.success("Talent profile deleted successfully");
 
       // Find the next available role to switch to
