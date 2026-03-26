@@ -20,11 +20,12 @@ The mobile mentorship page suffers from janky scroll behavior caused by the Mobi
 The bug manifests when a user scrolls on the mobile mentorship page. The MobileProgressiveHeader component creates its own scroll container (`overflow-y-auto`) which nests inside the page's flex layout, resulting in two competing scroll contexts that cause janky behavior and accessibility issues with bottom content.
 
 **Formal Specification:**
+
 ```
 FUNCTION isBugCondition(input)
   INPUT: input of type ScrollEvent on mobile mentorship page
   OUTPUT: boolean
-  
+
   RETURN input.viewport == 'mobile'
          AND input.page == 'mentorship'
          AND MobileProgressiveHeader.isUsed == true
@@ -44,6 +45,7 @@ END FUNCTION
 ### Preservation Requirements
 
 **Unchanged Behaviors:**
+
 - Desktop layout with static header, tabs, and scrollable content area must continue to work exactly as before
 - Category tabs on mobile must remain visible and sticky at the top while scrolling
 - Search and filter functionality must continue to display results correctly with pagination
@@ -51,6 +53,7 @@ END FUNCTION
 
 **Scope:**
 All inputs that do NOT involve mobile viewport scrolling on the mentorship page should be completely unaffected by this fix. This includes:
+
 - Desktop viewport behavior (any screen size >= md breakpoint)
 - Tab switching and filtering logic
 - Search functionality and API calls
@@ -97,6 +100,7 @@ Assuming our root cause analysis is correct:
 1. **Remove MobileProgressiveHeader wrapper**: Replace the `<MobileProgressiveHeader>` component with a simple div that has `overflow-y-auto` for single-scroll behavior
 
 2. **Restructure mobile layout**: Change from:
+
    ```tsx
    <MobileProgressiveHeader
      ref={mobileScrollRef}
@@ -106,19 +110,21 @@ Assuming our root cause analysis is correct:
      {content}
    </MobileProgressiveHeader>
    ```
+
    To:
+
    ```tsx
    <div className="flex-1 overflow-y-auto">
      {/* Header - scrolls with content */}
      <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA]">
        {header content}
      </div>
-     
+
      {/* Tabs - sticky */}
      <div className="sticky top-0 z-10 w-full px-[25px] py-[12px] bg-white border-b border-[#E1E4EA]">
        {tabs content}
      </div>
-     
+
      {/* Content */}
      <div>
        {content}
@@ -145,12 +151,14 @@ The testing strategy follows a two-phase approach: first, surface counterexample
 **Test Plan**: Manually test the mobile mentorship page on unfixed code to observe nested scroll behavior, pagination accessibility issues, and scroll feel inconsistencies. Document specific examples of janky behavior.
 
 **Test Cases**:
+
 1. **Nested Scroll Detection**: Inspect DOM on mobile mentorship page to confirm two scroll containers exist (will show nested structure on unfixed code)
 2. **Pagination Accessibility**: Scroll to bottom and attempt to click pagination controls, measuring if extra scroll effort is required (will fail on unfixed code)
 3. **Scroll Feel Comparison**: Navigate between opportunities page (fixed) and mentorship page (unfixed) to document the difference in scroll smoothness (will show inconsistency on unfixed code)
 4. **Rapid Scroll Test**: Rapidly scroll up and down to observe stuttering or momentum issues (may show janky behavior on unfixed code)
 
 **Expected Counterexamples**:
+
 - DOM inspection shows MobileProgressiveHeader creates a scroll container nested inside the page's flex container
 - Pagination controls require "pulling up extra" beyond natural scroll endpoint
 - Scroll momentum feels different/janky compared to opportunities page
@@ -161,6 +169,7 @@ The testing strategy follows a two-phase approach: first, surface counterexample
 **Goal**: Verify that for all inputs where the bug condition holds, the fixed function produces the expected behavior.
 
 **Pseudocode:**
+
 ```
 FOR ALL scrollEvent WHERE isBugCondition(scrollEvent) DO
   result := mobileLayout_fixed(scrollEvent)
@@ -171,6 +180,7 @@ END FOR
 ```
 
 **Test Cases**:
+
 1. **Single Scroll Container**: Inspect DOM to verify only one scroll container exists
 2. **Pagination Accessibility**: Scroll to bottom and verify pagination controls are fully accessible without extra effort
 3. **Scroll Smoothness**: Test scroll momentum and smoothness, comparing to opportunities page
@@ -182,6 +192,7 @@ END FOR
 **Goal**: Verify that for all inputs where the bug condition does NOT hold, the fixed function produces the same result as the original function.
 
 **Pseudocode:**
+
 ```
 FOR ALL input WHERE NOT isBugCondition(input) DO
   ASSERT mentorshipPage_original(input) = mentorshipPage_fixed(input)
@@ -189,6 +200,7 @@ END FOR
 ```
 
 **Testing Approach**: Manual testing is appropriate for this UI fix because:
+
 - The changes are visual and interaction-based, requiring human observation
 - Desktop layout behavior is straightforward to verify visually
 - Tab switching, search, and filter functionality can be tested through normal user interactions
@@ -197,6 +209,7 @@ END FOR
 **Test Plan**: Observe behavior on UNFIXED code first for desktop layout and interactions, then verify the same behavior continues after fix.
 
 **Test Cases**:
+
 1. **Desktop Layout Preservation**: Verify desktop layout (>= md breakpoint) shows static header with tabs and scrollable content area, unchanged from original
 2. **Tab Switching Preservation**: Click through all category tabs and verify they work identically to original
 3. **Search Functionality Preservation**: Enter search queries and verify results display correctly with pagination, unchanged from original

@@ -1,16 +1,16 @@
 /**
  * Preservation Property Tests for Mobile Scroll Progressive Header Fix
- * 
+ *
  * **Validates: Requirements 3.1, 3.2, 3.3, 3.4**
- * 
+ *
  * IMPORTANT: These tests should PASS on UNFIXED code - they capture baseline behavior to preserve.
- * 
+ *
  * Property 2: Preservation - Desktop and Interaction Behavior
- * 
+ *
  * For any interaction that is NOT mobile viewport scrolling (desktop layout, tab switching,
  * search/filter, pagination clicks), the fixed code SHALL produce exactly the same behavior
  * as the original code.
- * 
+ *
  * These tests verify that the fix does NOT break:
  * - Desktop layout with static header and scrollable content
  * - Category tabs remaining visible and sticky on mobile
@@ -26,7 +26,9 @@ import MentorshipPage from "./page";
 // Mock window.matchMedia for responsive hooks
 const createMatchMediaMock = (isDesktop: boolean) => {
   return vi.fn().mockImplementation((query) => {
-    const matches = query.includes("(min-width: 768px)") ? isDesktop : !isDesktop;
+    const matches = query.includes("(min-width: 768px)")
+      ? isDesktop
+      : !isDesktop;
     return {
       matches,
       media: query,
@@ -109,29 +111,31 @@ describe("Preservation Property Tests: Desktop and Interaction Behavior", () => 
       await screen.findAllByText("Mentorship");
 
       // Verify desktop layout structure
-      const desktopHeader = container.querySelector('.hidden.md\\:block');
+      const desktopHeader = container.querySelector(".hidden.md\\:block");
       expect(desktopHeader).toBeTruthy();
 
       // Verify header contains title
-      const title = desktopHeader?.querySelector('h1');
+      const title = desktopHeader?.querySelector("h1");
       expect(title?.textContent).toBe("Mentorship");
 
       // Verify search input exists in desktop header
-      const searchInput = desktopHeader?.querySelector('input[placeholder*="Search"]');
+      const searchInput = desktopHeader?.querySelector(
+        'input[placeholder*="Search"]',
+      );
       expect(searchInput).toBeTruthy();
 
       // Verify filter button exists in desktop header
-      const filterButton = desktopHeader?.querySelector('button');
+      const filterButton = desktopHeader?.querySelector("button");
       expect(filterButton).toBeTruthy();
 
       // Verify category tabs exist in desktop header
-      const categoryTabs = desktopHeader?.querySelectorAll('button');
+      const categoryTabs = desktopHeader?.querySelectorAll("button");
       expect(categoryTabs && categoryTabs.length > 1).toBe(true);
 
       // Verify desktop content area exists and is scrollable
-      const desktopContent = container.querySelector('.hidden.md\\:flex');
+      const desktopContent = container.querySelector(".hidden.md\\:flex");
       expect(desktopContent).toBeTruthy();
-      expect(desktopContent?.classList.contains('overflow-hidden')).toBe(true);
+      expect(desktopContent?.classList.contains("overflow-hidden")).toBe(true);
     });
 
     it("property: desktop layout structure is preserved across different viewport sizes", async () => {
@@ -152,22 +156,24 @@ describe("Preservation Property Tests: Desktop and Interaction Behavior", () => 
               await screen.findAllByText("Mentorship");
 
               // Verify desktop header is visible
-              const desktopHeader = container.querySelector('.hidden.md\\:block');
+              const desktopHeader =
+                container.querySelector(".hidden.md\\:block");
               expect(desktopHeader).toBeTruthy();
 
               // Verify mobile header is hidden
-              const mobileSection = container.querySelector('.md\\:hidden');
+              const mobileSection = container.querySelector(".md\\:hidden");
               expect(mobileSection).toBeTruthy();
 
               // Verify desktop content area exists
-              const desktopContent = container.querySelector('.hidden.md\\:flex');
+              const desktopContent =
+                container.querySelector(".hidden.md\\:flex");
               expect(desktopContent).toBeTruthy();
             } finally {
               unmount();
             }
-          }
+          },
         ),
-        { numRuns: 10 }
+        { numRuns: 10 },
       );
     });
   });
@@ -186,24 +192,24 @@ describe("Preservation Property Tests: Desktop and Interaction Behavior", () => 
       await screen.findAllByText("Mentorship");
 
       // Find mobile section
-      const mobileSection = container.querySelector('.md\\:hidden');
+      const mobileSection = container.querySelector(".md\\:hidden");
       expect(mobileSection).toBeTruthy();
 
       // Verify sticky tabs exist
-      const stickyTabs = container.querySelector('.sticky.top-0');
+      const stickyTabs = container.querySelector(".sticky.top-0");
       expect(stickyTabs).toBeTruthy();
 
       // Verify tabs have correct z-index for stacking
-      expect(stickyTabs?.classList.contains('z-10')).toBe(true);
+      expect(stickyTabs?.classList.contains("z-10")).toBe(true);
 
       // Verify tabs have background color (required for sticky to work visually)
-      const hasBackground = 
-        stickyTabs?.classList.contains('bg-white') ||
-        stickyTabs?.parentElement?.classList.contains('bg-white');
+      const hasBackground =
+        stickyTabs?.classList.contains("bg-white") ||
+        stickyTabs?.parentElement?.classList.contains("bg-white");
       expect(hasBackground).toBe(true);
 
       // Verify category buttons exist in tabs
-      const categoryButtons = stickyTabs?.querySelectorAll('button');
+      const categoryButtons = stickyTabs?.querySelectorAll("button");
       expect(categoryButtons && categoryButtons.length > 0).toBe(true);
     });
 
@@ -225,18 +231,18 @@ describe("Preservation Property Tests: Desktop and Interaction Behavior", () => 
               await screen.findAllByText("Mentorship");
 
               // Verify sticky tabs exist
-              const stickyTabs = container.querySelector('.sticky.top-0');
+              const stickyTabs = container.querySelector(".sticky.top-0");
               expect(stickyTabs).toBeTruthy();
 
               // Verify tabs have sticky positioning
-              expect(stickyTabs?.classList.contains('sticky')).toBe(true);
-              expect(stickyTabs?.classList.contains('top-0')).toBe(true);
+              expect(stickyTabs?.classList.contains("sticky")).toBe(true);
+              expect(stickyTabs?.classList.contains("top-0")).toBe(true);
             } finally {
               unmount();
             }
-          }
+          },
         ),
-        { numRuns: 5 }
+        { numRuns: 5 },
       );
     });
   });
@@ -249,7 +255,9 @@ describe("Preservation Property Tests: Desktop and Interaction Behavior", () => 
       await screen.findAllByText("Mentorship");
 
       // Verify search input exists
-      const searchInputs = container.querySelectorAll('input[placeholder*="Search"]');
+      const searchInputs = container.querySelectorAll(
+        'input[placeholder*="Search"]',
+      );
       expect(searchInputs.length).toBeGreaterThan(0);
 
       // Verify filter button exists
@@ -268,8 +276,10 @@ describe("Preservation Property Tests: Desktop and Interaction Behavior", () => 
         fc.asyncProperty(
           fc.oneof(
             fc.constant(""),
-            fc.string({ minLength: 2, maxLength: 20 }).filter(s => s.trim().length >= 2),
-            fc.constantFrom("engineer", "designer", "javascript", "react")
+            fc
+              .string({ minLength: 2, maxLength: 20 })
+              .filter((s) => s.trim().length >= 2),
+            fc.constantFrom("engineer", "designer", "javascript", "react"),
           ),
           async (searchQuery) => {
             const { container, unmount } = render(<MentorshipPage />);
@@ -279,7 +289,9 @@ describe("Preservation Property Tests: Desktop and Interaction Behavior", () => 
               await screen.findAllByText("Mentorship");
 
               // Find search input
-              const searchInputs = container.querySelectorAll('input[placeholder*="Search"]');
+              const searchInputs = container.querySelectorAll(
+                'input[placeholder*="Search"]',
+              );
               expect(searchInputs.length).toBeGreaterThan(0);
 
               // Verify search input accepts the query
@@ -291,9 +303,9 @@ describe("Preservation Property Tests: Desktop and Interaction Behavior", () => 
             } finally {
               unmount();
             }
-          }
+          },
         ),
-        { numRuns: 10 }
+        { numRuns: 10 },
       );
     });
 
@@ -325,9 +337,9 @@ describe("Preservation Property Tests: Desktop and Interaction Behavior", () => 
             } finally {
               unmount();
             }
-          }
+          },
         ),
-        { numRuns: 10 }
+        { numRuns: 10 },
       );
     });
   });
@@ -352,11 +364,13 @@ describe("Preservation Property Tests: Desktop and Interaction Behavior", () => 
       // Verify the page structure supports scroll-to-top functionality
       // The implementation may use different methods (ref.scrollToTop, window.scrollTo, etc.)
       // We verify the structure is in place, not the exact implementation
-      const mobileSection = container.querySelector('.md\\:hidden');
+      const mobileSection = container.querySelector(".md\\:hidden");
       expect(mobileSection).toBeTruthy();
 
       // Verify there's a scrollable container that can be scrolled to top
-      const scrollableContainer = mobileSection?.querySelector('[class*="overflow-y-auto"]');
+      const scrollableContainer = mobileSection?.querySelector(
+        '[class*="overflow-y-auto"]',
+      );
       expect(scrollableContainer).toBeTruthy();
     });
 
@@ -374,21 +388,24 @@ describe("Preservation Property Tests: Desktop and Interaction Behavior", () => 
               await screen.findAllByText("Mentorship");
 
               // Verify the page renders successfully with pagination structure
-              const mobileSection = container.querySelector('.md\\:hidden');
-              const desktopSection = container.querySelector('.hidden.md\\:flex');
-              
+              const mobileSection = container.querySelector(".md\\:hidden");
+              const desktopSection =
+                container.querySelector(".hidden.md\\:flex");
+
               // At least one section should exist
               expect(mobileSection || desktopSection).toBeTruthy();
 
               // Verify scrollable containers exist for scroll-to-top functionality
-              const scrollableContainers = container.querySelectorAll('[class*="overflow"]');
+              const scrollableContainers = container.querySelectorAll(
+                '[class*="overflow"]',
+              );
               expect(scrollableContainers.length).toBeGreaterThan(0);
             } finally {
               unmount();
             }
-          }
+          },
         ),
-        { numRuns: 10 }
+        { numRuns: 10 },
       );
     });
   });
@@ -399,7 +416,12 @@ describe("Preservation Property Tests: Desktop and Interaction Behavior", () => 
         fc.asyncProperty(
           fc.record({
             isDesktop: fc.boolean(),
-            searchQuery: fc.oneof(fc.constant(""), fc.string({ minLength: 2, maxLength: 15 }).filter(s => s.trim().length >= 2)),
+            searchQuery: fc.oneof(
+              fc.constant(""),
+              fc
+                .string({ minLength: 2, maxLength: 15 })
+                .filter((s) => s.trim().length >= 2),
+            ),
             category: fc.constantFrom("All", "Engineering", "Design"),
           }),
           async ({ isDesktop, searchQuery, category }) => {
@@ -416,10 +438,14 @@ describe("Preservation Property Tests: Desktop and Interaction Behavior", () => 
               await screen.findAllByText("Mentorship");
 
               // Verify core structure exists
-              expect(container.querySelector('h1')?.textContent).toBe("Mentorship");
+              expect(container.querySelector("h1")?.textContent).toBe(
+                "Mentorship",
+              );
 
               // Verify search functionality
-              const searchInputs = container.querySelectorAll('input[placeholder*="Search"]');
+              const searchInputs = container.querySelectorAll(
+                'input[placeholder*="Search"]',
+              );
               expect(searchInputs.length).toBeGreaterThan(0);
 
               // Verify filter button
@@ -427,27 +453,28 @@ describe("Preservation Property Tests: Desktop and Interaction Behavior", () => 
               expect(filterButtons.length).toBeGreaterThan(0);
 
               // Verify category tabs exist
-              const categoryButtons = container.querySelectorAll('button');
+              const categoryButtons = container.querySelectorAll("button");
               expect(categoryButtons.length).toBeGreaterThan(0);
 
               // Verify appropriate layout is shown
               if (isDesktop) {
-                const desktopHeader = container.querySelector('.hidden.md\\:block');
+                const desktopHeader =
+                  container.querySelector(".hidden.md\\:block");
                 expect(desktopHeader).toBeTruthy();
               } else {
-                const mobileSection = container.querySelector('.md\\:hidden');
+                const mobileSection = container.querySelector(".md\\:hidden");
                 expect(mobileSection).toBeTruthy();
-                
+
                 // Verify sticky tabs on mobile
-                const stickyTabs = container.querySelector('.sticky.top-0');
+                const stickyTabs = container.querySelector(".sticky.top-0");
                 expect(stickyTabs).toBeTruthy();
               }
             } finally {
               unmount();
             }
-          }
+          },
         ),
-        { numRuns: 20 }
+        { numRuns: 20 },
       );
     });
   });

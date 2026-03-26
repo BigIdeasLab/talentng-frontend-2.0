@@ -35,7 +35,6 @@
   - _Requirements: 3.1, 3.2, 3.3, 3.4_
 
 - [ ] 3. Fix for mobile scroll nested container issue
-
   - [ ] 3.1 Implement the fix
     - Remove MobileProgressiveHeader wrapper from mobile layout section
     - Replace with simple div that has `overflow-y-auto` for single-scroll behavior
