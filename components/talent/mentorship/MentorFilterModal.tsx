@@ -131,61 +131,14 @@ export function MentorFilterModal({
     }
   }, [isLocationOpen]);
 
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
-      ) {
-        handleApplyFilter();
-      }
-
-      if (
-        isHeadlineOpen &&
-        headlineRef.current &&
-        !headlineRef.current.contains(event.target as Node)
-      ) {
-        setIsHeadlineOpen(false);
-      }
-
-      if (
-        isExpertiseOpen &&
-        expertiseRef.current &&
-        !expertiseRef.current.contains(event.target as Node)
-      ) {
-        setIsExpertiseOpen(false);
-      }
-
-      if (
-        isLocationOpen &&
-        locationRef.current &&
-        !locationRef.current.contains(event.target as Node)
-      ) {
-        setIsLocationOpen(false);
-      }
-
-      if (
-        isLanguageOpen &&
-        languageRef.current &&
-        !languageRef.current.contains(event.target as Node)
-      ) {
-        setIsLanguageOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [
-    isOpen,
-    onClose,
-    handleApplyFilter,
-    isHeadlineOpen,
-    isExpertiseOpen,
-    isLocationOpen,
-    isLanguageOpen,
-  ]);
+  const closeOtherDropdowns = (
+    except?: "headline" | "expertise" | "location" | "language",
+  ) => {
+    if (except !== "headline") setIsHeadlineOpen(false);
+    if (except !== "expertise") setIsExpertiseOpen(false);
+    if (except !== "location") setIsLocationOpen(false);
+    if (except !== "language") setIsLanguageOpen(false);
+  };
 
   if (!isOpen) return null;
 
@@ -265,7 +218,7 @@ export function MentorFilterModal({
                         setHeadlineSearch("");
                       }
                     }}
-                    onFocus={() => setIsHeadlineOpen(true)}
+                    onFocus={() => { closeOtherDropdowns("headline"); setIsHeadlineOpen(true); }}
                     className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
                   />
                 </div>
@@ -346,7 +299,7 @@ export function MentorFilterModal({
                         setExpertiseSearch("");
                       }
                     }}
-                    onFocus={() => setIsExpertiseOpen(true)}
+                    onFocus={() => { closeOtherDropdowns("expertise"); setIsExpertiseOpen(true); }}
                     className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
                   />
                 </div>
@@ -462,7 +415,7 @@ export function MentorFilterModal({
                         setLanguageSearch("");
                       }
                     }}
-                    onFocus={() => setIsLanguageOpen(true)}
+                    onFocus={() => { closeOtherDropdowns("language"); setIsLanguageOpen(true); }}
                     className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
                   />
                 </div>
@@ -521,7 +474,7 @@ export function MentorFilterModal({
                       setLocationSearch(e.target.value);
                       setIsLocationOpen(true);
                     }}
-                    onFocus={() => setIsLocationOpen(true)}
+                    onFocus={() => { closeOtherDropdowns("location"); setIsLocationOpen(true); }}
                     className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
                   />
                 </div>

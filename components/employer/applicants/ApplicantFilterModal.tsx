@@ -98,19 +98,11 @@ export function ApplicantFilterModal({
       ) {
         handleApplyFilter();
       }
-
-      if (
-        isLocationOpen &&
-        locationRef.current &&
-        !locationRef.current.contains(event.target as Node)
-      ) {
-        setIsLocationOpen(false);
-      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen, onClose, handleApplyFilter, isLocationOpen]);
+  }, [isOpen, onClose, handleApplyFilter]);
 
   const getFilterCount = () => {
     let count = 0;

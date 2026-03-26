@@ -150,63 +150,14 @@ export function FilterModal({
     }));
   };
 
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
-      ) {
-        handleApplyFilter();
-      }
-
-      // Close skill dropdown if clicking outside of it
-      if (
-        isSkillOpen &&
-        skillRef.current &&
-        !skillRef.current.contains(event.target as Node)
-      ) {
-        setIsSkillOpen(false);
-      }
-
-      // Close stack dropdown if clicking outside of it
-      if (
-        isStackOpen &&
-        stackRef.current &&
-        !stackRef.current.contains(event.target as Node)
-      ) {
-        setIsStackOpen(false);
-      }
-
-      // Close location dropdown if clicking outside of it
-      if (
-        isLocationOpen &&
-        locationRef.current &&
-        !locationRef.current.contains(event.target as Node)
-      ) {
-        setIsLocationOpen(false);
-      }
-
-      // Close availability dropdown if clicking outside of it
-      if (
-        isAvailabilityOpen &&
-        availabilityRef.current &&
-        !availabilityRef.current.contains(event.target as Node)
-      ) {
-        setIsAvailabilityOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [
-    isSkillOpen,
-    isStackOpen,
-    isLocationOpen,
-    isAvailabilityOpen,
-    handleApplyFilter,
-  ]);
+  const closeOtherDropdowns = (
+    except?: "skill" | "stack" | "location" | "availability",
+  ) => {
+    if (except !== "skill") setIsSkillOpen(false);
+    if (except !== "stack") setIsStackOpen(false);
+    if (except !== "location") setIsLocationOpen(false);
+    if (except !== "availability") setIsAvailabilityOpen(false);
+  };
 
   useEffect(() => {
     const scrollSection = (ref: React.RefObject<HTMLDivElement>) => {

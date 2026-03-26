@@ -270,24 +270,26 @@ export function OpportunitiesFilterModal({
                     className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
                   />
                 </div>
-                {isCategoryOpen && categorySearch && filteredCategories.length > 0 && (
-                  <div className="absolute top-full mt-2 w-full max-h-[160px] overflow-y-auto bg-white rounded-[8px] shadow-[0_2px_20px_2px_rgba(0,0,0,0.15)] p-[8px] flex flex-col gap-[10px] z-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                    {filteredCategories.length > 0 &&
-                      filteredCategories.map((category) => (
-                        <button
-                          key={category}
-                          onClick={() => {
-                            toggleCategory(category);
-                            setIsCategoryOpen(false);
-                            setCategorySearch("");
-                          }}
-                          className="text-left px-[2px] py-[2px] text-[11px] font-normal text-black font-inter-tight capitalize hover:bg-gray-50 rounded"
-                        >
-                          {category}
-                        </button>
-                      ))}
-                  </div>
-                )}
+                {isCategoryOpen &&
+                  categorySearch &&
+                  filteredCategories.length > 0 && (
+                    <div className="absolute top-full mt-2 w-full max-h-[160px] overflow-y-auto bg-white rounded-[8px] shadow-[0_2px_20px_2px_rgba(0,0,0,0.15)] p-[8px] flex flex-col gap-[10px] z-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                      {filteredCategories.length > 0 &&
+                        filteredCategories.map((category) => (
+                          <button
+                            key={category}
+                            onClick={() => {
+                              toggleCategory(category);
+                              setIsCategoryOpen(false);
+                              setCategorySearch("");
+                            }}
+                            className="text-left px-[2px] py-[2px] text-[11px] font-normal text-black font-inter-tight capitalize hover:bg-gray-50 rounded"
+                          >
+                            {category}
+                          </button>
+                        ))}
+                    </div>
+                  )}
               </div>
               {/* Selected Categories */}
               {filters.categories && filters.categories.length > 0 && (
