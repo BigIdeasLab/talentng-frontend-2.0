@@ -218,7 +218,10 @@ export function MentorFilterModal({
                         setHeadlineSearch("");
                       }
                     }}
-                    onFocus={() => { closeOtherDropdowns("headline"); setIsHeadlineOpen(true); }}
+                    onFocus={() => {
+                      closeOtherDropdowns("headline");
+                      setIsHeadlineOpen(true);
+                    }}
                     className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
                   />
                 </div>
@@ -299,7 +302,10 @@ export function MentorFilterModal({
                         setExpertiseSearch("");
                       }
                     }}
-                    onFocus={() => { closeOtherDropdowns("expertise"); setIsExpertiseOpen(true); }}
+                    onFocus={() => {
+                      closeOtherDropdowns("expertise");
+                      setIsExpertiseOpen(true);
+                    }}
                     className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
                   />
                 </div>
@@ -415,7 +421,10 @@ export function MentorFilterModal({
                         setLanguageSearch("");
                       }
                     }}
-                    onFocus={() => { closeOtherDropdowns("language"); setIsLanguageOpen(true); }}
+                    onFocus={() => {
+                      closeOtherDropdowns("language");
+                      setIsLanguageOpen(true);
+                    }}
                     className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
                   />
                 </div>
@@ -474,7 +483,10 @@ export function MentorFilterModal({
                       setLocationSearch(e.target.value);
                       setIsLocationOpen(true);
                     }}
-                    onFocus={() => { closeOtherDropdowns("location"); setIsLocationOpen(true); }}
+                    onFocus={() => {
+                      closeOtherDropdowns("location");
+                      setIsLocationOpen(true);
+                    }}
                     className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
                   />
                 </div>
