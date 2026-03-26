@@ -20,10 +20,7 @@ import { getOpportunitiesData } from "./server-data";
 import { useProfile } from "@/hooks";
 import { RoleColorProvider } from "@/lib/theme/RoleColorContext";
 import { ErrorState } from "@/components/ui/error-state";
-import {
-  MobileProgressiveHeader,
-  type MobileProgressiveHeaderRef,
-} from "@/components/talent/opportunities/MobileProgressiveHeader";
+
 
 interface OpportunitiesClientProps {
   initialOpportunities: OpportunityData[];
@@ -58,7 +55,6 @@ export function OpportunitiesClient({
   const [error, setError] = useState<string | null>(initialError);
   const isInitialLoadRef = useRef(true);
   const fetchIdRef = useRef(0);
-  const mobileScrollRef = useRef<MobileProgressiveHeaderRef>(null);
 
   useEffect(() => {
     // Wait for role to be resolved and only fetch for talent/mentor
@@ -196,15 +192,11 @@ export function OpportunitiesClient({
 
   const handleNextPage = () => {
     fetchOpportunitiesWithFilters(offset + LIMIT);
-    // Scroll to top on mobile
-    mobileScrollRef.current?.scrollToTop();
   };
 
   const handlePreviousPage = () => {
     if (offset > 0) {
       fetchOpportunitiesWithFilters(offset - LIMIT);
-      // Scroll to top on mobile
-      mobileScrollRef.current?.scrollToTop();
     }
   };
 
@@ -275,61 +267,60 @@ export function OpportunitiesClient({
           />
         </div>
 
-        {/* Mobile: Progressive header with scroll behavior */}
-        <div className="md:hidden flex-1 flex flex-col overflow-hidden">
-          <MobileProgressiveHeader
-            ref={mobileScrollRef}
-            header={
-              <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA]">
-                {/* Title */}
-                <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px] mb-[19px]">
-                  Opportunities
-                </h1>
+        {/* Mobile: Simple scrollable layout */}
+        <div className="md:hidden flex-1 overflow-y-auto">
+          {/* Header - scrolls with content */}
+          <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA]">
+            {/* Title */}
+            <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px] mb-[19px]">
+              Opportunities
+            </h1>
 
-                {/* Search Bar and Filter */}
-                <div className="flex items-center gap-[8px]">
-                  <div className="flex-1">
-                    <SearchInput
-                      value={searchQuery}
-                      onChange={handleSearch}
-                      onSearch={handleSearch}
-                      placeholder="Search opportunities, skills..."
-                      isLoading={isLoading}
-                      debounceDelay={400}
-                    />
-                  </div>
-                  <div className="relative flex-shrink-0">
-                    <button
-                      onClick={() => setIsFilterOpen(true)}
-                      className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] transition-colors ${
-                        getFilterCount() > 0
-                          ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
-                          : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
-                      }`}
-                    >
-                      <SlidersHorizontal className="w-[15px] h-[15px]" />
-                      <span className="text-[13px] font-normal font-inter-tight">
-                        Filter
-                      </span>
-                      {getFilterCount() > 0 && (
-                        <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-                          {getFilterCount()}
-                        </span>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            }
-            tabs={
-              <div className="w-full px-[25px] py-[12px]">
-                <FilterTabs
-                  activeFilter={activeFilter}
-                  onFilterChange={handleFilterChange}
+            {/* Search Bar and Filter */}
+            <div className="flex items-center gap-[8px]">
+              <div className="flex-1">
+                <SearchInput
+                  value={searchQuery}
+                  onChange={handleSearch}
+                  onSearch={handleSearch}
+                  placeholder="Search opportunities, skills..."
+                  isLoading={isLoading}
+                  debounceDelay={400}
                 />
               </div>
-            }
-          >
+              <div className="relative flex-shrink-0">
+                <button
+                  onClick={() => setIsFilterOpen(true)}
+                  className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] transition-colors ${
+                    getFilterCount() > 0
+                      ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
+                      : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
+                  }`}
+                >
+                  <SlidersHorizontal className="w-[15px] h-[15px]" />
+                  <span className="text-[13px] font-normal font-inter-tight">
+                    Filter
+                  </span>
+                  {getFilterCount() > 0 && (
+                    <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                      {getFilterCount()}
+                    </span>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Tabs - sticky */}
+          <div className="sticky top-0 z-10 w-full px-[25px] py-[12px] bg-white border-b border-[#E1E4EA]">
+            <FilterTabs
+              activeFilter={activeFilter}
+              onFilterChange={handleFilterChange}
+            />
+          </div>
+
+          {/* Content */}
+          <div>
             {(isLoading || (isFetching && opportunities.length === 0)) && (
               <OpportunitiesGridSkeleton />
             )}
@@ -393,7 +384,7 @@ export function OpportunitiesClient({
                   }
                 />
               )}
-          </MobileProgressiveHeader>
+          </div>
           <OpportunitiesFilterModal
             isOpen={isFilterOpen}
             onClose={() => setIsFilterOpen(false)}
