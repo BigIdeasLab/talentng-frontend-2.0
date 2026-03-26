@@ -179,13 +179,15 @@ export function OpportunitiesFilterModal({
     if (!isOpen) return;
 
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
-      ) {
+      const target = event.target as Node;
+
+      // Close modal if clicking outside of it
+      if (modalRef.current && !modalRef.current.contains(target)) {
         handleApplyFilter();
+        return;
       }
 
+      // Close dropdowns if clicking outside of them, but NOT if clicking on their input fields
       const refs = [
         { open: isSkillOpen, ref: skillRef, set: setIsSkillOpen },
         { open: isCategoryOpen, ref: categoryRef, set: setIsCategoryOpen },
@@ -199,12 +201,16 @@ export function OpportunitiesFilterModal({
       ];
 
       refs.forEach(({ open, ref, set }) => {
-        if (
-          open &&
-          ref.current &&
-          !ref.current.contains(event.target as Node)
-        ) {
-          set(false);
+        if (open && ref.current) {
+          // Check if click is on an input field within this section
+          const inputElement = ref.current.querySelector("input");
+          const isInputClick =
+            inputElement && inputElement.contains(target as Node);
+
+          // Only close if clicking outside the ref AND not on the input
+          if (!ref.current.contains(target) && !isInputClick) {
+            set(false);
+          }
         }
       });
     };
