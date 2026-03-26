@@ -162,7 +162,9 @@ export function TalentSettings() {
     onSuccess: async (result) => {
       if (result.accountDeleted) {
         // User account was soft-deleted — clear session and redirect to login
-        toast.info("Your account has been deleted as this was your last profile.");
+        toast.info(
+          "Your account has been deleted as this was your last profile.",
+        );
         window.location.href = "/login";
         return;
       }

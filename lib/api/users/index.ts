@@ -55,11 +55,12 @@ export const deleteMentorProfile = async (): Promise<DeleteAccountResponse> => {
   });
 };
 
-export const deleteRecruiterProfile = async (): Promise<DeleteAccountResponse> => {
-  return apiClient<DeleteAccountResponse>("/recruiter/me", {
-    method: "DELETE",
-  });
-};
+export const deleteRecruiterProfile =
+  async (): Promise<DeleteAccountResponse> => {
+    return apiClient<DeleteAccountResponse>("/recruiter/me", {
+      method: "DELETE",
+    });
+  };
 
 // Export types
 export type { UsernameAvailability, DeleteAccountResponse };
