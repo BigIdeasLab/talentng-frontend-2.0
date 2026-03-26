@@ -440,7 +440,7 @@ function TalentUpcoming() {
   const sessionCount = totalCounts.sessions;
 
   return (
-    <div className="h-screen overflow-x-hidden bg-white flex flex-col">
+    <div className="flex flex-col h-[calc(100vh-60px)] md:h-screen overflow-x-hidden bg-white">
       <div className="w-full px-4 md:px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
         <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px] mb-[19px]">
           Calendar

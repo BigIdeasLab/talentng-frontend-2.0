@@ -224,7 +224,7 @@ export default function ApplicantsPage() {
   }
 
   return (
-    <div className="h-screen overflow-x-hidden bg-white flex flex-col">
+    <div className="flex flex-col h-[calc(100vh-60px)] md:h-screen overflow-x-hidden bg-white">
       {/* Header */}
       <div className="w-full px-3 md:px-5 pt-5 md:pt-6 border-b border-[#E1E4EA] flex-shrink-0">
         {/* Title Row */}

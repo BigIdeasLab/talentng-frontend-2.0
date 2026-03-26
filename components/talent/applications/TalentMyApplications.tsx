@@ -450,7 +450,7 @@ export function TalentMyApplications() {
       </div>
 
       {/* Mobile Layout with Progressive Header */}
-      <div className="md:hidden h-screen overflow-y-auto bg-white">
+      <div className="md:hidden h-[calc(100vh-60px)] overflow-y-auto bg-white">
         {/* Title and Tab Switch - Scrolls with content */}
         <div className="w-full px-4 pt-[19px] pb-4">
           <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px] mb-4">

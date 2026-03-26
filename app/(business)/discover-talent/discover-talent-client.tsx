@@ -125,7 +125,7 @@ export function DiscoverTalentClient({
   };
 
   return (
-    <div className="flex flex-col h-screen bg-white overflow-hidden">
+    <div className="flex flex-col h-[calc(100vh-60px)] md:h-screen bg-white overflow-hidden">
       <DiscoverTalentHeader
         selectedCategory={selectedCategory}
         onCategoryChange={handleCategoryChange}

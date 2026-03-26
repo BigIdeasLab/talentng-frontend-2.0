@@ -216,7 +216,7 @@ export default function MentorshipPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-white overflow-hidden">
+    <div className="flex flex-col h-[calc(100vh-60px)] md:h-screen bg-white overflow-hidden">
       {/* Desktop: Static Header */}
       <div className="hidden md:block w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
         <h1 className="text-[16px] font-medium text-black font-inter-tight leading-[16px] mb-[19px]">

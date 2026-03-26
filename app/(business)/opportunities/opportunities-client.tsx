@@ -243,7 +243,7 @@ export function OpportunitiesClient({
 
   return (
     <RoleColorProvider role={activeRole}>
-      <div className="h-screen overflow-x-hidden bg-white flex flex-col">
+      <div className="flex flex-col h-[calc(100vh-60px)] md:h-screen overflow-x-hidden bg-white">
         {/* Desktop: Static header */}
         <div className="hidden md:block w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
           <TalentOpportunitiesHeader
