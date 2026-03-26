@@ -175,58 +175,14 @@ export function OpportunitiesFilterModal({
     return value.toLocaleString();
   };
 
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Node;
-
-      // Close modal if clicking outside of it
-      if (modalRef.current && !modalRef.current.contains(target)) {
-        handleApplyFilter();
-        return;
-      }
-
-      // Close dropdowns if clicking outside of them, but NOT if clicking on their input fields
-      const refs = [
-        { open: isSkillOpen, ref: skillRef, set: setIsSkillOpen },
-        { open: isCategoryOpen, ref: categoryRef, set: setIsCategoryOpen },
-        {
-          open: isExperienceOpen,
-          ref: experienceRef,
-          set: setIsExperienceOpen,
-        },
-        { open: isLocationOpen, ref: locationRef, set: setIsLocationOpen },
-        { open: isBudgetOpen, ref: budgetRef, set: setIsBudgetOpen },
-      ];
-
-      refs.forEach(({ open, ref, set }) => {
-        if (open && ref.current) {
-          // Check if click is on an input field within this section
-          const inputElement = ref.current.querySelector("input");
-          const isInputClick =
-            inputElement && inputElement.contains(target as Node);
-
-          // Only close if clicking outside the ref AND not on the input
-          if (!ref.current.contains(target) && !isInputClick) {
-            set(false);
-          }
-        }
-      });
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [
-    isOpen,
-    onClose,
-    handleApplyFilter,
-    isSkillOpen,
-    isCategoryOpen,
-    isExperienceOpen,
-    isLocationOpen,
-    isBudgetOpen,
-  ]);
+  const closeOtherDropdowns = (
+    except?: "skill" | "category" | "experience" | "location",
+  ) => {
+    if (except !== "skill") setIsSkillOpen(false);
+    if (except !== "category") setIsCategoryOpen(false);
+    if (except !== "experience") setIsExperienceOpen(false);
+    if (except !== "location") setIsLocationOpen(false);
+  };
 
   useEffect(() => {
     const scrollSection = (ref: React.RefObject<HTMLDivElement>) => {
@@ -307,11 +263,14 @@ export function OpportunitiesFilterModal({
                       setCategorySearch(e.target.value);
                       setIsCategoryOpen(true);
                     }}
-                    onFocus={() => setIsCategoryOpen(true)}
+                    onFocus={() => {
+                      closeOtherDropdowns("category");
+                      setIsCategoryOpen(true);
+                    }}
                     className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
                   />
                 </div>
-                {isCategoryOpen && categorySearch && (
+                {isCategoryOpen && categorySearch && filteredCategories.length > 0 && (
                   <div className="absolute top-full mt-2 w-full max-h-[160px] overflow-y-auto bg-white rounded-[8px] shadow-[0_2px_20px_2px_rgba(0,0,0,0.15)] p-[8px] flex flex-col gap-[10px] z-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                     {filteredCategories.length > 0 &&
                       filteredCategories.map((category) => (
@@ -391,7 +350,10 @@ export function OpportunitiesFilterModal({
                         setSkillSearch("");
                       }
                     }}
-                    onFocus={() => setIsSkillOpen(true)}
+                    onFocus={() => {
+                      closeOtherDropdowns("skill");
+                      setIsSkillOpen(true);
+                    }}
                     className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
                   />
                 </div>
@@ -487,7 +449,10 @@ export function OpportunitiesFilterModal({
                     placeholder="Search Experience"
                     value={experienceSearch}
                     onChange={(e) => setExperienceSearch(e.target.value)}
-                    onFocus={() => setIsExperienceOpen(true)}
+                    onFocus={() => {
+                      closeOtherDropdowns("experience");
+                      setIsExperienceOpen(true);
+                    }}
                     className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
                   />
                 </div>
@@ -556,7 +521,10 @@ export function OpportunitiesFilterModal({
                       setLocationSearch(e.target.value);
                       setIsLocationOpen(true);
                     }}
-                    onFocus={() => setIsLocationOpen(true)}
+                    onFocus={() => {
+                      closeOtherDropdowns("location");
+                      setIsLocationOpen(true);
+                    }}
                     className="flex-1 text-[11px] font-normal font-inter-tight placeholder:text-black/30 placeholder:capitalize border-0 focus:outline-none bg-transparent"
                   />
                 </div>
