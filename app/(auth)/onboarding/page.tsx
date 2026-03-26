@@ -61,9 +61,9 @@ const OnboardingPage = () => {
 
   // Sync completedRoles if userRoles or isAddingRole changes
   useEffect(() => {
-    if (userRoles.length > 0) {
-      setCompletedRoles(userRoles);
-    }
+    // Always sync completedRoles with userRoles, even if empty
+    // This ensures stale data is cleared when profiles are deleted
+    setCompletedRoles(userRoles);
   }, [userRoles.join(","), isAddingRole]);
 
   // Unified list of existing roles for the role selection step

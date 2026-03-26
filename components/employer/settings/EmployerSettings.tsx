@@ -158,7 +158,9 @@ export function EmployerSettings() {
     mutationFn: deleteRecruiterProfile,
     onSuccess: async (result) => {
       if (result.accountDeleted) {
-        // User account was soft-deleted — clear session and redirect to login
+        // User account was soft-deleted — clear all cache and redirect to login
+        queryClient.clear();
+        localStorage.removeItem("userRoles");
         toast.info(
           "Your account has been deleted as this was your last profile.",
         );
@@ -167,6 +169,10 @@ export function EmployerSettings() {
       }
 
       toast.success("Recruiter profile deleted successfully");
+
+      // Clear cache to remove stale data
+      queryClient.clear();
+      localStorage.removeItem("userRoles");
 
       // Find the next available role to switch to
       const remainingRoles = userRoles.filter(
