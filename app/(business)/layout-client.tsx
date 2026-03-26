@@ -198,7 +198,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
 
       {/* Mobile Header with Hamburger Menu */}
       <div
-        className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-[#E1E4EA] relative z-50"
+        className="md:hidden sticky top-0 flex items-center justify-between px-4 py-3 bg-white border-b border-[#E1E4EA] z-50"
         suppressHydrationWarning
       >
         {/* Logo and Brand Name - Left */}
