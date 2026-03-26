@@ -9,10 +9,7 @@ import {
   MentorFilterModal,
   type MentorFilterState,
 } from "@/components/talent/mentorship/MentorFilterModal";
-import {
-  MobileProgressiveHeader,
-  type MobileProgressiveHeaderRef,
-} from "@/components/talent/opportunities/MobileProgressiveHeader";
+
 import { listMentors } from "@/lib/api/mentorship";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
@@ -83,7 +80,6 @@ export default function MentorshipPage() {
   const hasAccess = useRequireRole(["talent"]);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const fetchIdRef = useRef(0);
-  const mobileScrollRef = useRef<MobileProgressiveHeaderRef>(null);
 
   const fetchMentors = useCallback(
     async (
@@ -201,14 +197,14 @@ export default function MentorshipPage() {
     const nextOffset = offset + LIMIT;
     fetchMentors(undefined, undefined, undefined, nextOffset);
     // Scroll to top on mobile
-    mobileScrollRef.current?.scrollToTop();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handlePreviousPage = () => {
     const prevOffset = Math.max(0, offset - LIMIT);
     fetchMentors(undefined, undefined, undefined, prevOffset);
     // Scroll to top on mobile
-    mobileScrollRef.current?.scrollToTop();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   if (!hasAccess) {
@@ -295,134 +291,134 @@ export default function MentorshipPage() {
         </div>
       </div>
 
-      {/* Mobile: Progressive header with scroll behavior */}
-      <div className="md:hidden flex-1 flex flex-col overflow-hidden">
-        <MobileProgressiveHeader
-          ref={mobileScrollRef}
-          header={
-            <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA]">
-              <h1 className="text-[16px] font-medium text-black font-inter-tight leading-[16px] mb-[19px]">
-                Mentorship
-              </h1>
+      {/* Mobile: Simple scrollable layout */}
+      {/* Mobile: Simple scrollable layout */}
+      <div className="md:hidden flex-1 overflow-y-auto">
+          {/* Header - scrolls with content */}
+          <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA]">
+            <h1 className="text-[16px] font-medium text-black font-inter-tight leading-[16px] mb-[19px]">
+              Mentorship
+            </h1>
 
-              {/* Search Bar and Filter */}
-              <div className="flex items-center gap-[8px]">
-                <div className="flex-1">
-                  <SearchInput
-                    value={searchQuery}
-                    onChange={setSearchQuery}
-                    onSearch={handleMentorSearch}
-                    placeholder="Search mentors, topics..."
-                    debounceDelay={400}
-                  />
-                </div>
+            {/* Search Bar and Filter */}
+            <div className="flex items-center gap-[8px]">
+              <div className="flex-1">
+                <SearchInput
+                  value={searchQuery}
+                  onChange={setSearchQuery}
+                  onSearch={handleMentorSearch}
+                  placeholder="Search mentors, topics..."
+                  debounceDelay={400}
+                />
+              </div>
 
-                <div className="relative">
-                  <button
-                    onClick={() => setIsFilterOpen(true)}
-                    className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
-                      appliedFilters &&
-                      (appliedFilters.headlines.length > 0 ||
-                        appliedFilters.expertise.length > 0 ||
-                        appliedFilters.languages.length > 0 ||
-                        appliedFilters.location)
-                        ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
-                        : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
-                    }`}
-                  >
-                    <SlidersHorizontal className="w-[15px] h-[15px]" />
-                    <span className="text-[13px] font-normal font-inter-tight">
-                      Filter
-                    </span>
-                    {appliedFilters &&
-                      appliedFilters.headlines.length +
-                        appliedFilters.expertise.length +
-                        appliedFilters.languages.length +
-                        (appliedFilters.location ? 1 : 0) >
-                        0 && (
-                        <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-                          {appliedFilters.headlines.length +
-                            appliedFilters.expertise.length +
-                            appliedFilters.languages.length +
-                            (appliedFilters.location ? 1 : 0)}
-                        </span>
-                      )}
-                  </button>
-                </div>
+              <div className="relative">
+                <button
+                  onClick={() => setIsFilterOpen(true)}
+                  className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors ${
+                    appliedFilters &&
+                    (appliedFilters.headlines.length > 0 ||
+                      appliedFilters.expertise.length > 0 ||
+                      appliedFilters.languages.length > 0 ||
+                      appliedFilters.location)
+                      ? "bg-[#8463FF0D] border border-[#8463FF] text-[#8463FF]"
+                      : "bg-[#F5F5F5] hover:bg-gray-100 text-black border border-transparent"
+                  }`}
+                >
+                  <SlidersHorizontal className="w-[15px] h-[15px]" />
+                  <span className="text-[13px] font-normal font-inter-tight">
+                    Filter
+                  </span>
+                  {appliedFilters &&
+                    appliedFilters.headlines.length +
+                      appliedFilters.expertise.length +
+                      appliedFilters.languages.length +
+                      (appliedFilters.location ? 1 : 0) >
+                      0 && (
+                      <span className="ml-1 bg-[#8463FF] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                        {appliedFilters.headlines.length +
+                          appliedFilters.expertise.length +
+                          appliedFilters.languages.length +
+                          (appliedFilters.location ? 1 : 0)}
+                      </span>
+                    )}
+                </button>
               </div>
             </div>
-          }
-          tabs={
-            <div className="w-full px-[25px] py-[12px]">
-              <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
-                {CATEGORIES.map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() =>
-                      handleCategoryChange(cat === "All" ? "" : cat)
-                    }
-                    className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors font-inter-tight text-[13px] ${
-                      (activeCategory === "" && cat === "All") ||
-                      activeCategory === cat
-                        ? "text-black font-medium border-b-2 border-black"
-                        : "text-black/30 font-medium hover:text-black/50"
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
+          </div>
+
+          {/* Tabs - sticky */}
+          <div className="sticky top-0 z-10 w-full px-[25px] py-[12px] bg-white border-b border-[#E1E4EA]">
+            <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() =>
+                    handleCategoryChange(cat === "All" ? "" : cat)
+                  }
+                  className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors font-inter-tight text-[13px] ${
+                    (activeCategory === "" && cat === "All") ||
+                    activeCategory === cat
+                      ? "text-black font-medium border-b-2 border-black"
+                      : "text-black/30 font-medium hover:text-black/50"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Content */}
+          <div>
+            {mentorsLoading && !hasInitialLoaded ? (
+              <MentorGridSkeleton />
+            ) : (
+              <div
+                id="mentors"
+                className={`flex-1 flex flex-col transition-opacity duration-200 ${
+                  mentorsLoading ? "opacity-50" : "opacity-100"
+                }`}
+              >
+                <MentorGrid
+                  mentors={mentors}
+                  onNextPage={handleNextPage}
+                  onPreviousPage={handlePreviousPage}
+                  hasNextPage={pagination?.hasNextPage || false}
+                  hasPreviousPage={pagination?.hasPreviousPage || false}
+                  currentPage={pagination?.page || 1}
+                  totalPages={pagination?.totalPages || 1}
+                  totalMentors={pagination?.total}
+                  emptyTitle={
+                    searchQuery.trim()
+                      ? "No mentors match your search"
+                      : appliedFilters &&
+                          (appliedFilters.expertise.length > 0 ||
+                            appliedFilters.headlines.length > 0 ||
+                            appliedFilters.languages.length > 0 ||
+                            appliedFilters.location)
+                        ? "No mentors match your filters"
+                        : activeCategory && activeCategory !== ""
+                          ? "No mentors match your search"
+                          : "No mentors yet"
+                  }
+                  emptyDescription={
+                    searchQuery.trim()
+                      ? "Try adjusting your search query"
+                      : appliedFilters &&
+                          (appliedFilters.expertise.length > 0 ||
+                            appliedFilters.headlines.length > 0 ||
+                            appliedFilters.languages.length > 0 ||
+                            appliedFilters.location)
+                        ? "Try adjusting your filters"
+                        : activeCategory && activeCategory !== ""
+                          ? `No mentors match your search in the "${activeCategory}" category`
+                          : "Mentors will appear here as they join the platform"
+                  }
+                />
               </div>
-            </div>
-          }
-        >
-          {mentorsLoading && !hasInitialLoaded ? (
-            <MentorGridSkeleton />
-          ) : (
-            <div
-              id="mentors"
-              className={`flex-1 flex flex-col transition-opacity duration-200 ${
-                mentorsLoading ? "opacity-50" : "opacity-100"
-              }`}
-            >
-              <MentorGrid
-                mentors={mentors}
-                onNextPage={handleNextPage}
-                onPreviousPage={handlePreviousPage}
-                hasNextPage={pagination?.hasNextPage || false}
-                hasPreviousPage={pagination?.hasPreviousPage || false}
-                currentPage={pagination?.page || 1}
-                totalPages={pagination?.totalPages || 1}
-                totalMentors={pagination?.total}
-                emptyTitle={
-                  searchQuery.trim()
-                    ? "No mentors match your search"
-                    : appliedFilters &&
-                        (appliedFilters.expertise.length > 0 ||
-                          appliedFilters.headlines.length > 0 ||
-                          appliedFilters.languages.length > 0 ||
-                          appliedFilters.location)
-                      ? "No mentors match your filters"
-                      : activeCategory && activeCategory !== ""
-                        ? "No mentors match your search"
-                        : "No mentors yet"
-                }
-                emptyDescription={
-                  searchQuery.trim()
-                    ? "Try adjusting your search query"
-                    : appliedFilters &&
-                        (appliedFilters.expertise.length > 0 ||
-                          appliedFilters.headlines.length > 0 ||
-                          appliedFilters.languages.length > 0 ||
-                          appliedFilters.location)
-                      ? "Try adjusting your filters"
-                      : activeCategory && activeCategory !== ""
-                        ? `No mentors match your search in the "${activeCategory}" category`
-                        : "Mentors will appear here as they join the platform"
-                }
-              />
-            </div>
-          )}
-        </MobileProgressiveHeader>
+            )}
+          </div>
         <MentorFilterModal
           isOpen={isFilterOpen}
           onClose={() => setIsFilterOpen(false)}

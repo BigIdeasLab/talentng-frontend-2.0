@@ -21,7 +21,6 @@ import { useProfile } from "@/hooks";
 import { RoleColorProvider } from "@/lib/theme/RoleColorContext";
 import { ErrorState } from "@/components/ui/error-state";
 
-
 interface OpportunitiesClientProps {
   initialOpportunities: OpportunityData[];
   initialError: string | null;

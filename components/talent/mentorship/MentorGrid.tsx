@@ -50,8 +50,8 @@ export function MentorGrid({
         </p>
       </div>
 
-      {/* Grid Content (Scrollable) */}
-      <div className="flex-1 overflow-y-auto scrollbar-styled px-[25px] py-[16px]">
+      {/* Grid Content (Scrollable on desktop, relies on parent scroll on mobile) */}
+      <div className="flex-1 md:overflow-y-auto scrollbar-styled px-[25px] py-[16px]">
         {mentors.length === 0 ? (
           <EmptyState
             icon={Users}
