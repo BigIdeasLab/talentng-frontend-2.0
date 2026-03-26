@@ -174,7 +174,9 @@ export async function updateRecruiterSettings(
  * Update Recruiter Email
  * PATCH /recruiter/settings with email field
  */
-export async function updateRecruiterEmail(email: string): Promise<RecruiterSettings> {
+export async function updateRecruiterEmail(
+  email: string,
+): Promise<RecruiterSettings> {
   return apiClient<RecruiterSettings>("/recruiter/settings", {
     method: "PATCH",
     body: { email },
@@ -185,11 +187,16 @@ export async function updateRecruiterEmail(email: string): Promise<RecruiterSett
  * Verify Recruiter Email
  * POST /recruiter/verify-email
  */
-export async function verifyRecruiterEmail(code: string): Promise<{ success: boolean; message?: string }> {
-  return apiClient<{ success: boolean; message?: string }>("/recruiter/verify-email", {
-    method: "POST",
-    body: { verificationCode: code },
-  });
+export async function verifyRecruiterEmail(
+  code: string,
+): Promise<{ success: boolean; message?: string }> {
+  return apiClient<{ success: boolean; message?: string }>(
+    "/recruiter/verify-email",
+    {
+      method: "POST",
+      body: { verificationCode: code },
+    },
+  );
 }
 
 /**

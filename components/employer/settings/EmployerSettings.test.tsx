@@ -22,6 +22,7 @@ const mockRecruiterSettings = {
   emailMarketing: false,
   pushNewApplications: true,
   profileVisible: true,
+  emailVerified: false,
 };
 
 const mockUserData = {

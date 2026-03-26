@@ -221,7 +221,9 @@ export async function updateMentorSettings(
  * Update Mentor Email
  * PATCH /mentor/settings with email field
  */
-export async function updateMentorEmail(email: string): Promise<MentorSettings> {
+export async function updateMentorEmail(
+  email: string,
+): Promise<MentorSettings> {
   return apiClient<MentorSettings>("/mentor/settings", {
     method: "PATCH",
     body: { email },
@@ -232,11 +234,16 @@ export async function updateMentorEmail(email: string): Promise<MentorSettings> 
  * Verify Mentor Email
  * POST /mentor/verify-email
  */
-export async function verifyMentorEmail(code: string): Promise<{ success: boolean; message?: string }> {
-  return apiClient<{ success: boolean; message?: string }>("/mentor/verify-email", {
-    method: "POST",
-    body: { verificationCode: code },
-  });
+export async function verifyMentorEmail(
+  code: string,
+): Promise<{ success: boolean; message?: string }> {
+  return apiClient<{ success: boolean; message?: string }>(
+    "/mentor/verify-email",
+    {
+      method: "POST",
+      body: { verificationCode: code },
+    },
+  );
 }
 
 /**

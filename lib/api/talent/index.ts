@@ -515,7 +515,9 @@ export async function updateTalentSettings(
  * Update Talent Email
  * PATCH /talent/settings with email field
  */
-export async function updateTalentEmail(email: string): Promise<TalentSettings> {
+export async function updateTalentEmail(
+  email: string,
+): Promise<TalentSettings> {
   return apiClient<TalentSettings>("/talent/settings", {
     method: "PATCH",
     body: { email },
@@ -526,11 +528,16 @@ export async function updateTalentEmail(email: string): Promise<TalentSettings> 
  * Verify Talent Email
  * POST /talent/verify-email
  */
-export async function verifyTalentEmail(code: string): Promise<{ success: boolean; message?: string }> {
-  return apiClient<{ success: boolean; message?: string }>("/talent/verify-email", {
-    method: "POST",
-    body: { verificationCode: code },
-  });
+export async function verifyTalentEmail(
+  code: string,
+): Promise<{ success: boolean; message?: string }> {
+  return apiClient<{ success: boolean; message?: string }>(
+    "/talent/verify-email",
+    {
+      method: "POST",
+      body: { verificationCode: code },
+    },
+  );
 }
 
 /**

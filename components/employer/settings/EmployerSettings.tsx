@@ -118,6 +118,7 @@ export function EmployerSettings() {
     emailMarketing: false,
     pushNewApplications: true,
     profileVisible: true,
+    emailVerified: false,
   });
 
   const [visibility, setVisibility] = useState({
@@ -197,14 +198,20 @@ export function EmployerSettings() {
   const updateEmailMutation = useMutation({
     mutationFn: updateRecruiterEmail,
     onSuccess: () => {
-      toast.success("Email updated successfully. Please check your email for verification code.");
+      toast.success(
+        "Email updated successfully. Please check your email for verification code.",
+      );
       queryClient.invalidateQueries({ queryKey: ["recruiterSettings"] });
     },
     onError: (error: any) => {
-      if (error.error === 'RATE_LIMITED') {
-        toast.error(error.message || "You can only update your email once every 7 days.");
-      } else if (error.error === 'DUPLICATE_EMAIL') {
-        toast.error("This email is already in use. Please choose a different email.");
+      if (error.error === "RATE_LIMITED") {
+        toast.error(
+          error.message || "You can only update your email once every 7 days.",
+        );
+      } else if (error.error === "DUPLICATE_EMAIL") {
+        toast.error(
+          "This email is already in use. Please choose a different email.",
+        );
       } else {
         toast.error(error.message || "Failed to update email");
       }
@@ -318,7 +325,11 @@ export function EmployerSettings() {
             onEmailUpdate={handleEmailUpdate}
             onVerifyEmail={handleVerifyEmail}
             onResendCode={handleResendCode}
-            isLoading={updateEmailMutation.isPending || verifyEmailMutation.isPending || resendCodeMutation.isPending}
+            isLoading={
+              updateEmailMutation.isPending ||
+              verifyEmailMutation.isPending ||
+              resendCodeMutation.isPending
+            }
             rateLimitedUntil={undefined} // This would come from API error response
             roleColors={roleColors}
             isInitialLoading={isLoading || !userData}

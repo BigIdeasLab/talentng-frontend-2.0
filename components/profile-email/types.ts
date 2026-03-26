@@ -5,7 +5,7 @@
 import type { RoleColorPalette } from "@/lib/theme/role-colors";
 
 export interface ProfileEmailSectionProps {
-  role: 'talent' | 'mentor' | 'recruiter';
+  role: "talent" | "mentor" | "recruiter";
   currentEmail?: string;
   emailVerified: boolean;
   emailUpdatedAt?: string;
@@ -30,19 +30,28 @@ export interface VerificationModalProps {
 }
 
 export interface StatusIndicatorProps {
-  status: 'verified' | 'pending' | 'main-email' | 'rate-limited';
+  status: "verified" | "pending" | "main-email" | "rate-limited";
   nextUpdateTime?: string;
 }
 
-export type EmailStatus = 'verified' | 'pending' | 'main-email' | 'rate-limited';
+export type EmailStatus =
+  | "verified"
+  | "pending"
+  | "main-email"
+  | "rate-limited";
 
 export interface EmailUpdateError {
-  type: 'validation' | 'network' | 'rate-limit' | 'duplicate' | 'server';
+  type: "validation" | "network" | "rate-limit" | "duplicate" | "server";
   message: string;
   nextAllowedUpdate?: string;
 }
 
 export interface VerificationError {
-  type: 'invalid-code' | 'expired-code' | 'too-many-attempts' | 'network' | 'server';
+  type:
+    | "invalid-code"
+    | "expired-code"
+    | "too-many-attempts"
+    | "network"
+    | "server";
   message: string;
 }

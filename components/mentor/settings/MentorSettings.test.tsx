@@ -31,6 +31,7 @@ const mockMentorSettings = {
   emailMarketing: false,
   pushNewRequests: true,
   pushSessionReminders: true,
+  emailVerified: false,
 };
 
 const mockUserData = {

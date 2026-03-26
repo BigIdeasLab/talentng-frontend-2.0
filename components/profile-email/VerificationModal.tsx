@@ -51,7 +51,7 @@ export function VerificationModal({
     const newCode = code.split("");
     newCode[index] = value;
     const updatedCode = newCode.join("");
-    
+
     setCode(updatedCode);
 
     // Auto-focus next input
@@ -68,9 +68,12 @@ export function VerificationModal({
 
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    const pastedData = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 6);
     setCode(pastedData);
-    
+
     // Focus the next empty input or the last one
     const nextIndex = Math.min(pastedData.length, 5);
     inputRefs.current[nextIndex]?.focus();
@@ -78,7 +81,7 @@ export function VerificationModal({
 
   const handleVerify = async () => {
     if (code.length !== 6) return;
-    
+
     setIsVerifying(true);
     try {
       await onVerify(code);
@@ -139,9 +142,7 @@ export function VerificationModal({
             <p className="text-[13px] text-[#525866]">
               We sent a verification code to
             </p>
-            <p className="text-[13px] font-medium text-black mt-1">
-              {email}
-            </p>
+            <p className="text-[13px] font-medium text-black mt-1">{email}</p>
           </div>
 
           {/* Code Input */}
@@ -150,7 +151,9 @@ export function VerificationModal({
               {Array.from({ length: 6 }).map((_, index) => (
                 <Input
                   key={index}
-                  ref={(el) => (inputRefs.current[index] = el)}
+                  ref={(el) => {
+                    inputRefs.current[index] = el;
+                  }}
                   type="text"
                   inputMode="numeric"
                   maxLength={1}
@@ -178,9 +181,7 @@ export function VerificationModal({
               disabled={code.length !== 6 || isVerifying || isLoading}
               className="w-full min-h-[44px] bg-blue-600 text-white hover:bg-blue-700"
             >
-              {isVerifying && (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              )}
+              {isVerifying && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               Verify Email
             </Button>
 

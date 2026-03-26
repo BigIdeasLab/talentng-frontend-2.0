@@ -20,7 +20,7 @@ export interface EmailUpdateRequest {
 }
 
 export interface RateLimitError {
-  error: 'RATE_LIMITED';
+  error: "RATE_LIMITED";
   message: string;
   nextAllowedUpdate: string; // ISO timestamp
 }

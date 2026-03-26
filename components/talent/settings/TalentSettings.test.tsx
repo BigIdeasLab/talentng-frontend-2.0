@@ -24,6 +24,7 @@ const mockTalentSettings = {
   emailMarketing: false,
   pushApplications: true,
   pushInterviews: true,
+  emailVerified: false,
 };
 
 const mockUserData = {

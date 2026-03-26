@@ -1,7 +1,7 @@
 /**
  * Property-Based Tests - Profile Email Storage and Retrieval
  * Feature: profile-email-customization
- * 
+ *
  * Property 1: Profile Email Storage and Retrieval
  * **Validates: Requirements 1.1, 1.2, 8.1, 8.3**
  */
@@ -53,7 +53,7 @@ vi.mock("@/lib/api/auth", () => ({
 
 vi.mock("@/hooks/useProfile", () => ({
   useProfile: () => ({
-    userRoles: ['talent', 'mentor', 'recruiter'],
+    userRoles: ["talent", "mentor", "recruiter"],
     switchRole: vi.fn(),
   }),
 }));
@@ -68,7 +68,10 @@ vi.mock("sonner", () => ({
 // Import the mocked modules
 import { getTalentSettings, updateTalentEmail } from "@/lib/api/talent";
 import { getMentorSettings, updateMentorEmail } from "@/lib/api/mentor";
-import { getRecruiterSettings, updateRecruiterEmail } from "@/lib/api/recruiter";
+import {
+  getRecruiterSettings,
+  updateRecruiterEmail,
+} from "@/lib/api/recruiter";
 import { getCurrentUser } from "@/lib/api/users";
 
 const mockGetTalentSettings = vi.mocked(getTalentSettings);
@@ -81,10 +84,11 @@ const mockGetCurrentUser = vi.mocked(getCurrentUser);
 
 // Arbitraries
 const emailArbitrary = () => fc.emailAddress();
-const roleArbitrary = () => fc.constantFrom('talent', 'mentor', 'recruiter');
+const roleArbitrary = () => fc.constantFrom("talent", "mentor", "recruiter");
 const timestampArbitrary = () =>
-  fc.integer({ min: 1577836800000, max: 1735689600000 }) // 2020-01-01 to 2025-01-01 in ms
-    .map(ms => new Date(ms).toISOString());
+  fc
+    .integer({ min: 1577836800000, max: 1735689600000 }) // 2020-01-01 to 2025-01-01 in ms
+    .map((ms) => new Date(ms).toISOString());
 
 const settingsArbitrary = (role: string) => {
   const baseSettings = {
@@ -94,7 +98,7 @@ const settingsArbitrary = (role: string) => {
   };
 
   switch (role) {
-    case 'talent':
+    case "talent":
       return fc.record({
         ...baseSettings,
         profileVisible: fc.boolean(),
@@ -104,7 +108,7 @@ const settingsArbitrary = (role: string) => {
         pushApplications: fc.boolean(),
         pushInterviews: fc.boolean(),
       });
-    case 'mentor':
+    case "mentor":
       return fc.record({
         ...baseSettings,
         sessionDuration: fc.integer({ min: 15, max: 180 }),
@@ -113,7 +117,7 @@ const settingsArbitrary = (role: string) => {
         advanceBookingDays: fc.integer({ min: 1, max: 30 }),
         cancellationPolicy: fc.string(),
         autoAccept: fc.boolean(),
-        visibility: fc.constantFrom('public', 'private'),
+        visibility: fc.constantFrom("public", "private"),
         showStats: fc.boolean(),
         emailNewRequests: fc.boolean(),
         emailSessionReminders: fc.boolean(),
@@ -121,7 +125,7 @@ const settingsArbitrary = (role: string) => {
         pushNewRequests: fc.boolean(),
         pushSessionReminders: fc.boolean(),
       });
-    case 'recruiter':
+    case "recruiter":
       return fc.record({
         ...baseSettings,
         emailNewApplications: fc.boolean(),
@@ -142,16 +146,14 @@ function renderWithQueryClient(component: React.ReactElement) {
     },
   });
   return render(
-    <QueryClientProvider client={queryClient}>
-      {component}
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{component}</QueryClientProvider>,
   );
 }
 
 describe("Property 1: Profile Email Storage and Retrieval", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Mock user data
     mockGetCurrentUser.mockResolvedValue({
       id: "user-1",
@@ -167,35 +169,47 @@ describe("Property 1: Profile Email Storage and Retrieval", () => {
     await fc.assert(
       fc.asyncProperty(
         roleArbitrary(),
-        settingsArbitrary('talent'),
+        settingsArbitrary("talent"),
         emailArbitrary(),
         async (role, settings, newEmail) => {
           // Mock the appropriate settings getter
           switch (role) {
-            case 'talent':
+            case "talent":
               mockGetTalentSettings.mockResolvedValue(settings as any);
-              mockUpdateTalentEmail.mockResolvedValue({ ...settings, email: newEmail, emailVerified: false } as any);
+              mockUpdateTalentEmail.mockResolvedValue({
+                ...settings,
+                email: newEmail,
+                emailVerified: false,
+              } as any);
               break;
-            case 'mentor':
+            case "mentor":
               mockGetMentorSettings.mockResolvedValue(settings as any);
-              mockUpdateMentorEmail.mockResolvedValue({ ...settings, email: newEmail, emailVerified: false } as any);
+              mockUpdateMentorEmail.mockResolvedValue({
+                ...settings,
+                email: newEmail,
+                emailVerified: false,
+              } as any);
               break;
-            case 'recruiter':
+            case "recruiter":
               mockGetRecruiterSettings.mockResolvedValue(settings as any);
-              mockUpdateRecruiterEmail.mockResolvedValue({ ...settings, email: newEmail, emailVerified: false } as any);
+              mockUpdateRecruiterEmail.mockResolvedValue({
+                ...settings,
+                email: newEmail,
+                emailVerified: false,
+              } as any);
               break;
           }
 
           // Render the appropriate settings component
           let SettingsComponent;
           switch (role) {
-            case 'talent':
+            case "talent":
               SettingsComponent = TalentSettings;
               break;
-            case 'mentor':
+            case "mentor":
               SettingsComponent = MentorSettings;
               break;
-            case 'recruiter':
+            case "recruiter":
               SettingsComponent = EmployerSettings;
               break;
             default:
@@ -206,25 +220,27 @@ describe("Property 1: Profile Email Storage and Retrieval", () => {
 
           // Wait for component to load
           await waitFor(() => {
-            expect(container.textContent).toContain('Profile Email');
+            expect(container.textContent).toContain("Profile Email");
           });
 
           // Property: Should display current email settings
           if (settings.email && settings.emailVerified) {
             expect(container.textContent).toContain(settings.email);
-            expect(container.textContent).toContain('Verified');
+            expect(container.textContent).toContain("Verified");
           } else if (settings.email && !settings.emailVerified) {
-            expect(container.textContent).toContain('Pending Verification');
+            expect(container.textContent).toContain("Pending Verification");
           } else {
-            expect(container.textContent).toContain('Using Main Email');
+            expect(container.textContent).toContain("Using Main Email");
           }
 
           // Property: Should show correct role name in title
           const roleDisplayName = role.charAt(0).toUpperCase() + role.slice(1);
-          expect(container.textContent).toContain(`${roleDisplayName} Profile Email`);
-        }
+          expect(container.textContent).toContain(
+            `${roleDisplayName} Profile Email`,
+          );
+        },
       ),
-      { numRuns: 30 } // Reduced for performance
+      { numRuns: 30 }, // Reduced for performance
     );
   });
 
@@ -262,29 +278,44 @@ describe("Property 1: Profile Email Storage and Retrieval", () => {
 
           // Mock settings and update functions
           switch (role) {
-            case 'talent':
+            case "talent":
               mockGetTalentSettings.mockResolvedValue(settings as any);
-              mockUpdateTalentEmail.mockResolvedValue({ ...settings, email: profileEmail, emailVerified: false } as any);
+              mockUpdateTalentEmail.mockResolvedValue({
+                ...settings,
+                email: profileEmail,
+                emailVerified: false,
+              } as any);
               break;
-            case 'mentor':
-              mockGetMentorSettings.mockResolvedValue({ ...settings, sessionDuration: 60 } as any);
-              mockUpdateMentorEmail.mockResolvedValue({ ...settings, email: profileEmail, emailVerified: false } as any);
+            case "mentor":
+              mockGetMentorSettings.mockResolvedValue({
+                ...settings,
+                sessionDuration: 60,
+              } as any);
+              mockUpdateMentorEmail.mockResolvedValue({
+                ...settings,
+                email: profileEmail,
+                emailVerified: false,
+              } as any);
               break;
-            case 'recruiter':
+            case "recruiter":
               mockGetRecruiterSettings.mockResolvedValue(settings as any);
-              mockUpdateRecruiterEmail.mockResolvedValue({ ...settings, email: profileEmail, emailVerified: false } as any);
+              mockUpdateRecruiterEmail.mockResolvedValue({
+                ...settings,
+                email: profileEmail,
+                emailVerified: false,
+              } as any);
               break;
           }
 
           let SettingsComponent;
           switch (role) {
-            case 'talent':
+            case "talent":
               SettingsComponent = TalentSettings;
               break;
-            case 'mentor':
+            case "mentor":
               SettingsComponent = MentorSettings;
               break;
-            case 'recruiter':
+            case "recruiter":
               SettingsComponent = EmployerSettings;
               break;
             default:
@@ -294,18 +325,20 @@ describe("Property 1: Profile Email Storage and Retrieval", () => {
           const { container } = renderWithQueryClient(<SettingsComponent />);
 
           await waitFor(() => {
-            expect(container.textContent).toContain('Profile Email');
+            expect(container.textContent).toContain("Profile Email");
           });
 
           // Property: Should show main account email in account section
           expect(container.textContent).toContain(mainEmail);
 
           // Property: Should show main email as current notification email initially
-          expect(container.textContent).toContain(`Current Email for ${role.charAt(0).toUpperCase() + role.slice(1)} Notifications`);
+          expect(container.textContent).toContain(
+            `Current Email for ${role.charAt(0).toUpperCase() + role.slice(1)} Notifications`,
+          );
           expect(container.textContent).toContain(mainEmail);
-        }
+        },
       ),
-      { numRuns: 20 }
+      { numRuns: 20 },
     );
   });
 
@@ -314,80 +347,77 @@ describe("Property 1: Profile Email Storage and Retrieval", () => {
    */
   it("should maintain backward compatibility with existing settings", async () => {
     await fc.assert(
-      fc.asyncProperty(
-        roleArbitrary(),
-        async (role) => {
-          // Mock settings without email fields (backward compatibility)
-          const legacySettings = {
-            profileVisible: true,
-            emailApplications: true,
-            emailInterviews: true,
-            emailMarketing: false,
-            pushApplications: true,
-            pushInterviews: true,
-          };
+      fc.asyncProperty(roleArbitrary(), async (role) => {
+        // Mock settings without email fields (backward compatibility)
+        const legacySettings = {
+          profileVisible: true,
+          emailApplications: true,
+          emailInterviews: true,
+          emailMarketing: false,
+          pushApplications: true,
+          pushInterviews: true,
+        };
 
-          switch (role) {
-            case 'talent':
-              mockGetTalentSettings.mockResolvedValue(legacySettings as any);
-              break;
-            case 'mentor':
-              mockGetMentorSettings.mockResolvedValue({ 
-                ...legacySettings, 
-                sessionDuration: 60,
-                bufferTime: 15,
-                minAdvanceBookingMinutes: 60,
-                advanceBookingDays: 7,
-                cancellationPolicy: "24 hours",
-                autoAccept: false,
-                visibility: 'public',
-                showStats: true,
-                emailNewRequests: true,
-                emailSessionReminders: true,
-                pushNewRequests: true,
-                pushSessionReminders: true,
-              } as any);
-              break;
-            case 'recruiter':
-              mockGetRecruiterSettings.mockResolvedValue({
-                emailNewApplications: true,
-                emailMarketing: false,
-                pushNewApplications: true,
-                profileVisible: true,
-              } as any);
-              break;
-          }
-
-          let SettingsComponent;
-          switch (role) {
-            case 'talent':
-              SettingsComponent = TalentSettings;
-              break;
-            case 'mentor':
-              SettingsComponent = MentorSettings;
-              break;
-            case 'recruiter':
-              SettingsComponent = EmployerSettings;
-              break;
-            default:
-              return;
-          }
-
-          const { container } = renderWithQueryClient(<SettingsComponent />);
-
-          await waitFor(() => {
-            expect(container.textContent).toContain('Settings');
-          });
-
-          // Property: Should handle missing email fields gracefully
-          expect(container.textContent).toContain('Profile Email');
-          expect(container.textContent).toContain('Using Main Email');
-
-          // Property: Should still show existing notification settings
-          expect(container.textContent).toContain('Notification');
+        switch (role) {
+          case "talent":
+            mockGetTalentSettings.mockResolvedValue(legacySettings as any);
+            break;
+          case "mentor":
+            mockGetMentorSettings.mockResolvedValue({
+              ...legacySettings,
+              sessionDuration: 60,
+              bufferTime: 15,
+              minAdvanceBookingMinutes: 60,
+              advanceBookingDays: 7,
+              cancellationPolicy: "24 hours",
+              autoAccept: false,
+              visibility: "public",
+              showStats: true,
+              emailNewRequests: true,
+              emailSessionReminders: true,
+              pushNewRequests: true,
+              pushSessionReminders: true,
+            } as any);
+            break;
+          case "recruiter":
+            mockGetRecruiterSettings.mockResolvedValue({
+              emailNewApplications: true,
+              emailMarketing: false,
+              pushNewApplications: true,
+              profileVisible: true,
+            } as any);
+            break;
         }
-      ),
-      { numRuns: 15 }
+
+        let SettingsComponent;
+        switch (role) {
+          case "talent":
+            SettingsComponent = TalentSettings;
+            break;
+          case "mentor":
+            SettingsComponent = MentorSettings;
+            break;
+          case "recruiter":
+            SettingsComponent = EmployerSettings;
+            break;
+          default:
+            return;
+        }
+
+        const { container } = renderWithQueryClient(<SettingsComponent />);
+
+        await waitFor(() => {
+          expect(container.textContent).toContain("Settings");
+        });
+
+        // Property: Should handle missing email fields gracefully
+        expect(container.textContent).toContain("Profile Email");
+        expect(container.textContent).toContain("Using Main Email");
+
+        // Property: Should still show existing notification settings
+        expect(container.textContent).toContain("Notification");
+      }),
+      { numRuns: 15 },
     );
   });
 
@@ -414,26 +444,29 @@ describe("Property 1: Profile Email Storage and Retrieval", () => {
           };
 
           switch (role) {
-            case 'talent':
+            case "talent":
               mockGetTalentSettings.mockResolvedValue(settings as any);
               break;
-            case 'mentor':
-              mockGetMentorSettings.mockResolvedValue({ ...settings, sessionDuration: 60 } as any);
+            case "mentor":
+              mockGetMentorSettings.mockResolvedValue({
+                ...settings,
+                sessionDuration: 60,
+              } as any);
               break;
-            case 'recruiter':
+            case "recruiter":
               mockGetRecruiterSettings.mockResolvedValue(settings as any);
               break;
           }
 
           let SettingsComponent;
           switch (role) {
-            case 'talent':
+            case "talent":
               SettingsComponent = TalentSettings;
               break;
-            case 'mentor':
+            case "mentor":
               SettingsComponent = MentorSettings;
               break;
-            case 'recruiter':
+            case "recruiter":
               SettingsComponent = EmployerSettings;
               break;
             default:
@@ -443,20 +476,22 @@ describe("Property 1: Profile Email Storage and Retrieval", () => {
           const { container } = renderWithQueryClient(<SettingsComponent />);
 
           await waitFor(() => {
-            expect(container.textContent).toContain('Profile Email');
+            expect(container.textContent).toContain("Profile Email");
           });
 
           // Property: Should show correct verification status
           if (isVerified) {
-            expect(container.textContent).toContain('Verified');
+            expect(container.textContent).toContain("Verified");
             expect(container.textContent).toContain(email);
           } else {
-            expect(container.textContent).toContain('Pending Verification');
-            expect(container.textContent).toContain('Email verification required');
+            expect(container.textContent).toContain("Pending Verification");
+            expect(container.textContent).toContain(
+              "Email verification required",
+            );
           }
-        }
+        },
       ),
-      { numRuns: 20 }
+      { numRuns: 20 },
     );
   });
 });

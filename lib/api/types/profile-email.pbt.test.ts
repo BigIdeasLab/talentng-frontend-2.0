@@ -1,7 +1,7 @@
 /**
  * Property-Based Tests - Profile Email Customization
  * Feature: profile-email-customization
- * 
+ *
  * Property 10: API Integration and Compatibility
  * **Validates: Requirements 8.2, 8.4, 8.5**
  */
@@ -11,23 +11,23 @@ import * as fc from "fast-check";
 import type { TalentSettings } from "../talent/types";
 import type { MentorSettings } from "../mentor/types";
 import type { RecruiterSettings } from "../recruiter/types";
-import type { 
-  VerifyEmailRequest, 
-  VerifyEmailResponse, 
-  EmailUpdateRequest, 
-  RateLimitError 
+import type {
+  VerifyEmailRequest,
+  VerifyEmailResponse,
+  EmailUpdateRequest,
+  RateLimitError,
 } from "./index";
 
 // Arbitraries for email-related data
-const emailArbitrary = () => 
-  fc.emailAddress();
+const emailArbitrary = () => fc.emailAddress();
 
 const timestampArbitrary = () =>
-  fc.date({ min: new Date('2020-01-01'), max: new Date('2030-01-01') })
-    .map(date => date.toISOString());
+  fc
+    .date({ min: new Date("2020-01-01"), max: new Date("2030-01-01") })
+    .map((date) => date.toISOString());
 
 const verificationCodeArbitrary = () =>
-  fc.integer({ min: 100000, max: 999999 }).map(n => n.toString());
+  fc.integer({ min: 100000, max: 999999 }).map((n) => n.toString());
 
 // Settings arbitraries with email fields
 const talentSettingsArbitrary = () =>
@@ -55,7 +55,7 @@ const talentSettingsArbitrary = () =>
       email: emailArbitrary(),
       emailVerified: fc.boolean(),
       emailUpdatedAt: fc.oneof(fc.constant(undefined), timestampArbitrary()),
-    })
+    }),
   );
 
 const mentorSettingsArbitrary = () =>
@@ -68,7 +68,7 @@ const mentorSettingsArbitrary = () =>
       advanceBookingDays: fc.integer({ min: 1, max: 30 }),
       cancellationPolicy: fc.string(),
       autoAccept: fc.boolean(),
-      visibility: fc.constantFrom('public', 'private'),
+      visibility: fc.constantFrom("public", "private"),
       showStats: fc.boolean(),
       emailNewRequests: fc.boolean(),
       emailSessionReminders: fc.boolean(),
@@ -87,7 +87,7 @@ const mentorSettingsArbitrary = () =>
       advanceBookingDays: fc.integer({ min: 1, max: 30 }),
       cancellationPolicy: fc.string(),
       autoAccept: fc.boolean(),
-      visibility: fc.constantFrom('public', 'private'),
+      visibility: fc.constantFrom("public", "private"),
       showStats: fc.boolean(),
       emailNewRequests: fc.boolean(),
       emailSessionReminders: fc.boolean(),
@@ -97,7 +97,7 @@ const mentorSettingsArbitrary = () =>
       email: emailArbitrary(),
       emailVerified: fc.boolean(),
       emailUpdatedAt: fc.oneof(fc.constant(undefined), timestampArbitrary()),
-    })
+    }),
   );
 
 const recruiterSettingsArbitrary = () =>
@@ -121,7 +121,7 @@ const recruiterSettingsArbitrary = () =>
       email: emailArbitrary(),
       emailVerified: fc.boolean(),
       emailUpdatedAt: fc.oneof(fc.constant(undefined), timestampArbitrary()),
-    })
+    }),
   );
 
 describe("Property 10: API Integration and Compatibility", () => {
@@ -139,9 +139,11 @@ describe("Property 10: API Integration and Compatibility", () => {
           // Property: All settings should have the same email field types
           const hasConsistentEmailFields = (settings: any) => {
             return (
-              (settings.email === undefined || typeof settings.email === 'string') &&
-              typeof settings.emailVerified === 'boolean' &&
-              (settings.emailUpdatedAt === undefined || typeof settings.emailUpdatedAt === 'string')
+              (settings.email === undefined ||
+                typeof settings.email === "string") &&
+              typeof settings.emailVerified === "boolean" &&
+              (settings.emailUpdatedAt === undefined ||
+                typeof settings.emailUpdatedAt === "string")
             );
           };
 
@@ -159,9 +161,20 @@ describe("Property 10: API Integration and Compatibility", () => {
           if (!recruiterSettings.email) {
             expect(recruiterSettings.emailVerified).toBe(false);
           }
-        }
+
+          // Property: emailUpdatedAt should be undefined when email is undefined
+          if (!talentSettings.email) {
+            expect(talentSettings.emailUpdatedAt).toBeUndefined();
+          }
+          if (!mentorSettings.email) {
+            expect(mentorSettings.emailUpdatedAt).toBeUndefined();
+          }
+          if (!recruiterSettings.email) {
+            expect(recruiterSettings.emailUpdatedAt).toBeUndefined();
+          }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
@@ -180,18 +193,21 @@ describe("Property 10: API Integration and Compatibility", () => {
           const response: VerifyEmailResponse = { success, message };
 
           // Property: Request should have required code field
-          expect(typeof request.code === 'string').toBe(true);
+          expect(typeof request.code === "string").toBe(true);
           expect(request.code.length).toBe(6);
           expect(/^\d{6}$/.test(request.code)).toBe(true);
 
           // Property: Response should have required success field
-          expect(typeof response.success === 'boolean').toBe(true);
-          
+          expect(typeof response.success === "boolean").toBe(true);
+
           // Property: Message should be string or undefined
-          expect(response.message === undefined || typeof response.message === 'string').toBe(true);
-        }
+          expect(
+            response.message === undefined ||
+              typeof response.message === "string",
+          ).toBe(true);
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
@@ -208,25 +224,29 @@ describe("Property 10: API Integration and Compatibility", () => {
         (email, message, timestamp) => {
           const updateRequest: EmailUpdateRequest = { email };
           const rateLimitError: RateLimitError = {
-            error: 'RATE_LIMITED',
+            error: "RATE_LIMITED",
             message,
-            nextAllowedUpdate: timestamp
+            nextAllowedUpdate: timestamp,
           };
 
           // Property: Update request should have valid email
-          expect(typeof updateRequest.email === 'string').toBe(true);
-          expect(updateRequest.email.includes('@')).toBe(true);
+          expect(typeof updateRequest.email === "string").toBe(true);
+          expect(updateRequest.email.includes("@")).toBe(true);
 
           // Property: Rate limit error should have required fields
-          expect(rateLimitError.error).toBe('RATE_LIMITED');
-          expect(typeof rateLimitError.message === 'string').toBe(true);
-          expect(typeof rateLimitError.nextAllowedUpdate === 'string').toBe(true);
-          
+          expect(rateLimitError.error).toBe("RATE_LIMITED");
+          expect(typeof rateLimitError.message === "string").toBe(true);
+          expect(typeof rateLimitError.nextAllowedUpdate === "string").toBe(
+            true,
+          );
+
           // Property: nextAllowedUpdate should be valid ISO timestamp
-          expect(() => new Date(rateLimitError.nextAllowedUpdate)).not.toThrow();
-        }
+          expect(
+            () => new Date(rateLimitError.nextAllowedUpdate),
+          ).not.toThrow();
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 
@@ -242,28 +262,50 @@ describe("Property 10: API Integration and Compatibility", () => {
         recruiterSettingsArbitrary(),
         (talentSettings, mentorSettings, recruiterSettings) => {
           // Property: All settings should have existing notification fields
-          expect(typeof talentSettings.emailApplications === 'boolean').toBe(true);
-          expect(typeof talentSettings.emailInterviews === 'boolean').toBe(true);
-          expect(typeof talentSettings.emailMarketing === 'boolean').toBe(true);
+          expect(typeof talentSettings.emailApplications === "boolean").toBe(
+            true,
+          );
+          expect(typeof talentSettings.emailInterviews === "boolean").toBe(
+            true,
+          );
+          expect(typeof talentSettings.emailMarketing === "boolean").toBe(true);
 
-          expect(typeof mentorSettings.emailNewRequests === 'boolean').toBe(true);
-          expect(typeof mentorSettings.emailSessionReminders === 'boolean').toBe(true);
-          expect(typeof mentorSettings.emailMarketing === 'boolean').toBe(true);
+          expect(typeof mentorSettings.emailNewRequests === "boolean").toBe(
+            true,
+          );
+          expect(
+            typeof mentorSettings.emailSessionReminders === "boolean",
+          ).toBe(true);
+          expect(typeof mentorSettings.emailMarketing === "boolean").toBe(true);
 
-          expect(typeof recruiterSettings.emailNewApplications === 'boolean').toBe(true);
-          expect(typeof recruiterSettings.emailMarketing === 'boolean').toBe(true);
+          expect(
+            typeof recruiterSettings.emailNewApplications === "boolean",
+          ).toBe(true);
+          expect(typeof recruiterSettings.emailMarketing === "boolean").toBe(
+            true,
+          );
 
           // Property: New email fields should not interfere with existing fields
-          const talentWithoutEmail = { ...talentSettings };
-          delete talentWithoutEmail.email;
-          delete talentWithoutEmail.emailVerified;
-          delete talentWithoutEmail.emailUpdatedAt;
-          
-          expect(Object.keys(talentWithoutEmail)).toContain('profileVisible');
-          expect(Object.keys(talentWithoutEmail)).toContain('emailApplications');
-        }
+          const talentWithoutEmail: Partial<typeof talentSettings> = {
+            ...talentSettings,
+          };
+          if ("email" in talentWithoutEmail) {
+            talentWithoutEmail.email = undefined;
+          }
+          if ("emailVerified" in talentWithoutEmail) {
+            talentWithoutEmail.emailVerified = false;
+          }
+          if ("emailUpdatedAt" in talentWithoutEmail) {
+            talentWithoutEmail.emailUpdatedAt = undefined;
+          }
+
+          expect(Object.keys(talentWithoutEmail)).toContain("profileVisible");
+          expect(Object.keys(talentWithoutEmail)).toContain(
+            "emailApplications",
+          );
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 });

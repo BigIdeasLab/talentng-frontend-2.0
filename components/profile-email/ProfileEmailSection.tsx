@@ -34,24 +34,24 @@ export function ProfileEmailSection({
   // Determine email status
   const getEmailStatus = (): EmailStatus => {
     if (rateLimitedUntil && new Date(rateLimitedUntil) > new Date()) {
-      return 'rate-limited';
+      return "rate-limited";
     }
     if (!currentEmail) {
-      return 'main-email';
+      return "main-email";
     }
     if (!emailVerified) {
-      return 'pending';
+      return "pending";
     }
-    return 'verified';
+    return "verified";
   };
 
   const status = getEmailStatus();
-  const isRateLimited = status === 'rate-limited';
+  const isRateLimited = status === "rate-limited";
   const needsVerification = currentEmail && !emailVerified;
 
   const handleEmailUpdate = async () => {
     if (!emailInput.trim() || emailInput === currentEmail) return;
-    
+
     setIsUpdating(true);
     try {
       await onEmailUpdate(emailInput.trim());
@@ -137,7 +137,8 @@ export function ProfileEmailSection({
           {getRoleDisplayName()} Profile Email
         </h2>
         <p className="text-[13px] font-inter-tight text-[#525866] mt-1">
-          Set a custom email address for {role} notifications. If not set, notifications will be sent to your main account email.
+          Set a custom email address for {role} notifications. If not set,
+          notifications will be sent to your main account email.
         </p>
       </div>
 
@@ -152,16 +153,13 @@ export function ProfileEmailSection({
               {getDisplayEmail()}
             </p>
           </div>
-          <StatusIndicator 
-            status={status} 
-            nextUpdateTime={rateLimitedUntil} 
-          />
+          <StatusIndicator status={status} nextUpdateTime={rateLimitedUntil} />
         </div>
 
         {/* Email Input */}
         <div className="space-y-3">
           <div>
-            <Label 
+            <Label
               htmlFor={`${role}-email`}
               className="text-[12px] font-medium font-inter-tight text-[#525866]"
             >
@@ -179,7 +177,8 @@ export function ProfileEmailSection({
             {isRateLimited && (
               <p className="text-[11px] text-amber-600 mt-1 flex items-center gap-1">
                 <Clock className="w-3 h-3" />
-                You can update this email again on {new Date(rateLimitedUntil!).toLocaleDateString()}
+                You can update this email again on{" "}
+                {new Date(rateLimitedUntil!).toLocaleDateString()}
               </p>
             )}
           </div>
@@ -194,7 +193,8 @@ export function ProfileEmailSection({
                     Email verification required
                   </p>
                   <p className="text-[11px] text-amber-700 mt-1">
-                    Your custom email needs to be verified before it can receive notifications.
+                    Your custom email needs to be verified before it can receive
+                    notifications.
                   </p>
                   <Button
                     variant="outline"
@@ -214,19 +214,17 @@ export function ProfileEmailSection({
             <Button
               onClick={handleEmailUpdate}
               disabled={
-                isUpdating || 
-                isLoading || 
-                isRateLimited || 
-                !emailInput.trim() || 
+                isUpdating ||
+                isLoading ||
+                isRateLimited ||
+                !emailInput.trim() ||
                 emailInput === currentEmail
               }
               className="text-white active:opacity-90 hover:opacity-90 min-h-[44px] flex-1 sm:flex-none"
               style={{ backgroundColor: roleColors.primary }}
             >
-              {isUpdating && (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              )}
-              {currentEmail ? 'Update Email' : 'Set Custom Email'}
+              {isUpdating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              {currentEmail ? "Update Email" : "Set Custom Email"}
             </Button>
 
             {currentEmail && (

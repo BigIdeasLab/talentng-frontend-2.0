@@ -17,7 +17,7 @@ This implementation extends existing role-based settings pages to support profil
     - Include error handling and loading state types
     - _Requirements: 5.1, 5.2, 5.3_
 
-  - [ ]* 1.3 Write property test for type consistency
+  - [ ]\* 1.3 Write property test for type consistency
     - **Property 10: API Integration and Compatibility**
     - **Validates: Requirements 8.2, 8.4, 8.5**
 
@@ -39,7 +39,7 @@ This implementation extends existing role-based settings pages to support profil
     - Include next update time display for rate limiting
     - _Requirements: 1.4, 1.5, 3.4, 5.2_
 
-  - [ ]* 2.4 Write property test for UI status display
+  - [ ]\* 2.4 Write property test for UI status display
     - **Property 7: UI Status Display Accuracy**
     - **Validates: Requirements 1.4, 1.5, 5.2, 5.3, 5.6**
 
@@ -59,7 +59,7 @@ This implementation extends existing role-based settings pages to support profil
     - Include proper error handling and type safety
     - _Requirements: 1.1, 2.1, 2.3, 8.2_
 
-  - [ ]* 3.4 Write property test for email validation and uniqueness
+  - [ ]\* 3.4 Write property test for email validation and uniqueness
     - **Property 6: Email Validation and Uniqueness**
     - **Validates: Requirements 6.1, 6.2, 6.3, 6.5**
 
@@ -85,7 +85,7 @@ This implementation extends existing role-based settings pages to support profil
     - Maintain existing layout and styling patterns
     - _Requirements: 1.1, 5.1, 8.2_
 
-  - [ ]* 5.4 Write property test for profile email storage and retrieval
+  - [ ]\* 5.4 Write property test for profile email storage and retrieval
     - **Property 1: Profile Email Storage and Retrieval**
     - **Validates: Requirements 1.1, 1.2, 8.1, 8.3**
 
@@ -102,15 +102,15 @@ This implementation extends existing role-based settings pages to support profil
     - Handle rate limit errors from API responses
     - _Requirements: 3.1, 3.2, 3.3, 3.4_
 
-  - [ ]* 6.3 Write property test for email update verification reset
+  - [ ]\* 6.3 Write property test for email update verification reset
     - **Property 2: Email Update Verification Reset**
     - **Validates: Requirements 1.3, 2.1**
 
-  - [ ]* 6.4 Write property test for verification code generation and validation
+  - [ ]\* 6.4 Write property test for verification code generation and validation
     - **Property 3: Verification Code Generation and Validation**
     - **Validates: Requirements 2.2, 2.3, 2.4, 2.5**
 
-  - [ ]* 6.5 Write property test for rate limiting enforcement
+  - [ ]\* 6.5 Write property test for rate limiting enforcement
     - **Property 4: Rate Limiting Enforcement**
     - **Validates: Requirements 3.1, 3.2, 3.3**
 
@@ -127,11 +127,11 @@ This implementation extends existing role-based settings pages to support profil
     - Include loading states and user feedback
     - _Requirements: 5.4, 7.4_
 
-  - [ ]* 7.3 Write property test for error handling and fallback behavior
+  - [ ]\* 7.3 Write property test for error handling and fallback behavior
     - **Property 8: Error Handling and Fallback Behavior**
     - **Validates: Requirements 6.4, 7.1, 7.2, 7.3, 7.4**
 
-  - [ ]* 7.4 Write property test for toast notification feedback
+  - [ ]\* 7.4 Write property test for toast notification feedback
     - **Property 11: Toast Notification Feedback**
     - **Validates: Requirements 5.4, 7.4**
 
@@ -139,15 +139,15 @@ This implementation extends existing role-based settings pages to support profil
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 9. Add comprehensive property-based tests
-  - [ ]* 9.1 Write property test for notification routing logic
+  - [ ]\* 9.1 Write property test for notification routing logic
     - **Property 5: Notification Routing Logic**
     - **Validates: Requirements 2.6, 4.1, 4.2, 4.3, 4.4**
 
-  - [ ]* 9.2 Write property test for verification attempt rate limiting
+  - [ ]\* 9.2 Write property test for verification attempt rate limiting
     - **Property 9: Verification Attempt Rate Limiting**
     - **Validates: Requirements 7.5**
 
-  - [ ]* 9.3 Write property test for notification logging
+  - [ ]\* 9.3 Write property test for notification logging
     - **Property 12: Notification Logging**
     - **Validates: Requirements 4.5, 7.3**
 

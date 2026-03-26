@@ -19,12 +19,12 @@ import { Switch } from "@/components/ui/switch";
 import { DeleteConfirmationModal } from "@/components/ui/delete-confirmation-modal";
 import { ProfileEmailSection } from "@/components/profile-email";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
-import { 
-  getTalentSettings, 
+import {
+  getTalentSettings,
   updateTalentSettings,
   updateTalentEmail,
   verifyTalentEmail,
-  resendTalentVerification
+  resendTalentVerification,
 } from "@/lib/api/talent";
 import { getCurrentUser } from "@/lib/api/users";
 import { logoutAllDevices } from "@/lib/api/auth";
@@ -190,14 +190,20 @@ export function TalentSettings() {
   const updateEmailMutation = useMutation({
     mutationFn: updateTalentEmail,
     onSuccess: () => {
-      toast.success("Email updated successfully. Please check your email for verification code.");
+      toast.success(
+        "Email updated successfully. Please check your email for verification code.",
+      );
       queryClient.invalidateQueries({ queryKey: ["talentSettings"] });
     },
     onError: (error: any) => {
-      if (error.error === 'RATE_LIMITED') {
-        toast.error(error.message || "You can only update your email once every 7 days.");
-      } else if (error.error === 'DUPLICATE_EMAIL') {
-        toast.error("This email is already in use. Please choose a different email.");
+      if (error.error === "RATE_LIMITED") {
+        toast.error(
+          error.message || "You can only update your email once every 7 days.",
+        );
+      } else if (error.error === "DUPLICATE_EMAIL") {
+        toast.error(
+          "This email is already in use. Please choose a different email.",
+        );
       } else {
         toast.error(error.message || "Failed to update email");
       }
@@ -289,7 +295,11 @@ export function TalentSettings() {
             onEmailUpdate={handleEmailUpdate}
             onVerifyEmail={handleVerifyEmail}
             onResendCode={handleResendCode}
-            isLoading={updateEmailMutation.isPending || verifyEmailMutation.isPending || resendCodeMutation.isPending}
+            isLoading={
+              updateEmailMutation.isPending ||
+              verifyEmailMutation.isPending ||
+              resendCodeMutation.isPending
+            }
             rateLimitedUntil={undefined} // This would come from API error response
             roleColors={roleColors}
             isInitialLoading={isLoading || !userData}
