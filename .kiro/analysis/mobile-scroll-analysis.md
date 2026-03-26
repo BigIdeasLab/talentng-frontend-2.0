@@ -3,6 +3,7 @@
 ## Current State
 
 ### Layout Structure
+
 The app has a **two-level scroll hierarchy**:
 
 1. **Layout Level** (`app/(business)/layout-client.tsx`):
@@ -16,6 +17,7 @@ The app has a **two-level scroll hierarchy**:
 ### Pages Analyzed
 
 #### ✅ Pages with Proper Desktop Structure (h-screen + internal flex)
+
 These pages work correctly on desktop:
 
 1. **Calendar** (`app/(business)/calendar/page.tsx`)
@@ -78,11 +80,13 @@ These pages work correctly on desktop:
 ## The Double Scroll Problem
 
 ### On Mobile:
+
 1. **Layout scroll**: `overflow-y-auto` on content wrapper
 2. **Page scroll**: `h-screen overflow-y-auto` on mobile layout
 3. **Result**: Two nested scrollbars = janky UX
 
 ### On Desktop:
+
 - Most pages use `h-screen overflow-hidden` which prevents double scroll
 - Internal content areas have their own `overflow-y-auto`
 - This works because the layout scroll is at the top level
@@ -90,19 +94,23 @@ These pages work correctly on desktop:
 ## Recommended Solution
 
 ### Option 1: Remove Layout Scroll (RECOMMENDED)
+
 **Change**: Remove `overflow-y-auto` from layout, change to `overflow-hidden`
 
 **Pros**:
+
 - Eliminates double scroll on mobile
 - Pages already have proper scroll handling
 - Minimal changes needed
 - Better mobile UX
 
 **Cons**:
+
 - Need to verify all pages have proper scroll containers
 - Any page without `h-screen` will be cut off
 
 **Implementation**:
+
 ```tsx
 // app/(business)/layout-client.tsx
 <div className={`flex-1 overflow-hidden transition-all duration-200 ${...}`}>
@@ -111,13 +119,16 @@ These pages work correctly on desktop:
 ```
 
 ### Option 2: Remove Page-Level Scroll on Mobile
+
 **Change**: Remove `h-screen overflow-y-auto` from mobile layouts
 
 **Pros**:
+
 - Layout handles all scrolling
 - Simpler page components
 
 **Cons**:
+
 - Breaks desktop sticky headers/footers
 - Requires major refactoring of all pages
 - Loses per-page scroll control
@@ -126,11 +137,13 @@ These pages work correctly on desktop:
 ## Action Plan
 
 ### Phase 1: Verify Current Pages (DONE ✅)
+
 - [x] Check all main pages for scroll structure
 - [x] Document current patterns
 - [x] Identify pages that need updates
 
 ### Phase 2: Test Layout Change
+
 1. Change layout to `overflow-hidden`
 2. Test each page on desktop:
    - Dashboard (all roles)
@@ -150,7 +163,9 @@ These pages work correctly on desktop:
    - Test pagination
 
 ### Phase 3: Fix Any Broken Pages
+
 If any page is cut off after layout change:
+
 - Add `h-screen overflow-y-auto` to mobile layout
 - Add `h-screen` with flex structure to desktop layout
 
@@ -159,6 +174,7 @@ If any page is cut off after layout change:
 **RECOMMENDATION**: Proceed with Option 1 (Remove Layout Scroll)
 
 **Reasoning**:
+
 - 90%+ of pages already have proper `h-screen` structure
 - Minimal risk of breaking existing functionality
 - Solves the double scroll issue cleanly
