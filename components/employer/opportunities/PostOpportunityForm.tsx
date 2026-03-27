@@ -55,8 +55,8 @@ export function PostOpportunityForm() {
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   const [formData, setFormData] = useState(() => {
-    if (typeof window === 'undefined') return DEFAULT_FORM_DATA;
-    
+    if (typeof window === "undefined") return DEFAULT_FORM_DATA;
+
     const saved = sessionStorage.getItem("opportunityFormData");
     if (saved) {
       try {
@@ -85,7 +85,7 @@ export function PostOpportunityForm() {
 
   const clearForm = () => {
     setFormData(DEFAULT_FORM_DATA);
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       sessionStorage.removeItem("opportunityFormData");
     }
   };
@@ -227,7 +227,7 @@ export function PostOpportunityForm() {
 
   // Save form data to sessionStorage whenever it changes
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       sessionStorage.setItem("opportunityFormData", JSON.stringify(formData));
     }
   }, [formData]);
@@ -302,7 +302,7 @@ export function PostOpportunityForm() {
   const handleCancel = () => {
     setShowExitModal(true);
     setPendingNavigation(() => () => {
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         sessionStorage.removeItem("opportunityFormData");
       }
       router.push("/opportunities");
@@ -310,7 +310,7 @@ export function PostOpportunityForm() {
   };
 
   const handleDiscard = () => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       sessionStorage.removeItem("opportunityFormData");
     }
     setShowExitModal(false);
@@ -359,43 +359,43 @@ export function PostOpportunityForm() {
                   : undefined
               }
             >
-            Description
-          </button>
-          {!isVolunteer && (
+              Description
+            </button>
+            {!isVolunteer && (
+              <button
+                onClick={() => toggleSection("budget-scope")}
+                className={`text-[14px] font-normal transition-colors text-left ${
+                  expandedSection === "budget-scope"
+                    ? "font-medium"
+                    : "text-[#525866] hover:text-black"
+                }`}
+                style={
+                  expandedSection === "budget-scope"
+                    ? { color: ROLE_COLORS.recruiter.primary }
+                    : undefined
+                }
+              >
+                Budget & Scope
+              </button>
+            )}
             <button
-              onClick={() => toggleSection("budget-scope")}
+              onClick={() => toggleSection("application-settings")}
               className={`text-[14px] font-normal transition-colors text-left ${
-                expandedSection === "budget-scope"
+                expandedSection === "application-settings"
                   ? "font-medium"
                   : "text-[#525866] hover:text-black"
               }`}
               style={
-                expandedSection === "budget-scope"
+                expandedSection === "application-settings"
                   ? { color: ROLE_COLORS.recruiter.primary }
                   : undefined
               }
             >
-              Budget & Scope
+              Application Settings
             </button>
-          )}
-          <button
-            onClick={() => toggleSection("application-settings")}
-            className={`text-[14px] font-normal transition-colors text-left ${
-              expandedSection === "application-settings"
-                ? "font-medium"
-                : "text-[#525866] hover:text-black"
-            }`}
-            style={
-              expandedSection === "application-settings"
-                ? { color: ROLE_COLORS.recruiter.primary }
-                : undefined
-            }
-          >
-            Application Settings
-          </button>
+          </div>
         </div>
       </div>
-    </div>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
@@ -416,8 +416,12 @@ export function PostOpportunityForm() {
               disabled={!isFormComplete}
               className="rounded-full font-inter-tight text-[13px] font-normal text-white transition-colors px-5 py-2 min-h-[44px] disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
-                backgroundColor: isFormComplete ? ROLE_COLORS.recruiter.primary : '#9CA3AF',
-                borderColor: isFormComplete ? ROLE_COLORS.recruiter.primary : '#9CA3AF',
+                backgroundColor: isFormComplete
+                  ? ROLE_COLORS.recruiter.primary
+                  : "#9CA3AF",
+                borderColor: isFormComplete
+                  ? ROLE_COLORS.recruiter.primary
+                  : "#9CA3AF",
               }}
             >
               Preview
@@ -641,8 +645,12 @@ export function PostOpportunityForm() {
           disabled={!isFormComplete}
           className="flex-1 rounded-full font-inter-tight text-[13px] font-normal text-white transition-colors py-3 min-h-[44px] disabled:opacity-50 disabled:cursor-not-allowed"
           style={{
-            backgroundColor: isFormComplete ? ROLE_COLORS.recruiter.primary : '#9CA3AF',
-            borderColor: isFormComplete ? ROLE_COLORS.recruiter.primary : '#9CA3AF',
+            backgroundColor: isFormComplete
+              ? ROLE_COLORS.recruiter.primary
+              : "#9CA3AF",
+            borderColor: isFormComplete
+              ? ROLE_COLORS.recruiter.primary
+              : "#9CA3AF",
           }}
         >
           Preview

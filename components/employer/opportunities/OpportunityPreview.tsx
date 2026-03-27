@@ -333,7 +333,7 @@ export function OpportunityPreview() {
           data: finalData,
         });
         // Clear sessionStorage after successful save
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
           sessionStorage.removeItem("opportunityFormData");
         }
         setSuccessModal({
@@ -346,7 +346,7 @@ export function OpportunityPreview() {
       } else {
         await createMutation.mutateAsync(finalData);
         // Clear sessionStorage after successful save
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
           sessionStorage.removeItem("opportunityFormData");
         }
         setSuccessModal({
@@ -411,7 +411,7 @@ export function OpportunityPreview() {
           data: finalData,
         });
         // Clear sessionStorage after successful post
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
           sessionStorage.removeItem("opportunityFormData");
         }
         setSuccessModal({
@@ -424,7 +424,7 @@ export function OpportunityPreview() {
       } else {
         await createMutation.mutateAsync(finalData);
         // Clear sessionStorage after successful post
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
           sessionStorage.removeItem("opportunityFormData");
         }
         setSuccessModal({

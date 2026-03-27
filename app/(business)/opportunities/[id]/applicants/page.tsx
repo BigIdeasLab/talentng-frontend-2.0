@@ -96,7 +96,7 @@ export default function OpportunityApplicantsPage() {
     data: response,
     isLoading: isAppsLoading,
     error: appsError,
-  } = useRecruiterApplicationsQuery({ 
+  } = useRecruiterApplicationsQuery({
     opportunityId,
     limit: LIMIT,
     offset: offset,

@@ -237,6 +237,7 @@ All pages have been updated to follow the mobile layout patterns! ✅
 ### Completed Updates
 
 **Recruiter Role:**
+
 - ✅ Opportunities page (shared with talent)
 - ✅ Discover Talent page (shared with talent)
 - ✅ Applicants page
@@ -244,12 +245,14 @@ All pages have been updated to follow the mobile layout patterns! ✅
 - ✅ Dashboard (EmployerDashboard)
 
 **Mentor Role:**
+
 - ✅ Applications page
 - ✅ Sessions page
 - ✅ Dashboard (MentorDashboard)
 - ✅ Mentorship page (shared with talent)
 
 **Talent Role:**
+
 - ✅ Opportunities page
 - ✅ Mentorship page
 - ✅ Calendar page

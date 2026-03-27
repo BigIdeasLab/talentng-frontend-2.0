@@ -61,16 +61,18 @@ export function RecruiterUpcoming() {
           offset: offset,
         });
         const responseData = Array.isArray(res) ? res : res.data || [];
-        const responsePagination = Array.isArray(res) ? null : res.pagination || null;
-        
+        const responsePagination = Array.isArray(res)
+          ? null
+          : res.pagination || null;
+
         setItems(responseData);
         setPagination(responsePagination);
-        
-        console.log('Interviews API Response:', { 
-          dataLength: responseData.length, 
-          pagination: responsePagination 
+
+        console.log("Interviews API Response:", {
+          dataLength: responseData.length,
+          pagination: responsePagination,
         });
-        
+
         if (isInitialLoad) setIsInitialLoad(false);
       } catch (error) {
         console.error("Failed to load recruiter upcoming data:", error);

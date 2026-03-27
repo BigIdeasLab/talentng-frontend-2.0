@@ -45,7 +45,7 @@ interface MentorshipRequest {
 function mapApiRequest(request: ApiMentorshipRequest): MentorshipRequest {
   const datePart = request.scheduledDate.split("T")[0];
   const scheduledDate = new Date(`${datePart}T${request.scheduledTime}:00`);
-  
+
   return {
     id: request.id,
     mentee: {
@@ -58,14 +58,13 @@ function mapApiRequest(request: ApiMentorshipRequest): MentorshipRequest {
       avatar: (() => {
         // Try multiple avatar sources
         const rawAvatar =
-          request.mentee.profileImageUrl || 
-          request.mentee.avatar;
-        
+          request.mentee.profileImageUrl || request.mentee.avatar;
+
         // Filter out placeholder/invalid URLs
         if (!rawAvatar) return "/default.png";
         if (rawAvatar.includes("builder.io")) return "/default.png";
         if (rawAvatar.includes("placeholder")) return "/default.png";
-        
+
         return rawAvatar;
       })(),
       title: request.mentee.headline || "",
@@ -141,7 +140,7 @@ export default function ApplicationsPage() {
       const meta = !Array.isArray(requestsResponse)
         ? requestsResponse?.meta
         : null;
-      
+
       // Always create pagination data if we have items, even if API doesn't return meta
       const paginationData = meta
         ? {
@@ -217,9 +216,9 @@ export default function ApplicationsPage() {
               onError={(e) => {
                 // If image fails to load, show initials instead
                 const target = e.currentTarget;
-                target.style.display = 'none';
+                target.style.display = "none";
                 const initialsDiv = target.nextElementSibling as HTMLElement;
-                if (initialsDiv) initialsDiv.style.display = 'flex';
+                if (initialsDiv) initialsDiv.style.display = "flex";
               }}
             />
             <div className="w-8 h-8 rounded-full bg-[#FDF2F8] items-center justify-center flex-shrink-0 hidden">
@@ -271,8 +270,7 @@ export default function ApplicationsPage() {
                     : "text-[#EF4444]"
               }`}
             >
-              {request.status.charAt(0).toUpperCase() +
-                request.status.slice(1)}
+              {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
             </span>
           </div>
         </div>
@@ -295,8 +293,7 @@ export default function ApplicationsPage() {
               {request.duration}
             </span>
           </div>
-          {request.location &&
-          /^https?:\/\//i.test(request.location) ? (
+          {request.location && /^https?:\/\//i.test(request.location) ? (
             <a
               href={request.location}
               target="_blank"
@@ -402,7 +399,13 @@ export default function ApplicationsPage() {
       ) : (
         <div className={`grid ${gridCols} gap-[7px]`}>
           {filteredRequests.length === 0 ? (
-            <div className={gridCols.includes("lg:grid-cols-2") ? "col-span-1 lg:col-span-2" : ""}>
+            <div
+              className={
+                gridCols.includes("lg:grid-cols-2")
+                  ? "col-span-1 lg:col-span-2"
+                  : ""
+              }
+            >
               {renderEmptyState()}
             </div>
           ) : (
@@ -529,7 +532,9 @@ export default function ApplicationsPage() {
                     : "text-black/30 font-medium hover:text-black/50"
                 }`}
               >
-                <span className="text-[13px] font-inter-tight">{tab.label}</span>
+                <span className="text-[13px] font-inter-tight">
+                  {tab.label}
+                </span>
               </button>
             ))}
           </div>
@@ -765,9 +770,7 @@ export default function ApplicationsPage() {
         </div>
 
         {/* Mobile Content */}
-        <div className="p-4">
-          {renderContent("grid-cols-1")}
-        </div>
+        <div className="p-4">{renderContent("grid-cols-1")}</div>
 
         {/* Pagination - Mobile */}
         {pagination && (
@@ -775,7 +778,10 @@ export default function ApplicationsPage() {
             <div className="flex flex-col gap-3">
               <div className="text-[13px] text-[#525866] font-inter-tight text-center">
                 Showing {pagination.offset + 1} to{" "}
-                {Math.min(pagination.offset + pagination.limit, pagination.total)}{" "}
+                {Math.min(
+                  pagination.offset + pagination.limit,
+                  pagination.total,
+                )}{" "}
                 of {pagination.total} requests
               </div>
               <div className="flex items-center justify-center gap-2">
@@ -820,7 +826,10 @@ export default function ApplicationsPage() {
             <div className="flex items-center justify-between">
               <div className="text-[13px] text-[#525866] font-inter-tight">
                 Showing {pagination.offset + 1} to{" "}
-                {Math.min(pagination.offset + pagination.limit, pagination.total)}{" "}
+                {Math.min(
+                  pagination.offset + pagination.limit,
+                  pagination.total,
+                )}{" "}
                 of {pagination.total} requests
               </div>
               <div className="flex items-center gap-2">

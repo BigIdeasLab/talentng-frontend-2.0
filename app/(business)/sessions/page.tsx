@@ -202,8 +202,10 @@ export default function SessionsPage() {
       // Extract and transform pagination data
       // Check for both pagination (direct) and meta (PaginatedResponse) formats
       const meta = !Array.isArray(response) ? response?.meta : null;
-      const directPagination = !Array.isArray(response) ? (response as any)?.pagination : null;
-      
+      const directPagination = !Array.isArray(response)
+        ? (response as any)?.pagination
+        : null;
+
       const paginationData = directPagination || null;
       setPagination(paginationData);
 
@@ -428,7 +430,9 @@ export default function SessionsPage() {
                     : "text-black/30 font-medium hover:text-black/50"
                 }`}
               >
-                <span className="text-[13px] font-inter-tight">{tab.label}</span>
+                <span className="text-[13px] font-inter-tight">
+                  {tab.label}
+                </span>
               </button>
             ))}
           </div>
@@ -670,7 +674,10 @@ export default function SessionsPage() {
             <div className="flex flex-col gap-3">
               <div className="text-[13px] text-[#525866] font-inter-tight text-center">
                 Showing {pagination.offset + 1} to{" "}
-                {Math.min(pagination.offset + pagination.limit, pagination.total)}{" "}
+                {Math.min(
+                  pagination.offset + pagination.limit,
+                  pagination.total,
+                )}{" "}
                 of {pagination.total} sessions
               </div>
               <div className="flex items-center justify-center gap-2">
@@ -806,7 +813,10 @@ export default function SessionsPage() {
             <div className="flex items-center justify-between">
               <div className="text-[13px] text-[#525866] font-inter-tight">
                 Showing {pagination.offset + 1} to{" "}
-                {Math.min(pagination.offset + pagination.limit, pagination.total)}{" "}
+                {Math.min(
+                  pagination.offset + pagination.limit,
+                  pagination.total,
+                )}{" "}
                 of {pagination.total} sessions
               </div>
               <div className="flex items-center gap-2">

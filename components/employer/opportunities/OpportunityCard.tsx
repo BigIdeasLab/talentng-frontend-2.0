@@ -611,7 +611,9 @@ export function OpportunityCard({
                 displayApplicants.map((app) => (
                   <img
                     key={app.id}
-                    src={app.user.talentProfile.profileImageUrl || "/default.png"}
+                    src={
+                      app.user.talentProfile.profileImageUrl || "/default.png"
+                    }
                     alt={app.user.talentProfile.fullName}
                     title={app.user.talentProfile.fullName}
                     className="w-6 h-6 rounded-full border border-white flex-shrink-0 object-cover"

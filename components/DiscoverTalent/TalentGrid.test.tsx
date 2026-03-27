@@ -69,9 +69,13 @@ describe("TalentGrid", () => {
   it("renders all talent cards", () => {
     const { container } = render(<TalentGrid talents={mockTalents} />);
 
-    const card1Elements = container.querySelectorAll('[data-testid="talent-card-1"]');
+    const card1Elements = container.querySelectorAll(
+      '[data-testid="talent-card-1"]',
+    );
     expect(card1Elements.length).toBeGreaterThan(0);
-    const card2Elements = container.querySelectorAll('[data-testid="talent-card-2"]');
+    const card2Elements = container.querySelectorAll(
+      '[data-testid="talent-card-2"]',
+    );
     expect(card2Elements.length).toBeGreaterThan(0);
   });
 

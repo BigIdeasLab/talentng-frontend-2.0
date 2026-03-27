@@ -150,7 +150,9 @@ export function SessionCard({
             {(() => {
               const rawAvatar = mentee.avatar || "";
               const safeAvatar =
-                rawAvatar && !rawAvatar.includes("builder.io") && !rawAvatar.includes("placeholder")
+                rawAvatar &&
+                !rawAvatar.includes("builder.io") &&
+                !rawAvatar.includes("placeholder")
                   ? rawAvatar
                   : "/default.png";
 
@@ -163,9 +165,10 @@ export function SessionCard({
                     onError={(e) => {
                       // If image fails to load, show initials instead
                       const target = e.currentTarget;
-                      target.style.display = 'none';
-                      const initialsDiv = target.nextElementSibling as HTMLElement;
-                      if (initialsDiv) initialsDiv.style.display = 'flex';
+                      target.style.display = "none";
+                      const initialsDiv =
+                        target.nextElementSibling as HTMLElement;
+                      if (initialsDiv) initialsDiv.style.display = "flex";
                     }}
                   />
                   <div className="w-8 h-8 rounded-full bg-[#FDF2F8] items-center justify-center flex-shrink-0 hidden">

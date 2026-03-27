@@ -23,7 +23,10 @@ const emailArbitrary = () => fc.emailAddress();
 
 const timestampArbitrary = () =>
   fc
-    .integer({ min: new Date("2020-01-01").getTime(), max: new Date("2030-01-01").getTime() })
+    .integer({
+      min: new Date("2020-01-01").getTime(),
+      max: new Date("2030-01-01").getTime(),
+    })
     .map((timestamp) => new Date(timestamp).toISOString());
 
 const verificationCodeArbitrary = () =>

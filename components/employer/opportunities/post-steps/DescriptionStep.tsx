@@ -252,14 +252,19 @@ export function DescriptionStep({
           <div className="flex flex-col gap-2 border border-[#E1E4EA] rounded-[8px] p-3 min-w-0">
             {/* List of added responsibilities */}
             {formData.keyResponsibilities.map((item, index) => (
-              <div key={index} className="flex items-center gap-2 group min-w-0">
+              <div
+                key={index}
+                className="flex items-center gap-2 group min-w-0"
+              >
                 <span
                   className="text-[14px] flex-shrink-0 leading-none"
                   style={{ color: ROLE_COLORS.recruiter.primary }}
                 >
                   •
                 </span>
-                <span className="text-[13px] text-black flex-1 min-w-0 break-all leading-[1.4]">{item}</span>
+                <span className="text-[13px] text-black flex-1 min-w-0 break-all leading-[1.4]">
+                  {item}
+                </span>
                 <button
                   type="button"
                   onClick={() => handleRemoveResponsibility(index)}
@@ -322,14 +327,19 @@ export function DescriptionStep({
           <div className="flex flex-col gap-2 border border-[#E1E4EA] rounded-[8px] p-3 min-w-0">
             {/* List of added requirements */}
             {formData.requirements.map((item, index) => (
-              <div key={index} className="flex items-center gap-2 group min-w-0">
+              <div
+                key={index}
+                className="flex items-center gap-2 group min-w-0"
+              >
                 <span
                   className="text-[14px] flex-shrink-0 leading-none"
                   style={{ color: ROLE_COLORS.recruiter.primary }}
                 >
                   •
                 </span>
-                <span className="text-[13px] text-black flex-1 min-w-0 break-all leading-[1.4]">{item}</span>
+                <span className="text-[13px] text-black flex-1 min-w-0 break-all leading-[1.4]">
+                  {item}
+                </span>
                 <button
                   type="button"
                   onClick={() => handleRemoveRequirement(index)}

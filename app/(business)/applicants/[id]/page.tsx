@@ -399,7 +399,10 @@ export default function ApplicantProposalPage() {
                   className="flex items-center gap-[10px] hover:opacity-80 transition-opacity text-left"
                 >
                   <img
-                    src={applicant.user.talentProfile.profileImageUrl || "/default.png"}
+                    src={
+                      applicant.user.talentProfile.profileImageUrl ||
+                      "/default.png"
+                    }
                     alt={applicant.user.talentProfile.fullName}
                     className="w-[59px] h-[59px] rounded-full object-cover"
                     onError={(e) => {

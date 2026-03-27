@@ -61,7 +61,11 @@ function renderWithQueryClient(component: React.ReactElement) {
 
   return render(
     <QueryClientProvider client={queryClient}>
-      <ProfileProvider initialRole="recruiter" initialProfileName="Test Employer" initialProfileAvatar="">
+      <ProfileProvider
+        initialRole="recruiter"
+        initialProfileName="Test Employer"
+        initialProfileAvatar=""
+      >
         {component}
       </ProfileProvider>
     </QueryClientProvider>,
