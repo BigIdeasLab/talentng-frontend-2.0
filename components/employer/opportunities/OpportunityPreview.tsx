@@ -332,6 +332,10 @@ export function OpportunityPreview() {
           id: opportunityId,
           data: finalData,
         });
+        // Clear sessionStorage after successful save
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem("opportunityFormData");
+        }
         setSuccessModal({
           isOpen: true,
           title: "Draft Updated!",
@@ -341,6 +345,10 @@ export function OpportunityPreview() {
         });
       } else {
         await createMutation.mutateAsync(finalData);
+        // Clear sessionStorage after successful save
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem("opportunityFormData");
+        }
         setSuccessModal({
           isOpen: true,
           title: "Draft Saved!",
@@ -402,6 +410,10 @@ export function OpportunityPreview() {
           id: opportunityId,
           data: finalData,
         });
+        // Clear sessionStorage after successful post
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem("opportunityFormData");
+        }
         setSuccessModal({
           isOpen: true,
           title: "Opportunity Updated!",
@@ -411,6 +423,10 @@ export function OpportunityPreview() {
         });
       } else {
         await createMutation.mutateAsync(finalData);
+        // Clear sessionStorage after successful post
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem("opportunityFormData");
+        }
         setSuccessModal({
           isOpen: true,
           title: "Opportunity Posted!",
@@ -445,7 +461,7 @@ export function OpportunityPreview() {
       <div className="h-screen bg-white overflow-hidden flex flex-col">
         <div className="mx-auto w-full flex flex-col flex-1 overflow-hidden">
           {/* Header */}
-          <div className="px-4 py-4 md:px-5 md:py-5 flex flex-col gap-3 pb-4 border-b border-gray-100 mb-9 flex-shrink-0">
+          <div className="px-4 py-4 md:px-5 md:py-5 flex flex-col gap-3 pb-4 border-b border-gray-100 flex-shrink-0">
             <div className="flex items-center justify-between gap-3">
               <h1 className="font-inter-tight text-[17px] font-medium text-black">
                 {isEditMode && opportunityStatus === "active"
@@ -477,9 +493,9 @@ export function OpportunityPreview() {
 
           {/* Main Content Scrollable Wrapper */}
           <div className="flex-1 overflow-y-auto scrollbar-styled">
-            <div className="px-4 md:px-5 grid grid-cols-1 lg:grid-cols-[1fr_460px] gap-6 lg:gap-7">
+            <div className="px-4 md:px-5 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_460px] gap-6 lg:gap-7 pb-20">
               {/* Left Column - Job Details */}
-              <div className="flex flex-col gap-9">
+              <div className="flex flex-col gap-9 min-w-0 pb-6">
                 {/* Job Header */}
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-col gap-4">
@@ -489,7 +505,7 @@ export function OpportunityPreview() {
                       className="w-[75px] h-[75px] rounded-full object-cover"
                     />
                     <div className="flex flex-col gap-3">
-                      <h2 className="font-inter-tight text-[17px] font-medium text-black leading-5">
+                      <h2 className="font-inter-tight text-[17px] font-medium text-black leading-5 break-words">
                         {formData.title}
                       </h2>
                       <div className="flex items-center gap-1.5">
@@ -554,7 +570,7 @@ export function OpportunityPreview() {
                     <h3 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
                       About the Role
                     </h3>
-                    <p className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
+                    <p className="font-inter-tight text-[13px] font-normal text-black leading-[165%] break-words">
                       {formData.description}
                     </p>
                   </div>
@@ -570,12 +586,12 @@ export function OpportunityPreview() {
                       {formData.keyResponsibilities.map((item, index) => (
                         <div key={index} className="flex items-start gap-3">
                           <span
-                            className="text-[14px] flex-shrink-0 pt-0.5"
+                            className="text-[14px] flex-shrink-0 pt-[3px]"
                             style={{ color: ROLE_COLORS.recruiter.primary }}
                           >
                             •
                           </span>
-                          <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
+                          <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%] break-words">
                             {item}
                           </span>
                         </div>
@@ -594,12 +610,12 @@ export function OpportunityPreview() {
                       {formData.requirements.map((item, index) => (
                         <div key={index} className="flex items-start gap-3">
                           <span
-                            className="text-[14px] flex-shrink-0 pt-0.5"
+                            className="text-[14px] flex-shrink-0 pt-[3px]"
                             style={{ color: ROLE_COLORS.recruiter.primary }}
                           >
                             •
                           </span>
-                          <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
+                          <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%] break-words">
                             {item}
                           </span>
                         </div>
@@ -650,7 +666,7 @@ export function OpportunityPreview() {
               </div>
 
               {/* Right Column */}
-              <div className="flex flex-col gap-2 sticky top-0 h-fit">
+              <div className="flex flex-col gap-2 sticky top-0 lg:top-6 h-fit lg:mt-6 pb-6">
                 {/* Job Card */}
                 <div className="border border-[#E1E4EA] rounded-[16px] p-5 flex flex-col gap-4">
                   {/* Budget - Hidden for Volunteer */}
@@ -906,7 +922,7 @@ export function OpportunityPreview() {
                   <div className="flex flex-col sm:flex-row items-stretch gap-2 pt-4">
                     <button
                       onClick={handleSaveDraft}
-                      className="flex-1 h-[48px] flex items-center justify-center gap-1.5 bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
+                      className="flex-1 min-h-[44px] px-6 py-3 flex items-center justify-center gap-1.5 bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
                     >
                       <svg
                         width="20"
@@ -927,7 +943,7 @@ export function OpportunityPreview() {
                     </button>
                     <button
                       onClick={handlePost}
-                      className="flex-1 h-[48px] flex items-center justify-center gap-2 rounded-full font-inter-tight text-[14px] font-normal text-white hover:opacity-80 transition-colors"
+                      className="flex-1 min-h-[44px] px-6 py-3 flex items-center justify-center gap-2 rounded-full font-inter-tight text-[14px] font-normal text-white hover:opacity-80 transition-colors"
                       style={{
                         backgroundColor: ROLE_COLORS.recruiter.primary,
                         borderColor: ROLE_COLORS.recruiter.primary,

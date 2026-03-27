@@ -19,7 +19,7 @@ import {
   setMyAvailability,
   type AvailabilitySlot,
 } from "@/lib/api/mentorship";
-import { Check, Clock, Zap, Info } from "lucide-react";
+import { Check, Clock, Zap, Info, ChevronDown, Settings } from "lucide-react";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { SuccessModal } from "@/components/ui/success-modal";
@@ -97,6 +97,10 @@ export default function AvailabilityPage() {
   const [meetingLinkError, setMeetingLinkError] = useState(false);
   const [pendingDuration, setPendingDuration] = useState<string | null>(null);
   const [showSaveSuccess, setShowSaveSuccess] = useState(false);
+
+  // Mobile state
+  const [selectedDay, setSelectedDay] = useState(0);
+  const [settingsExpanded, setSettingsExpanded] = useState(false);
 
   // Grid-specific state
   const [isDragging, setIsDragging] = useState(false);
@@ -259,6 +263,17 @@ export default function AvailabilityPage() {
     return () => window.removeEventListener("mouseup", handleGlobalMouseUp);
   }, []);
 
+  // ============ Mobile Tap Handler ============
+
+  const handleTapSlot = (dayIndex: number, timeIndex: number) => {
+    const isSelected = selectedSlots.has(`${dayIndex}-${timeIndex}`);
+    if (isSelected) {
+      deselectBlock(dayIndex, timeIndex);
+    } else {
+      selectBlock(dayIndex, timeIndex);
+    }
+  };
+
   // ============ Shared Handlers ============
 
   const clearAll = () => {
@@ -416,14 +431,14 @@ export default function AvailabilityPage() {
   }
 
   return (
-    <div className="h-screen overflow-x-hidden bg-white flex flex-col">
-      {/* Header */}
-      <div className="w-full px-4 md:px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+    <div className="h-[calc(100vh-60px)] md:h-screen overflow-x-hidden bg-white flex flex-col">
+      {/* Desktop Header */}
+      <div className="hidden md:block w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+        <div className="flex items-center justify-between gap-3">
           <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px]">
             Availability
           </h1>
-          <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="flex items-center gap-3">
             {isSaved && !hasChanges && (
               <div className="flex items-center gap-2 rounded-full bg-green-50 px-3 py-1.5 text-green-700">
                 <Check className="h-4 w-4" />
@@ -458,7 +473,409 @@ export default function AvailabilityPage() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 md:p-6">
+      {/* ============ Mobile Layout ============ */}
+      <div className="md:hidden flex-1 overflow-y-auto">
+        {/* Header - scrolls with content */}
+        <div className="w-full px-4 pt-[19px] pb-4 border-b border-[#E1E4EA]">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px]">
+              Availability
+            </h1>
+            <div className="flex items-center gap-2">
+              {isSaved && !hasChanges && (
+                <div className="flex items-center gap-1.5 rounded-full bg-green-50 px-2.5 py-1 text-green-700">
+                  <Check className="h-3.5 w-3.5" />
+                  <span className="font-inter-tight text-[12px] font-medium">
+                    Saved
+                  </span>
+                </div>
+              )}
+              {hasChanges && (
+                <div className="flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-amber-700">
+                  <span className="font-inter-tight text-[12px] font-medium">
+                    Unsaved
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="flex gap-3 mb-4">
+            <div className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-sm border border-[#E1E4EA]">
+              <Clock
+                className="h-3.5 w-3.5"
+                style={{ color: ROLE_COLORS.mentor.dark }}
+              />
+              <span className="text-[13px] font-medium text-black">
+                {getTotalHours()}
+              </span>
+              <span className="text-[11px] text-[#525866]">/ week</span>
+            </div>
+            <div className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-sm border border-[#E1E4EA]">
+              <div
+                className="flex h-3.5 w-3.5 items-center justify-center rounded text-[9px] font-bold text-white"
+                style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
+              >
+                {getEnabledDaysCount()}
+              </div>
+              <span className="text-[11px] text-[#525866]">days</span>
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+            <button
+              onClick={clearAll}
+              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-[13px] font-medium text-[#525866] transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600 flex-shrink-0"
+            >
+              Clear All
+            </button>
+            <button
+              onClick={selectWeekdays9to5}
+              className="flex items-center gap-1.5 rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-[13px] font-medium text-[#525866] flex-shrink-0"
+            >
+              <Zap className="h-3 w-3" />
+              Weekdays 9-5
+            </button>
+            <button
+              onClick={selectMornings}
+              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-[13px] font-medium text-[#525866] flex-shrink-0"
+            >
+              Mornings
+            </button>
+            <button
+              onClick={selectAfternoons}
+              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-[13px] font-medium text-[#525866] flex-shrink-0"
+            >
+              Afternoons
+            </button>
+          </div>
+        </div>
+
+        {/* Day Tabs - Sticky */}
+        <div className="sticky top-0 z-10 bg-white border-b border-[#E1E4EA] px-4 py-2">
+          <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hide">
+            {DAYS.map((day) => {
+              const dayHasSlots = Array.from(selectedSlots).some((key) =>
+                key.startsWith(`${day.index}-`),
+              );
+              return (
+                <button
+                  key={day.index}
+                  onClick={() => setSelectedDay(day.index)}
+                  className={`px-3 py-1.5 rounded-lg flex-shrink-0 transition-colors text-[13px] font-inter-tight font-medium ${
+                    selectedDay === day.index
+                      ? "text-white"
+                      : dayHasSlots
+                        ? "text-[#525866] bg-[#F5F5F5]"
+                        : "text-black/30 hover:text-black/50"
+                  }`}
+                  style={
+                    selectedDay === day.index
+                      ? { backgroundColor: ROLE_COLORS.mentor.dark }
+                      : undefined
+                  }
+                >
+                  {day.short}
+                  {dayHasSlots && selectedDay !== day.index && (
+                    <span
+                      className="ml-1 inline-block w-1.5 h-1.5 rounded-full"
+                      style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
+                    />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Settings - Collapsible */}
+        <div className="border-b border-[#E1E4EA]">
+          <button
+            onClick={() => setSettingsExpanded(!settingsExpanded)}
+            className="flex items-center justify-between w-full px-4 py-3 text-left"
+          >
+            <div className="flex items-center gap-2">
+              <Settings className="h-4 w-4 text-[#525866]" />
+              <span className="text-[13px] font-medium font-inter-tight text-[#525866]">
+                Session Settings
+              </span>
+            </div>
+            <ChevronDown
+              className={`h-4 w-4 text-[#525866] transition-transform ${settingsExpanded ? "rotate-180" : ""}`}
+            />
+          </button>
+          {settingsExpanded && (
+            <div className="px-4 pb-4 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <label className="text-[13px] font-medium text-[#525866]">
+                  Duration
+                </label>
+                <Select
+                  value={sessionDuration}
+                  onValueChange={(v) => {
+                    if (selectedSlots.size > 0) {
+                      setPendingDuration(v);
+                      return;
+                    }
+                    setSessionDuration(v);
+                    setHasChanges(true);
+                  }}
+                >
+                  <SelectTrigger className="h-10 w-28 border-[#E1E4EA] bg-white text-[13px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="30">30 min</SelectItem>
+                    <SelectItem value="60">60 min</SelectItem>
+                    <SelectItem value="90">90 min</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-center justify-between">
+                <label className="text-[13px] font-medium text-[#525866]">
+                  Buffer
+                </label>
+                <Select
+                  value={bufferTime}
+                  onValueChange={(v) => {
+                    setBufferTime(v);
+                    setHasChanges(true);
+                  }}
+                >
+                  <SelectTrigger className="h-10 w-28 border-[#E1E4EA] bg-white text-[13px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">None</SelectItem>
+                    <SelectItem value="15">15 min</SelectItem>
+                    <SelectItem value="30">30 min</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-center justify-between">
+                <label className="text-[13px] font-medium text-[#525866]">
+                  Min. Notice
+                </label>
+                <Select
+                  value={minAdvanceBookingMinutes}
+                  onValueChange={(v) => {
+                    setMinAdvanceBookingMinutes(v);
+                    setHasChanges(true);
+                  }}
+                >
+                  <SelectTrigger className="h-10 w-28 border-[#E1E4EA] bg-white text-[13px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">None</SelectItem>
+                    <SelectItem value="15">15 min</SelectItem>
+                    <SelectItem value="30">30 min</SelectItem>
+                    <SelectItem value="60">1 hour</SelectItem>
+                    <SelectItem value="120">2 hours</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[13px] font-medium text-[#525866]">
+                  Meeting Link <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  type="url"
+                  placeholder="https://meet.google.com/..."
+                  value={defaultMeetingLink}
+                  onChange={(e) => {
+                    setDefaultMeetingLink(e.target.value);
+                    setHasChanges(true);
+                    if (e.target.value.trim()) setMeetingLinkError(false);
+                  }}
+                  className={`h-10 border-[#E1E4EA] bg-white text-[13px] ${
+                    meetingLinkError
+                      ? "border-red-500 focus-visible:ring-red-500"
+                      : ""
+                  }`}
+                />
+                {meetingLinkError && (
+                  <span className="text-[11px] text-red-500">
+                    Meeting link is required
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Time Slots for Selected Day */}
+        <div className="px-4 py-3">
+          <div className="text-[13px] font-medium font-inter-tight text-[#525866] mb-2">
+            {DAYS[selectedDay].name}
+          </div>
+          <div className="flex flex-col">
+            {TIME_SLOTS.map((slot, timeIndex) => {
+              const key = `${selectedDay}-${timeIndex}`;
+              const isSelected = selectedSlots.has(key);
+              const wasSaved = savedSlots.has(key);
+              const isTopOfHour = slot.value.endsWith(":00");
+              const prevSelected = selectedSlots.has(
+                `${selectedDay}-${timeIndex - 1}`,
+              );
+              const nextSelected = selectedSlots.has(
+                `${selectedDay}-${timeIndex + 1}`,
+              );
+
+              const isSavedSlot = isSelected && wasSaved;
+              const isNewSlot = isSelected && !wasSaved;
+              const isRemovedSlot = !isSelected && wasSaved;
+
+              // Determine block top for label
+              let isBlockTop = false;
+              if (isSelected) {
+                let runStart = timeIndex;
+                while (
+                  runStart > 0 &&
+                  selectedSlots.has(`${selectedDay}-${runStart - 1}`)
+                ) {
+                  runStart--;
+                }
+                isBlockTop = (timeIndex - runStart) % cellsPerSlot === 0;
+              }
+
+              // Border radius
+              let roundedClass = "";
+              if (isSelected) {
+                const isTop = !prevSelected;
+                const isBottom = !nextSelected;
+                if (isTop && isBottom) roundedClass = "rounded-lg";
+                else if (isTop) roundedClass = "rounded-t-lg";
+                else if (isBottom) roundedClass = "rounded-b-lg";
+              }
+
+              const canSelect = canSelectBlock(selectedDay, timeIndex);
+
+              return (
+                <div
+                  key={timeIndex}
+                  className={`flex items-center relative ${
+                    isTopOfHour ? "border-t border-[#E1E4EA]" : ""
+                  }`}
+                  style={{ height: "44px" }}
+                >
+                  {/* Time label */}
+                  <div className="w-16 flex-shrink-0 pr-3 text-right">
+                    {isTopOfHour && (
+                      <span className="text-[12px] font-medium text-[#525866]">
+                        {slot.label}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Slot */}
+                  <button
+                    type="button"
+                    onClick={() => handleTapSlot(selectedDay, timeIndex)}
+                    disabled={!isSelected && !canSelect}
+                    className={`flex-1 h-full relative transition-colors ${
+                      isSelected
+                        ? ""
+                        : isRemovedSlot
+                          ? "bg-red-50"
+                          : canSelect
+                            ? "active:bg-[#FDF2F8]"
+                            : "opacity-40"
+                    } ${
+                      isTopOfHour && !isSelected
+                        ? "border-t border-[#E1E4EA]"
+                        : !isSelected
+                          ? "border-t border-[#F0F0F0]"
+                          : ""
+                    }`}
+                  >
+                    {isSelected && (
+                      <div
+                        className={`absolute inset-x-0 inset-y-0 ${roundedClass} ${
+                          isSavedSlot ? "bg-emerald-500" : ""
+                        }`}
+                        style={
+                          isNewSlot
+                            ? { backgroundColor: ROLE_COLORS.mentor.dark }
+                            : undefined
+                        }
+                      >
+                        {isBlockTop && (
+                          <span className="absolute inset-0 flex items-center justify-center text-[11px] font-medium text-white/90 pointer-events-none select-none">
+                            {sessionDuration}m
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    {isRemovedSlot && (
+                      <div className="absolute inset-x-0 inset-y-0 border-2 border-dashed border-red-400 bg-red-100/50 rounded-lg" />
+                    )}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Legend */}
+          <div className="mt-4 flex flex-col items-center gap-2">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1.5">
+                <div className="h-3 w-3 rounded bg-emerald-500" />
+                <span className="text-[11px] text-[#525866]">Saved</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div
+                  className="h-3 w-3 rounded"
+                  style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
+                />
+                <span className="text-[11px] text-[#525866]">New</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="h-3 w-3 rounded border-2 border-dashed border-red-400 bg-red-100" />
+                <span className="text-[11px] text-[#525866]">Removed</span>
+              </div>
+            </div>
+            <p className="text-[11px] text-[#99A0AE]">
+              Tap to select/deselect time slots. Repeats weekly.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Sticky Bottom Save Bar */}
+      {hasChanges && (
+        <div className="md:hidden border-t border-[#E1E4EA] bg-white px-4 py-3 flex items-center justify-between flex-shrink-0">
+          <div className="text-[13px] text-[#525866] font-inter-tight">
+            <span
+              className="font-semibold"
+              style={{ color: ROLE_COLORS.mentor.dark }}
+            >
+              {selectedSlots.size}
+            </span>{" "}
+            slots ({getTotalHours()}/wk)
+          </div>
+          <Button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="rounded-lg px-5 py-2 text-[13px] font-medium text-white hover:opacity-80 disabled:opacity-50"
+            style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
+          >
+            {isSaving ? (
+              <span className="flex items-center gap-2">
+                <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                Saving...
+              </span>
+            ) : (
+              "Save"
+            )}
+          </Button>
+        </div>
+      )}
+
+      {/* ============ Desktop Content ============ */}
+      <div className="hidden md:block flex-1 overflow-y-auto p-6">
         {/* Stats & Quick Actions */}
         <div className="mb-5 flex flex-col md:flex-row flex-wrap items-stretch md:items-center justify-between gap-4">
           <div className="flex gap-3 flex-wrap">

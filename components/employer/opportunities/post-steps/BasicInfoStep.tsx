@@ -354,7 +354,7 @@ export function BasicInfoStep({
       <ResponsiveFormButtons>
         <button
           onClick={handleNext}
-          className="bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
+          className="bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors px-6 py-3"
         >
           Next
         </button>

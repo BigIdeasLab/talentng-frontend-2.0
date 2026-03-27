@@ -499,9 +499,12 @@ export default function HiredTalentsPage() {
                     className="flex items-start gap-3 hover:opacity-80 transition-opacity text-left"
                   >
                     <img
-                      src={talent.avatar}
+                      src={talent.avatar || "/default.png"}
                       alt={talent.name}
                       className="w-[42px] h-[42px] rounded-full object-cover flex-shrink-0"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/default.png";
+                      }}
                     />
                     <div className="flex-1 flex flex-col justify-center gap-2">
                       <div className="flex flex-col gap-1">

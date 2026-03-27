@@ -136,6 +136,8 @@ export default function SessionsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [dateRange, setDateRange] = useState<string>("all");
   const [displayedSessions, setDisplayedSessions] = useState<SessionView[]>([]);
+  const [pagination, setPagination] = useState<any>(null);
+  const [currentPage, setCurrentPage] = useState(0);
 
   const [completeModalOpen, setCompleteModalOpen] = useState(false);
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
@@ -171,6 +173,8 @@ export default function SessionsPage() {
               dateRange: dateRange as "today" | "week" | "month",
             }
           : {}),
+        limit: 20,
+        page: currentPage + 1, // API uses 1-based page numbers
       };
 
       const response = await getSessions(apiParams);
@@ -195,6 +199,14 @@ export default function SessionsPage() {
       setDisplayedSessions(currentData);
       setSessions(currentData);
 
+      // Extract and transform pagination data
+      // Check for both pagination (direct) and meta (PaginatedResponse) formats
+      const meta = !Array.isArray(response) ? response?.meta : null;
+      const directPagination = !Array.isArray(response) ? (response as any)?.pagination : null;
+      
+      const paginationData = directPagination || null;
+      setPagination(paginationData);
+
       if (response?.meta) {
         setMeta(response.meta);
       }
@@ -209,7 +221,7 @@ export default function SessionsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [activeTab, searchQuery, dateRange, isInitialLoad]);
+  }, [activeTab, searchQuery, dateRange, isInitialLoad, currentPage]);
 
   // Subscribe to real-time updates
   useNotificationSocket({
@@ -225,6 +237,11 @@ export default function SessionsPage() {
       fetchSessions();
     }
   }, [hasAccess, fetchSessions]);
+
+  // Reset to page 0 when filters change
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [activeTab, searchQuery, dateRange]);
 
   // Server handles all filtering — render results directly
   const filteredSessions = displayedSessions;
@@ -355,12 +372,69 @@ export default function SessionsPage() {
   // Only show skeleton on initial load
   if (isInitialLoad && isLoading) {
     return (
-      <div className="h-screen overflow-x-hidden bg-white flex flex-col">
-        <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+      <div className="flex flex-col h-[calc(100vh-60px)] md:h-screen overflow-x-hidden bg-white">
+        {/* Header */}
+        <div className="w-full px-4 md:px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+          {/* Title */}
           <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px] mb-[19px]">
             Sessions
           </h1>
+
+          {/* Search Bar and Date Range Filters */}
+          <div className="flex flex-col md:flex-row items-stretch md:items-center gap-[8px] mb-[19px]">
+            <div className="flex-1 w-full md:max-w-[585px]">
+              <SearchInput
+                value={searchQuery}
+                onChange={setSearchQuery}
+                onSearch={setSearchQuery}
+                placeholder="Search mentee, topic..."
+                isLoading={false}
+                debounceDelay={500}
+              />
+            </div>
+
+            {/* Date Range Filter Buttons */}
+            <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hide">
+              {[
+                { value: "all", label: "All Time" },
+                { value: "today", label: "Today" },
+                { value: "week", label: "This Week" },
+                { value: "month", label: "This Month" },
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => setDateRange(option.value)}
+                  className={`min-h-[44px] md:h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors text-[13px] font-normal font-inter-tight border ${
+                    dateRange === option.value
+                      ? "bg-[#8463FF0D] border-[#8463FF] text-[#8463FF]"
+                      : "bg-[#F5F5F5] hover:bg-gray-100 text-black border-transparent"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Filter Tabs */}
+          <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as typeof activeTab)}
+                className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors min-h-[44px] md:min-h-0 ${
+                  activeTab === tab.id
+                    ? "text-black font-medium border-b-2 border-black"
+                    : "text-black/30 font-medium hover:text-black/50"
+                }`}
+              >
+                <span className="text-[13px] font-inter-tight">{tab.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
+
+        {/* Content Loading */}
         <div className="flex-1 overflow-hidden">
           <div className="h-full overflow-y-auto p-4 md:p-6">
             <SessionsSkeleton />
@@ -372,16 +446,16 @@ export default function SessionsPage() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-60px)] md:h-screen overflow-x-hidden bg-white">
-      {/* Header */}
-      <div className="w-full px-4 md:px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+      {/* Desktop Header */}
+      <div className="hidden md:block w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
         {/* Title */}
         <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px] mb-[19px]">
           Sessions
         </h1>
 
         {/* Search Bar and Date Range Filters */}
-        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-[8px] mb-[19px]">
-          <div className="flex-1 w-full md:max-w-[585px]">
+        <div className="flex items-center gap-[8px] mb-[19px]">
+          <div className="flex-1 max-w-[585px]">
             <SearchInput
               value={searchQuery}
               onChange={setSearchQuery}
@@ -393,7 +467,7 @@ export default function SessionsPage() {
           </div>
 
           {/* Date Range Filter Buttons */}
-          <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hide">
+          <div className="flex items-center gap-[6px]">
             {[
               { value: "all", label: "All Time" },
               { value: "today", label: "Today" },
@@ -403,7 +477,7 @@ export default function SessionsPage() {
               <button
                 key={option.value}
                 onClick={() => setDateRange(option.value)}
-                className={`min-h-[44px] md:h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors text-[13px] font-normal font-inter-tight border ${
+                className={`h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors text-[13px] font-normal font-inter-tight border ${
                   dateRange === option.value
                     ? "bg-[#8463FF0D] border-[#8463FF] text-[#8463FF]"
                     : "bg-[#F5F5F5] hover:bg-gray-100 text-black border-transparent"
@@ -415,13 +489,13 @@ export default function SessionsPage() {
           </div>
         </div>
 
-        {/* Filter Tabs */}
-        <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
+        {/* Filter Tabs - Desktop */}
+        <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide pb-[12px]">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as typeof activeTab)}
-              className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors min-h-[44px] md:min-h-0 ${
+              className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors ${
                 activeTab === tab.id
                   ? "text-black font-medium border-b-2 border-black"
                   : "text-black/30 font-medium hover:text-black/50"
@@ -433,9 +507,205 @@ export default function SessionsPage() {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-hidden">
-        <div className="h-full overflow-y-auto p-4 md:p-6">
+      {/* Mobile: Single scroll container with sticky tabs */}
+      <div className="md:hidden flex-1 overflow-y-auto">
+        {/* Header - scrolls with content */}
+        <div className="w-full px-4 pt-[19px] pb-4 border-b border-[#E1E4EA]">
+          {/* Title */}
+          <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px] mb-[19px]">
+            Sessions
+          </h1>
+
+          {/* Search Bar */}
+          <div className="mb-4">
+            <SearchInput
+              value={searchQuery}
+              onChange={setSearchQuery}
+              onSearch={setSearchQuery}
+              placeholder="Search mentee, topic..."
+              isLoading={isLoading && !isInitialLoad}
+              debounceDelay={500}
+            />
+          </div>
+
+          {/* Date Range Filter Buttons */}
+          <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hide pb-1">
+            {[
+              { value: "all", label: "All Time" },
+              { value: "today", label: "Today" },
+              { value: "week", label: "This Week" },
+              { value: "month", label: "This Month" },
+            ].map((option) => (
+              <button
+                key={option.value}
+                onClick={() => setDateRange(option.value)}
+                className={`h-[44px] px-[15px] py-[7px] flex items-center gap-[5px] rounded-[8px] flex-shrink-0 transition-colors text-[13px] font-normal font-inter-tight border ${
+                  dateRange === option.value
+                    ? "bg-[#8463FF0D] border-[#8463FF] text-[#8463FF]"
+                    : "bg-[#F5F5F5] hover:bg-gray-100 text-black border-transparent"
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Status Filter Tabs - Sticky */}
+        <div className="sticky top-0 z-10 bg-white px-4 py-2">
+          <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as typeof activeTab)}
+                className={`px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors ${
+                  activeTab === tab.id
+                    ? "text-black font-medium border-b-2 border-black"
+                    : "text-black/30 font-medium hover:text-black/50"
+                }`}
+              >
+                <span className="text-[13px] font-inter-tight">
+                  {tab.label}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Mobile Content */}
+        <div className="p-4">
+          {isLoading && !isInitialLoad ? (
+            // Show previous data with loading indicator in search bar
+            <div className="grid grid-cols-1 gap-[7px]">
+              {filteredSessions.length === 0 ? (
+                <EmptyState
+                  icon={Calendar}
+                  title={
+                    searchQuery.trim() || (dateRange && dateRange !== "all")
+                      ? "No sessions match your search"
+                      : activeTab === "completed"
+                        ? "No completed sessions yet"
+                        : activeTab === "cancelled"
+                          ? "No cancelled sessions"
+                          : activeTab === "upcoming"
+                            ? "No upcoming sessions"
+                            : "No sessions match your search"
+                  }
+                  description={
+                    searchQuery.trim()
+                      ? "Try adjusting your search query"
+                      : dateRange && dateRange !== "all"
+                        ? "Try adjusting your date range"
+                        : activeTab === "completed"
+                          ? "Completed sessions will appear here"
+                          : activeTab === "cancelled"
+                            ? "Cancelled sessions will appear here"
+                            : activeTab === "upcoming"
+                              ? "Your upcoming sessions will appear here"
+                              : "Sessions will appear here"
+                  }
+                />
+              ) : (
+                filteredSessions.map((session) => (
+                  <SessionCard
+                    key={session.id}
+                    {...session}
+                    onReschedule={handleReschedule}
+                    onCancel={handleCancel}
+                    onComplete={handleComplete}
+                    onDispute={handleDispute}
+                  />
+                ))
+              )}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-[7px]">
+              {filteredSessions.length === 0 ? (
+                <EmptyState
+                  icon={Calendar}
+                  title={
+                    searchQuery.trim() || (dateRange && dateRange !== "all")
+                      ? "No sessions match your search"
+                      : activeTab === "completed"
+                        ? "No completed sessions yet"
+                        : activeTab === "cancelled"
+                          ? "No cancelled sessions"
+                          : activeTab === "upcoming"
+                            ? "No upcoming sessions"
+                            : "No sessions match your search"
+                  }
+                  description={
+                    searchQuery.trim()
+                      ? "Try adjusting your search query"
+                      : dateRange && dateRange !== "all"
+                        ? "Try adjusting your date range"
+                        : activeTab === "completed"
+                          ? "Completed sessions will appear here"
+                          : activeTab === "cancelled"
+                            ? "Cancelled sessions will appear here"
+                            : activeTab === "upcoming"
+                              ? "Your upcoming sessions will appear here"
+                              : "Sessions will appear here"
+                  }
+                />
+              ) : (
+                filteredSessions.map((session) => (
+                  <SessionCard
+                    key={session.id}
+                    {...session}
+                    onReschedule={handleReschedule}
+                    onCancel={handleCancel}
+                    onComplete={handleComplete}
+                    onDispute={handleDispute}
+                  />
+                ))
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Pagination - Mobile */}
+        {pagination && (
+          <div className="px-4 py-4 border-t border-[#E1E4EA] bg-white">
+            <div className="flex flex-col gap-3">
+              <div className="text-[13px] text-[#525866] font-inter-tight text-center">
+                Showing {pagination.offset + 1} to{" "}
+                {Math.min(pagination.offset + pagination.limit, pagination.total)}{" "}
+                of {pagination.total} sessions
+              </div>
+              <div className="flex items-center justify-center gap-2">
+                <button
+                  onClick={() => {
+                    setCurrentPage(currentPage - 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  disabled={!pagination.hasPreviousPage}
+                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all"
+                >
+                  Previous
+                </button>
+                <span className="text-[13px] text-[#525866] font-inter-tight">
+                  Page {pagination.currentPage} of {pagination.totalPages}
+                </span>
+                <button
+                  onClick={() => {
+                    setCurrentPage(currentPage + 1);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  disabled={!pagination.hasNextPage}
+                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Desktop Content */}
+      <div className="hidden md:flex flex-1 overflow-hidden flex-col">
+        <div className="flex-1 overflow-y-auto p-6">
           {isLoading && !isInitialLoad ? (
             // Show previous data with loading indicator in search bar
             <div className="grid grid-cols-1 md:grid-cols-2 gap-[7px]">
@@ -529,6 +799,38 @@ export default function SessionsPage() {
             </div>
           )}
         </div>
+
+        {/* Pagination - Desktop */}
+        {pagination && (
+          <div className="flex-shrink-0 px-6 py-4 border-t border-[#E1E4EA] bg-white">
+            <div className="flex items-center justify-between">
+              <div className="text-[13px] text-[#525866] font-inter-tight">
+                Showing {pagination.offset + 1} to{" "}
+                {Math.min(pagination.offset + pagination.limit, pagination.total)}{" "}
+                of {pagination.total} sessions
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCurrentPage(currentPage - 1)}
+                  disabled={!pagination.hasPreviousPage}
+                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all"
+                >
+                  Previous
+                </button>
+                <span className="text-[13px] text-[#525866] font-inter-tight">
+                  Page {pagination.currentPage} of {pagination.totalPages}
+                </span>
+                <button
+                  onClick={() => setCurrentPage(currentPage + 1)}
+                  disabled={!pagination.hasNextPage}
+                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <ConfirmationModal

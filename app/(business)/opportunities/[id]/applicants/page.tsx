@@ -76,6 +76,8 @@ export default function OpportunityApplicantsPage() {
     dateRange: "all",
   });
   const [applicants, setApplicants] = useState<MappedApplicant[]>([]);
+  const [offset, setOffset] = useState(0);
+  const LIMIT = 20;
 
   // Hire modal state
   const [hireModalOpen, setHireModalOpen] = useState(false);
@@ -94,9 +96,14 @@ export default function OpportunityApplicantsPage() {
     data: response,
     isLoading: isAppsLoading,
     error: appsError,
-  } = useRecruiterApplicationsQuery({ opportunityId });
+  } = useRecruiterApplicationsQuery({ 
+    opportunityId,
+    limit: LIMIT,
+    offset: offset,
+  });
 
   const rawApplicants = response?.data || [];
+  const pagination = response?.pagination;
 
   const isLoading = isOppLoading || isAppsLoading;
   const error = oppError || appsError ? "Failed to load" : null;
@@ -106,6 +113,25 @@ export default function OpportunityApplicantsPage() {
       setApplicants(mapApplicationsToUI(rawApplicants));
     }
   }, [rawApplicants]);
+
+  // Reset offset when filters change
+  useEffect(() => {
+    setOffset(0);
+  }, [searchQuery, sortBy, filters]);
+
+  const handleNextPage = () => {
+    if (pagination?.hasNextPage) {
+      setOffset(offset + LIMIT);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (pagination?.hasPreviousPage) {
+      setOffset(Math.max(0, offset - LIMIT));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   const opportunityTitle = opportunity?.title || "";
 
@@ -532,9 +558,12 @@ export default function OpportunityApplicantsPage() {
                       className="flex items-center gap-[8px] hover:opacity-80 transition-opacity text-left h-full"
                     >
                       <img
-                        src={applicant.avatar}
+                        src={applicant.avatar || "/default.png"}
                         alt={applicant.name}
                         className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = "/default.png";
+                        }}
                       />
                       <div className="flex flex-col gap-1 min-w-0">
                         <span className="font-inter-tight text-[13px] font-medium text-black leading-tight truncate">
@@ -703,6 +732,39 @@ export default function OpportunityApplicantsPage() {
                 ))}
               </div>
             </>
+          )}
+
+          {/* Pagination */}
+          {pagination && pagination.total > 0 && (
+            <div className="flex items-center justify-between px-[24px] py-[16px] border-t border-[#E1E4EA] flex-shrink-0">
+              <div className="text-[13px] text-[#525866] font-inter-tight">
+                Showing {pagination.offset + 1} to{" "}
+                {Math.min(
+                  pagination.offset + pagination.limit,
+                  pagination.total,
+                )}{" "}
+                of {pagination.total} results
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handlePreviousPage}
+                  disabled={!pagination.hasPreviousPage}
+                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                >
+                  Previous
+                </button>
+                <span className="text-[13px] text-[#525866] font-inter-tight">
+                  Page {pagination.currentPage} of {pagination.totalPages}
+                </span>
+                <button
+                  onClick={handleNextPage}
+                  disabled={!pagination.hasNextPage}
+                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
           )}
         </div>
       </div>

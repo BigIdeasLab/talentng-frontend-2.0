@@ -7,7 +7,7 @@ interface OpportunitiesHeaderProps {
 export function OpportunitiesHeader({ onPostClick }: OpportunitiesHeaderProps) {
   return (
     <div className="flex items-center justify-between gap-2">
-      <h1 className="text-lg font-medium font-inter-tight text-black">
+      <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px]">
         Opportunities
       </h1>
       <button

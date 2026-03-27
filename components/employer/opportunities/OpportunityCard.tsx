@@ -420,9 +420,12 @@ export function OpportunityCard({
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">
             <img
-              src={opportunity.companyLogo}
+              src={opportunity.companyLogo || "/default.png"}
               alt={opportunity.companyName}
               className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "/default.png";
+              }}
             />
             <div className="flex flex-col gap-0.5">
               <div className="text-xs font-medium font-inter-tight text-black">
@@ -560,10 +563,13 @@ export function OpportunityCard({
               displayApplicants.map((app) => (
                 <img
                   key={app.id}
-                  src={app.user.talentProfile.profileImageUrl}
+                  src={app.user.talentProfile.profileImageUrl || "/default.png"}
                   alt={app.user.talentProfile.fullName}
                   title={app.user.talentProfile.fullName}
                   className="w-6 h-6 rounded-full border border-white flex-shrink-0 object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "/default.png";
+                  }}
                 />
               ))
             ) : (
@@ -605,10 +611,13 @@ export function OpportunityCard({
                 displayApplicants.map((app) => (
                   <img
                     key={app.id}
-                    src={app.user.talentProfile.profileImageUrl}
+                    src={app.user.talentProfile.profileImageUrl || "/default.png"}
                     alt={app.user.talentProfile.fullName}
                     title={app.user.talentProfile.fullName}
                     className="w-6 h-6 rounded-full border border-white flex-shrink-0 object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/default.png";
+                    }}
                   />
                 ))
               ) : (

@@ -18,11 +18,11 @@ export function FormSectionComponent({
   return (
     <div
       ref={forwardedRef}
-      className="border border-gray-300 rounded-[16px] overflow-hidden"
+      className="border border-gray-300 rounded-[16px] overflow-visible"
     >
       <button
         onClick={onToggle}
-        className="w-full px-5 py-4 bg-gray-50 flex items-center justify-between hover:bg-gray-100 transition-colors"
+        className={`w-full px-5 py-4 bg-gray-50 flex items-center justify-between hover:bg-gray-100 transition-colors ${isExpanded ? "rounded-t-[16px]" : "rounded-[16px]"}`}
       >
         <span className="font-medium text-black text-[14px]">{title}</span>
         <svg
@@ -44,7 +44,7 @@ export function FormSectionComponent({
       {isExpanded && (
         <>
           <div className="h-[1px] bg-gray-300" />
-          <div className="p-5">{children}</div>
+          <div className="p-5 min-w-0">{children}</div>
         </>
       )}
     </div>

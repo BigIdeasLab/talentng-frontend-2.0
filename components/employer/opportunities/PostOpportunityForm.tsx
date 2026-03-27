@@ -55,6 +55,8 @@ export function PostOpportunityForm() {
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   const [formData, setFormData] = useState(() => {
+    if (typeof window === 'undefined') return DEFAULT_FORM_DATA;
+    
     const saved = sessionStorage.getItem("opportunityFormData");
     if (saved) {
       try {
@@ -83,7 +85,9 @@ export function PostOpportunityForm() {
 
   const clearForm = () => {
     setFormData(DEFAULT_FORM_DATA);
-    sessionStorage.removeItem("opportunityFormData");
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem("opportunityFormData");
+    }
   };
 
   const checkDuplicateTitle = () => {
@@ -105,6 +109,8 @@ export function PostOpportunityForm() {
       checkDuplicateTitle();
     }
   }, []);
+
+  const isVolunteer = formData.type?.toLowerCase() === "volunteer";
 
   const validateAllSections = (): string | null => {
     // Basic Info
@@ -148,6 +154,9 @@ export function PostOpportunityForm() {
 
     return null;
   };
+
+  // Check if all required fields are complete
+  const isFormComplete = validateAllSections() === null && !titleError;
 
   const handleSave = () => {
     if (titleError) {
@@ -199,8 +208,6 @@ export function PostOpportunityForm() {
     setFormData((prev: typeof formData) => ({ ...prev, ...data }));
   };
 
-  const isVolunteer = formData.type?.toLowerCase() === "volunteer";
-
   // Clear budget fields when switching to volunteer
   useEffect(() => {
     if (isVolunteer) {
@@ -220,7 +227,9 @@ export function PostOpportunityForm() {
 
   // Save form data to sessionStorage whenever it changes
   useEffect(() => {
-    sessionStorage.setItem("opportunityFormData", JSON.stringify(formData));
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem("opportunityFormData", JSON.stringify(formData));
+    }
   }, [formData]);
 
   // Warn before leaving the page
@@ -293,13 +302,17 @@ export function PostOpportunityForm() {
   const handleCancel = () => {
     setShowExitModal(true);
     setPendingNavigation(() => () => {
-      sessionStorage.removeItem("opportunityFormData");
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem("opportunityFormData");
+      }
       router.push("/opportunities");
     });
   };
 
   const handleDiscard = () => {
-    sessionStorage.removeItem("opportunityFormData");
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem("opportunityFormData");
+    }
     setShowExitModal(false);
     if (pendingNavigation) {
       pendingNavigation();
@@ -314,37 +327,38 @@ export function PostOpportunityForm() {
   return (
     <div className="flex h-screen bg-white">
       {/* Sidebar - Hidden on mobile */}
-      <div className="hidden lg:block w-[250px] border-r border-[#E1E4EA] p-6 overflow-y-auto flex flex-col gap-[22px]">
-        <h3 className="text-[14px] font-semibold text-black">Sections</h3>
+      <div className="hidden lg:block w-[250px] border-r border-[#E1E4EA] p-6 overflow-y-auto">
         <div className="flex flex-col gap-[22px]">
-          <button
-            onClick={() => toggleSection("basic-info")}
-            className={`text-[14px] font-normal transition-colors text-left ${
-              expandedSection === "basic-info"
-                ? "font-medium"
-                : "text-[#525866] hover:text-black"
-            }`}
-            style={
-              expandedSection === "basic-info"
-                ? { color: ROLE_COLORS.recruiter.primary }
-                : undefined
-            }
-          >
-            Basic Info
-          </button>
-          <button
-            onClick={() => toggleSection("description")}
-            className={`text-[14px] font-normal transition-colors text-left ${
-              expandedSection === "description"
-                ? "font-medium"
-                : "text-[#525866] hover:text-black"
-            }`}
-            style={
-              expandedSection === "description"
-                ? { color: ROLE_COLORS.recruiter.primary }
-                : undefined
-            }
-          >
+          <h3 className="text-[14px] font-semibold text-black">Sections</h3>
+          <div className="flex flex-col gap-[22px]">
+            <button
+              onClick={() => toggleSection("basic-info")}
+              className={`text-[14px] font-normal transition-colors text-left ${
+                expandedSection === "basic-info"
+                  ? "font-medium"
+                  : "text-[#525866] hover:text-black"
+              }`}
+              style={
+                expandedSection === "basic-info"
+                  ? { color: ROLE_COLORS.recruiter.primary }
+                  : undefined
+              }
+            >
+              Basic Info
+            </button>
+            <button
+              onClick={() => toggleSection("description")}
+              className={`text-[14px] font-normal transition-colors text-left ${
+                expandedSection === "description"
+                  ? "font-medium"
+                  : "text-[#525866] hover:text-black"
+              }`}
+              style={
+                expandedSection === "description"
+                  ? { color: ROLE_COLORS.recruiter.primary }
+                  : undefined
+              }
+            >
             Description
           </button>
           {!isVolunteer && (
@@ -381,36 +395,38 @@ export function PostOpportunityForm() {
           </button>
         </div>
       </div>
+    </div>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Action Bar */}
-        <div className="px-4 lg:px-[80px] py-4 border-b border-[#E1E4EA] flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
-          <h1 className="font-inter-tight text-[17px] font-medium text-black">
+        <div className="px-4 md:px-8 lg:px-[80px] py-4 border-b border-[#E1E4EA] flex items-center justify-between gap-3">
+          <h1 className="font-inter-tight text-[17px] lg:text-[18px] font-medium text-black whitespace-nowrap">
             Post An Opportunity
           </h1>
-          <ResponsiveFormButtons align="end">
+          <div className="hidden md:flex items-center gap-2">
             <button
               onClick={handleCancel}
-              className="border border-gray-200 rounded-full font-inter-tight text-[13px] font-normal text-black hover:bg-gray-50 transition-colors px-5 py-2"
+              className="border border-gray-200 rounded-full font-inter-tight text-[13px] font-normal text-black hover:bg-gray-50 transition-colors px-5 py-2 min-h-[44px]"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
-              className="rounded-full font-inter-tight text-[13px] font-normal text-white hover:opacity-80 transition-colors px-5 py-2"
+              disabled={!isFormComplete}
+              className="rounded-full font-inter-tight text-[13px] font-normal text-white transition-colors px-5 py-2 min-h-[44px] disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
-                backgroundColor: ROLE_COLORS.recruiter.primary,
-                borderColor: ROLE_COLORS.recruiter.primary,
+                backgroundColor: isFormComplete ? ROLE_COLORS.recruiter.primary : '#9CA3AF',
+                borderColor: isFormComplete ? ROLE_COLORS.recruiter.primary : '#9CA3AF',
               }}
             >
-              Save & Post
+              Preview
             </button>
-          </ResponsiveFormButtons>
+          </div>
         </div>
 
         {/* Form Sections */}
-        <div className="flex-1 overflow-y-auto scrollbar-styled px-4 lg:px-[80px] pt-[25px] pb-6">
+        <div className="flex-1 overflow-y-auto scrollbar-styled px-4 md:px-8 lg:px-[80px] pt-[25px] pb-24 md:pb-6">
           <div className="max-w-[700px] mx-auto flex flex-col gap-[12px]">
             {/* Basic Info Section */}
             <FormSectionComponent
@@ -595,10 +611,11 @@ export function PostOpportunityForm() {
                     </div>
 
                     {/* Preview Button */}
-                    <ResponsiveFormButtons>
+                    <ResponsiveFormButtons className="hidden md:flex">
                       <button
                         onClick={handleSave}
-                        className="bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
+                        disabled={!isFormComplete}
+                        className="bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white transition-colors px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:border-gray-400"
                       >
                         Preview
                       </button>
@@ -609,6 +626,27 @@ export function PostOpportunityForm() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Mobile Sticky Bottom Bar */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#E1E4EA] px-4 py-3 flex items-center gap-3 z-40">
+        <button
+          onClick={handleCancel}
+          className="flex-1 border border-gray-200 rounded-full font-inter-tight text-[13px] font-normal text-black hover:bg-gray-50 transition-colors py-3 min-h-[44px]"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleSave}
+          disabled={!isFormComplete}
+          className="flex-1 rounded-full font-inter-tight text-[13px] font-normal text-white transition-colors py-3 min-h-[44px] disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{
+            backgroundColor: isFormComplete ? ROLE_COLORS.recruiter.primary : '#9CA3AF',
+            borderColor: isFormComplete ? ROLE_COLORS.recruiter.primary : '#9CA3AF',
+          }}
+        >
+          Preview
+        </button>
       </div>
 
       {/* Exit Modal */}

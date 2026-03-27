@@ -10,6 +10,8 @@ import {
 import { getDiscoverTalentData } from "./server-data";
 import type { TalentData } from "./server-data";
 import type { FilterState } from "@/components/DiscoverTalent";
+import { cn } from "@/lib/utils";
+import categories from "@/lib/data/categories.json";
 
 interface DiscoverTalentClientProps {
   initialTalents: TalentData[];
@@ -110,6 +112,10 @@ export function DiscoverTalentClient({
       offset + LIMIT,
       sortBy,
     );
+    // Scroll to top on mobile
+    if (window.innerWidth < 768) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const handlePreviousPage = () => {
@@ -121,81 +127,191 @@ export function DiscoverTalentClient({
         offset - LIMIT,
         sortBy,
       );
+      // Scroll to top on mobile
+      if (window.innerWidth < 768) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
     }
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-60px)] md:h-screen bg-white overflow-hidden">
-      <DiscoverTalentHeader
-        selectedCategory={selectedCategory}
-        onCategoryChange={handleCategoryChange}
-        searchQuery={searchQuery}
-        onSearchChange={handleSearch}
-        onFilterApply={handleFilterApply}
-        sortBy={sortBy}
-        onSortChange={handleSortChange}
-        isLoading={loading}
-      />
-      {loading && <TalentGridSkeleton />}
-      {error && !loading && (
-        <div className="flex-1 flex items-center justify-center">
-          <p className="text-red-500">Error: {error}</p>
-        </div>
-      )}
-      {!loading && !error && (
-        <TalentGrid
-          talents={[...talents].sort((a, b) => {
-            if (sortBy === "newest") {
-              return (
-                new Date(b.createdAt || 0).getTime() -
-                new Date(a.createdAt || 0).getTime()
-              );
-            }
-            if (sortBy === "oldest") {
-              return (
-                new Date(a.createdAt || 0).getTime() -
-                new Date(b.createdAt || 0).getTime()
-              );
-            }
-            return 0;
-          })}
-          onNextPage={handleNextPage}
-          onPreviousPage={handlePreviousPage}
-          hasNextPage={pagination?.hasNextPage || false}
-          hasPreviousPage={pagination?.hasPreviousPage || false}
-          currentPage={pagination?.currentPage || 1}
-          totalPages={pagination?.totalPages || 1}
-          totalTalents={pagination?.total}
-          emptyTitle={
-            searchQuery.trim()
-              ? "No talents match your search"
-              : filters &&
-                  ((filters.skills && filters.skills.length > 0) ||
-                    (filters.stack && filters.stack.length > 0) ||
-                    filters.location ||
-                    filters.availability ||
-                    filters.headline)
-                ? "No talents match your filters"
-                : selectedCategory !== "All"
-                  ? "No talents match your search"
-                  : "No talents yet"
-          }
-          emptyDescription={
-            searchQuery.trim()
-              ? "Try adjusting your search query"
-              : filters &&
-                  ((filters.skills && filters.skills.length > 0) ||
-                    (filters.stack && filters.stack.length > 0) ||
-                    filters.location ||
-                    filters.availability ||
-                    filters.headline)
-                ? "Try adjusting your filters"
-                : selectedCategory !== "All"
-                  ? `No talents match your search in the "${selectedCategory}" category`
-                  : "Talents will appear here as they join the platform"
-          }
+    <>
+      {/* Desktop Layout */}
+      <div className="hidden md:flex flex-col h-screen bg-white overflow-hidden">
+        <DiscoverTalentHeader
+          selectedCategory={selectedCategory}
+          onCategoryChange={handleCategoryChange}
+          searchQuery={searchQuery}
+          onSearchChange={handleSearch}
+          onFilterApply={handleFilterApply}
+          sortBy={sortBy}
+          onSortChange={handleSortChange}
+          isLoading={loading}
         />
-      )}
-    </div>
+        {loading && <TalentGridSkeleton />}
+        {error && !loading && (
+          <div className="flex-1 flex items-center justify-center">
+            <p className="text-red-500">Error: {error}</p>
+          </div>
+        )}
+        {!loading && !error && (
+          <TalentGrid
+            talents={[...talents].sort((a, b) => {
+              if (sortBy === "newest") {
+                return (
+                  new Date(b.createdAt || 0).getTime() -
+                  new Date(a.createdAt || 0).getTime()
+                );
+              }
+              if (sortBy === "oldest") {
+                return (
+                  new Date(a.createdAt || 0).getTime() -
+                  new Date(b.createdAt || 0).getTime()
+                );
+              }
+              return 0;
+            })}
+            onNextPage={handleNextPage}
+            onPreviousPage={handlePreviousPage}
+            hasNextPage={pagination?.hasNextPage || false}
+            hasPreviousPage={pagination?.hasPreviousPage || false}
+            currentPage={pagination?.currentPage || 1}
+            totalPages={pagination?.totalPages || 1}
+            totalTalents={pagination?.total}
+            emptyTitle={
+              searchQuery.trim()
+                ? "No talents match your search"
+                : filters &&
+                    ((filters.skills && filters.skills.length > 0) ||
+                      (filters.stack && filters.stack.length > 0) ||
+                      filters.location ||
+                      filters.availability ||
+                      filters.headline)
+                  ? "No talents match your filters"
+                  : selectedCategory !== "All"
+                    ? "No talents match your search"
+                    : "No talents yet"
+            }
+            emptyDescription={
+              searchQuery.trim()
+                ? "Try adjusting your search query"
+                : filters &&
+                    ((filters.skills && filters.skills.length > 0) ||
+                      (filters.stack && filters.stack.length > 0) ||
+                      filters.location ||
+                      filters.availability ||
+                      filters.headline)
+                  ? "Try adjusting your filters"
+                  : selectedCategory !== "All"
+                    ? `No talents match your search in the "${selectedCategory}" category`
+                    : "Talents will appear here as they join the platform"
+            }
+          />
+        )}
+      </div>
+
+      {/* Mobile Layout - Single scroll container */}
+      <div className="md:hidden h-[calc(100vh-60px)] overflow-y-auto bg-white">
+        <DiscoverTalentHeader
+          selectedCategory={selectedCategory}
+          onCategoryChange={handleCategoryChange}
+          searchQuery={searchQuery}
+          onSearchChange={handleSearch}
+          onFilterApply={handleFilterApply}
+          sortBy={sortBy}
+          onSortChange={handleSortChange}
+          isLoading={loading}
+          isMobile={true}
+        />
+
+        {/* Category Tabs - Sticky */}
+        <div className="sticky top-0 z-10 bg-white px-4 py-2 border-b border-[#E1E4EA]">
+          <div
+            className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide"
+            role="tablist"
+          >
+            {["All", ...categories].map((category) => (
+              <button
+                key={category}
+                onClick={() => handleCategoryChange(category)}
+                disabled={loading}
+                role="tab"
+                aria-selected={selectedCategory === category}
+                aria-label={`Filter by ${category}`}
+                className={cn(
+                  "px-[12px] py-[6px] flex justify-center items-center whitespace-nowrap flex-shrink-0 rounded transition-colors disabled:opacity-60 disabled:cursor-not-allowed",
+                  selectedCategory === category
+                    ? "text-black font-medium border-b-2 border-black"
+                    : "text-black/30 font-medium hover:text-black/50",
+                )}
+              >
+                <span className="text-[13px] font-inter-tight">{category}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {loading && <TalentGridSkeleton />}
+        {error && !loading && (
+          <div className="flex-1 flex items-center justify-center p-4">
+            <p className="text-red-500">Error: {error}</p>
+          </div>
+        )}
+        {!loading && !error && (
+          <TalentGrid
+            talents={[...talents].sort((a, b) => {
+              if (sortBy === "newest") {
+                return (
+                  new Date(b.createdAt || 0).getTime() -
+                  new Date(a.createdAt || 0).getTime()
+                );
+              }
+              if (sortBy === "oldest") {
+                return (
+                  new Date(a.createdAt || 0).getTime() -
+                  new Date(b.createdAt || 0).getTime()
+                );
+              }
+              return 0;
+            })}
+            onNextPage={handleNextPage}
+            onPreviousPage={handlePreviousPage}
+            hasNextPage={pagination?.hasNextPage || false}
+            hasPreviousPage={pagination?.hasPreviousPage || false}
+            currentPage={pagination?.currentPage || 1}
+            totalPages={pagination?.totalPages || 1}
+            totalTalents={pagination?.total}
+            emptyTitle={
+              searchQuery.trim()
+                ? "No talents match your search"
+                : filters &&
+                    ((filters.skills && filters.skills.length > 0) ||
+                      (filters.stack && filters.stack.length > 0) ||
+                      filters.location ||
+                      filters.availability ||
+                      filters.headline)
+                  ? "No talents match your filters"
+                  : selectedCategory !== "All"
+                    ? "No talents match your search"
+                    : "No talents yet"
+            }
+            emptyDescription={
+              searchQuery.trim()
+                ? "Try adjusting your search query"
+                : filters &&
+                    ((filters.skills && filters.skills.length > 0) ||
+                      (filters.stack && filters.stack.length > 0) ||
+                      filters.location ||
+                      filters.availability ||
+                      filters.headline)
+                  ? "Try adjusting your filters"
+                  : selectedCategory !== "All"
+                    ? `No talents match your search in the "${selectedCategory}" category`
+                    : "Talents will appear here as they join the platform"
+            }
+          />
+        )}
+      </div>
+    </>
   );
 }

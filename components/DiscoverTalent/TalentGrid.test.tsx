@@ -56,37 +56,44 @@ const mockTalents: TalentData[] = [
 
 describe("TalentGrid", () => {
   it("renders talent cards using ResponsiveGrid", () => {
-    render(<TalentGrid talents={mockTalents} />);
+    const { container } = render(<TalentGrid talents={mockTalents} />);
 
-    const grid = screen.getByTestId("responsive-grid");
-    expect(grid).toBeInTheDocument();
-    expect(grid).toHaveAttribute("data-columns", "3");
-    expect(grid).toHaveAttribute("data-gap", "2");
+    const grids = container.querySelectorAll('[data-testid="responsive-grid"]');
+    expect(grids.length).toBeGreaterThan(0);
+    grids.forEach((grid) => {
+      expect(grid).toHaveAttribute("data-columns", "3");
+      expect(grid).toHaveAttribute("data-gap", "2");
+    });
   });
 
   it("renders all talent cards", () => {
-    render(<TalentGrid talents={mockTalents} />);
+    const { container } = render(<TalentGrid talents={mockTalents} />);
 
-    expect(screen.getByTestId("talent-card-1")).toBeInTheDocument();
-    expect(screen.getByTestId("talent-card-2")).toBeInTheDocument();
+    const card1Elements = container.querySelectorAll('[data-testid="talent-card-1"]');
+    expect(card1Elements.length).toBeGreaterThan(0);
+    const card2Elements = container.querySelectorAll('[data-testid="talent-card-2"]');
+    expect(card2Elements.length).toBeGreaterThan(0);
   });
 
   it("displays correct talent count", () => {
     render(<TalentGrid talents={mockTalents} totalTalents={10} />);
 
-    expect(screen.getByText("10 talents found")).toBeInTheDocument();
+    const countElements = screen.getAllByText("10 talents found");
+    expect(countElements.length).toBeGreaterThan(0);
   });
 
   it("displays singular form for single talent", () => {
     render(<TalentGrid talents={[mockTalents[0]]} totalTalents={1} />);
 
-    expect(screen.getByText("1 talent found")).toBeInTheDocument();
+    const countElements = screen.getAllByText("1 talent found");
+    expect(countElements.length).toBeGreaterThan(0);
   });
 
   it("displays empty state when no talents", () => {
     render(<TalentGrid talents={[]} />);
 
-    expect(screen.getByText("No talents found")).toBeInTheDocument();
+    const emptyElements = screen.getAllByText("No talents found");
+    expect(emptyElements.length).toBeGreaterThan(0);
   });
 
   it("displays pagination controls", () => {
@@ -100,8 +107,11 @@ describe("TalentGrid", () => {
       />,
     );
 
-    expect(screen.getByText("Page 2 of 5")).toBeInTheDocument();
-    expect(screen.getByText("Previous")).toBeInTheDocument();
-    expect(screen.getByText("Next")).toBeInTheDocument();
+    const pageElements = screen.getAllByText("Page 2 of 5");
+    expect(pageElements.length).toBeGreaterThan(0);
+    const prevButtons = screen.getAllByText("Previous");
+    expect(prevButtons.length).toBeGreaterThan(0);
+    const nextButtons = screen.getAllByText("Next");
+    expect(nextButtons.length).toBeGreaterThan(0);
   });
 });

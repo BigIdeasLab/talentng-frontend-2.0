@@ -139,6 +139,11 @@ export function EmployerOpportunities() {
     }
   }, [opportunitiesRaw]);
 
+  // Reset to page 0 when filters change
+  useEffect(() => {
+    setOffset(0);
+  }, [activeTab, searchQuery, sortBy, appliedFilters]);
+
   const handlePostClick = () => {
     router.push("/opportunities/post");
   };
@@ -152,9 +157,9 @@ export function EmployerOpportunities() {
       <RoleColorProvider role="recruiter">
         <div className="h-screen overflow-x-hidden bg-white flex flex-col">
           {/* Fixed Header */}
-          <div className="w-full px-3 md:px-5 pt-5 md:pt-6 border-b border-[#E1E4EA] flex-shrink-0">
+          <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
             {/* Header */}
-            <div className="flex flex-col gap-4 mb-4">
+            <div className="flex flex-col gap-[8px] mb-[19px]">
               <OpportunitiesHeader onPostClick={handlePostClick} />
               <SearchAndFilters
                 searchQuery={searchQuery}
@@ -196,11 +201,12 @@ export function EmployerOpportunities() {
 
   return (
     <RoleColorProvider role="recruiter">
-      <div className="h-screen overflow-x-hidden bg-white flex flex-col">
+      {/* Desktop Layout */}
+      <div className="hidden md:flex h-screen overflow-x-hidden bg-white flex-col">
         {/* Fixed Header */}
-        <div className="w-full px-3 md:px-5 pt-5 md:pt-6 border-b border-[#E1E4EA] flex-shrink-0">
+        <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
           {/* Header */}
-          <div className="flex flex-col gap-4 mb-4">
+          <div className="flex flex-col gap-[8px] mb-[19px]">
             <OpportunitiesHeader onPostClick={handlePostClick} />
             <SearchAndFilters
               searchQuery={searchQuery}
@@ -228,7 +234,7 @@ export function EmployerOpportunities() {
 
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto">
-          <div className="px-3 md:px-5 pt-5 md:pt-6">
+          <div className="px-3 md:px-5 pt-5 md:pt-6 pb-6">
             {/* Opportunities Grid or Empty State */}
             {filteredOpportunities.length === 0 ? (
               <EmptyState
@@ -256,77 +262,214 @@ export function EmployerOpportunities() {
                 }
               />
             ) : (
-              <>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-                  {filteredOpportunities.map((opportunity) => (
-                    <OpportunityCardComponent
-                      key={opportunity.id}
-                      opportunity={opportunity}
-                      activeTab={activeTab}
-                      onMutationSuccess={fetchOpportunities}
-                    />
-                  ))}
-                </div>
-                {/* Pagination Controls */}
-                {opportunitiesRaw?.pagination &&
-                  opportunitiesRaw.pagination.totalPages > 1 && (
-                    <div className="flex items-center justify-between py-4">
-                      <button
-                        onClick={handlePreviousPage}
-                        disabled={!opportunitiesRaw.pagination.hasPreviousPage}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#E1E4EA] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#F5F5F5] transition-colors"
-                      >
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M15 18L9 12L15 6"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                        <span className="text-sm font-normal">Previous</span>
-                      </button>
-
-                      <span className="text-sm font-normal text-gray-600">
-                        Page {opportunitiesRaw.pagination.currentPage} of{" "}
-                        {opportunitiesRaw.pagination.totalPages}
-                      </span>
-
-                      <button
-                        onClick={handleNextPage}
-                        disabled={!opportunitiesRaw.pagination.hasNextPage}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#E1E4EA] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#F5F5F5] transition-colors"
-                      >
-                        <span className="text-sm font-normal">Next</span>
-                        <svg
-                          width="16"
-                          height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M9 18L15 12L9 6"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  )}
-              </>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {filteredOpportunities.map((opportunity) => (
+                  <OpportunityCardComponent
+                    key={opportunity.id}
+                    opportunity={opportunity}
+                    activeTab={activeTab}
+                    onMutationSuccess={fetchOpportunities}
+                  />
+                ))}
+              </div>
             )}
           </div>
         </div>
+
+        {/* Pagination Controls - Desktop */}
+        {opportunitiesRaw?.pagination && (
+          <div className="hidden md:flex items-center justify-between px-5 py-4 border-t border-[#E1E4EA] flex-shrink-0">
+            <div className="text-[13px] text-[#525866] font-inter-tight">
+              Showing {opportunitiesRaw.pagination.offset + 1} to{" "}
+              {Math.min(
+                opportunitiesRaw.pagination.offset +
+                  opportunitiesRaw.pagination.limit,
+                opportunitiesRaw.pagination.total,
+              )}{" "}
+              of {opportunitiesRaw.pagination.total} opportunities
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handlePreviousPage}
+                disabled={!opportunitiesRaw.pagination.hasPreviousPage}
+                className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all"
+              >
+                Previous
+              </button>
+              <span className="text-[13px] text-[#525866] font-inter-tight">
+                Page {opportunitiesRaw.pagination.currentPage} of{" "}
+                {opportunitiesRaw.pagination.totalPages}
+              </span>
+              <button
+                onClick={handleNextPage}
+                disabled={!opportunitiesRaw.pagination.hasNextPage}
+                className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Pagination Controls - Mobile */}
+        {opportunitiesRaw?.pagination && (
+          <div className="md:hidden px-4 py-4 border-t border-[#E1E4EA] bg-white flex-shrink-0">
+            <div className="flex flex-col gap-3">
+              <div className="text-[13px] text-[#525866] font-inter-tight text-center">
+                Showing {opportunitiesRaw.pagination.offset + 1} to{" "}
+                {Math.min(
+                  opportunitiesRaw.pagination.offset +
+                    opportunitiesRaw.pagination.limit,
+                  opportunitiesRaw.pagination.total,
+                )}{" "}
+                of {opportunitiesRaw.pagination.total} opportunities
+              </div>
+              <div className="flex items-center justify-center gap-2">
+                <button
+                  onClick={() => {
+                    handlePreviousPage();
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  disabled={!opportunitiesRaw.pagination.hasPreviousPage}
+                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all min-h-[44px]"
+                >
+                  Previous
+                </button>
+                <span className="text-[13px] text-[#525866] font-inter-tight">
+                  Page {opportunitiesRaw.pagination.currentPage} of{" "}
+                  {opportunitiesRaw.pagination.totalPages}
+                </span>
+                <button
+                  onClick={() => {
+                    handleNextPage();
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  disabled={!opportunitiesRaw.pagination.hasNextPage}
+                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all min-h-[44px]"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Mobile Layout - Single scroll container */}
+      <div className="md:hidden h-[calc(100vh-60px)] overflow-y-auto bg-white">
+        {/* Header */}
+        <div className="px-4 pt-[19px] pb-4 border-b border-[#E1E4EA]">
+          <div className="mb-[19px]">
+            <OpportunitiesHeader onPostClick={handlePostClick} />
+          </div>
+          <SearchAndFilters
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+            onFilterClick={() => setIsFilterOpen(true)}
+            isSearching={isPending}
+            filterCount={getFilterCount()}
+            filterModal={
+              <OpportunitiesFilterModal
+                isOpen={isFilterOpen}
+                onClose={() => setIsFilterOpen(false)}
+                onApply={handleApplyFilters}
+                availableSkills={[]}
+                initialFilters={appliedFilters || undefined}
+              />
+            }
+          />
+        </div>
+
+        {/* Tabs - Sticky */}
+        <div className="sticky top-0 z-10 bg-white px-4 py-2 border-b border-[#E1E4EA]">
+          <OpportunitiesTabs activeTab={activeTab} onTabChange={setActiveTab} />
+        </div>
+
+        {/* Content */}
+        <div className="px-3 pt-5 pb-6">
+          {filteredOpportunities.length === 0 ? (
+            <EmptyState
+              icon={Briefcase}
+              title="No opportunities match your search"
+              description={
+                searchQuery.trim()
+                  ? "Try adjusting your search query"
+                  : appliedFilters &&
+                      (appliedFilters.skills?.length > 0 ||
+                        appliedFilters.types?.length > 0 ||
+                        appliedFilters.categories?.length > 0 ||
+                        appliedFilters.experienceLevels?.length > 0 ||
+                        appliedFilters.location ||
+                        (appliedFilters.minBudget &&
+                          appliedFilters.minBudget > 0) ||
+                        (appliedFilters.maxBudget &&
+                          appliedFilters.maxBudget > 0))
+                    ? "Try adjusting your filters"
+                    : activeTab === "draft"
+                      ? "You haven't created any draft opportunities yet"
+                      : activeTab === "closed"
+                        ? "You don't have any closed opportunities"
+                        : "You haven't posted any opportunities yet"
+              }
+            />
+          ) : (
+            <div className="grid grid-cols-1 gap-4">
+              {filteredOpportunities.map((opportunity) => (
+                <OpportunityCardComponent
+                  key={opportunity.id}
+                  opportunity={opportunity}
+                  activeTab={activeTab}
+                  onMutationSuccess={fetchOpportunities}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Pagination - Mobile */}
+        {opportunitiesRaw?.pagination && (
+          <div className="px-4 py-4 border-t border-[#E1E4EA] bg-white">
+            <div className="flex flex-col gap-3">
+              <div className="text-[13px] text-[#525866] font-inter-tight text-center">
+                Showing {opportunitiesRaw.pagination.offset + 1} to{" "}
+                {Math.min(
+                  opportunitiesRaw.pagination.offset +
+                    opportunitiesRaw.pagination.limit,
+                  opportunitiesRaw.pagination.total,
+                )}{" "}
+                of {opportunitiesRaw.pagination.total} opportunities
+              </div>
+              <div className="flex items-center justify-center gap-2">
+                <button
+                  onClick={() => {
+                    handlePreviousPage();
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  disabled={!opportunitiesRaw.pagination.hasPreviousPage}
+                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all min-h-[44px]"
+                >
+                  Previous
+                </button>
+                <span className="text-[13px] text-[#525866] font-inter-tight">
+                  Page {opportunitiesRaw.pagination.currentPage} of{" "}
+                  {opportunitiesRaw.pagination.totalPages}
+                </span>
+                <button
+                  onClick={() => {
+                    handleNextPage();
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  disabled={!opportunitiesRaw.pagination.hasNextPage}
+                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all min-h-[44px]"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </RoleColorProvider>
   );

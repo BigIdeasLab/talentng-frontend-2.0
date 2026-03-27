@@ -92,13 +92,17 @@ describe("Bug Condition Exploration: Mobile Scroll Nested Container Detection", 
     // Expected behavior: Only ONE element with overflow-y-auto in the mobile layout
     // Bug behavior: TWO elements with overflow-y-auto (page container + MobileProgressiveHeader)
 
-    const scrollableElements = container.querySelectorAll(
-      '[class*="overflow-y-auto"]',
-    );
+    const mobileContainer = container.querySelector(".md\\:hidden");
+    // The mobile container itself should be the single scroll container
+    expect(mobileContainer?.className).toContain("overflow-y-auto");
+    // No nested scroll containers inside (exclude responsive variants like md:overflow-y-auto)
+    const nestedScrollables = Array.from(
+      mobileContainer!.querySelectorAll('[class*="overflow-y-auto"]'),
+    ).filter((el) => el.classList.contains("overflow-y-auto"));
 
-    // On UNFIXED code: This will find 2+ scrollable elements (nested containers)
-    // On FIXED code: This should find exactly 1 scrollable element (single scroll container)
-    expect(scrollableElements.length).toBe(1);
+    // On UNFIXED code: This will find nested scrollable elements inside
+    // On FIXED code: No nested scroll containers (the mobile container itself is the scroll container)
+    expect(nestedScrollables.length).toBe(0);
 
     // TEST 2: Verify MobileProgressiveHeader is NOT used (it creates nested scroll)
     // Expected behavior: Mobile layout uses simple div with overflow-y-auto
@@ -118,18 +122,13 @@ describe("Bug Condition Exploration: Mobile Scroll Nested Container Detection", 
     // Expected behavior: Mobile container has flex-1 overflow-y-auto directly
     // Bug behavior: Mobile container has MobileProgressiveHeader wrapper with its own scroll
 
-    const mobileContainer = container.querySelector(".md\\:hidden");
+    // mobileContainer already queried above — reuse it
     expect(mobileContainer).toBeTruthy();
 
-    // Check that the mobile container has the correct single-scroll structure
-    // It should have a direct child with overflow-y-auto (not nested inside another scroll container)
-    const directScrollChild = mobileContainer?.querySelector(
-      ':scope > .overflow-y-auto, :scope > [class*="overflow-y-auto"]',
-    );
-
-    // On UNFIXED code: This might be null or point to MobileProgressiveHeader
-    // On FIXED code: This should exist and be the single scroll container
-    expect(directScrollChild).toBeTruthy();
+    // The mobile container itself is the scroll container (flex-1 overflow-y-auto)
+    // so there's no separate direct child with overflow-y-auto
+    expect(mobileContainer?.className).toContain("overflow-y-auto");
+    expect(mobileContainer?.className).toContain("flex-1");
 
     // TEST 4: Verify sticky tabs are positioned correctly (not inside nested scroll)
     // Expected behavior: Tabs have position: sticky and are in the single scroll container
@@ -175,14 +174,15 @@ describe("Bug Condition Exploration: Mobile Scroll Nested Container Detection", 
     expect(nestedScrollWrapper).toBeNull();
 
     // Verify the scroll container structure allows natural scrolling to bottom content
-    // The mobile container should have a direct overflow-y-auto child, not nested scrolls
-    const scrollContainers = mobileContainer?.querySelectorAll(
-      '[class*="overflow-y-auto"]',
-    );
+    // The mobile container itself should have overflow-y-auto, not nested scrolls
+    expect(mobileContainer?.className).toContain("overflow-y-auto");
+    const nestedScrollContainers = Array.from(
+      mobileContainer!.querySelectorAll('[class*="overflow-y-auto"]'),
+    ).filter((el) => el.classList.contains("overflow-y-auto"));
 
-    // On UNFIXED code: Multiple scroll containers (nested)
-    // On FIXED code: Exactly one scroll container
-    expect(scrollContainers?.length).toBe(1);
+    // On UNFIXED code: Multiple nested scroll containers
+    // On FIXED code: No nested scroll containers (the mobile container itself is the scroll container)
+    expect(nestedScrollContainers.length).toBe(0);
   });
 
   it("EXPECTED TO FAIL ON UNFIXED CODE: should provide consistent scroll experience matching opportunities page pattern", async () => {
@@ -198,11 +198,11 @@ describe("Bug Condition Exploration: Mobile Scroll Nested Container Detection", 
     const mobileSection = container.querySelector(".md\\:hidden");
     expect(mobileSection).toBeTruthy();
 
-    // Check for the opportunities page pattern: flex-1 overflow-y-auto
+    // Check for the opportunities page pattern: flex-1 overflow-y-auto on the mobile section itself
     // NOT the MobileProgressiveHeader pattern: h-full overflow-y-auto scrollbar-styled
-    const hasOpportunitiesPattern = mobileSection?.querySelector(
-      ".flex-1.overflow-y-auto",
-    );
+    const hasOpportunitiesPattern =
+      mobileSection?.classList.contains("flex-1") &&
+      mobileSection?.classList.contains("overflow-y-auto");
     const hasMobileProgressiveHeaderPattern = mobileSection?.querySelector(
       ".h-full.overflow-y-auto.scrollbar-styled",
     );
@@ -213,7 +213,7 @@ describe("Bug Condition Exploration: Mobile Scroll Nested Container Detection", 
     expect(hasMobileProgressiveHeaderPattern).toBeNull();
 
     // Verify header scrolls with content (not in a separate scroll container)
-    const header = screen.getByText("Mentorship").closest("div");
+    const header = screen.getAllByText("Mentorship")[0].closest("div");
     const headerInNestedScroll = header?.closest(
       ".h-full.overflow-y-auto.scrollbar-styled",
     );

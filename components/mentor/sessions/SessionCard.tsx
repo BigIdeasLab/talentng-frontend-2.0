@@ -150,25 +150,33 @@ export function SessionCard({
             {(() => {
               const rawAvatar = mentee.avatar || "";
               const safeAvatar =
-                rawAvatar && !rawAvatar.includes("builder.io")
+                rawAvatar && !rawAvatar.includes("builder.io") && !rawAvatar.includes("placeholder")
                   ? rawAvatar
-                  : null;
+                  : "/default.png";
 
-              return safeAvatar ? (
-                <img
-                  src={safeAvatar}
-                  alt={mentee.name}
-                  className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-                />
-              ) : (
-                <div className="w-8 h-8 rounded-full bg-[#FDF2F8] flex items-center justify-center flex-shrink-0">
-                  <span
-                    className="text-[12px] font-semibold font-inter-tight"
-                    style={{ color: ROLE_COLORS.mentor.dark }}
-                  >
-                    {menteeInitials}
-                  </span>
-                </div>
+              return (
+                <>
+                  <img
+                    src={safeAvatar}
+                    alt={mentee.name}
+                    className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                    onError={(e) => {
+                      // If image fails to load, show initials instead
+                      const target = e.currentTarget;
+                      target.style.display = 'none';
+                      const initialsDiv = target.nextElementSibling as HTMLElement;
+                      if (initialsDiv) initialsDiv.style.display = 'flex';
+                    }}
+                  />
+                  <div className="w-8 h-8 rounded-full bg-[#FDF2F8] items-center justify-center flex-shrink-0 hidden">
+                    <span
+                      className="text-[12px] font-semibold font-inter-tight"
+                      style={{ color: ROLE_COLORS.mentor.dark }}
+                    >
+                      {menteeInitials.toUpperCase().slice(0, 2)}
+                    </span>
+                  </div>
+                </>
               );
             })()}
             <div className="flex flex-col gap-1">

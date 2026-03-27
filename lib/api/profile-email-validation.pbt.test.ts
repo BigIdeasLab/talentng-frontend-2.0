@@ -221,7 +221,7 @@ describe("Property 6: Email Validation and Uniqueness", () => {
             `/${role}/verify-email`,
             expect.objectContaining({
               method: "POST",
-              body: { code },
+              body: { verificationCode: code },
             }),
           );
         },
@@ -295,7 +295,7 @@ describe("Property 6: Email Validation and Uniqueness", () => {
 
         // Property: API should be called with correct endpoint
         expect(mockApiClient).toHaveBeenCalledWith(
-          `/${role}/verify-email/resend`,
+          `/${role}/resend-verification`,
           expect.objectContaining({
             method: "POST",
           }),

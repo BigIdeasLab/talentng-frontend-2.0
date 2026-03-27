@@ -2,15 +2,22 @@ import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { MentorSettings } from "./MentorSettings";
+import { ProfileProvider } from "@/app/(business)/profile-provider";
 
 // Mock the API modules
 vi.mock("@/lib/api/mentor", () => ({
   getMentorSettings: vi.fn(),
   updateMentorSettings: vi.fn(),
+  updateMentorEmail: vi.fn(),
+  verifyMentorEmail: vi.fn(),
+  resendMentorVerification: vi.fn(),
 }));
 
 vi.mock("@/lib/api/users", () => ({
   getCurrentUser: vi.fn(),
+  deleteMentorProfile: vi.fn(),
+  deleteTalentProfile: vi.fn(),
+  deleteRecruiterProfile: vi.fn(),
 }));
 
 vi.mock("@/lib/api/auth", () => ({
@@ -62,7 +69,11 @@ function renderWithQueryClient(component: React.ReactElement) {
   });
 
   return render(
-    <QueryClientProvider client={queryClient}>{component}</QueryClientProvider>,
+    <QueryClientProvider client={queryClient}>
+      <ProfileProvider initialRole="mentor" initialProfileName="Test Mentor" initialProfileAvatar="">
+        {component}
+      </ProfileProvider>
+    </QueryClientProvider>,
   );
 }
 

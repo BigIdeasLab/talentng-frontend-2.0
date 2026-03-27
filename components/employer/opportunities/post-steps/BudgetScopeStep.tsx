@@ -214,11 +214,11 @@ export function BudgetScopeStep({
           <label className="font-inter-tight text-[13px] font-normal text-black">
             How do you want to pay talents
           </label>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <div className="flex flex-col sm:grid sm:grid-cols-3 gap-2">
             <button
               type="button"
               onClick={() => handlePaymentTypeSelect("weekly")}
-              className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors ${
+              className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors min-h-[44px] ${
                 selectedPayment === "weekly"
                   ? "text-black"
                   : "border-[#E1E4EA] text-[#99A0AE] hover:opacity-80"
@@ -237,7 +237,7 @@ export function BudgetScopeStep({
             <button
               type="button"
               onClick={() => handlePaymentTypeSelect("monthly")}
-              className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors ${
+              className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors min-h-[44px] ${
                 selectedPayment === "monthly"
                   ? "text-black"
                   : "border-[#E1E4EA] text-[#99A0AE] hover:opacity-80"
@@ -256,7 +256,7 @@ export function BudgetScopeStep({
             <button
               type="button"
               onClick={() => handlePaymentTypeSelect("hourly")}
-              className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors ${
+              className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors min-h-[44px] ${
                 selectedPayment === "hourly"
                   ? "text-black"
                   : "border-[#E1E4EA] text-[#99A0AE] hover:opacity-80"
@@ -288,11 +288,11 @@ export function BudgetScopeStep({
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Pricing
           </label>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="flex flex-col sm:grid sm:grid-cols-2 gap-2">
             <button
               type="button"
               onClick={() => handlePriceModeSelect("range")}
-              className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors ${
+              className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors min-h-[44px] ${
                 selectedPriceMode === "range"
                   ? "text-black"
                   : "border-[#E1E4EA] text-[#99A0AE] hover:opacity-80"
@@ -311,7 +311,7 @@ export function BudgetScopeStep({
             <button
               type="button"
               onClick={() => handlePriceModeSelect("fixed")}
-              className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors ${
+              className={`flex items-center justify-center px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] transition-colors min-h-[44px] ${
                 selectedPriceMode === "fixed"
                   ? "text-black"
                   : "border-[#E1E4EA] text-[#99A0AE] hover:opacity-80"
@@ -339,7 +339,7 @@ export function BudgetScopeStep({
           )}
 
           {selectedPriceMode === "range" ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="flex flex-col sm:grid sm:grid-cols-2 gap-2">
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[13px] text-black font-medium pointer-events-none">
                   ₦
@@ -361,7 +361,7 @@ export function BudgetScopeStep({
                       ROLE_COLORS.recruiter.primary)
                   }
                   onBlur={(e) => (e.currentTarget.style.borderColor = "")}
-                  className={`w-full pl-6 pr-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none transition-colors disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed ${
+                  className={`w-full pl-6 pr-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none transition-colors disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed min-h-[46px] ${
                     errors.minBudget ? "border-red-500" : "border-[#E1E4EA]"
                   }`}
                 />
@@ -387,7 +387,7 @@ export function BudgetScopeStep({
                       ROLE_COLORS.recruiter.primary)
                   }
                   onBlur={(e) => (e.currentTarget.style.borderColor = "")}
-                  className={`w-full pl-6 pr-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none transition-colors disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed ${
+                  className={`w-full pl-6 pr-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none transition-colors disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed min-h-[46px] ${
                     errors.maxBudget ? "border-red-500" : "border-[#E1E4EA]"
                   }`}
                 />
@@ -411,7 +411,7 @@ export function BudgetScopeStep({
                     ROLE_COLORS.recruiter.primary)
                 }
                 onBlur={(e) => (e.currentTarget.style.borderColor = "")}
-                className={`w-full pl-6 pr-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none transition-colors disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed ${
+                className={`w-full pl-6 pr-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none transition-colors disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed min-h-[46px] ${
                   errors.price ? "border-red-500" : "border-[#E1E4EA]"
                 }`}
               />
@@ -568,7 +568,7 @@ export function BudgetScopeStep({
               scrollToFirstError();
             }
           }}
-          className="bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
+          className="bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors px-6 py-3"
         >
           Next
         </button>

@@ -179,9 +179,9 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
 
       <div className="mx-auto w-full px-3 py-3 md:px-4 md:py-4 flex flex-col flex-1 overflow-y-auto">
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-5 lg:gap-2">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_450px] gap-5 lg:gap-2">
           {/* Left Column - Opportunity Details */}
-          <div className="flex flex-col gap-9 overflow-y-auto pr-2">
+          <div className="flex flex-col gap-9 overflow-y-auto pr-2 min-w-0">
             {/* Job Header */}
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-4">
@@ -191,7 +191,7 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                   className="w-[75px] h-[75px] rounded-full object-cover"
                 />
                 <div className="flex flex-col gap-3">
-                  <h2 className="font-inter-tight text-[17px] font-medium text-black leading-5">
+                  <h2 className="font-inter-tight text-[17px] font-medium text-black leading-5 break-words">
                     {opportunity.title}
                   </h2>
                   <div className="flex items-center gap-1.5">
@@ -255,7 +255,7 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                 <h3 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
                   About the Role
                 </h3>
-                <p className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
+                <p className="font-inter-tight text-[13px] font-normal text-black leading-[165%] break-words">
                   {opportunity.description}
                 </p>
               </div>
@@ -276,7 +276,7 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                       >
                         •
                       </span>
-                      <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
+                      <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%] break-words">
                         {item}
                       </span>
                     </div>
@@ -300,7 +300,7 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                       >
                         •
                       </span>
-                      <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
+                      <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%] break-words">
                         {item}
                       </span>
                     </div>
@@ -662,7 +662,7 @@ export function OpportunityDetails({ opportunityId }: OpportunityDetailsProps) {
                 </div>
               </div>
               {opportunity.description && (
-                <p className="font-inter-tight text-[12px] font-normal text-black leading-[160%]">
+                <p className="font-inter-tight text-[12px] font-normal text-black leading-[160%] break-words">
                   {opportunity.description}
                 </p>
               )}

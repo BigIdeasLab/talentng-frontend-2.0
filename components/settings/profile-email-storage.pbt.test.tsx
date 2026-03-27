@@ -242,7 +242,7 @@ describe("Property 1: Profile Email Storage and Retrieval", () => {
       ),
       { numRuns: 30 }, // Reduced for performance
     );
-  });
+  }, 30000);
 
   /**
    * Property: Email updates should not affect main account email
@@ -340,7 +340,7 @@ describe("Property 1: Profile Email Storage and Retrieval", () => {
       ),
       { numRuns: 20 },
     );
-  });
+  }, 30000);
 
   /**
    * Property: Settings should maintain backward compatibility

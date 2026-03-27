@@ -10,6 +10,7 @@ import { useRequireRole } from "@/hooks/useRequireRole";
 import { useProfile } from "@/hooks/useProfile";
 import { PageLoadingState } from "@/lib/page-utils";
 import { ApplicantsSkeleton } from "@/components/employer/applicants/ApplicantsSkeleton";
+import { ApplicantCard } from "@/components/employer/applicants/ApplicantCard";
 import {
   useRecruiterApplicationsQuery,
   useUpdateApplicationStatus,
@@ -353,48 +354,59 @@ export default function ApplicantsPage() {
       {/* Content */}
       <div className="flex-1 overflow-hidden">
         <div className="h-full overflow-y-auto p-4 md:p-6">
-          {/* Table */}
-          <div className="rounded-[16px] border border-[#E1E4EA] bg-white overflow-hidden flex flex-col flex-1">
-            {filteredApplicants.length === 0 ? (
-              <EmptyState
-                icon={Users}
-                title={
-                  searchQuery.trim()
-                    ? "No applicants match your search"
-                    : filters.status.length > 0 ||
-                        filters.location ||
-                        filters.dateRange !== "all"
-                      ? "No applicants match your filters"
-                      : activeTab === "hired"
-                        ? "No hired talents yet"
-                        : activeTab === "rejected"
-                          ? "No rejected applicants"
-                          : activeTab === "shortlisted"
-                            ? "No shortlisted applicants yet"
-                            : activeTab === "applied"
-                              ? "No applicants in review"
-                              : "No applicants match your search"
-                }
-                description={
-                  searchQuery.trim()
-                    ? "Try adjusting your search query"
-                    : filters.status.length > 0 ||
-                        filters.location ||
-                        filters.dateRange !== "all"
-                      ? "Try adjusting your filters"
-                      : activeTab === "hired"
-                        ? "Talents you hire will appear here"
-                        : activeTab === "rejected"
-                          ? "Rejected applicants will appear here"
-                          : activeTab === "shortlisted"
-                            ? "Shortlisted applicants will appear here"
-                            : activeTab === "applied"
-                              ? "Applicants in review will appear here"
-                              : "When candidates apply to opportunities, they'll appear here"
-                }
-              />
-            ) : (
-              <>
+          {filteredApplicants.length === 0 ? (
+            <EmptyState
+              icon={Users}
+              title={
+                searchQuery.trim()
+                  ? "No applicants match your search"
+                  : filters.status.length > 0 ||
+                      filters.location ||
+                      filters.dateRange !== "all"
+                    ? "No applicants match your filters"
+                    : activeTab === "hired"
+                      ? "No hired talents yet"
+                      : activeTab === "rejected"
+                        ? "No rejected applicants"
+                        : activeTab === "shortlisted"
+                          ? "No shortlisted applicants yet"
+                          : activeTab === "applied"
+                            ? "No applicants in review"
+                            : "No applicants match your search"
+              }
+              description={
+                searchQuery.trim()
+                  ? "Try adjusting your search query"
+                  : filters.status.length > 0 ||
+                      filters.location ||
+                      filters.dateRange !== "all"
+                    ? "Try adjusting your filters"
+                    : activeTab === "hired"
+                      ? "Talents you hire will appear here"
+                      : activeTab === "rejected"
+                        ? "Rejected applicants will appear here"
+                        : activeTab === "shortlisted"
+                          ? "Shortlisted applicants will appear here"
+                          : activeTab === "applied"
+                            ? "Applicants in review will appear here"
+                            : "When candidates apply to opportunities, they'll appear here"
+              }
+            />
+          ) : (
+            <>
+              {/* Mobile Card View */}
+              <div className="md:hidden flex flex-col gap-4">
+                {filteredApplicants.map((applicant) => (
+                  <ApplicantCard
+                    key={applicant.id}
+                    applicant={applicant}
+                    onHireClick={handleHireClick}
+                  />
+                ))}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden md:block rounded-[16px] border border-[#E1E4EA] bg-white overflow-hidden">
                 {/* Table Header */}
                 <div className="px-[24px] py-[16px] border-b border-[#E1E4EA]">
                   <div className="grid grid-cols-[40px_1fr_80px_1.2fr_140px_120px_110px_1.3fr] gap-4">
@@ -426,7 +438,7 @@ export default function ApplicantsPage() {
                 </div>
 
                 {/* Table Body */}
-                <div className="px-[24px] py-[19px] flex flex-col gap-[19px] overflow-y-auto flex-1">
+                <div className="px-[24px] py-[19px] flex flex-col gap-[19px]">
                   {filteredApplicants.map((applicant, index) => (
                     <div
                       key={applicant.id}
@@ -447,9 +459,12 @@ export default function ApplicantsPage() {
                         className="flex items-center gap-[8px] hover:opacity-80 transition-opacity text-left h-full"
                       >
                         <img
-                          src={applicant.avatar}
+                          src={applicant.avatar || "/default.png"}
                           alt={applicant.name}
                           className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = "/default.png";
+                          }}
                         />
                         <div className="flex flex-col gap-1 min-w-0">
                           <span className="font-inter-tight text-[13px] font-medium text-black leading-tight truncate">
@@ -611,52 +626,52 @@ export default function ApplicantsPage() {
                     </div>
                   ))}
                 </div>
-              </>
-            )}
-
-            {/* Pagination */}
-            {pagination && pagination.total > 0 && (
-              <div className="flex items-center justify-between px-[24px] py-[16px] border-t border-[#E1E4EA] flex-shrink-0">
-                <div className="text-[13px] text-[#525866] font-inter-tight">
-                  Showing {pagination.offset + 1} to{" "}
-                  {Math.min(
-                    pagination.offset + pagination.limit,
-                    pagination.total,
-                  )}{" "}
-                  of {pagination.total} results
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => {
-                      setCurrentPage(currentPage - 1);
-                      if (window.innerWidth < 768) {
-                        window.scrollTo({ top: 0, behavior: "smooth" });
-                      }
-                    }}
-                    disabled={!pagination.hasPreviousPage}
-                    className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
-                  >
-                    Previous
-                  </button>
-                  <span className="text-[13px] text-[#525866] font-inter-tight">
-                    Page {pagination.currentPage} of {pagination.totalPages}
-                  </span>
-                  <button
-                    onClick={() => {
-                      setCurrentPage(currentPage + 1);
-                      if (window.innerWidth < 768) {
-                        window.scrollTo({ top: 0, behavior: "smooth" });
-                      }
-                    }}
-                    disabled={!pagination.hasNextPage}
-                    className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
-                  >
-                    Next
-                  </button>
-                </div>
               </div>
-            )}
-          </div>
+            </>
+          )}
+
+          {/* Pagination */}
+          {pagination && pagination.total > 0 && (
+            <div className="flex flex-col md:flex-row items-center justify-between gap-3 mt-4 px-4 py-3 md:px-[24px] md:py-[16px] border border-[#E1E4EA] rounded-[12px] md:rounded-[16px] bg-white">
+              <div className="text-[13px] text-[#525866] font-inter-tight text-center md:text-left">
+                Showing {pagination.offset + 1} to{" "}
+                {Math.min(
+                  pagination.offset + pagination.limit,
+                  pagination.total,
+                )}{" "}
+                of {pagination.total} results
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    setCurrentPage(currentPage - 1);
+                    if (window.innerWidth < 768) {
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }
+                  }}
+                  disabled={!pagination.hasPreviousPage}
+                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors min-h-[44px] md:min-h-0"
+                >
+                  Previous
+                </button>
+                <span className="text-[13px] text-[#525866] font-inter-tight">
+                  Page {pagination.currentPage} of {pagination.totalPages}
+                </span>
+                <button
+                  onClick={() => {
+                    setCurrentPage(currentPage + 1);
+                    if (window.innerWidth < 768) {
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }
+                  }}
+                  disabled={!pagination.hasNextPage}
+                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors min-h-[44px] md:min-h-0"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

@@ -194,14 +194,14 @@ export function DescriptionStep({
   );
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 min-w-0 w-full overflow-hidden">
       {/* Section Title */}
       <h2 className="font-inter-tight text-[17px] font-medium text-black">
         Describe Your Opportunity
       </h2>
 
       {/* Form Fields */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 min-w-0">
         {/* Description */}
         <ResponsiveFormField>
           <label className="font-inter-tight text-[13px] font-normal text-black">
@@ -217,7 +217,7 @@ export function DescriptionStep({
             onFocus={() => setDescriptionFocused(true)}
             onBlur={() => setDescriptionFocused(false)}
             rows={5}
-            className={`w-full px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none transition-colors resize-none ${
+            className={`w-full min-w-0 px-3 py-3 border rounded-[8px] font-inter-tight text-[13px] text-black placeholder:text-[#99A0AE] outline-none transition-colors resize-none break-all ${
               errors.description ? "border-red-500" : "border-[#E1E4EA]"
             }`}
             style={
@@ -249,21 +249,21 @@ export function DescriptionStep({
               {errors.keyResponsibilities}
             </span>
           )}
-          <div className="flex flex-col gap-2 border border-[#E1E4EA] rounded-[8px] p-3">
+          <div className="flex flex-col gap-2 border border-[#E1E4EA] rounded-[8px] p-3 min-w-0">
             {/* List of added responsibilities */}
             {formData.keyResponsibilities.map((item, index) => (
-              <div key={index} className="flex items-center gap-2 group">
+              <div key={index} className="flex items-center gap-2 group min-w-0">
                 <span
-                  className="text-[14px]"
+                  className="text-[14px] flex-shrink-0 leading-none"
                   style={{ color: ROLE_COLORS.recruiter.primary }}
                 >
                   •
                 </span>
-                <span className="text-[13px] text-black flex-1">{item}</span>
+                <span className="text-[13px] text-black flex-1 min-w-0 break-all leading-[1.4]">{item}</span>
                 <button
                   type="button"
                   onClick={() => handleRemoveResponsibility(index)}
-                  className="text-[#99A0AE] hover:text-[#E63C23] transition-colors opacity-0 group-hover:opacity-100"
+                  className="text-[#99A0AE] hover:text-[#E63C23] transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100 flex-shrink-0"
                 >
                   <svg
                     width="16"
@@ -284,9 +284,9 @@ export function DescriptionStep({
               </div>
             ))}
             {/* Input for new responsibility */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 min-w-0">
               <span
-                className="text-[14px]"
+                className="text-[14px] flex-shrink-0 leading-none"
                 style={{ color: ROLE_COLORS.recruiter.primary }}
               >
                 •
@@ -297,7 +297,7 @@ export function DescriptionStep({
                 value={responsibilityInput}
                 onChange={(e) => setResponsibilityInput(e.target.value)}
                 onKeyDown={handleResponsibilityKeyDown}
-                className="text-[13px] text-black placeholder:text-[#99A0AE] outline-none flex-1 bg-transparent"
+                className="text-[13px] text-black placeholder:text-[#99A0AE] outline-none flex-1 min-w-0 bg-transparent leading-[1.4]"
               />
               <button
                 type="button"
@@ -319,21 +319,21 @@ export function DescriptionStep({
           <label className="font-inter-tight text-[13px] font-normal text-black">
             Requirements
           </label>
-          <div className="flex flex-col gap-2 border border-[#E1E4EA] rounded-[8px] p-3">
+          <div className="flex flex-col gap-2 border border-[#E1E4EA] rounded-[8px] p-3 min-w-0">
             {/* List of added requirements */}
             {formData.requirements.map((item, index) => (
-              <div key={index} className="flex items-center gap-2 group">
+              <div key={index} className="flex items-center gap-2 group min-w-0">
                 <span
-                  className="text-[14px]"
+                  className="text-[14px] flex-shrink-0 leading-none"
                   style={{ color: ROLE_COLORS.recruiter.primary }}
                 >
                   •
                 </span>
-                <span className="text-[13px] text-black flex-1">{item}</span>
+                <span className="text-[13px] text-black flex-1 min-w-0 break-all leading-[1.4]">{item}</span>
                 <button
                   type="button"
                   onClick={() => handleRemoveRequirement(index)}
-                  className="text-[#99A0AE] hover:text-[#E63C23] transition-colors opacity-0 group-hover:opacity-100"
+                  className="text-[#99A0AE] hover:text-[#E63C23] transition-colors opacity-100 md:opacity-0 md:group-hover:opacity-100 flex-shrink-0"
                 >
                   <svg
                     width="16"
@@ -354,9 +354,9 @@ export function DescriptionStep({
               </div>
             ))}
             {/* Input for new requirement */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 min-w-0">
               <span
-                className="text-[14px]"
+                className="text-[14px] flex-shrink-0 leading-none"
                 style={{ color: ROLE_COLORS.recruiter.primary }}
               >
                 •
@@ -367,7 +367,7 @@ export function DescriptionStep({
                 value={requirementInput}
                 onChange={(e) => setRequirementInput(e.target.value)}
                 onKeyDown={handleRequirementKeyDown}
-                className="text-[13px] text-black placeholder:text-[#99A0AE] outline-none flex-1 bg-transparent"
+                className="text-[13px] text-black placeholder:text-[#99A0AE] outline-none flex-1 min-w-0 bg-transparent leading-[1.4]"
               />
               <button
                 type="button"
@@ -397,20 +397,20 @@ export function DescriptionStep({
               {errors.tags}
             </span>
           )}
-          <div className="relative">
+          <div className="relative min-w-0">
             <div className="flex flex-wrap gap-2 p-3 border border-[#E1E4EA] rounded-[8px] min-h-[46px]">
               {/* Added tags as pills */}
               {formData.tags.map((tag, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-2 px-3 py-1 border rounded-full"
+                  className="flex items-center gap-2 px-3 py-1 border rounded-full max-w-full"
                   style={{
                     backgroundColor: `${ROLE_COLORS.recruiter.primary}1A`,
                     borderColor: ROLE_COLORS.recruiter.primary,
                   }}
                 >
                   <span
-                    className="text-[12px] font-medium"
+                    className="text-[12px] font-medium truncate"
                     style={{ color: ROLE_COLORS.recruiter.primary }}
                   >
                     {tag}
@@ -418,7 +418,7 @@ export function DescriptionStep({
                   <button
                     type="button"
                     onClick={() => handleRemoveTag(index)}
-                    className="hover:text-[#E63C23] transition-colors"
+                    className="hover:text-[#E63C23] transition-colors p-1 -m-1"
                     style={{ color: ROLE_COLORS.recruiter.primary }}
                   >
                     <svg
@@ -453,7 +453,7 @@ export function DescriptionStep({
                 }}
                 onKeyDown={handleTagsKeyDown}
                 onFocus={() => setShowTagsDropdown(true)}
-                className="flex-1 min-w-[150px] text-[13px] text-black placeholder:text-[#99A0AE] outline-none bg-transparent"
+                className="flex-1 min-w-[100px] text-[13px] text-black placeholder:text-[#99A0AE] outline-none bg-transparent"
               />
             </div>
 
@@ -467,7 +467,7 @@ export function DescriptionStep({
                         key={skill}
                         type="button"
                         onClick={() => handleAddTag(skill)}
-                        className="w-full text-left px-3 py-2 text-[13px] text-black hover:bg-gray-100 transition-colors"
+                        className="w-full text-left px-3 py-3 md:py-2 text-[13px] text-black hover:bg-gray-100 transition-colors min-h-[44px] md:min-h-0"
                       >
                         {skill}
                       </button>
@@ -476,13 +476,13 @@ export function DescriptionStep({
                       <button
                         type="button"
                         onClick={() => handleAddTag(tagsInput)}
-                        className="w-full text-left px-3 py-2 text-[13px] font-medium border-t border-[#E1E4EA] hover:opacity-80"
+                        className="w-full text-left px-3 py-3 md:py-2 text-[13px] font-medium border-t border-[#E1E4EA] hover:opacity-80 min-h-[44px] md:min-h-0"
                         style={{
                           color: ROLE_COLORS.recruiter.primary,
                           backgroundColor: `${ROLE_COLORS.recruiter.primary}0D`,
                         }}
                       >
-                        + Add "{tagsInput}" as custom tag
+                        + Add &quot;{tagsInput}&quot; as custom tag
                       </button>
                     )}
                   </>
@@ -490,13 +490,13 @@ export function DescriptionStep({
                   <button
                     type="button"
                     onClick={() => handleAddTag(tagsInput)}
-                    className="w-full text-left px-3 py-2 text-[13px] font-medium hover:opacity-80"
+                    className="w-full text-left px-3 py-3 md:py-2 text-[13px] font-medium hover:opacity-80 min-h-[44px] md:min-h-0"
                     style={{
                       color: ROLE_COLORS.recruiter.primary,
                       backgroundColor: `${ROLE_COLORS.recruiter.primary}0D`,
                     }}
                   >
-                    + Add "{tagsInput}" as custom tag
+                    + Add &quot;{tagsInput}&quot; as custom tag
                   </button>
                 ) : null}
               </div>
@@ -517,7 +517,7 @@ export function DescriptionStep({
               {errors.tools}
             </span>
           )}
-          <div className="relative overflow-visible">
+          <div className="relative overflow-visible min-w-0">
             <div className="flex flex-wrap gap-2 p-3 border border-[#E1E4EA] rounded-[8px] min-h-[46px]">
               {/* Added tools as pills */}
               {formData.tools.map((tool, index) => {
@@ -525,7 +525,7 @@ export function DescriptionStep({
                 return (
                   <div
                     key={index}
-                    className="flex items-center gap-2 px-2.5 py-1.5 border rounded-full"
+                    className="flex items-center gap-2 px-2.5 py-1.5 border rounded-full max-w-full"
                     style={{
                       backgroundColor: `${ROLE_COLORS.recruiter.primary}1A`,
                       borderColor: ROLE_COLORS.recruiter.primary,
@@ -540,7 +540,7 @@ export function DescriptionStep({
                       }}
                     />
                     <span
-                      className="text-[12px] font-medium"
+                      className="text-[12px] font-medium truncate"
                       style={{ color: ROLE_COLORS.recruiter.primary }}
                     >
                       {tool}
@@ -548,7 +548,7 @@ export function DescriptionStep({
                     <button
                       type="button"
                       onClick={() => handleRemoveTool(index)}
-                      className="hover:text-[#E63C23] transition-colors"
+                      className="hover:text-[#E63C23] transition-colors p-1 -m-1"
                       style={{ color: ROLE_COLORS.recruiter.primary }}
                     >
                       <svg
@@ -584,7 +584,7 @@ export function DescriptionStep({
                 }}
                 onKeyDown={handleToolsKeyDown}
                 onFocus={() => setShowToolsDropdown(true)}
-                className="flex-1 min-w-[150px] text-[13px] text-black placeholder:text-[#99A0AE] outline-none bg-transparent"
+                className="flex-1 min-w-[100px] text-[13px] text-black placeholder:text-[#99A0AE] outline-none bg-transparent"
               />
             </div>
 
@@ -600,7 +600,7 @@ export function DescriptionStep({
                           key={tool}
                           type="button"
                           onClick={() => handleAddTool(tool)}
-                          className="w-full flex items-center gap-3 text-left px-3 py-2.5 text-[13px] text-black hover:bg-gray-100 transition-colors border-b border-gray-50 last:border-b-0"
+                          className="w-full flex items-center gap-3 text-left px-3 py-3 md:py-2.5 text-[13px] text-black hover:bg-gray-100 transition-colors border-b border-gray-50 last:border-b-0 min-h-[44px] md:min-h-0"
                         >
                           <img
                             src={toolInfo.logo}
@@ -611,9 +611,9 @@ export function DescriptionStep({
                                 "none";
                             }}
                           />
-                          <div className="flex-1">
-                            <div className="font-medium">{tool}</div>
-                            <div className="text-[11px] text-gray-500">
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium truncate">{tool}</div>
+                            <div className="text-[11px] text-gray-500 truncate">
                               {toolInfo.category}
                             </div>
                           </div>
@@ -624,13 +624,13 @@ export function DescriptionStep({
                       <button
                         type="button"
                         onClick={() => handleAddTool(toolsInput)}
-                        className="w-full text-left px-3 py-2 text-[13px] font-medium border-t border-[#E1E4EA] hover:opacity-80"
+                        className="w-full text-left px-3 py-3 md:py-2 text-[13px] font-medium border-t border-[#E1E4EA] hover:opacity-80 min-h-[44px] md:min-h-0"
                         style={{
                           color: ROLE_COLORS.recruiter.primary,
                           backgroundColor: `${ROLE_COLORS.recruiter.primary}0D`,
                         }}
                       >
-                        + Add "{toolsInput}" as custom tool
+                        + Add &quot;{toolsInput}&quot; as custom tool
                       </button>
                     )}
                   </>
@@ -638,13 +638,13 @@ export function DescriptionStep({
                   <button
                     type="button"
                     onClick={() => handleAddTool(toolsInput)}
-                    className="w-full text-left px-3 py-2 text-[13px] font-medium hover:opacity-80"
+                    className="w-full text-left px-3 py-3 md:py-2 text-[13px] font-medium hover:opacity-80 min-h-[44px] md:min-h-0"
                     style={{
                       color: ROLE_COLORS.recruiter.primary,
                       backgroundColor: `${ROLE_COLORS.recruiter.primary}0D`,
                     }}
                   >
-                    + Add "{toolsInput}" as custom tool
+                    + Add &quot;{toolsInput}&quot; as custom tool
                   </button>
                 ) : null}
               </div>
@@ -657,7 +657,7 @@ export function DescriptionStep({
       <ResponsiveFormButtons>
         <button
           onClick={handleNext}
-          className="bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors"
+          className="bg-[#181B25] border border-[#181B25] rounded-full font-inter-tight text-[14px] font-normal text-white hover:bg-[#2a2d35] transition-colors px-6 py-3"
         >
           Next
         </button>
