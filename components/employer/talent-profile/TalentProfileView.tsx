@@ -80,23 +80,22 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
       </div>
 
       <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
-
         {/* Left Sidebar - Profile Panel - Stacked on mobile, sidebar on desktop */}
         <TalentProfilePanel
-        profile={profile}
-        onHireClick={() => setIsHireModalOpen(true)}
-        completionPercentage={profile.stats?.completionPercentage || 0}
-        socialLinks={
-          profile.socialLinks
-            ? {
-                telegram: profile.socialLinks.telegram || undefined,
-                twitter: profile.socialLinks.twitter || undefined,
-                instagram: profile.socialLinks.instagram || undefined,
-                linkedin: profile.socialLinks.linkedin || undefined,
-              }
-            : undefined
-        }
-      />
+          profile={profile}
+          onHireClick={() => setIsHireModalOpen(true)}
+          completionPercentage={profile.stats?.completionPercentage || 0}
+          socialLinks={
+            profile.socialLinks
+              ? {
+                  telegram: profile.socialLinks.telegram || undefined,
+                  twitter: profile.socialLinks.twitter || undefined,
+                  instagram: profile.socialLinks.instagram || undefined,
+                  linkedin: profile.socialLinks.linkedin || undefined,
+                }
+              : undefined
+          }
+        />
 
         {/* Main Content Area */}
         <main className="flex-1 flex flex-col bg-white">
@@ -105,174 +104,176 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
 
           {/* Content Section */}
           <div className="flex-1">
-          {/* Portfolio/Works Tab */}
-          {activeTab === "works" && (
-            <TalentWorksGrid
-              gallery={profile.gallery || []}
-              onItemClick={setSelectedWork}
-            />
-          )}
+            {/* Portfolio/Works Tab */}
+            {activeTab === "works" && (
+              <TalentWorksGrid
+                gallery={profile.gallery || []}
+                onItemClick={setSelectedWork}
+              />
+            )}
 
-          {/* Services Tab */}
-          {activeTab === "services" && (
-            <TalentServicesGrid
-              services={profile.services || []}
-              onServiceClick={setSelectedService}
-            />
-          )}
+            {/* Services Tab */}
+            {activeTab === "services" && (
+              <TalentServicesGrid
+                services={profile.services || []}
+                onServiceClick={setSelectedService}
+              />
+            )}
 
-          {/* Recommendations Tab */}
-          {activeTab === "recommendations" && (
-            <TalentRecommendationsGrid
-              recommendations={profile.recommendations || []}
-            />
-          )}
+            {/* Recommendations Tab */}
+            {activeTab === "recommendations" && (
+              <TalentRecommendationsGrid
+                recommendations={profile.recommendations || []}
+              />
+            )}
 
-          {/* About Tab */}
-          {activeTab === "about" && (
-            <div className="flex flex-col gap-7 p-3 md:p-4 lg:p-5 w-full max-w-[700px]">
-              {/* About Section */}
-              {profile.bio && (
+            {/* About Tab */}
+            {activeTab === "about" && (
+              <div className="flex flex-col gap-7 p-3 md:p-4 lg:p-5 w-full max-w-[700px]">
+                {/* About Section */}
+                {profile.bio && (
+                  <div className="flex flex-col gap-4">
+                    <h2 className="text-lg font-semibold text-black font-inter-tight">
+                      About {profile.fullName || "User"}
+                    </h2>
+                    <div className="flex flex-col gap-3 text-[13px] font-normal text-black font-inter-tight leading-[22px]">
+                      {profile.bio.split("\n").map((paragraph, index) => (
+                        <p key={index}>{paragraph}</p>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Professional Details */}
                 <div className="flex flex-col gap-4">
                   <h2 className="text-lg font-semibold text-black font-inter-tight">
-                    About {profile.fullName || "User"}
+                    Professional Details
                   </h2>
-                  <div className="flex flex-col gap-3 text-[13px] font-normal text-black font-inter-tight leading-[22px]">
-                    {profile.bio.split("\n").map((paragraph, index) => (
-                      <p key={index}>{paragraph}</p>
-                    ))}
+                  <div className="flex flex-col gap-2">
+                    {/* Headline */}
+                    {profile.headline && (
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-3 px-3 py-2.5 rounded-[8px] border border-[#E1E4EA]">
+                        <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px]">
+                          Headline
+                        </div>
+                        <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px]">
+                          {profile.headline}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Category */}
+                    {profile.category && (
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-3 px-3 py-2.5 rounded-[8px] border border-[#E1E4EA]">
+                        <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px]">
+                          Category
+                        </div>
+                        <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px]">
+                          {profile.category}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Location */}
+                    {profile.location && (
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-3 px-3 py-2.5 rounded-[8px] border border-[#E1E4EA]">
+                        <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px]">
+                          Location
+                        </div>
+                        <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px]">
+                          {profile.location}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Availability */}
+                    {profile.availability &&
+                      profile.availability.length > 0 && (
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-3 px-3 py-2.5 rounded-[8px] border border-[#E1E4EA]">
+                          <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px]">
+                            Availability
+                          </div>
+                          <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px] text-right">
+                            {profile.availability.join(", ")}
+                          </div>
+                        </div>
+                      )}
+
+                    {/* Member Since */}
+                    {profile.createdAt && (
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-3 px-3 py-2.5 rounded-[8px] border border-[#E1E4EA]">
+                        <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px]">
+                          Member Since
+                        </div>
+                        <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px]">
+                          {new Date(profile.createdAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              month: "long",
+                              year: "numeric",
+                            },
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
-              )}
 
-              {/* Professional Details */}
-              <div className="flex flex-col gap-4">
-                <h2 className="text-lg font-semibold text-black font-inter-tight">
-                  Professional Details
-                </h2>
-                <div className="flex flex-col gap-2">
-                  {/* Headline */}
-                  {profile.headline && (
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-3 px-3 py-2.5 rounded-[8px] border border-[#E1E4EA]">
-                      <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px]">
-                        Headline
-                      </div>
-                      <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px]">
-                        {profile.headline}
+                {/* Work Experience */}
+                {profile.workExperience &&
+                  profile.workExperience.length > 0 && (
+                    <div className="flex flex-col gap-4">
+                      <h2 className="text-lg font-semibold text-black font-inter-tight">
+                        Work Experience
+                      </h2>
+                      <div className="flex flex-col gap-4">
+                        {profile.workExperience.map((exp, idx) => (
+                          <div
+                            key={exp.id || `exp-${idx}`}
+                            className="flex flex-col gap-2 px-3 py-3 rounded-[8px] border border-[#E1E4EA]"
+                          >
+                            <div className="text-[14px] font-semibold text-black font-inter-tight">
+                              {exp.role}
+                            </div>
+                            <div className="text-[13px] font-normal text-black/70 font-inter-tight">
+                              {exp.company}
+                            </div>
+                            <div className="text-[12px] font-normal text-black/50 font-inter-tight">
+                              {exp.duration}
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )}
 
-                  {/* Category */}
-                  {profile.category && (
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-3 px-3 py-2.5 rounded-[8px] border border-[#E1E4EA]">
-                      <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px]">
-                        Category
-                      </div>
-                      <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px]">
-                        {profile.category}
-                      </div>
+                {/* Education */}
+                {profile.education && profile.education.length > 0 && (
+                  <div className="flex flex-col gap-4">
+                    <h2 className="text-lg font-semibold text-black font-inter-tight">
+                      Education
+                    </h2>
+                    <div className="flex flex-col gap-4">
+                      {profile.education.map((edu, idx) => (
+                        <div
+                          key={edu.id || `edu-${idx}`}
+                          className="flex flex-col gap-2 px-3 py-3 rounded-[8px] border border-[#E1E4EA]"
+                        >
+                          <div className="text-[14px] font-semibold text-black font-inter-tight">
+                            {edu.degree}
+                          </div>
+                          <div className="text-[13px] font-normal text-black/70 font-inter-tight">
+                            {edu.institution}
+                          </div>
+                          <div className="text-[12px] font-normal text-black/50 font-inter-tight">
+                            {edu.field}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  )}
-
-                  {/* Location */}
-                  {profile.location && (
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-3 px-3 py-2.5 rounded-[8px] border border-[#E1E4EA]">
-                      <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px]">
-                        Location
-                      </div>
-                      <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px]">
-                        {profile.location}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Availability */}
-                  {profile.availability && profile.availability.length > 0 && (
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-3 px-3 py-2.5 rounded-[8px] border border-[#E1E4EA]">
-                      <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px]">
-                        Availability
-                      </div>
-                      <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px] text-right">
-                        {profile.availability.join(", ")}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Member Since */}
-                  {profile.createdAt && (
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-3 px-3 py-2.5 rounded-[8px] border border-[#E1E4EA]">
-                      <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px]">
-                        Member Since
-                      </div>
-                      <div className="text-[13px] font-normal text-black font-inter-tight leading-[22px]">
-                        {new Date(profile.createdAt).toLocaleDateString(
-                          "en-US",
-                          {
-                            month: "long",
-                            year: "numeric",
-                          },
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
-
-              {/* Work Experience */}
-              {profile.workExperience && profile.workExperience.length > 0 && (
-                <div className="flex flex-col gap-4">
-                  <h2 className="text-lg font-semibold text-black font-inter-tight">
-                    Work Experience
-                  </h2>
-                  <div className="flex flex-col gap-4">
-                    {profile.workExperience.map((exp, idx) => (
-                      <div
-                        key={exp.id || `exp-${idx}`}
-                        className="flex flex-col gap-2 px-3 py-3 rounded-[8px] border border-[#E1E4EA]"
-                      >
-                        <div className="text-[14px] font-semibold text-black font-inter-tight">
-                          {exp.role}
-                        </div>
-                        <div className="text-[13px] font-normal text-black/70 font-inter-tight">
-                          {exp.company}
-                        </div>
-                        <div className="text-[12px] font-normal text-black/50 font-inter-tight">
-                          {exp.duration}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Education */}
-              {profile.education && profile.education.length > 0 && (
-                <div className="flex flex-col gap-4">
-                  <h2 className="text-lg font-semibold text-black font-inter-tight">
-                    Education
-                  </h2>
-                  <div className="flex flex-col gap-4">
-                    {profile.education.map((edu, idx) => (
-                      <div
-                        key={edu.id || `edu-${idx}`}
-                        className="flex flex-col gap-2 px-3 py-3 rounded-[8px] border border-[#E1E4EA]"
-                      >
-                        <div className="text-[14px] font-semibold text-black font-inter-tight">
-                          {edu.degree}
-                        </div>
-                        <div className="text-[13px] font-normal text-black/70 font-inter-tight">
-                          {edu.institution}
-                        </div>
-                        <div className="text-[12px] font-normal text-black/50 font-inter-tight">
-                          {edu.field}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
             )}
           </div>
         </main>

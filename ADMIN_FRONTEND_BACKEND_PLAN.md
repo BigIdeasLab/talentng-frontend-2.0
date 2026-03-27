@@ -1,6 +1,7 @@
 # Admin Frontend Backend API Plan
 
 ## Overview
+
 Backend API requirements for 10 admin frontend pages: Dashboard, Talent, Recruiters, Mentors, Opportunity, Analytics, Broadcast, Logs, Support, Settings.
 
 ---
@@ -8,12 +9,15 @@ Backend API requirements for 10 admin frontend pages: Dashboard, Talent, Recruit
 ## 1. 📊 DASHBOARD PAGE
 
 ### Purpose
+
 Overview of platform health and key metrics at a glance.
 
 ### Must-Have Endpoints
 
 #### `GET /api/v1/admin/dashboard/stats`
+
 **Response**:
+
 ```json
 {
   "users": {
@@ -60,8 +64,10 @@ Overview of platform health and key metrics at a glance.
 ```
 
 #### `GET /api/v1/admin/dashboard/activity`
+
 **Query Params**: `?period=7d|30d|90d`
 **Response**: Recent activity feed
+
 ```json
 {
   "data": [
@@ -78,8 +84,10 @@ Overview of platform health and key metrics at a glance.
 ```
 
 #### `GET /api/v1/admin/dashboard/charts`
+
 **Query Params**: `?period=7d|30d|90d&metric=users|opportunities|applications`
 **Response**: Time-series data for charts
+
 ```json
 {
   "labels": ["Jan 1", "Jan 2", "Jan 3"],
@@ -97,12 +105,15 @@ Overview of platform health and key metrics at a glance.
 ## 2. 👤 TALENT PAGE
 
 ### Purpose
+
 Manage all talent users, view profiles, suspend/ban, search and filter.
 
 ### Must-Have Endpoints
 
 #### `GET /api/v1/admin/talents`
-**Query Params**: 
+
+**Query Params**:
+
 - `q` (search by name/email/username)
 - `status` (active|suspended|banned)
 - `isVerified` (true|false)
@@ -111,6 +122,7 @@ Manage all talent users, view profiles, suspend/ban, search and filter.
 - `sortOrder` (asc|desc)
 
 **Response**:
+
 ```json
 {
   "data": [
@@ -141,7 +153,9 @@ Manage all talent users, view profiles, suspend/ban, search and filter.
 ```
 
 #### `GET /api/v1/admin/talents/:id`
+
 **Response**: Detailed talent profile
+
 ```json
 {
   "id": "uuid",
@@ -179,12 +193,13 @@ Manage all talent users, view profiles, suspend/ban, search and filter.
 }
 ```
 
-
 #### `PATCH /api/v1/admin/talents/:id/status`
+
 **Body**: `{ "status": "active|suspended|banned", "reason": "string" }`
 **Response**: Updated user
 
 #### `DELETE /api/v1/admin/talents/:id`
+
 **Response**: 204 No Content (soft delete)
 
 ---
@@ -192,12 +207,15 @@ Manage all talent users, view profiles, suspend/ban, search and filter.
 ## 3. 🏢 RECRUITERS PAGE
 
 ### Purpose
+
 Manage recruiter accounts, view companies, monitor job postings, track earnings.
 
 ### Must-Have Endpoints
 
 #### `GET /api/v1/admin/recruiters`
-**Query Params**: 
+
+**Query Params**:
+
 - `q` (search by company/email)
 - `status` (active|suspended|banned)
 - `companySize` (startup|small|medium|large)
@@ -205,6 +223,7 @@ Manage recruiter accounts, view companies, monitor job postings, track earnings.
 - `limit`, `offset`
 
 **Response**:
+
 ```json
 {
   "data": [
@@ -235,16 +254,20 @@ Manage recruiter accounts, view companies, monitor job postings, track earnings.
 ```
 
 #### `GET /api/v1/admin/recruiters/:id`
+
 **Response**: Detailed recruiter profile with opportunities and earnings
 
 #### `GET /api/v1/admin/recruiters/:id/opportunities`
+
 **Response**: All opportunities posted by recruiter
 
 #### `GET /api/v1/admin/recruiters/:id/earnings`
+
 **Query Params**: `?startDate=2024-01-01&endDate=2024-01-31`
 **Response**: Earnings breakdown
 
 #### `PATCH /api/v1/admin/recruiters/:id/status`
+
 **Body**: `{ "status": "active|suspended|banned", "reason": "string" }`
 
 ---
@@ -252,12 +275,15 @@ Manage recruiter accounts, view companies, monitor job postings, track earnings.
 ## 4. 🎓 MENTORS PAGE
 
 ### Purpose
+
 Manage mentors, view sessions, ratings, suspend low-rated mentors.
 
 ### Must-Have Endpoints
 
 #### `GET /api/v1/admin/mentors`
-**Query Params**: 
+
+**Query Params**:
+
 - `q` (search by name/expertise)
 - `status` (active|suspended|banned)
 - `minRating` (1-5)
@@ -265,6 +291,7 @@ Manage mentors, view sessions, ratings, suspend low-rated mentors.
 - `limit`, `offset`
 
 **Response**:
+
 ```json
 {
   "data": [
@@ -295,19 +322,24 @@ Manage mentors, view sessions, ratings, suspend low-rated mentors.
 ```
 
 #### `GET /api/v1/admin/mentors/:id`
+
 **Response**: Detailed mentor profile
 
 #### `GET /api/v1/admin/mentors/:id/sessions`
+
 **Query Params**: `?status=completed|upcoming|cancelled&limit&offset`
 **Response**: Session history with ratings
 
 #### `GET /api/v1/admin/mentors/:id/reviews`
+
 **Response**: All reviews/ratings for mentor
 
 #### `PATCH /api/v1/admin/mentors/:id/visibility`
+
 **Body**: `{ "visibility": "public|private" }`
 
 #### `PATCH /api/v1/admin/mentors/:id/status`
+
 **Body**: `{ "status": "active|suspended|banned", "reason": "string" }`
 
 ---
@@ -315,12 +347,15 @@ Manage mentors, view sessions, ratings, suspend low-rated mentors.
 ## 5. 💼 OPPORTUNITY PAGE
 
 ### Purpose
+
 Manage all job opportunities, approve/reject, flag inappropriate, view applicants.
 
 ### Must-Have Endpoints
 
 #### `GET /api/v1/admin/opportunities`
-**Query Params**: 
+
+**Query Params**:
+
 - `q` (search by title/company)
 - `status` (active|draft|closed|flagged)
 - `type` (job|gig|internship)
@@ -328,6 +363,7 @@ Manage all job opportunities, approve/reject, flag inappropriate, view applicant
 - `limit`, `offset`
 
 **Response**:
+
 ```json
 {
   "data": [
@@ -358,15 +394,19 @@ Manage all job opportunities, approve/reject, flag inappropriate, view applicant
 ```
 
 #### `GET /api/v1/admin/opportunities/:id`
+
 **Response**: Full opportunity details with applicants
 
 #### `PATCH /api/v1/admin/opportunities/:id/status`
+
 **Body**: `{ "status": "active|closed|flagged", "reason": "string" }`
 
 #### `POST /api/v1/admin/opportunities/:id/flag`
+
 **Body**: `{ "reason": "inappropriate|spam|misleading", "notes": "string" }`
 
 #### `DELETE /api/v1/admin/opportunities/:id`
+
 **Response**: 204 No Content (soft delete)
 
 ---
@@ -374,13 +414,16 @@ Manage all job opportunities, approve/reject, flag inappropriate, view applicant
 ## 6. 📈 ANALYTICS PAGE
 
 ### Purpose
+
 Platform-wide analytics, trends, growth metrics, export reports.
 
 ### Must-Have Endpoints
 
 #### `GET /api/v1/admin/analytics/overview`
+
 **Query Params**: `?startDate=2024-01-01&endDate=2024-01-31`
 **Response**:
+
 ```json
 {
   "period": {
@@ -427,16 +470,20 @@ Platform-wide analytics, trends, growth metrics, export reports.
 ```
 
 #### `GET /api/v1/admin/analytics/trends`
+
 **Query Params**: `?metric=users|opportunities|applications&period=7d|30d|90d`
 **Response**: Time-series data for trend charts
 
 #### `GET /api/v1/admin/analytics/retention`
+
 **Response**: User retention cohort analysis
 
 #### `GET /api/v1/admin/analytics/churn`
+
 **Response**: Churn rate and reasons
 
 #### `POST /api/v1/admin/analytics/export`
+
 **Body**: `{ "reportType": "users|opportunities|revenue", "format": "csv|pdf", "startDate": "...", "endDate": "..." }`
 **Response**: Download URL or file stream
 
@@ -445,13 +492,16 @@ Platform-wide analytics, trends, growth metrics, export reports.
 ## 7. 📢 BROADCAST PAGE
 
 ### Purpose
+
 Send platform-wide or targeted announcements to users.
 
 ### Must-Have Endpoints
 
 #### `GET /api/v1/admin/broadcasts`
+
 **Query Params**: `?status=draft|sent|scheduled&limit&offset`
 **Response**:
+
 ```json
 {
   "data": [
@@ -476,7 +526,9 @@ Send platform-wide or targeted announcements to users.
 ```
 
 #### `POST /api/v1/admin/broadcasts`
+
 **Body**:
+
 ```json
 {
   "title": "string",
@@ -488,9 +540,11 @@ Send platform-wide or targeted announcements to users.
 ```
 
 #### `GET /api/v1/admin/broadcasts/:id`
+
 **Response**: Broadcast details with delivery stats
 
 #### `DELETE /api/v1/admin/broadcasts/:id`
+
 **Response**: 204 (only for drafts/scheduled)
 
 ---
@@ -498,12 +552,15 @@ Send platform-wide or targeted announcements to users.
 ## 8. 📋 LOGS PAGE
 
 ### Purpose
+
 View all admin actions, audit trail, system events.
 
 ### Must-Have Endpoints
 
 #### `GET /api/v1/admin/audit-logs`
-**Query Params**: 
+
+**Query Params**:
+
 - `action` (user.suspend|opportunity.delete|etc)
 - `performedBy` (admin ID)
 - `entityType` (users|opportunities|applications)
@@ -511,6 +568,7 @@ View all admin actions, audit trail, system events.
 - `limit`, `offset`
 
 **Response**:
+
 ```json
 {
   "data": [
@@ -541,6 +599,7 @@ View all admin actions, audit trail, system events.
 ```
 
 #### `GET /api/v1/admin/audit-logs/export`
+
 **Query Params**: Same as above + `format=csv|pdf`
 **Response**: Download file
 
@@ -549,12 +608,15 @@ View all admin actions, audit trail, system events.
 ## 9. 🎫 SUPPORT PAGE
 
 ### Purpose
+
 Manage user support tickets, assign, resolve issues.
 
 ### Must-Have Endpoints
 
 #### `GET /api/v1/admin/support/tickets`
-**Query Params**: 
+
+**Query Params**:
+
 - `status` (open|in_progress|resolved|closed)
 - `priority` (low|medium|high|urgent)
 - `assignedTo` (admin ID)
@@ -562,6 +624,7 @@ Manage user support tickets, assign, resolve issues.
 - `limit`, `offset`
 
 **Response**:
+
 ```json
 {
   "data": [
@@ -590,10 +653,13 @@ Manage user support tickets, assign, resolve issues.
 ```
 
 #### `GET /api/v1/admin/support/tickets/:id`
+
 **Response**: Full ticket details with conversation history
 
 #### `POST /api/v1/admin/support/tickets`
+
 **Body**: Create ticket on behalf of user
+
 ```json
 {
   "userId": "uuid",
@@ -605,7 +671,9 @@ Manage user support tickets, assign, resolve issues.
 ```
 
 #### `PATCH /api/v1/admin/support/tickets/:id`
+
 **Body**: Update ticket
+
 ```json
 {
   "status": "open|in_progress|resolved|closed",
@@ -615,7 +683,9 @@ Manage user support tickets, assign, resolve issues.
 ```
 
 #### `POST /api/v1/admin/support/tickets/:id/reply`
+
 **Body**: Add reply to ticket
+
 ```json
 {
   "message": "string",
@@ -624,7 +694,9 @@ Manage user support tickets, assign, resolve issues.
 ```
 
 #### `GET /api/v1/admin/support/stats`
+
 **Response**: Support metrics
+
 ```json
 {
   "openTickets": 45,
@@ -644,12 +716,15 @@ Manage user support tickets, assign, resolve issues.
 ## 10. ⚙️ SETTINGS PAGE
 
 ### Purpose
+
 Platform configuration, admin user management, system settings.
 
 ### Must-Have Endpoints
 
 #### `GET /api/v1/admin/settings/admins`
+
 **Response**: List of all admin users
+
 ```json
 {
   "data": [
@@ -668,7 +743,9 @@ Platform configuration, admin user management, system settings.
 ```
 
 #### `POST /api/v1/admin/settings/admins`
+
 **Body**: Create new admin
+
 ```json
 {
   "email": "string",
@@ -680,13 +757,17 @@ Platform configuration, admin user management, system settings.
 ```
 
 #### `PATCH /api/v1/admin/settings/admins/:id`
+
 **Body**: Update admin permissions/status
 
 #### `DELETE /api/v1/admin/settings/admins/:id`
+
 **Response**: 204 (cannot delete self)
 
 #### `GET /api/v1/admin/settings/platform`
+
 **Response**: Platform configuration
+
 ```json
 {
   "maintenance": {
@@ -706,6 +787,7 @@ Platform configuration, admin user management, system settings.
 ```
 
 #### `PATCH /api/v1/admin/settings/platform`
+
 **Body**: Update platform settings
 
 ---
@@ -713,6 +795,7 @@ Platform configuration, admin user management, system settings.
 ## 📊 IMPLEMENTATION PRIORITY
 
 ### Phase 1: Core Operations (Week 1-2)
+
 1. ✅ Dashboard stats endpoint
 2. ✅ Talent management (list, view, suspend)
 3. ✅ Recruiter management (list, view, suspend)
@@ -720,12 +803,14 @@ Platform configuration, admin user management, system settings.
 5. ✅ Audit logs (view only)
 
 ### Phase 2: Advanced Features (Week 3-4)
+
 6. ✅ Mentor management
 7. ✅ Analytics overview
 8. ✅ Support ticketing system
 9. ✅ Broadcast system
 
 ### Phase 3: Polish & Optimization (Week 5)
+
 10. ✅ Settings & admin management
 11. ✅ Export functionality
 12. ✅ Advanced analytics
@@ -736,6 +821,7 @@ Platform configuration, admin user management, system settings.
 ## 🔑 KEY TECHNICAL REQUIREMENTS
 
 ### All Endpoints Must Have:
+
 - ✅ JWT authentication with admin role check
 - ✅ Pagination (limit, offset, total, currentPage, totalPages, hasNextPage, hasPreviousPage)
 - ✅ Audit logging for all write operations
@@ -744,12 +830,14 @@ Platform configuration, admin user management, system settings.
 - ✅ Rate limiting
 
 ### Performance Considerations:
+
 - Dashboard stats should be cached (5-minute TTL)
 - Analytics queries should use database indexes
 - Large exports should be async with download links
 - Real-time data should use WebSockets or polling
 
 ### Security:
+
 - All endpoints require admin role
 - Sensitive operations (delete, ban) require additional confirmation
 - Audit logs are immutable
@@ -764,7 +852,6 @@ Platform configuration, admin user management, system settings.
 3. Create API documentation (Swagger/OpenAPI)
 4. Begin Phase 1 implementation
 5. Set up monitoring and logging
-
 
 ---
 
@@ -832,4 +919,3 @@ Platform configuration, admin user management, system settings.
 
 29. Settings Backend: Implement GET /api/v1/admin/settings/admins, POST /admins, PATCH /admins/:id, DELETE /admins/:id, GET /settings/platform, PATCH /settings/platform.
 30. Settings Frontend: Build AdminUsersTable, CreateAdminModal, EditAdminModal, delete dialog, and PlatformSettings component with maintenance mode/feature toggles/limits.
-

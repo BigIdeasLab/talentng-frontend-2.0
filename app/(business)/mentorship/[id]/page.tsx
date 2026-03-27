@@ -334,132 +334,133 @@ export default function MentorDetailPage() {
 
                   {/* Details Container */}
                   <div className="flex flex-col items-start gap-[10px] w-full">
-                  {/* Average Rating */}
-                  <div className="flex justify-between items-center w-full">
-                    <div className="flex items-center gap-1.5">
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 22 22"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M11 1.83L13.09 8.26H19.92L14.42 12.24L16.51 18.67L11 14.69L5.49 18.67L7.58 12.24L2.08 8.26H8.91L11 1.83Z"
-                          fill="#FFD700"
-                          stroke="#FFD700"
-                          strokeWidth="1"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      <span className="text-[12px] font-normal text-black font-inter-tight">
-                        {mentor.rating && Number(mentor.rating) > 0
-                          ? Number(mentor.rating).toFixed(1)
-                          : "N/A"}{" "}
-                        Rating
-                      </span>
+                    {/* Average Rating */}
+                    <div className="flex justify-between items-center w-full">
+                      <div className="flex items-center gap-1.5">
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 22 22"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M11 1.83L13.09 8.26H19.92L14.42 12.24L16.51 18.67L11 14.69L5.49 18.67L7.58 12.24L2.08 8.26H8.91L11 1.83Z"
+                            fill="#FFD700"
+                            stroke="#FFD700"
+                            strokeWidth="1"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        <span className="text-[12px] font-normal text-black font-inter-tight">
+                          {mentor.rating && Number(mentor.rating) > 0
+                            ? Number(mentor.rating).toFixed(1)
+                            : "N/A"}{" "}
+                          Rating
+                        </span>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Sessions completed */}
-                  <div className="flex justify-between items-center w-full">
-                    <div className="flex items-center gap-1.5">
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 22 22"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M2.29166 12.6807L5.49999 16.0418L6.43867 15.0584M15.125 5.9585L9.56724 11.7809"
-                          stroke="#525866"
-                          strokeWidth="1.375"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M6.875 12.6807L10.0833 16.0418L19.7083 5.9585"
-                          stroke="#525866"
-                          strokeWidth="1.375"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      <span className="text-[12px] font-normal text-black font-inter-tight">
-                        {mentor.totalSessions} Session Completed
-                      </span>
+                    {/* Sessions completed */}
+                    <div className="flex justify-between items-center w-full">
+                      <div className="flex items-center gap-1.5">
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 22 22"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M2.29166 12.6807L5.49999 16.0418L6.43867 15.0584M15.125 5.9585L9.56724 11.7809"
+                            stroke="#525866"
+                            strokeWidth="1.375"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M6.875 12.6807L10.0833 16.0418L19.7083 5.9585"
+                            stroke="#525866"
+                            strokeWidth="1.375"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        <span className="text-[12px] font-normal text-black font-inter-tight">
+                          {mentor.totalSessions} Session Completed
+                        </span>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Session Duration */}
-                  <div className="flex justify-between items-center w-full">
-                    <div className="flex items-center gap-1.5">
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 22 22"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M11 7.33301V10.9997L13.2917 13.2913"
-                          stroke="#525866"
-                          strokeWidth="1.375"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M20.1667 11.0002C20.1667 16.0627 16.0626 20.1668 11 20.1668C5.9374 20.1668 1.83334 16.0627 1.83334 11.0002C1.83334 5.93755 5.9374 1.8335 11 1.8335C16.0626 1.8335 20.1667 5.93755 20.1667 11.0002Z"
-                          stroke="#525866"
-                          strokeWidth="1.375"
-                        />
-                      </svg>
-                      <span className="text-[12px] font-normal text-black font-inter-tight">
-                        {mentor.sessionDuration} min / session
-                      </span>
+                    {/* Session Duration */}
+                    <div className="flex justify-between items-center w-full">
+                      <div className="flex items-center gap-1.5">
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 22 22"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M11 7.33301V10.9997L13.2917 13.2913"
+                            stroke="#525866"
+                            strokeWidth="1.375"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M20.1667 11.0002C20.1667 16.0627 16.0626 20.1668 11 20.1668C5.9374 20.1668 1.83334 16.0627 1.83334 11.0002C1.83334 5.93755 5.9374 1.8335 11 1.8335C16.0626 1.8335 20.1667 5.93755 20.1667 11.0002Z"
+                            stroke="#525866"
+                            strokeWidth="1.375"
+                          />
+                        </svg>
+                        <span className="text-[12px] font-normal text-black font-inter-tight">
+                          {mentor.sessionDuration} min / session
+                        </span>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Mentoring time */}
-                  <div className="flex justify-between items-center w-full">
-                    <div className="flex items-center gap-1.5">
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 22 22"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M7.67767 2.75C7.48159 2.82327 7.28875 2.90319 7.09942 2.98949M18.9911 14.9427C19.0848 14.7399 19.1712 14.533 19.2499 14.3225M16.9571 17.751C17.1145 17.604 17.2667 17.4516 17.4132 17.2938M13.9964 19.5913C14.1743 19.5242 14.3495 19.4517 14.5218 19.3738M11.1429 20.1611C10.9313 20.1684 10.7181 20.1684 10.5064 20.1611M7.13828 19.3787C7.30401 19.4532 7.47242 19.523 7.6433 19.5876M4.28308 17.3441C4.40838 17.4769 4.53767 17.6059 4.67078 17.7309M2.41322 14.3591C2.48186 14.5404 2.55619 14.7188 2.63599 14.8943M1.8378 11.4632C1.83185 11.2724 1.83187 11.0805 1.8378 10.8895M2.40657 8.00904C2.474 7.82985 2.547 7.65337 2.62533 7.47982M4.26793 5.02263C4.40053 4.88138 4.53764 4.74442 4.67903 4.61197"
-                          stroke="#525866"
-                          strokeWidth="1.375"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M12.375 11C12.375 11.7594 11.7594 12.375 11 12.375C10.2406 12.375 9.625 11.7594 9.625 11C9.625 10.2406 10.2406 9.625 11 9.625M12.375 11C12.375 10.2406 11.7594 9.625 11 9.625M12.375 11H14.6667M11 9.625V5.5"
-                          stroke="#525866"
-                          strokeWidth="1.375"
-                          strokeLinecap="round"
-                        />
-                        <path
-                          d="M20.1667 11.0002C20.1667 5.93755 16.0626 1.8335 11 1.8335"
-                          stroke="#525866"
-                          strokeWidth="1.375"
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                      <span className="text-[12px] font-normal text-black font-inter-tight">
-                        {Math.round(
-                          (mentor.totalSessions * mentor.sessionDuration) / 60,
-                        )}
-                        h mentoring time
-                      </span>
+                    {/* Mentoring time */}
+                    <div className="flex justify-between items-center w-full">
+                      <div className="flex items-center gap-1.5">
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 22 22"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M7.67767 2.75C7.48159 2.82327 7.28875 2.90319 7.09942 2.98949M18.9911 14.9427C19.0848 14.7399 19.1712 14.533 19.2499 14.3225M16.9571 17.751C17.1145 17.604 17.2667 17.4516 17.4132 17.2938M13.9964 19.5913C14.1743 19.5242 14.3495 19.4517 14.5218 19.3738M11.1429 20.1611C10.9313 20.1684 10.7181 20.1684 10.5064 20.1611M7.13828 19.3787C7.30401 19.4532 7.47242 19.523 7.6433 19.5876M4.28308 17.3441C4.40838 17.4769 4.53767 17.6059 4.67078 17.7309M2.41322 14.3591C2.48186 14.5404 2.55619 14.7188 2.63599 14.8943M1.8378 11.4632C1.83185 11.2724 1.83187 11.0805 1.8378 10.8895M2.40657 8.00904C2.474 7.82985 2.547 7.65337 2.62533 7.47982M4.26793 5.02263C4.40053 4.88138 4.53764 4.74442 4.67903 4.61197"
+                            stroke="#525866"
+                            strokeWidth="1.375"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M12.375 11C12.375 11.7594 11.7594 12.375 11 12.375C10.2406 12.375 9.625 11.7594 9.625 11C9.625 10.2406 10.2406 9.625 11 9.625M12.375 11C12.375 10.2406 11.7594 9.625 11 9.625M12.375 11H14.6667M11 9.625V5.5"
+                            stroke="#525866"
+                            strokeWidth="1.375"
+                            strokeLinecap="round"
+                          />
+                          <path
+                            d="M20.1667 11.0002C20.1667 5.93755 16.0626 1.8335 11 1.8335"
+                            stroke="#525866"
+                            strokeWidth="1.375"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                        <span className="text-[12px] font-normal text-black font-inter-tight">
+                          {Math.round(
+                            (mentor.totalSessions * mentor.sessionDuration) /
+                              60,
+                          )}
+                          h mentoring time
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
                 </div>
               </div>
 
@@ -641,40 +642,15 @@ export default function MentorDetailPage() {
                         return url;
                       })
                       .map((social) => {
-                      const url =
-                        mentor.links?.[social.key] ||
-                        mentor.links?.[social.key.toLowerCase()];
-                      return (
-                        <div
-                          key={social.key}
-                          className="flex justify-between items-center w-full"
-                        >
-                          <div className="flex items-center gap-[6px]">
-                            <svg
-                              width="18"
-                              height="18"
-                              viewBox="0 0 22 22"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d={social.icon}
-                                stroke="#525866"
-                                strokeWidth="1.375"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                            <span className="text-[12px] font-normal text-black font-inter-tight">
-                              {social.label}
-                            </span>
-                          </div>
-                          {url && (
-                            <Link
-                              href={url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
+                        const url =
+                          mentor.links?.[social.key] ||
+                          mentor.links?.[social.key.toLowerCase()];
+                        return (
+                          <div
+                            key={social.key}
+                            className="flex justify-between items-center w-full"
+                          >
+                            <div className="flex items-center gap-[6px]">
                               <svg
                                 width="18"
                                 height="18"
@@ -683,25 +659,50 @@ export default function MentorDetailPage() {
                                 xmlns="http://www.w3.org/2000/svg"
                               >
                                 <path
-                                  d="M10.1739 2.75C6.82897 2.75602 5.0774 2.83816 3.95801 3.95773C2.75 5.16593 2.75 7.11051 2.75 10.9996C2.75 14.8888 2.75 16.8334 3.95801 18.0415C5.16601 19.2498 7.11028 19.2498 10.9989 19.2498C14.8873 19.2498 16.8316 19.2498 18.0396 18.0415C19.1589 16.922 19.2411 15.1701 19.2471 11.8247"
-                                  stroke="#525866"
-                                  strokeWidth="1.375"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                                <path
-                                  d="M18.8431 3.20458L10.1281 11.9702M18.8431 3.20458C18.3903 2.75119 15.3399 2.79345 14.695 2.80262M18.8431 3.20458C19.296 3.65798 19.2537 6.71231 19.2445 7.35802"
+                                  d={social.icon}
                                   stroke="#525866"
                                   strokeWidth="1.375"
                                   strokeLinecap="round"
                                   strokeLinejoin="round"
                                 />
                               </svg>
-                            </Link>
-                          )}
-                        </div>
-                      );
-                    })}
+                              <span className="text-[12px] font-normal text-black font-inter-tight">
+                                {social.label}
+                              </span>
+                            </div>
+                            {url && (
+                              <Link
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <svg
+                                  width="18"
+                                  height="18"
+                                  viewBox="0 0 22 22"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M10.1739 2.75C6.82897 2.75602 5.0774 2.83816 3.95801 3.95773C2.75 5.16593 2.75 7.11051 2.75 10.9996C2.75 14.8888 2.75 16.8334 3.95801 18.0415C5.16601 19.2498 7.11028 19.2498 10.9989 19.2498C14.8873 19.2498 16.8316 19.2498 18.0396 18.0415C19.1589 16.922 19.2411 15.1701 19.2471 11.8247"
+                                    stroke="#525866"
+                                    strokeWidth="1.375"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                  <path
+                                    d="M18.8431 3.20458L10.1281 11.9702M18.8431 3.20458C18.3903 2.75119 15.3399 2.79345 14.695 2.80262M18.8431 3.20458C19.296 3.65798 19.2537 6.71231 19.2445 7.35802"
+                                    stroke="#525866"
+                                    strokeWidth="1.375"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                              </Link>
+                            )}
+                          </div>
+                        );
+                      })}
                   </div>
                 </div>
               )}
