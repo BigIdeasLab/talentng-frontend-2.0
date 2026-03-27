@@ -12,6 +12,8 @@ import {
   Settings,
   FileText,
   Calendar,
+  Search,
+  Clock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ProfileSwitcher } from "@/components/layouts/ProfileSwitcher";
@@ -28,6 +30,7 @@ interface MobileNavigationProps {
   onNotificationClick?: () => void;
   notificationCount?: number;
   upcomingCount?: number;
+  applicantsCount?: number;
   onClose?: () => void;
 }
 
@@ -85,6 +88,7 @@ const getTalentMenuItems = (
 const getRecruiterMenuItems = (
   notificationCount?: number,
   upcomingCount?: number,
+  applicantsCount?: number,
 ): MenuItem[] => [
   {
     id: "dashboard",
@@ -93,21 +97,34 @@ const getRecruiterMenuItems = (
     href: "/dashboard",
   },
   {
-    id: "opportunities",
-    label: "Opportunities",
+    id: "discover-talent",
+    label: "Discover Talent",
+    icon: <Search className="w-5 h-5" strokeWidth={1.25} />,
+    href: "/discover-talent",
+  },
+  {
+    id: "create-opportunities",
+    label: "Create Opportunities",
     icon: <Briefcase className="w-5 h-5" strokeWidth={1.25} />,
     href: "/opportunities",
   },
   {
-    id: "calendar",
-    label: "Calendar",
+    id: "applicants",
+    label: "Applicants",
+    icon: <Users className="w-5 h-5" strokeWidth={1.25} />,
+    href: "/applicants",
+    badge: applicantsCount,
+  },
+  {
+    id: "interviews",
+    label: "Interviews",
     icon: <Calendar className="w-5 h-5" strokeWidth={1.25} />,
+    href: "/interviews",
     badge: upcomingCount,
-    href: "/calendar",
   },
   {
     id: "notification",
-    label: "Notification",
+    label: "Notifications",
     icon: <Bell className="w-5 h-5" strokeWidth={1.25} />,
     badge: notificationCount,
   },
@@ -124,21 +141,27 @@ const getMentorMenuItems = (
     href: "/dashboard",
   },
   {
-    id: "mentorship",
-    label: "Mentorship",
-    icon: <Users className="w-5 h-5" strokeWidth={1.25} />,
-    href: "/mentorship",
+    id: "application",
+    label: "Applications",
+    icon: <FileText className="w-5 h-5" strokeWidth={1.25} />,
+    href: "/applications",
   },
   {
-    id: "calendar",
-    label: "Calendar",
+    id: "availability",
+    label: "Availability",
+    icon: <Clock className="w-5 h-5" strokeWidth={1.25} />,
+    href: "/availability",
+  },
+  {
+    id: "session-management",
+    label: "Sessions",
     icon: <Calendar className="w-5 h-5" strokeWidth={1.25} />,
+    href: "/sessions",
     badge: upcomingCount,
-    href: "/calendar",
   },
   {
     id: "notification",
-    label: "Notification",
+    label: "Notifications",
     icon: <Bell className="w-5 h-5" strokeWidth={1.25} />,
     badge: notificationCount,
   },
@@ -169,13 +192,14 @@ export function MobileNavigation({
   onNotificationClick,
   notificationCount = 0,
   upcomingCount = 0,
+  applicantsCount = 0,
   onClose,
 }: MobileNavigationProps) {
   const pathname = usePathname();
 
   const menuItems =
     activeRole === "recruiter"
-      ? getRecruiterMenuItems(notificationCount, upcomingCount)
+      ? getRecruiterMenuItems(notificationCount, upcomingCount, applicantsCount)
       : activeRole === "mentor"
         ? getMentorMenuItems(notificationCount, upcomingCount)
         : getTalentMenuItems(notificationCount, upcomingCount);
@@ -253,11 +277,11 @@ export function MobileNavigation({
 
             return (
               <PrefetchOnInteraction
+                key={item.id}
                 href={item.href}
                 config={{ enableOnMobile: true, delay: 0 }}
               >
                 <Link
-                  key={item.id}
                   href={item.href}
                   onClick={() => handleItemClick(item)}
                   className={cn(
@@ -333,11 +357,11 @@ export function MobileNavigation({
 
               return (
                 <PrefetchOnInteraction
+                  key={item.id}
                   href={item.href}
                   config={{ enableOnMobile: true, delay: 0 }}
                 >
                   <Link
-                    key={item.id}
                     href={item.href}
                     onClick={() => handleItemClick(item)}
                     className={cn(

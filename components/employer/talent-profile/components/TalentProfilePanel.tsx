@@ -29,10 +29,11 @@ export function TalentProfilePanel({
   const stackRemaining = Math.max(0, (profile.stack?.length || 0) - 5);
 
   return (
-    <div className="w-full lg:w-[350px] flex flex-col bg-white lg:border-r border-[#E1E4EA] px-[25px] py-[15px] overflow-y-auto lg:h-screen scrollbar-hide">
+    <div className="w-full lg:w-[350px] flex-shrink-0 lg:border-r border-[#E1E4EA] bg-white flex flex-col lg:overflow-hidden">
+      <div className="flex-1 lg:overflow-y-auto scrollbar-hidden px-[25px] py-[15px]">
       {/* User Profile Section */}
       <div className="flex flex-col items-center gap-[20px]">
-        {/* Profile Picture with Completion Badge */}
+        {/* Profile Picture */}
         <div className="relative w-[110px] h-[110px]">
           <img
             src={(() => {
@@ -42,50 +43,8 @@ export function TalentProfilePanel({
                 : "/default.png";
             })()}
             alt={profile.fullName || "Profile"}
-            className="w-full h-full object-cover rounded-full p-2"
+            className="w-full h-full object-cover rounded-full"
           />
-          <svg
-            width="110"
-            height="110"
-            viewBox="0 0 110 110"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="absolute inset-0 w-full h-full pointer-events-none z-10"
-          >
-            <circle
-              cx="55"
-              cy="55"
-              r="54"
-              stroke="#E63C23"
-              strokeWidth="2"
-              strokeOpacity="0.2"
-            />
-            <path
-              d="M55 1C62.0914 1 69.1133 2.39675 75.6649 5.1105C82.2165 7.82426 88.1694 11.8019 93.1838 16.8162C98.1981 21.8306 102.176 27.7835 104.889 34.3351C107.603 40.8867 109 47.9086 109 55"
-              stroke="#E63C23"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <rect
-              x="90"
-              y="15"
-              width="28"
-              height="15"
-              rx="7.5"
-              fill="#E63C23"
-            />
-            <text
-              x="104"
-              y="26.2754"
-              fill="white"
-              fontSize="10"
-              fontFamily="Inter Tight"
-              textAnchor="middle"
-              dominantBaseline="middle"
-            >
-              {completionPercentage}%
-            </text>
-          </svg>
         </div>
 
         {/* User Info */}
@@ -159,7 +118,7 @@ export function TalentProfilePanel({
       {/* Hire Button - Touch-friendly with 44px minimum height */}
       <button
         onClick={onHireClick}
-        className="w-full mt-[20px] px-6 py-3 min-h-[44px] rounded-full bg-[#1A1D2E] hover:bg-[#252A3E] transition-colors text-white text-[14px] font-medium font-inter-tight flex items-center justify-center gap-2"
+        className="w-full mt-[20px] px-6 py-3 min-h-[44px] rounded-full bg-[#181B25] hover:bg-[#2a2f3a] transition-colors text-white text-[14px] font-medium font-inter-tight flex items-center justify-center gap-2"
       >
         <svg
           width="20"
@@ -241,7 +200,7 @@ export function TalentProfilePanel({
       )}
 
       {/* Social Links Section */}
-      {socialLinks && (
+      {socialLinks && Object.values(socialLinks).some(Boolean) && (
         <div className="mt-[20px] flex flex-col items-start gap-[12px] flex-shrink-0">
           <h3 className="text-[12px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
             Social Links
@@ -252,7 +211,9 @@ export function TalentProfilePanel({
               { name: "X", icon: "𝕏", url: socialLinks?.twitter },
               { name: "Instagram", icon: "📷", url: socialLinks?.instagram },
               { name: "LinkedIn", icon: "in", url: socialLinks?.linkedin },
-            ].map((social, idx) => (
+            ]
+              .filter((social): social is { name: string; icon: string; url: string } => !!social.url)
+              .map((social, idx) => (
               <div
                 key={idx}
                 className="flex justify-between items-center w-full"
@@ -263,8 +224,10 @@ export function TalentProfilePanel({
                   </span>
                 </div>
                 <Link
-                  href={social.url || "#"}
-                  className="text-[#525866] hover:text-black transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#525866] hover:text-black transition-colors"
                 >
                   <svg
                     width="18"
@@ -295,6 +258,7 @@ export function TalentProfilePanel({
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

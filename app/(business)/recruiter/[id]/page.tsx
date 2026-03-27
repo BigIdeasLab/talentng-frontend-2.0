@@ -188,7 +188,7 @@ export default function RecruiterProfilePage() {
   const socialLinks = profile.links as Record<string, string> | null;
 
   return (
-    <div className="flex flex-col h-screen bg-white overflow-hidden">
+    <div className="h-screen bg-white flex flex-col overflow-hidden">
       {/* Header */}
       <div className="flex-shrink-0 px-5 py-3 border-b border-[#E1E4EA] flex items-center justify-between">
         <h1 className="font-inter-tight text-[14px] font-medium text-black">
@@ -202,9 +202,10 @@ export default function RecruiterProfilePage() {
         </button>
       </div>
 
-      <div className="flex flex-1 overflow-hidden md:flex-row flex-col">
+      <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
         {/* Profile Panel — matches EmployerProfilePanel structure */}
-        <div className="hidden lg:flex w-[350px] flex-col bg-white border-r border-[#E1E4EA] px-[25px] py-[15px] overflow-y-auto scrollbar-hide">
+        <div className="w-full lg:w-[350px] flex-shrink-0 flex flex-col bg-white lg:border-r border-[#E1E4EA] lg:overflow-hidden">
+          <div className="flex-1 lg:overflow-y-auto scrollbar-hidden px-[25px] py-[15px]">
           {/* Company Profile Section */}
           <div className="flex flex-col items-center gap-[20px]">
             {/* Company Logo */}
@@ -296,6 +297,14 @@ export default function RecruiterProfilePage() {
               </div>
             </div>
           </div>
+
+          {/* View Opportunities Button */}
+          <button
+            onClick={() => setActiveTab("opportunities")}
+            className="w-full h-[44px] rounded-full bg-[#181B25] hover:bg-[#2a2f3a] text-white font-normal text-[14px] font-inter-tight transition-colors flex-shrink-0 mt-[20px]"
+          >
+            View Opportunities
+          </button>
 
           {/* Social Links Section */}
           {socialLinks && Object.values(socialLinks).some(Boolean) && (
@@ -402,7 +411,9 @@ export default function RecruiterProfilePage() {
                       </svg>
                     ),
                   },
-                ].map((social, idx) => (
+                ]
+                  .filter((social) => social.url)
+                  .map((social, idx) => (
                   <div
                     key={idx}
                     className="flex justify-between items-center w-full"
@@ -413,50 +424,45 @@ export default function RecruiterProfilePage() {
                         {social.name}
                       </span>
                     </div>
-                    {social.url ? (
-                      <Link
-                        href={social.url}
-                        target="_blank"
-                        className="text-[#525866] hover:text-black transition-colors"
+                    <Link
+                      href={social.url}
+                      target="_blank"
+                      className="text-[#525866] hover:text-black transition-colors"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 22 22"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-[18px] h-[18px]"
                       >
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 22 22"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-[18px] h-[18px]"
-                        >
-                          <path
-                            d="M10.1739 2.75C6.82897 2.75602 5.0774 2.83816 3.95801 3.95773C2.75 5.16593 2.75 7.11051 2.75 10.9996C2.75 14.8888 2.75 16.8334 3.95801 18.0415C5.16601 19.2498 7.11028 19.2498 10.9989 19.2498C14.8873 19.2498 16.8316 19.2498 18.0396 18.0415C19.1589 16.922 19.2411 15.1701 19.2471 11.8247"
-                            stroke="currentColor"
-                            strokeWidth="1.375"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M18.8432 3.20458L10.1282 11.9702M18.8432 3.20458C18.3904 2.75119 15.34 2.79345 14.6951 2.80262M18.8432 3.20458C19.296 3.65798 19.2538 6.71231 19.2446 7.35802"
-                            stroke="currentColor"
-                            strokeWidth="1.375"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </Link>
-                    ) : (
-                      <span className="text-[10px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
-                        —
-                      </span>
-                    )}
+                        <path
+                          d="M10.1739 2.75C6.82897 2.75602 5.0774 2.83816 3.95801 3.95773C2.75 5.16593 2.75 7.11051 2.75 10.9996C2.75 14.8888 2.75 16.8334 3.95801 18.0415C5.16601 19.2498 7.11028 19.2498 10.9989 19.2498C14.8873 19.2498 16.8316 19.2498 18.0396 18.0415C19.1589 16.922 19.2411 15.1701 19.2471 11.8247"
+                          stroke="currentColor"
+                          strokeWidth="1.375"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M18.8432 3.20458L10.1282 11.9702M18.8432 3.20458C18.3904 2.75119 15.34 2.79345 14.6951 2.80262M18.8432 3.20458C19.296 3.65798 19.2538 6.71231 19.2446 7.35802"
+                          stroke="currentColor"
+                          strokeWidth="1.375"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </Link>
                   </div>
                 ))}
               </div>
             </div>
           )}
+          </div>
         </div>
 
         {/* Main Content Area */}
-        <main className="flex-1 flex flex-col bg-white overflow-hidden">
+        <main className="flex-1 flex flex-col bg-white">
           {/* Top Navigation — matches EmployerProfileNav */}
           <div className="flex items-center justify-between w-full bg-white border-b border-[#E1E4EA] sticky top-0 z-30">
             <div className="flex items-center gap-0 overflow-x-auto flex-1 scrollbar-hidden">
@@ -481,36 +487,7 @@ export default function RecruiterProfilePage() {
           </div>
 
           {/* Content Section */}
-          <div className="flex-1 overflow-y-auto scrollbar-styled">
-            {/* Mobile Profile Header (visible only on mobile where sidebar is hidden) */}
-            <div className="lg:hidden px-4 py-5 border-b border-[#E1E4EA]">
-              <div className="flex items-center gap-3">
-                <img
-                  src={profile.profileImageUrl || "/default.png"}
-                  alt={profile.company || "Company"}
-                  className="w-14 h-14 rounded-full object-cover"
-                />
-                <div>
-                  <h2 className="text-[16px] font-medium text-black font-inter-tight">
-                    {profile.company || profile.username}
-                  </h2>
-                  {profile.industry && (
-                    <p className="text-[13px] font-light text-[rgba(0,0,0,0.30)] font-inter-tight">
-                      {profile.industry}
-                    </p>
-                  )}
-                  {profile.location && (
-                    <div className="flex items-center gap-1 mt-1">
-                      <MapPin className="w-3 h-3 text-[#525866]" />
-                      <span className="text-[11px] text-[#525866] font-inter-tight">
-                        {profile.location}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
+          <div className="flex-1">
             {/* About Tab */}
             {activeTab === "about" && (
               <div className="flex flex-col gap-7 p-3 md:p-4 lg:p-5 w-full flex-1">

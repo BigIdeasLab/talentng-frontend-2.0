@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import type { TalentProfile, Service } from "@/lib/api/talent/types";
 import { TalentProfilePanel } from "./components/TalentProfilePanel";
 import { TalentProfileNav } from "./components/TalentProfileNav";
@@ -15,12 +16,26 @@ interface TalentProfileViewProps {
 }
 
 export function TalentProfileView({ profile }: TalentProfileViewProps) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("works");
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedWork, setSelectedWork] = useState<any>(null);
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-white">
+      {/* Mobile Header - Only visible on mobile */}
+      <div className="lg:hidden flex-shrink-0 px-5 py-3 border-b border-[#E1E4EA] flex items-center justify-between">
+        <h1 className="font-inter-tight text-[14px] font-medium text-black">
+          Talent Profile
+        </h1>
+        <button
+          onClick={() => router.back()}
+          className="px-4 py-1.5 border border-[#F5F5F5] rounded-full font-inter-tight text-[11px] font-normal text-black hover:bg-gray-50 transition-colors"
+        >
+          Back
+        </button>
+      </div>
+
       {/* Left Sidebar - Profile Panel */}
       <TalentProfilePanel
         profile={profile}

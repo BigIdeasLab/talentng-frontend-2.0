@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks";
 import { useProfile } from "@/hooks/useProfile";
 import type { TalentProfile, Service } from "@/lib/api/talent/types";
@@ -20,6 +21,7 @@ interface TalentProfileViewProps {
 }
 
 export function TalentProfileView({ profile }: TalentProfileViewProps) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("works");
   const [isHireModalOpen, setIsHireModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
@@ -63,9 +65,24 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen bg-white">
-      {/* Left Sidebar - Profile Panel - Stacked on mobile, sidebar on desktop */}
-      <TalentProfilePanel
+    <div className="flex flex-col h-screen bg-white overflow-hidden">
+      {/* Header - Visible on all screen sizes */}
+      <div className="flex-shrink-0 px-5 py-3 border-b border-[#E1E4EA] flex items-center justify-between">
+        <h1 className="font-inter-tight text-[14px] font-medium text-black">
+          Talent Profile
+        </h1>
+        <button
+          onClick={() => router.back()}
+          className="px-4 py-1.5 border border-[#F5F5F5] rounded-full font-inter-tight text-[11px] font-normal text-black hover:bg-gray-50 transition-colors"
+        >
+          Back
+        </button>
+      </div>
+
+      <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
+
+        {/* Left Sidebar - Profile Panel - Stacked on mobile, sidebar on desktop */}
+        <TalentProfilePanel
         profile={profile}
         onHireClick={() => setIsHireModalOpen(true)}
         completionPercentage={profile.stats?.completionPercentage || 0}
@@ -81,13 +98,13 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
         }
       />
 
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col bg-white overflow-hidden">
-        {/* Top Navigation */}
-        <TalentProfileNav activeTab={activeTab} onTabChange={setActiveTab} />
+        {/* Main Content Area */}
+        <main className="flex-1 flex flex-col bg-white">
+          {/* Top Navigation */}
+          <TalentProfileNav activeTab={activeTab} onTabChange={setActiveTab} />
 
-        {/* Content Section */}
-        <div className="flex-1 overflow-y-auto scrollbar-styled">
+          {/* Content Section */}
+          <div className="flex-1">
           {/* Portfolio/Works Tab */}
           {activeTab === "works" && (
             <TalentWorksGrid
@@ -256,9 +273,10 @@ export function TalentProfileView({ profile }: TalentProfileViewProps) {
                 </div>
               )}
             </div>
-          )}
-        </div>
-      </main>
+            )}
+          </div>
+        </main>
+      </div>
 
       {/* Hire Opportunities Modal */}
       <HireOpportunitiesModal

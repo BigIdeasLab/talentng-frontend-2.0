@@ -19,20 +19,23 @@ export function TalentProfileNav({
   onTabChange,
 }: TalentProfileNavProps) {
   return (
-    <div className="flex-shrink-0 border-b border-[#E1E4EA] px-[25px] bg-white">
-      <div className="flex items-center gap-[24px] overflow-x-auto scrollbar-hidden">
+    <div className="flex items-center justify-between w-full bg-white border-b border-[#E1E4EA] sticky top-0 z-30">
+      <div className="flex items-center gap-0 overflow-x-auto flex-1 scrollbar-hidden">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => onTabChange(tab.id)}
             className={cn(
-              "py-[16px] px-[8px] text-[14px] font-medium border-b-2 transition-colors whitespace-nowrap flex-shrink-0",
+              "px-[12px] sm:px-[20px] py-[14px] sm:py-[18px] text-[12px] sm:text-[13px] font-medium font-inter-tight whitespace-nowrap transition-colors relative",
               activeTab === tab.id
-                ? "border-[#5C30FF] text-[#5C30FF]"
-                : "border-transparent text-gray-600 hover:text-black",
+                ? "text-black"
+                : "text-[rgba(0,0,0,0.30)] hover:text-[rgba(0,0,0,0.6)]",
             )}
           >
             {tab.label}
+            {activeTab === tab.id && (
+              <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-black" />
+            )}
           </button>
         ))}
       </div>

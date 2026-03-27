@@ -300,12 +300,12 @@ export default function MentorDetailPage() {
       <div className="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
         {/* Left Sidebar */}
         <div className="w-full lg:w-[350px] flex-shrink-0 lg:border-r border-[#E1E4EA] bg-white flex flex-col lg:overflow-hidden">
-          <div className="flex-1 lg:overflow-y-auto scrollbar-hidden px-4 py-7">
+          <div className="flex-1 lg:overflow-y-auto scrollbar-hidden px-[25px] py-[15px]">
             <div className="flex flex-col gap-5">
               {/* Profile Section */}
-              <div className="flex flex-col items-center gap-5">
+              <div className="flex flex-col items-center gap-[20px]">
                 {/* Profile Picture */}
-                <div className="relative w-[90px] h-[90px] flex-shrink-0">
+                <div className="relative w-[110px] h-[110px] flex-shrink-0">
                   <div
                     className="w-full h-full rounded-full bg-cover bg-center"
                     style={{
@@ -320,17 +320,20 @@ export default function MentorDetailPage() {
                 </div>
 
                 {/* Info Container */}
-                <div className="flex flex-col items-center gap-3 w-[200px]">
-                  <h2 className="text-[16px] font-medium text-black font-inter-tight text-center">
-                    {mentor.name}
-                  </h2>
-                  <p className="text-[14px] font-light text-[rgba(0,0,0,0.30)] font-inter-tight text-center">
-                    {mentor.title}
-                  </p>
-                </div>
+                <div className="flex flex-col items-center gap-[12px] w-full">
+                  <div className="text-center">
+                    <h2 className="text-[16px] font-medium text-black font-inter-tight">
+                      {mentor.name}
+                    </h2>
+                    {mentor.title && (
+                      <p className="text-[13px] font-light text-[rgba(0,0,0,0.30)] font-inter-tight">
+                        {mentor.title}
+                      </p>
+                    )}
+                  </div>
 
-                {/* Details Container */}
-                <div className="flex flex-col items-start gap-3 w-full">
+                  {/* Details Container */}
+                  <div className="flex flex-col items-start gap-[10px] w-full">
                   {/* Average Rating */}
                   <div className="flex justify-between items-center w-full">
                     <div className="flex items-center gap-1.5">
@@ -349,7 +352,7 @@ export default function MentorDetailPage() {
                           strokeLinejoin="round"
                         />
                       </svg>
-                      <span className="text-[13px] font-normal text-black font-inter-tight">
+                      <span className="text-[12px] font-normal text-black font-inter-tight">
                         {mentor.rating && Number(mentor.rating) > 0
                           ? Number(mentor.rating).toFixed(1)
                           : "N/A"}{" "}
@@ -383,7 +386,7 @@ export default function MentorDetailPage() {
                           strokeLinejoin="round"
                         />
                       </svg>
-                      <span className="text-[13px] font-normal text-black font-inter-tight">
+                      <span className="text-[12px] font-normal text-black font-inter-tight">
                         {mentor.totalSessions} Session Completed
                       </span>
                     </div>
@@ -412,7 +415,7 @@ export default function MentorDetailPage() {
                           strokeWidth="1.375"
                         />
                       </svg>
-                      <span className="text-[13px] font-normal text-black font-inter-tight">
+                      <span className="text-[12px] font-normal text-black font-inter-tight">
                         {mentor.sessionDuration} min / session
                       </span>
                     </div>
@@ -448,7 +451,7 @@ export default function MentorDetailPage() {
                           strokeLinecap="round"
                         />
                       </svg>
-                      <span className="text-[13px] font-normal text-black font-inter-tight">
+                      <span className="text-[12px] font-normal text-black font-inter-tight">
                         {Math.round(
                           (mentor.totalSessions * mentor.sessionDuration) / 60,
                         )}
@@ -456,6 +459,7 @@ export default function MentorDetailPage() {
                       </span>
                     </div>
                   </div>
+                </div>
                 </div>
               </div>
 
@@ -465,7 +469,7 @@ export default function MentorDetailPage() {
                   setBookingStep(hasSelectedSlot ? "details" : "availability");
                   setIsBookingModalOpen(true);
                 }}
-                className="w-full h-auto rounded-[40px] bg-[#181B25] hover:bg-[#2a2f3a] text-white px-16 py-4 font-normal text-[15px] font-inter-tight transition-colors"
+                className="w-full h-[44px] rounded-full bg-[#181B25] hover:bg-[#2a2f3a] text-white font-normal text-[14px] font-inter-tight transition-colors flex-shrink-0"
               >
                 Book Session
               </button>
@@ -574,7 +578,7 @@ export default function MentorDetailPage() {
 
               {/* Stack Section */}
               {mentor.stack && mentor.stack.length > 0 && (
-                <div className="flex flex-col items-start gap-[12px]">
+                <div className="mt-[20px] flex flex-col items-start gap-[12px] flex-shrink-0">
                   <h3 className="text-[12px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
                     Stack
                   </h3>
@@ -582,7 +586,7 @@ export default function MentorDetailPage() {
                     {mentor.stack.slice(0, 5).map((tool, idx) => (
                       <div
                         key={idx}
-                        className="px-[10px] py-[7px] rounded-full bg-[#F5F5F5] flex items-center gap-[5px]"
+                        className="px-[10px] py-[6px] rounded-full bg-[#F5F5F5] flex items-center gap-[5px]"
                       >
                         <div className="w-[16px] h-[16px] rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex-shrink-0" />
                         <span className="text-[11px] font-normal text-black font-inter-tight">
@@ -591,7 +595,7 @@ export default function MentorDetailPage() {
                       </div>
                     ))}
                     {mentor.stack.length > 5 && (
-                      <div className="px-[10px] py-[7px] rounded-full bg-[#F5F5F5]">
+                      <div className="px-[10px] py-[6px] rounded-full bg-[#F5F5F5]">
                         <span className="text-[11px] font-normal text-black font-inter-tight">
                           +{mentor.stack.length - 5}
                         </span>
@@ -603,11 +607,11 @@ export default function MentorDetailPage() {
 
               {/* Social Links */}
               {mentor.links && Object.values(mentor.links).some(Boolean) && (
-                <div className="flex flex-col items-start gap-4 w-full">
-                  <h3 className="text-[11px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
+                <div className="mt-[20px] flex flex-col items-start gap-[12px] flex-shrink-0">
+                  <h3 className="text-[12px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
                     Social Links
                   </h3>
-                  <div className="flex flex-col gap-2 w-full">
+                  <div className="flex flex-col gap-[10px] w-full">
                     {[
                       {
                         key: "telegram",
@@ -629,7 +633,14 @@ export default function MentorDetailPage() {
                         label: "LinkedIn",
                         icon: "M4.12501 8.7085H3.66668C2.80243 8.7085 2.37032 8.7085 2.10183 8.97698C1.83334 9.24548 1.83334 9.6776 1.83334 10.5418V18.3335C1.83334 19.1977 1.83334 19.6298 2.10183 19.8983C2.37032 20.1668 2.80243 20.1668 3.66668 20.1668H4.12501C4.98925 20.1668 5.42137 20.1668 5.68986 19.8983C5.95834 19.6298 5.95834 19.1977 5.95834 18.3335V10.5418C5.95834 9.6776 5.95834 9.24548 5.68986 8.97698C5.42137 8.7085 4.98925 8.7085 4.12501 8.7085Z",
                       },
-                    ].map((social) => {
+                    ]
+                      .filter((social) => {
+                        const url =
+                          mentor.links?.[social.key] ||
+                          mentor.links?.[social.key.toLowerCase()];
+                        return url;
+                      })
+                      .map((social) => {
                       const url =
                         mentor.links?.[social.key] ||
                         mentor.links?.[social.key.toLowerCase()];
@@ -638,7 +649,7 @@ export default function MentorDetailPage() {
                           key={social.key}
                           className="flex justify-between items-center w-full"
                         >
-                          <div className="flex items-center gap-1.5">
+                          <div className="flex items-center gap-[6px]">
                             <svg
                               width="18"
                               height="18"
@@ -654,7 +665,7 @@ export default function MentorDetailPage() {
                                 strokeLinejoin="round"
                               />
                             </svg>
-                            <span className="text-[13px] font-normal text-black font-inter-tight">
+                            <span className="text-[12px] font-normal text-black font-inter-tight">
                               {social.label}
                             </span>
                           </div>
@@ -701,20 +712,23 @@ export default function MentorDetailPage() {
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col lg:overflow-hidden">
           {/* Tabs */}
-          <div className="flex-shrink-0 sticky top-[20px] z-10 lg:static border-b border-[#E1E4EA] bg-white px-4 lg:px-6 pt-4">
-            <div className="flex items-center gap-6">
+          <div className="flex items-center justify-between w-full bg-white border-b border-[#E1E4EA] sticky top-0 z-30">
+            <div className="flex items-center gap-0 overflow-x-auto flex-1 scrollbar-hidden">
               {/* TODO: Re-enable "Reviews" and "Session" tabs when real data is available */}
               {(["Overview"] as TabType[]).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`pb-3 font-inter-tight text-[13px] font-medium border-b-2 transition-colors ${
+                  className={`px-[12px] sm:px-[20px] py-[14px] sm:py-[18px] text-[12px] sm:text-[13px] font-medium font-inter-tight whitespace-nowrap transition-colors relative ${
                     activeTab === tab
-                      ? "border-black text-black"
-                      : "border-transparent text-[#A3A3A3] hover:text-black"
+                      ? "text-black"
+                      : "text-[rgba(0,0,0,0.30)] hover:text-[rgba(0,0,0,0.6)]"
                   }`}
                 >
                   {tab}
+                  {activeTab === tab && (
+                    <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-black" />
+                  )}
                 </button>
               ))}
             </div>

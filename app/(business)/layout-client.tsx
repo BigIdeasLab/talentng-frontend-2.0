@@ -239,6 +239,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
                   ? mentorUpcomingCount
                   : talentUpcomingCount
             }
+            applicantsCount={recruiterApplicantsCount}
             onClose={() => setIsMobileDrawerOpen(false)}
           />
         )}
