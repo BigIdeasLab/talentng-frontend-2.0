@@ -31,6 +31,7 @@ Business Verification allows **recruiters** to verify their business/organizatio
 ### 1.1 Feature Description
 
 Recruiters can:
+
 - Submit a business verification application with supporting documents
 - Upload multiple documents (CAC certificate required, plus optional tax/incorporation docs)
 - View the status of their application (pending, approved, rejected)
@@ -42,15 +43,15 @@ Recruiters can:
 
 #### Page: Business Verification Dashboard (`/dashboard/verification`)
 
-| Component | Description |
-|-----------|-------------|
+| Component                    | Description                                                                                                        |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | **VerificationStatusBanner** | Shows current verification status at the top of the page. States: `not_started`, `pending`, `approved`, `rejected` |
-| **ApplicationForm** | Multi-step form for submitting a new verification application |
-| **DocumentUploader** | Drag-and-drop file upload component for business documents |
-| **DocumentList** | Displays uploaded documents with type labels, file size, and preview links |
-| **RejectionNotice** | Alert component shown when application was rejected, displays the admin's rejection reason and a "Resubmit" button |
-| **VerifiedBadge** | Badge/icon shown on the recruiter profile after approval |
-| **ApplicationTimeline** | Timeline showing submission date, review date, and status changes |
+| **ApplicationForm**          | Multi-step form for submitting a new verification application                                                      |
+| **DocumentUploader**         | Drag-and-drop file upload component for business documents                                                         |
+| **DocumentList**             | Displays uploaded documents with type labels, file size, and preview links                                         |
+| **RejectionNotice**          | Alert component shown when application was rejected, displays the admin's rejection reason and a "Resubmit" button |
+| **VerifiedBadge**            | Badge/icon shown on the recruiter profile after approval                                                           |
+| **ApplicationTimeline**      | Timeline showing submission date, review date, and status changes                                                  |
 
 #### Suggested Page States
 
@@ -101,20 +102,20 @@ POST /api/v1/verification-requests/business
 
 **Request Body:**
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `type` | `string` | Yes | Must be `"business"` |
-| `documents` | `DocumentDto[]` | Yes | Array of documents (min 1, must include at least one `cac` type) |
+| Field       | Type            | Required | Description                                                      |
+| ----------- | --------------- | -------- | ---------------------------------------------------------------- |
+| `type`      | `string`        | Yes      | Must be `"business"`                                             |
+| `documents` | `DocumentDto[]` | Yes      | Array of documents (min 1, must include at least one `cac` type) |
 
 **DocumentDto fields:**
 
-| Field | Type | Required | Validation | Description |
-|-------|------|----------|------------|-------------|
-| `url` | `string` | Yes | Must be a valid URL | URL of the uploaded document (from your file storage) |
-| `filename` | `string` | Yes | - | Original filename |
-| `fileType` | `string` | Yes | `application/pdf`, `image/jpeg`, `image/jpg`, `image/png` | MIME type |
-| `fileSize` | `number` | Yes | Max `10485760` (10MB) | File size in bytes |
-| `documentType` | `string` | Yes | `cac`, `tax_certificate`, `incorporation`, `other` | Type of business document |
+| Field          | Type     | Required | Validation                                                | Description                                           |
+| -------------- | -------- | -------- | --------------------------------------------------------- | ----------------------------------------------------- |
+| `url`          | `string` | Yes      | Must be a valid URL                                       | URL of the uploaded document (from your file storage) |
+| `filename`     | `string` | Yes      | -                                                         | Original filename                                     |
+| `fileType`     | `string` | Yes      | `application/pdf`, `image/jpeg`, `image/jpg`, `image/png` | MIME type                                             |
+| `fileSize`     | `number` | Yes      | Max `10485760` (10MB)                                     | File size in bytes                                    |
+| `documentType` | `string` | Yes      | `cac`, `tax_certificate`, `incorporation`, `other`        | Type of business document                             |
 
 #### List My Verification Requests
 
@@ -126,15 +127,15 @@ Non-admin users automatically see only their own requests.
 
 **Query Parameters:**
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `q` | `string` | - | Search query |
-| `type` | `enum` | - | Filter by type: `kyc`, `org`, `business` |
-| `status` | `enum` | - | Filter by status: `pending`, `approved`, `rejected` |
-| `limit` | `number` | `20` | Items per page |
-| `offset` | `number` | `0` | Items to skip |
-| `sortBy` | `string` | `createdAt` | Sort field |
-| `sortOrder` | `string` | `desc` | `asc` or `desc` |
+| Parameter   | Type     | Default     | Description                                         |
+| ----------- | -------- | ----------- | --------------------------------------------------- |
+| `q`         | `string` | -           | Search query                                        |
+| `type`      | `enum`   | -           | Filter by type: `kyc`, `org`, `business`            |
+| `status`    | `enum`   | -           | Filter by status: `pending`, `approved`, `rejected` |
+| `limit`     | `number` | `20`        | Items per page                                      |
+| `offset`    | `number` | `0`         | Items to skip                                       |
+| `sortBy`    | `string` | `createdAt` | Sort field                                          |
+| `sortOrder` | `string` | `desc`      | `asc` or `desc`                                     |
 
 #### Get Single Verification Request
 
@@ -297,13 +298,13 @@ Option B - Real-time Notifications:
 
 #### Frontend Validation Rules (Before API Call)
 
-| Rule | Error Message |
-|------|---------------|
-| At least 1 document uploaded | "At least one document is required" |
-| At least 1 CAC document in the list | "A CAC certificate is required for business verification" |
-| Each file ≤ 10MB | "File size must not exceed 10MB" |
-| File type must be PDF, JPEG, JPG, or PNG | "Only PDF and image files (JPEG, PNG) are accepted" |
-| No pending application already exists | "You already have a pending verification application" |
+| Rule                                     | Error Message                                             |
+| ---------------------------------------- | --------------------------------------------------------- |
+| At least 1 document uploaded             | "At least one document is required"                       |
+| At least 1 CAC document in the list      | "A CAC certificate is required for business verification" |
+| Each file ≤ 10MB                         | "File size must not exceed 10MB"                          |
+| File type must be PDF, JPEG, JPG, or PNG | "Only PDF and image files (JPEG, PNG) are accepted"       |
+| No pending application already exists    | "You already have a pending verification application"     |
 
 ---
 
@@ -312,6 +313,7 @@ Option B - Real-time Notifications:
 ### 2.1 Feature Description
 
 Admins can:
+
 - View all verification applications across the platform with filters and pagination
 - Review individual applications with full business details and submitted documents
 - Approve legitimate applications (auto-updates user verification status and sends notifications)
@@ -323,39 +325,39 @@ Admins can:
 
 #### Page: Verification Applications List (`/admin/verifications`)
 
-| Component | Description |
-|-----------|-------------|
-| **VerificationTable** | Paginated data table listing all verification applications |
-| **StatusFilter** | Dropdown filter: All, Pending, Approved, Rejected |
-| **TypeFilter** | Dropdown filter: All, Business, KYC, Org |
-| **SortControls** | Sort by: Created Date, Updated Date (asc/desc) |
-| **StatusBadge** | Color-coded badge: 🟡 Pending, 🟢 Approved, 🔴 Rejected |
-| **PaginationControls** | Page navigation with item count |
+| Component              | Description                                                |
+| ---------------------- | ---------------------------------------------------------- |
+| **VerificationTable**  | Paginated data table listing all verification applications |
+| **StatusFilter**       | Dropdown filter: All, Pending, Approved, Rejected          |
+| **TypeFilter**         | Dropdown filter: All, Business, KYC, Org                   |
+| **SortControls**       | Sort by: Created Date, Updated Date (asc/desc)             |
+| **StatusBadge**        | Color-coded badge: 🟡 Pending, 🟢 Approved, 🔴 Rejected    |
+| **PaginationControls** | Page navigation with item count                            |
 
 **Table columns:**
 
-| Column | Source Field | Description |
-|--------|-------------|-------------|
-| Business Name | `user.recruiterProfile.company` | Company name from recruiter profile |
-| Applicant | `user.username` or `user.email` | Who submitted |
-| Type | `type` | Verification type (business, kyc, org) |
-| Status | `status` | Current status with colored badge |
-| Documents | `documents.length` | Number of documents submitted |
-| Submitted | `createdAt` | Submission date |
-| Reviewed | `reviewedAt` | Review date (if reviewed) |
-| Actions | - | "View" button linking to detail page |
+| Column        | Source Field                    | Description                            |
+| ------------- | ------------------------------- | -------------------------------------- |
+| Business Name | `user.recruiterProfile.company` | Company name from recruiter profile    |
+| Applicant     | `user.username` or `user.email` | Who submitted                          |
+| Type          | `type`                          | Verification type (business, kyc, org) |
+| Status        | `status`                        | Current status with colored badge      |
+| Documents     | `documents.length`              | Number of documents submitted          |
+| Submitted     | `createdAt`                     | Submission date                        |
+| Reviewed      | `reviewedAt`                    | Review date (if reviewed)              |
+| Actions       | -                               | "View" button linking to detail page   |
 
 #### Page: Verification Application Detail (`/admin/verifications/:id`)
 
-| Component | Description |
-|-----------|-------------|
-| **ApplicationHeader** | Shows business name, applicant, status badge, submission date |
-| **BusinessInfoCard** | Company name, industry, applicant email from `user.recruiterProfile` |
-| **DocumentViewer** | List of submitted documents with download links, file type icons, and document type labels |
-| **DocumentPreview** | In-page PDF/image preview for each document |
-| **ReviewActions** | Approve / Reject action buttons (only shown for `pending` applications) |
-| **RejectionModal** | Modal with textarea for rejection reason (10–500 chars) + confirm button |
-| **ReviewHistory** | Shows who reviewed and when, with review notes if rejected |
+| Component             | Description                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------ |
+| **ApplicationHeader** | Shows business name, applicant, status badge, submission date                              |
+| **BusinessInfoCard**  | Company name, industry, applicant email from `user.recruiterProfile`                       |
+| **DocumentViewer**    | List of submitted documents with download links, file type icons, and document type labels |
+| **DocumentPreview**   | In-page PDF/image preview for each document                                                |
+| **ReviewActions**     | Approve / Reject action buttons (only shown for `pending` applications)                    |
+| **RejectionModal**    | Modal with textarea for rejection reason (10–500 chars) + confirm button                   |
+| **ReviewHistory**     | Shows who reviewed and when, with review notes if rejected                                 |
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -398,14 +400,14 @@ GET /api/v1/admin/verifications
 
 **Query Parameters:**
 
-| Parameter | Type | Default | Options | Description |
-|-----------|------|---------|---------|-------------|
-| `type` | `enum` | - | `kyc`, `org`, `business` | Filter by verification type |
-| `status` | `enum` | - | `pending`, `approved`, `rejected` | Filter by status |
-| `limit` | `number` | `20` | min: 1 | Items per page |
-| `offset` | `number` | `0` | min: 0 | Items to skip |
-| `sortBy` | `enum` | `createdAt` | `createdAt`, `updatedAt` | Field to sort by |
-| `sortOrder` | `enum` | `desc` | `asc`, `desc` | Sort direction |
+| Parameter   | Type     | Default     | Options                           | Description                 |
+| ----------- | -------- | ----------- | --------------------------------- | --------------------------- |
+| `type`      | `enum`   | -           | `kyc`, `org`, `business`          | Filter by verification type |
+| `status`    | `enum`   | -           | `pending`, `approved`, `rejected` | Filter by status            |
+| `limit`     | `number` | `20`        | min: 1                            | Items per page              |
+| `offset`    | `number` | `0`         | min: 0                            | Items to skip               |
+| `sortBy`    | `enum`   | `createdAt` | `createdAt`, `updatedAt`          | Field to sort by            |
+| `sortOrder` | `enum`   | `desc`      | `asc`, `desc`                     | Sort direction              |
 
 #### Get Single Verification Application
 
@@ -424,6 +426,7 @@ PATCH /api/v1/admin/verifications/:id/approve
 No request body needed. The admin's user ID is taken from the auth token.
 
 **Side effects on approval:**
+
 - Sets `status` to `approved`, `reviewedById` to admin ID, `reviewedAt` to now
 - Sets the user's `isVerified = true` and `verificationLevel = "org"`
 - Creates an audit log entry
@@ -437,11 +440,12 @@ PATCH /api/v1/admin/verifications/:id/reject
 
 **Request Body:**
 
-| Field | Type | Required | Validation | Description |
-|-------|------|----------|------------|-------------|
-| `reviewNotes` | `string` | Yes | 10–500 characters | Reason for rejection |
+| Field         | Type     | Required | Validation        | Description          |
+| ------------- | -------- | -------- | ----------------- | -------------------- |
+| `reviewNotes` | `string` | Yes      | 10–500 characters | Reason for rejection |
 
 **Side effects on rejection:**
+
 - Sets `status` to `rejected`, `reviewNotes`, `reviewedById`, `reviewedAt`
 - Creates an audit log entry
 - Sends in-app notification + email to the business owner with the rejection reason
@@ -623,6 +627,7 @@ PATCH /api/v1/admin/verifications/:id/reject
 #### Admin Dashboard Integration
 
 Consider adding a **verification widget** to the admin dashboard:
+
 ```
 ┌──────────────────────────┐
 │  📋 Pending Verifications │
@@ -642,22 +647,22 @@ Fetch count via: `GET /api/v1/admin/verifications?status=pending&limit=1` and us
 
 ```typescript
 // Verification Types
-type VerificationType = 'kyc' | 'org' | 'business';
-type VerificationStatus = 'pending' | 'approved' | 'rejected';
+type VerificationType = "kyc" | "org" | "business";
+type VerificationStatus = "pending" | "approved" | "rejected";
 
 // Document
 interface DocumentDto {
   url: string;
   filename: string;
-  fileType: 'application/pdf' | 'image/jpeg' | 'image/jpg' | 'image/png';
-  fileSize: number;        // max 10485760 (10MB)
-  documentType: 'cac' | 'tax_certificate' | 'incorporation' | 'other';
+  fileType: "application/pdf" | "image/jpeg" | "image/jpg" | "image/png";
+  fileSize: number; // max 10485760 (10MB)
+  documentType: "cac" | "tax_certificate" | "incorporation" | "other";
 }
 
 // Submit request body
 interface CreateBusinessVerificationRequest {
-  type: 'business';
-  documents: DocumentDto[];  // min 1, must include at least one 'cac'
+  type: "business";
+  documents: DocumentDto[]; // min 1, must include at least one 'cac'
 }
 
 // Verification request (API response)
@@ -669,9 +674,9 @@ interface VerificationRequest {
   status: VerificationStatus;
   reviewNotes: string | null;
   reviewedById: string | null;
-  reviewedAt: string | null;    // ISO 8601
-  createdAt: string;            // ISO 8601
-  updatedAt: string;            // ISO 8601
+  reviewedAt: string | null; // ISO 8601
+  createdAt: string; // ISO 8601
+  updatedAt: string; // ISO 8601
 }
 
 // Admin response (includes user data)
@@ -689,7 +694,7 @@ interface VerificationRequestWithUser extends VerificationRequest {
 
 // Reject request body
 interface RejectVerificationRequest {
-  reviewNotes: string;   // 10-500 characters
+  reviewNotes: string; // 10-500 characters
 }
 
 // Paginated response
@@ -710,10 +715,10 @@ interface PaginatedResponse<T> {
 interface AdminVerificationFilters {
   type?: VerificationType;
   status?: VerificationStatus;
-  limit?: number;           // default: 20, min: 1
-  offset?: number;          // default: 0, min: 0
-  sortBy?: 'createdAt' | 'updatedAt';   // default: 'createdAt'
-  sortOrder?: 'asc' | 'desc';           // default: 'desc'
+  limit?: number; // default: 20, min: 1
+  offset?: number; // default: 0, min: 0
+  sortBy?: "createdAt" | "updatedAt"; // default: 'createdAt'
+  sortOrder?: "asc" | "desc"; // default: 'desc'
 }
 ```
 
@@ -721,20 +726,23 @@ interface AdminVerificationFilters {
 
 ```typescript
 const DOCUMENT_TYPE_LABELS: Record<string, string> = {
-  cac: 'CAC Certificate',
-  tax_certificate: 'Tax Certificate',
-  incorporation: 'Incorporation Document',
-  other: 'Other Document',
+  cac: "CAC Certificate",
+  tax_certificate: "Tax Certificate",
+  incorporation: "Incorporation Document",
+  other: "Other Document",
 };
 ```
 
 ### Status Display Config
 
 ```typescript
-const STATUS_CONFIG: Record<VerificationStatus, { label: string; color: string; icon: string }> = {
-  pending:  { label: 'Pending Review', color: '#F59E0B', icon: '⏳' },
-  approved: { label: 'Approved',       color: '#10B981', icon: '✅' },
-  rejected: { label: 'Rejected',       color: '#EF4444', icon: '❌' },
+const STATUS_CONFIG: Record<
+  VerificationStatus,
+  { label: string; color: string; icon: string }
+> = {
+  pending: { label: "Pending Review", color: "#F59E0B", icon: "⏳" },
+  approved: { label: "Approved", color: "#10B981", icon: "✅" },
+  rejected: { label: "Rejected", color: "#EF4444", icon: "❌" },
 };
 ```
 
@@ -746,15 +754,15 @@ Both the recruiter and admin receive notifications at various stages.
 
 ### Recruiter Notifications
 
-| Event | Notification Type | Channels | Content |
-|-------|------------------|----------|---------|
-| Application approved | `verification_approved` | In-app, Email | "Your business verification has been approved" |
+| Event                | Notification Type       | Channels      | Content                                                     |
+| -------------------- | ----------------------- | ------------- | ----------------------------------------------------------- |
+| Application approved | `verification_approved` | In-app, Email | "Your business verification has been approved"              |
 | Application rejected | `verification_rejected` | In-app, Email | "Your business verification has been rejected. Reason: ..." |
 
 ### Admin Notifications
 
-| Event | Notification Type | Channels | Content |
-|-------|------------------|----------|---------|
+| Event                     | Notification Type        | Channels      | Content                                                        |
+| ------------------------- | ------------------------ | ------------- | -------------------------------------------------------------- |
 | New application submitted | `verification_submitted` | In-app, Email | "[username] has submitted a business verification application" |
 
 ### Notification Payload Structures
@@ -799,23 +807,23 @@ Both the recruiter and admin receive notifications at various stages.
 
 ### Recruiter Endpoints
 
-| Status | Code | Scenario | Frontend Action |
-|--------|------|----------|-----------------|
-| `400` | Bad Request | Missing/invalid fields (e.g., no documents, invalid file type) | Show field-level validation errors |
-| `403` | Forbidden | Non-recruiter tries to submit | Show "Only recruiters can submit business verification" |
-| `403` | Forbidden | Missing CAC document | Show "A CAC certificate is required" |
-| `409` | Conflict | User already has a pending application | Show "You already have a pending application" and link to it |
-| `401` | Unauthorized | Token expired / missing | Redirect to login |
+| Status | Code         | Scenario                                                       | Frontend Action                                              |
+| ------ | ------------ | -------------------------------------------------------------- | ------------------------------------------------------------ |
+| `400`  | Bad Request  | Missing/invalid fields (e.g., no documents, invalid file type) | Show field-level validation errors                           |
+| `403`  | Forbidden    | Non-recruiter tries to submit                                  | Show "Only recruiters can submit business verification"      |
+| `403`  | Forbidden    | Missing CAC document                                           | Show "A CAC certificate is required"                         |
+| `409`  | Conflict     | User already has a pending application                         | Show "You already have a pending application" and link to it |
+| `401`  | Unauthorized | Token expired / missing                                        | Redirect to login                                            |
 
 ### Admin Endpoints
 
-| Status | Code | Scenario | Frontend Action |
-|--------|------|----------|-----------------|
-| `400` | Bad Request | Application not found or not pending | Show error toast |
-| `400` | Bad Request | Rejection reason < 10 or > 500 chars | Show validation error on textarea |
-| `404` | Not Found | Application ID doesn't exist | Show "Application not found" page |
-| `401` | Unauthorized | Token expired | Redirect to login |
-| `403` | Forbidden | Non-admin tries to access | Redirect to unauthorized page |
+| Status | Code         | Scenario                             | Frontend Action                   |
+| ------ | ------------ | ------------------------------------ | --------------------------------- |
+| `400`  | Bad Request  | Application not found or not pending | Show error toast                  |
+| `400`  | Bad Request  | Rejection reason < 10 or > 500 chars | Show validation error on textarea |
+| `404`  | Not Found    | Application ID doesn't exist         | Show "Application not found" page |
+| `401`  | Unauthorized | Token expired                        | Redirect to login                 |
+| `403`  | Forbidden    | Non-admin tries to access            | Redirect to unauthorized page     |
 
 ---
 
@@ -823,20 +831,20 @@ Both the recruiter and admin receive notifications at various stages.
 
 ### Recruiter Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
+| Method | Endpoint                                 | Description                              |
+| ------ | ---------------------------------------- | ---------------------------------------- |
 | `POST` | `/api/v1/verification-requests/business` | Submit business verification application |
-| `GET` | `/api/v1/verification-requests` | List own verification requests |
-| `GET` | `/api/v1/verification-requests/:id` | Get single verification request |
+| `GET`  | `/api/v1/verification-requests`          | List own verification requests           |
+| `GET`  | `/api/v1/verification-requests/:id`      | Get single verification request          |
 
 ### Admin Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/v1/admin/verifications` | List all verification applications |
-| `GET` | `/api/v1/admin/verifications/:id` | Get verification application detail |
-| `PATCH` | `/api/v1/admin/verifications/:id/approve` | Approve application |
-| `PATCH` | `/api/v1/admin/verifications/:id/reject` | Reject application with reason |
+| Method  | Endpoint                                  | Description                         |
+| ------- | ----------------------------------------- | ----------------------------------- |
+| `GET`   | `/api/v1/admin/verifications`             | List all verification applications  |
+| `GET`   | `/api/v1/admin/verifications/:id`         | Get verification application detail |
+| `PATCH` | `/api/v1/admin/verifications/:id/approve` | Approve application                 |
+| `PATCH` | `/api/v1/admin/verifications/:id/reject`  | Reject application with reason      |
 
 ---
 

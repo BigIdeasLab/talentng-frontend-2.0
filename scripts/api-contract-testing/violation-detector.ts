@@ -1,4 +1,4 @@
-import type { ValidationError } from './types.js';
+import type { ValidationError } from "./types.js";
 
 export class ViolationDetector {
   /**
@@ -7,7 +7,7 @@ export class ViolationDetector {
   detectViolations(
     errors: ValidationError[],
     endpoint: string,
-    method: string
+    method: string,
   ): ValidationError[] {
     return errors.map((error) => ({
       ...error,
@@ -22,13 +22,13 @@ export class ViolationDetector {
     endpoint: string,
     method: string,
     statusCode: number,
-    statusText: string
+    statusText: string,
   ): ValidationError {
     return {
-      type: 'http_error',
+      type: "http_error",
       path: endpoint,
       message: `[${method} ${endpoint}] HTTP ${statusCode}: ${statusText}`,
-      expected: '2xx status code',
+      expected: "2xx status code",
       actual: `${statusCode}`,
     };
   }
@@ -39,10 +39,10 @@ export class ViolationDetector {
   createNetworkErrorViolation(
     endpoint: string,
     method: string,
-    errorMessage: string
+    errorMessage: string,
   ): ValidationError {
     return {
-      type: 'network_error',
+      type: "network_error",
       path: endpoint,
       message: `[${method} ${endpoint}] Network error: ${errorMessage}`,
     };

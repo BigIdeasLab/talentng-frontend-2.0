@@ -4,10 +4,10 @@ import type {
   DetailEndpointConfig,
   TestResult,
   TestReport,
-} from './types.js';
-import type { IHttpClient } from './http-client.js';
-import type { ISchemaValidator } from './schema-validator.js';
-import { ViolationDetector } from './violation-detector.js';
+} from "./types.js";
+import type { IHttpClient } from "./http-client.js";
+import type { ISchemaValidator } from "./schema-validator.js";
+import { ViolationDetector } from "./violation-detector.js";
 
 export interface ITestOrchestrator {
   runTests(features: FeatureConfig[]): Promise<TestReport>;
@@ -19,7 +19,7 @@ export class TestOrchestrator implements ITestOrchestrator {
   constructor(
     private httpClient: IHttpClient,
     private validator: ISchemaValidator,
-    private authToken: string
+    private authToken: string,
   ) {
     this.violationDetector = new ViolationDetector();
   }
@@ -31,7 +31,7 @@ export class TestOrchestrator implements ITestOrchestrator {
     // Test all endpoints sequentially
     for (const feature of features) {
       console.log(`\nTesting feature: ${feature.name}`);
-      
+
       for (const endpoint of feature.endpoints) {
         try {
           // Test the main endpoint
@@ -42,7 +42,7 @@ export class TestOrchestrator implements ITestOrchestrator {
           if (result.passed && endpoint.detailEndpoints) {
             const detailResults = await this.testDetailEndpoints(
               result,
-              endpoint.detailEndpoints
+              endpoint.detailEndpoints,
             );
             results.push(...detailResults);
           }
@@ -57,7 +57,7 @@ export class TestOrchestrator implements ITestOrchestrator {
               this.violationDetector.createNetworkErrorViolation(
                 endpoint.path,
                 endpoint.method,
-                error instanceof Error ? error.message : 'Unknown error'
+                error instanceof Error ? error.message : "Unknown error",
               ),
             ],
             timestamp: new Date().toISOString(),
@@ -70,7 +70,8 @@ export class TestOrchestrator implements ITestOrchestrator {
     // Calculate statistics
     const passedTests = results.filter((r) => r.passed).length;
     const failedTests = results.filter((r) => !r.passed).length;
-    const passRate = results.length > 0 ? (passedTests / results.length) * 100 : 0;
+    const passRate =
+      results.length > 0 ? (passedTests / results.length) * 100 : 0;
 
     return {
       totalTests: results.length,
@@ -91,19 +92,22 @@ export class TestOrchestrator implements ITestOrchestrator {
       const response = await this.httpClient.request(
         endpoint.method,
         endpoint.path,
-        this.authToken
+        this.authToken,
       );
 
       const responseTime = Date.now() - startTime;
 
       // Validate response against schema
-      const validationErrors = this.validator.validate(response, endpoint.schema);
+      const validationErrors = this.validator.validate(
+        response,
+        endpoint.schema,
+      );
 
       // Add endpoint context to errors
       const errors = this.violationDetector.detectViolations(
         validationErrors,
         endpoint.path,
-        endpoint.method
+        endpoint.method,
       );
 
       return {
@@ -132,7 +136,7 @@ export class TestOrchestrator implements ITestOrchestrator {
                 endpoint.path,
                 endpoint.method,
                 statusCode,
-                statusText
+                statusText,
               ),
             ],
             timestamp,
@@ -149,7 +153,7 @@ export class TestOrchestrator implements ITestOrchestrator {
             this.violationDetector.createNetworkErrorViolation(
               endpoint.path,
               endpoint.method,
-              error.message
+              error.message,
             ),
           ],
           timestamp,
@@ -163,7 +167,7 @@ export class TestOrchestrator implements ITestOrchestrator {
 
   private async testDetailEndpoints(
     listResult: TestResult,
-    detailConfigs: DetailEndpointConfig[]
+    detailConfigs: DetailEndpointConfig[],
   ): Promise<TestResult[]> {
     const results: TestResult[] = [];
 
@@ -175,10 +179,10 @@ export class TestOrchestrator implements ITestOrchestrator {
     // Parse list response to get IDs
     // Assuming the response is an array or has a data array
     let items: any[] = [];
-    
+
     // This is a simplified approach - in reality, you'd need to handle different response structures
     // For now, we'll skip detail endpoint testing if we can't determine the structure
-    
+
     return results;
   }
 }

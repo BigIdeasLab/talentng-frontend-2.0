@@ -46,15 +46,15 @@ Edit `scripts/api-contract-testing/config/api-endpoints.ts` to define your API e
 ```typescript
 export const API_ENDPOINTS: FeatureConfig[] = [
   {
-    name: 'Profile',
+    name: "Profile",
     endpoints: [
       {
-        path: '/profile',
-        method: 'GET',
+        path: "/profile",
+        method: "GET",
         schema: {
-          id: { type: 'string', required: true },
-          email: { type: 'string', required: true },
-          name: { type: 'string', required: true },
+          id: { type: "string", required: true },
+          email: { type: "string", required: true },
+          name: { type: "string", required: true },
         },
       },
     ],
@@ -75,6 +75,7 @@ npm run test:api-contracts
 ### Console Output
 
 The tool provides color-coded console output:
+
 - ✓ Green for passing tests
 - ✗ Red for failing tests
 - Detailed error information for failures
@@ -82,6 +83,7 @@ The tool provides color-coded console output:
 ### JSON Report
 
 Test results are exported to `API_TEST_RESULTS.json` with:
+
 - Total test count and pass rate
 - Individual test results
 - Detailed violation information

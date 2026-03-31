@@ -5,7 +5,7 @@ export interface IHttpClient {
 export class HttpClient implements IHttpClient {
   constructor(
     private baseUrl: string,
-    private timeout: number = 30000
+    private timeout: number = 30000,
   ) {}
 
   async request<T>(method: string, path: string, token: string): Promise<T> {
@@ -17,7 +17,7 @@ export class HttpClient implements IHttpClient {
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         signal: controller.signal,
@@ -31,9 +31,9 @@ export class HttpClient implements IHttpClient {
       }
 
       // Parse JSON response
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        throw new Error('Response is not JSON');
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("Response is not JSON");
       }
 
       const data = await response.json();
@@ -42,7 +42,7 @@ export class HttpClient implements IHttpClient {
       clearTimeout(timeoutId);
 
       // Handle timeout
-      if (error instanceof Error && error.name === 'AbortError') {
+      if (error instanceof Error && error.name === "AbortError") {
         throw new Error(`Request timeout after ${this.timeout}ms`);
       }
 

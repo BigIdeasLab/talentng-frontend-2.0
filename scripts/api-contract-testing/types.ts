@@ -1,7 +1,13 @@
 // Core types for API contract testing
 
 // Schema validation types
-export type SchemaType = 'string' | 'number' | 'boolean' | 'object' | 'array' | 'null';
+export type SchemaType =
+  | "string"
+  | "number"
+  | "boolean"
+  | "object"
+  | "array"
+  | "null";
 
 export interface SchemaField {
   type: SchemaType;
@@ -17,7 +23,7 @@ export interface Schema {
 // Endpoint configuration types
 export interface EndpointConfig {
   path: string;
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  method: "GET" | "POST" | "PUT" | "DELETE";
   schema: Schema;
   detailEndpoints?: DetailEndpointConfig[];
 }
@@ -35,7 +41,7 @@ export interface FeatureConfig {
 
 // Test result types
 export interface ValidationError {
-  type: 'missing_field' | 'type_mismatch' | 'http_error' | 'network_error';
+  type: "missing_field" | "type_mismatch" | "http_error" | "network_error";
   path: string;
   expected?: string;
   actual?: string;
@@ -62,7 +68,7 @@ export interface TestReport {
 
 // Authentication types
 export interface AuthConfig {
-  type: 'token' | 'email_password';
+  type: "token" | "email_password";
   token?: string;
   email?: string;
   password?: string;
