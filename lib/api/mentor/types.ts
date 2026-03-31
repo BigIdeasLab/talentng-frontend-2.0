@@ -26,6 +26,7 @@ export interface MentorProfile {
   visibility: Visibility;
   isFeatured: boolean;
   featuredUntil: string | null;
+  verificationStatus?: "pending" | "approved" | "rejected" | null;
   views: number;
   avgRating: number | null;
   totalSessions: number;

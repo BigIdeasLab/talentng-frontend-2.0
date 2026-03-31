@@ -71,6 +71,7 @@ export interface Opportunity {
   updatedAt: string;
   deletedAt: string | null;
   postedBy: PostedBy;
+  verificationStatus?: "pending" | "approved" | "rejected" | null;
   appliedAs?: ("talent" | "mentor")[];
   saved?: boolean;
   similar?: Opportunity[];

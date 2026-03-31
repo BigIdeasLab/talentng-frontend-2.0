@@ -1,5 +1,7 @@
 "use client";
 
+import { useVerificationStatus } from "@/hooks/useBusinessVerification";
+
 interface AboutTabProps {
   companyName?: string;
   bio?: string | null;
@@ -19,12 +21,22 @@ export function AboutTab({
   operatingModel = "—",
   location = "—",
 }: AboutTabProps) {
+  const { data: verificationStatus } = useVerificationStatus();
+  const isVerified = verificationStatus?.status === "approved";
+
   return (
     <div className="flex flex-col gap-7 p-3 md:p-4 lg:p-5 w-full max-w-[700px]">
       {/* About Section */}
       <div className="flex flex-col gap-4">
-        <h2 className="text-lg font-semibold text-black font-inter-tight">
+        <h2 className="text-lg font-semibold text-black font-inter-tight flex items-center gap-2">
           About {companyName}
+          {isVerified && (
+            <img
+              src="/verify.png"
+              alt="Verified"
+              className="w-5 h-5 flex-shrink-0"
+            />
+          )}
         </h2>
         <div className="flex flex-col gap-3 text-[13px] font-normal text-black font-inter-tight leading-[22px]">
           {bio ? (

@@ -27,6 +27,7 @@ interface Opportunity {
   rate: string;
   isSaved?: boolean;
   appliedAs?: ("talent" | "mentor")[];
+  verificationStatus?: "pending" | "approved" | "rejected" | null;
 }
 
 interface OpportunitiesGridProps {
@@ -178,9 +179,14 @@ export function OpportunitiesGrid({
                         />
                       </div>
                       <div className="flex flex-col items-start gap-[4px]">
-                        <h3 className="text-[13px] font-medium leading-normal font-inter-tight text-black">
-                          {opportunity.companyName}
-                        </h3>
+                        <div className="flex items-center gap-1.5">
+                          <h3 className="text-[13px] font-medium leading-normal font-inter-tight text-black">
+                            {opportunity.companyName}
+                          </h3>
+                          {opportunity.verificationStatus === 'approved' && (
+                            <img src="/verify.png" alt="Verified" className="w-5 h-5 flex-shrink-0" />
+                          )}
+                        </div>
                         <span className="text-[12px] font-light leading-normal font-inter-tight text-[#525866]">
                           {opportunity.date}
                         </span>

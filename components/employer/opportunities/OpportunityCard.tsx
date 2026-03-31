@@ -428,8 +428,13 @@ export function OpportunityCard({
               }}
             />
             <div className="flex flex-col gap-0.5">
-              <div className="text-xs font-medium font-inter-tight text-black">
-                {opportunity.companyName}
+              <div className="flex items-center gap-1.5">
+                <div className="text-xs font-medium font-inter-tight text-black">
+                  {opportunity.companyName}
+                </div>
+                {opportunity.verificationStatus === 'approved' && (
+                  <img src="/verify.png" alt="Verified" className="w-5 h-5 flex-shrink-0" />
+                )}
               </div>
               <div className="flex items-center gap-1.5 text-[11px] font-light font-inter-tight text-[#525866]">
                 <span>{opportunity.date}</span>

@@ -14,6 +14,7 @@ import { PageLoadingState } from "@/lib/page-utils";
 import { OpportunityCard } from "@/components/talent/opportunities/opportunity-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import type { DisplayOpportunity } from "@/components/talent/opportunities/types";
+import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
 
 type TabType = "about" | "opportunities";
 
@@ -220,9 +221,14 @@ export default function RecruiterProfilePage() {
               {/* Company Info */}
               <div className="flex flex-col items-center gap-[12px] w-full">
                 <div className="text-center">
-                  <h2 className="text-[16px] font-medium text-black font-inter-tight">
-                    {profile.company || profile.username}
-                  </h2>
+                  <div className="flex items-center justify-center gap-1.5">
+                    <h2 className="text-[16px] font-medium text-black font-inter-tight">
+                      {profile.company || profile.username}
+                    </h2>
+                    {profile.verificationStatus === 'approved' && (
+                      <img src="/verify.png" alt="Verified" className="w-5 h-5 flex-shrink-0" />
+                    )}
+                  </div>
                   {profile.industry && (
                     <p className="text-[13px] font-light text-[rgba(0,0,0,0.30)] font-inter-tight">
                       {profile.industry}

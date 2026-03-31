@@ -18,6 +18,7 @@ export interface RecruiterProfile {
   links: Record<string, any> | null;
   visibility: string | null;
   profileImageUrl: string | null;
+  verificationStatus?: "pending" | "approved" | "rejected" | null;
   // Notification preferences
   emailNewApplications: boolean;
   emailMarketing: boolean;

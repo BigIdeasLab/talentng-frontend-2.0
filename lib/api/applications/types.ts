@@ -27,6 +27,7 @@ export interface Opportunity {
   description?: string;
   location: string;
   logo?: string | null;
+  verificationStatus?: "pending" | "approved" | "rejected" | null;
   postedBy?: {
     id: string;
     username: string;

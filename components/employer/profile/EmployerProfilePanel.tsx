@@ -5,7 +5,6 @@ import { MapPin, Briefcase, Users } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
 import { useVerificationStatus } from "@/hooks/useBusinessVerification";
 
 interface EmployerProfilePanelProps {
@@ -134,7 +133,13 @@ export function EmployerProfilePanel({
               <h2 className="text-[16px] font-medium text-black font-inter-tight">
                 {company?.name || "Company Name"}
               </h2>
-              {isVerified && <VerifiedBadge size="md" showTooltip />}
+              {isVerified && (
+                <img
+                  src="/verify.png"
+                  alt="Verified"
+                  className="w-5 h-5 flex-shrink-0"
+                />
+              )}
             </div>
             {company?.tagline && (
               <p className="text-[13px] font-light text-[rgba(0,0,0,0.30)] font-inter-tight">

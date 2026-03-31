@@ -233,8 +233,13 @@ export function OpportunitiesTable({
             <div className="font-inter-tight text-[13px] font-medium text-black">
               {opportunity.title}
             </div>
-            <div className="font-inter-tight text-[12px] font-light text-[#525866]">
-              {opportunity.companyName}
+            <div className="flex items-center gap-1.5">
+              <div className="font-inter-tight text-[12px] font-light text-[#525866]">
+                {opportunity.companyName}
+              </div>
+              {opportunity.verificationStatus === 'approved' && (
+                <img src="/verify.png" alt="Verified" className="w-5 h-5 flex-shrink-0" />
+              )}
             </div>
           </div>
         </div>
@@ -347,8 +352,13 @@ export function OpportunitiesTable({
           <div className="font-inter-tight text-[13px] font-medium text-black">
             {opportunity.title}
           </div>
-          <div className="font-inter-tight text-[12px] font-light text-[#525866]">
-            {opportunity.companyName}
+          <div className="flex items-center gap-1.5">
+            <div className="font-inter-tight text-[12px] font-light text-[#525866]">
+              {opportunity.companyName}
+            </div>
+            {opportunity.verificationStatus === 'approved' && (
+              <img src="/verify.png" alt="Verified" className="w-5 h-5 flex-shrink-0" />
+            )}
           </div>
         </div>
         <div

@@ -77,6 +77,7 @@ export interface TalentProfile {
   visibility: "public" | "private" | "PUBLIC" | "PRIVATE";
   isFeatured: boolean;
   featuredUntil: string | null;
+  verificationStatus?: "pending" | "approved" | "rejected" | null;
   createdAt: string;
   updatedAt: string;
   views: number;

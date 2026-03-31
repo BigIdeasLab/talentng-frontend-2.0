@@ -363,32 +363,35 @@ export default function ApplicantProposalPage() {
 
   return (
     <div className="h-screen bg-white overflow-hidden flex flex-col">
-      <div className="flex-1 overflow-y-auto px-[64px] md:px-[120px] py-[24px]">
-        <div className="max-w-full flex flex-col gap-[25px]">
-          {/* Back Button */}
-          <Link
-            href="/applicants"
-            className="flex items-center gap-[8px] text-black/30 hover:text-black/50 transition-colors w-fit"
+      {/* Fixed Header */}
+      <div className="sticky top-0 z-10 bg-white border-b border-[#E1E4EA] px-[16px] md:px-[24px] py-[14px]">
+        <Link
+          href="/applicants"
+          className="flex items-center gap-[8px] text-black/30 hover:text-black/50 transition-colors w-fit"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M9.783 11.7826C9.71332 11.8525 9.63053 11.9079 9.53937 11.9458C9.4482 11.9837 9.35046 12.0031 9.25175 12.0031C9.15304 12.0031 9.0553 11.9837 8.96414 11.9458C8.87297 11.9079 8.79018 11.8525 8.7205 11.7826L5.7205 8.78255C5.65058 8.71287 5.5951 8.63008 5.55725 8.53891C5.5194 8.44775 5.49991 8.35001 5.49991 8.2513C5.49991 8.15259 5.5194 8.05485 5.55725 7.96369C5.5951 7.87252 5.65058 7.78973 5.7205 7.72005L8.7205 4.72005C8.8614 4.57915 9.0525 4.5 9.25175 4.5C9.45101 4.5 9.64211 4.57915 9.783 4.72005C9.9239 4.86095 10.0031 5.05204 10.0031 5.2513C10.0031 5.45056 9.9239 5.64165 9.783 5.78255L7.31488 8.25193L9.78488 10.7213C9.85449 10.7911 9.90966 10.8739 9.94724 10.965C9.98482 11.0561 10.0041 11.1538 10.0039 11.2523C10.0037 11.3509 9.98413 11.4484 9.94623 11.5394C9.90832 11.6304 9.85286 11.713 9.783 11.7826Z"
-                fill="#B2B2B2"
-              />
-            </svg>
-            <span className="font-inter-tight text-[13px] font-normal leading-normal">
-              Back to Applicants
-            </span>
-          </Link>
+            <path
+              d="M9.783 11.7826C9.71332 11.8525 9.63053 11.9079 9.53937 11.9458C9.4482 11.9837 9.35046 12.0031 9.25175 12.0031C9.15304 12.0031 9.0553 11.9837 8.96414 11.9458C8.87297 11.9079 8.79018 11.8525 8.7205 11.7826L5.7205 8.78255C5.65058 8.71287 5.5951 8.63008 5.55725 8.53891C5.5194 8.44775 5.49991 8.35001 5.49991 8.2513C5.49991 8.15259 5.5194 8.05485 5.55725 7.96369C5.5951 7.87252 5.65058 7.78973 5.7205 7.72005L8.7205 4.72005C8.8614 4.57915 9.0525 4.5 9.25175 4.5C9.45101 4.5 9.64211 4.57915 9.783 4.72005C9.9239 4.86095 10.0031 5.05204 10.0031 5.2513C10.0031 5.45056 9.9239 5.64165 9.783 5.78255L7.31488 8.25193L9.78488 10.7213C9.85449 10.7911 9.90966 10.8739 9.94724 10.965C9.98482 11.0561 10.0041 11.1538 10.0039 11.2523C10.0037 11.3509 9.98413 11.4484 9.94623 11.5394C9.90832 11.6304 9.85286 11.713 9.783 11.7826Z"
+              fill="#B2B2B2"
+            />
+          </svg>
+          <span className="font-inter-tight text-[13px] font-normal leading-normal">
+            Back to Applicants
+          </span>
+        </Link>
+      </div>
 
-          {/* Profile Card */}
+      <div className="flex-1 overflow-y-auto px-[16px] md:px-[24px] py-[24px] scrollbar-styled">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-[24px]">
+          {/* Left Column - Main Content */}
           <div className="flex flex-col gap-[18px]">
+            {/* Profile Card */}
             <div className="flex flex-col gap-[18px] p-[18px] rounded-[10px] border border-[#E1E4EA] bg-white">
               {/* Profile Header */}
               <div className="flex items-start justify-between">
@@ -433,111 +436,6 @@ export default function ApplicantProposalPage() {
                     </div>
                   </div>
                 </button>
-              </div>
-
-              {/* Stats Section */}
-              <div className="flex items-center gap-[200px] py-[18px] pr-[18px] border-t border-b border-[#E1E4EA]">
-                {/* Hires */}
-                <div className="flex items-center gap-[6px]">
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 15 15"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M12.5 4.375H2.5C1.80964 4.375 1.25 4.93464 1.25 5.625V11.875C1.25 12.5654 1.80964 13.125 2.5 13.125H12.5C13.1904 13.125 13.75 12.5654 13.75 11.875V5.625C13.75 4.93464 13.1904 4.375 12.5 4.375Z"
-                      stroke="#5C30FF"
-                      strokeWidth="1.6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M10 13.125V3.125C10 2.79348 9.8683 2.47554 9.63388 2.24112C9.39946 2.0067 9.08152 1.875 8.75 1.875H6.25C5.91848 1.875 5.60054 2.0067 5.36612 2.24112C5.1317 2.47554 5 2.79348 5 3.125V13.125"
-                      stroke="#5C30FF"
-                      strokeWidth="1.6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <span className="font-inter-tight text-[12px] font-normal text-black leading-normal">
-                    <span className="text-[#606060] text-[12px]">Hires:</span>{" "}
-                    {applicant.user.talentProfile.hiredCount}x
-                  </span>
-                </div>
-
-                {/* Location */}
-                <div className="flex items-center gap-[6px]">
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 15 15"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M8.51106 13.3544C8.24006 13.6081 7.87775 13.75 7.50069 13.75C7.12362 13.75 6.76138 13.6081 6.49031 13.3544C4.00814 11.0163 0.681725 8.40431 2.30392 4.61229C3.18102 2.56198 5.28646 1.25 7.50069 1.25C9.71494 1.25 11.8204 2.56198 12.6975 4.61229C14.3176 8.39956 10.9994 11.0243 8.51106 13.3544Z"
-                      stroke="#525866"
-                      strokeWidth="1.375"
-                    />
-                    <path
-                      d="M9.6875 6.875C9.6875 8.08312 8.70812 9.0625 7.5 9.0625C6.29188 9.0625 5.3125 8.08312 5.3125 6.875C5.3125 5.66688 6.29188 4.6875 7.5 4.6875C8.70812 4.6875 9.6875 5.66688 9.6875 6.875Z"
-                      stroke="#525866"
-                      strokeWidth="1.375"
-                    />
-                  </svg>
-                  <span className="font-inter-tight text-[12px] font-normal text-black leading-normal">
-                    {applicant.user.talentProfile.location}
-                  </span>
-                </div>
-
-                {/* Date */}
-                <div className="flex items-center gap-[6px]">
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 15 15"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M11.875 2.5H3.125C2.43464 2.5 1.875 3.05964 1.875 3.75V12.5C1.875 13.1904 2.43464 13.75 3.125 13.75H11.875C12.5654 13.75 13.125 13.1904 13.125 12.5V3.75C13.125 3.05964 12.5654 2.5 11.875 2.5Z"
-                      stroke="#525866"
-                      strokeWidth="1.6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M10 1.25V3.75"
-                      stroke="#525866"
-                      strokeWidth="1.6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M5 1.25V3.75"
-                      stroke="#525866"
-                      strokeWidth="1.6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M1.875 6.25H13.125"
-                      stroke="#525866"
-                      strokeWidth="1.6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <span className="font-inter-tight text-[12px] font-normal text-black leading-normal">
-                    {new Date(applicant.createdAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </span>
-                </div>
               </div>
             </div>
 
@@ -935,13 +833,212 @@ export default function ApplicantProposalPage() {
                 </div>
               </div>
             )}
+          </div>
 
-            {/* Actions Section */}
-            <div className="flex flex-col gap-[18px] p-[18px] pt-[23px] rounded-[10px] border border-[#E1E4EA] bg-white">
+          {/* Right Column - Sticky Sidebar */}
+          <div className="lg:sticky lg:top-0 lg:self-start flex flex-col gap-[14px]">
+            {/* Quick Info Card */}
+            <div className="flex flex-col gap-[14px] p-[14px] rounded-[10px] border border-[#E1E4EA] bg-white">
+              <h2 className="font-inter-tight text-[15px] font-semibold text-black leading-normal">
+                Quick Info
+              </h2>
+              <div className="flex flex-col gap-[14px]">
+                {/* Hires */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-[6px]">
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 15 15"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12.5 4.375H2.5C1.80964 4.375 1.25 4.93464 1.25 5.625V11.875C1.25 12.5654 1.80964 13.125 2.5 13.125H12.5C13.1904 13.125 13.75 12.5654 13.75 11.875V5.625C13.75 4.93464 13.1904 4.375 12.5 4.375Z"
+                        stroke="#5C30FF"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M10 13.125V3.125C10 2.79348 9.8683 2.47554 9.63388 2.24112C9.39946 2.0067 9.08152 1.875 8.75 1.875H6.25C5.91848 1.875 5.60054 2.0067 5.36612 2.24112C5.1317 2.47554 5 2.79348 5 3.125V13.125"
+                        stroke="#5C30FF"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span className="font-inter-tight text-[12px] font-normal text-[#606060] leading-normal">
+                      Hires
+                    </span>
+                  </div>
+                  <span className="font-inter-tight text-[12px] font-semibold text-black leading-normal">
+                    {applicant.user.talentProfile.hiredCount}x
+                  </span>
+                </div>
+
+                {/* Location */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-[6px]">
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 15 15"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M8.51106 13.3544C8.24006 13.6081 7.87775 13.75 7.50069 13.75C7.12362 13.75 6.76138 13.6081 6.49031 13.3544C4.00814 11.0163 0.681725 8.40431 2.30392 4.61229C3.18102 2.56198 5.28646 1.25 7.50069 1.25C9.71494 1.25 11.8204 2.56198 12.6975 4.61229C14.3176 8.39956 10.9994 11.0243 8.51106 13.3544Z"
+                        stroke="#525866"
+                        strokeWidth="1.375"
+                      />
+                      <path
+                        d="M9.6875 6.875C9.6875 8.08312 8.70812 9.0625 7.5 9.0625C6.29188 9.0625 5.3125 8.08312 5.3125 6.875C5.3125 5.66688 6.29188 4.6875 7.5 4.6875C8.70812 4.6875 9.6875 5.66688 9.6875 6.875Z"
+                        stroke="#525866"
+                        strokeWidth="1.375"
+                      />
+                    </svg>
+                    <span className="font-inter-tight text-[12px] font-normal text-[#606060] leading-normal">
+                      Location
+                    </span>
+                  </div>
+                  <span className="font-inter-tight text-[12px] font-semibold text-black leading-normal">
+                    {applicant.user.talentProfile.location}
+                  </span>
+                </div>
+
+                {/* Category */}
+                {applicant.user.talentProfile.category && (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-[6px]">
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 15 15"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M5.625 1.875H2.5C2.15482 1.875 1.875 2.15482 1.875 2.5V5.625C1.875 5.97018 2.15482 6.25 2.5 6.25H5.625C5.97018 6.25 6.25 5.97018 6.25 5.625V2.5C6.25 2.15482 5.97018 1.875 5.625 1.875Z"
+                          stroke="#525866"
+                          strokeWidth="1.375"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M12.5 1.875H9.375C9.02982 1.875 8.75 2.15482 8.75 2.5V5.625C8.75 5.97018 9.02982 6.25 9.375 6.25H12.5C12.8452 6.25 13.125 5.97018 13.125 5.625V2.5C13.125 2.15482 12.8452 1.875 12.5 1.875Z"
+                          stroke="#525866"
+                          strokeWidth="1.375"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M5.625 8.75H2.5C2.15482 8.75 1.875 9.02982 1.875 9.375V12.5C1.875 12.8452 2.15482 13.125 2.5 13.125H5.625C5.97018 13.125 6.25 12.8452 6.25 12.5V9.375C6.25 9.02982 5.97018 8.75 5.625 8.75Z"
+                          stroke="#525866"
+                          strokeWidth="1.375"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M12.5 8.75H9.375C9.02982 8.75 8.75 9.02982 8.75 9.375V12.5C8.75 12.8452 9.02982 13.125 9.375 13.125H12.5C12.8452 13.125 13.125 12.8452 13.125 12.5V9.375C13.125 9.02982 12.8452 8.75 12.5 8.75Z"
+                          stroke="#525866"
+                          strokeWidth="1.375"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <span className="font-inter-tight text-[12px] font-normal text-[#606060] leading-normal">
+                        Category
+                      </span>
+                    </div>
+                    <span className="font-inter-tight text-[12px] font-semibold text-black leading-normal">
+                      {applicant.user.talentProfile.category}
+                    </span>
+                  </div>
+                )}
+
+                {/* Date Applied */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-[6px]">
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 15 15"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M11.875 2.5H3.125C2.43464 2.5 1.875 3.05964 1.875 3.75V12.5C1.875 13.1904 2.43464 13.75 3.125 13.75H11.875C12.5654 13.75 13.125 13.1904 13.125 12.5V3.75C13.125 3.05964 12.5654 2.5 11.875 2.5Z"
+                        stroke="#525866"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M10 1.25V3.75"
+                        stroke="#525866"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M5 1.25V3.75"
+                        stroke="#525866"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M1.875 6.25H13.125"
+                        stroke="#525866"
+                        strokeWidth="1.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span className="font-inter-tight text-[12px] font-normal text-[#606060] leading-normal">
+                      Applied
+                    </span>
+                  </div>
+                  <span className="font-inter-tight text-[12px] font-semibold text-black leading-normal">
+                    {new Date(applicant.createdAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Skills Card */}
+            {applicant.user.talentProfile.skills &&
+              applicant.user.talentProfile.skills.length > 0 && (
+                <div className="flex flex-col gap-[14px] p-[14px] rounded-[10px] border border-[#E1E4EA] bg-white">
+                  <h2 className="font-inter-tight text-[15px] font-semibold text-black leading-normal">
+                    Skills
+                  </h2>
+                  <div className="flex flex-wrap gap-[8px]">
+                    {applicant.user.talentProfile.skills.map(
+                      (skill: string, index: number) => (
+                        <span
+                          key={index}
+                          className="px-[10px] py-[4px] rounded-[50px] bg-[#F5F5F5] border border-[#E1E4EA] font-inter-tight text-[12px] font-normal text-[#525866] leading-normal"
+                        >
+                          {skill}
+                        </span>
+                      ),
+                    )}
+                  </div>
+                </div>
+              )}
+
+            {/* Actions Card */}
+            <div className="flex flex-col gap-[18px] p-[14px] rounded-[10px] border border-[#E1E4EA] bg-white">
               <h2 className="font-inter-tight text-[15px] font-semibold text-black leading-normal">
                 Actions
               </h2>
-              <div className="flex items-center gap-[10px]">
+              <div className="flex flex-col gap-[10px]">
                 {/* Hire Talent Button */}
                 <button
                   onClick={() => setIsHireModalOpen(true)}
@@ -949,7 +1046,7 @@ export default function ApplicantProposalPage() {
                     applicant.status === "hired" ||
                     applicant.status === "rejected"
                   }
-                  className="flex items-center gap-[5px] h-8 px-3 rounded-[8px] border border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4a26cc] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center justify-center gap-[5px] h-9 w-full rounded-[8px] border border-[#5C30FF] bg-[#5C30FF] hover:bg-[#4a26cc] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg
                     width="15"
@@ -993,7 +1090,7 @@ export default function ApplicantProposalPage() {
                     applicant.status === "rejected" ||
                     hasActiveInterview
                   }
-                  className="flex items-center gap-1 h-8 px-[14px_20px_14px_14px] py-[12px] rounded-[8px] border border-[#E6E7EA] bg-white hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center justify-center gap-1 h-9 w-full rounded-[8px] border border-[#E6E7EA] bg-white hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg
                     width="13"
@@ -1043,7 +1140,7 @@ export default function ApplicantProposalPage() {
                     applicant.status === "hired" ||
                     applicant.status === "rejected"
                   }
-                  className="flex items-center justify-center gap-1 h-8 px-3 py-[12px] rounded-[8px] border border-[#E6E7EA] bg-white hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center justify-center gap-1 h-9 w-full rounded-[8px] border border-[#E6E7EA] bg-white hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg
                     width="15"
@@ -1080,6 +1177,33 @@ export default function ApplicantProposalPage() {
                 </button>
               </div>
             </div>
+
+            {/* View Full Profile Link */}
+            <button
+              onClick={() =>
+                router.push(`/discover-talent/${applicant.user.id}`)
+              }
+              className="flex items-center justify-center gap-[6px] h-9 w-full rounded-[8px] border border-[#E1E4EA] bg-[#F5F5F5] hover:bg-[#EBEBEB] transition-colors"
+            >
+              <span className="font-inter-tight text-[12px] font-medium text-[#525866] leading-normal">
+                View Full Profile
+              </span>
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M6 12L10 8L6 4"
+                  stroke="#525866"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
           </div>
         </div>
       </div>

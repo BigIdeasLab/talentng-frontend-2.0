@@ -31,6 +31,7 @@ export interface DisplayOpportunity {
   location?: string;
   experienceLevel?: string;
   duration?: string;
+  verificationStatus?: "pending" | "approved" | "rejected" | null;
 }
 
 // Grid component props

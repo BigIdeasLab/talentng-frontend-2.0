@@ -44,6 +44,7 @@ export interface OpportunityCard {
   appliedAs?: ("talent" | "mentor")[];
   saved?: boolean;
   createdAt?: string;
+  verificationStatus?: "pending" | "approved" | "rejected" | null;
 }
 
 // Component props

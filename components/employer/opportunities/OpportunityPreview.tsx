@@ -512,6 +512,9 @@ export function OpportunityPreview() {
                         <span className="font-inter-tight text-[15px] font-normal text-black/30">
                           {getCompanyName()}
                         </span>
+                        {displayProfile?.verificationStatus === 'approved' && (
+                          <img src="/verify.png" alt="Verified" className="w-5 h-5 flex-shrink-0" />
+                        )}
                         <span className="font-inter-tight text-[15px] font-normal text-black/30">
                           •
                         </span>

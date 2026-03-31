@@ -21,6 +21,7 @@ export interface UIProfileData {
     operatingModel?: string;
   };
   company?: string;
+  verificationStatus?: "pending" | "approved" | "rejected" | null;
   experience: {
     id: string;
     company: string;
