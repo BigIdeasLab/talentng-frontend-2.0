@@ -64,11 +64,11 @@ interface RecentReviewsProps {
 
 export function RecentReviews({ reviews }: RecentReviewsProps) {
   return (
-    <div className="flex flex-col gap-4 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white">
+    <div className="flex flex-col gap-4 p-4 md:p-6 rounded-2xl border border-[#E1E4EA] bg-white">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-1.5">
           <MessageSquare className="w-4 h-4 text-[#E9B305]" />
-          <h2 className="text-[15px] font-semibold font-inter-tight">
+          <h2 className="text-[16px] font-semibold font-inter-tight">
             Recent Reviews
           </h2>
         </div>
@@ -82,7 +82,7 @@ export function RecentReviews({ reviews }: RecentReviewsProps) {
         </Link>
       </div>
       {reviews.length === 0 ? (
-        <p className="text-[12px] text-[#606060] font-inter-tight text-center py-6">
+        <p className="text-[13px] text-[#606060] font-inter-tight text-center py-6">
           No reviews yet
         </p>
       ) : (

@@ -44,25 +44,23 @@ interface TopSkillsProps {
 
 export function TopSkills({ skills }: TopSkillsProps) {
   return (
-    <div
-      className={`flex flex-col gap-5 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white flex-shrink-0 ${cardHover}`}
-    >
+    <div className="flex flex-col gap-5 p-4 md:p-6 rounded-2xl border border-[#E1E4EA] bg-white flex-shrink-0">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-1.5">
           <Zap className="w-4 h-4 text-[#E9B305] fill-[#E9B305]" />
-          <h2 className="text-[15px] font-semibold font-inter-tight">
+          <h2 className="text-[16px] font-bold font-inter-tight text-[#111827]">
             Top Skills
           </h2>
         </div>
         <Link
           href="/profile/edit?section=professional"
-          className="px-2 py-1.5 rounded-md border border-gray-200 text-[12px] font-inter-tight text-black hover:bg-gray-50 transition-colors"
+          className="px-2 py-1.5 rounded-md border border-[#E1E4EA] text-[12px] font-inter-tight text-[#525866] hover:bg-gray-50 transition-colors"
         >
           Add Skills
         </Link>
       </div>
       {skills.length === 0 ? (
-        <p className="text-[12px] text-[#606060] font-inter-tight text-center py-6">
+        <p className="text-[13px] text-[#525866] font-inter-tight text-center py-6">
           No skills added yet
         </p>
       ) : (

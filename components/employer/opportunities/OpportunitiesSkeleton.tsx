@@ -58,37 +58,10 @@ function OpportunityCardSkeleton() {
 
 export function OpportunitiesSkeleton() {
   return (
-    <div className="h-screen overflow-y-auto overflow-x-hidden bg-white">
-      <div className="w-full mx-auto px-3 py-5 md:px-5 md:py-6">
-        {/* Header Skeleton */}
-        <div className="flex flex-col gap-4 mb-6">
-          <div className="flex justify-between items-center">
-            <Skeleton className="h-[24px] w-[150px]" />
-            <Skeleton className="h-[40px] w-[120px] rounded-lg" />
-          </div>
-          <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
-            <Skeleton className="flex-1 h-[38px] rounded-lg" />
-            <div className="flex gap-2">
-              <Skeleton className="h-[38px] w-[80px] rounded-lg" />
-              <Skeleton className="h-[38px] w-[120px] rounded-lg" />
-            </div>
-          </div>
-        </div>
-
-        {/* Tabs Skeleton */}
-        <div className="flex gap-4 mb-6 border-b border-[#E1E4EA] pb-2">
-          <Skeleton className="h-[20px] w-[60px]" />
-          <Skeleton className="h-[20px] w-[80px]" />
-          <Skeleton className="h-[20px] w-[60px]" />
-        </div>
-
-        {/* Grid Skeleton */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <OpportunityCardSkeleton key={i} />
-          ))}
-        </div>
-      </div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <OpportunityCardSkeleton key={i} />
+      ))}
     </div>
   );
 }

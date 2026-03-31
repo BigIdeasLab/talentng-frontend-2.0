@@ -299,15 +299,15 @@ export function AchievementsSection({
   achievements,
 }: AchievementsSectionProps) {
   return (
-    <div className="flex flex-col gap-5 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-[#FFFDF5] flex-shrink-0">
+    <div className="flex flex-col gap-5 p-4 md:p-6 rounded-2xl border border-[#E1E4EA] bg-white flex-shrink-0">
       <div className="flex items-center gap-1.5">
         <Award className="w-4 h-4 text-[#F59E0B]" />
-        <h2 className="text-[15px] font-semibold font-inter-tight">
+        <h2 className="text-[16px] font-semibold font-inter-tight">
           Achievements
         </h2>
       </div>
       {achievements.length === 0 ? (
-        <p className="text-[12px] text-[#606060] font-inter-tight text-center py-6">
+        <p className="text-[13px] text-[#606060] font-inter-tight text-center py-6">
           No achievements yet
         </p>
       ) : (

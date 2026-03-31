@@ -669,7 +669,7 @@ export default function SessionsPage() {
         </div>
 
         {/* Pagination - Mobile */}
-        {pagination && (
+        {pagination && pagination.total > 0 && (
           <div className="px-4 py-4 border-t border-[#E1E4EA] bg-white">
             <div className="flex flex-col gap-3">
               <div className="text-[13px] text-[#525866] font-inter-tight text-center">
@@ -808,7 +808,7 @@ export default function SessionsPage() {
         </div>
 
         {/* Pagination - Desktop */}
-        {pagination && (
+        {pagination && pagination.total > 0 && (
           <div className="flex-shrink-0 px-6 py-4 border-t border-[#E1E4EA] bg-white">
             <div className="flex items-center justify-between">
               <div className="text-[13px] text-[#525866] font-inter-tight">

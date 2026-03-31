@@ -285,44 +285,39 @@ export default function HiredTalentsPage() {
 
   return (
     <div className="h-screen bg-white overflow-hidden flex flex-col">
-      <div className="flex-1 overflow-y-auto px-3 md:px-8 py-5 md:py-6">
-        {/* Header Section */}
-        <div className="flex flex-col gap-5 md:gap-6 mb-6">
-          {/* Back Button */}
-          <Link
-            href="/applicants"
-            className="flex items-center gap-2 text-black/30 hover:text-black/50 transition-colors w-fit"
-          >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+      {/* Fixed Header with Border */}
+      <div className="w-full px-4 md:px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
+        {/* Title with Back Button and Description */}
+        <div className="flex flex-col gap-2 mb-[19px]">
+          <div className="flex items-center gap-2">
+            <Link
+              href="/applicants"
+              className="flex items-center justify-center w-6 h-6 text-black/30 hover:text-black/50 transition-colors"
             >
-              <path
-                d="M9.783 11.7826C9.71332 11.8525 9.63053 11.9079 9.53937 11.9458C9.4482 11.9837 9.35046 12.0031 9.25175 12.0031C9.15304 12.0031 9.0553 11.9837 8.96414 11.9458C8.87297 11.9079 8.79018 11.8525 8.7205 11.7826L5.7205 8.78255C5.65058 8.71287 5.5951 8.63008 5.55725 8.53891C5.5194 8.44775 5.49991 8.35001 5.49991 8.2513C5.49991 8.15259 5.5194 8.05485 5.55725 7.96369C5.5951 7.87252 5.65058 7.78973 5.7205 7.72005L8.7205 4.72005C8.8614 4.57915 9.0525 4.5 9.25175 4.5C9.45101 4.5 9.64211 4.57915 9.783 4.72005C9.9239 4.86095 10.0031 5.05204 10.0031 5.2513C10.0031 5.45056 9.9239 5.64165 9.783 5.78255L7.31488 8.25193L9.78488 10.7213C9.85449 10.7911 9.90966 10.8739 9.94724 10.965C9.98482 11.0561 10.0041 11.1538 10.0039 11.2523C10.0037 11.3509 9.98413 11.4484 9.94623 11.5394C9.90832 11.6304 9.85286 11.713 9.783 11.7826Z"
-                fill="#B2B2B2"
-              />
-            </svg>
-            <span className="font-inter-tight text-[13px] font-normal">
-              Back to applicants
-            </span>
-          </Link>
-
-          {/* Title and Description */}
-          <div className="flex flex-col gap-2">
-            <h1 className="font-inter-tight text-[21px] font-medium text-black leading-5">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9.783 11.7826C9.71332 11.8525 9.63053 11.9079 9.53937 11.9458C9.4482 11.9837 9.35046 12.0031 9.25175 12.0031C9.15304 12.0031 9.0553 11.9837 8.96414 11.9458C8.87297 11.9079 8.79018 11.8525 8.7205 11.7826L5.7205 8.78255C5.65058 8.71287 5.5951 8.63008 5.55725 8.53891C5.5194 8.44775 5.49991 8.35001 5.49991 8.2513C5.49991 8.15259 5.5194 8.05485 5.55725 7.96369C5.5951 7.87252 5.65058 7.78973 5.7205 7.72005L8.7205 4.72005C8.8614 4.57915 9.0525 4.5 9.25175 4.5C9.45101 4.5 9.64211 4.57915 9.783 4.72005C9.9239 4.86095 10.0031 5.05204 10.0031 5.2513C10.0031 5.45056 9.9239 5.64165 9.783 5.78255L7.31488 8.25193L9.78488 10.7213C9.85449 10.7911 9.90966 10.8739 9.94724 10.965C9.98482 11.0561 10.0041 11.1538 10.0039 11.2523C10.0037 11.3509 9.98413 11.4484 9.94623 11.5394C9.90832 11.6304 9.85286 11.713 9.783 11.7826Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </Link>
+            <h1 className="font-inter-tight text-[16px] font-medium text-black leading-[16px]">
               Hired Talents
             </h1>
-            <p className="font-inter-tight text-[13px] font-normal text-black/30">
-              View all talents you&apos;ve hired across opportunities
-            </p>
           </div>
+          <p className="font-inter-tight text-[13px] font-normal text-black/30">
+            View all talents you&apos;ve hired across opportunities
+          </p>
         </div>
 
         {/* Search and Filters */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mb-6">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
           {/* Search Container */}
           <div className="flex-1 max-w-full sm:max-w-[550px]">
             <SearchInput
@@ -464,7 +459,10 @@ export default function HiredTalentsPage() {
           </div>
         </div>
 
-        {/* Talents Grid */}
+      </div>
+
+      {/* Scrollable Content Area */}
+      <div className="flex-1 overflow-y-auto px-4 md:px-[25px] py-4">
         {filteredTalents.length === 0 ? (
           <EmptyState
             title={

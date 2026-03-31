@@ -2,7 +2,6 @@ import { Eye, Briefcase, Bookmark, Target } from "lucide-react";
 import Link from "next/link";
 import type { TalentDashboardStats } from "@/lib/api/talent";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
-import { cardHover } from "@/lib/theme/effects";
 
 interface StatCardProps {
   title: string;
@@ -40,15 +39,15 @@ function StatCard({
     <>
       <div className="flex justify-between items-center">
         <div className="flex flex-col gap-2">
-          <h3 className="text-[#606060] text-[12px] font-medium font-inter-tight">
+          <h3 className="text-[#525866] text-[11px] font-medium font-inter-tight uppercase tracking-wide">
             {title}
           </h3>
-          <p className="text-[20px] md:text-[24px] font-bold font-inter-tight group-hover:text-blue-600 transition-colors">
+          <p className="text-[20px] md:text-[24px] font-bold font-inter-tight text-[#111827]">
             {value}
           </p>
         </div>
         <div
-          className={`w-[36px] h-[36px] md:w-[40px] md:h-[40px] rounded-full ${iconBg} flex items-center justify-center group-hover:scale-110 transition-transform`}
+          className={`w-[36px] h-[36px] md:w-[40px] md:h-[40px] rounded-full ${iconBg} flex items-center justify-center`}
         >
           <div className={iconColor} style={iconColorStyle}>
             {icon}
@@ -56,7 +55,7 @@ function StatCard({
         </div>
       </div>
       {trend ? (
-        <div className="flex items-center gap-1 md:hidden lg:flex">
+        <div className="flex items-center gap-1">
           <svg
             width="10"
             height="8"
@@ -84,7 +83,7 @@ function StatCard({
           </span>
         </div>
       ) : (
-        <p className="text-[#606060] text-[11px] font-medium font-inter-tight md:hidden lg:block">
+        <p className="text-[#525866] text-[11px] font-medium font-inter-tight">
           {subtitle}
         </p>
       )}
@@ -95,8 +94,14 @@ function StatCard({
     return (
       <Link
         href={href}
-        className={`flex flex-col justify-center gap-3 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] ${cardHover} ${gradient ?? ""} group transition-all`}
+        className={`flex flex-col justify-center gap-3 p-4 rounded-2xl border border-[#E1E4EA] transition-colors ${gradient ?? ""}`}
         style={gradientStyle}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = ROLE_COLORS.talent.primary;
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = '#E1E4EA';
+        }}
       >
         {content}
       </Link>
@@ -104,8 +109,8 @@ function StatCard({
   }
 
   return (
-    <div
-      className={`flex flex-col justify-center gap-3 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] ${cardHover} ${gradient ?? ""}`}
+    <div 
+      className={`flex flex-col justify-center gap-3 p-4 rounded-2xl border border-[#E1E4EA] ${gradient ?? ""}`}
       style={gradientStyle}
     >
       {content}

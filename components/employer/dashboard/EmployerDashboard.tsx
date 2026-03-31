@@ -141,7 +141,7 @@ const EmployerDashboard = mobileOptimizedMemo(function EmployerDashboard() {
   }
 
   return (
-    <div className="px-4 py-6 md:px-8 md:py-7 flex flex-col gap-5 h-full overflow-y-auto scrollbar-styled">
+    <div className="flex flex-col gap-4 px-3 py-4 md:px-5 md:py-5 h-full overflow-y-auto scrollbar-styled">
       {/* Welcome Header */}
       <WelcomeHeader
         companyName={data?.companyName ?? "Employer"}
@@ -150,7 +150,7 @@ const EmployerDashboard = mobileOptimizedMemo(function EmployerDashboard() {
       />
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 flex-shrink-0">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 flex-shrink-0">
         <StatsCard
           icon={<Users className="w-5 h-5" strokeWidth={1.6} />}
           value={formattedStats.totalApplicants.value}
@@ -214,7 +214,7 @@ const EmployerDashboard = mobileOptimizedMemo(function EmployerDashboard() {
       </div>
 
       {/* Weekly Overview and Hiring Pipeline */}
-      <div className="grid grid-cols-1 lg:grid-cols-[5fr_3fr] gap-4 flex-shrink-0">
+      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-4 flex-shrink-0">
         <WeeklyOverviewChart data={data?.weeklyOverview} />
         <HiringPipeline data={data?.hiringPipeline} />
       </div>

@@ -291,59 +291,57 @@ export function RecruiterSidebar({
 
       {/* Content Container */}
       <div className="flex-1 md:px-[8px] lg:px-[20px] py-[8px] overflow-y-auto">
+        {/* Profile Switcher */}
+        <div className="mb-4 md:hidden lg:block">
+          <ProfileSwitcher />
+        </div>
+
+        {/* Main Navigation */}
         <div className="flex flex-col gap-[6px]">
-          {/* Profile Switcher */}
-          <div className="md:hidden lg:block">
-            <ProfileSwitcher />
-          </div>
+          {menuItems.map((item) => {
+            const isActive = pathname === item.href;
+            const isNotification = item.id === "notification";
+            const MenuComponent = isNotification ? "button" : "a";
 
-          {/* Main Navigation */}
-          <div className="flex flex-col gap-[6px]">
-            {menuItems.map((item) => {
-              const isActive = pathname === item.href;
-              const isNotification = item.id === "notification";
-              const MenuComponent = isNotification ? "button" : "a";
-
-              return (
-                <MenuComponent
-                  key={item.id}
-                  href={isNotification ? undefined : item.href}
-                  onClick={(e: any) => {
-                    if (isNotification) {
-                      handleNotificationClick(e);
-                    } else {
-                      onItemSelect?.(item.id);
-                    }
-                  }}
-                  className={cn(
-                    sidebarItemBase,
-                    isActive ? sidebarItemActive : sidebarItemInactive,
-                    "md:justify-center lg:justify-start",
-                  )}
-                  style={
-                    isActive
-                      ? {
-                          backgroundColor: ROLE_COLORS.recruiter.light,
-                          borderColor: ROLE_COLORS.recruiter.dark,
-                        }
-                      : undefined
+            return (
+              <MenuComponent
+                key={item.id}
+                href={isNotification ? undefined : item.href}
+                onClick={(e: any) => {
+                  if (isNotification) {
+                    handleNotificationClick(e);
+                  } else {
+                    onItemSelect?.(item.id);
                   }
-                >
-                  {item.icon}
-                  <span className="text-[13px] font-inter-tight text-left flex-1 md:hidden lg:inline">
-                    {item.label}
-                  </span>
-                  {item.badge !== undefined && item.badge > 0 && (
-                    <div className="flex items-center justify-center w-5 h-5 rounded-full bg-[#E63C23] flex-shrink-0 md:absolute md:top-1 md:right-1 lg:static">
-                      <span className="text-[11px] font-semibold text-white font-inter-tight">
-                        {item.badge}
-                      </span>
-                    </div>
-                  )}
-                </MenuComponent>
-              );
-            })}
-          </div>
+                }}
+                className={cn(
+                  sidebarItemBase,
+                  isActive ? sidebarItemActive : sidebarItemInactive,
+                  "md:justify-center lg:justify-start",
+                )}
+                style={
+                  isActive
+                    ? {
+                        backgroundColor: ROLE_COLORS.recruiter.light,
+                        borderColor: ROLE_COLORS.recruiter.dark,
+                      }
+                    : undefined
+                }
+              >
+                {item.icon}
+                <span className="text-[13px] font-inter-tight text-left flex-1 md:hidden lg:inline">
+                  {item.label}
+                </span>
+                {item.badge !== undefined && item.badge > 0 && (
+                  <div className="flex items-center justify-center w-5 h-5 rounded-full bg-[#E63C23] flex-shrink-0 md:absolute md:top-1 md:right-1 lg:static">
+                    <span className="text-[11px] font-semibold text-white font-inter-tight">
+                      {item.badge}
+                    </span>
+                  </div>
+                )}
+              </MenuComponent>
+            );
+          })}
         </div>
       </div>
 

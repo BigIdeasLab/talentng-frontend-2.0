@@ -189,7 +189,7 @@ export function EmployerOpportunities() {
           </div>
 
           {/* Scrollable Content with Skeleton */}
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto scrollbar-styled">
             <div className="px-3 md:px-5 pt-5 md:pt-6">
               <OpportunitiesSkeleton />
             </div>
@@ -233,7 +233,7 @@ export function EmployerOpportunities() {
         </div>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto scrollbar-styled">
           <div className="px-3 md:px-5 pt-5 md:pt-6 pb-6">
             {/* Opportunities Grid or Empty State */}
             {filteredOpportunities.length === 0 ? (
@@ -277,7 +277,7 @@ export function EmployerOpportunities() {
         </div>
 
         {/* Pagination Controls - Desktop */}
-        {opportunitiesRaw?.pagination && (
+        {opportunitiesRaw?.pagination && opportunitiesRaw.pagination.total > 0 && (
           <div className="hidden md:flex items-center justify-between px-5 py-4 border-t border-[#E1E4EA] flex-shrink-0">
             <div className="text-[13px] text-[#525866] font-inter-tight">
               Showing {opportunitiesRaw.pagination.offset + 1} to{" "}
@@ -312,7 +312,7 @@ export function EmployerOpportunities() {
         )}
 
         {/* Pagination Controls - Mobile */}
-        {opportunitiesRaw?.pagination && (
+        {opportunitiesRaw?.pagination && opportunitiesRaw.pagination.total > 0 && (
           <div className="md:hidden px-4 py-4 border-t border-[#E1E4EA] bg-white flex-shrink-0">
             <div className="flex flex-col gap-3">
               <div className="text-[13px] text-[#525866] font-inter-tight text-center">
@@ -356,7 +356,7 @@ export function EmployerOpportunities() {
       </div>
 
       {/* Mobile Layout - Single scroll container */}
-      <div className="md:hidden h-[calc(100vh-60px)] overflow-y-auto bg-white">
+      <div className="md:hidden h-[calc(100vh-60px)] overflow-y-auto scrollbar-styled bg-white">
         {/* Header */}
         <div className="px-4 pt-[19px] pb-4 border-b border-[#E1E4EA]">
           <div className="mb-[19px]">
@@ -429,7 +429,7 @@ export function EmployerOpportunities() {
         </div>
 
         {/* Pagination - Mobile */}
-        {opportunitiesRaw?.pagination && (
+        {opportunitiesRaw?.pagination && opportunitiesRaw.pagination.total > 0 && (
           <div className="px-4 py-4 border-t border-[#E1E4EA] bg-white">
             <div className="flex flex-col gap-3">
               <div className="text-[13px] text-[#525866] font-inter-tight text-center">

@@ -27,13 +27,13 @@ interface WeeklyOverviewProps {
 
 export function WeeklyOverview({ data }: WeeklyOverviewProps) {
   return (
-    <div className="flex flex-col gap-5 p-4 md:p-6 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white">
+    <div className="flex flex-col gap-5 p-4 md:p-6 rounded-2xl border border-[#E1E4EA] bg-white">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <div className="flex flex-col gap-2">
-          <h2 className="text-[15px] font-bold font-inter-tight">
+          <h2 className="text-[16px] font-bold font-inter-tight">
             Weekly Overview
           </h2>
-          <p className="text-[12px] text-[#606060] font-inter-tight">
+          <p className="text-[13px] text-[#606060] font-inter-tight">
             Sessions and profile views this week
           </p>
         </div>

@@ -36,10 +36,10 @@ function StatCard({
     <>
       <div className="flex justify-between items-center">
         <div className="flex flex-col gap-2">
-          <h3 className="text-[#606060] text-[12px] font-medium font-inter-tight">
+          <h3 className="text-[#525866] text-[11px] font-medium font-inter-tight uppercase">
             {title}
           </h3>
-          <p className="text-[20px] md:text-[24px] font-bold font-inter-tight group-hover:text-[#DB2777] transition-colors">
+          <p className="text-[#111827] text-[24px] font-bold font-inter-tight transition-colors">
             {value}
           </p>
         </div>
@@ -85,7 +85,7 @@ function StatCard({
     return (
       <Link
         href={href}
-        className={`flex flex-col justify-center gap-3 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] ${gradient ?? ""} group transition-all hover:-translate-y-1`}
+        className={`flex flex-col justify-center gap-3 p-4 rounded-2xl border border-[#E1E4EA] bg-white ${gradient ?? ""} group transition-all hover:border-[#e63c23]`}
         style={gradientStyle}
       >
         {content}
@@ -95,7 +95,7 @@ function StatCard({
 
   return (
     <div
-      className={`flex flex-col justify-center gap-3 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] ${gradient ?? ""}`}
+      className={`flex flex-col justify-center gap-3 p-4 rounded-2xl border border-[#E1E4EA] bg-white ${gradient ?? ""}`}
       style={gradientStyle}
     >
       {content}

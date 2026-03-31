@@ -202,7 +202,98 @@ export default function ApplicantsPage() {
 
   // Only show skeleton on initial load
   if (isInitialLoad && (isLoading || isPending || !response)) {
-    return <ApplicantsSkeleton />;
+    return (
+      <div className="flex flex-col h-[calc(100vh-60px)] md:h-screen overflow-x-hidden bg-white">
+        {/* Header */}
+        <div className="w-full px-3 md:px-5 pt-5 md:pt-6 border-b border-[#E1E4EA] flex-shrink-0">
+          {/* Title Row */}
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px]">
+              Applicants
+            </h1>
+            <Link
+              href="/applicants/hired-talents"
+              className="flex items-center gap-[5px] px-[14px] py-[7px] rounded-[8px] border border-[#E1E4EA] hover:bg-gray-50 transition-colors cursor-pointer"
+            >
+              <Users className="w-[14px] h-[14px] text-[#525866]" />
+              <span className="font-inter-tight text-[13px] font-normal text-[#525866] leading-normal">
+                Hired Talents (0)
+              </span>
+            </Link>
+          </div>
+
+          {/* Search Bar and Filter */}
+          <div className="flex items-center gap-[8px] mb-4">
+            <div className="flex-1 max-w-[585px]">
+              <SearchInput
+                value={searchQuery}
+                onChange={setSearchQuery}
+                onSearch={setSearchQuery}
+                placeholder="Search name, role..."
+                debounceDelay={500}
+              />
+            </div>
+
+            <div className="relative flex-shrink-0">
+              <button
+                onClick={() => setIsFilterOpen(true)}
+                className="flex items-center gap-1.5 px-3 h-9 rounded-lg transition-colors flex-shrink-0 hover:bg-gray-50 border border-transparent"
+              >
+                <SlidersHorizontal className="w-[15px] h-[15px]" />
+                <span className="text-xs font-normal font-inter-tight">
+                  Filter
+                </span>
+              </button>
+            </div>
+
+            {/* Sort Button */}
+            <div className="relative group flex-shrink-0">
+              <button className="h-[38px] px-[15px] py-[7px] flex items-center gap-[5px] bg-[#F5F5F5] rounded-[8px] hover:bg-gray-100 transition-colors">
+                <span className="text-[13px] font-normal text-black font-inter-tight">
+                  Newest
+                </span>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.2826 6.2209C11.3525 6.29058 11.4079 6.37338 11.4458 6.46454C11.4837 6.5557 11.5031 6.65344 11.5031 6.75215C11.5031 6.85086 11.4837 6.9486 11.4458 7.03977C11.4079 7.13093 11.3525 7.21373 11.2826 7.2834L8.28255 10.2834C8.21287 10.3533 8.13008 10.4088 8.03892 10.4467C7.94775 10.4845 7.85001 10.504 7.7513 10.504C7.65259 10.504 7.55485 10.4845 7.46369 10.4467C7.37252 10.4088 7.28973 10.3533 7.22005 10.2834L4.22005 7.2834C4.07915 7.14251 4 6.95141 4 6.75215C4 6.5529 4.07915 6.3618 4.22005 6.2209C4.36095 6.08001 4.55204 6.00085 4.7513 6.00085C4.95056 6.00085 5.14165 6.08001 5.28255 6.2209L7.75193 8.68903L10.2213 6.21903C10.2911 6.14942 10.3739 6.09425 10.465 6.05666C10.5561 6.01908 10.6538 5.99983 10.7523 6C10.8509 6.00018 10.9484 6.01977 11.0394 6.05768C11.1304 6.09558 11.213 6.15105 11.2826 6.2209Z"
+                    fill="black"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Filter Tabs */}
+          <div className="flex items-center gap-5 border-b border-transparent mb-6 overflow-x-auto scrollbar-hide">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-3 py-1.5 text-sm md:text-xs font-medium font-inter-tight whitespace-nowrap transition-colors flex-shrink-0 rounded ${
+                  activeTab === tab.id
+                    ? "text-black border-b-2 border-black"
+                    : "text-black/30"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Content with Skeleton */}
+        <div className="flex-1 overflow-hidden">
+          <div className="h-full overflow-y-auto scrollbar-styled p-4 md:p-6">
+            <ApplicantsSkeleton />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
@@ -353,7 +444,7 @@ export default function ApplicantsPage() {
 
       {/* Content */}
       <div className="flex-1 overflow-hidden">
-        <div className="h-full overflow-y-auto p-4 md:p-6">
+        <div className="h-full overflow-y-auto scrollbar-styled p-4 md:p-6">
           {filteredApplicants.length === 0 ? (
             <EmptyState
               icon={Users}

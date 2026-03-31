@@ -55,56 +55,30 @@ function RowSkeleton() {
 
 export function ApplicantsSkeleton() {
   return (
-    <div className="h-screen overflow-x-hidden bg-white flex flex-col">
-      {/* Header */}
-      <div className="w-full px-[25px] pt-[19px] pb-[16px] border-b border-[#E1E4EA] flex-shrink-0">
-        <div className="flex items-center justify-between mb-[19px]">
-          <Skeleton className="h-[16px] w-[100px]" />
-          <Skeleton className="h-[34px] w-[140px] rounded-[8px]" />
-        </div>
-
-        <div className="flex items-center gap-[8px] mb-[19px]">
-          <Skeleton className="flex-1 max-w-[585px] h-[38px] rounded-[8px]" />
-          <Skeleton className="h-[38px] w-[80px] rounded-[8px]" />
-        </div>
-
-        <div className="flex items-center gap-[8px]">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} className="h-[30px] w-[70px] rounded" />
+    <div className="rounded-[16px] border border-[#E1E4EA] bg-white overflow-hidden">
+      {/* Table Header */}
+      <div className="px-[24px] py-[16px] border-b border-[#E1E4EA]">
+        <div className="grid grid-cols-[40px_1fr_80px_1.2fr_140px_120px_110px_1.3fr] gap-4">
+          {[
+            "S/N",
+            "Talents",
+            "Hires",
+            "Opportunity",
+            "Location",
+            "Date Applied",
+            "Status",
+            "Actions",
+          ].map((h) => (
+            <Skeleton key={h} className="h-[13px] w-[60px]" />
           ))}
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-hidden">
-        <div className="h-full overflow-y-auto p-4 md:p-6">
-          <div className="rounded-[16px] border border-[#E1E4EA] bg-white overflow-hidden">
-            {/* Table Header */}
-            <div className="px-[24px] py-[16px] border-b border-[#E1E4EA]">
-              <div className="grid grid-cols-[40px_1fr_80px_1.2fr_140px_120px_110px_1.3fr] gap-4">
-                {[
-                  "S/N",
-                  "Talents",
-                  "Hires",
-                  "Opportunity",
-                  "Location",
-                  "Date Applied",
-                  "Status",
-                  "Actions",
-                ].map((h) => (
-                  <Skeleton key={h} className="h-[13px] w-[60px]" />
-                ))}
-              </div>
-            </div>
-
-            {/* Table Rows */}
-            <div className="px-[24px] py-[19px] flex flex-col gap-[19px]">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <RowSkeleton key={i} />
-              ))}
-            </div>
-          </div>
-        </div>
+      {/* Table Rows */}
+      <div className="px-[24px] py-[19px] flex flex-col gap-[19px]">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <RowSkeleton key={i} />
+        ))}
       </div>
     </div>
   );

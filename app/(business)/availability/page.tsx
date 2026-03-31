@@ -426,10 +426,6 @@ export default function AvailabilityPage() {
     return <PageLoadingState message="Checking access..." />;
   }
 
-  if (isLoading) {
-    return <AvailabilitySkeleton />;
-  }
-
   return (
     <div className="h-[calc(100vh-60px)] md:h-screen overflow-x-hidden bg-white flex flex-col">
       {/* Desktop Header */}
@@ -474,7 +470,13 @@ export default function AvailabilityPage() {
       </div>
 
       {/* ============ Mobile Layout ============ */}
-      <div className="md:hidden flex-1 overflow-y-auto">
+      <div className="md:hidden flex-1 overflow-y-auto scrollbar-styled">
+        {isLoading ? (
+          <div className="p-4">
+            <AvailabilitySkeleton />
+          </div>
+        ) : (
+          <>
         {/* Header - scrolls with content */}
         <div className="w-full px-4 pt-[19px] pb-4 border-b border-[#E1E4EA]">
           <div className="flex items-center justify-between mb-4">
@@ -842,6 +844,8 @@ export default function AvailabilityPage() {
             </p>
           </div>
         </div>
+        </>
+        )}
       </div>
 
       {/* Mobile Sticky Bottom Save Bar */}
@@ -875,7 +879,11 @@ export default function AvailabilityPage() {
       )}
 
       {/* ============ Desktop Content ============ */}
-      <div className="hidden md:block flex-1 overflow-y-auto p-6">
+      <div className="hidden md:block flex-1 overflow-y-auto scrollbar-styled p-6">
+        {isLoading ? (
+          <AvailabilitySkeleton />
+        ) : (
+          <>
         {/* Stats & Quick Actions */}
         <div className="mb-5 flex flex-col md:flex-row flex-wrap items-stretch md:items-center justify-between gap-4">
           <div className="flex gap-3 flex-wrap">
@@ -1295,6 +1303,8 @@ export default function AvailabilityPage() {
             week.
           </p>
         </div>
+        </>
+        )}
       </div>
 
       <ConfirmationModal

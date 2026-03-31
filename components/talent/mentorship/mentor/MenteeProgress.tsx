@@ -72,11 +72,11 @@ interface MenteeProgressProps {
 
 export function MenteeProgress({ mentees }: MenteeProgressProps) {
   return (
-    <div className="flex flex-col gap-4 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white">
+    <div className="flex flex-col gap-4 p-4 md:p-6 rounded-2xl border border-[#E1E4EA] bg-white">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-1.5">
           <Target className="w-4 h-4 text-[#11B981]" />
-          <h2 className="text-[15px] font-bold font-inter-tight">
+          <h2 className="text-[16px] font-bold font-inter-tight">
             Mentee Progress
           </h2>
         </div>
@@ -91,7 +91,7 @@ export function MenteeProgress({ mentees }: MenteeProgressProps) {
       </div>
       <div className="flex flex-col gap-3">
         {mentees.length === 0 ? (
-          <p className="text-[12px] text-[#606060] font-inter-tight text-center py-6">
+          <p className="text-[13px] text-[#606060] font-inter-tight text-center py-6">
             No mentee data available
           </p>
         ) : (

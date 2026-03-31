@@ -382,7 +382,7 @@ export function ProfileSwitcher() {
 
   return (
     <div
-      className="w-full px-[10px] py-[12px] rounded-lg"
+      className="w-full px-[10px] py-[12px] rounded-lg border border-[#E1E4EA]"
       style={{ backgroundColor: roleColors.light }}
     >
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>

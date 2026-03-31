@@ -100,11 +100,9 @@ interface RecentApplicationsProps {
 
 export function RecentApplications({ applications }: RecentApplicationsProps) {
   return (
-    <div
-      className={`flex flex-col gap-4 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white ${cardHover}`}
-    >
+    <div className="flex flex-col gap-4 p-4 md:p-6 rounded-2xl border border-[#E1E4EA] bg-white">
       <div className="flex justify-between items-center">
-        <h2 className="text-[15px] font-bold font-inter-tight">
+        <h2 className="text-[16px] font-bold font-inter-tight text-[#111827]">
           Recent Applications
         </h2>
         <Link
@@ -118,7 +116,7 @@ export function RecentApplications({ applications }: RecentApplicationsProps) {
       </div>
       <div className="flex flex-col gap-3">
         {applications.length === 0 ? (
-          <p className="text-[12px] text-[#606060] font-inter-tight text-center py-6">
+          <p className="text-[13px] text-[#525866] font-inter-tight text-center py-6">
             No applications yet
           </p>
         ) : (

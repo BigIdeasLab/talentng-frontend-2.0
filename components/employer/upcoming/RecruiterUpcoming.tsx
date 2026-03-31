@@ -257,7 +257,7 @@ export function RecruiterUpcoming() {
           </div>
 
           {/* Pagination Controls - Desktop */}
-          {pagination && (
+          {pagination && pagination.total > 0 && (
             <div className="hidden md:flex items-center justify-between px-5 py-4 border-t border-[#E1E4EA]">
               <div className="text-[13px] text-[#525866] font-inter-tight">
                 Showing {pagination.offset + 1} to{" "}
@@ -290,7 +290,7 @@ export function RecruiterUpcoming() {
           )}
 
           {/* Pagination Controls - Mobile */}
-          {pagination && (
+          {pagination && pagination.total > 0 && (
             <div className="md:hidden px-4 py-4 border-t border-[#E1E4EA] bg-white">
               <div className="flex flex-col gap-3">
                 <div className="text-[13px] text-[#525866] font-inter-tight text-center">

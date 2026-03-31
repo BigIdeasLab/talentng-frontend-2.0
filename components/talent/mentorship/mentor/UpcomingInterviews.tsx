@@ -81,19 +81,19 @@ interface UpcomingInterviewsProps {
 
 export function UpcomingInterviews({ sessions }: UpcomingInterviewsProps) {
   return (
-    <div className="flex flex-col gap-4 p-4 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.11)] bg-white">
+    <div className="flex flex-col gap-4 p-4 md:p-6 rounded-2xl border border-[#E1E4EA] bg-white">
       <div className="flex items-center gap-1.5">
         <Calendar
           className="w-4 h-4"
           style={{ color: ROLE_COLORS.mentor.dark }}
         />
-        <h2 className="text-[15px] font-bold font-inter-tight">
+        <h2 className="text-[16px] font-bold font-inter-tight">
           Upcoming Sessions
         </h2>
       </div>
       <div className="flex flex-col gap-3">
         {sessions.length === 0 ? (
-          <p className="text-[12px] text-[#606060] font-inter-tight text-center py-6">
+          <p className="text-[13px] text-[#606060] font-inter-tight text-center py-6">
             No upcoming sessions
           </p>
         ) : (

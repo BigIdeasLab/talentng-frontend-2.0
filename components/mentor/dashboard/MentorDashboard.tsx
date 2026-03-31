@@ -44,7 +44,7 @@ export default function MentorDashboard() {
   }
 
   return (
-    <div className="px-4 py-6 md:px-8 md:py-7 flex flex-col gap-5 h-full overflow-y-auto scrollbar-styled">
+    <div className="flex flex-col gap-4 px-3 py-4 md:px-5 md:py-5 h-full overflow-y-auto scrollbar-styled">
       <MentorHeroSection
         name={data.user.name}
         greeting={data.user.greeting}
@@ -52,11 +52,11 @@ export default function MentorDashboard() {
         message={data.welcome.message}
       />
       <MentorStatCards stats={data.stats} />
-      <div className="grid grid-cols-1 lg:grid-cols-[5fr_3fr] gap-4 flex-shrink-0">
+      <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-3 flex-shrink-0">
         <WeeklyOverview data={data.weeklyOverview} />
         <HiringPipeline data={data.hiringPipeline} />
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-shrink-0">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 flex-shrink-0">
         <UpcomingInterviews sessions={data.upcomingSessions} />
         <MenteeProgress mentees={data.menteeProgress} />
       </div>
