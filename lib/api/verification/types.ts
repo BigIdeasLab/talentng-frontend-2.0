@@ -3,7 +3,11 @@
  * Types for business verification requests and responses
  */
 
-export type VerificationStatus = 'not_started' | 'pending' | 'approved' | 'rejected';
+export type VerificationStatus =
+  | "not_started"
+  | "pending"
+  | "approved"
+  | "rejected";
 
 export interface BusinessVerificationData {
   businessName: string;
@@ -41,7 +45,7 @@ export interface DocumentUploadResponse {
 }
 
 export interface SubmitVerificationRequest {
-  type: 'business';
+  type: "business";
   businessName: string;
   registrationNumber: string;
   businessType: string;
@@ -55,7 +59,7 @@ export interface SubmitVerificationRequest {
 }
 
 export interface ResubmitVerificationRequest {
-  type: 'business';
+  type: "business";
   businessName: string;
   registrationNumber: string;
   businessType: string;
@@ -67,4 +71,3 @@ export interface ResubmitVerificationRequest {
   phoneNumber: string;
   documents: File[]; // Actual File objects
 }
-

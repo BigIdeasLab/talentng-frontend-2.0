@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { VerificationDashboard } from '@/components/verification/VerificationDashboard';
-import { useRequireRole } from '@/hooks/useRequireRole';
-import { PageLoadingState } from '@/lib/page-utils';
+import { VerificationDashboard } from "@/components/verification/VerificationDashboard";
+import { useRequireRole } from "@/hooks/useRequireRole";
+import { PageLoadingState } from "@/lib/page-utils";
 
 export default function VerificationPage() {
   // Restrict access to recruiters/employers only
-  const hasAccess = useRequireRole(['recruiter', 'employer']);
+  const hasAccess = useRequireRole(["recruiter", "employer"]);
 
   if (!hasAccess) {
     return <PageLoadingState message="Checking access..." />;
@@ -21,10 +21,11 @@ export default function VerificationPage() {
             Business Verification
           </h1>
           <p className="font-inter-tight text-[13px] font-normal text-black/30">
-            Verify your business to build trust with talent and get a verified badge
+            Verify your business to build trust with talent and get a verified
+            badge
           </p>
         </div>
-        
+
         <VerificationDashboard />
       </div>
     </div>

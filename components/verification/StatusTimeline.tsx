@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { CheckCircle, Clock, XCircle, FileText } from 'lucide-react';
-import { format } from 'date-fns';
-import type { VerificationStatus } from '@/lib/api/verification';
-import { cn } from '@/lib/utils';
+import { CheckCircle, Clock, XCircle, FileText } from "lucide-react";
+import { format } from "date-fns";
+import type { VerificationStatus } from "@/lib/api/verification";
+import { cn } from "@/lib/utils";
 
 interface StatusTimelineProps {
   status: VerificationStatus;
@@ -20,31 +20,31 @@ export function StatusTimeline({
 }: StatusTimelineProps) {
   const steps = [
     {
-      id: 'submitted',
-      label: 'Application Submitted',
-      isComplete: status !== 'not_started',
+      id: "submitted",
+      label: "Application Submitted",
+      isComplete: status !== "not_started",
       timestamp: submittedAt,
       icon: FileText,
     },
     {
-      id: 'review',
-      label: 'Under Review',
-      isComplete: status === 'approved' || status === 'rejected',
-      isCurrent: status === 'pending',
-      timestamp: status === 'pending' ? submittedAt : reviewedAt,
+      id: "review",
+      label: "Under Review",
+      isComplete: status === "approved" || status === "rejected",
+      isCurrent: status === "pending",
+      timestamp: status === "pending" ? submittedAt : reviewedAt,
       icon: Clock,
     },
     {
-      id: 'result',
-      label: status === 'rejected' ? 'Rejected' : 'Approved',
-      isComplete: status === 'approved' || status === 'rejected',
+      id: "result",
+      label: status === "rejected" ? "Rejected" : "Approved",
+      isComplete: status === "approved" || status === "rejected",
       timestamp: reviewedAt,
-      icon: status === 'rejected' ? XCircle : CheckCircle,
-      isRejected: status === 'rejected',
+      icon: status === "rejected" ? XCircle : CheckCircle,
+      isRejected: status === "rejected",
     },
   ];
 
-  if (status === 'not_started') {
+  if (status === "not_started") {
     return (
       <div className="text-center py-8 text-gray-500">
         <p>No verification application submitted yet.</p>
@@ -63,8 +63,8 @@ export function StatusTimeline({
             {!isLast && (
               <div
                 className={cn(
-                  'absolute left-4 top-10 h-full w-0.5',
-                  step.isComplete ? 'bg-blue-600' : 'bg-gray-300'
+                  "absolute left-4 top-10 h-full w-0.5",
+                  step.isComplete ? "bg-blue-600" : "bg-gray-300",
                 )}
                 aria-hidden="true"
               />
@@ -73,13 +73,17 @@ export function StatusTimeline({
             <div className="flex items-start gap-4">
               <div
                 className={cn(
-                  'flex h-8 w-8 items-center justify-center rounded-full flex-shrink-0',
-                  step.isComplete && !step.isRejected && 'bg-blue-600 text-white',
-                  step.isRejected && 'bg-red-600 text-white',
-                  step.isCurrent && 'bg-blue-100 text-blue-600 animate-pulse',
-                  !step.isComplete && !step.isCurrent && 'bg-gray-200 text-gray-500'
+                  "flex h-8 w-8 items-center justify-center rounded-full flex-shrink-0",
+                  step.isComplete &&
+                    !step.isRejected &&
+                    "bg-blue-600 text-white",
+                  step.isRejected && "bg-red-600 text-white",
+                  step.isCurrent && "bg-blue-100 text-blue-600 animate-pulse",
+                  !step.isComplete &&
+                    !step.isCurrent &&
+                    "bg-gray-200 text-gray-500",
                 )}
-                aria-label={`${step.label} ${step.isComplete ? 'completed' : step.isCurrent ? 'in progress' : 'pending'}`}
+                aria-label={`${step.label} ${step.isComplete ? "completed" : step.isCurrent ? "in progress" : "pending"}`}
               >
                 <Icon className="h-4 w-4" />
               </div>
@@ -87,16 +91,18 @@ export function StatusTimeline({
               <div className="flex-1 min-w-0 pt-0.5">
                 <p
                   className={cn(
-                    'text-sm font-medium',
-                    step.isComplete || step.isCurrent ? 'text-gray-900' : 'text-gray-500'
+                    "text-sm font-medium",
+                    step.isComplete || step.isCurrent
+                      ? "text-gray-900"
+                      : "text-gray-500",
                   )}
                 >
                   {step.label}
                 </p>
-                
+
                 {step.timestamp && (
                   <p className="text-xs text-gray-500 mt-1">
-                    {format(new Date(step.timestamp), 'MMM d, yyyy h:mm a')}
+                    {format(new Date(step.timestamp), "MMM d, yyyy h:mm a")}
                   </p>
                 )}
 

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useRef, useCallback } from 'react';
-import { Upload, X, FileText, Loader2, AlertCircle } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import type { DocumentUploadResponse } from '@/lib/api/verification';
+import { useState, useRef, useCallback } from "react";
+import { Upload, X, FileText, Loader2, AlertCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
+import type { DocumentUploadResponse } from "@/lib/api/verification";
 
 interface DocumentUploaderProps {
   onUpload: (file: File) => Promise<DocumentUploadResponse>;
@@ -13,8 +13,8 @@ interface DocumentUploaderProps {
   maxSizeMB?: number;
 }
 
-const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
-const ALLOWED_EXTENSIONS = ['.pdf', '.jpg', '.jpeg', '.png'];
+const ALLOWED_TYPES = ["application/pdf", "image/jpeg", "image/png"];
+const ALLOWED_EXTENSIONS = [".pdf", ".jpg", ".jpeg", ".png"];
 
 export function DocumentUploader({
   onUpload,
@@ -43,44 +43,48 @@ export function DocumentUploader({
     }
 
     return null;
-  }
+  };
 
-  const handleFiles = useCallback(async (files: FileList | null) => {
-    if (!files) return;
+  const handleFiles = useCallback(
+    async (files: FileList | null) => {
+      if (!files) return;
 
-    const fileArray = Array.from(files);
-    const newErrors: Record<string, string> = {};
+      const fileArray = Array.from(files);
+      const newErrors: Record<string, string> = {};
 
-    for (const file of fileArray) {
-      const error = validateFile(file);
-      
-      if (error) {
-        newErrors[file.name] = error;
-        continue;
+      for (const file of fileArray) {
+        const error = validateFile(file);
+
+        if (error) {
+          newErrors[file.name] = error;
+          continue;
+        }
+
+        setUploadingFiles((prev) => new Set(prev).add(file.name));
+
+        try {
+          await onUpload(file);
+          setErrors((prev) => {
+            const updated = { ...prev };
+            delete updated[file.name];
+            return updated;
+          });
+        } catch (error) {
+          newErrors[file.name] =
+            error instanceof Error ? error.message : "Upload failed";
+        } finally {
+          setUploadingFiles((prev) => {
+            const updated = new Set(prev);
+            updated.delete(file.name);
+            return updated;
+          });
+        }
       }
 
-      setUploadingFiles(prev => new Set(prev).add(file.name));
-      
-      try {
-        await onUpload(file);
-        setErrors(prev => {
-          const updated = { ...prev };
-          delete updated[file.name];
-          return updated;
-        });
-      } catch (error) {
-        newErrors[file.name] = error instanceof Error ? error.message : 'Upload failed';
-      } finally {
-        setUploadingFiles(prev => {
-          const updated = new Set(prev);
-          updated.delete(file.name);
-          return updated;
-        });
-      }
-    }
-
-    setErrors(prev => ({ ...prev, ...newErrors }));
-  }, [documents.length, maxFiles, maxSizeMB, onUpload]);
+      setErrors((prev) => ({ ...prev, ...newErrors }));
+    },
+    [documents.length, maxFiles, maxSizeMB, onUpload],
+  );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -92,30 +96,39 @@ export function DocumentUploader({
     setIsDragging(false);
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    handleFiles(e.dataTransfer.files);
-  }, [handleFiles]);
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDragging(false);
+      handleFiles(e.dataTransfer.files);
+    },
+    [handleFiles],
+  );
 
-  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    handleFiles(e.target.files);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  }, [handleFiles]);
-
-  const handleRemove = useCallback((documentId: string) => {
-    onRemove(documentId);
-    setErrors(prev => {
-      const updated = { ...prev };
-      const doc = documents.find(d => d.documentId === documentId);
-      if (doc) {
-        delete updated[doc.filename];
+  const handleFileSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      handleFiles(e.target.files);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
       }
-      return updated;
-    });
-  }, [documents, onRemove]);
+    },
+    [handleFiles],
+  );
+
+  const handleRemove = useCallback(
+    (documentId: string) => {
+      onRemove(documentId);
+      setErrors((prev) => {
+        const updated = { ...prev };
+        const doc = documents.find((d) => d.documentId === documentId);
+        if (doc) {
+          delete updated[doc.filename];
+        }
+        return updated;
+      });
+    },
+    [documents, onRemove],
+  );
 
   return (
     <div className="space-y-4">
@@ -125,16 +138,18 @@ export function DocumentUploader({
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={cn(
-          'relative border-2 border-dashed rounded-lg p-6 transition-colors',
-          isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50',
-          documents.length >= maxFiles && 'opacity-50 cursor-not-allowed'
+          "relative border-2 border-dashed rounded-lg p-6 transition-colors",
+          isDragging
+            ? "border-blue-500 bg-blue-50"
+            : "border-gray-300 bg-gray-50",
+          documents.length >= maxFiles && "opacity-50 cursor-not-allowed",
         )}
       >
         <input
           ref={fileInputRef}
           type="file"
           multiple
-          accept={ALLOWED_EXTENSIONS.join(',')}
+          accept={ALLOWED_EXTENSIONS.join(",")}
           onChange={handleFileSelect}
           disabled={documents.length >= maxFiles}
           className="sr-only"
@@ -145,8 +160,8 @@ export function DocumentUploader({
         <label
           htmlFor="document-upload"
           className={cn(
-            'flex flex-col items-center cursor-pointer',
-            documents.length >= maxFiles && 'cursor-not-allowed'
+            "flex flex-col items-center cursor-pointer",
+            documents.length >= maxFiles && "cursor-not-allowed",
           )}
         >
           <Upload className="h-10 w-10 text-gray-400 mb-3" aria-hidden="true" />
@@ -190,7 +205,10 @@ export function DocumentUploader({
                 key={doc.documentId}
                 className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-md"
               >
-                <FileText className="h-5 w-5 text-blue-600 flex-shrink-0" aria-hidden="true" />
+                <FileText
+                  className="h-5 w-5 text-blue-600 flex-shrink-0"
+                  aria-hidden="true"
+                />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">
                     {doc.filename}
@@ -217,7 +235,10 @@ export function DocumentUploader({
               key={filename}
               className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-200 rounded-md"
             >
-              <Loader2 className="h-5 w-5 text-blue-600 animate-spin flex-shrink-0" aria-hidden="true" />
+              <Loader2
+                className="h-5 w-5 text-blue-600 animate-spin flex-shrink-0"
+                aria-hidden="true"
+              />
               <p className="text-sm text-blue-900">Uploading {filename}...</p>
             </div>
           ))}

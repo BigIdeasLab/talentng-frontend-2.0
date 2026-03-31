@@ -1,43 +1,52 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { DocumentUploader } from './DocumentUploader';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { DocumentUploader } from "./DocumentUploader";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from '@/components/ui/form';
-import { ResponsiveFormField } from '@/components/forms/ResponsiveFormField';
-import { ResponsiveFormButtons } from '@/components/forms/ResponsiveFormButtons';
-import type { BusinessVerificationData, DocumentUploadResponse } from '@/lib/api/verification';
+} from "@/components/ui/form";
+import { ResponsiveFormField } from "@/components/forms/ResponsiveFormField";
+import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
+import type {
+  BusinessVerificationData,
+  DocumentUploadResponse,
+} from "@/lib/api/verification";
 
 // Validation Schemas
 export const businessInfoSchema = z.object({
-  businessName: z.string().min(2, 'Business name must be at least 2 characters'),
-  registrationNumber: z.string().min(1, 'Registration number is required'),
-  businessType: z.string().min(1, 'Business type is required'),
-  address: z.string().min(5, 'Address must be at least 5 characters'),
-  city: z.string().min(2, 'City is required'),
-  state: z.string().min(2, 'State is required'),
-  country: z.string().min(2, 'Country is required'),
-  website: z.string().url('Invalid URL').optional().or(z.literal('')),
+  businessName: z
+    .string()
+    .min(2, "Business name must be at least 2 characters"),
+  registrationNumber: z.string().min(1, "Registration number is required"),
+  businessType: z.string().min(1, "Business type is required"),
+  address: z.string().min(5, "Address must be at least 5 characters"),
+  city: z.string().min(2, "City is required"),
+  state: z.string().min(2, "State is required"),
+  country: z.string().min(2, "Country is required"),
+  website: z.string().url("Invalid URL").optional().or(z.literal("")),
 });
 
 export const contactInfoSchema = z.object({
-  phoneNumber: z.string().regex(/^\+?[1-9][\d\s]{1,17}$/, 'Invalid phone number format'),
+  phoneNumber: z
+    .string()
+    .regex(/^\+?[1-9][\d\s]{1,17}$/, "Invalid phone number format"),
 });
 
 export const documentSchema = z.object({
-  documents: z.array(z.instanceof(File)).min(1, 'At least one document is required'),
+  documents: z
+    .array(z.instanceof(File))
+    .min(1, "At least one document is required"),
 });
 
 export const fullVerificationSchema = businessInfoSchema
@@ -56,21 +65,21 @@ interface ApplicationFormProps {
 }
 
 const BUSINESS_TYPES = [
-  'LLC',
-  'Corporation',
-  'Partnership',
-  'Sole Proprietorship',
-  'Other',
+  "LLC",
+  "Corporation",
+  "Partnership",
+  "Sole Proprietorship",
+  "Other",
 ];
 
 const COUNTRIES = [
-  'Nigeria',
-  'Ghana',
-  'Kenya',
-  'South Africa',
-  'United States',
-  'United Kingdom',
-  'Other',
+  "Nigeria",
+  "Ghana",
+  "Kenya",
+  "South Africa",
+  "United States",
+  "United Kingdom",
+  "Other",
 ];
 
 export function ApplicationForm({
@@ -80,7 +89,7 @@ export function ApplicationForm({
 }: ApplicationFormProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<Partial<BusinessVerificationData>>(
-    initialData || {}
+    initialData || {},
   );
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
@@ -88,14 +97,14 @@ export function ApplicationForm({
   const businessInfoForm = useForm<BusinessInfoFormValues>({
     resolver: zodResolver(businessInfoSchema),
     defaultValues: {
-      businessName: initialData?.businessName || '',
-      registrationNumber: initialData?.registrationNumber || '',
-      businessType: initialData?.businessType || '',
-      address: initialData?.address || '',
-      city: initialData?.city || '',
-      state: initialData?.state || '',
-      country: initialData?.country || '',
-      website: initialData?.website || '',
+      businessName: initialData?.businessName || "",
+      registrationNumber: initialData?.registrationNumber || "",
+      businessType: initialData?.businessType || "",
+      address: initialData?.address || "",
+      city: initialData?.city || "",
+      state: initialData?.state || "",
+      country: initialData?.country || "",
+      website: initialData?.website || "",
     },
   });
 
@@ -103,7 +112,7 @@ export function ApplicationForm({
   const contactInfoForm = useForm<ContactInfoFormValues>({
     resolver: zodResolver(contactInfoSchema),
     defaultValues: {
-      phoneNumber: initialData?.phoneNumber || '',
+      phoneNumber: initialData?.phoneNumber || "",
     },
   });
 
@@ -125,13 +134,15 @@ export function ApplicationForm({
     setCurrentStep(3);
   };
 
-  const handleDocumentUpload = async (file: File): Promise<DocumentUploadResponse> => {
+  const handleDocumentUpload = async (
+    file: File,
+  ): Promise<DocumentUploadResponse> => {
     // Store the actual file object
     setUploadedFiles((prev) => [...prev, file]);
-    
+
     // Update form data with files
-    documentForm.setValue('documents', [...uploadedFiles, file]);
-    
+    documentForm.setValue("documents", [...uploadedFiles, file]);
+
     // Return a mock response for UI display
     return {
       documentId: `file-${Date.now()}`,
@@ -143,11 +154,11 @@ export function ApplicationForm({
   const handleDocumentRemove = (documentId: string) => {
     // Extract index from documentId (format: file-timestamp)
     const index = uploadedFiles.findIndex((_, i) => `file-${i}` === documentId);
-    
+
     if (index !== -1) {
       const newFiles = uploadedFiles.filter((_, i) => i !== index);
       setUploadedFiles(newFiles);
-      documentForm.setValue('documents', newFiles);
+      documentForm.setValue("documents", newFiles);
     }
   };
 
@@ -173,9 +184,9 @@ export function ApplicationForm({
             Step {currentStep} of 3
           </span>
           <span className="text-sm text-gray-500">
-            {currentStep === 1 && 'Business Information'}
-            {currentStep === 2 && 'Contact Details'}
-            {currentStep === 3 && 'Document Upload'}
+            {currentStep === 1 && "Business Information"}
+            {currentStep === 2 && "Contact Details"}
+            {currentStep === 3 && "Document Upload"}
           </span>
         </div>
         <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -486,8 +497,8 @@ export function ApplicationForm({
             </h2>
 
             <p className="text-sm text-gray-600 mb-4">
-              Upload verification documents such as business registration certificate,
-              tax identification, or other official documents.
+              Upload verification documents such as business registration
+              certificate, tax identification, or other official documents.
             </p>
 
             <FormField
@@ -535,7 +546,7 @@ export function ApplicationForm({
                     Submitting...
                   </>
                 ) : (
-                  'Submit Application'
+                  "Submit Application"
                 )}
               </Button>
             </ResponsiveFormButtons>

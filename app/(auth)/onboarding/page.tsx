@@ -152,10 +152,13 @@ const OnboardingPage = () => {
       // 1. React Query cache (for useAuth hook)
       // 2. localStorage (for useProfile/ProfileSwitcher)
       if (response?.roles) {
-        console.log("[Onboarding] Updating React Query cache and localStorage with:", {
-          roles: response.roles,
-          needsOnboarding: response.needsOnboarding,
-        });
+        console.log(
+          "[Onboarding] Updating React Query cache and localStorage with:",
+          {
+            roles: response.roles,
+            needsOnboarding: response.needsOnboarding,
+          },
+        );
         queryClient.setQueryData(["user"], response);
         localStorage.setItem("userRoles", response.roles.join(","));
         // Small delay to ensure localStorage is written before redirect

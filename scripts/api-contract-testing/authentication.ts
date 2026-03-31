@@ -51,14 +51,23 @@ export class AuthenticationModule implements IAuthenticationModule {
           );
         }
 
-        const data = await response.json() as AuthResponse;
+        const data = (await response.json()) as AuthResponse;
 
         // Try to find token in various common response formats
-        const token = data.token || data.accessToken || data.access_token || 
-                     (data.data && (data.data.token || data.data.accessToken || data.data.access_token));
+        const token =
+          data.token ||
+          data.accessToken ||
+          data.access_token ||
+          (data.data &&
+            (data.data.token ||
+              data.data.accessToken ||
+              data.data.access_token));
 
         if (!token) {
-          console.error('Authentication response:', JSON.stringify(data, null, 2));
+          console.error(
+            "Authentication response:",
+            JSON.stringify(data, null, 2),
+          );
           throw new Error("Authentication response does not contain a token");
         }
 

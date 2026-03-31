@@ -3,7 +3,7 @@
  * Provides hooks for managing verification state with React Query
  */
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   submitVerification,
   getVerificationStatus,
@@ -11,9 +11,9 @@ import {
   uploadDocument,
   type SubmitVerificationRequest,
   type ResubmitVerificationRequest,
-} from '@/lib/api/verification';
+} from "@/lib/api/verification";
 
-const VERIFICATION_QUERY_KEY = ['verification', 'status'];
+const VERIFICATION_QUERY_KEY = ["verification", "status"];
 const POLLING_INTERVAL = 30000; // 30 seconds
 
 /**
@@ -34,7 +34,7 @@ export function useVerificationStatus(options?: { enabled?: boolean }) {
     },
     refetchInterval: (query) => {
       // Poll every 30s if status is pending
-      return query.state.data?.status === 'pending' ? POLLING_INTERVAL : false;
+      return query.state.data?.status === "pending" ? POLLING_INTERVAL : false;
     },
   });
 
@@ -46,9 +46,9 @@ export function useVerificationStatus(options?: { enabled?: boolean }) {
  */
 export function useSubmitVerification() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: (request: SubmitVerificationRequest) => 
+    mutationFn: (request: SubmitVerificationRequest) =>
       submitVerification(request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: VERIFICATION_QUERY_KEY });
@@ -61,9 +61,9 @@ export function useSubmitVerification() {
  */
 export function useResubmitVerification() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: (request: ResubmitVerificationRequest) => 
+    mutationFn: (request: ResubmitVerificationRequest) =>
       resubmitVerification(request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: VERIFICATION_QUERY_KEY });

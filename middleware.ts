@@ -89,7 +89,9 @@ export async function middleware(request: NextRequest) {
   // Skip this processing for /redirect (it handles its own token storage)
   if (tokenFromUrl && pathname !== "/redirect") {
     // Use needsOnboarding if available (authoritative), fallback to isNewUser for backward compatibility
-    const needsOnboarding = needsOnboardingFromUrl === "true" || (needsOnboardingFromUrl === null && isNewUserFromUrl === "true");
+    const needsOnboarding =
+      needsOnboardingFromUrl === "true" ||
+      (needsOnboardingFromUrl === null && isNewUserFromUrl === "true");
 
     // If already on onboarding, only proceed if user needs onboarding
     // (users who completed onboarding should be redirected to dashboard)
@@ -102,7 +104,8 @@ export async function middleware(request: NextRequest) {
           params.set("refreshToken", refreshTokenFromUrl);
         if (userIdFromUrl) params.set("userId", userIdFromUrl);
         if (rolesFromUrl) params.set("roles", rolesFromUrl);
-        if (needsOnboardingFromUrl) params.set("needsOnboarding", needsOnboardingFromUrl);
+        if (needsOnboardingFromUrl)
+          params.set("needsOnboarding", needsOnboardingFromUrl);
 
         const redirectUrl = `/redirect?${params.toString()}`;
         return NextResponse.redirect(new URL(redirectUrl, request.url));
@@ -123,7 +126,8 @@ export async function middleware(request: NextRequest) {
         if (refreshTokenFromUrl)
           params.set("refreshToken", refreshTokenFromUrl);
         if (userIdFromUrl) params.set("userId", userIdFromUrl);
-        if (needsOnboardingFromUrl) params.set("needsOnboarding", needsOnboardingFromUrl);
+        if (needsOnboardingFromUrl)
+          params.set("needsOnboarding", needsOnboardingFromUrl);
 
         const redirectUrl = `/onboarding?${params.toString()}`;
         return NextResponse.redirect(new URL(redirectUrl, request.url));
@@ -136,7 +140,8 @@ export async function middleware(request: NextRequest) {
           params.set("refreshToken", refreshTokenFromUrl);
         if (userIdFromUrl) params.set("userId", userIdFromUrl);
         if (rolesFromUrl) params.set("roles", rolesFromUrl);
-        if (needsOnboardingFromUrl) params.set("needsOnboarding", needsOnboardingFromUrl);
+        if (needsOnboardingFromUrl)
+          params.set("needsOnboarding", needsOnboardingFromUrl);
 
         const redirectUrl = `/redirect?${params.toString()}`;
         return NextResponse.redirect(new URL(redirectUrl, request.url));

@@ -52,7 +52,7 @@ export function EmployerProfilePanel({
 }: EmployerProfilePanelProps) {
   const { data: verificationStatus } = useVerificationStatus();
   const isVerified = verificationStatus?.status === "approved";
-  
+
   const completeness = completionPercentage ?? 0;
   const ringSize = 110;
   const strokeWidth = 2;
