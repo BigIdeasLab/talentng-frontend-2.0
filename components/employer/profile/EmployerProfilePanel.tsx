@@ -5,6 +5,8 @@ import { MapPin, Briefcase, Users } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
+import { useVerificationStatus } from "@/hooks/useBusinessVerification";
 
 interface EmployerProfilePanelProps {
   company?: {
@@ -48,6 +50,9 @@ export function EmployerProfilePanel({
   visibility = "public",
   onVisibilityChange,
 }: EmployerProfilePanelProps) {
+  const { data: verificationStatus } = useVerificationStatus();
+  const isVerified = verificationStatus?.status === "approved";
+  
   const completeness = completionPercentage ?? 0;
   const ringSize = 110;
   const strokeWidth = 2;
@@ -125,9 +130,12 @@ export function EmployerProfilePanel({
         {/* Company Info */}
         <div className="flex flex-col items-center gap-[12px] w-full">
           <div className="text-center">
-            <h2 className="text-[16px] font-medium text-black font-inter-tight">
-              {company?.name || "Company Name"}
-            </h2>
+            <div className="flex items-center justify-center gap-[6px]">
+              <h2 className="text-[16px] font-medium text-black font-inter-tight">
+                {company?.name || "Company Name"}
+              </h2>
+              {isVerified && <VerifiedBadge size="md" showTooltip />}
+            </div>
             {company?.tagline && (
               <p className="text-[13px] font-light text-[rgba(0,0,0,0.30)] font-inter-tight">
                 {company.tagline}
