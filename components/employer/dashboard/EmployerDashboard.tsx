@@ -12,16 +12,10 @@ import { WelcomeHeader } from "./WelcomeHeader";
 import { useRecruiterDashboard } from "@/hooks/useRecruiterDashboard";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import {
-  OrientationAdaptiveGrid,
-  OrientationAdaptiveLayout,
-} from "@/components/ui/OrientationAdaptiveLayout";
-import {
   mobileOptimizedMemo,
   useMobileOptimizedMemo,
   useMobileOptimizedCallback,
-  MobileLazyRender,
 } from "@/lib/utils/mobile-performance";
-import { useOrientationScrollPreservation } from "@/hooks/useOrientationState";
 
 function Skeleton({ className }: { className?: string }) {
   return (
@@ -61,9 +55,6 @@ function DashboardSkeleton() {
 
 const EmployerDashboard = mobileOptimizedMemo(function EmployerDashboard() {
   const { data, isLoading, isPending, error } = useRecruiterDashboard();
-
-  // Preserve scroll position during orientation changes
-  useOrientationScrollPreservation();
 
   console.log("Recruiter Dashboard Data:", data);
 
@@ -159,13 +150,7 @@ const EmployerDashboard = mobileOptimizedMemo(function EmployerDashboard() {
       />
 
       {/* Stat Cards */}
-      <OrientationAdaptiveGrid
-        portraitMobileCols={1}
-        landscapeMobileCols={2}
-        tabletCols={2}
-        desktopCols={4}
-        className="flex-shrink-0"
-      >
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 flex-shrink-0">
         <StatsCard
           icon={<Users className="w-5 h-5" strokeWidth={1.6} />}
           value={formattedStats.totalApplicants.value}
@@ -226,36 +211,22 @@ const EmployerDashboard = mobileOptimizedMemo(function EmployerDashboard() {
               | "negative",
           }}
         />
-      </OrientationAdaptiveGrid>
+      </div>
 
-      {/* Weekly Overview and Hiring Pipeline - Lazy render on mobile */}
-      <MobileLazyRender mobileDelay={50}>
-        <OrientationAdaptiveLayout
-          portraitClassName="space-y-4"
-          landscapeClassName="grid grid-cols-1 lg:grid-cols-[5fr_3fr] gap-4"
-          className="flex-shrink-0"
-        >
-          <WeeklyOverviewChart data={data?.weeklyOverview} />
-          <HiringPipeline data={data?.hiringPipeline} />
-        </OrientationAdaptiveLayout>
-      </MobileLazyRender>
+      {/* Weekly Overview and Hiring Pipeline */}
+      <div className="grid grid-cols-1 lg:grid-cols-[5fr_3fr] gap-4 flex-shrink-0">
+        <WeeklyOverviewChart data={data?.weeklyOverview} />
+        <HiringPipeline data={data?.hiringPipeline} />
+      </div>
 
-      {/* Opportunities and Activity - Lazy render on mobile */}
-      <MobileLazyRender mobileDelay={100}>
-        <OrientationAdaptiveLayout
-          portraitClassName="space-y-4"
-          landscapeClassName="grid grid-cols-1 lg:grid-cols-2 gap-4"
-          className="flex-shrink-0"
-        >
-          <TopOpportunities data={data?.topOpportunities} />
-          <RecentActivity data={data?.recentActivity} />
-        </OrientationAdaptiveLayout>
-      </MobileLazyRender>
+      {/* Opportunities and Activity */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-shrink-0">
+        <TopOpportunities data={data?.topOpportunities} />
+        <RecentActivity data={data?.recentActivity} />
+      </div>
 
-      {/* Quick Actions - Lazy render on mobile */}
-      <MobileLazyRender mobileDelay={150}>
-        <QuickActions />
-      </MobileLazyRender>
+      {/* Quick Actions */}
+      <QuickActions />
     </div>
   );
 });

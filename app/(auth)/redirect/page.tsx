@@ -18,6 +18,7 @@ function AuthRedirectContent() {
     const refreshToken = searchParams.get("refreshToken");
     const userId = searchParams.get("userId");
     const roles = searchParams.get("roles");
+    const needsOnboarding = searchParams.get("needsOnboarding");
 
     if (accessToken && refreshToken) {
       // Store tokens in localStorage
@@ -32,8 +33,12 @@ function AuthRedirectContent() {
         localStorage.setItem("userRoles", roles);
       }
 
-      // Redirect to dashboard
-      router.push("/dashboard");
+      // Redirect based on onboarding status
+      if (needsOnboarding === "true") {
+        router.push("/onboarding");
+      } else {
+        router.push("/dashboard");
+      }
     } else {
       // No tokens found, redirect to login
       router.push("/login");

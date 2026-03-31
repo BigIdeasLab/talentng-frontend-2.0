@@ -15,6 +15,7 @@ export type User = {
   status: string;
   verificationLevel: string;
   hasPassword?: boolean;
+  needsOnboarding?: boolean;
   talentProfile?: any;
   recruiterProfile?: any;
   mentorProfile?: any;

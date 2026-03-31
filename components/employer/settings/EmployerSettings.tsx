@@ -7,12 +7,15 @@ import {
   Loader2,
   Bell,
   Shield,
+  ShieldCheck,
   Trash2,
   Mail,
   User,
   LogOut,
   Eye,
+  ChevronRight,
 } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -328,6 +331,30 @@ export function EmployerSettings() {
                 Save Changes
               </Button>
             </div>
+          </SettingsSection>
+
+          {/* Business Verification */}
+          <SettingsSection
+            title="Business Verification"
+            description="Verify your business to build trust with talent and get a verified badge"
+          >
+            <Link
+              href="/verification"
+              className="flex items-center justify-between py-3 group"
+            >
+              <div className="flex items-center gap-3">
+                <ShieldCheck className="w-5 h-5 text-[#525866]" />
+                <div>
+                  <p className="text-[13px] font-medium font-inter-tight text-black">
+                    Verification Status
+                  </p>
+                  <p className="text-[12px] font-inter-tight text-[#525866]">
+                    View or submit your business verification application
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-[#525866] group-hover:translate-x-0.5 transition-transform" />
+            </Link>
           </SettingsSection>
 
           {/* Profile Email */}

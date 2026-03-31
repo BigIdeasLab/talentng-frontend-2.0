@@ -22,6 +22,7 @@ import { LoadingScreen } from "@/components/layouts/LoadingScreen";
 import { NotificationsModal } from "@/components/layouts/modals/NotificationsModal";
 import { RoleSwitchModal } from "@/components/ui/RoleSwitchModal";
 import { GlobalErrorHandler } from "@/components/GlobalErrorHandler";
+import { useAuth } from "@/hooks/useAuth";
 
 export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -35,6 +36,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   const [mentorUpcomingCount, setMentorUpcomingCount] = useState(0);
   const { activeRole, isLoading, roleSwitchRequired, triggerRoleSwitch } =
     useProfile();
+  const { user } = useAuth();
 
   // Map active role to recipient role for notifications
   const getRecipientRole = (
@@ -135,12 +137,13 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
     setTotalUnreadCount(roleUnreadCount + generalUnreadCount);
   }, [roleUnreadCount, generalUnreadCount]);
 
-  // Redirect to onboarding if no active role after loading
+  // Redirect to onboarding if user needs onboarding (authoritative backend check)
   useEffect(() => {
-    if (!isLoading && !activeRole) {
-      router.replace("/onboarding");
+    if (!isLoading && user?.needsOnboarding) {
+      // Use window.location for hard redirect to break out of any routing loops
+      window.location.href = "/onboarding";
     }
-  }, [isLoading, activeRole, router]);
+  }, [isLoading, user?.needsOnboarding]);
 
   // Fetch profile data client-side
   useProfileData();

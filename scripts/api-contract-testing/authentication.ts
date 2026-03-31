@@ -22,7 +22,7 @@ export class AuthenticationModule implements IAuthenticationModule {
         );
       }
       this.token = this.config.token;
-      return this.token;
+      return this.config.token;
     }
 
     // Email/password authentication
@@ -51,14 +51,19 @@ export class AuthenticationModule implements IAuthenticationModule {
           );
         }
 
-        const data: AuthResponse = await response.json();
+        const data = await response.json() as AuthResponse;
 
-        if (!data.token) {
+        // Try to find token in various common response formats
+        const token = data.token || data.accessToken || data.access_token || 
+                     (data.data && (data.data.token || data.data.accessToken || data.data.access_token));
+
+        if (!token) {
+          console.error('Authentication response:', JSON.stringify(data, null, 2));
           throw new Error("Authentication response does not contain a token");
         }
 
-        this.token = data.token;
-        return this.token;
+        this.token = token;
+        return token;
       } catch (error) {
         if (error instanceof Error) {
           throw new Error(`Authentication failed: ${error.message}`);

@@ -74,6 +74,7 @@ export async function middleware(request: NextRequest) {
   const refreshTokenFromUrl = searchParams.get("refreshToken");
   const userIdFromUrl = searchParams.get("userId");
   const isNewUserFromUrl = searchParams.get("isNewUser");
+  const needsOnboardingFromUrl = searchParams.get("needsOnboarding");
   const rolesFromUrl = searchParams.get("roles");
   const jwtSecret = process.env.JWT_SECRET;
 
@@ -87,31 +88,33 @@ export async function middleware(request: NextRequest) {
   // If tokens are in the URL (OAuth callback), validate and redirect to store in localStorage
   // Skip this processing for /redirect (it handles its own token storage)
   if (tokenFromUrl && pathname !== "/redirect") {
-    const isNewUser = isNewUserFromUrl === "true";
+    // Use needsOnboarding if available (authoritative), fallback to isNewUser for backward compatibility
+    const needsOnboarding = needsOnboardingFromUrl === "true" || (needsOnboardingFromUrl === null && isNewUserFromUrl === "true");
 
-    // If already on onboarding, only proceed if it's a new user
-    // (existing users should be redirected to dashboard)
+    // If already on onboarding, only proceed if user needs onboarding
+    // (users who completed onboarding should be redirected to dashboard)
     if (pathname === "/onboarding") {
-      if (!isNewUser) {
-        // Existing user should not be on onboarding, redirect to dashboard
+      if (!needsOnboarding) {
+        // User has completed onboarding, redirect to dashboard
         const params = new URLSearchParams();
         params.set("accessToken", tokenFromUrl);
         if (refreshTokenFromUrl)
           params.set("refreshToken", refreshTokenFromUrl);
         if (userIdFromUrl) params.set("userId", userIdFromUrl);
         if (rolesFromUrl) params.set("roles", rolesFromUrl);
+        if (needsOnboardingFromUrl) params.set("needsOnboarding", needsOnboardingFromUrl);
 
         const redirectUrl = `/redirect?${params.toString()}`;
         return NextResponse.redirect(new URL(redirectUrl, request.url));
       }
-      // New user on onboarding - allow it (TokenStorage component will handle)
+      // User needs onboarding - allow it (TokenStorage component will handle)
       return NextResponse.next();
     }
 
     const payload = await verifyToken(tokenFromUrl, jwtSecret);
     if (payload) {
-      // For new users, go to onboarding; for existing users, go to dashboard
-      if (isNewUser) {
+      // For users needing onboarding, go to onboarding; for others, go to dashboard
+      if (needsOnboarding) {
         // Redirect to onboarding with tokens in query params
         // Client component will read these and store in localStorage
         const params = new URLSearchParams();
@@ -120,11 +123,12 @@ export async function middleware(request: NextRequest) {
         if (refreshTokenFromUrl)
           params.set("refreshToken", refreshTokenFromUrl);
         if (userIdFromUrl) params.set("userId", userIdFromUrl);
+        if (needsOnboardingFromUrl) params.set("needsOnboarding", needsOnboardingFromUrl);
 
         const redirectUrl = `/onboarding?${params.toString()}`;
         return NextResponse.redirect(new URL(redirectUrl, request.url));
       } else {
-        // Existing user - go to dashboard with tokens in query params
+        // User has completed onboarding - go to dashboard with tokens in query params
         const params = new URLSearchParams();
 
         params.set("accessToken", tokenFromUrl);
@@ -132,6 +136,7 @@ export async function middleware(request: NextRequest) {
           params.set("refreshToken", refreshTokenFromUrl);
         if (userIdFromUrl) params.set("userId", userIdFromUrl);
         if (rolesFromUrl) params.set("roles", rolesFromUrl);
+        if (needsOnboardingFromUrl) params.set("needsOnboarding", needsOnboardingFromUrl);
 
         const redirectUrl = `/redirect?${params.toString()}`;
         return NextResponse.redirect(new URL(redirectUrl, request.url));

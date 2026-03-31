@@ -1,42 +1,51 @@
 import type { FeatureConfig } from "../types.js";
 
 /**
- * Example API endpoint configurations
+ * API Endpoint Configurations for TalentNG Platform
  *
- * This file demonstrates how to configure endpoints for contract testing.
- * Customize this file to match your API structure and expected response schemas.
+ * These endpoints are based on the actual API response structures.
+ * Updated to match real backend responses.
  */
 export const API_ENDPOINTS: FeatureConfig[] = [
   {
-    name: "Profile",
+    name: "User Profile",
     endpoints: [
       {
-        path: "/profile",
+        path: "/users/me",
         method: "GET",
         schema: {
           id: { type: "string", required: true },
+          username: { type: "string", required: true },
           email: { type: "string", required: true },
-          name: { type: "string", required: true },
-          role: { type: "string", required: true },
-          createdAt: { type: "string", required: false },
+          roles: { type: "array", required: true }, // Note: "roles" not "role"
+          status: { type: "string", required: true },
+          isVerified: { type: "boolean", required: true },
+          createdAt: { type: "string", required: true },
+          updatedAt: { type: "string", required: true },
         },
       },
     ],
   },
   {
-    name: "Opportunities",
+    name: "Opportunities (Public)",
     endpoints: [
       {
         path: "/opportunities",
         method: "GET",
         schema: {
-          id: { type: "string", required: true },
-          title: { type: "string", required: true },
-          description: { type: "string", required: true },
-          budget: { type: "number", required: false },
-          status: { type: "string", required: true },
+          data: {
+            type: "array",
+            required: true,
+            arrayItemSchema: {
+              id: { type: "string", required: true },
+              title: { type: "string", required: true },
+              description: { type: "string", required: true },
+              type: { type: "string", required: true },
+              tags: { type: "array", required: false },
+            },
+          },
+          // Note: API doesn't return total/limit/offset at root level
         },
-        // Example of detail endpoints that will be tested if list returns data
         detailEndpoints: [
           {
             pathTemplate: "/opportunities/:id",
@@ -45,16 +54,9 @@ export const API_ENDPOINTS: FeatureConfig[] = [
               id: { type: "string", required: true },
               title: { type: "string", required: true },
               description: { type: "string", required: true },
-              budget: { type: "number", required: false },
-              status: { type: "string", required: true },
-              applicants: {
-                type: "array",
-                required: true,
-                arrayItemSchema: {
-                  id: { type: "string", required: true },
-                  name: { type: "string", required: true },
-                },
-              },
+              type: { type: "string", required: true },
+              requirements: { type: "array", required: false },
+              tags: { type: "array", required: false },
             },
           },
         ],
@@ -62,24 +64,78 @@ export const API_ENDPOINTS: FeatureConfig[] = [
     ],
   },
   {
-    name: "Users",
+    name: "Talent Profile",
     endpoints: [
       {
-        path: "/users",
+        path: "/talent/profile",
         method: "GET",
         schema: {
-          id: { type: "string", required: true },
-          email: { type: "string", required: true },
-          name: { type: "string", required: true },
-          role: { type: "string", required: true },
           profile: {
+            type: "object",
+            required: true,
+            objectSchema: {
+              id: { type: "string", required: true },
+              userId: { type: "string", required: true },
+              fullName: { type: "string", required: false },
+              headline: { type: "string", required: false },
+              bio: { type: "string", required: false },
+              skills: { type: "array", required: false },
+              profileImageUrl: { type: "string", required: false },
+            },
+          },
+        },
+      },
+    ],
+  },
+  {
+    name: "Talent Dashboard",
+    endpoints: [
+      {
+        path: "/talent/dashboard",
+        method: "GET",
+        schema: {
+          user: {
+            type: "object",
+            required: true,
+            objectSchema: {
+              name: { type: "string", required: true },
+              greeting: { type: "string", required: false },
+            },
+          },
+          welcome: {
             type: "object",
             required: false,
             objectSchema: {
-              bio: { type: "string", required: false },
-              avatar: { type: "string", required: false },
+              newOpportunities: { type: "number", required: false },
+              profileViewsIncreasePercent: { type: "number", required: false },
             },
           },
+          stats: {
+            type: "object",
+            required: false,
+          },
+        },
+      },
+    ],
+  },
+  {
+    name: "Talent Opportunities",
+    endpoints: [
+      {
+        path: "/talent/opportunities",
+        method: "GET",
+        schema: {
+          data: {
+            type: "array",
+            required: true,
+            arrayItemSchema: {
+              id: { type: "string", required: true },
+              title: { type: "string", required: true },
+              description: { type: "string", required: true },
+              type: { type: "string", required: true },
+            },
+          },
+          // Note: API doesn't return total/limit/offset at root level
         },
       },
     ],

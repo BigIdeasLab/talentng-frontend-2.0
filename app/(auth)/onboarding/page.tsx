@@ -152,11 +152,16 @@ const OnboardingPage = () => {
       // 1. React Query cache (for useAuth hook)
       // 2. localStorage (for useProfile/ProfileSwitcher)
       if (response?.roles) {
+        console.log("[Onboarding] Updating React Query cache and localStorage with:", {
+          roles: response.roles,
+          needsOnboarding: response.needsOnboarding,
+        });
         queryClient.setQueryData(["user"], response);
         localStorage.setItem("userRoles", response.roles.join(","));
         // Small delay to ensure localStorage is written before redirect
         await new Promise((resolve) => setTimeout(resolve, 100));
       } else {
+        console.log("[Onboarding] No roles in response, refetching user");
         refetchUser();
       }
 
@@ -377,6 +382,12 @@ const OnboardingPage = () => {
     try {
       const response = await completeOnboardingMutation.mutateAsync(formData);
 
+      console.log("[Onboarding] Final submit completion response:", {
+        response,
+        needsOnboarding: response?.needsOnboarding,
+        roles: response?.roles,
+      });
+
       toast({
         title: "Success",
         description: isAddingRole
@@ -389,9 +400,11 @@ const OnboardingPage = () => {
       // 1. React Query cache (for useAuth hook)
       // 2. localStorage (for useProfile/ProfileSwitcher)
       if (response?.roles) {
+        console.log("[Onboarding] Final - Updating cache with:", response);
         queryClient.setQueryData(["user"], response);
         localStorage.setItem("userRoles", response.roles.join(","));
       } else {
+        console.log("[Onboarding] Final - No roles, refetching");
         refetchUser();
       }
 
