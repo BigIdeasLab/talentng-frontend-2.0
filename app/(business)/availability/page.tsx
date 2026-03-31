@@ -477,374 +477,374 @@ export default function AvailabilityPage() {
           </div>
         ) : (
           <>
-        {/* Header - scrolls with content */}
-        <div className="w-full px-4 pt-[19px] pb-4 border-b border-[#E1E4EA]">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px]">
-              Availability
-            </h1>
-            <div className="flex items-center gap-2">
-              {isSaved && !hasChanges && (
-                <div className="flex items-center gap-1.5 rounded-full bg-green-50 px-2.5 py-1 text-green-700">
-                  <Check className="h-3.5 w-3.5" />
-                  <span className="font-inter-tight text-[12px] font-medium">
-                    Saved
-                  </span>
-                </div>
-              )}
-              {hasChanges && (
-                <div className="flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-amber-700">
-                  <span className="font-inter-tight text-[12px] font-medium">
-                    Unsaved
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div className="flex gap-3 mb-4">
-            <div className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-sm border border-[#E1E4EA]">
-              <Clock
-                className="h-3.5 w-3.5"
-                style={{ color: ROLE_COLORS.mentor.dark }}
-              />
-              <span className="text-[13px] font-medium text-black">
-                {getTotalHours()}
-              </span>
-              <span className="text-[11px] text-[#525866]">/ week</span>
-            </div>
-            <div className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-sm border border-[#E1E4EA]">
-              <div
-                className="flex h-3.5 w-3.5 items-center justify-center rounded text-[9px] font-bold text-white"
-                style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
-              >
-                {getEnabledDaysCount()}
-              </div>
-              <span className="text-[11px] text-[#525866]">days</span>
-            </div>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-            <button
-              onClick={clearAll}
-              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-[13px] font-medium text-[#525866] transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600 flex-shrink-0"
-            >
-              Clear All
-            </button>
-            <button
-              onClick={selectWeekdays9to5}
-              className="flex items-center gap-1.5 rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-[13px] font-medium text-[#525866] flex-shrink-0"
-            >
-              <Zap className="h-3 w-3" />
-              Weekdays 9-5
-            </button>
-            <button
-              onClick={selectMornings}
-              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-[13px] font-medium text-[#525866] flex-shrink-0"
-            >
-              Mornings
-            </button>
-            <button
-              onClick={selectAfternoons}
-              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-[13px] font-medium text-[#525866] flex-shrink-0"
-            >
-              Afternoons
-            </button>
-          </div>
-        </div>
-
-        {/* Day Tabs - Sticky */}
-        <div className="sticky top-0 z-10 bg-white border-b border-[#E1E4EA] px-4 py-2">
-          <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hide">
-            {DAYS.map((day) => {
-              const dayHasSlots = Array.from(selectedSlots).some((key) =>
-                key.startsWith(`${day.index}-`),
-              );
-              return (
-                <button
-                  key={day.index}
-                  onClick={() => setSelectedDay(day.index)}
-                  className={`px-3 py-1.5 rounded-lg flex-shrink-0 transition-colors text-[13px] font-inter-tight font-medium ${
-                    selectedDay === day.index
-                      ? "text-white"
-                      : dayHasSlots
-                        ? "text-[#525866] bg-[#F5F5F5]"
-                        : "text-black/30 hover:text-black/50"
-                  }`}
-                  style={
-                    selectedDay === day.index
-                      ? { backgroundColor: ROLE_COLORS.mentor.dark }
-                      : undefined
-                  }
-                >
-                  {day.short}
-                  {dayHasSlots && selectedDay !== day.index && (
-                    <span
-                      className="ml-1 inline-block w-1.5 h-1.5 rounded-full"
-                      style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
-                    />
+            {/* Header - scrolls with content */}
+            <div className="w-full px-4 pt-[19px] pb-4 border-b border-[#E1E4EA]">
+              <div className="flex items-center justify-between mb-4">
+                <h1 className="text-[16px] font-medium font-inter-tight text-black leading-[16px]">
+                  Availability
+                </h1>
+                <div className="flex items-center gap-2">
+                  {isSaved && !hasChanges && (
+                    <div className="flex items-center gap-1.5 rounded-full bg-green-50 px-2.5 py-1 text-green-700">
+                      <Check className="h-3.5 w-3.5" />
+                      <span className="font-inter-tight text-[12px] font-medium">
+                        Saved
+                      </span>
+                    </div>
                   )}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+                  {hasChanges && (
+                    <div className="flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-amber-700">
+                      <span className="font-inter-tight text-[12px] font-medium">
+                        Unsaved
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
 
-        {/* Settings - Collapsible */}
-        <div className="border-b border-[#E1E4EA]">
-          <button
-            onClick={() => setSettingsExpanded(!settingsExpanded)}
-            className="flex items-center justify-between w-full px-4 py-3 text-left"
-          >
-            <div className="flex items-center gap-2">
-              <Settings className="h-4 w-4 text-[#525866]" />
-              <span className="text-[13px] font-medium font-inter-tight text-[#525866]">
-                Session Settings
-              </span>
-            </div>
-            <ChevronDown
-              className={`h-4 w-4 text-[#525866] transition-transform ${settingsExpanded ? "rotate-180" : ""}`}
-            />
-          </button>
-          {settingsExpanded && (
-            <div className="px-4 pb-4 flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <label className="text-[13px] font-medium text-[#525866]">
-                  Duration
-                </label>
-                <Select
-                  value={sessionDuration}
-                  onValueChange={(v) => {
-                    if (selectedSlots.size > 0) {
-                      setPendingDuration(v);
-                      return;
-                    }
-                    setSessionDuration(v);
-                    setHasChanges(true);
-                  }}
-                >
-                  <SelectTrigger className="h-10 w-28 border-[#E1E4EA] bg-white text-[13px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="30">30 min</SelectItem>
-                    <SelectItem value="60">60 min</SelectItem>
-                    <SelectItem value="90">90 min</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex items-center justify-between">
-                <label className="text-[13px] font-medium text-[#525866]">
-                  Buffer
-                </label>
-                <Select
-                  value={bufferTime}
-                  onValueChange={(v) => {
-                    setBufferTime(v);
-                    setHasChanges(true);
-                  }}
-                >
-                  <SelectTrigger className="h-10 w-28 border-[#E1E4EA] bg-white text-[13px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="0">None</SelectItem>
-                    <SelectItem value="15">15 min</SelectItem>
-                    <SelectItem value="30">30 min</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex items-center justify-between">
-                <label className="text-[13px] font-medium text-[#525866]">
-                  Min. Notice
-                </label>
-                <Select
-                  value={minAdvanceBookingMinutes}
-                  onValueChange={(v) => {
-                    setMinAdvanceBookingMinutes(v);
-                    setHasChanges(true);
-                  }}
-                >
-                  <SelectTrigger className="h-10 w-28 border-[#E1E4EA] bg-white text-[13px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="0">None</SelectItem>
-                    <SelectItem value="15">15 min</SelectItem>
-                    <SelectItem value="30">30 min</SelectItem>
-                    <SelectItem value="60">1 hour</SelectItem>
-                    <SelectItem value="120">2 hours</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[13px] font-medium text-[#525866]">
-                  Meeting Link <span className="text-red-500">*</span>
-                </label>
-                <Input
-                  type="url"
-                  placeholder="https://meet.google.com/..."
-                  value={defaultMeetingLink}
-                  onChange={(e) => {
-                    setDefaultMeetingLink(e.target.value);
-                    setHasChanges(true);
-                    if (e.target.value.trim()) setMeetingLinkError(false);
-                  }}
-                  className={`h-10 border-[#E1E4EA] bg-white text-[13px] ${
-                    meetingLinkError
-                      ? "border-red-500 focus-visible:ring-red-500"
-                      : ""
-                  }`}
-                />
-                {meetingLinkError && (
-                  <span className="text-[11px] text-red-500">
-                    Meeting link is required
+              {/* Stats */}
+              <div className="flex gap-3 mb-4">
+                <div className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-sm border border-[#E1E4EA]">
+                  <Clock
+                    className="h-3.5 w-3.5"
+                    style={{ color: ROLE_COLORS.mentor.dark }}
+                  />
+                  <span className="text-[13px] font-medium text-black">
+                    {getTotalHours()}
                   </span>
-                )}
+                  <span className="text-[11px] text-[#525866]">/ week</span>
+                </div>
+                <div className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-sm border border-[#E1E4EA]">
+                  <div
+                    className="flex h-3.5 w-3.5 items-center justify-center rounded text-[9px] font-bold text-white"
+                    style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
+                  >
+                    {getEnabledDaysCount()}
+                  </div>
+                  <span className="text-[11px] text-[#525866]">days</span>
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+                <button
+                  onClick={clearAll}
+                  className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-[13px] font-medium text-[#525866] transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600 flex-shrink-0"
+                >
+                  Clear All
+                </button>
+                <button
+                  onClick={selectWeekdays9to5}
+                  className="flex items-center gap-1.5 rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-[13px] font-medium text-[#525866] flex-shrink-0"
+                >
+                  <Zap className="h-3 w-3" />
+                  Weekdays 9-5
+                </button>
+                <button
+                  onClick={selectMornings}
+                  className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-[13px] font-medium text-[#525866] flex-shrink-0"
+                >
+                  Mornings
+                </button>
+                <button
+                  onClick={selectAfternoons}
+                  className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-[13px] font-medium text-[#525866] flex-shrink-0"
+                >
+                  Afternoons
+                </button>
               </div>
             </div>
-          )}
-        </div>
 
-        {/* Time Slots for Selected Day */}
-        <div className="px-4 py-3">
-          <div className="text-[13px] font-medium font-inter-tight text-[#525866] mb-2">
-            {DAYS[selectedDay].name}
-          </div>
-          <div className="flex flex-col">
-            {TIME_SLOTS.map((slot, timeIndex) => {
-              const key = `${selectedDay}-${timeIndex}`;
-              const isSelected = selectedSlots.has(key);
-              const wasSaved = savedSlots.has(key);
-              const isTopOfHour = slot.value.endsWith(":00");
-              const prevSelected = selectedSlots.has(
-                `${selectedDay}-${timeIndex - 1}`,
-              );
-              const nextSelected = selectedSlots.has(
-                `${selectedDay}-${timeIndex + 1}`,
-              );
+            {/* Day Tabs - Sticky */}
+            <div className="sticky top-0 z-10 bg-white border-b border-[#E1E4EA] px-4 py-2">
+              <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hide">
+                {DAYS.map((day) => {
+                  const dayHasSlots = Array.from(selectedSlots).some((key) =>
+                    key.startsWith(`${day.index}-`),
+                  );
+                  return (
+                    <button
+                      key={day.index}
+                      onClick={() => setSelectedDay(day.index)}
+                      className={`px-3 py-1.5 rounded-lg flex-shrink-0 transition-colors text-[13px] font-inter-tight font-medium ${
+                        selectedDay === day.index
+                          ? "text-white"
+                          : dayHasSlots
+                            ? "text-[#525866] bg-[#F5F5F5]"
+                            : "text-black/30 hover:text-black/50"
+                      }`}
+                      style={
+                        selectedDay === day.index
+                          ? { backgroundColor: ROLE_COLORS.mentor.dark }
+                          : undefined
+                      }
+                    >
+                      {day.short}
+                      {dayHasSlots && selectedDay !== day.index && (
+                        <span
+                          className="ml-1 inline-block w-1.5 h-1.5 rounded-full"
+                          style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
+                        />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
-              const isSavedSlot = isSelected && wasSaved;
-              const isNewSlot = isSelected && !wasSaved;
-              const isRemovedSlot = !isSelected && wasSaved;
-
-              // Determine block top for label
-              let isBlockTop = false;
-              if (isSelected) {
-                let runStart = timeIndex;
-                while (
-                  runStart > 0 &&
-                  selectedSlots.has(`${selectedDay}-${runStart - 1}`)
-                ) {
-                  runStart--;
-                }
-                isBlockTop = (timeIndex - runStart) % cellsPerSlot === 0;
-              }
-
-              // Border radius
-              let roundedClass = "";
-              if (isSelected) {
-                const isTop = !prevSelected;
-                const isBottom = !nextSelected;
-                if (isTop && isBottom) roundedClass = "rounded-lg";
-                else if (isTop) roundedClass = "rounded-t-lg";
-                else if (isBottom) roundedClass = "rounded-b-lg";
-              }
-
-              const canSelect = canSelectBlock(selectedDay, timeIndex);
-
-              return (
-                <div
-                  key={timeIndex}
-                  className={`flex items-center relative ${
-                    isTopOfHour ? "border-t border-[#E1E4EA]" : ""
-                  }`}
-                  style={{ height: "44px" }}
-                >
-                  {/* Time label */}
-                  <div className="w-16 flex-shrink-0 pr-3 text-right">
-                    {isTopOfHour && (
-                      <span className="text-[12px] font-medium text-[#525866]">
-                        {slot.label}
+            {/* Settings - Collapsible */}
+            <div className="border-b border-[#E1E4EA]">
+              <button
+                onClick={() => setSettingsExpanded(!settingsExpanded)}
+                className="flex items-center justify-between w-full px-4 py-3 text-left"
+              >
+                <div className="flex items-center gap-2">
+                  <Settings className="h-4 w-4 text-[#525866]" />
+                  <span className="text-[13px] font-medium font-inter-tight text-[#525866]">
+                    Session Settings
+                  </span>
+                </div>
+                <ChevronDown
+                  className={`h-4 w-4 text-[#525866] transition-transform ${settingsExpanded ? "rotate-180" : ""}`}
+                />
+              </button>
+              {settingsExpanded && (
+                <div className="px-4 pb-4 flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[13px] font-medium text-[#525866]">
+                      Duration
+                    </label>
+                    <Select
+                      value={sessionDuration}
+                      onValueChange={(v) => {
+                        if (selectedSlots.size > 0) {
+                          setPendingDuration(v);
+                          return;
+                        }
+                        setSessionDuration(v);
+                        setHasChanges(true);
+                      }}
+                    >
+                      <SelectTrigger className="h-10 w-28 border-[#E1E4EA] bg-white text-[13px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="30">30 min</SelectItem>
+                        <SelectItem value="60">60 min</SelectItem>
+                        <SelectItem value="90">90 min</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <label className="text-[13px] font-medium text-[#525866]">
+                      Buffer
+                    </label>
+                    <Select
+                      value={bufferTime}
+                      onValueChange={(v) => {
+                        setBufferTime(v);
+                        setHasChanges(true);
+                      }}
+                    >
+                      <SelectTrigger className="h-10 w-28 border-[#E1E4EA] bg-white text-[13px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0">None</SelectItem>
+                        <SelectItem value="15">15 min</SelectItem>
+                        <SelectItem value="30">30 min</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <label className="text-[13px] font-medium text-[#525866]">
+                      Min. Notice
+                    </label>
+                    <Select
+                      value={minAdvanceBookingMinutes}
+                      onValueChange={(v) => {
+                        setMinAdvanceBookingMinutes(v);
+                        setHasChanges(true);
+                      }}
+                    >
+                      <SelectTrigger className="h-10 w-28 border-[#E1E4EA] bg-white text-[13px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0">None</SelectItem>
+                        <SelectItem value="15">15 min</SelectItem>
+                        <SelectItem value="30">30 min</SelectItem>
+                        <SelectItem value="60">1 hour</SelectItem>
+                        <SelectItem value="120">2 hours</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[13px] font-medium text-[#525866]">
+                      Meeting Link <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                      type="url"
+                      placeholder="https://meet.google.com/..."
+                      value={defaultMeetingLink}
+                      onChange={(e) => {
+                        setDefaultMeetingLink(e.target.value);
+                        setHasChanges(true);
+                        if (e.target.value.trim()) setMeetingLinkError(false);
+                      }}
+                      className={`h-10 border-[#E1E4EA] bg-white text-[13px] ${
+                        meetingLinkError
+                          ? "border-red-500 focus-visible:ring-red-500"
+                          : ""
+                      }`}
+                    />
+                    {meetingLinkError && (
+                      <span className="text-[11px] text-red-500">
+                        Meeting link is required
                       </span>
                     )}
                   </div>
+                </div>
+              )}
+            </div>
 
-                  {/* Slot */}
-                  <button
-                    type="button"
-                    onClick={() => handleTapSlot(selectedDay, timeIndex)}
-                    disabled={!isSelected && !canSelect}
-                    className={`flex-1 h-full relative transition-colors ${
-                      isSelected
-                        ? ""
-                        : isRemovedSlot
-                          ? "bg-red-50"
-                          : canSelect
-                            ? "active:bg-[#FDF2F8]"
-                            : "opacity-40"
-                    } ${
-                      isTopOfHour && !isSelected
-                        ? "border-t border-[#E1E4EA]"
-                        : !isSelected
-                          ? "border-t border-[#F0F0F0]"
-                          : ""
-                    }`}
-                  >
-                    {isSelected && (
-                      <div
-                        className={`absolute inset-x-0 inset-y-0 ${roundedClass} ${
-                          isSavedSlot ? "bg-emerald-500" : ""
-                        }`}
-                        style={
-                          isNewSlot
-                            ? { backgroundColor: ROLE_COLORS.mentor.dark }
-                            : undefined
-                        }
-                      >
-                        {isBlockTop && (
-                          <span className="absolute inset-0 flex items-center justify-center text-[11px] font-medium text-white/90 pointer-events-none select-none">
-                            {sessionDuration}m
+            {/* Time Slots for Selected Day */}
+            <div className="px-4 py-3">
+              <div className="text-[13px] font-medium font-inter-tight text-[#525866] mb-2">
+                {DAYS[selectedDay].name}
+              </div>
+              <div className="flex flex-col">
+                {TIME_SLOTS.map((slot, timeIndex) => {
+                  const key = `${selectedDay}-${timeIndex}`;
+                  const isSelected = selectedSlots.has(key);
+                  const wasSaved = savedSlots.has(key);
+                  const isTopOfHour = slot.value.endsWith(":00");
+                  const prevSelected = selectedSlots.has(
+                    `${selectedDay}-${timeIndex - 1}`,
+                  );
+                  const nextSelected = selectedSlots.has(
+                    `${selectedDay}-${timeIndex + 1}`,
+                  );
+
+                  const isSavedSlot = isSelected && wasSaved;
+                  const isNewSlot = isSelected && !wasSaved;
+                  const isRemovedSlot = !isSelected && wasSaved;
+
+                  // Determine block top for label
+                  let isBlockTop = false;
+                  if (isSelected) {
+                    let runStart = timeIndex;
+                    while (
+                      runStart > 0 &&
+                      selectedSlots.has(`${selectedDay}-${runStart - 1}`)
+                    ) {
+                      runStart--;
+                    }
+                    isBlockTop = (timeIndex - runStart) % cellsPerSlot === 0;
+                  }
+
+                  // Border radius
+                  let roundedClass = "";
+                  if (isSelected) {
+                    const isTop = !prevSelected;
+                    const isBottom = !nextSelected;
+                    if (isTop && isBottom) roundedClass = "rounded-lg";
+                    else if (isTop) roundedClass = "rounded-t-lg";
+                    else if (isBottom) roundedClass = "rounded-b-lg";
+                  }
+
+                  const canSelect = canSelectBlock(selectedDay, timeIndex);
+
+                  return (
+                    <div
+                      key={timeIndex}
+                      className={`flex items-center relative ${
+                        isTopOfHour ? "border-t border-[#E1E4EA]" : ""
+                      }`}
+                      style={{ height: "44px" }}
+                    >
+                      {/* Time label */}
+                      <div className="w-16 flex-shrink-0 pr-3 text-right">
+                        {isTopOfHour && (
+                          <span className="text-[12px] font-medium text-[#525866]">
+                            {slot.label}
                           </span>
                         )}
                       </div>
-                    )}
-                    {isRemovedSlot && (
-                      <div className="absolute inset-x-0 inset-y-0 border-2 border-dashed border-red-400 bg-red-100/50 rounded-lg" />
-                    )}
-                  </button>
-                </div>
-              );
-            })}
-          </div>
 
-          {/* Legend */}
-          <div className="mt-4 flex flex-col items-center gap-2">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1.5">
-                <div className="h-3 w-3 rounded bg-emerald-500" />
-                <span className="text-[11px] text-[#525866]">Saved</span>
+                      {/* Slot */}
+                      <button
+                        type="button"
+                        onClick={() => handleTapSlot(selectedDay, timeIndex)}
+                        disabled={!isSelected && !canSelect}
+                        className={`flex-1 h-full relative transition-colors ${
+                          isSelected
+                            ? ""
+                            : isRemovedSlot
+                              ? "bg-red-50"
+                              : canSelect
+                                ? "active:bg-[#FDF2F8]"
+                                : "opacity-40"
+                        } ${
+                          isTopOfHour && !isSelected
+                            ? "border-t border-[#E1E4EA]"
+                            : !isSelected
+                              ? "border-t border-[#F0F0F0]"
+                              : ""
+                        }`}
+                      >
+                        {isSelected && (
+                          <div
+                            className={`absolute inset-x-0 inset-y-0 ${roundedClass} ${
+                              isSavedSlot ? "bg-emerald-500" : ""
+                            }`}
+                            style={
+                              isNewSlot
+                                ? { backgroundColor: ROLE_COLORS.mentor.dark }
+                                : undefined
+                            }
+                          >
+                            {isBlockTop && (
+                              <span className="absolute inset-0 flex items-center justify-center text-[11px] font-medium text-white/90 pointer-events-none select-none">
+                                {sessionDuration}m
+                              </span>
+                            )}
+                          </div>
+                        )}
+                        {isRemovedSlot && (
+                          <div className="absolute inset-x-0 inset-y-0 border-2 border-dashed border-red-400 bg-red-100/50 rounded-lg" />
+                        )}
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
-              <div className="flex items-center gap-1.5">
-                <div
-                  className="h-3 w-3 rounded"
-                  style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
-                />
-                <span className="text-[11px] text-[#525866]">New</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="h-3 w-3 rounded border-2 border-dashed border-red-400 bg-red-100" />
-                <span className="text-[11px] text-[#525866]">Removed</span>
+
+              {/* Legend */}
+              <div className="mt-4 flex flex-col items-center gap-2">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1.5">
+                    <div className="h-3 w-3 rounded bg-emerald-500" />
+                    <span className="text-[11px] text-[#525866]">Saved</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div
+                      className="h-3 w-3 rounded"
+                      style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
+                    />
+                    <span className="text-[11px] text-[#525866]">New</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div className="h-3 w-3 rounded border-2 border-dashed border-red-400 bg-red-100" />
+                    <span className="text-[11px] text-[#525866]">Removed</span>
+                  </div>
+                </div>
+                <p className="text-[11px] text-[#99A0AE]">
+                  Tap to select/deselect time slots. Repeats weekly.
+                </p>
               </div>
             </div>
-            <p className="text-[11px] text-[#99A0AE]">
-              Tap to select/deselect time slots. Repeats weekly.
-            </p>
-          </div>
-        </div>
-        </>
+          </>
         )}
       </div>
 
@@ -884,426 +884,431 @@ export default function AvailabilityPage() {
           <AvailabilitySkeleton />
         ) : (
           <>
-        {/* Stats & Quick Actions */}
-        <div className="mb-5 flex flex-col md:flex-row flex-wrap items-stretch md:items-center justify-between gap-4">
-          <div className="flex gap-3 flex-wrap">
-            <div className="flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 shadow-sm">
-              <Clock
-                className="h-4 w-4"
-                style={{ color: ROLE_COLORS.mentor.dark }}
-              />
-              <span className="text-sm font-medium text-black">
-                {getTotalHours()}
-              </span>
-              <span className="text-xs text-[#525866]">/ week</span>
-            </div>
-            <div className="flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 shadow-sm">
-              <div
-                className="flex h-4 w-4 items-center justify-center rounded text-[10px] font-bold text-white"
-                style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
-              >
-                {getEnabledDaysCount()}
-              </div>
-              <span className="text-xs text-[#525866]">days available</span>
-            </div>
-          </div>
-
-          <div className="flex gap-2 flex-wrap">
-            <button
-              onClick={clearAll}
-              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-sm md:text-xs font-medium text-[#525866] transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600 min-h-[44px] md:min-h-0"
-            >
-              Clear All
-            </button>
-            <button
-              onClick={selectWeekdays9to5}
-              className="flex items-center gap-1.5 rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-sm md:text-xs font-medium text-[#525866] transition-colors hover:opacity-80 min-h-[44px] md:min-h-0"
-            >
-              <Zap className="h-3 w-3" />
-              Weekdays 9-5
-            </button>
-            <button
-              onClick={selectMornings}
-              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-sm md:text-xs font-medium text-[#525866] transition-colors hover:opacity-80 min-h-[44px] md:min-h-0"
-            >
-              Mornings
-            </button>
-            <button
-              onClick={selectAfternoons}
-              className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-sm md:text-xs font-medium text-[#525866] transition-colors hover:opacity-80 min-h-[44px] md:min-h-0"
-            >
-              Afternoons
-            </button>
-          </div>
-        </div>
-
-        {/* Main Card */}
-        <div className="rounded-xl border border-[#E1E4EA] bg-white shadow-sm">
-          {/* Settings Bar */}
-          <div className="flex flex-wrap gap-4 border-b border-[#E1E4EA] bg-[#FAFAFA] px-5 py-4 overflow-visible relative">
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
-                <label className="text-xs font-medium text-[#525866]">
-                  Duration
-                </label>
-                <div className="group relative">
-                  <Info className="h-3 w-3 text-[#B2B2B2] cursor-help" />
+            {/* Stats & Quick Actions */}
+            <div className="mb-5 flex flex-col md:flex-row flex-wrap items-stretch md:items-center justify-between gap-4">
+              <div className="flex gap-3 flex-wrap">
+                <div className="flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 shadow-sm">
+                  <Clock
+                    className="h-4 w-4"
+                    style={{ color: ROLE_COLORS.mentor.dark }}
+                  />
+                  <span className="text-sm font-medium text-black">
+                    {getTotalHours()}
+                  </span>
+                  <span className="text-xs text-[#525866]">/ week</span>
+                </div>
+                <div className="flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 shadow-sm">
                   <div
-                    className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal"
-                    style={{ zIndex: 9999 }}
+                    className="flex h-4 w-4 items-center justify-center rounded text-[10px] font-bold text-white"
+                    style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
                   >
-                    Length of each mentorship session
+                    {getEnabledDaysCount()}
                   </div>
+                  <span className="text-xs text-[#525866]">days available</span>
                 </div>
               </div>
-              <Select
-                value={sessionDuration}
-                onValueChange={(v) => {
-                  if (selectedSlots.size > 0) {
-                    setPendingDuration(v);
-                    return;
-                  }
-                  setSessionDuration(v);
-                  setHasChanges(true);
-                }}
-              >
-                <SelectTrigger className="h-10 md:h-8 w-24 border-[#E1E4EA] bg-white text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="30">30 min</SelectItem>
-                  <SelectItem value="60">60 min</SelectItem>
-                  <SelectItem value="90">90 min</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
 
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
-                <label className="text-xs font-medium text-[#525866]">
-                  Buffer
-                </label>
-                <div className="group relative">
-                  <Info className="h-3 w-3 text-[#B2B2B2] cursor-help" />
-                  <div
-                    className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal"
-                    style={{ zIndex: 9999 }}
-                  >
-                    Time between sessions to prepare or rest
-                  </div>
-                </div>
+              <div className="flex gap-2 flex-wrap">
+                <button
+                  onClick={clearAll}
+                  className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-sm md:text-xs font-medium text-[#525866] transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600 min-h-[44px] md:min-h-0"
+                >
+                  Clear All
+                </button>
+                <button
+                  onClick={selectWeekdays9to5}
+                  className="flex items-center gap-1.5 rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-sm md:text-xs font-medium text-[#525866] transition-colors hover:opacity-80 min-h-[44px] md:min-h-0"
+                >
+                  <Zap className="h-3 w-3" />
+                  Weekdays 9-5
+                </button>
+                <button
+                  onClick={selectMornings}
+                  className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-sm md:text-xs font-medium text-[#525866] transition-colors hover:opacity-80 min-h-[44px] md:min-h-0"
+                >
+                  Mornings
+                </button>
+                <button
+                  onClick={selectAfternoons}
+                  className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-sm md:text-xs font-medium text-[#525866] transition-colors hover:opacity-80 min-h-[44px] md:min-h-0"
+                >
+                  Afternoons
+                </button>
               </div>
-              <Select
-                value={bufferTime}
-                onValueChange={(v) => {
-                  setBufferTime(v);
-                  setHasChanges(true);
-                }}
-              >
-                <SelectTrigger className="h-10 md:h-8 w-20 border-[#E1E4EA] bg-white text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="0">None</SelectItem>
-                  <SelectItem value="15">15 min</SelectItem>
-                  <SelectItem value="30">30 min</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
 
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
-                <label className="text-xs font-medium text-[#525866]">
-                  Min. Notice
-                </label>
-                <div className="group relative">
-                  <Info className="h-3 w-3 text-[#B2B2B2] cursor-help" />
-                  <div
-                    className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal"
-                    style={{ zIndex: 9999 }}
-                  >
-                    Minimum time before a session can be booked
-                  </div>
-                </div>
-              </div>
-              <Select
-                value={minAdvanceBookingMinutes}
-                onValueChange={(v) => {
-                  setMinAdvanceBookingMinutes(v);
-                  setHasChanges(true);
-                }}
-              >
-                <SelectTrigger className="h-8 w-24 border-[#E1E4EA] bg-white text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="0">None</SelectItem>
-                  <SelectItem value="15">15 min</SelectItem>
-                  <SelectItem value="30">30 min</SelectItem>
-                  <SelectItem value="60">1 hour</SelectItem>
-                  <SelectItem value="120">2 hours</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
-                <label className="text-xs font-medium text-[#525866]">
-                  Meeting Link <span className="text-red-500">*</span>
-                </label>
-                <div className="group relative">
-                  <Info className="h-3 w-3 text-[#B2B2B2] cursor-help" />
-                  <div
-                    className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-56 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal"
-                    style={{ zIndex: 9999 }}
-                  >
-                    Default video call link sent to mentees (Google Meet, Zoom,
-                    etc.)
-                  </div>
-                </div>
-              </div>
-              <Input
-                type="url"
-                placeholder="https://meet.google.com/..."
-                value={defaultMeetingLink}
-                onChange={(e) => {
-                  setDefaultMeetingLink(e.target.value);
-                  setHasChanges(true);
-                  if (e.target.value.trim()) setMeetingLinkError(false);
-                }}
-                className={`h-8 w-64 border-[#E1E4EA] bg-white text-xs ${
-                  meetingLinkError
-                    ? "border-red-500 focus-visible:ring-red-500"
-                    : ""
-                }`}
-              />
-            </div>
-            {meetingLinkError && (
-              <span className="text-[10px] text-red-500">
-                Meeting link is required
-              </span>
-            )}
-          </div>
-
-          {/* Grid View */}
-          <div className="overflow-x-auto p-4">
-            <div
-              ref={gridRef}
-              className="grid select-none"
-              style={{ gridTemplateColumns: "60px repeat(7, 1fr)" }}
-              onMouseLeave={() => setIsDragging(false)}
-            >
-              {/* Header Row */}
-              <div className="sticky left-0 z-10 bg-white" />
-              {DAYS.map((day) => {
-                const dayHasSlots = Array.from(selectedSlots).some((key) =>
-                  key.startsWith(`${day.index}-`),
-                );
-                return (
-                  <div
-                    key={day.index}
-                    className="border-b border-l border-[#E1E4EA] bg-[#FAFAFA] px-2 py-3 text-center first:border-l-0"
-                  >
-                    <div
-                      className="text-sm font-semibold"
-                      style={{
-                        color: dayHasSlots ? ROLE_COLORS.mentor.dark : "black",
-                      }}
-                    >
-                      {day.short}
-                    </div>
-                    <div className="mt-0.5 text-[10px] text-[#99A0AE]">
-                      {day.name}
+            {/* Main Card */}
+            <div className="rounded-xl border border-[#E1E4EA] bg-white shadow-sm">
+              {/* Settings Bar */}
+              <div className="flex flex-wrap gap-4 border-b border-[#E1E4EA] bg-[#FAFAFA] px-5 py-4 overflow-visible relative">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <label className="text-xs font-medium text-[#525866]">
+                      Duration
+                    </label>
+                    <div className="group relative">
+                      <Info className="h-3 w-3 text-[#B2B2B2] cursor-help" />
+                      <div
+                        className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal"
+                        style={{ zIndex: 9999 }}
+                      >
+                        Length of each mentorship session
+                      </div>
                     </div>
                   </div>
-                );
-              })}
-
-              {/* Time Rows */}
-              {TIME_SLOTS.map((slot, timeIndex) => (
-                <div key={`row-${timeIndex}`} className="contents">
-                  {/* Time Label */}
-                  <div
-                    className="sticky left-0 z-10 flex items-center justify-end bg-white pr-3"
-                    style={{ height: "24px" }}
-                  >
-                    <span className="text-[11px] font-medium text-[#525866]">
-                      {getTimeLabel(slot)}
-                    </span>
-                  </div>
-
-                  {/* Day Cells */}
-                  {DAYS.map((day) => {
-                    const key = `${day.index}-${timeIndex}`;
-                    const isSelected = selectedSlots.has(key);
-                    const wasSaved = savedSlots.has(key);
-                    const isTopOfHour = slot.value.endsWith(":00");
-                    const prevSelected = selectedSlots.has(
-                      `${day.index}-${timeIndex - 1}`,
-                    );
-                    const nextSelected = selectedSlots.has(
-                      `${day.index}-${timeIndex + 1}`,
-                    );
-                    const prevSaved = savedSlots.has(
-                      `${day.index}-${timeIndex - 1}`,
-                    );
-                    const nextSaved = savedSlots.has(
-                      `${day.index}-${timeIndex + 1}`,
-                    );
-
-                    // Determine slot state
-                    const isSavedSlot = isSelected && wasSaved; // Green - saved in backend
-                    const isNewSlot = isSelected && !wasSaved; // Purple - newly added
-                    const isRemovedSlot = !isSelected && wasSaved; // Red - will be removed
-
-                    // Determine if this cell is the top of a duration block
-                    let isBlockTop = false;
-                    if (isSelected) {
-                      let runStart = timeIndex;
-                      while (
-                        runStart > 0 &&
-                        selectedSlots.has(`${day.index}-${runStart - 1}`)
-                      ) {
-                        runStart--;
+                  <Select
+                    value={sessionDuration}
+                    onValueChange={(v) => {
+                      if (selectedSlots.size > 0) {
+                        setPendingDuration(v);
+                        return;
                       }
-                      isBlockTop = (timeIndex - runStart) % cellsPerSlot === 0;
-                    }
+                      setSessionDuration(v);
+                      setHasChanges(true);
+                    }}
+                  >
+                    <SelectTrigger className="h-10 md:h-8 w-24 border-[#E1E4EA] bg-white text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="30">30 min</SelectItem>
+                      <SelectItem value="60">60 min</SelectItem>
+                      <SelectItem value="90">90 min</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-                    // Determine border radius based on neighbors (for selected slots)
-                    let borderRadius = "";
-                    if (isSelected) {
-                      const isTop = !prevSelected;
-                      const isBottom = !nextSelected;
-                      if (isTop && isBottom) borderRadius = "rounded";
-                      else if (isTop) borderRadius = "rounded-t";
-                      else if (isBottom) borderRadius = "rounded-b";
-                    }
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <label className="text-xs font-medium text-[#525866]">
+                      Buffer
+                    </label>
+                    <div className="group relative">
+                      <Info className="h-3 w-3 text-[#B2B2B2] cursor-help" />
+                      <div
+                        className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal"
+                        style={{ zIndex: 9999 }}
+                      >
+                        Time between sessions to prepare or rest
+                      </div>
+                    </div>
+                  </div>
+                  <Select
+                    value={bufferTime}
+                    onValueChange={(v) => {
+                      setBufferTime(v);
+                      setHasChanges(true);
+                    }}
+                  >
+                    <SelectTrigger className="h-10 md:h-8 w-20 border-[#E1E4EA] bg-white text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">None</SelectItem>
+                      <SelectItem value="15">15 min</SelectItem>
+                      <SelectItem value="30">30 min</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-                    // Border radius for removed slots indicator
-                    let removedRadius = "";
-                    if (isRemovedSlot) {
-                      const isTop = !prevSaved || prevSelected;
-                      const isBottom = !nextSaved || nextSelected;
-                      if (isTop && isBottom) removedRadius = "rounded";
-                      else if (isTop) removedRadius = "rounded-t";
-                      else if (isBottom) removedRadius = "rounded-b";
-                    }
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <label className="text-xs font-medium text-[#525866]">
+                      Min. Notice
+                    </label>
+                    <div className="group relative">
+                      <Info className="h-3 w-3 text-[#B2B2B2] cursor-help" />
+                      <div
+                        className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal"
+                        style={{ zIndex: 9999 }}
+                      >
+                        Minimum time before a session can be booked
+                      </div>
+                    </div>
+                  </div>
+                  <Select
+                    value={minAdvanceBookingMinutes}
+                    onValueChange={(v) => {
+                      setMinAdvanceBookingMinutes(v);
+                      setHasChanges(true);
+                    }}
+                  >
+                    <SelectTrigger className="h-8 w-24 border-[#E1E4EA] bg-white text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">None</SelectItem>
+                      <SelectItem value="15">15 min</SelectItem>
+                      <SelectItem value="30">30 min</SelectItem>
+                      <SelectItem value="60">1 hour</SelectItem>
+                      <SelectItem value="120">2 hours</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-                    // Slot color
-                    const slotColor = isSavedSlot
-                      ? "bg-emerald-500" // Green for saved
-                      : "";
-                    const slotStyle = isNewSlot
-                      ? { backgroundColor: ROLE_COLORS.mentor.dark }
-                      : undefined;
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <label className="text-xs font-medium text-[#525866]">
+                      Meeting Link <span className="text-red-500">*</span>
+                    </label>
+                    <div className="group relative">
+                      <Info className="h-3 w-3 text-[#B2B2B2] cursor-help" />
+                      <div
+                        className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-56 p-2 bg-gray-900 text-white text-[10px] rounded shadow-lg pointer-events-none whitespace-normal"
+                        style={{ zIndex: 9999 }}
+                      >
+                        Default video call link sent to mentees (Google Meet,
+                        Zoom, etc.)
+                      </div>
+                    </div>
+                  </div>
+                  <Input
+                    type="url"
+                    placeholder="https://meet.google.com/..."
+                    value={defaultMeetingLink}
+                    onChange={(e) => {
+                      setDefaultMeetingLink(e.target.value);
+                      setHasChanges(true);
+                      if (e.target.value.trim()) setMeetingLinkError(false);
+                    }}
+                    className={`h-8 w-64 border-[#E1E4EA] bg-white text-xs ${
+                      meetingLinkError
+                        ? "border-red-500 focus-visible:ring-red-500"
+                        : ""
+                    }`}
+                  />
+                </div>
+                {meetingLinkError && (
+                  <span className="text-[10px] text-red-500">
+                    Meeting link is required
+                  </span>
+                )}
+              </div>
 
+              {/* Grid View */}
+              <div className="overflow-x-auto p-4">
+                <div
+                  ref={gridRef}
+                  className="grid select-none"
+                  style={{ gridTemplateColumns: "60px repeat(7, 1fr)" }}
+                  onMouseLeave={() => setIsDragging(false)}
+                >
+                  {/* Header Row */}
+                  <div className="sticky left-0 z-10 bg-white" />
+                  {DAYS.map((day) => {
+                    const dayHasSlots = Array.from(selectedSlots).some((key) =>
+                      key.startsWith(`${day.index}-`),
+                    );
                     return (
                       <div
-                        key={`cell-${day.index}-${timeIndex}`}
-                        className={`relative cursor-pointer border-l transition-colors ${
-                          isTopOfHour
-                            ? "border-t border-[#E1E4EA]"
-                            : "border-t border-[#F0F0F0]"
-                        } first:border-l-0 ${
-                          isSelected
-                            ? ""
-                            : isRemovedSlot
-                              ? "bg-red-50"
-                              : "hover:bg-[#FDF2F8]"
-                        }`}
-                        style={{ height: "24px" }}
-                        onMouseDown={() =>
-                          handleMouseDown(day.index, timeIndex)
-                        }
-                        onMouseEnter={() =>
-                          handleMouseEnter(day.index, timeIndex)
-                        }
-                        onMouseUp={handleMouseUp}
+                        key={day.index}
+                        className="border-b border-l border-[#E1E4EA] bg-[#FAFAFA] px-2 py-3 text-center first:border-l-0"
                       >
-                        {/* Saved or New slot */}
-                        {isSelected && (
-                          <div
-                            className={`absolute inset-x-1 inset-y-0 ${slotColor} ${borderRadius}`}
-                            style={slotStyle}
-                          >
-                            {isBlockTop && (
-                              <span
-                                className="absolute left-0 right-0 top-0 flex items-center justify-center text-[9px] font-medium text-white/90 pointer-events-none select-none z-10"
-                                style={{ height: `${cellsPerSlot * 24}px` }}
-                              >
-                                {sessionDuration}m
-                              </span>
-                            )}
-                          </div>
-                        )}
-                        {/* Removed slot indicator */}
-                        {isRemovedSlot && (
-                          <div
-                            className={`absolute inset-x-1 inset-y-0 border-2 border-dashed border-red-400 bg-red-100/50 ${removedRadius}`}
-                          />
-                        )}
+                        <div
+                          className="text-sm font-semibold"
+                          style={{
+                            color: dayHasSlots
+                              ? ROLE_COLORS.mentor.dark
+                              : "black",
+                          }}
+                        >
+                          {day.short}
+                        </div>
+                        <div className="mt-0.5 text-[10px] text-[#99A0AE]">
+                          {day.name}
+                        </div>
                       </div>
                     );
                   })}
+
+                  {/* Time Rows */}
+                  {TIME_SLOTS.map((slot, timeIndex) => (
+                    <div key={`row-${timeIndex}`} className="contents">
+                      {/* Time Label */}
+                      <div
+                        className="sticky left-0 z-10 flex items-center justify-end bg-white pr-3"
+                        style={{ height: "24px" }}
+                      >
+                        <span className="text-[11px] font-medium text-[#525866]">
+                          {getTimeLabel(slot)}
+                        </span>
+                      </div>
+
+                      {/* Day Cells */}
+                      {DAYS.map((day) => {
+                        const key = `${day.index}-${timeIndex}`;
+                        const isSelected = selectedSlots.has(key);
+                        const wasSaved = savedSlots.has(key);
+                        const isTopOfHour = slot.value.endsWith(":00");
+                        const prevSelected = selectedSlots.has(
+                          `${day.index}-${timeIndex - 1}`,
+                        );
+                        const nextSelected = selectedSlots.has(
+                          `${day.index}-${timeIndex + 1}`,
+                        );
+                        const prevSaved = savedSlots.has(
+                          `${day.index}-${timeIndex - 1}`,
+                        );
+                        const nextSaved = savedSlots.has(
+                          `${day.index}-${timeIndex + 1}`,
+                        );
+
+                        // Determine slot state
+                        const isSavedSlot = isSelected && wasSaved; // Green - saved in backend
+                        const isNewSlot = isSelected && !wasSaved; // Purple - newly added
+                        const isRemovedSlot = !isSelected && wasSaved; // Red - will be removed
+
+                        // Determine if this cell is the top of a duration block
+                        let isBlockTop = false;
+                        if (isSelected) {
+                          let runStart = timeIndex;
+                          while (
+                            runStart > 0 &&
+                            selectedSlots.has(`${day.index}-${runStart - 1}`)
+                          ) {
+                            runStart--;
+                          }
+                          isBlockTop =
+                            (timeIndex - runStart) % cellsPerSlot === 0;
+                        }
+
+                        // Determine border radius based on neighbors (for selected slots)
+                        let borderRadius = "";
+                        if (isSelected) {
+                          const isTop = !prevSelected;
+                          const isBottom = !nextSelected;
+                          if (isTop && isBottom) borderRadius = "rounded";
+                          else if (isTop) borderRadius = "rounded-t";
+                          else if (isBottom) borderRadius = "rounded-b";
+                        }
+
+                        // Border radius for removed slots indicator
+                        let removedRadius = "";
+                        if (isRemovedSlot) {
+                          const isTop = !prevSaved || prevSelected;
+                          const isBottom = !nextSaved || nextSelected;
+                          if (isTop && isBottom) removedRadius = "rounded";
+                          else if (isTop) removedRadius = "rounded-t";
+                          else if (isBottom) removedRadius = "rounded-b";
+                        }
+
+                        // Slot color
+                        const slotColor = isSavedSlot
+                          ? "bg-emerald-500" // Green for saved
+                          : "";
+                        const slotStyle = isNewSlot
+                          ? { backgroundColor: ROLE_COLORS.mentor.dark }
+                          : undefined;
+
+                        return (
+                          <div
+                            key={`cell-${day.index}-${timeIndex}`}
+                            className={`relative cursor-pointer border-l transition-colors ${
+                              isTopOfHour
+                                ? "border-t border-[#E1E4EA]"
+                                : "border-t border-[#F0F0F0]"
+                            } first:border-l-0 ${
+                              isSelected
+                                ? ""
+                                : isRemovedSlot
+                                  ? "bg-red-50"
+                                  : "hover:bg-[#FDF2F8]"
+                            }`}
+                            style={{ height: "24px" }}
+                            onMouseDown={() =>
+                              handleMouseDown(day.index, timeIndex)
+                            }
+                            onMouseEnter={() =>
+                              handleMouseEnter(day.index, timeIndex)
+                            }
+                            onMouseUp={handleMouseUp}
+                          >
+                            {/* Saved or New slot */}
+                            {isSelected && (
+                              <div
+                                className={`absolute inset-x-1 inset-y-0 ${slotColor} ${borderRadius}`}
+                                style={slotStyle}
+                              >
+                                {isBlockTop && (
+                                  <span
+                                    className="absolute left-0 right-0 top-0 flex items-center justify-center text-[9px] font-medium text-white/90 pointer-events-none select-none z-10"
+                                    style={{ height: `${cellsPerSlot * 24}px` }}
+                                  >
+                                    {sessionDuration}m
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                            {/* Removed slot indicator */}
+                            {isRemovedSlot && (
+                              <div
+                                className={`absolute inset-x-1 inset-y-0 border-2 border-dashed border-red-400 bg-red-100/50 ${removedRadius}`}
+                              />
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
 
-          {/* Footer */}
-          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between border-t border-[#E1E4EA] bg-[#FAFAFA] px-5 py-4 gap-3">
-            <div className="text-sm text-[#525866] text-center md:text-left">
-              <span
-                className="font-semibold"
-                style={{ color: ROLE_COLORS.mentor.dark }}
-              >
-                {selectedSlots.size}
-              </span>{" "}
-              slots selected ({getTotalHours()} per week)
+              {/* Footer */}
+              <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between border-t border-[#E1E4EA] bg-[#FAFAFA] px-5 py-4 gap-3">
+                <div className="text-sm text-[#525866] text-center md:text-left">
+                  <span
+                    className="font-semibold"
+                    style={{ color: ROLE_COLORS.mentor.dark }}
+                  >
+                    {selectedSlots.size}
+                  </span>{" "}
+                  slots selected ({getTotalHours()} per week)
+                </div>
+                <Button
+                  onClick={handleSave}
+                  disabled={isSaving || !hasChanges}
+                  className="rounded-lg px-6 py-2 text-sm font-medium text-white hover:opacity-80 disabled:opacity-50 min-h-[44px] md:min-h-0"
+                  style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
+                >
+                  {isSaving ? (
+                    <span className="flex items-center gap-2">
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      Saving...
+                    </span>
+                  ) : (
+                    "Save Availability"
+                  )}
+                </Button>
+              </div>
             </div>
-            <Button
-              onClick={handleSave}
-              disabled={isSaving || !hasChanges}
-              className="rounded-lg px-6 py-2 text-sm font-medium text-white hover:opacity-80 disabled:opacity-50 min-h-[44px] md:min-h-0"
-              style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
-            >
-              {isSaving ? (
-                <span className="flex items-center gap-2">
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  Saving...
-                </span>
-              ) : (
-                "Save Availability"
-              )}
-            </Button>
-          </div>
-        </div>
 
-        {/* Legend & Help Text */}
-        <div className="mt-4 flex flex-col items-center gap-2">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1.5">
-              <div className="h-3 w-3 rounded bg-emerald-500" />
-              <span className="text-xs text-[#525866]">Saved</span>
+            {/* Legend & Help Text */}
+            <div className="mt-4 flex flex-col items-center gap-2">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1.5">
+                  <div className="h-3 w-3 rounded bg-emerald-500" />
+                  <span className="text-xs text-[#525866]">Saved</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div
+                    className="h-3 w-3 rounded"
+                    style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
+                  />
+                  <span className="text-xs text-[#525866]">New</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="h-3 w-3 rounded border-2 border-dashed border-red-400 bg-red-100" />
+                  <span className="text-xs text-[#525866]">
+                    Will be removed
+                  </span>
+                </div>
+              </div>
+              <p className="text-xs text-[#99A0AE]">
+                Click and drag to select time slots. Your availability repeats
+                every week.
+              </p>
             </div>
-            <div className="flex items-center gap-1.5">
-              <div
-                className="h-3 w-3 rounded"
-                style={{ backgroundColor: ROLE_COLORS.mentor.dark }}
-              />
-              <span className="text-xs text-[#525866]">New</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="h-3 w-3 rounded border-2 border-dashed border-red-400 bg-red-100" />
-              <span className="text-xs text-[#525866]">Will be removed</span>
-            </div>
-          </div>
-          <p className="text-xs text-[#99A0AE]">
-            Click and drag to select time slots. Your availability repeats every
-            week.
-          </p>
-        </div>
-        </>
+          </>
         )}
       </div>
 

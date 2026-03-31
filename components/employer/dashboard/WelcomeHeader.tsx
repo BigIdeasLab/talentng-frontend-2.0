@@ -52,7 +52,9 @@ export function WelcomeHeader({
 
           {/* Description */}
           <p className="text-white text-[13px] font-inter-tight">
-            You have {totalApplicants} applicants in your pipeline. {pendingReviews} pending review{pendingReviews !== 1 ? "s" : ""} awaiting your attention.
+            You have {totalApplicants} applicants in your pipeline.{" "}
+            {pendingReviews} pending review{pendingReviews !== 1 ? "s" : ""}{" "}
+            awaiting your attention.
           </p>
         </div>
 

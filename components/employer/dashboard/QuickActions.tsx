@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { Users, Briefcase, CheckCircle, UserCheck, ShieldCheck } from "lucide-react";
+import {
+  Users,
+  Briefcase,
+  CheckCircle,
+  UserCheck,
+  ShieldCheck,
+} from "lucide-react";
 
 interface ActionButtonProps {
   icon: React.ReactNode;
@@ -8,9 +14,14 @@ interface ActionButtonProps {
   variant?: "default" | "success";
 }
 
-function ActionButton({ icon, label, href, variant = "default" }: ActionButtonProps) {
+function ActionButton({
+  icon,
+  label,
+  href,
+  variant = "default",
+}: ActionButtonProps) {
   const isSuccess = variant === "success";
-  
+
   return (
     <Link
       href={href}
@@ -22,9 +33,11 @@ function ActionButton({ icon, label, href, variant = "default" }: ActionButtonPr
     >
       <div className="flex items-center gap-1">
         {icon}
-        <span className={`font-inter-tight text-[12px] font-normal ${
-          isSuccess ? "text-white" : "text-[#525866]"
-        }`}>
+        <span
+          className={`font-inter-tight text-[12px] font-normal ${
+            isSuccess ? "text-white" : "text-[#525866]"
+          }`}
+        >
           {label}
         </span>
       </div>
@@ -77,10 +90,7 @@ export function QuickActions() {
         />
         <ActionButton
           icon={
-            <ShieldCheck
-              className="w-3.5 h-3.5 text-white"
-              strokeWidth={1.6}
-            />
+            <ShieldCheck className="w-3.5 h-3.5 text-white" strokeWidth={1.6} />
           }
           label="Get Verified"
           href="/verification"

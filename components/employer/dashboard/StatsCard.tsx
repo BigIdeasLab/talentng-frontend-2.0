@@ -62,7 +62,7 @@ const StatsCard = mobileOptimizedMemo(
             e.currentTarget.style.borderColor = ROLE_COLORS.recruiter.primary;
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = '#E1E4EA';
+            e.currentTarget.style.borderColor = "#E1E4EA";
           }}
         >
           {content}

@@ -100,7 +100,7 @@ function StatCard({
           e.currentTarget.style.borderColor = ROLE_COLORS.talent.primary;
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = '#E1E4EA';
+          e.currentTarget.style.borderColor = "#E1E4EA";
         }}
       >
         {content}
@@ -109,7 +109,7 @@ function StatCard({
   }
 
   return (
-    <div 
+    <div
       className={`flex flex-col justify-center gap-3 p-4 rounded-2xl border border-[#E1E4EA] ${gradient ?? ""}`}
       style={gradientStyle}
     >

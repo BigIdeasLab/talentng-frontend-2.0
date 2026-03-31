@@ -458,7 +458,6 @@ export default function HiredTalentsPage() {
             </div>
           </div>
         </div>
-
       </div>
 
       {/* Scrollable Content Area */}

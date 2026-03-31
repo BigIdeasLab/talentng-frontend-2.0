@@ -351,7 +351,6 @@ export default function OpportunityApplicantsPage() {
           </div>
         </div>
 
-
         {/* Search and Filters */}
         <div className="flex items-center gap-[8px] relative overflow-visible">
           {/* Search Container */}

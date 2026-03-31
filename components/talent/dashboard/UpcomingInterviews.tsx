@@ -193,7 +193,9 @@ export function UpcomingInterviews({
             className="w-4 h-4"
             style={{ color: ROLE_COLORS.talent.dark }}
           />
-          <h2 className="text-[16px] font-bold font-inter-tight text-[#111827]">Upcoming</h2>
+          <h2 className="text-[16px] font-bold font-inter-tight text-[#111827]">
+            Upcoming
+          </h2>
         </div>
         {events.length > 3 && (
           <Link

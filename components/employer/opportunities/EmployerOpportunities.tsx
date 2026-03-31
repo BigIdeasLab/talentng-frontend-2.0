@@ -277,45 +277,10 @@ export function EmployerOpportunities() {
         </div>
 
         {/* Pagination Controls - Desktop */}
-        {opportunitiesRaw?.pagination && opportunitiesRaw.pagination.total > 0 && (
-          <div className="hidden md:flex items-center justify-between px-5 py-4 border-t border-[#E1E4EA] flex-shrink-0">
-            <div className="text-[13px] text-[#525866] font-inter-tight">
-              Showing {opportunitiesRaw.pagination.offset + 1} to{" "}
-              {Math.min(
-                opportunitiesRaw.pagination.offset +
-                  opportunitiesRaw.pagination.limit,
-                opportunitiesRaw.pagination.total,
-              )}{" "}
-              of {opportunitiesRaw.pagination.total} opportunities
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handlePreviousPage}
-                disabled={!opportunitiesRaw.pagination.hasPreviousPage}
-                className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all"
-              >
-                Previous
-              </button>
-              <span className="text-[13px] text-[#525866] font-inter-tight">
-                Page {opportunitiesRaw.pagination.currentPage} of{" "}
-                {opportunitiesRaw.pagination.totalPages}
-              </span>
-              <button
-                onClick={handleNextPage}
-                disabled={!opportunitiesRaw.pagination.hasNextPage}
-                className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Pagination Controls - Mobile */}
-        {opportunitiesRaw?.pagination && opportunitiesRaw.pagination.total > 0 && (
-          <div className="md:hidden px-4 py-4 border-t border-[#E1E4EA] bg-white flex-shrink-0">
-            <div className="flex flex-col gap-3">
-              <div className="text-[13px] text-[#525866] font-inter-tight text-center">
+        {opportunitiesRaw?.pagination &&
+          opportunitiesRaw.pagination.total > 0 && (
+            <div className="hidden md:flex items-center justify-between px-5 py-4 border-t border-[#E1E4EA] flex-shrink-0">
+              <div className="text-[13px] text-[#525866] font-inter-tight">
                 Showing {opportunitiesRaw.pagination.offset + 1} to{" "}
                 {Math.min(
                   opportunitiesRaw.pagination.offset +
@@ -324,14 +289,11 @@ export function EmployerOpportunities() {
                 )}{" "}
                 of {opportunitiesRaw.pagination.total} opportunities
               </div>
-              <div className="flex items-center justify-center gap-2">
+              <div className="flex items-center gap-2">
                 <button
-                  onClick={() => {
-                    handlePreviousPage();
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }}
+                  onClick={handlePreviousPage}
                   disabled={!opportunitiesRaw.pagination.hasPreviousPage}
-                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all min-h-[44px]"
+                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all"
                 >
                   Previous
                 </button>
@@ -340,19 +302,59 @@ export function EmployerOpportunities() {
                   {opportunitiesRaw.pagination.totalPages}
                 </span>
                 <button
-                  onClick={() => {
-                    handleNextPage();
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }}
+                  onClick={handleNextPage}
                   disabled={!opportunitiesRaw.pagination.hasNextPage}
-                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all min-h-[44px]"
+                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all"
                 >
                   Next
                 </button>
               </div>
             </div>
-          </div>
-        )}
+          )}
+
+        {/* Pagination Controls - Mobile */}
+        {opportunitiesRaw?.pagination &&
+          opportunitiesRaw.pagination.total > 0 && (
+            <div className="md:hidden px-4 py-4 border-t border-[#E1E4EA] bg-white flex-shrink-0">
+              <div className="flex flex-col gap-3">
+                <div className="text-[13px] text-[#525866] font-inter-tight text-center">
+                  Showing {opportunitiesRaw.pagination.offset + 1} to{" "}
+                  {Math.min(
+                    opportunitiesRaw.pagination.offset +
+                      opportunitiesRaw.pagination.limit,
+                    opportunitiesRaw.pagination.total,
+                  )}{" "}
+                  of {opportunitiesRaw.pagination.total} opportunities
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <button
+                    onClick={() => {
+                      handlePreviousPage();
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    disabled={!opportunitiesRaw.pagination.hasPreviousPage}
+                    className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all min-h-[44px]"
+                  >
+                    Previous
+                  </button>
+                  <span className="text-[13px] text-[#525866] font-inter-tight">
+                    Page {opportunitiesRaw.pagination.currentPage} of{" "}
+                    {opportunitiesRaw.pagination.totalPages}
+                  </span>
+                  <button
+                    onClick={() => {
+                      handleNextPage();
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    disabled={!opportunitiesRaw.pagination.hasNextPage}
+                    className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all min-h-[44px]"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
       </div>
 
       {/* Mobile Layout - Single scroll container */}
@@ -429,47 +431,48 @@ export function EmployerOpportunities() {
         </div>
 
         {/* Pagination - Mobile */}
-        {opportunitiesRaw?.pagination && opportunitiesRaw.pagination.total > 0 && (
-          <div className="px-4 py-4 border-t border-[#E1E4EA] bg-white">
-            <div className="flex flex-col gap-3">
-              <div className="text-[13px] text-[#525866] font-inter-tight text-center">
-                Showing {opportunitiesRaw.pagination.offset + 1} to{" "}
-                {Math.min(
-                  opportunitiesRaw.pagination.offset +
-                    opportunitiesRaw.pagination.limit,
-                  opportunitiesRaw.pagination.total,
-                )}{" "}
-                of {opportunitiesRaw.pagination.total} opportunities
-              </div>
-              <div className="flex items-center justify-center gap-2">
-                <button
-                  onClick={() => {
-                    handlePreviousPage();
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }}
-                  disabled={!opportunitiesRaw.pagination.hasPreviousPage}
-                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all min-h-[44px]"
-                >
-                  Previous
-                </button>
-                <span className="text-[13px] text-[#525866] font-inter-tight">
-                  Page {opportunitiesRaw.pagination.currentPage} of{" "}
-                  {opportunitiesRaw.pagination.totalPages}
-                </span>
-                <button
-                  onClick={() => {
-                    handleNextPage();
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }}
-                  disabled={!opportunitiesRaw.pagination.hasNextPage}
-                  className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all min-h-[44px]"
-                >
-                  Next
-                </button>
+        {opportunitiesRaw?.pagination &&
+          opportunitiesRaw.pagination.total > 0 && (
+            <div className="px-4 py-4 border-t border-[#E1E4EA] bg-white">
+              <div className="flex flex-col gap-3">
+                <div className="text-[13px] text-[#525866] font-inter-tight text-center">
+                  Showing {opportunitiesRaw.pagination.offset + 1} to{" "}
+                  {Math.min(
+                    opportunitiesRaw.pagination.offset +
+                      opportunitiesRaw.pagination.limit,
+                    opportunitiesRaw.pagination.total,
+                  )}{" "}
+                  of {opportunitiesRaw.pagination.total} opportunities
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <button
+                    onClick={() => {
+                      handlePreviousPage();
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    disabled={!opportunitiesRaw.pagination.hasPreviousPage}
+                    className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all min-h-[44px]"
+                  >
+                    Previous
+                  </button>
+                  <span className="text-[13px] text-[#525866] font-inter-tight">
+                    Page {opportunitiesRaw.pagination.currentPage} of{" "}
+                    {opportunitiesRaw.pagination.totalPages}
+                  </span>
+                  <button
+                    onClick={() => {
+                      handleNextPage();
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    disabled={!opportunitiesRaw.pagination.hasNextPage}
+                    className="px-4 py-2 border border-[#E1E4EA] rounded-lg text-[13px] font-inter-tight disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all min-h-[44px]"
+                  >
+                    Next
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
       </div>
     </RoleColorProvider>
   );
