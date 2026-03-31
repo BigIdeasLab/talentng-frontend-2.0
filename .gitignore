@@ -28,6 +28,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
 .env*.local
 
 # vercel
@@ -53,3 +54,11 @@ testsprite_teststmp/
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+# API test results
+API_TEST_RESULTS.json
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
