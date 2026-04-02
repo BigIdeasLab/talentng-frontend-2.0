@@ -115,12 +115,14 @@ interface AdminSidebarProps {
 ```
 
 **Responsibilities:**
+
 - Display navigation menu with icons and labels
 - Highlight active route
 - Show admin profile section
 - Responsive: full sidebar on desktop, collapsed on tablet, drawer on mobile
 
 **Navigation Items:**
+
 - Dashboard
 - Talents
 - Recruiters
@@ -142,6 +144,7 @@ interface AdminHeaderProps {
 ```
 
 **Responsibilities:**
+
 - Display logo and app title
 - Show hamburger menu button on mobile
 - Display admin user info and logout button
@@ -152,12 +155,14 @@ interface AdminHeaderProps {
 #### Dashboard Page
 
 **Components:**
+
 - `DashboardStats`: Metric cards for users, opportunities, applications, mentorship
 - `ActivityFeed`: Recent platform activity timeline
 - `TrendCharts`: Line/bar charts for user growth, opportunities, applications
 - `PeriodSelector`: Toggle for 7d, 30d, 90d time periods
 
 **Data Flow:**
+
 1. Fetch dashboard stats from `/api/v1/admin/dashboard/stats`
 2. Fetch activity feed from `/api/v1/admin/dashboard/activity`
 3. Fetch chart data from `/api/v1/admin/dashboard/charts`
@@ -166,12 +171,14 @@ interface AdminHeaderProps {
 #### Talent Management Page
 
 **Components:**
+
 - `TalentTable`: Paginated table with search and filters
 - `TalentDetailModal`: Full profile view with tabs (Profile, Applications, Activity)
 - `StatusUpdateModal`: Form to update talent status with reason
 - `DeleteConfirmDialog`: Confirmation dialog for talent deletion
 
 **Data Flow:**
+
 1. Fetch talents from `/api/v1/admin/talents` with query params
 2. Search/filter triggers new API call with updated params
 3. Click talent row opens detail modal
@@ -180,12 +187,14 @@ interface AdminHeaderProps {
 #### Recruiter Management Page
 
 **Components:**
+
 - `RecruiterTable`: Paginated table with company info
 - `RecruiterDetailModal`: Tabs for Profile, Opportunities, Earnings
 - `OpportunitiesTab`: List of recruiter's posted jobs
 - `EarningsTab`: Earnings chart and transaction table
 
 **Data Flow:**
+
 1. Fetch recruiters from `/api/v1/admin/recruiters`
 2. Detail modal fetches additional data from `/api/v1/admin/recruiters/:id`
 3. Opportunities tab fetches from `/api/v1/admin/recruiters/:id/opportunities`
@@ -194,6 +203,7 @@ interface AdminHeaderProps {
 #### Mentor Management Page
 
 **Components:**
+
 - `MentorTable`: Table with ratings and expertise
 - `MentorDetailModal`: Tabs for Profile, Sessions, Reviews
 - `SessionsTab`: Session history with ratings
@@ -201,6 +211,7 @@ interface AdminHeaderProps {
 - `VisibilityToggle`: Toggle for public/private profile
 
 **Data Flow:**
+
 1. Fetch mentors from `/api/v1/admin/mentors`
 2. Detail modal fetches from `/api/v1/admin/mentors/:id`
 3. Sessions tab fetches from `/api/v1/admin/mentors/:id/sessions`
@@ -209,12 +220,14 @@ interface AdminHeaderProps {
 #### Opportunity Management Page
 
 **Components:**
+
 - `OpportunityTable`: Table with job details and stats
 - `OpportunityDetailModal`: Full job description and applicants
 - `FlagModal`: Form to flag opportunity with reason
 - `StatusUpdateModal`: Form to change opportunity status
 
 **Data Flow:**
+
 1. Fetch opportunities from `/api/v1/admin/opportunities`
 2. Detail modal fetches from `/api/v1/admin/opportunities/:id`
 3. Flag/status update triggers API call and refreshes table
@@ -222,6 +235,7 @@ interface AdminHeaderProps {
 #### Analytics Page
 
 **Components:**
+
 - `AnalyticsOverview`: Metric cards for all key metrics
 - `DateRangePicker`: Date range selector
 - `TrendsChart`: Line chart for selected metric over time
@@ -230,6 +244,7 @@ interface AdminHeaderProps {
 - `ExportButton`: Export analytics to CSV/PDF
 
 **Data Flow:**
+
 1. Fetch overview from `/api/v1/admin/analytics/overview`
 2. Fetch trends from `/api/v1/admin/analytics/trends`
 3. Fetch retention from `/api/v1/admin/analytics/retention`
@@ -239,12 +254,14 @@ interface AdminHeaderProps {
 #### Broadcast Page
 
 **Components:**
+
 - `BroadcastTable`: Table with broadcast status and stats
 - `CreateBroadcastModal`: Form to create new broadcast
 - `BroadcastDetailModal`: View broadcast details and delivery stats
 - `ScheduleSelector`: Date/time picker for scheduling
 
 **Data Flow:**
+
 1. Fetch broadcasts from `/api/v1/admin/broadcasts`
 2. Create broadcast posts to `/api/v1/admin/broadcasts`
 3. Detail modal fetches from `/api/v1/admin/broadcasts/:id`
@@ -253,11 +270,13 @@ interface AdminHeaderProps {
 #### Audit Logs Page
 
 **Components:**
+
 - `AuditLogsTable`: Table with filters for action, admin, entity, date
 - `LogDetailModal`: Detailed view of log entry
 - `ExportButton`: Export logs to CSV/PDF
 
 **Data Flow:**
+
 1. Fetch logs from `/api/v1/admin/audit-logs`
 2. Filters trigger new API call with updated params
 3. Export triggers `/api/v1/admin/audit-logs/export`
@@ -265,6 +284,7 @@ interface AdminHeaderProps {
 #### Support Page
 
 **Components:**
+
 - `TicketsTable`: Table with filters for status, priority, category
 - `TicketDetailModal`: Full conversation history
 - `CreateTicketModal`: Form to create ticket on behalf of user
@@ -272,6 +292,7 @@ interface AdminHeaderProps {
 - `SupportStats`: Metric cards for support performance
 
 **Data Flow:**
+
 1. Fetch tickets from `/api/v1/admin/support/tickets`
 2. Fetch stats from `/api/v1/admin/support/stats`
 3. Detail modal fetches from `/api/v1/admin/support/tickets/:id`
@@ -281,6 +302,7 @@ interface AdminHeaderProps {
 #### Settings Page
 
 **Components:**
+
 - `AdminUsersTable`: Table of admin users
 - `CreateAdminModal`: Form to create new admin
 - `EditAdminModal`: Form to edit admin roles/permissions
@@ -289,6 +311,7 @@ interface AdminHeaderProps {
 - `LimitsForm`: Form for platform limits
 
 **Data Flow:**
+
 1. Fetch admin users from `/api/v1/admin/settings/admins`
 2. Fetch platform settings from `/api/v1/admin/settings/platform`
 3. Create admin posts to `/api/v1/admin/settings/admins`
@@ -310,6 +333,7 @@ interface DataTableProps<T> {
 ```
 
 **Features:**
+
 - Sortable columns
 - Pagination controls
 - Loading skeleton
@@ -329,6 +353,7 @@ interface SearchBarProps {
 ```
 
 **Features:**
+
 - Debounced input (default 300ms)
 - Clear button
 - Search icon
@@ -347,12 +372,13 @@ interface FilterPanelProps {
 interface FilterConfig {
   key: string;
   label: string;
-  type: 'select' | 'multiselect' | 'date' | 'daterange';
+  type: "select" | "multiselect" | "date" | "daterange";
   options?: { label: string; value: string }[];
 }
 ```
 
 **Features:**
+
 - Multiple filter types
 - Reset all filters
 - Mobile drawer on small screens
@@ -362,12 +388,13 @@ interface FilterConfig {
 
 ```typescript
 interface StatusBadgeProps {
-  status: 'active' | 'suspended' | 'banned' | 'pending' | 'resolved' | 'closed';
-  variant?: 'default' | 'outline';
+  status: "active" | "suspended" | "banned" | "pending" | "resolved" | "closed";
+  variant?: "default" | "outline";
 }
 ```
 
 **Features:**
+
 - Color-coded by status
 - Consistent styling across app
 - Accessible contrast ratios
@@ -383,13 +410,14 @@ interface ConfirmDialogProps {
   description: string;
   confirmText?: string;
   cancelText?: string;
-  variant?: 'default' | 'destructive';
+  variant?: "default" | "destructive";
   requireReason?: boolean;
   onReasonChange?: (reason: string) => void;
 }
 ```
 
 **Features:**
+
 - Optional reason input
 - Destructive variant for dangerous actions
 - Keyboard shortcuts (Enter to confirm, Esc to cancel)
@@ -422,7 +450,7 @@ interface Talent {
   fullName: string;
   profileImageUrl: string | null;
   isVerified: boolean;
-  status: 'active' | 'suspended' | 'banned';
+  status: "active" | "suspended" | "banned";
   createdAt: string;
   lastActiveAt: string | null;
   talentProfile: {
@@ -449,11 +477,11 @@ interface Recruiter {
   username: string;
   email: string;
   isVerified: boolean;
-  status: 'active' | 'suspended' | 'banned';
+  status: "active" | "suspended" | "banned";
   createdAt: string;
   recruiterProfile: {
     company: string;
-    companySize: 'startup' | 'small' | 'medium' | 'large';
+    companySize: "startup" | "small" | "medium" | "large";
     industry: string;
     website: string;
     logo: string | null;
@@ -477,7 +505,7 @@ interface Mentor {
   fullName: string;
   profileImageUrl: string | null;
   isVerified: boolean;
-  status: 'active' | 'suspended' | 'banned';
+  status: "active" | "suspended" | "banned";
   mentorProfile: {
     expertise: string[];
     headline: string;
@@ -500,8 +528,8 @@ interface Opportunity {
   id: string;
   title: string;
   company: string;
-  type: 'job' | 'gig' | 'internship';
-  status: 'active' | 'draft' | 'closed' | 'flagged';
+  type: "job" | "gig" | "internship";
+  status: "active" | "draft" | "closed" | "flagged";
   location: string;
   employmentType: string;
   postedBy: {
@@ -526,9 +554,9 @@ interface Broadcast {
   id: string;
   title: string;
   message: string;
-  targetAudience: 'all' | 'talents' | 'recruiters' | 'mentors';
-  channels: ('email' | 'inapp' | 'push')[];
-  status: 'draft' | 'scheduled' | 'sent';
+  targetAudience: "all" | "talents" | "recruiters" | "mentors";
+  channels: ("email" | "inapp" | "push")[];
+  status: "draft" | "scheduled" | "sent";
   scheduledFor: string | null;
   sentAt: string | null;
   stats: {
@@ -552,7 +580,7 @@ interface AuditLog {
     email: string;
   };
   entity: {
-    type: 'users' | 'opportunities' | 'applications' | 'mentors' | 'broadcasts';
+    type: "users" | "opportunities" | "applications" | "mentors" | "broadcasts";
     id: string;
     name: string;
   };
@@ -573,9 +601,9 @@ interface AuditLog {
 interface SupportTicket {
   id: string;
   subject: string;
-  category: 'account' | 'payment' | 'technical' | 'other';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  status: 'open' | 'in_progress' | 'resolved' | 'closed';
+  category: "account" | "payment" | "technical" | "other";
+  priority: "low" | "medium" | "high" | "urgent";
+  status: "open" | "in_progress" | "resolved" | "closed";
   user: {
     id: string;
     name: string;
@@ -597,7 +625,7 @@ interface TicketMessage {
   sender: {
     id: string;
     name: string;
-    type: 'user' | 'admin';
+    type: "user" | "admin";
   };
   internal: boolean;
   createdAt: string;
@@ -651,251 +679,251 @@ interface DashboardStats {
 }
 ```
 
-## 
+##
+
 Correctness Properties
 
-*A property is a characteristic or behavior that should hold true across all valid executions of a system-essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
+_A property is a characteristic or behavior that should hold true across all valid executions of a system-essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees._
 
 ### Property 1: Time Period Selection Updates Charts
 
-*For any* time period selection (7d, 30d, 90d), when the period is changed, the chart data should be fetched with the new period parameter and the charts should re-render with the updated data.
+_For any_ time period selection (7d, 30d, 90d), when the period is changed, the chart data should be fetched with the new period parameter and the charts should re-render with the updated data.
 
 **Validates: Requirements 1.4**
 
 ### Property 2: Search Filters Results
 
-*For any* search query on the talent page, all returned results should have the query string present in either the name, email, or username field (case-insensitive).
+_For any_ search query on the talent page, all returned results should have the query string present in either the name, email, or username field (case-insensitive).
 
 **Validates: Requirements 2.2**
 
 ### Property 3: Status Filter Matches Results
 
-*For any* status filter selection (active, suspended, banned), all returned results should have a status that matches the selected filter value.
+_For any_ status filter selection (active, suspended, banned), all returned results should have a status that matches the selected filter value.
 
 **Validates: Requirements 2.3**
 
 ### Property 4: Status Update Requires Reason
 
-*For any* talent status update attempt, if no reason is provided, the system should reject the update and display a validation error.
+_For any_ talent status update attempt, if no reason is provided, the system should reject the update and display a validation error.
 
 **Validates: Requirements 2.5**
 
 ### Property 5: Soft Delete Preserves Record
 
-*For any* talent deletion, the record should still exist in the database with a deletedAt timestamp (soft delete), not be permanently removed.
+_For any_ talent deletion, the record should still exist in the database with a deletedAt timestamp (soft delete), not be permanently removed.
 
 **Validates: Requirements 2.6**
 
 ### Property 6: Recruiter Filter Matches Criteria
 
-*For any* combination of recruiter filters (status, company size, industry), all returned results should match all selected filter criteria.
+_For any_ combination of recruiter filters (status, company size, industry), all returned results should match all selected filter criteria.
 
 **Validates: Requirements 3.2**
 
 ### Property 7: Recruiter Opportunities Belong To Recruiter
 
-*For any* recruiter's opportunities list, all displayed opportunities should have a postedBy.id that matches the recruiter's id.
+_For any_ recruiter's opportunities list, all displayed opportunities should have a postedBy.id that matches the recruiter's id.
 
 **Validates: Requirements 3.4**
 
 ### Property 8: Recruiter Suspension Flags Opportunities
 
-*For any* recruiter suspension, all of the recruiter's active opportunities should be automatically flagged for review.
+_For any_ recruiter suspension, all of the recruiter's active opportunities should be automatically flagged for review.
 
 **Validates: Requirements 3.6**
 
 ### Property 9: Mentor Rating Filter
 
-*For any* minimum rating filter value, all returned mentors should have an avgRating greater than or equal to the filter value.
+_For any_ minimum rating filter value, all returned mentors should have an avgRating greater than or equal to the filter value.
 
 **Validates: Requirements 4.2**
 
 ### Property 10: Mentor Sessions Belong To Mentor
 
-*For any* mentor's session list, all displayed sessions should have a mentorId that matches the mentor's id.
+_For any_ mentor's session list, all displayed sessions should have a mentorId that matches the mentor's id.
 
 **Validates: Requirements 4.4**
 
 ### Property 11: Mentor Reviews Belong To Mentor
 
-*For any* mentor's reviews list, all displayed reviews should be associated with sessions where the mentorId matches the mentor's id.
+_For any_ mentor's reviews list, all displayed reviews should be associated with sessions where the mentorId matches the mentor's id.
 
 **Validates: Requirements 4.5**
 
 ### Property 12: Mentor Visibility Update Reflects
 
-*For any* mentor visibility update, the mentor's profile visibility status should immediately reflect the new value (public or private).
+_For any_ mentor visibility update, the mentor's profile visibility status should immediately reflect the new value (public or private).
 
 **Validates: Requirements 4.6**
 
 ### Property 13: Low Rating Flags Account
 
-*For any* mentor with an average rating below 3.0, the account should be automatically flagged for admin review.
+_For any_ mentor with an average rating below 3.0, the account should be automatically flagged for admin review.
 
 **Validates: Requirements 4.7**
 
 ### Property 14: Opportunity Filter Matches Criteria
 
-*For any* combination of opportunity filters (status, type, postedBy), all returned results should match all selected filter criteria.
+_For any_ combination of opportunity filters (status, type, postedBy), all returned results should match all selected filter criteria.
 
 **Validates: Requirements 5.2**
 
 ### Property 15: Opportunity Flag Requires Reason And Notes
 
-*For any* opportunity flag attempt, if either reason or notes are missing, the system should reject the flag and display a validation error.
+_For any_ opportunity flag attempt, if either reason or notes are missing, the system should reject the flag and display a validation error.
 
 **Validates: Requirements 5.4**
 
 ### Property 16: Opportunity Status Change Notifies And Logs
 
-*For any* opportunity status change, a notification should be sent to the posting recruiter and an audit log entry should be created.
+_For any_ opportunity status change, a notification should be sent to the posting recruiter and an audit log entry should be created.
 
 **Validates: Requirements 5.5**
 
 ### Property 17: Opportunity Delete Is Soft Delete
 
-*For any* opportunity deletion, the record should still exist with a deletedAt timestamp, applicants should be notified, and admin confirmation should be required.
+_For any_ opportunity deletion, the record should still exist with a deletedAt timestamp, applicants should be notified, and admin confirmation should be required.
 
 **Validates: Requirements 5.6**
 
 ### Property 18: Analytics Date Range Filters Data
 
-*For any* date range selection in analytics, all displayed metrics should only include data from within the selected date range.
+_For any_ date range selection in analytics, all displayed metrics should only include data from within the selected date range.
 
 **Validates: Requirements 6.7**
 
 ### Property 19: Analytics Export Generates File
 
-*For any* analytics export request, the system should generate a downloadable file in the requested format (CSV or PDF).
+_For any_ analytics export request, the system should generate a downloadable file in the requested format (CSV or PDF).
 
 **Validates: Requirements 6.8**
 
 ### Property 20: Broadcast Schedule Must Be Future
 
-*For any* scheduled broadcast, the scheduledFor timestamp should be in the future (greater than the current time).
+_For any_ scheduled broadcast, the scheduledFor timestamp should be in the future (greater than the current time).
 
 **Validates: Requirements 7.2**
 
 ### Property 21: Sent Broadcasts Cannot Be Deleted
 
-*For any* broadcast with status "sent", deletion attempts should be rejected with an error message.
+_For any_ broadcast with status "sent", deletion attempts should be rejected with an error message.
 
 **Validates: Requirements 7.5**
 
 ### Property 22: Audit Log Filter Matches Criteria
 
-*For any* combination of audit log filters (action type, performing admin, entity type, date range), all returned results should match all selected filter criteria.
+_For any_ combination of audit log filters (action type, performing admin, entity type, date range), all returned results should match all selected filter criteria.
 
 **Validates: Requirements 8.2**
 
 ### Property 23: Audit Log Export Generates File
 
-*For any* audit log export request, the system should generate a downloadable file in the requested format (CSV or PDF).
+_For any_ audit log export request, the system should generate a downloadable file in the requested format (CSV or PDF).
 
 **Validates: Requirements 8.4**
 
 ### Property 24: Ticket Update Reflects New Values
 
-*For any* support ticket update, the ticket's status, priority, and assignedTo fields should immediately reflect the new values.
+_For any_ support ticket update, the ticket's status, priority, and assignedTo fields should immediately reflect the new values.
 
 **Validates: Requirements 9.4**
 
 ### Property 25: Reply Visibility Matches Type
 
-*For any* ticket reply, if marked as internal, it should only be visible to admins; if external, it should be visible to both admins and the user.
+_For any_ ticket reply, if marked as internal, it should only be visible to admins; if external, it should be visible to both admins and the user.
 
 **Validates: Requirements 9.5**
 
 ### Property 26: Admin Creation Requires All Fields
 
-*For any* admin user creation attempt, if any required field (email, username, password, role, permissions) is missing, the system should reject the creation and display validation errors.
+_For any_ admin user creation attempt, if any required field (email, username, password, role, permissions) is missing, the system should reject the creation and display validation errors.
 
 **Validates: Requirements 10.2**
 
 ### Property 27: Admin Update Reflects New Values
 
-*For any* admin user update, the admin's roles, permissions, and status should immediately reflect the new values.
+_For any_ admin user update, the admin's roles, permissions, and status should immediately reflect the new values.
 
 **Validates: Requirements 10.3**
 
 ### Property 28: Self-Deletion Is Prevented
 
-*For any* admin deletion attempt where the target admin id matches the current user's id, the system should reject the deletion with an error message.
+_For any_ admin deletion attempt where the target admin id matches the current user's id, the system should reject the deletion with an error message.
 
 **Validates: Requirements 10.4**
 
 ### Property 29: Platform Settings Update Reflects
 
-*For any* platform settings update, the new values for maintenance mode, feature toggles, and limits should immediately be reflected in the settings display.
+_For any_ platform settings update, the new values for maintenance mode, feature toggles, and limits should immediately be reflected in the settings display.
 
 **Validates: Requirements 10.6**
 
 ### Property 30: Protected Routes Require Admin Auth
 
-*For any* admin route access attempt without a valid admin JWT token, the system should redirect to the login page.
+_For any_ admin route access attempt without a valid admin JWT token, the system should redirect to the login page.
 
 **Validates: Requirements 11.1**
 
 ### Property 31: Expired Token Triggers Refresh
 
-*For any* API call with an expired access token, the system should automatically attempt to refresh the token using the refresh token before retrying the original request.
+_For any_ API call with an expired access token, the system should automatically attempt to refresh the token using the refresh token before retrying the original request.
 
 **Validates: Requirements 11.3**
 
 ### Property 32: Failed Refresh Clears Tokens
 
-*For any* failed token refresh attempt, all stored tokens should be cleared and the user should be redirected to the login page.
+_For any_ failed token refresh attempt, all stored tokens should be cleared and the user should be redirected to the login page.
 
 **Validates: Requirements 11.4**
 
 ### Property 33: Unauthorized Access Redirects
 
-*For any* route access attempt without authentication, the system should redirect to the login page.
+_For any_ route access attempt without authentication, the system should redirect to the login page.
 
 **Validates: Requirements 11.6**
 
 ### Property 34: Mobile Tables Display As Cards
 
-*For any* data table rendered on a mobile viewport (<768px), the layout should be cards instead of table rows.
+_For any_ data table rendered on a mobile viewport (<768px), the layout should be cards instead of table rows.
 
 **Validates: Requirements 12.4**
 
 ### Property 35: Mobile Touch Targets Meet Minimum
 
-*For any* form field or interactive element on mobile, the touch target height should be at least 44px.
+_For any_ form field or interactive element on mobile, the touch target height should be at least 44px.
 
 **Validates: Requirements 12.5**
 
 ### Property 36: Loading State Shows Indicator
 
-*For any* data loading state, a loading indicator (skeleton or spinner) should be visible to the user.
+_For any_ data loading state, a loading indicator (skeleton or spinner) should be visible to the user.
 
 **Validates: Requirements 13.1**
 
 ### Property 37: API Error Shows Message And Retry
 
-*For any* API error response, an error message should be displayed along with a retry button.
+_For any_ API error response, an error message should be displayed along with a retry button.
 
 **Validates: Requirements 13.2**
 
 ### Property 38: Network Error Shows Offline Indicator
 
-*For any* network error, an offline indicator should be displayed to the user.
+_For any_ network error, an offline indicator should be displayed to the user.
 
 **Validates: Requirements 13.3**
 
 ### Property 39: 403 Error Shows Permissions Message
 
-*For any* 403 API response, the system should display an "insufficient permissions" error message.
+_For any_ 403 API response, the system should display an "insufficient permissions" error message.
 
 **Validates: Requirements 13.4**
 
 ### Property 40: 429 Error Shows Rate Limit Message
 
-*For any* 429 API response, the system should display a "too many requests" error message with the retry-after time if available.
+_For any_ 429 API response, the system should display a "too many requests" error message with the retry-after time if available.
 
 **Validates: Requirements 13.5**
-
 
 ## Error Handling
 
@@ -968,6 +996,7 @@ Unit tests focus on individual components and utility functions:
 **Tools**: Vitest, React Testing Library
 
 **Example Test**:
+
 ```typescript
 describe('StatusBadge', () => {
   it('renders active status with correct color', () => {
@@ -993,22 +1022,23 @@ Property tests verify universal properties across many generated inputs:
 **Tag Format**: `// Feature: admin-frontend-app, Property {number}: {property_text}`
 
 **Example Test**:
+
 ```typescript
-import fc from 'fast-check';
+import fc from "fast-check";
 
 // Feature: admin-frontend-app, Property 3: Status Filter Matches Results
-describe('Talent filtering', () => {
-  it('filters talents by status correctly', () => {
+describe("Talent filtering", () => {
+  it("filters talents by status correctly", () => {
     fc.assert(
       fc.property(
         fc.array(talentArbitrary),
-        fc.constantFrom('active', 'suspended', 'banned'),
+        fc.constantFrom("active", "suspended", "banned"),
         (talents, status) => {
           const filtered = filterTalentsByStatus(talents, status);
-          return filtered.every(talent => talent.status === status);
-        }
+          return filtered.every((talent) => talent.status === status);
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 });
@@ -1024,23 +1054,24 @@ Integration tests verify interactions between components and API:
 4. **Navigation Tests**: Test routing and navigation
 
 **Example Test**:
+
 ```typescript
 describe('Talent Management Page', () => {
   it('allows searching and viewing talent details', async () => {
     render(<TalentPage />);
-    
+
     // Search for talent
     const searchInput = screen.getByPlaceholderText('Search talents...');
     await userEvent.type(searchInput, 'john');
-    
+
     // Wait for results
     await waitFor(() => {
       expect(screen.getByText('John Doe')).toBeInTheDocument();
     });
-    
+
     // Click to view details
     await userEvent.click(screen.getByText('John Doe'));
-    
+
     // Verify modal opens
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByText('Profile')).toBeInTheDocument();
@@ -1060,29 +1091,32 @@ End-to-end tests verify complete user workflows:
 **Tools**: Playwright
 
 **Example Test**:
+
 ```typescript
-test('admin can suspend a talent', async ({ page }) => {
+test("admin can suspend a talent", async ({ page }) => {
   // Login
-  await page.goto('/login');
-  await page.fill('[name="email"]', 'admin@talentng.com');
-  await page.fill('[name="password"]', 'password');
+  await page.goto("/login");
+  await page.fill('[name="email"]', "admin@talentng.com");
+  await page.fill('[name="password"]', "password");
   await page.click('button[type="submit"]');
-  
+
   // Navigate to talents
-  await page.click('text=Talents');
-  await expect(page).toHaveURL('/talents');
-  
+  await page.click("text=Talents");
+  await expect(page).toHaveURL("/talents");
+
   // Search for talent
-  await page.fill('[placeholder="Search talents..."]', 'john');
-  await page.click('text=John Doe');
-  
+  await page.fill('[placeholder="Search talents..."]', "john");
+  await page.click("text=John Doe");
+
   // Suspend talent
-  await page.click('text=Suspend');
-  await page.fill('[name="reason"]', 'Violation of terms');
-  await page.click('text=Confirm');
-  
+  await page.click("text=Suspend");
+  await page.fill('[name="reason"]', "Violation of terms");
+  await page.click("text=Confirm");
+
   // Verify success
-  await expect(page.locator('text=Talent suspended successfully')).toBeVisible();
+  await expect(
+    page.locator("text=Talent suspended successfully"),
+  ).toBeVisible();
 });
 ```
 
@@ -1092,4 +1126,3 @@ test('admin can suspend a talent', async ({ page }) => {
 - Property Tests: All correctness properties from design document
 - Integration Tests: All major user flows
 - E2E Tests: Critical paths (auth, CRUD, search/filter)
-

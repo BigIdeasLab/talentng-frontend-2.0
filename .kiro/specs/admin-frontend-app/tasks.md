@@ -20,27 +20,23 @@ This plan breaks down the implementation of the admin frontend application into 
     - Create token refresh logic with automatic retry
     - Build admin role validation utilities
     - _Requirements: Design - Property 30, 31, 32, 33_
-  
   - [ ] 2.2 Build login page
     - Create login form with email and password fields
     - Implement form validation and error handling
     - Add "Forgot Password" link
     - Handle successful login with token storage and redirect
     - _Requirements: Design - Authentication section_
-  
   - [ ] 2.3 Build forgot password page
     - Create password reset request form
     - Implement email validation
     - Display success message after submission
     - _Requirements: Design - Authentication section_
-  
   - [ ] 2.4 Create protected route wrapper
     - Build HOC or middleware to check admin authentication
     - Redirect unauthenticated users to login
     - Handle token expiration with automatic refresh
     - _Requirements: Design - Property 30, 33_
-  
-  - [ ]* 2.5 Write property test for token refresh
+  - [ ]\* 2.5 Write property test for token refresh
     - **Property 31: Expired Token Triggers Refresh**
     - **Validates: Design - Property 31**
 
@@ -52,20 +48,17 @@ This plan breaks down the implementation of the admin frontend application into 
     - Add admin profile section at bottom
     - Make responsive: full on desktop, collapsed on tablet, drawer on mobile
     - _Requirements: Design - AdminSidebar interface_
-  
   - [ ] 3.2 Create AdminHeader component
     - Build header with logo and app title
     - Add hamburger menu button for mobile
     - Implement admin user info dropdown with logout
     - Add breadcrumb navigation
     - _Requirements: Design - AdminHeader interface_
-  
   - [ ] 3.3 Create AdminMobileNav component
     - Build mobile drawer navigation
     - Implement open/close animations
     - Add overlay backdrop
     - _Requirements: Design - Layout Components section_
-  
   - [ ] 3.4 Create admin layout wrapper
     - Build layout component combining sidebar and header
     - Implement responsive layout switching
@@ -82,26 +75,22 @@ This plan breaks down the implementation of the admin frontend application into 
     - Build mobile card view for small screens
     - Add row click handler
     - _Requirements: Design - DataTable interface, Property 34_
-  
   - [ ] 4.2 Create SearchBar component
     - Build search input with debouncing (300ms default)
     - Add clear button
     - Implement keyboard shortcut (Cmd+K)
     - _Requirements: Design - SearchBar interface_
-  
   - [ ] 4.3 Create FilterPanel component
     - Build filter panel with multiple filter types (select, multiselect, date, daterange)
     - Add reset all filters button
     - Implement mobile drawer for small screens
     - Add active filter count badge
     - _Requirements: Design - FilterPanel interface_
-  
   - [ ] 4.4 Create StatusBadge component
     - Build badge with color coding by status
     - Support variants: default and outline
     - Ensure accessible contrast ratios
     - _Requirements: Design - StatusBadge interface_
-  
   - [ ] 4.5 Create ConfirmDialog component
     - Build confirmation dialog with title and description
     - Add optional reason input field
@@ -109,7 +98,6 @@ This plan breaks down the implementation of the admin frontend application into 
     - Implement keyboard shortcuts (Enter to confirm, Esc to cancel)
     - Add loading state during confirmation
     - _Requirements: Design - ConfirmDialog interface_
-  
   - [ ] 4.6 Create ExportButton component
     - Build export button with format selector (CSV/PDF)
     - Implement download functionality
@@ -123,7 +111,6 @@ This plan breaks down the implementation of the admin frontend application into 
     - Add request/response interceptors
     - Handle network errors and retries
     - _Requirements: Design - Error Handling section, Property 31, 32_
-  
   - [ ] 5.2 Create admin API modules
     - Create API functions for dashboard endpoints
     - Create API functions for talents endpoints
@@ -136,8 +123,7 @@ This plan breaks down the implementation of the admin frontend application into 
     - Create API functions for support endpoints
     - Create API functions for settings endpoints
     - _Requirements: Design - Architecture section, Backend Plan_
-  
-  - [ ]* 5.3 Write property test for API error handling
+  - [ ]\* 5.3 Write property test for API error handling
     - **Property 37: API Error Shows Message And Retry**
     - **Validates: Design - Property 37**
 
@@ -149,19 +135,16 @@ This plan breaks down the implementation of the admin frontend application into 
     - Build metric cards for mentorship (sessions, ratings)
     - Build metric cards for reports (pending, resolved, flagged)
     - _Requirements: Design - Dashboard Page section, Backend Plan - Dashboard_
-  
   - [ ] 6.2 Create ActivityFeed component
     - Build timeline view for recent activities
     - Display user avatars and activity descriptions
     - Format timestamps relative to now
     - _Requirements: Design - Dashboard Page section_
-  
   - [ ] 6.3 Create TrendCharts component
     - Build line/bar charts using Chart.js or Recharts
     - Add period selector (7d, 30d, 90d)
     - Implement metric toggle (users, opportunities, applications)
     - _Requirements: Design - Dashboard Page section, Property 1_
-  
   - [ ] 6.4 Build dashboard page
     - Fetch dashboard stats from API
     - Fetch activity feed from API
@@ -169,8 +152,7 @@ This plan breaks down the implementation of the admin frontend application into 
     - Implement React Query caching (5 minutes TTL)
     - Wire all components together
     - _Requirements: Design - Dashboard Page section_
-  
-  - [ ]* 6.5 Write property test for time period selection
+  - [ ]\* 6.5 Write property test for time period selection
     - **Property 1: Time Period Selection Updates Charts**
     - **Validates: Design - Property 1**
 
@@ -183,7 +165,6 @@ This plan breaks down the implementation of the admin frontend application into 
     - Add pagination
     - Handle row click to open detail modal
     - _Requirements: Design - Talent Management Page section, Backend Plan - Talent Page_
-  
   - [ ] 7.2 Create TalentDetailModal component
     - Build modal with tabs: Profile, Applications, Activity
     - Display profile information and stats
@@ -191,7 +172,6 @@ This plan breaks down the implementation of the admin frontend application into 
     - Show activity timeline in Activity tab
     - Add action buttons: Update Status, Delete
     - _Requirements: Design - Talent Management Page section, Property 7_
-  
   - [ ] 7.3 Create StatusUpdateModal component
     - Build form with status dropdown (active, suspended, banned)
     - Add required reason textarea
@@ -199,30 +179,25 @@ This plan breaks down the implementation of the admin frontend application into 
     - Handle status update API call
     - Show success/error messages
     - _Requirements: Design - Talent Management Page section, Property 4_
-  
   - [ ] 7.4 Create DeleteConfirmDialog for talents
     - Build confirmation dialog with warning message
     - Add required reason input
     - Implement soft delete API call
     - Show success message and refresh table
     - _Requirements: Design - Talent Management Page section, Property 5_
-  
   - [ ] 7.5 Build talent management page
     - Fetch talents from API with query params
     - Wire search and filters to API calls
     - Integrate TalentTable, TalentDetailModal, StatusUpdateModal, DeleteConfirmDialog
     - Handle loading and error states
     - _Requirements: Design - Talent Management Page section_
-  
-  - [ ]* 7.6 Write property test for search filtering
+  - [ ]\* 7.6 Write property test for search filtering
     - **Property 2: Search Filters Results**
     - **Validates: Design - Property 2**
-  
-  - [ ]* 7.7 Write property test for status filtering
+  - [ ]\* 7.7 Write property test for status filtering
     - **Property 3: Status Filter Matches Results**
     - **Validates: Design - Property 3**
-  
-  - [ ]* 7.8 Write property test for status update validation
+  - [ ]\* 7.8 Write property test for status update validation
     - **Property 4: Status Update Requires Reason**
     - **Validates: Design - Property 4**
 
@@ -235,37 +210,31 @@ This plan breaks down the implementation of the admin frontend application into 
     - Implement pagination
     - Handle row click to open detail modal
     - _Requirements: Design - Recruiter Management Page section, Backend Plan - Recruiters Page_
-  
   - [ ] 8.2 Create RecruiterDetailModal component
     - Build modal with tabs: Profile, Opportunities, Earnings
     - Display company info and stats in Profile tab
     - _Requirements: Design - Recruiter Management Page section_
-  
   - [ ] 8.3 Create OpportunitiesTab component
     - Fetch recruiter's opportunities from API
     - Display opportunity cards with status badges
     - Add view details links
     - _Requirements: Design - Recruiter Management Page section, Property 7_
-  
   - [ ] 8.4 Create EarningsTab component
     - Build date range picker
     - Fetch earnings data from API
     - Display earnings chart
     - Show transaction table
     - _Requirements: Design - Recruiter Management Page section_
-  
   - [ ] 8.5 Build recruiter management page
     - Fetch recruiters from API with query params
     - Wire search and filters to API calls
     - Integrate RecruiterTable, RecruiterDetailModal, status update, and delete functionality
     - Handle loading and error states
     - _Requirements: Design - Recruiter Management Page section_
-  
-  - [ ]* 8.6 Write property test for recruiter filtering
+  - [ ]\* 8.6 Write property test for recruiter filtering
     - **Property 6: Recruiter Filter Matches Criteria**
     - **Validates: Design - Property 6**
-  
-  - [ ]* 8.7 Write property test for recruiter opportunities
+  - [ ]\* 8.7 Write property test for recruiter opportunities
     - **Property 7: Recruiter Opportunities Belong To Recruiter**
     - **Validates: Design - Property 7**
 
@@ -278,42 +247,35 @@ This plan breaks down the implementation of the admin frontend application into 
     - Implement pagination
     - Handle row click to open detail modal
     - _Requirements: Design - Mentor Management Page section, Backend Plan - Mentors Page_
-  
   - [ ] 9.2 Create MentorDetailModal component
     - Build modal with tabs: Profile, Sessions, Reviews
     - Display profile info, rating, and stats in Profile tab
     - _Requirements: Design - Mentor Management Page section_
-  
   - [ ] 9.3 Create SessionsTab component
     - Fetch mentor's sessions from API
     - Display session cards with status badges and ratings
     - Add date/time formatting
     - _Requirements: Design - Mentor Management Page section, Property 10_
-  
   - [ ] 9.4 Create ReviewsTab component
     - Fetch mentor's reviews from API
     - Display review cards with star ratings
     - Show reviewer info and timestamps
     - _Requirements: Design - Mentor Management Page section, Property 11_
-  
   - [ ] 9.5 Create VisibilityToggle component
     - Build toggle switch for public/private profile
     - Add confirmation dialog
     - Handle visibility update API call
     - _Requirements: Design - Mentor Management Page section, Property 12_
-  
   - [ ] 9.6 Build mentor management page
     - Fetch mentors from API with query params
     - Wire search and filters to API calls
     - Integrate MentorTable, MentorDetailModal, VisibilityToggle, status update functionality
     - Handle loading and error states
     - _Requirements: Design - Mentor Management Page section_
-  
-  - [ ]* 9.7 Write property test for mentor rating filter
+  - [ ]\* 9.7 Write property test for mentor rating filter
     - **Property 9: Mentor Rating Filter**
     - **Validates: Design - Property 9**
-  
-  - [ ]* 9.8 Write property test for mentor sessions
+  - [ ]\* 9.8 Write property test for mentor sessions
     - **Property 10: Mentor Sessions Belong To Mentor**
     - **Validates: Design - Property 10**
 
@@ -325,33 +287,28 @@ This plan breaks down the implementation of the admin frontend application into 
     - Implement pagination
     - Handle row click to open detail modal
     - _Requirements: Design - Opportunity Management Page section, Backend Plan - Opportunity Page_
-  
   - [ ] 10.2 Create OpportunityDetailModal component
     - Build modal with full job description
     - Display applicants list
     - Show opportunity stats (views, applications, interviews)
     - Add action buttons: Update Status, Flag, Delete
     - _Requirements: Design - Opportunity Management Page section_
-  
   - [ ] 10.3 Create FlagModal component
     - Build form with reason dropdown (inappropriate, spam, misleading)
     - Add required notes textarea
     - Implement validation
     - Handle flag API call
     - _Requirements: Design - Opportunity Management Page section, Property 15_
-  
   - [ ] 10.4 Build opportunity management page
     - Fetch opportunities from API with query params
     - Wire search and filters to API calls
     - Integrate OpportunityTable, OpportunityDetailModal, FlagModal, status update, and delete functionality
     - Handle loading and error states
     - _Requirements: Design - Opportunity Management Page section_
-  
-  - [ ]* 10.5 Write property test for opportunity filtering
+  - [ ]\* 10.5 Write property test for opportunity filtering
     - **Property 14: Opportunity Filter Matches Criteria**
     - **Validates: Design - Property 14**
-  
-  - [ ]* 10.6 Write property test for opportunity flag validation
+  - [ ]\* 10.6 Write property test for opportunity flag validation
     - **Property 15: Opportunity Flag Requires Reason And Notes**
     - **Validates: Design - Property 15**
 
@@ -361,33 +318,28 @@ This plan breaks down the implementation of the admin frontend application into 
     - Add date range picker
     - Fetch overview data from API
     - _Requirements: Design - Analytics Page section, Backend Plan - Analytics Page_
-  
   - [ ] 11.2 Create TrendsChart component
     - Build line chart for selected metric over time
     - Add metric selector dropdown
     - Add period toggle (7d, 30d, 90d)
     - Fetch trends data from API
     - _Requirements: Design - Analytics Page section_
-  
   - [ ] 11.3 Create RetentionTable component
     - Build cohort retention table with heatmap visualization
     - Fetch retention data from API
     - _Requirements: Design - Analytics Page section_
-  
   - [ ] 11.4 Create ChurnAnalysis component
     - Display churn rate metric
     - Show churn reasons breakdown
     - Fetch churn data from API
     - _Requirements: Design - Analytics Page section_
-  
   - [ ] 11.5 Build analytics page
     - Wire all analytics components together
     - Implement date range filtering across all components
     - Add export functionality
     - Handle loading and error states
     - _Requirements: Design - Analytics Page section_
-  
-  - [ ]* 11.6 Write property test for date range filtering
+  - [ ]\* 11.6 Write property test for date range filtering
     - **Property 18: Analytics Date Range Filters Data**
     - **Validates: Design - Property 18**
 
@@ -399,32 +351,27 @@ This plan breaks down the implementation of the admin frontend application into 
     - Implement pagination
     - Handle row click to open detail modal
     - _Requirements: Design - Broadcast Page section, Backend Plan - Broadcast Page_
-  
   - [ ] 12.2 Create CreateBroadcastModal component
     - Build form with title, message, target audience selector, channels checkboxes
     - Add optional scheduling date/time picker
     - Implement validation (future date for scheduled broadcasts)
     - Handle create API call
     - _Requirements: Design - Broadcast Page section, Property 20_
-  
   - [ ] 12.3 Create BroadcastDetailModal component
     - Display broadcast message preview
     - Show delivery stats (sent, delivered, opened, clicked)
     - Display engagement metrics
     - _Requirements: Design - Broadcast Page section_
-  
   - [ ] 12.4 Build broadcast page
     - Fetch broadcasts from API with filters
     - Integrate BroadcastTable, CreateBroadcastModal, BroadcastDetailModal
     - Implement delete functionality with status validation
     - Handle loading and error states
     - _Requirements: Design - Broadcast Page section_
-  
-  - [ ]* 12.5 Write property test for broadcast scheduling
+  - [ ]\* 12.5 Write property test for broadcast scheduling
     - **Property 20: Broadcast Schedule Must Be Future**
     - **Validates: Design - Property 20**
-  
-  - [ ]* 12.6 Write property test for sent broadcast deletion
+  - [ ]\* 12.6 Write property test for sent broadcast deletion
     - **Property 21: Sent Broadcasts Cannot Be Deleted**
     - **Validates: Design - Property 21**
 
@@ -437,21 +384,18 @@ This plan breaks down the implementation of the admin frontend application into 
     - Implement pagination
     - Handle row click to open detail modal
     - _Requirements: Design - Audit Logs Page section, Backend Plan - Logs Page_
-  
   - [ ] 13.2 Create LogDetailModal component
     - Display full log entry details
     - Show before/after values for updates
     - Display reason if provided
     - _Requirements: Design - Audit Logs Page section_
-  
   - [ ] 13.3 Build audit logs page
     - Fetch logs from API with filters
     - Integrate AuditLogsTable, LogDetailModal
     - Add export functionality
     - Handle loading and error states
     - _Requirements: Design - Audit Logs Page section_
-  
-  - [ ]* 13.4 Write property test for audit log filtering
+  - [ ]\* 13.4 Write property test for audit log filtering
     - **Property 22: Audit Log Filter Matches Criteria**
     - **Validates: Design - Property 22**
 
@@ -460,7 +404,6 @@ This plan breaks down the implementation of the admin frontend application into 
     - Build metric cards for open tickets, avg response time, avg resolution time, satisfaction rate
     - Fetch stats from API
     - _Requirements: Design - Support Page section, Backend Plan - Support Page_
-  
   - [ ] 14.2 Create TicketsTable component
     - Build table with columns: ticket ID, subject, category, priority, status, user, assigned to, created date
     - Add priority badges and status indicators
@@ -469,34 +412,29 @@ This plan breaks down the implementation of the admin frontend application into 
     - Implement pagination
     - Handle row click to open detail modal
     - _Requirements: Design - Support Page section_
-  
   - [ ] 14.3 Create TicketDetailModal component
     - Display full conversation thread
     - Show user info and ticket metadata
     - Add action buttons: Update Status, Assign, Reply
     - _Requirements: Design - Support Page section_
-  
   - [ ] 14.4 Create CreateTicketModal component
     - Build form with user selector, subject, description, category, priority
     - Implement validation
     - Handle create API call
     - _Requirements: Design - Support Page section_
-  
   - [ ] 14.5 Create ReplyForm component
     - Build rich text editor for reply message
     - Add internal note toggle
     - Add attachment support
     - Handle reply API call
     - _Requirements: Design - Support Page section, Property 25_
-  
   - [ ] 14.6 Build support page
     - Fetch tickets and stats from API
     - Integrate SupportStats, TicketsTable, TicketDetailModal, CreateTicketModal, ReplyForm
     - Implement ticket update functionality
     - Handle loading and error states
     - _Requirements: Design - Support Page section_
-  
-  - [ ]* 14.7 Write property test for reply visibility
+  - [ ]\* 14.7 Write property test for reply visibility
     - **Property 25: Reply Visibility Matches Type**
     - **Validates: Design - Property 25**
 
@@ -505,38 +443,32 @@ This plan breaks down the implementation of the admin frontend application into 
     - Build table with columns: username, email, roles, permissions, status, last login
     - Add action buttons: Edit, Delete
     - _Requirements: Design - Settings Page section, Backend Plan - Settings Page_
-  
   - [ ] 15.2 Create CreateAdminModal component
     - Build form with email, username, password, roles selector, permissions checkboxes
     - Implement validation for all required fields
     - Handle create API call
     - _Requirements: Design - Settings Page section, Property 26_
-  
   - [ ] 15.3 Create EditAdminModal component
     - Build form with roles selector, permissions checkboxes, status toggle
     - Implement validation
     - Handle update API call
     - _Requirements: Design - Settings Page section_
-  
   - [ ] 15.4 Create PlatformSettingsForm component
     - Build form with maintenance mode toggle and message input
     - Add feature toggles for user registration, opportunity posting, mentorship booking
     - Add limits inputs for max opportunities per recruiter, max applications per talent
     - Handle update API call
     - _Requirements: Design - Settings Page section, Property 29_
-  
   - [ ] 15.5 Build settings page
     - Fetch admin users and platform settings from API
     - Integrate AdminUsersTable, CreateAdminModal, EditAdminModal, PlatformSettingsForm
     - Implement delete functionality with self-deletion prevention
     - Handle loading and error states
     - _Requirements: Design - Settings Page section_
-  
-  - [ ]* 15.6 Write property test for admin creation validation
+  - [ ]\* 15.6 Write property test for admin creation validation
     - **Property 26: Admin Creation Requires All Fields**
     - **Validates: Design - Property 26**
-  
-  - [ ]* 15.7 Write property test for self-deletion prevention
+  - [ ]\* 15.7 Write property test for self-deletion prevention
     - **Property 28: Self-Deletion Is Prevented**
     - **Validates: Design - Property 28**
 
@@ -546,7 +478,6 @@ This plan breaks down the implementation of the admin frontend application into 
     - Log errors to monitoring service
     - Add reset functionality
     - _Requirements: Design - Error Handling section_
-  
   - [ ] 16.2 Create loading state components
     - Build full-page skeleton loader
     - Build table skeleton rows
@@ -554,12 +485,10 @@ This plan breaks down the implementation of the admin frontend application into 
     - Build button loading spinner
     - Build inline loading spinner
     - _Requirements: Design - Loading States section, Property 36_
-  
   - [ ] 16.3 Create empty state components
     - Build generic empty state with icon, title, description, and optional action
     - Create specific empty states for each page
     - _Requirements: Design - Empty States section_
-  
   - [ ] 16.4 Implement global error handling
     - Handle 401 errors with token refresh
     - Handle 403 errors with permissions message
@@ -567,12 +496,10 @@ This plan breaks down the implementation of the admin frontend application into 
     - Handle network errors with offline indicator
     - Handle 500 errors with retry option
     - _Requirements: Design - Error Handling section, Property 37, 38, 39, 40_
-  
-  - [ ]* 16.5 Write property test for loading states
+  - [ ]\* 16.5 Write property test for loading states
     - **Property 36: Loading State Shows Indicator**
     - **Validates: Design - Property 36**
-  
-  - [ ]* 16.6 Write property test for API error handling
+  - [ ]\* 16.6 Write property test for API error handling
     - **Property 37: API Error Shows Message And Retry**
     - **Validates: Design - Property 37**
 
@@ -582,33 +509,29 @@ This plan breaks down the implementation of the admin frontend application into 
     - Ensure touch targets are at least 44px
     - Test all pages on mobile viewport
     - _Requirements: Design - Property 34, 35_
-  
   - [ ] 17.2 Optimize mobile navigation
     - Test sidebar drawer on mobile
     - Ensure smooth animations
     - Test touch gestures
     - _Requirements: Design - Layout Components section_
-  
   - [ ] 17.3 Test mobile forms
     - Ensure all form fields are accessible on mobile
     - Test keyboard behavior
     - Verify touch target sizes
     - _Requirements: Design - Property 35_
-  
-  - [ ]* 17.4 Write property test for mobile touch targets
+  - [ ]\* 17.4 Write property test for mobile touch targets
     - **Property 35: Mobile Touch Targets Meet Minimum**
     - **Validates: Design - Property 35**
 
 - [ ] 18. Testing and quality assurance
-  - [ ]* 18.1 Write unit tests for shared components
+  - [ ]\* 18.1 Write unit tests for shared components
     - Test DataTable rendering and interactions
     - Test SearchBar debouncing and clear functionality
     - Test FilterPanel filter application and reset
     - Test StatusBadge color coding
     - Test ConfirmDialog keyboard shortcuts
     - _Requirements: Design - Testing Strategy section_
-  
-  - [ ]* 18.2 Write integration tests for pages
+  - [ ]\* 18.2 Write integration tests for pages
     - Test dashboard page rendering and data fetching
     - Test talent page search, filter, and CRUD operations
     - Test recruiter page with opportunities and earnings tabs
@@ -620,8 +543,7 @@ This plan breaks down the implementation of the admin frontend application into 
     - Test support page with ticket creation and replies
     - Test settings page with admin management
     - _Requirements: Design - Testing Strategy section_
-  
-  - [ ]* 18.3 Write E2E tests for critical flows
+  - [ ]\* 18.3 Write E2E tests for critical flows
     - Test authentication flow (login, token refresh, logout)
     - Test talent suspension flow
     - Test opportunity flagging flow
@@ -635,12 +557,10 @@ This plan breaks down the implementation of the admin frontend application into 
     - Document development commands
     - Document build and deployment process
     - _Requirements: Design - Architecture section_
-  
   - [ ] 19.2 Document component API
     - Create Storybook stories for shared components
     - Document props and usage examples
     - _Requirements: Design - Shared Components section_
-  
   - [ ] 19.3 Create API integration guide
     - Document API client usage
     - Document error handling patterns

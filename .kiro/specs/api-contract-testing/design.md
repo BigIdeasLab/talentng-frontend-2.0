@@ -5,6 +5,7 @@
 The API Contract Testing Tool is a standalone TypeScript script that validates backend API endpoints against expected frontend data contracts. The tool provides automated testing of API response structures to ensure frontend-backend integration integrity and catch breaking changes early in the development cycle.
 
 The tool operates as a command-line script that:
+
 1. Authenticates with the API using environment-based credentials
 2. Systematically tests configured endpoints organized by feature area
 3. Validates response structures against expected schemas
@@ -28,7 +29,7 @@ graph TD
     G --> H[Violation Detector]
     D --> I[Console Reporter]
     D --> J[JSON Reporter]
-    
+
     F --> K[API Backend]
     I --> L[Terminal Output]
     J --> M[API_TEST_RESULTS.json]
@@ -62,7 +63,7 @@ graph TD
 
 ```typescript
 // Core types for schema validation
-type SchemaType = 'string' | 'number' | 'boolean' | 'object' | 'array' | 'null';
+type SchemaType = "string" | "number" | "boolean" | "object" | "array" | "null";
 
 interface SchemaField {
   type: SchemaType;
@@ -78,7 +79,7 @@ interface Schema {
 // Endpoint configuration types
 interface EndpointConfig {
   path: string;
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  method: "GET" | "POST" | "PUT" | "DELETE";
   schema: Schema;
   detailEndpoints?: DetailEndpointConfig[];
 }
@@ -96,7 +97,7 @@ interface FeatureConfig {
 
 // Test result types
 interface ValidationError {
-  type: 'missing_field' | 'type_mismatch' | 'http_error' | 'network_error';
+  type: "missing_field" | "type_mismatch" | "http_error" | "network_error";
   path: string;
   expected?: string;
   actual?: string;
@@ -123,7 +124,7 @@ interface TestReport {
 
 // Authentication types
 interface AuthConfig {
-  type: 'token' | 'email_password';
+  type: "token" | "email_password";
   token?: string;
   email?: string;
   password?: string;
@@ -145,7 +146,7 @@ interface IAuthenticationModule {
    * @throws Error if authentication fails
    */
   authenticate(): Promise<string>;
-  
+
   /**
    * Gets the current authentication token
    * @returns Current token or null if not authenticated
@@ -156,13 +157,13 @@ interface IAuthenticationModule {
 class AuthenticationModule implements IAuthenticationModule {
   constructor(
     private config: AuthConfig,
-    private apiBaseUrl: string
+    private apiBaseUrl: string,
   ) {}
-  
+
   async authenticate(): Promise<string> {
     // Implementation handles both token and email/password auth
   }
-  
+
   getToken(): string | null {
     // Returns stored token
   }
@@ -184,8 +185,11 @@ interface IHttpClient {
 }
 
 class HttpClient implements IHttpClient {
-  constructor(private baseUrl: string, private timeout: number = 30000) {}
-  
+  constructor(
+    private baseUrl: string,
+    private timeout: number = 30000,
+  ) {}
+
   async request<T>(method: string, path: string, token: string): Promise<T> {
     // Implementation uses fetch with timeout and error handling
   }
@@ -203,7 +207,7 @@ interface ISchemaValidator {
    * @returns Array of validation errors (empty if valid)
    */
   validate(data: any, schema: Schema): ValidationError[];
-  
+
   /**
    * Validates a single field against its schema definition
    * @param value Field value
@@ -211,15 +215,23 @@ interface ISchemaValidator {
    * @param path Field path for error reporting
    * @returns Array of validation errors
    */
-  validateField(value: any, fieldSchema: SchemaField, path: string): ValidationError[];
+  validateField(
+    value: any,
+    fieldSchema: SchemaField,
+    path: string,
+  ): ValidationError[];
 }
 
 class SchemaValidator implements ISchemaValidator {
   validate(data: any, schema: Schema): ValidationError[] {
     // Recursively validates all fields
   }
-  
-  validateField(value: any, fieldSchema: SchemaField, path: string): ValidationError[] {
+
+  validateField(
+    value: any,
+    fieldSchema: SchemaField,
+    path: string,
+  ): ValidationError[] {
     // Validates individual field with type checking
   }
 }
@@ -241,20 +253,20 @@ class TestOrchestrator implements ITestOrchestrator {
   constructor(
     private httpClient: IHttpClient,
     private validator: ISchemaValidator,
-    private authToken: string
+    private authToken: string,
   ) {}
-  
+
   async runTests(features: FeatureConfig[]): Promise<TestReport> {
     // Orchestrates test execution across all features
   }
-  
+
   private async testEndpoint(endpoint: EndpointConfig): Promise<TestResult> {
     // Tests a single endpoint
   }
-  
+
   private async testDetailEndpoints(
     listResponse: any[],
-    detailConfigs: DetailEndpointConfig[]
+    detailConfigs: DetailEndpointConfig[],
   ): Promise<TestResult[]> {
     // Tests detail endpoints using IDs from list response
   }
@@ -270,7 +282,7 @@ interface IConsoleReporter {
    * @param result Test result to report
    */
   reportTest(result: TestResult): void;
-  
+
   /**
    * Reports the final summary
    * @param report Complete test report
@@ -291,7 +303,7 @@ class ConsoleReporter implements IConsoleReporter {
   reportTest(result: TestResult): void {
     // Color-coded console output
   }
-  
+
   reportSummary(report: TestReport): void {
     // Summary with pass rate
   }
@@ -313,57 +325,57 @@ The tool uses a programmatic configuration structure defined in TypeScript:
 ```typescript
 const API_CONFIG: FeatureConfig[] = [
   {
-    name: 'Opportunities',
+    name: "Opportunities",
     endpoints: [
       {
-        path: '/opportunities',
-        method: 'GET',
+        path: "/opportunities",
+        method: "GET",
         schema: {
-          id: { type: 'string', required: true },
-          title: { type: 'string', required: true },
-          description: { type: 'string', required: true },
-          budget: { type: 'number', required: false },
-          status: { type: 'string', required: true }
+          id: { type: "string", required: true },
+          title: { type: "string", required: true },
+          description: { type: "string", required: true },
+          budget: { type: "number", required: false },
+          status: { type: "string", required: true },
         },
         detailEndpoints: [
           {
-            pathTemplate: '/opportunities/:id',
-            idField: 'id',
+            pathTemplate: "/opportunities/:id",
+            idField: "id",
             schema: {
-              id: { type: 'string', required: true },
-              title: { type: 'string', required: true },
-              description: { type: 'string', required: true },
-              budget: { type: 'number', required: false },
-              status: { type: 'string', required: true },
+              id: { type: "string", required: true },
+              title: { type: "string", required: true },
+              description: { type: "string", required: true },
+              budget: { type: "number", required: false },
+              status: { type: "string", required: true },
               applicants: {
-                type: 'array',
+                type: "array",
                 required: true,
                 arrayItemSchema: {
-                  id: { type: 'string', required: true },
-                  name: { type: 'string', required: true }
-                }
-              }
-            }
-          }
-        ]
-      }
-    ]
+                  id: { type: "string", required: true },
+                  name: { type: "string", required: true },
+                },
+              },
+            },
+          },
+        ],
+      },
+    ],
   },
   {
-    name: 'Profile',
+    name: "Profile",
     endpoints: [
       {
-        path: '/profile',
-        method: 'GET',
+        path: "/profile",
+        method: "GET",
         schema: {
-          id: { type: 'string', required: true },
-          email: { type: 'string', required: true },
-          name: { type: 'string', required: true },
-          role: { type: 'string', required: true }
-        }
-      }
-    ]
-  }
+          id: { type: "string", required: true },
+          email: { type: "string", required: true },
+          name: { type: "string", required: true },
+          role: { type: "string", required: true },
+        },
+      },
+    ],
+  },
 ];
 ```
 
@@ -425,10 +437,9 @@ PASSWORD=your_password
 }
 ```
 
-
 ## Correctness Properties
 
-*A property is a characteristic or behavior that should hold true across all valid executions of a system-essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
+_A property is a characteristic or behavior that should hold true across all valid executions of a system-essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees._
 
 ### Property Reflection
 
@@ -442,97 +453,97 @@ After analyzing all acceptance criteria, I identified several areas of redundanc
 
 ### Property 1: Schema Validation Correctness
 
-*For any* API response and expected schema, when all required fields are present with correct types, the validator should mark the validation as passed with no errors.
+_For any_ API response and expected schema, when all required fields are present with correct types, the validator should mark the validation as passed with no errors.
 
 **Validates: Requirements 3.1, 3.2, 3.3, 9.2, 9.3**
 
 ### Property 2: Validation Error Reporting
 
-*For any* validation failure (missing field or type mismatch), the validator should record the complete field path, the error type, and for type mismatches both the expected and actual types.
+_For any_ validation failure (missing field or type mismatch), the validator should record the complete field path, the error type, and for type mismatches both the expected and actual types.
 
 **Validates: Requirements 3.6, 3.7, 9.4**
 
 ### Property 3: Contract Violation Detection
 
-*For any* API response that fails validation (missing fields, type mismatches, or HTTP errors), the contract tester should record a violation with the endpoint path, violation type, and detailed debugging information.
+_For any_ API response that fails validation (missing fields, type mismatches, or HTTP errors), the contract tester should record a violation with the endpoint path, violation type, and detailed debugging information.
 
 **Validates: Requirements 4.1, 4.2, 4.3, 4.4, 4.5, 4.6**
 
 ### Property 4: Nested Structure Validation
 
-*For any* nested object or array structure in an API response, the validator should recursively validate all nested fields against their schemas, reporting errors with complete paths from root to leaf.
+_For any_ nested object or array structure in an API response, the validator should recursively validate all nested fields against their schemas, reporting errors with complete paths from root to leaf.
 
 **Validates: Requirements 3.4, 3.5**
 
 ### Property 5: Authentication Token Persistence
 
-*For any* successful authentication (token-based or email/password), the authentication module should store the token and include it in all subsequent API requests.
+_For any_ successful authentication (token-based or email/password), the authentication module should store the token and include it in all subsequent API requests.
 
 **Validates: Requirements 1.3, 1.5**
 
 ### Property 6: Test Execution Resilience
 
-*For any* test suite with multiple endpoints, when individual tests fail (network errors, timeouts, validation failures), the contract tester should continue executing all remaining tests and complete the full test suite.
+_For any_ test suite with multiple endpoints, when individual tests fail (network errors, timeouts, validation failures), the contract tester should continue executing all remaining tests and complete the full test suite.
 
 **Validates: Requirements 8.1, 8.2, 8.3, 8.4, 8.5**
 
 ### Property 7: Conditional Detail Endpoint Testing
 
-*For any* list endpoint with configured detail endpoints, when the list response contains data, the tester should execute detail endpoint tests using identifiers from the list response; when the list response is empty, the tester should skip detail endpoint tests.
+_For any_ list endpoint with configured detail endpoints, when the list response contains data, the tester should execute detail endpoint tests using identifiers from the list response; when the list response is empty, the tester should skip detail endpoint tests.
 
 **Validates: Requirements 2.4, 2.5**
 
 ### Property 8: Authentication Method Configuration
 
-*For any* authentication configuration (token-based with ACCESS_TOKEN or email/password with EMAIL and PASSWORD), the authentication module should successfully authenticate using the provided credentials and return a valid token.
+_For any_ authentication configuration (token-based with ACCESS_TOKEN or email/password with EMAIL and PASSWORD), the authentication module should successfully authenticate using the provided credentials and return a valid token.
 
 **Validates: Requirements 1.1, 1.2**
 
 ### Property 9: Authentication Failure Handling
 
-*For any* authentication attempt with invalid credentials, the contract tester should log detailed error information and terminate execution without proceeding to endpoint tests.
+_For any_ authentication attempt with invalid credentials, the contract tester should log detailed error information and terminate execution without proceeding to endpoint tests.
 
 **Validates: Requirements 1.4**
 
 ### Property 10: Configuration Loading
 
-*For any* valid endpoint configuration structure with feature groupings, endpoint definitions, and schemas (including nested schemas), the contract tester should successfully load and organize the configuration for test execution.
+_For any_ valid endpoint configuration structure with feature groupings, endpoint definitions, and schemas (including nested schemas), the contract tester should successfully load and organize the configuration for test execution.
 
 **Validates: Requirements 2.1, 2.2, 7.2, 7.3, 7.4, 7.5, 7.6**
 
 ### Property 11: Sequential Endpoint Execution
 
-*For any* configured test suite, the contract tester should execute all endpoints in sequence, testing each endpoint exactly once (plus detail endpoints when applicable).
+_For any_ configured test suite, the contract tester should execute all endpoints in sequence, testing each endpoint exactly once (plus detail endpoints when applicable).
 
 **Validates: Requirements 2.3, 2.6**
 
 ### Property 12: JSON Report Completeness
 
-*For any* completed test suite, the JSON report should contain all tested endpoints with their pass/fail status, detailed violation information for failures, overall pass rate, and timestamp metadata.
+_For any_ completed test suite, the JSON report should contain all tested endpoints with their pass/fail status, detailed violation information for failures, overall pass rate, and timestamp metadata.
 
 **Validates: Requirements 6.1, 6.3, 6.4, 6.5, 6.6, 6.7**
 
 ### Property 13: Console Report Content
 
-*For any* test result, the console output should include the endpoint path, and for failed tests should include missing fields, type mismatches, and HTTP error codes.
+_For any_ test result, the console output should include the endpoint path, and for failed tests should include missing fields, type mismatches, and HTTP error codes.
 
 **Validates: Requirements 5.4, 5.5, 5.6, 5.7**
 
 ### Property 14: Pass Rate Calculation
 
-*For any* test suite with N total tests and P passing tests, the reported pass rate should equal (P / N) * 100, displayed in both console and JSON reports.
+_For any_ test suite with N total tests and P passing tests, the reported pass rate should equal (P / N) \* 100, displayed in both console and JSON reports.
 
 **Validates: Requirements 5.8, 6.6**
 
 ### Property 15: Environment Configuration
 
-*For any* API base URL provided via the API_URL environment variable, the contract tester should use that URL for all API requests.
+_For any_ API base URL provided via the API_URL environment variable, the contract tester should use that URL for all API requests.
 
 **Validates: Requirements 7.1**
 
 ### Property 16: Validation Round Trip
 
-*For any* API response that exactly matches its expected schema (all required fields present with correct types), validating the response should produce zero errors and mark the test as passed.
+_For any_ API response that exactly matches its expected schema (all required fields present with correct types), validating the response should produce zero errors and mark the test as passed.
 
 **Validates: Requirements 9.5**
 
@@ -589,6 +600,7 @@ After analyzing all acceptance criteria, I identified several areas of redundanc
 The API Contract Testing Tool will be validated using both unit tests and property-based tests:
 
 **Unit Tests**: Focus on specific examples, edge cases, and integration points:
+
 - Authentication with specific valid/invalid credentials
 - Validation of specific response structures with known violations
 - Error handling for specific HTTP status codes
@@ -596,6 +608,7 @@ The API Contract Testing Tool will be validated using both unit tests and proper
 - Console output formatting for specific test results
 
 **Property-Based Tests**: Verify universal properties across all inputs:
+
 - Schema validation correctness across randomly generated responses and schemas
 - Nested structure validation with varying depths and complexities
 - Error resilience across randomly generated failure scenarios
@@ -607,6 +620,7 @@ The API Contract Testing Tool will be validated using both unit tests and proper
 **Library**: fast-check (already available in the project)
 
 **Test Configuration**:
+
 - Minimum 100 iterations per property test
 - Each test tagged with format: **Feature: api-contract-testing, Property {number}: {property_text}**
 - Custom generators for API responses, schemas, and configurations
@@ -614,72 +628,73 @@ The API Contract Testing Tool will be validated using both unit tests and proper
 **Example Property Test Structure**:
 
 ```typescript
-import fc from 'fast-check';
-import { describe, it, expect } from 'vitest';
+import fc from "fast-check";
+import { describe, it, expect } from "vitest";
 
-describe('Schema Validator Properties', () => {
-  it('Property 1: Schema Validation Correctness', () => {
+describe("Schema Validator Properties", () => {
+  it("Property 1: Schema Validation Correctness", () => {
     // Feature: api-contract-testing, Property 1: Schema Validation Correctness
     fc.assert(
       fc.property(
         fc.record({
           id: fc.string(),
           name: fc.string(),
-          age: fc.integer()
+          age: fc.integer(),
         }),
         (response) => {
           const schema = {
-            id: { type: 'string', required: true },
-            name: { type: 'string', required: true },
-            age: { type: 'number', required: true }
+            id: { type: "string", required: true },
+            name: { type: "string", required: true },
+            age: { type: "number", required: true },
           };
-          
+
           const validator = new SchemaValidator();
           const errors = validator.validate(response, schema);
-          
+
           expect(errors).toHaveLength(0);
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
-  
-  it('Property 2: Validation Error Reporting', () => {
+
+  it("Property 2: Validation Error Reporting", () => {
     // Feature: api-contract-testing, Property 2: Validation Error Reporting
     fc.assert(
       fc.property(
         fc.record({
           id: fc.string(),
           // name field intentionally missing
-          age: fc.string() // wrong type
+          age: fc.string(), // wrong type
         }),
         (response) => {
           const schema = {
-            id: { type: 'string', required: true },
-            name: { type: 'string', required: true },
-            age: { type: 'number', required: true }
+            id: { type: "string", required: true },
+            name: { type: "string", required: true },
+            age: { type: "number", required: true },
           };
-          
+
           const validator = new SchemaValidator();
           const errors = validator.validate(response, schema);
-          
+
           // Should have error for missing 'name'
-          const missingNameError = errors.find(e => 
-            e.type === 'missing_field' && e.path === 'name'
+          const missingNameError = errors.find(
+            (e) => e.type === "missing_field" && e.path === "name",
           );
           expect(missingNameError).toBeDefined();
-          
+
           // Should have error for wrong type 'age'
-          const typeMismatchError = errors.find(e => 
-            e.type === 'type_mismatch' && 
-            e.path === 'age' &&
-            e.expected === 'number' &&
-            e.actual === 'string'
+          const typeMismatchError = errors.find(
+            (e) =>
+              e.type === "type_mismatch" &&
+              e.path === "age" &&
+              e.expected === "number" &&
+              e.actual === "string",
           );
           expect(typeMismatchError).toBeDefined();
-        }
+        },
       ),
-      { numRuns: 100 }
+      { numRuns: 100 },
     );
   });
 });
@@ -688,29 +703,29 @@ describe('Schema Validator Properties', () => {
 ### Unit Test Examples
 
 ```typescript
-describe('Authentication Module', () => {
-  it('should authenticate with valid token', async () => {
+describe("Authentication Module", () => {
+  it("should authenticate with valid token", async () => {
     const authModule = new AuthenticationModule(
-      { type: 'token', token: 'valid_token_123' },
-      'http://localhost:3000/api/v1'
+      { type: "token", token: "valid_token_123" },
+      "http://localhost:3000/api/v1",
     );
-    
+
     const token = await authModule.authenticate();
-    expect(token).toBe('valid_token_123');
+    expect(token).toBe("valid_token_123");
   });
-  
-  it('should throw error with invalid credentials', async () => {
+
+  it("should throw error with invalid credentials", async () => {
     const authModule = new AuthenticationModule(
-      { type: 'email_password', email: 'invalid@test.com', password: 'wrong' },
-      'http://localhost:3000/api/v1'
+      { type: "email_password", email: "invalid@test.com", password: "wrong" },
+      "http://localhost:3000/api/v1",
     );
-    
+
     await expect(authModule.authenticate()).rejects.toThrow();
   });
 });
 
-describe('JSON Reporter', () => {
-  it('should write report to API_TEST_RESULTS.json', async () => {
+describe("JSON Reporter", () => {
+  it("should write report to API_TEST_RESULTS.json", async () => {
     const reporter = new JsonReporter();
     const report: TestReport = {
       totalTests: 2,
@@ -718,13 +733,13 @@ describe('JSON Reporter', () => {
       failedTests: 1,
       passRate: 50,
       results: [],
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
-    
-    await reporter.exportReport(report, 'API_TEST_RESULTS.json');
-    
+
+    await reporter.exportReport(report, "API_TEST_RESULTS.json");
+
     // Verify file exists and contains correct data
-    const fileContent = await fs.readFile('API_TEST_RESULTS.json', 'utf-8');
+    const fileContent = await fs.readFile("API_TEST_RESULTS.json", "utf-8");
     const parsed = JSON.parse(fileContent);
     expect(parsed.totalTests).toBe(2);
     expect(parsed.passRate).toBe(50);
@@ -742,8 +757,8 @@ describe('JSON Reporter', () => {
 ### Continuous Integration
 
 The test suite should be integrated into CI/CD pipelines:
+
 - Run on every pull request
 - Fail builds if any property test fails
 - Generate coverage reports
 - Archive JSON test reports as artifacts
-

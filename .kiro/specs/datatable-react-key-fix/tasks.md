@@ -37,7 +37,6 @@
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
 - [x] 3. Fix for DataTable React key uniqueness
-
   - [x] 3.1 Implement the fix
     - Update desktop table cell keys at line 103: change `key={column.key}` to `key={`${row.id || rowIndex}-${column.key}`}`
     - Update mobile card field keys at line 181: change `key={column.key}` to `key={`${row.id || rowIndex}-${column.key}`}`

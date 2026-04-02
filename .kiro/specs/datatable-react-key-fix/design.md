@@ -21,11 +21,12 @@ This bugfix addresses React console warnings about missing unique key props in t
 The bug manifests when the DataTable component renders multiple rows of data, where each row contains multiple columns. The nested map operations (rows.map -> columns.map) create a situation where column.key is reused across different rows, violating React's requirement for unique keys within a parent's children list.
 
 **Formal Specification:**
+
 ```
 FUNCTION isBugCondition(input)
   INPUT: input of type { data: T[], columns: Column<T>[] }
   OUTPUT: boolean
-  
+
   RETURN input.data.length > 0
          AND input.columns.length > 0
          AND renderingNestedMaps(input.data, input.columns)
@@ -45,6 +46,7 @@ END FUNCTION
 ### Preservation Requirements
 
 **Unchanged Behaviors:**
+
 - Table headers must continue to use column.key as the key prop (they are not nested inside row iterations)
 - Loading skeleton must continue to use the existing composite key pattern
 - All data must display correctly with proper styling and layout
@@ -111,6 +113,7 @@ The fix is minimal and surgical, affecting only the key prop values in two locat
    - No logic, styling, or behavior changes needed
 
 **Implementation Notes**:
+
 - Use the same fallback pattern as row keys: `row.id || rowIndex`
 - This ensures consistency with the existing row key generation
 - The composite key format matches the pattern already used in the loading skeleton
@@ -129,12 +132,14 @@ The testing strategy follows a two-phase approach: first, confirm the bug exists
 **Test Plan**: Render the DataTable component with test data in both desktop and mobile viewports, monitor the browser console for React key prop warnings, and document the exact warning messages and frequencies.
 
 **Test Cases**:
+
 1. **Desktop Table with Multiple Rows**: Render table with 3+ rows and 3+ columns (will generate warnings at line 103)
 2. **Mobile Card with Multiple Cards**: Render in mobile viewport with 3+ rows (will generate warnings at line 181)
 3. **Single Row Edge Case**: Render with 1 row to confirm pattern is still incorrect even if warnings don't appear
 4. **Loading State**: Verify loading skeleton does NOT generate warnings (confirms existing pattern is correct)
 
 **Expected Counterexamples**:
+
 - Console warnings: "Warning: Each child in a list should have a unique 'key' prop"
 - Warning count equals: (number of rows) × (number of columns) for each view
 - Warnings reference DataTable.tsx at lines 103 and 181
@@ -144,6 +149,7 @@ The testing strategy follows a two-phase approach: first, confirm the bug exists
 **Goal**: Verify that after applying the fix, no React key prop warnings are generated for any combination of data and columns.
 
 **Pseudocode:**
+
 ```
 FOR ALL input WHERE isBugCondition(input) DO
   result := DataTable_fixed(input)
@@ -155,6 +161,7 @@ END FOR
 **Test Plan**: Render the fixed DataTable with various data configurations and verify no console warnings appear.
 
 **Test Cases**:
+
 1. **Desktop Table - No Warnings**: Render with multiple rows and columns, verify console is clean
 2. **Mobile Card - No Warnings**: Render in mobile viewport, verify console is clean
 3. **Large Dataset**: Render with 50+ rows to ensure pattern scales correctly
@@ -165,12 +172,13 @@ END FOR
 **Goal**: Verify that the fixed component produces identical visual output and behavior compared to the original component for all inputs.
 
 **Pseudocode:**
+
 ```
 FOR ALL input WHERE TRUE DO
   visualOutput_original := render(DataTable_original(input))
   visualOutput_fixed := render(DataTable_fixed(input))
   ASSERT visualOutput_original = visualOutput_fixed
-  
+
   behavior_original := interactions(DataTable_original(input))
   behavior_fixed := interactions(DataTable_fixed(input))
   ASSERT behavior_original = behavior_fixed
@@ -178,6 +186,7 @@ END FOR
 ```
 
 **Testing Approach**: Property-based testing is recommended for preservation checking because:
+
 - It generates many test cases automatically across different data shapes
 - It catches edge cases that manual tests might miss
 - It provides strong guarantees that only the key props changed, nothing else
@@ -185,6 +194,7 @@ END FOR
 **Test Plan**: Compare rendered output and behavior between original and fixed versions across many scenarios.
 
 **Test Cases**:
+
 1. **Visual Rendering Preservation**: Verify all cells display the same content, styling, and layout
 2. **Click Handler Preservation**: Verify onRowClick triggers correctly with the same row data
 3. **Custom Renderer Preservation**: Verify column.render functions execute and display identically

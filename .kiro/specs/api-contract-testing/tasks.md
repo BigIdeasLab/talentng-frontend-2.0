@@ -13,7 +13,7 @@ This implementation plan creates a standalone TypeScript CLI tool that validates
   - Install required dependencies: node-fetch, chalk (for colored console output)
   - _Requirements: 7.2, 7.3, 7.4, 7.5_
 
-- [ ]* 1.1 Write property test for type definitions
+- [ ]\* 1.1 Write property test for type definitions
   - **Property 10: Configuration Loading**
   - **Validates: Requirements 2.1, 2.2, 7.2, 7.3, 7.4, 7.5, 7.6**
   - Generate random valid endpoint configurations and verify they can be loaded
@@ -24,34 +24,28 @@ This implementation plan creates a standalone TypeScript CLI tool that validates
     - Implement required field validation
     - Return ValidationError array for all violations
     - _Requirements: 3.1, 3.2, 3.3, 9.1, 9.2_
-  
-  - [ ]* 2.2 Write property test for schema validation correctness
+  - [ ]\* 2.2 Write property test for schema validation correctness
     - **Property 1: Schema Validation Correctness**
     - **Validates: Requirements 3.1, 3.2, 3.3, 9.2, 9.3**
     - Generate random valid responses matching schemas and verify zero errors
-  
-  - [ ]* 2.3 Write property test for validation error reporting
+  - [ ]\* 2.3 Write property test for validation error reporting
     - **Property 2: Validation Error Reporting**
     - **Validates: Requirements 3.6, 3.7, 9.4**
     - Generate responses with missing fields and type mismatches, verify complete error details
-  
   - [x] 2.4 Add nested object validation support
     - Implement recursive validation for nested objects
     - Build complete field paths for nested errors (e.g., "user.address.city")
     - _Requirements: 3.4_
-  
   - [x] 2.5 Add array validation support
     - Implement array element schema validation
     - Validate each array element against arrayItemSchema
     - Build field paths for array element errors (e.g., "items[0].name")
     - _Requirements: 3.5_
-  
-  - [ ]* 2.6 Write property test for nested structure validation
+  - [ ]\* 2.6 Write property test for nested structure validation
     - **Property 4: Nested Structure Validation**
     - **Validates: Requirements 3.4, 3.5**
     - Generate deeply nested structures with varying depths, verify recursive validation
-  
-  - [ ]* 2.7 Write unit tests for edge cases
+  - [ ]\* 2.7 Write unit tests for edge cases
     - Test null values in required fields
     - Test empty arrays
     - Test deeply nested structures (5+ levels)
@@ -65,8 +59,7 @@ This implementation plan creates a standalone TypeScript CLI tool that validates
     - Implement error handling for network errors, timeouts, and HTTP errors
     - Parse JSON responses and handle non-JSON responses
     - _Requirements: 8.2, 8.3_
-  
-  - [ ]* 3.2 Write unit tests for HTTP client
+  - [ ]\* 3.2 Write unit tests for HTTP client
     - Test successful requests with mock responses
     - Test timeout handling
     - Test network error handling
@@ -81,28 +74,23 @@ This implementation plan creates a standalone TypeScript CLI tool that validates
     - Store authentication token after successful authentication
     - Implement getToken() method
     - _Requirements: 1.1, 1.2, 1.3, 1.5_
-  
-  - [ ]* 4.2 Write property test for authentication token persistence
+  - [ ]\* 4.2 Write property test for authentication token persistence
     - **Property 5: Authentication Token Persistence**
     - **Validates: Requirements 1.3, 1.5**
     - Verify token is stored and available after successful authentication
-  
-  - [ ]* 4.3 Write property test for authentication method configuration
+  - [ ]\* 4.3 Write property test for authentication method configuration
     - **Property 8: Authentication Method Configuration**
     - **Validates: Requirements 1.1, 1.2**
     - Test both token-based and email/password authentication methods
-  
   - [x] 4.4 Implement authentication failure handling
     - Log detailed error messages for authentication failures
     - Terminate execution with exit code 1 on authentication failure
     - _Requirements: 1.4_
-  
-  - [ ]* 4.5 Write property test for authentication failure handling
+  - [ ]\* 4.5 Write property test for authentication failure handling
     - **Property 9: Authentication Failure Handling**
     - **Validates: Requirements 1.4**
     - Verify tool terminates with error on invalid credentials
-  
-  - [ ]* 4.6 Write unit tests for authentication module
+  - [ ]\* 4.6 Write unit tests for authentication module
     - Test token authentication with valid token
     - Test email/password authentication with valid credentials
     - Test authentication failure scenarios
@@ -118,13 +106,11 @@ This implementation plan creates a standalone TypeScript CLI tool that validates
     - Add endpoint path and violation type to each violation
     - Format violation information for reporting
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6_
-  
-  - [ ]* 6.2 Write property test for contract violation detection
+  - [ ]\* 6.2 Write property test for contract violation detection
     - **Property 3: Contract Violation Detection**
     - **Validates: Requirements 4.1, 4.2, 4.3, 4.4, 4.5, 4.6**
     - Generate various validation failures and verify violations are recorded with complete details
-  
-  - [ ]* 6.3 Write unit tests for violation detector
+  - [ ]\* 6.3 Write unit tests for violation detector
     - Test missing field violations
     - Test type mismatch violations
     - Test HTTP error violations
@@ -137,43 +123,36 @@ This implementation plan creates a standalone TypeScript CLI tool that validates
     - Aggregate test results into TestReport
     - Calculate pass rate statistics
     - _Requirements: 2.3, 2.6_
-  
   - [x] 7.2 Implement testEndpoint() method
     - Execute HTTP request for endpoint
     - Validate response against schema
     - Handle HTTP errors and network errors
     - Create TestResult object with timestamp and response time
     - _Requirements: 2.3, 3.1, 3.2, 3.3_
-  
   - [x] 7.3 Implement testDetailEndpoints() method
     - Extract IDs from list endpoint response using idField
     - Build detail endpoint URLs from pathTemplate
     - Execute detail endpoint tests for each ID
     - Skip detail endpoints when list response is empty
     - _Requirements: 2.4, 2.5_
-  
-  - [ ]* 7.4 Write property test for conditional detail endpoint testing
+  - [ ]\* 7.4 Write property test for conditional detail endpoint testing
     - **Property 7: Conditional Detail Endpoint Testing**
     - **Validates: Requirements 2.4, 2.5**
     - Verify detail endpoints are tested when list has data, skipped when empty
-  
   - [x] 7.5 Implement error resilience
     - Continue testing remaining endpoints when individual tests fail
     - Catch and log all errors without stopping execution
     - Ensure all configured endpoints are tested
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
-  
-  - [ ]* 7.6 Write property test for test execution resilience
+  - [ ]\* 7.6 Write property test for test execution resilience
     - **Property 6: Test Execution Resilience**
     - **Validates: Requirements 8.1, 8.2, 8.3, 8.4, 8.5**
     - Generate test suites with random failures, verify all tests execute
-  
-  - [ ]* 7.7 Write property test for sequential endpoint execution
+  - [ ]\* 7.7 Write property test for sequential endpoint execution
     - **Property 11: Sequential Endpoint Execution**
     - **Validates: Requirements 2.3, 2.6**
     - Verify each endpoint is tested exactly once in sequence
-  
-  - [ ]* 7.8 Write unit tests for test orchestrator
+  - [ ]\* 7.8 Write unit tests for test orchestrator
     - Test successful endpoint validation
     - Test failed endpoint validation
     - Test list-to-detail endpoint chaining
@@ -188,18 +167,15 @@ This implementation plan creates a standalone TypeScript CLI tool that validates
     - Display missing fields, type mismatches, and HTTP errors for failed tests
     - Use chalk library for colored output
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7_
-  
   - [x] 8.2 Implement reportSummary() method
     - Display total tests, passed tests, failed tests
     - Display pass rate percentage
     - _Requirements: 5.8_
-  
-  - [ ]* 8.3 Write property test for console report content
+  - [ ]\* 8.3 Write property test for console report content
     - **Property 13: Console Report Content**
     - **Validates: Requirements 5.4, 5.5, 5.6, 5.7**
     - Verify console output includes all required information for failed tests
-  
-  - [ ]* 8.4 Write unit tests for console reporter
+  - [ ]\* 8.4 Write unit tests for console reporter
     - Test passing test output format
     - Test failing test output format with various error types
     - Test summary output format
@@ -213,18 +189,15 @@ This implementation plan creates a standalone TypeScript CLI tool that validates
     - Include pass rate and timestamp metadata
     - Handle file write errors gracefully
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7_
-  
-  - [ ]* 9.2 Write property test for JSON report completeness
+  - [ ]\* 9.2 Write property test for JSON report completeness
     - **Property 12: JSON Report Completeness**
     - **Validates: Requirements 6.1, 6.3, 6.4, 6.5, 6.6, 6.7**
     - Verify JSON report contains all required fields and data
-  
-  - [ ]* 9.3 Write property test for pass rate calculation
+  - [ ]\* 9.3 Write property test for pass rate calculation
     - **Property 14: Pass Rate Calculation**
     - **Validates: Requirements 5.8, 6.6**
     - Generate test suites with varying pass/fail ratios, verify pass rate accuracy
-  
-  - [ ]* 9.4 Write unit tests for JSON reporter
+  - [ ]\* 9.4 Write unit tests for JSON reporter
     - Test successful report export
     - Test report file content structure
     - Test file write error handling
@@ -240,13 +213,11 @@ This implementation plan creates a standalone TypeScript CLI tool that validates
     - Validate required environment variables are present
     - Load endpoint configurations from programmatic structure
     - _Requirements: 7.1, 7.2_
-  
-  - [ ]* 11.2 Write property test for environment configuration
+  - [ ]\* 11.2 Write property test for environment configuration
     - **Property 15: Environment Configuration**
     - **Validates: Requirements 7.1**
     - Verify API_URL is correctly loaded and used for all requests
-  
-  - [ ]* 11.3 Write unit tests for configuration loader
+  - [ ]\* 11.3 Write unit tests for configuration loader
     - Test API_URL loading
     - Test token authentication configuration
     - Test email/password authentication configuration
@@ -261,7 +232,6 @@ This implementation plan creates a standalone TypeScript CLI tool that validates
     - Include various schema types (primitives, objects, arrays, nested structures)
     - Add inline comments explaining configuration structure
     - _Requirements: 7.2, 7.3, 7.4, 7.5, 7.6_
-  
   - [x] 12.2 Create .env.example file
     - Document API_URL variable
     - Document ACCESS_TOKEN variable for token authentication
@@ -282,13 +252,11 @@ This implementation plan creates a standalone TypeScript CLI tool that validates
     - Report results to console and export JSON report
     - Handle top-level errors and exit codes
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.3, 2.6, 5.1, 6.1, 6.2, 7.1_
-  
-  - [ ]* 13.2 Write property test for validation round trip
+  - [ ]\* 13.2 Write property test for validation round trip
     - **Property 16: Validation Round Trip**
     - **Validates: Requirements 9.5**
     - Generate responses that exactly match schemas, verify zero errors and passed status
-  
-  - [ ]* 13.3 Write integration tests for complete workflow
+  - [ ]\* 13.3 Write integration tests for complete workflow
     - Test end-to-end flow with mock API server
     - Test authentication → endpoint testing → validation → reporting flow
     - Test with multiple features and endpoints
@@ -300,7 +268,6 @@ This implementation plan creates a standalone TypeScript CLI tool that validates
     - Add "test:api-contracts" script to package.json
     - Configure script to run TypeScript directly with ts-node or compile first
     - _Requirements: 7.1_
-  
   - [x] 14.2 Create README.md for the tool
     - Document installation and setup
     - Document environment variable configuration

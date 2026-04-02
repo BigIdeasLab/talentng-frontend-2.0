@@ -26,17 +26,17 @@ graph TB
         Hook[useBusinessVerification Hook]
         API[API Layer]
     end
-    
+
     subgraph "State Management"
         RQ[React Query Cache]
         Poll[Polling Mechanism]
     end
-    
+
     subgraph "Backend API"
         VER[/verification endpoints]
         DOC[/document upload]
     end
-    
+
     UI --> Hook
     Hook --> RQ
     Hook --> Poll
@@ -89,7 +89,11 @@ app/(business)/verification/
 #### lib/api/verification/types.ts
 
 ```typescript
-export type VerificationStatus = 'not_started' | 'pending' | 'approved' | 'rejected';
+export type VerificationStatus =
+  | "not_started"
+  | "pending"
+  | "approved"
+  | "rejected";
 
 export interface BusinessVerificationData {
   businessName: string;
@@ -139,24 +143,24 @@ export interface ResubmitVerificationRequest {
 #### lib/api/verification/index.ts
 
 ```typescript
-import apiClient from '@/lib/api';
+import apiClient from "@/lib/api";
 import type {
   VerificationStatusResponse,
   SubmitVerificationRequest,
   ResubmitVerificationRequest,
   DocumentUploadResponse,
   VerificationApplication,
-} from './types';
+} from "./types";
 
 /**
  * Submit a new verification application
  * POST /verification/submit
  */
 export async function submitVerification(
-  request: SubmitVerificationRequest
+  request: SubmitVerificationRequest,
 ): Promise<VerificationApplication> {
-  return apiClient<VerificationApplication>('/verification/submit', {
-    method: 'POST',
+  return apiClient<VerificationApplication>("/verification/submit", {
+    method: "POST",
     body: request,
   });
 }
@@ -166,8 +170,8 @@ export async function submitVerification(
  * GET /verification/status
  */
 export async function getVerificationStatus(): Promise<VerificationStatusResponse> {
-  return apiClient<VerificationStatusResponse>('/verification/status', {
-    method: 'GET',
+  return apiClient<VerificationStatusResponse>("/verification/status", {
+    method: "GET",
   });
 }
 
@@ -176,10 +180,10 @@ export async function getVerificationStatus(): Promise<VerificationStatusRespons
  * POST /verification/resubmit
  */
 export async function resubmitVerification(
-  request: ResubmitVerificationRequest
+  request: ResubmitVerificationRequest,
 ): Promise<VerificationApplication> {
-  return apiClient<VerificationApplication>('/verification/resubmit', {
-    method: 'POST',
+  return apiClient<VerificationApplication>("/verification/resubmit", {
+    method: "POST",
     body: request,
   });
 }
@@ -188,12 +192,14 @@ export async function resubmitVerification(
  * Upload a verification document
  * POST /verification/upload-document
  */
-export async function uploadDocument(file: File): Promise<DocumentUploadResponse> {
+export async function uploadDocument(
+  file: File,
+): Promise<DocumentUploadResponse> {
   const formData = new FormData();
-  formData.append('document', file);
-  
-  return apiClient<DocumentUploadResponse>('/verification/upload-document', {
-    method: 'POST',
+  formData.append("document", file);
+
+  return apiClient<DocumentUploadResponse>("/verification/upload-document", {
+    method: "POST",
     body: formData,
   });
 }
@@ -204,8 +210,8 @@ export async function uploadDocument(file: File): Promise<DocumentUploadResponse
 #### hooks/useBusinessVerification.ts
 
 ```typescript
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import {
   submitVerification,
   getVerificationStatus,
@@ -213,9 +219,9 @@ import {
   uploadDocument,
   type SubmitVerificationRequest,
   type ResubmitVerificationRequest,
-} from '@/lib/api/verification';
+} from "@/lib/api/verification";
 
-const VERIFICATION_QUERY_KEY = ['verification', 'status'];
+const VERIFICATION_QUERY_KEY = ["verification", "status"];
 const POLLING_INTERVAL = 30000; // 30 seconds
 
 /**
@@ -228,7 +234,7 @@ export function useVerificationStatus() {
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchInterval: (data) => {
       // Poll every 30s if status is pending
-      return data?.status === 'pending' ? POLLING_INTERVAL : false;
+      return data?.status === "pending" ? POLLING_INTERVAL : false;
     },
   });
 
@@ -240,9 +246,9 @@ export function useVerificationStatus() {
  */
 export function useSubmitVerification() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: (request: SubmitVerificationRequest) => 
+    mutationFn: (request: SubmitVerificationRequest) =>
       submitVerification(request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: VERIFICATION_QUERY_KEY });
@@ -255,9 +261,9 @@ export function useSubmitVerification() {
  */
 export function useResubmitVerification() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: (request: ResubmitVerificationRequest) => 
+    mutationFn: (request: ResubmitVerificationRequest) =>
       resubmitVerification(request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: VERIFICATION_QUERY_KEY });
@@ -282,12 +288,14 @@ export function useUploadDocument() {
 Reusable banner component that displays verification status with appropriate styling and actions.
 
 **Props:**
+
 - `status`: VerificationStatus
 - `rejectionReason?`: string
 - `onActionClick`: () => void
 - `className?`: string
 
 **Behavior:**
+
 - Displays different messages and colors based on status
 - Shows actionable CTA button for pending/rejected states
 - Dismissible for approved status
@@ -298,11 +306,13 @@ Reusable banner component that displays verification status with appropriate sty
 Multi-step form for verification submission with validation.
 
 **Props:**
+
 - `initialData?`: BusinessVerificationData
 - `onSubmit`: (data: BusinessVerificationData) => Promise<void>
 - `isSubmitting`: boolean
 
 **Features:**
+
 - 3 steps: Business Info, Contact Details, Document Upload
 - Zod schema validation per step
 - Progress indicator
@@ -310,6 +320,7 @@ Multi-step form for verification submission with validation.
 - Mobile-optimized layout
 
 **Validation Rules:**
+
 - Business name: required, min 2 chars
 - Registration number: required, alphanumeric
 - Phone: required, valid format
@@ -321,6 +332,7 @@ Multi-step form for verification submission with validation.
 File upload component with preview and validation.
 
 **Props:**
+
 - `onUpload`: (file: File) => Promise<DocumentUploadResponse>
 - `onRemove`: (documentId: string) => void
 - `documents`: DocumentUploadResponse[]
@@ -328,6 +340,7 @@ File upload component with preview and validation.
 - `maxSizeMB?`: number
 
 **Features:**
+
 - Drag-and-drop support
 - File type validation (PDF, JPG, PNG)
 - Size validation (default 10MB)
@@ -340,6 +353,7 @@ File upload component with preview and validation.
 Main orchestrator component for the verification page.
 
 **Features:**
+
 - Displays current status
 - Shows application form for new/resubmit
 - Displays status timeline
@@ -352,11 +366,13 @@ Main orchestrator component for the verification page.
 Small badge component to indicate verified status.
 
 **Props:**
+
 - `size?`: 'sm' | 'md' | 'lg'
 - `showTooltip?`: boolean
 - `className?`: string
 
 **Features:**
+
 - Checkmark icon with "Verified" text
 - Tooltip explaining verification
 - Accessible with ARIA labels
@@ -367,12 +383,14 @@ Small badge component to indicate verified status.
 Visual timeline showing verification progress.
 
 **Props:**
+
 - `status`: VerificationStatus
 - `submittedAt?`: string
 - `reviewedAt?`: string
 - `rejectionReason?`: string
 
 **Features:**
+
 - Visual progress indicator
 - Timestamps for each stage
 - Rejection reason display
@@ -392,7 +410,7 @@ import { useRequireRole } from '@/hooks/useRequireRole';
 
 export default function VerificationPage() {
   useRequireRole('recruiter');
-  
+
   return (
     <div className="container mx-auto px-4 py-6">
       <h1 className="text-2xl font-bold mb-6">Business Verification</h1>
@@ -491,25 +509,27 @@ interface FormState {
 Using Zod for type-safe validation:
 
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 export const businessInfoSchema = z.object({
-  businessName: z.string().min(2, 'Business name must be at least 2 characters'),
-  registrationNumber: z.string().min(1, 'Registration number is required'),
-  businessType: z.string().min(1, 'Business type is required'),
-  address: z.string().min(5, 'Address must be at least 5 characters'),
-  city: z.string().min(2, 'City is required'),
-  state: z.string().min(2, 'State is required'),
-  country: z.string().min(2, 'Country is required'),
-  website: z.string().url('Invalid URL').optional().or(z.literal('')),
+  businessName: z
+    .string()
+    .min(2, "Business name must be at least 2 characters"),
+  registrationNumber: z.string().min(1, "Registration number is required"),
+  businessType: z.string().min(1, "Business type is required"),
+  address: z.string().min(5, "Address must be at least 5 characters"),
+  city: z.string().min(2, "City is required"),
+  state: z.string().min(2, "State is required"),
+  country: z.string().min(2, "Country is required"),
+  website: z.string().url("Invalid URL").optional().or(z.literal("")),
 });
 
 export const contactInfoSchema = z.object({
-  phoneNumber: z.string().regex(/^\+?[1-9]\d{1,14}$/, 'Invalid phone number'),
+  phoneNumber: z.string().regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number"),
 });
 
 export const documentSchema = z.object({
-  documents: z.array(z.string()).min(1, 'At least one document is required'),
+  documents: z.array(z.string()).min(1, "At least one document is required"),
 });
 
 export const fullVerificationSchema = businessInfoSchema
@@ -519,102 +539,101 @@ export const fullVerificationSchema = businessInfoSchema
 
 ## Correctness Properties
 
-
-*A property is a characteristic or behavior that should hold true across all valid executions of a system-essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
+_A property is a characteristic or behavior that should hold true across all valid executions of a system-essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees._
 
 ### Property 1: Form Validation Rejects Invalid Data
 
-*For any* form submission with invalid data (missing required fields, invalid formats, or constraint violations), the system should reject the submission and display specific error messages for each invalid field.
+_For any_ form submission with invalid data (missing required fields, invalid formats, or constraint violations), the system should reject the submission and display specific error messages for each invalid field.
 
 **Validates: Requirements 1.2, 1.4**
 
 ### Property 2: Valid Form Submission Triggers API Call
 
-*For any* valid verification form data, submitting the form should trigger an API call to the backend and display a confirmation message upon success.
+_For any_ valid verification form data, submitting the form should trigger an API call to the backend and display a confirmation message upon success.
 
 **Validates: Requirements 1.3**
 
 ### Property 3: Form Step Navigation Preserves Data
 
-*For any* form data entered in step N, navigating to step N+1 and then back to step N should preserve all previously entered data without loss.
+_For any_ form data entered in step N, navigating to step N+1 and then back to step N should preserve all previously entered data without loss.
 
 **Validates: Requirements 1.5**
 
 ### Property 4: File Upload Validation
 
-*For any* file upload attempt, the system should validate file type (PDF, JPG, PNG) and size (≤10MB) before accepting, rejecting invalid files with appropriate error messages.
+_For any_ file upload attempt, the system should validate file type (PDF, JPG, PNG) and size (≤10MB) before accepting, rejecting invalid files with appropriate error messages.
 
 **Validates: Requirements 2.1, 2.3**
 
 ### Property 5: Successful Upload Shows Preview
 
-*For any* valid file that is successfully uploaded, the system should display a preview of the document in the document list.
+_For any_ valid file that is successfully uploaded, the system should display a preview of the document in the document list.
 
 **Validates: Requirements 2.2**
 
 ### Property 6: Document List Reflects Operations
 
-*For any* sequence of document upload and removal operations, the displayed document list should accurately reflect the current set of documents (adding N documents increases count by N, removing M documents decreases count by M).
+_For any_ sequence of document upload and removal operations, the displayed document list should accurately reflect the current set of documents (adding N documents increases count by N, removing M documents decreases count by M).
 
 **Validates: Requirements 2.4, 2.5**
 
 ### Property 7: Status Display Reflects Application State
 
-*For any* verification application state (pending, approved, rejected, not_started), the system should display the correct status and corresponding UI elements (timeline, rejection reason, prompts).
+_For any_ verification application state (pending, approved, rejected, not_started), the system should display the correct status and corresponding UI elements (timeline, rejection reason, prompts).
 
 **Validates: Requirements 3.1, 3.3**
 
 ### Property 8: Polling Activates for Pending Status
 
-*For any* verification with pending status, the system should poll the API every 30 seconds for status updates, and stop polling when status changes to approved or rejected.
+_For any_ verification with pending status, the system should poll the API every 30 seconds for status updates, and stop polling when status changes to approved or rejected.
 
 **Validates: Requirements 3.2, 8.5**
 
 ### Property 9: Resubmission Pre-fills Previous Data
 
-*For any* rejected verification application, initiating resubmission should pre-fill the form with all previous application data while allowing all fields to be edited.
+_For any_ rejected verification application, initiating resubmission should pre-fill the form with all previous application data while allowing all fields to be edited.
 
 **Validates: Requirements 4.2, 4.3**
 
 ### Property 10: Resubmission Transitions to Pending
 
-*For any* rejected verification, successfully resubmitting should change the status to pending and trigger a new verification review cycle.
+_For any_ rejected verification, successfully resubmitting should change the status to pending and trigger a new verification review cycle.
 
 **Validates: Requirements 4.4**
 
 ### Property 11: Banner Display Based on Status
 
-*For any* verification status, the dashboard should display a status banner if and only if the status is not_started, pending, or rejected, with appropriate messaging and actions for each state.
+_For any_ verification status, the dashboard should display a status banner if and only if the status is not_started, pending, or rejected, with appropriate messaging and actions for each state.
 
 **Validates: Requirements 5.1, 5.3, 5.4, 5.5**
 
 ### Property 12: Verified Badge Display
 
-*For any* employer profile, opportunity listing, or employer card, a verified badge should be displayed if and only if the employer has an approved verification status.
+_For any_ employer profile, opportunity listing, or employer card, a verified badge should be displayed if and only if the employer has an approved verification status.
 
 **Validates: Requirements 7.1, 7.2, 7.4, 7.5**
 
 ### Property 13: Query Invalidation on Status Change
 
-*For any* mutation that changes verification status (submit, resubmit), the system should invalidate the verification status query to trigger a refetch and update all components displaying verification data.
+_For any_ mutation that changes verification status (submit, resubmit), the system should invalidate the verification status query to trigger a refetch and update all components displaying verification data.
 
 **Validates: Requirements 8.2**
 
 ### Property 14: React Query Cache Sharing
 
-*For any* multiple components requesting verification data within the stale time window, the system should serve the data from React Query cache without making additional API calls.
+_For any_ multiple components requesting verification data within the stale time window, the system should serve the data from React Query cache without making additional API calls.
 
 **Validates: Requirements 8.3, 8.4**
 
 ### Property 15: API Error Handling Consistency
 
-*For any* API error response (network error, validation error, server error), the system should handle the error gracefully and display a user-friendly error message without crashing.
+_For any_ API error response (network error, validation error, server error), the system should handle the error gracefully and display a user-friendly error message without crashing.
 
 **Validates: Requirements 9.4**
 
 ### Property 16: Component Prop Consistency
 
-*For any* reusable component (VerificationStatusBanner, VerifiedBadge, DocumentUploader, StatusTimeline), rendering with the same props should produce consistent output across different usage contexts.
+_For any_ reusable component (VerificationStatusBanner, VerifiedBadge, DocumentUploader, StatusTimeline), rendering with the same props should produce consistent output across different usage contexts.
 
 **Validates: Requirements 10.5**
 
@@ -697,6 +716,7 @@ This feature will use both unit tests and property-based tests for comprehensive
 ### Unit Testing
 
 **Component Tests:**
+
 - VerificationStatusBanner: Renders correctly for each status
 - ApplicationForm: Step navigation, form submission, validation display
 - DocumentUploader: File selection, drag-and-drop, preview display
@@ -704,12 +724,14 @@ This feature will use both unit tests and property-based tests for comprehensive
 - StatusTimeline: Timeline rendering for each status
 
 **Integration Tests:**
+
 - Dashboard banner integration
 - Navigation menu integration
 - Profile badge integration
 - Form submission flow end-to-end
 
 **Edge Cases:**
+
 - Empty form submission
 - Maximum file size boundary
 - Network timeout scenarios
@@ -719,6 +741,7 @@ This feature will use both unit tests and property-based tests for comprehensive
 ### Property-Based Testing
 
 **Configuration:**
+
 - Use fast-check library for TypeScript/JavaScript
 - Minimum 100 iterations per property test
 - Each test tagged with: **Feature: business-verification-integration, Property {number}: {property_text}**
@@ -778,26 +801,31 @@ This feature will use both unit tests and property-based tests for comprehensive
 
 ```typescript
 // Example generators for property-based testing
-import * as fc from 'fast-check';
+import * as fc from "fast-check";
 
 // Generate valid business verification data
 export const validVerificationDataArb = fc.record({
   businessName: fc.string({ minLength: 2, maxLength: 100 }),
   registrationNumber: fc.string({ minLength: 5, maxLength: 20 }),
-  businessType: fc.constantFrom('LLC', 'Corporation', 'Partnership', 'Sole Proprietorship'),
+  businessType: fc.constantFrom(
+    "LLC",
+    "Corporation",
+    "Partnership",
+    "Sole Proprietorship",
+  ),
   address: fc.string({ minLength: 5, maxLength: 200 }),
   city: fc.string({ minLength: 2, maxLength: 50 }),
   state: fc.string({ minLength: 2, maxLength: 50 }),
-  country: fc.constantFrom('Nigeria', 'Ghana', 'Kenya', 'South Africa'),
+  country: fc.constantFrom("Nigeria", "Ghana", "Kenya", "South Africa"),
   website: fc.option(fc.webUrl(), { nil: undefined }),
-  phoneNumber: fc.string({ minLength: 10, maxLength: 15 }).map(s => '+' + s),
+  phoneNumber: fc.string({ minLength: 10, maxLength: 15 }).map((s) => "+" + s),
   documents: fc.array(fc.uuid(), { minLength: 1, maxLength: 5 }),
 });
 
 // Generate invalid verification data
 export const invalidVerificationDataArb = fc.record({
   businessName: fc.option(fc.string({ maxLength: 1 }), { nil: undefined }),
-  registrationNumber: fc.option(fc.constant(''), { nil: undefined }),
+  registrationNumber: fc.option(fc.constant(""), { nil: undefined }),
   phoneNumber: fc.option(fc.string({ maxLength: 5 }), { nil: undefined }),
   // ... other invalid fields
 });
@@ -805,16 +833,22 @@ export const invalidVerificationDataArb = fc.record({
 // Generate file metadata
 export const fileMetadataArb = fc.record({
   name: fc.string({ minLength: 1, maxLength: 50 }),
-  type: fc.constantFrom('application/pdf', 'image/jpeg', 'image/png', 'text/plain', 'application/zip'),
+  type: fc.constantFrom(
+    "application/pdf",
+    "image/jpeg",
+    "image/png",
+    "text/plain",
+    "application/zip",
+  ),
   size: fc.integer({ min: 0, max: 20 * 1024 * 1024 }), // 0 to 20MB
 });
 
 // Generate verification status
 export const verificationStatusArb = fc.constantFrom(
-  'not_started',
-  'pending',
-  'approved',
-  'rejected'
+  "not_started",
+  "pending",
+  "approved",
+  "rejected",
 );
 ```
 
@@ -947,22 +981,26 @@ export const verificationStatusArb = fc.constantFrom(
 ## Migration and Rollout
 
 ### Phase 1: Core Implementation
+
 - Implement API layer and types
 - Create React Query hooks
 - Build core components
 
 ### Phase 2: Integration
+
 - Integrate with dashboard
 - Add navigation menu items
 - Implement verified badges
 
 ### Phase 3: Testing and Polish
+
 - Write unit tests
 - Write property-based tests
 - Conduct manual testing
 - Fix bugs and polish UI
 
 ### Phase 4: Deployment
+
 - Deploy to staging
 - Conduct user acceptance testing
 - Deploy to production
@@ -971,6 +1009,7 @@ export const verificationStatusArb = fc.constantFrom(
 ### Rollback Plan
 
 If critical issues are discovered:
+
 1. Feature flag to disable verification UI
 2. Hide navigation menu items
 3. Remove dashboard banners

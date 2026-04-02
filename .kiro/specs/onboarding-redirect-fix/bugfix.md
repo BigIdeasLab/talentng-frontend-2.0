@@ -11,6 +11,7 @@ The backend already provides an authoritative `needsOnboarding` field in the GET
 ### Root Cause
 
 **CONFIRMED via backend test and terminal logs**: The backend correctly sends:
+
 ```
 /onboarding?accessToken=...&refreshToken=...&userId=...&needsOnboarding=true
 ```
@@ -18,9 +19,11 @@ The backend already provides an authoritative `needsOnboarding` field in the GET
 **BUT** the Next.js middleware (`middleware.ts`) intercepts the `/onboarding` route and checks `isNewUser` instead of `needsOnboarding`. When `isNewUser=false` (user logged in before), it redirects to `/redirect` and **strips the `needsOnboarding` parameter**.
 
 **Middleware logic (lines 105-119)**:
+
 ```typescript
 if (pathname === "/onboarding") {
-  if (!isNewUser) {  // ← WRONG: checks isNewUser instead of needsOnboarding
+  if (!isNewUser) {
+    // ← WRONG: checks isNewUser instead of needsOnboarding
     // Redirect to /redirect, stripping needsOnboarding parameter
     const redirectUrl = `/redirect?${params.toString()}`;
     return NextResponse.redirect(new URL(redirectUrl, request.url));
@@ -63,11 +66,13 @@ This causes users who have logged in before but have no profiles (`isNewUser=fal
 ### Frontend Middleware Fix (IMPLEMENTED)
 
 The Next.js middleware (`middleware.ts`) has been updated to:
+
 1. Extract `needsOnboarding` parameter from URL
 2. Use `needsOnboarding` instead of `isNewUser` for routing decisions
 3. Preserve `needsOnboarding` parameter when redirecting
 
 **Changes made**:
+
 - Line 73: Added `const needsOnboardingFromUrl = searchParams.get("needsOnboarding");`
 - Line 85: Changed logic to check `needsOnboarding` instead of `isNewUser`
 - Lines 95, 113, 127: Preserve `needsOnboarding` parameter in redirect URLs
@@ -75,6 +80,7 @@ The Next.js middleware (`middleware.ts`) has been updated to:
 ### Backend Status
 
 The backend is correctly implemented:
+
 - ✅ Google OAuth callback sends `needsOnboarding=true` for users without profiles
 - ✅ Google OAuth callback sends `needsOnboarding=false` for users with profiles
 - ✅ All auth endpoints return `needsOnboarding` field in user response
@@ -82,6 +88,7 @@ The backend is correctly implemented:
 ### Frontend Status
 
 The frontend is correctly implemented:
+
 - ✅ `app/(auth)/redirect/page.tsx` reads `needsOnboarding` from URL params and routes accordingly
 - ✅ `app/(business)/layout-client.tsx` checks `user?.needsOnboarding` as a safety net
 - ✅ `lib/types/auth.ts` includes `needsOnboarding?: boolean` in User type

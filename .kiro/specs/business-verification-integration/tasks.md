@@ -19,7 +19,7 @@ This implementation plan covers the complete Business Verification Integration f
     - Handle FormData for document uploads
     - _Requirements: 1.3, 2.2, 3.2, 4.1_
 
-  - [ ]* 1.3 Write property test for API type consistency
+  - [ ]\* 1.3 Write property test for API type consistency
     - **Property 16: Component Prop Consistency**
     - **Validates: Requirements 10.5**
     - Test that API types match expected structure across all endpoints
@@ -34,17 +34,17 @@ This implementation plan covers the complete Business Verification Integration f
     - Define query key constant: `['verification', 'status']`
     - _Requirements: 3.2, 4.1, 8.1, 8.2, 8.5_
 
-  - [ ]* 2.2 Write property test for polling behavior
+  - [ ]\* 2.2 Write property test for polling behavior
     - **Property 8: Polling Activates for Pending Status**
     - **Validates: Requirements 3.2, 8.5**
     - Test that polling activates only for pending status and stops for approved/rejected
 
-  - [ ]* 2.3 Write property test for cache invalidation
+  - [ ]\* 2.3 Write property test for cache invalidation
     - **Property 13: Query Invalidation on Status Change**
     - **Validates: Requirements 8.2**
     - Test that mutations properly invalidate verification status query
 
-  - [ ]* 2.4 Write property test for cache sharing
+  - [ ]\* 2.4 Write property test for cache sharing
     - **Property 14: React Query Cache Sharing**
     - **Validates: Requirements 8.3, 8.4**
     - Test that multiple components share cached data within stale time window
@@ -63,7 +63,7 @@ This implementation plan covers the complete Business Verification Integration f
     - Add ARIA labels for accessibility
     - _Requirements: 5.1, 5.3, 5.4, 5.5, 9.1_
 
-  - [ ]* 4.2 Write property test for banner display logic
+  - [ ]\* 4.2 Write property test for banner display logic
     - **Property 11: Banner Display Based on Status**
     - **Validates: Requirements 5.1, 5.3, 5.4, 5.5**
     - Test that banner displays correctly for each status with appropriate messaging
@@ -77,7 +77,7 @@ This implementation plan covers the complete Business Verification Integration f
     - Support multiple size variants
     - _Requirements: 7.1, 7.2, 7.4, 7.5, 9.1_
 
-  - [ ]* 4.4 Write property test for badge display logic
+  - [ ]\* 4.4 Write property test for badge display logic
     - **Property 12: Verified Badge Display**
     - **Validates: Requirements 7.1, 7.2, 7.4, 7.5**
     - Test that badge displays only for approved verification status
@@ -91,7 +91,7 @@ This implementation plan covers the complete Business Verification Integration f
     - Implement mobile-responsive layout
     - _Requirements: 3.3, 9.1_
 
-  - [ ]* 4.6 Write property test for status display
+  - [ ]\* 4.6 Write property test for status display
     - **Property 7: Status Display Reflects Application State**
     - **Validates: Requirements 3.1, 3.3**
     - Test that timeline displays correct UI elements for each status
@@ -108,17 +108,17 @@ This implementation plan covers the complete Business Verification Integration f
     - Implement mobile-optimized file picker
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 9.1_
 
-  - [ ]* 5.2 Write property test for file upload validation
+  - [ ]\* 5.2 Write property test for file upload validation
     - **Property 4: File Upload Validation**
     - **Validates: Requirements 2.1, 2.3**
     - Test that invalid file types and sizes are rejected with appropriate errors
 
-  - [ ]* 5.3 Write property test for upload preview
+  - [ ]\* 5.3 Write property test for upload preview
     - **Property 5: Successful Upload Shows Preview**
     - **Validates: Requirements 2.2**
     - Test that valid uploaded files display preview in document list
 
-  - [ ]* 5.4 Write property test for document list operations
+  - [ ]\* 5.4 Write property test for document list operations
     - **Property 6: Document List Reflects Operations**
     - **Validates: Requirements 2.4, 2.5**
     - Test that document list count matches add/remove operations
@@ -145,17 +145,17 @@ This implementation plan covers the complete Business Verification Integration f
     - Add keyboard navigation support
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 9.1, 9.2_
 
-  - [ ]* 6.3 Write property test for form validation
+  - [ ]\* 6.3 Write property test for form validation
     - **Property 1: Form Validation Rejects Invalid Data**
     - **Validates: Requirements 1.2, 1.4**
     - Test that invalid form data is rejected with specific error messages
 
-  - [ ]* 6.4 Write property test for valid form submission
+  - [ ]\* 6.4 Write property test for valid form submission
     - **Property 2: Valid Form Submission Triggers API Call**
     - **Validates: Requirements 1.3**
     - Test that valid form data triggers API call and shows confirmation
 
-  - [ ]* 6.5 Write property test for step navigation
+  - [ ]\* 6.5 Write property test for step navigation
     - **Property 3: Form Step Navigation Preserves Data**
     - **Validates: Requirements 1.5**
     - Test that navigating between steps preserves all entered data
@@ -176,17 +176,17 @@ This implementation plan covers the complete Business Verification Integration f
     - Implement mobile-responsive layout
     - _Requirements: 3.1, 3.2, 3.3, 4.1, 4.2, 4.3, 4.4, 9.1_
 
-  - [ ]* 8.2 Write property test for resubmission pre-fill
+  - [ ]\* 8.2 Write property test for resubmission pre-fill
     - **Property 9: Resubmission Pre-fills Previous Data**
     - **Validates: Requirements 4.2, 4.3**
     - Test that rejected applications pre-fill form with previous data
 
-  - [ ]* 8.3 Write property test for resubmission status transition
+  - [ ]\* 8.3 Write property test for resubmission status transition
     - **Property 10: Resubmission Transitions to Pending**
     - **Validates: Requirements 4.4**
     - Test that successful resubmission changes status to pending
 
-  - [ ]* 8.4 Write unit tests for VerificationDashboard
+  - [ ]\* 8.4 Write unit tests for VerificationDashboard
     - Test component rendering for each status
     - Test form submission flow
     - Test error handling
@@ -201,7 +201,7 @@ This implementation plan covers the complete Business Verification Integration f
     - Implement mobile-responsive padding and spacing
     - _Requirements: 6.1, 6.2, 9.1_
 
-  - [ ]* 9.2 Write unit test for page access control
+  - [ ]\* 9.2 Write unit test for page access control
     - Test that page requires recruiter role
     - Test that non-recruiters are redirected
 
@@ -215,7 +215,7 @@ This implementation plan covers the complete Business Verification Integration f
     - Add margin bottom for spacing
     - _Requirements: 5.1, 5.2, 8.1_
 
-  - [ ]* 10.2 Write unit test for dashboard banner integration
+  - [ ]\* 10.2 Write unit test for dashboard banner integration
     - Test that banner displays for non-approved statuses
     - Test that banner is hidden for approved status
     - Test navigation on action click
@@ -235,7 +235,7 @@ This implementation plan covers the complete Business Verification Integration f
     - Set href to `/verification`
     - _Requirements: 6.1, 6.3, 9.1_
 
-  - [ ]* 11.3 Write unit tests for navigation integration
+  - [ ]\* 11.3 Write unit tests for navigation integration
     - Test that verification menu item appears in sidebar
     - Test that verification menu item appears in mobile nav
     - Test navigation to verification page
@@ -265,7 +265,7 @@ This implementation plan covers the complete Business Verification Integration f
     - Use small size for compact display
     - _Requirements: 7.4, 7.5_
 
-  - [ ]* 12.4 Write unit tests for badge integration
+  - [ ]\* 12.4 Write unit tests for badge integration
     - Test badge displays on employer profiles when verified
     - Test badge displays on opportunity listings when verified
     - Test badge displays on employer cards when verified
@@ -294,12 +294,12 @@ This implementation plan covers the complete Business Verification Integration f
     - Handle network timeout scenarios
     - _Requirements: 9.3, 9.4_
 
-  - [ ]* 14.3 Write property test for error handling consistency
+  - [ ]\* 14.3 Write property test for error handling consistency
     - **Property 15: API Error Handling Consistency**
     - **Validates: Requirements 9.4**
     - Test that all API errors are handled gracefully without crashes
 
-  - [ ]* 14.4 Write unit tests for error scenarios
+  - [ ]\* 14.4 Write unit tests for error scenarios
     - Test form validation error display
     - Test file upload error messages
     - Test network error handling
@@ -325,7 +325,7 @@ This implementation plan covers the complete Business Verification Integration f
     - Optimize bundle size with lazy loading
     - _Requirements: 9.1_
 
-  - [ ]* 15.3 Write unit tests for accessibility
+  - [ ]\* 15.3 Write unit tests for accessibility
     - Test keyboard navigation
     - Test ARIA labels presence
     - Test focus management
