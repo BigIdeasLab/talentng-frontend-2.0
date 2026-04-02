@@ -93,7 +93,7 @@ export function QuickActions() {
             <ShieldCheck className="w-3.5 h-3.5 text-white" strokeWidth={1.6} />
           }
           label="Get Verified"
-          href="/verification"
+          href="/profile?tab=verification"
           variant="success"
         />
       </div>

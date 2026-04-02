@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, AlertCircle } from "lucide-react";
-import { VerificationStatusBanner } from "./VerificationStatusBanner";
 import { ApplicationForm } from "./ApplicationForm";
 import { StatusTimeline } from "./StatusTimeline";
 import {
@@ -68,15 +67,15 @@ export function VerificationDashboard() {
   };
 
   const handleBannerAction = () => {
-    // Scroll to form or refresh page
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    // Navigate to profile
+    router.push("/profile");
   };
 
   // Loading state
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-6 w-6 animate-spin text-[#8463FF]" />
+        <Loader2 className="h-6 w-6 animate-spin text-[#5C30FF]" />
         <span className="ml-3 font-inter-tight text-[13px] text-black/60">
           Loading verification status...
         </span>
@@ -111,13 +110,6 @@ export function VerificationDashboard() {
 
   return (
     <div className="space-y-4">
-      {/* Status Banner */}
-      <VerificationStatusBanner
-        status={status}
-        rejectionReason={application?.rejectionReason}
-        onActionClick={handleBannerAction}
-      />
-
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Left Column: Form or Status */}
@@ -235,7 +227,7 @@ export function VerificationDashboard() {
 
               <button
                 onClick={() => router.push("/profile")}
-                className="inline-flex items-center px-6 py-3 bg-[#8463FF] hover:bg-[#7151E6] text-white rounded-lg font-inter-tight text-[13px] font-medium transition-colors"
+                className="inline-flex items-center px-6 py-3 bg-[#5C30FF] hover:bg-[#4a24d6] text-white rounded-lg font-inter-tight text-[13px] font-medium transition-colors"
               >
                 View Profile
               </button>

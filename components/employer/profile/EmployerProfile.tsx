@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks";
 import { EmployerProfilePanel } from "./EmployerProfilePanel";
 import { EmployerProfileNav } from "./EmployerProfileNav";
 import { OpportunitiesTab } from "./tabs/OpportunitiesTab";
 import { PastHiresTab } from "./tabs/PastHiresTab";
 import { AboutTab } from "./tabs/AboutTab";
+import { VerificationTab } from "./tabs/VerificationTab";
 import { updateRecruiterProfile } from "@/lib/api/recruiter";
 
 interface EmployerProfileProps {
@@ -59,9 +60,20 @@ export function EmployerProfile({
   visibility = "public",
 }: EmployerProfileProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user: _user } = useAuth();
-  const [activeTab, setActiveTab] = useState("about");
+  
+  // Get tab from URL query parameter, default to "about"
+  const tabFromUrl = searchParams.get("tab");
+  const [activeTab, setActiveTab] = useState(tabFromUrl || "about");
   const [currentVisibility, setCurrentVisibility] = useState(visibility);
+
+  // Update active tab when URL changes
+  useEffect(() => {
+    if (tabFromUrl) {
+      setActiveTab(tabFromUrl);
+    }
+  }, [tabFromUrl]);
 
   const handleVisibilityChange = useCallback(
     async (newVisibility: "public" | "private") => {
@@ -131,6 +143,9 @@ export function EmployerProfile({
               operatingModel={aboutData?.operatingModel}
             />
           )}
+
+          {/* Verification Tab */}
+          {activeTab === "verification" && <VerificationTab />}
         </div>
       </main>
     </div>

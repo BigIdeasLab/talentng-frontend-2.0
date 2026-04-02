@@ -178,20 +178,20 @@ export function ApplicationForm({
   return (
     <div className="w-full max-w-3xl mx-auto">
       {/* Progress Indicator */}
-      <div className="mb-8">
+      <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-gray-700">
+          <span className="font-inter-tight text-[13px] font-medium text-black">
             Step {currentStep} of 3
           </span>
-          <span className="text-sm text-gray-500">
+          <span className="font-inter-tight text-[13px] text-black/60">
             {currentStep === 1 && "Business Information"}
             {currentStep === 2 && "Contact Details"}
             {currentStep === 3 && "Document Upload"}
           </span>
         </div>
-        <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div className="w-full h-2 bg-[#E1E4EA] rounded-full overflow-hidden">
           <div
-            className="h-full bg-purple-600 transition-all duration-300"
+            className="h-full bg-[#5C30FF] transition-all duration-300"
             style={{ width: `${(currentStep / 3) * 100}%` }}
             role="progressbar"
             aria-valuenow={currentStep}
@@ -209,12 +209,12 @@ export function ApplicationForm({
             onSubmit={businessInfoForm.handleSubmit(handleBusinessInfoNext)}
             className="space-y-4"
           >
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="font-inter-tight text-[15px] font-semibold text-black mb-4">
               Business Information
             </h2>
 
             <ResponsiveFormField fullWidth>
-              <label className="text-sm font-medium text-gray-700">
+              <label className="font-inter-tight text-[13px] font-medium text-black">
                 Business Name <span className="text-red-500">*</span>
               </label>
               <FormField
@@ -226,7 +226,7 @@ export function ApplicationForm({
                       <Input
                         placeholder="Enter your business name"
                         {...field}
-                        className="h-12 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-600"
+                        className="h-11 rounded-lg border-[#E1E4EA] font-inter-tight text-[13px] focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                         aria-label="Business name"
                       />
                     </FormControl>
@@ -237,7 +237,7 @@ export function ApplicationForm({
             </ResponsiveFormField>
 
             <ResponsiveFormField fullWidth>
-              <label className="text-sm font-medium text-gray-700">
+              <label className="font-inter-tight text-[13px] font-medium text-black">
                 Registration Number <span className="text-red-500">*</span>
               </label>
               <FormField
@@ -249,7 +249,7 @@ export function ApplicationForm({
                       <Input
                         placeholder="Enter registration number"
                         {...field}
-                        className="h-12 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-600"
+                        className="h-11 rounded-lg border-[#E1E4EA] font-inter-tight text-[13px] focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                         aria-label="Registration number"
                       />
                     </FormControl>
@@ -260,7 +260,7 @@ export function ApplicationForm({
             </ResponsiveFormField>
 
             <ResponsiveFormField fullWidth>
-              <label className="text-sm font-medium text-gray-700">
+              <label className="font-inter-tight text-[13px] font-medium text-black">
                 Business Type <span className="text-red-500">*</span>
               </label>
               <FormField
@@ -271,7 +271,7 @@ export function ApplicationForm({
                     <FormControl>
                       <select
                         {...field}
-                        className="w-full h-12 rounded-lg border border-gray-300 px-3 focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                        className="w-full h-11 rounded-lg border border-[#E1E4EA] px-3 font-inter-tight text-[13px] focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                         aria-label="Business type"
                       >
                         <option value="">Select business type</option>
@@ -289,7 +289,7 @@ export function ApplicationForm({
             </ResponsiveFormField>
 
             <ResponsiveFormField fullWidth>
-              <label className="text-sm font-medium text-gray-700">
+              <label className="font-inter-tight text-[13px] font-medium text-black">
                 Address <span className="text-red-500">*</span>
               </label>
               <FormField
@@ -301,7 +301,7 @@ export function ApplicationForm({
                       <Input
                         placeholder="Enter business address"
                         {...field}
-                        className="h-12 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-600"
+                        className="h-11 rounded-lg border-[#E1E4EA] font-inter-tight text-[13px] focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                         aria-label="Business address"
                       />
                     </FormControl>
@@ -313,7 +313,7 @@ export function ApplicationForm({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <ResponsiveFormField fullWidth>
-                <label className="text-sm font-medium text-gray-700">
+                <label className="font-inter-tight text-[13px] font-medium text-black">
                   City <span className="text-red-500">*</span>
                 </label>
                 <FormField
@@ -325,7 +325,7 @@ export function ApplicationForm({
                         <Input
                           placeholder="Enter city"
                           {...field}
-                          className="h-12 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-600"
+                          className="h-11 rounded-lg border-[#E1E4EA] font-inter-tight text-[13px] focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                           aria-label="City"
                         />
                       </FormControl>
@@ -336,7 +336,7 @@ export function ApplicationForm({
               </ResponsiveFormField>
 
               <ResponsiveFormField fullWidth>
-                <label className="text-sm font-medium text-gray-700">
+                <label className="font-inter-tight text-[13px] font-medium text-black">
                   State <span className="text-red-500">*</span>
                 </label>
                 <FormField
@@ -348,7 +348,7 @@ export function ApplicationForm({
                         <Input
                           placeholder="Enter state"
                           {...field}
-                          className="h-12 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-600"
+                          className="h-11 rounded-lg border-[#E1E4EA] font-inter-tight text-[13px] focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                           aria-label="State"
                         />
                       </FormControl>
@@ -360,7 +360,7 @@ export function ApplicationForm({
             </div>
 
             <ResponsiveFormField fullWidth>
-              <label className="text-sm font-medium text-gray-700">
+              <label className="font-inter-tight text-[13px] font-medium text-black">
                 Country <span className="text-red-500">*</span>
               </label>
               <FormField
@@ -371,7 +371,7 @@ export function ApplicationForm({
                     <FormControl>
                       <select
                         {...field}
-                        className="w-full h-12 rounded-lg border border-gray-300 px-3 focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                        className="w-full h-11 rounded-lg border border-[#E1E4EA] px-3 font-inter-tight text-[13px] focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                         aria-label="Country"
                       >
                         <option value="">Select country</option>
@@ -389,7 +389,7 @@ export function ApplicationForm({
             </ResponsiveFormField>
 
             <ResponsiveFormField fullWidth>
-              <label className="text-sm font-medium text-gray-700">
+              <label className="font-inter-tight text-[13px] font-medium text-black">
                 Website (Optional)
               </label>
               <FormField
@@ -402,7 +402,7 @@ export function ApplicationForm({
                         type="url"
                         placeholder="https://example.com"
                         {...field}
-                        className="h-12 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-600"
+                        className="h-11 rounded-lg border-[#E1E4EA] font-inter-tight text-[13px] focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                         aria-label="Website"
                       />
                     </FormControl>
@@ -415,7 +415,7 @@ export function ApplicationForm({
             <ResponsiveFormButtons align="end" className="mt-6">
               <Button
                 type="submit"
-                className="bg-purple-600 hover:bg-purple-700 text-white px-8 h-12 rounded-lg"
+                className="bg-[#5C30FF] hover:bg-[#4a24d6] text-white px-8 h-11 rounded-lg font-inter-tight text-[13px]"
               >
                 Next
                 <ChevronRight className="ml-2 h-4 w-4" />
@@ -432,12 +432,12 @@ export function ApplicationForm({
             onSubmit={contactInfoForm.handleSubmit(handleContactInfoNext)}
             className="space-y-4"
           >
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="font-inter-tight text-[15px] font-semibold text-black mb-4">
               Contact Details
             </h2>
 
             <ResponsiveFormField fullWidth>
-              <label className="text-sm font-medium text-gray-700">
+              <label className="font-inter-tight text-[13px] font-medium text-black">
                 Phone Number <span className="text-red-500">*</span>
               </label>
               <FormField
@@ -450,12 +450,12 @@ export function ApplicationForm({
                         type="tel"
                         placeholder="+1234567890"
                         {...field}
-                        className="h-12 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-600"
+                        className="h-11 rounded-lg border-[#E1E4EA] font-inter-tight text-[13px] focus:ring-2 focus:ring-[#5C30FF] focus:border-transparent"
                         aria-label="Phone number"
                       />
                     </FormControl>
                     <FormMessage />
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="font-inter-tight text-[11px] text-black/60 mt-1">
                       Include country code (e.g., +234 for Nigeria)
                     </p>
                   </FormItem>
@@ -468,14 +468,14 @@ export function ApplicationForm({
                 type="button"
                 onClick={handleBack}
                 variant="outline"
-                className="px-8 h-12 rounded-lg"
+                className="px-8 h-11 rounded-lg font-inter-tight text-[13px]"
               >
                 <ChevronLeft className="mr-2 h-4 w-4" />
                 Back
               </Button>
               <Button
                 type="submit"
-                className="bg-purple-600 hover:bg-purple-700 text-white px-8 h-12 rounded-lg"
+                className="bg-[#5C30FF] hover:bg-[#4a24d6] text-white px-8 h-11 rounded-lg font-inter-tight text-[13px]"
               >
                 Next
                 <ChevronRight className="ml-2 h-4 w-4" />
@@ -492,11 +492,11 @@ export function ApplicationForm({
             onSubmit={documentForm.handleSubmit(handleFinalSubmit)}
             className="space-y-4"
           >
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="font-inter-tight text-[15px] font-semibold text-black mb-4">
               Document Upload
             </h2>
 
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="font-inter-tight text-[13px] text-black/60 mb-4">
               Upload verification documents such as business registration
               certificate, tax identification, or other official documents.
             </p>
@@ -529,7 +529,7 @@ export function ApplicationForm({
                 type="button"
                 onClick={handleBack}
                 variant="outline"
-                className="px-8 h-12 rounded-lg"
+                className="px-8 h-11 rounded-lg font-inter-tight text-[13px]"
                 disabled={isSubmitting}
               >
                 <ChevronLeft className="mr-2 h-4 w-4" />
@@ -538,7 +538,7 @@ export function ApplicationForm({
               <Button
                 type="submit"
                 disabled={isSubmitting || uploadedFiles.length === 0}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-8 h-12 rounded-lg disabled:opacity-50"
+                className="bg-[#5C30FF] hover:bg-[#4a24d6] text-white px-8 h-11 rounded-lg font-inter-tight text-[13px] disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <>

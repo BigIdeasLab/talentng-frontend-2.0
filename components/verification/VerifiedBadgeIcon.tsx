@@ -6,7 +6,12 @@
 import type { VerificationStatus } from "@/lib/api/verification/types";
 
 interface VerifiedBadgeIconProps {
-  verificationStatus?: VerificationStatus | "pending" | "approved" | "rejected" | null;
+  verificationStatus?:
+    | VerificationStatus
+    | "pending"
+    | "approved"
+    | "rejected"
+    | null;
   size?: "sm" | "md" | "lg";
   className?: string;
 }

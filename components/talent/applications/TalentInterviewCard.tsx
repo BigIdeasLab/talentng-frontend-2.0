@@ -121,9 +121,9 @@ export function TalentInterviewCard({
                 <p className="text-[12px] text-[#525866] font-inter-tight truncate">
                   {company} • {opportunityType || "Interview"}
                 </p>
-                <VerifiedBadgeIcon 
-                  verificationStatus={verificationStatus} 
-                  size="sm" 
+                <VerifiedBadgeIcon
+                  verificationStatus={verificationStatus}
+                  size="sm"
                 />
               </div>
             </div>

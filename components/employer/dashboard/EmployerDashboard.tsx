@@ -9,6 +9,7 @@ import { TopOpportunities } from "./TopOpportunities";
 import { RecentActivity } from "./RecentActivity";
 import { QuickActions } from "./QuickActions";
 import { WelcomeHeader } from "./WelcomeHeader";
+import { VerificationPromptCard } from "./VerificationPromptCard";
 import { useRecruiterDashboard } from "@/hooks/useRecruiterDashboard";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import {
@@ -148,6 +149,9 @@ const EmployerDashboard = mobileOptimizedMemo(function EmployerDashboard() {
         totalApplicants={formattedStats.totalApplicants.value}
         pendingReviews={formattedStats.pendingReviews.value}
       />
+
+      {/* Verification Prompt Card - Only shows when NOT verified */}
+      <VerificationPromptCard />
 
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 flex-shrink-0">

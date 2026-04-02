@@ -232,9 +232,9 @@ export default function RecruiterProfilePage() {
                     <h2 className="text-[16px] font-medium text-black font-inter-tight">
                       {profile.company || profile.username}
                     </h2>
-                    <VerifiedBadgeIcon 
-                      verificationStatus={profile.verificationStatus} 
-                      size="lg" 
+                    <VerifiedBadgeIcon
+                      verificationStatus={profile.verificationStatus}
+                      size="lg"
                     />
                   </div>
                   {profile.industry && (

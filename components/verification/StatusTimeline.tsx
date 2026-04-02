@@ -46,8 +46,10 @@ export function StatusTimeline({
 
   if (status === "not_started") {
     return (
-      <div className="text-center py-8 text-gray-500">
-        <p>No verification application submitted yet.</p>
+      <div className="text-center py-8 text-black/60">
+        <p className="font-inter-tight text-[13px]">
+          No verification application submitted yet.
+        </p>
       </div>
     );
   }
@@ -91,24 +93,24 @@ export function StatusTimeline({
               <div className="flex-1 min-w-0 pt-0.5">
                 <p
                   className={cn(
-                    "text-sm font-medium",
+                    "font-inter-tight text-[13px] font-medium",
                     step.isComplete || step.isCurrent
-                      ? "text-gray-900"
-                      : "text-gray-500",
+                      ? "text-black"
+                      : "text-black/50",
                   )}
                 >
                   {step.label}
                 </p>
 
                 {step.timestamp && (
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="font-inter-tight text-[11px] text-black/60 mt-1">
                     {format(new Date(step.timestamp), "MMM d, yyyy h:mm a")}
                   </p>
                 )}
 
                 {step.isRejected && rejectionReason && (
                   <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-md">
-                    <p className="text-sm text-red-800">
+                    <p className="font-inter-tight text-[13px] text-red-800">
                       <span className="font-medium">Reason: </span>
                       {rejectionReason}
                     </p>

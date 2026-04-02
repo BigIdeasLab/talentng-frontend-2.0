@@ -31,9 +31,9 @@ export function AboutTab({
       <div className="flex flex-col gap-4">
         <h2 className="text-lg font-semibold text-black font-inter-tight flex items-center gap-2">
           About {companyName}
-          <VerifiedBadgeIcon 
-            verificationStatus={verificationStatus?.status} 
-            size="lg" 
+          <VerifiedBadgeIcon
+            verificationStatus={verificationStatus?.status}
+            size="lg"
           />
         </h2>
         <div className="flex flex-col gap-3 text-[13px] font-normal text-black font-inter-tight leading-[22px]">

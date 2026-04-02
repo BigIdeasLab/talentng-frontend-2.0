@@ -32,7 +32,7 @@ export function WelcomeHeader({
             Welcome back, {companyName}
             {isVerified && (
               <Link
-                href="/verification"
+                href="/profile?tab=verification"
                 className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/20 hover:bg-white/30 transition-colors text-[11px] font-medium text-white"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
@@ -41,7 +41,7 @@ export function WelcomeHeader({
             )}
             {!isVerified && (
               <Link
-                href="/verification"
+                href="/profile?tab=verification"
                 className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/20 hover:bg-white/30 transition-colors text-[11px] font-medium text-white"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />

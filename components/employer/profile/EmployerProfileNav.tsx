@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 
 interface EmployerProfileNavProps {
-  activeTab?: "opportunities" | "hires" | "about";
+  activeTab?: "opportunities" | "hires" | "about" | "verification";
   onTabChange?: (tab: string) => void;
   onCreateOpportunity?: () => void;
 }
@@ -15,12 +15,14 @@ const tabs = [
   { id: "opportunities", label: "Open Opportunities" },
   { id: "hires", label: "Past Hires" },
   { id: "about", label: "About" },
+  { id: "verification", label: "Verification" },
 ];
 
 const buttonTexts: Record<string, string> = {
   opportunities: "Create Opportunity",
   hires: "Create Opportunity",
   about: "Create Opportunity",
+  verification: "Create Opportunity",
 };
 
 export function EmployerProfileNav({

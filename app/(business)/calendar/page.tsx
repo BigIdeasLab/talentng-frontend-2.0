@@ -589,7 +589,9 @@ function TalentUpcoming() {
                       opportunityId={application.opportunityId}
                       companyLogo={application.opportunity.logo}
                       opportunityType={application.opportunity.type}
-                      verificationStatus={application.opportunity.verificationStatus}
+                      verificationStatus={
+                        application.opportunity.verificationStatus
+                      }
                     />
                   );
                 }

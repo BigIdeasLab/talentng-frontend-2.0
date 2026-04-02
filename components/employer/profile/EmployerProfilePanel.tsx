@@ -134,9 +134,9 @@ export function EmployerProfilePanel({
               <h2 className="text-[16px] font-medium text-black font-inter-tight">
                 {company?.name || "Company Name"}
               </h2>
-              <VerifiedBadgeIcon 
-                verificationStatus={verificationStatus?.status} 
-                size="lg" 
+              <VerifiedBadgeIcon
+                verificationStatus={verificationStatus?.status}
+                size="lg"
               />
             </div>
             {company?.tagline && (

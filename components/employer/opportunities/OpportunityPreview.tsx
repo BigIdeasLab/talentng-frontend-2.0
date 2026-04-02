@@ -514,7 +514,9 @@ export function OpportunityPreview() {
                           {getCompanyName()}
                         </span>
                         <VerifiedBadgeIcon
-                          verificationStatus={displayProfile?.verificationStatus}
+                          verificationStatus={
+                            displayProfile?.verificationStatus
+                          }
                           size="sm"
                         />
                         <span className="font-inter-tight text-[15px] font-normal text-black/30">

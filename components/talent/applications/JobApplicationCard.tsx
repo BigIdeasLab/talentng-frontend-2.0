@@ -64,9 +64,9 @@ export function JobApplicationCard({ application }: JobApplicationCardProps) {
                 <p className="text-[12px] text-[#525866] font-inter-tight truncate">
                   {opportunity.company}
                 </p>
-                <VerifiedBadgeIcon 
-                  verificationStatus={opportunity.verificationStatus} 
-                  size="sm" 
+                <VerifiedBadgeIcon
+                  verificationStatus={opportunity.verificationStatus}
+                  size="sm"
                 />
               </div>
             </div>

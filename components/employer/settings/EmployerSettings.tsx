@@ -339,7 +339,7 @@ export function EmployerSettings() {
             description="Verify your business to build trust with talent and get a verified badge"
           >
             <Link
-              href="/verification"
+              href="/profile?tab=verification"
               className="flex items-center justify-between py-3 group"
             >
               <div className="flex items-center gap-3">
