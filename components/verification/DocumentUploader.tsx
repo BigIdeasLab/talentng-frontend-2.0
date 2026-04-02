@@ -185,8 +185,12 @@ export function DocumentUploader({
             >
               <AlertCircle className="h-4 w-4 text-red-600 flex-shrink-0 mt-0.5" />
               <div className="flex-1 min-w-0">
-                <p className="font-inter-tight text-[13px] font-medium text-red-800 break-words">{filename}</p>
-                <p className="font-inter-tight text-[11px] text-red-700">{error}</p>
+                <p className="font-inter-tight text-[13px] font-medium text-red-800 break-words">
+                  {filename}
+                </p>
+                <p className="font-inter-tight text-[11px] text-red-700">
+                  {error}
+                </p>
               </div>
             </div>
           ))}
@@ -239,7 +243,9 @@ export function DocumentUploader({
                 className="h-5 w-5 text-blue-600 animate-spin flex-shrink-0"
                 aria-hidden="true"
               />
-              <p className="font-inter-tight text-[13px] text-blue-900 break-words">Uploading {filename}...</p>
+              <p className="font-inter-tight text-[13px] text-blue-900 break-words">
+                Uploading {filename}...
+              </p>
             </div>
           ))}
         </div>
