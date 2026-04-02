@@ -99,6 +99,7 @@ export async function getOpportunitiesData(params?: {
       location: opp.location,
       experienceLevel: opp.experienceLevel,
       duration: opp.duration,
+      verificationStatus: opp.verificationStatus, // ✅ Added: Pass through verification status from backend
     }));
 
     return {

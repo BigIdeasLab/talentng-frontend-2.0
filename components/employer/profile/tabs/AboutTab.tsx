@@ -1,6 +1,7 @@
 "use client";
 
 import { useVerificationStatus } from "@/hooks/useBusinessVerification";
+import { VerifiedBadgeIcon } from "@/components/verification/VerifiedBadgeIcon";
 
 interface AboutTabProps {
   companyName?: string;
@@ -30,13 +31,10 @@ export function AboutTab({
       <div className="flex flex-col gap-4">
         <h2 className="text-lg font-semibold text-black font-inter-tight flex items-center gap-2">
           About {companyName}
-          {isVerified && (
-            <img
-              src="/verify.png"
-              alt="Verified"
-              className="w-5 h-5 flex-shrink-0"
-            />
-          )}
+          <VerifiedBadgeIcon 
+            verificationStatus={verificationStatus?.status} 
+            size="lg" 
+          />
         </h2>
         <div className="flex flex-col gap-3 text-[13px] font-normal text-black font-inter-tight leading-[22px]">
           {bio ? (

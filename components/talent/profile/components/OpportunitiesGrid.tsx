@@ -13,6 +13,7 @@ import {
 import { useProfile } from "@/hooks";
 import { ApplicationModal } from "@/components/talent/opportunities/application-modal";
 import type { DisplayOpportunity } from "@/components/talent/opportunities/types";
+import { VerifiedBadgeIcon } from "@/components/verification/VerifiedBadgeIcon";
 
 type OpportunityType = "internship" | "job_listing";
 
@@ -183,9 +184,10 @@ export function OpportunitiesGrid({
                           <h3 className="text-[13px] font-medium leading-normal font-inter-tight text-black">
                             {opportunity.companyName}
                           </h3>
-                          {opportunity.verificationStatus === 'approved' && (
-                            <img src="/verify.png" alt="Verified" className="w-5 h-5 flex-shrink-0" />
-                          )}
+                          <VerifiedBadgeIcon
+                            verificationStatus={opportunity.verificationStatus}
+                            size="sm"
+                          />
                         </div>
                         <span className="text-[12px] font-light leading-normal font-inter-tight text-[#525866]">
                           {opportunity.date}

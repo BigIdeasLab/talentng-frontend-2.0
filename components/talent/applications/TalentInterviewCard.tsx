@@ -13,6 +13,7 @@ import {
 import Link from "next/link";
 import type { ApplicationInterview } from "@/lib/api/applications/types";
 import { copyToClipboard } from "@/lib/utils/clipboard";
+import { VerifiedBadgeIcon } from "@/components/verification/VerifiedBadgeIcon";
 
 interface TalentInterviewCardProps {
   interview: ApplicationInterview;
@@ -21,6 +22,7 @@ interface TalentInterviewCardProps {
   opportunityId: string;
   companyLogo?: string | null;
   opportunityType?: string | null;
+  verificationStatus?: "pending" | "approved" | "rejected" | null;
 }
 
 const STATUS_CONFIG: Record<
@@ -60,6 +62,7 @@ export function TalentInterviewCard({
   opportunityId,
   companyLogo,
   opportunityType,
+  verificationStatus,
 }: TalentInterviewCardProps) {
   const [copied, setCopied] = useState(false);
   const status = STATUS_CONFIG[interview.status] || STATUS_CONFIG.scheduled;
@@ -114,9 +117,15 @@ export function TalentInterviewCard({
               <h3 className="text-[14px] font-medium font-inter-tight text-black truncate">
                 {opportunityTitle}
               </h3>
-              <p className="text-[12px] text-[#525866] font-inter-tight truncate">
-                {company} • {opportunityType || "Interview"}
-              </p>
+              <div className="flex items-center gap-1.5">
+                <p className="text-[12px] text-[#525866] font-inter-tight truncate">
+                  {company} • {opportunityType || "Interview"}
+                </p>
+                <VerifiedBadgeIcon 
+                  verificationStatus={verificationStatus} 
+                  size="sm" 
+                />
+              </div>
             </div>
           </div>
           <div

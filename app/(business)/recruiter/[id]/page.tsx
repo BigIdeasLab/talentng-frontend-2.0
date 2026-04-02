@@ -14,7 +14,7 @@ import { PageLoadingState } from "@/lib/page-utils";
 import { OpportunityCard } from "@/components/talent/opportunities/opportunity-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import type { DisplayOpportunity } from "@/components/talent/opportunities/types";
-import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
+import { VerifiedBadgeIcon } from "@/components/verification/VerifiedBadgeIcon";
 
 type TabType = "about" | "opportunities";
 
@@ -45,6 +45,12 @@ export default function RecruiterProfilePage() {
       setError(null);
       try {
         const data = await getRecruiterProfileByUserId(userId);
+        console.log("RecruiterProfilePage - Profile data:", {
+          userId,
+          company: data.company,
+          verificationStatus: data.verificationStatus,
+          fullProfile: data,
+        });
         setProfile(data);
       } catch (err) {
         if (err instanceof Error && err.message.includes("404")) {
@@ -100,6 +106,7 @@ export default function RecruiterProfilePage() {
               | undefined,
             experienceLevel: opp.experienceLevel,
             duration: opp.duration,
+            verificationStatus: opp.verificationStatus,
           }),
         );
         setOpportunities(mapped);
@@ -225,9 +232,10 @@ export default function RecruiterProfilePage() {
                     <h2 className="text-[16px] font-medium text-black font-inter-tight">
                       {profile.company || profile.username}
                     </h2>
-                    {profile.verificationStatus === 'approved' && (
-                      <img src="/verify.png" alt="Verified" className="w-5 h-5 flex-shrink-0" />
-                    )}
+                    <VerifiedBadgeIcon 
+                      verificationStatus={profile.verificationStatus} 
+                      size="lg" 
+                    />
                   </div>
                   {profile.industry && (
                     <p className="text-[13px] font-light text-[rgba(0,0,0,0.30)] font-inter-tight">

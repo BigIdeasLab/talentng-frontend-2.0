@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useVerificationStatus } from "@/hooks/useBusinessVerification";
+import { VerifiedBadgeIcon } from "@/components/verification/VerifiedBadgeIcon";
 
 interface EmployerProfilePanelProps {
   company?: {
@@ -133,13 +134,10 @@ export function EmployerProfilePanel({
               <h2 className="text-[16px] font-medium text-black font-inter-tight">
                 {company?.name || "Company Name"}
               </h2>
-              {isVerified && (
-                <img
-                  src="/verify.png"
-                  alt="Verified"
-                  className="w-5 h-5 flex-shrink-0"
-                />
-              )}
+              <VerifiedBadgeIcon 
+                verificationStatus={verificationStatus?.status} 
+                size="lg" 
+              />
             </div>
             {company?.tagline && (
               <p className="text-[13px] font-light text-[rgba(0,0,0,0.30)] font-inter-tight">

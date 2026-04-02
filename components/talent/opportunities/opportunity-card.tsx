@@ -14,6 +14,7 @@ import {
 import { useProfile } from "@/hooks";
 import { useRoleColors } from "@/lib/theme/RoleColorContext";
 import { SuccessModal } from "@/components/ui/success-modal";
+import { VerifiedBadgeIcon } from "@/components/verification/VerifiedBadgeIcon";
 
 interface OpportunityCardProps {
   opportunity: DisplayOpportunity;
@@ -113,8 +114,14 @@ export function OpportunityCard({
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#8463FF] to-[#5C30FF] flex-shrink-0" />
               )}
               <div className="flex flex-col items-start">
-                <div className="text-[13px] font-semibold font-inter-tight text-black">
-                  {opportunity.companyName}
+                <div className="flex items-center gap-1.5">
+                  <div className="text-[13px] font-semibold font-inter-tight text-black">
+                    {opportunity.companyName}
+                  </div>
+                  <VerifiedBadgeIcon
+                    verificationStatus={opportunity.verificationStatus}
+                    size="sm"
+                  />
                 </div>
                 <div className="text-[11px] font-normal font-inter-tight text-black/30">
                   {opportunity.date}

@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { MapPin, Calendar } from "lucide-react";
 import Link from "next/link";
 import type { Application } from "@/lib/api/applications/types";
+import { VerifiedBadgeIcon } from "@/components/verification/VerifiedBadgeIcon";
 
 interface JobApplicationCardProps {
   application: Application;
@@ -59,9 +60,15 @@ export function JobApplicationCard({ application }: JobApplicationCardProps) {
               <h3 className="text-[14px] font-medium font-inter-tight text-black truncate">
                 {opportunity.title}
               </h3>
-              <p className="text-[12px] text-[#525866] font-inter-tight truncate">
-                {opportunity.company}
-              </p>
+              <div className="flex items-center gap-1.5">
+                <p className="text-[12px] text-[#525866] font-inter-tight truncate">
+                  {opportunity.company}
+                </p>
+                <VerifiedBadgeIcon 
+                  verificationStatus={opportunity.verificationStatus} 
+                  size="sm" 
+                />
+              </div>
             </div>
           </div>
           <div

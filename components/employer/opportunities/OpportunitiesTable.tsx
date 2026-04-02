@@ -15,6 +15,7 @@ import {
   useReopenOpportunity,
 } from "@/hooks/useRecruiterOpportunities";
 import type { OpportunityCard as OpportunityType } from "@/lib/types";
+import { VerifiedBadgeIcon } from "@/components/verification/VerifiedBadgeIcon";
 
 interface OpportunitiesTableProps {
   opportunities: OpportunityType[];
@@ -237,9 +238,10 @@ export function OpportunitiesTable({
               <div className="font-inter-tight text-[12px] font-light text-[#525866]">
                 {opportunity.companyName}
               </div>
-              {opportunity.verificationStatus === 'approved' && (
-                <img src="/verify.png" alt="Verified" className="w-5 h-5 flex-shrink-0" />
-              )}
+              <VerifiedBadgeIcon
+                verificationStatus={opportunity.verificationStatus}
+                size="sm"
+              />
             </div>
           </div>
         </div>
@@ -356,9 +358,10 @@ export function OpportunitiesTable({
             <div className="font-inter-tight text-[12px] font-light text-[#525866]">
               {opportunity.companyName}
             </div>
-            {opportunity.verificationStatus === 'approved' && (
-              <img src="/verify.png" alt="Verified" className="w-5 h-5 flex-shrink-0" />
-            )}
+            <VerifiedBadgeIcon
+              verificationStatus={opportunity.verificationStatus}
+              size="sm"
+            />
           </div>
         </div>
         <div

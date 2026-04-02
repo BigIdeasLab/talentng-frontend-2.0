@@ -14,6 +14,7 @@ import { useRoleColors } from "@/lib/theme/RoleColorContext";
 import { useProfile, useToast } from "@/hooks";
 import { ApplicationModal } from "@/components/talent/opportunities/application-modal";
 import { SimilarOpportunitiesSection } from "./SimilarOpportunitiesSection";
+import { VerifiedBadgeIcon } from "@/components/verification/VerifiedBadgeIcon";
 import type { DisplayOpportunity } from "@/components/talent/opportunities/types";
 import type { Opportunity } from "@/lib/api/opportunities/types";
 
@@ -295,6 +296,10 @@ export function OpportunityDetails({
                     >
                       {opportunity.company}
                     </Link>
+                    <VerifiedBadgeIcon
+                      verificationStatus={opportunity.verificationStatus}
+                      size="sm"
+                    />
                     <span className="font-inter-tight text-[15px] font-normal text-black/30">
                       •
                     </span>
@@ -905,9 +910,15 @@ export function OpportunityDetails({
                   className="w-8 h-8 rounded-full object-cover"
                 />
                 <div className="flex flex-col gap-1">
-                  <span className="font-inter-tight text-[12px] font-medium text-black leading-normal">
-                    {opportunity.company}
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-inter-tight text-[12px] font-medium text-black leading-normal">
+                      {opportunity.company}
+                    </span>
+                    <VerifiedBadgeIcon
+                      verificationStatus={opportunity.verificationStatus}
+                      size="sm"
+                    />
+                  </div>
                   <span className="font-inter-tight text-[11px] font-light text-[#525866] leading-normal capitalize">
                     {opportunity.category || "Company"}
                   </span>

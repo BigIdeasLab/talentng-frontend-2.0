@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { OpportunityCardProps } from "@/lib/types";
 import { TYPE_CONFIG } from "@/lib/types/opportunities";
+import { VerifiedBadgeIcon } from "@/components/verification/VerifiedBadgeIcon";
 
 // Opportunity Status Color Configuration
 const OPPORTUNITY_STATUS_CONFIG: Record<
@@ -432,9 +433,10 @@ export function OpportunityCard({
                 <div className="text-xs font-medium font-inter-tight text-black">
                   {opportunity.companyName}
                 </div>
-                {opportunity.verificationStatus === 'approved' && (
-                  <img src="/verify.png" alt="Verified" className="w-5 h-5 flex-shrink-0" />
-                )}
+                <VerifiedBadgeIcon
+                  verificationStatus={opportunity.verificationStatus}
+                  size="sm"
+                />
               </div>
               <div className="flex items-center gap-1.5 text-[11px] font-light font-inter-tight text-[#525866]">
                 <span>{opportunity.date}</span>

@@ -397,6 +397,7 @@ function TalentUpcoming() {
                 title: item.position || item.title,
                 company: item.company || item.subtitle,
                 logo: item.logo || item.image,
+                verificationStatus: item.verificationStatus,
                 // The API doesn't include opportunity type in the Interview object
                 // This would need to be added to the backend API response
                 type: null,
@@ -588,6 +589,7 @@ function TalentUpcoming() {
                       opportunityId={application.opportunityId}
                       companyLogo={application.opportunity.logo}
                       opportunityType={application.opportunity.type}
+                      verificationStatus={application.opportunity.verificationStatus}
                     />
                   );
                 }
