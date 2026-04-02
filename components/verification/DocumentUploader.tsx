@@ -138,7 +138,7 @@ export function DocumentUploader({
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={cn(
-          "relative border-2 border-dashed rounded-lg p-6 transition-colors",
+          "relative border-2 border-dashed rounded-lg p-4 md:p-6 transition-colors",
           isDragging
             ? "border-blue-500 bg-blue-50"
             : "border-gray-300 bg-gray-50",
@@ -165,10 +165,10 @@ export function DocumentUploader({
           )}
         >
           <Upload className="h-10 w-10 text-gray-400 mb-3" aria-hidden="true" />
-          <p className="text-sm font-medium text-gray-700 mb-1">
+          <p className="font-inter-tight text-[13px] font-medium text-gray-700 mb-1 text-center">
             Drop files here or click to upload
           </p>
-          <p className="text-xs text-gray-500">
+          <p className="font-inter-tight text-[11px] text-gray-500 text-center">
             PDF, JPG, or PNG up to {maxSizeMB}MB (max {maxFiles} files)
           </p>
         </label>
@@ -185,8 +185,8 @@ export function DocumentUploader({
             >
               <AlertCircle className="h-4 w-4 text-red-600 flex-shrink-0 mt-0.5" />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-red-800">{filename}</p>
-                <p className="text-xs text-red-700">{error}</p>
+                <p className="font-inter-tight text-[13px] font-medium text-red-800 break-words">{filename}</p>
+                <p className="font-inter-tight text-[11px] text-red-700">{error}</p>
               </div>
             </div>
           ))}
@@ -196,7 +196,7 @@ export function DocumentUploader({
       {/* Uploaded Documents */}
       {documents.length > 0 && (
         <div className="space-y-2">
-          <h4 className="text-sm font-medium text-gray-700">
+          <h4 className="font-inter-tight text-[13px] font-medium text-gray-700">
             Uploaded Documents ({documents.length}/{maxFiles})
           </h4>
           <div className="space-y-2">
@@ -210,13 +210,13 @@ export function DocumentUploader({
                   aria-hidden="true"
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
+                  <p className="font-inter-tight text-[13px] font-medium text-gray-900 truncate">
                     {doc.filename}
                   </p>
                 </div>
                 <button
                   onClick={() => handleRemove(doc.documentId)}
-                  className="flex-shrink-0 text-gray-400 hover:text-red-600 transition-colors"
+                  className="flex-shrink-0 text-gray-400 hover:text-red-600 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
                   aria-label={`Remove ${doc.filename}`}
                 >
                   <X className="h-5 w-5" />
@@ -239,7 +239,7 @@ export function DocumentUploader({
                 className="h-5 w-5 text-blue-600 animate-spin flex-shrink-0"
                 aria-hidden="true"
               />
-              <p className="text-sm text-blue-900">Uploading {filename}...</p>
+              <p className="font-inter-tight text-[13px] text-blue-900 break-words">Uploading {filename}...</p>
             </div>
           ))}
         </div>

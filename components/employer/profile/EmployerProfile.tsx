@@ -62,7 +62,7 @@ export function EmployerProfile({
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user: _user } = useAuth();
-  
+
   // Get tab from URL query parameter, default to "about"
   const tabFromUrl = searchParams.get("tab");
   const [activeTab, setActiveTab] = useState(tabFromUrl || "about");
