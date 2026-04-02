@@ -31,6 +31,7 @@ interface MobileNavigationProps {
   notificationCount?: number;
   upcomingCount?: number;
   applicantsCount?: number;
+  ticketCount?: number;
   onClose?: () => void;
 }
 
@@ -167,12 +168,13 @@ const getMentorMenuItems = (
   },
 ];
 
-const otherItems: MenuItem[] = [
+const getOtherItems = (ticketCount?: number): MenuItem[] => [
   {
     id: "support",
     label: "Support",
     icon: <Headphones className="w-5 h-5" strokeWidth={1.25} />,
     href: "/support",
+    badge: ticketCount,
   },
   {
     id: "settings",
@@ -193,6 +195,7 @@ export function MobileNavigation({
   notificationCount = 0,
   upcomingCount = 0,
   applicantsCount = 0,
+  ticketCount = 0,
   onClose,
 }: MobileNavigationProps) {
   const pathname = usePathname();
@@ -203,6 +206,8 @@ export function MobileNavigation({
       : activeRole === "mentor"
         ? getMentorMenuItems(notificationCount, upcomingCount)
         : getTalentMenuItems(notificationCount, upcomingCount);
+
+  const otherItems = getOtherItems(ticketCount);
 
   const roleColors =
     activeRole === "recruiter"
@@ -351,6 +356,11 @@ export function MobileNavigation({
                     <span className="flex-1 text-sm font-medium text-gray-900">
                       {item.label}
                     </span>
+                    {item.badge !== undefined && item.badge > 0 && (
+                      <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-red-600 text-xs font-semibold text-white">
+                        {item.badge}
+                      </span>
+                    )}
                   </button>
                 );
               }
@@ -384,6 +394,11 @@ export function MobileNavigation({
                     <span className="flex-1 text-sm font-medium text-gray-900">
                       {item.label}
                     </span>
+                    {item.badge !== undefined && item.badge > 0 && (
+                      <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-red-600 text-xs font-semibold text-white">
+                        {item.badge}
+                      </span>
+                    )}
                   </Link>
                 </PrefetchOnInteraction>
               );

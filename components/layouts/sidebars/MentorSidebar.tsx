@@ -17,6 +17,7 @@ interface SidebarProps {
   onNotificationClick?: () => void;
   notificationCount?: number;
   upcomingCount?: number;
+  ticketCount?: number;
 }
 
 interface MenuItem {
@@ -351,8 +352,8 @@ const menuItems: MenuItem[] = [
   },
 ];
 
-const otherItems: Omit<MenuItem, "badge">[] = [
-  { id: "support", label: "Support", icon: <SupportIcon />, href: "/support" },
+const getOtherItems = (ticketCount?: number): MenuItem[] => [
+  { id: "support", label: "Support", icon: <SupportIcon />, href: "/support", badge: ticketCount },
   {
     id: "settings",
     label: "Settings",
@@ -414,9 +415,11 @@ export function MentorSidebar({
   onNotificationClick,
   notificationCount = 0,
   upcomingCount = 0,
+  ticketCount = 0,
 }: SidebarProps) {
   const pathname = usePathname();
   const menuItems = getMenuItems(notificationCount, upcomingCount);
+  const otherItems = getOtherItems(ticketCount);
 
   const handleNotificationClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -529,6 +532,13 @@ export function MentorSidebar({
                 <span className="text-[13px] font-inter-tight text-left flex-1 md:hidden lg:inline">
                   {item.label}
                 </span>
+                {item.badge !== undefined && item.badge > 0 && (
+                  <div className="flex items-center justify-center w-5 h-5 rounded-full bg-[#E63C23] flex-shrink-0 md:absolute md:top-1 md:right-1 lg:static">
+                    <span className="text-[11px] font-semibold text-white font-inter-tight">
+                      {item.badge}
+                    </span>
+                  </div>
+                )}
               </MenuComponent>
             );
           })}

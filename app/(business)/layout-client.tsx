@@ -6,6 +6,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { useProfileData } from "@/hooks/useProfileData";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useNotificationSocket } from "@/hooks/useNotificationSocket";
+import { useTicketCount } from "@/hooks/useSupport";
 import { TalentSidebar } from "@/components/layouts/sidebars/TalentSidebar";
 import { RecruiterSidebar } from "@/components/layouts/sidebars/RecruiterSidebar";
 import { MentorSidebar } from "@/components/layouts/sidebars/MentorSidebar";
@@ -37,6 +38,10 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   const { activeRole, isLoading, roleSwitchRequired, triggerRoleSwitch } =
     useProfile();
   const { user } = useAuth();
+
+  // Fetch active ticket count
+  const { data: ticketCountData } = useTicketCount();
+  const ticketCount = ticketCountData?.count || 0;
 
   // Map active role to recipient role for notifications
   const getRecipientRole = (
@@ -162,6 +167,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
             notificationCount={totalUnreadCount}
             upcomingCount={recruiterUpcomingCount}
             applicantsCount={recruiterApplicantsCount}
+            ticketCount={ticketCount}
           />
         );
       case "mentor":
@@ -172,6 +178,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
             onNotificationClick={() => setIsNotificationsOpen(true)}
             notificationCount={totalUnreadCount}
             upcomingCount={mentorUpcomingCount}
+            ticketCount={ticketCount}
           />
         );
       case "talent":
@@ -183,6 +190,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
             onNotificationClick={() => setIsNotificationsOpen(true)}
             notificationCount={totalUnreadCount}
             upcomingCount={talentUpcomingCount}
+            ticketCount={ticketCount}
           />
         );
     }
@@ -243,6 +251,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
                   : talentUpcomingCount
             }
             applicantsCount={recruiterApplicantsCount}
+            ticketCount={ticketCount}
             onClose={() => setIsMobileDrawerOpen(false)}
           />
         )}
