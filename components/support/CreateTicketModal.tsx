@@ -47,9 +47,7 @@ export function CreateTicketModal({ isOpen, onClose }: CreateTicketModalProps) {
       return response;
     },
     onSuccess: (data: any) => {
-      toast.success(
-        `Ticket created successfully! Ticket ID: ${data.ticketId}`,
-      );
+      toast.success(`Ticket created successfully! Ticket ID: ${data.ticketId}`);
       setFormData({ subject: "", message: "", category: "other" });
       onClose();
       // Redirect to ticket detail page

@@ -243,9 +243,7 @@ function ContactForm() {
       return response;
     },
     onSuccess: (data: any) => {
-      toast.success(
-        `Ticket created successfully! Ticket ID: ${data.ticketId}`,
-      );
+      toast.success(`Ticket created successfully! Ticket ID: ${data.ticketId}`);
       setFormData({ subject: "", message: "", category: "other" });
       // Optionally redirect to ticket detail page
       setTimeout(() => {
@@ -394,17 +392,12 @@ export default function SupportPage() {
             </p>
           </div>
           <Link href="/support/tickets" className="relative">
-            <Button
-              variant="outline"
-              className="text-[13px] font-inter-tight"
-            >
+            <Button variant="outline" className="text-[13px] font-inter-tight">
               <FileText className="w-4 h-4 mr-2" />
               My Tickets
             </Button>
             {ticketCount > 0 && (
-              <span
-                className="absolute -top-2 -right-2 min-w-[20px] h-[20px] rounded-full bg-[#E63C23] text-white text-[10px] font-medium font-inter-tight flex items-center justify-center px-1.5"
-              >
+              <span className="absolute -top-2 -right-2 min-w-[20px] h-[20px] rounded-full bg-[#E63C23] text-white text-[10px] font-medium font-inter-tight flex items-center justify-center px-1.5">
                 {ticketCount}
               </span>
             )}

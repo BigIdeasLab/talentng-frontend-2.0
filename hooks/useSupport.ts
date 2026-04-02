@@ -1,9 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supportService } from "@/lib/api/support";
-import type {
-  CreateTicketDto,
-  TicketFilters,
-} from "@/lib/api/support/types";
+import type { CreateTicketDto, TicketFilters } from "@/lib/api/support/types";
 
 /**
  * Hook to fetch user's support tickets
@@ -48,8 +45,7 @@ export const useAddReply = (ticketId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (message: string) =>
-      supportService.addReply(ticketId, message),
+    mutationFn: (message: string) => supportService.addReply(ticketId, message),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ticket", ticketId] });
       queryClient.invalidateQueries({ queryKey: ["tickets"] });

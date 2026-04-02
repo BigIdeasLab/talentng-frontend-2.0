@@ -321,8 +321,7 @@ const guideContent: Record<
         },
         {
           title: "Payout Settings",
-          description:
-            "Configure your payment details in Settings > Payouts.",
+          description: "Configure your payment details in Settings > Payouts.",
         },
       ],
     },
@@ -358,10 +357,10 @@ export function HelpGuideModal({
         </h2>
 
         {/* Steps */}
-        <div 
+        <div
           className="space-y-4 max-h-[60vh] overflow-y-auto pr-2"
           style={{
-            scrollbarWidth: 'thin',
+            scrollbarWidth: "thin",
             scrollbarColor: `${roleColors.primary}30 transparent`,
           }}
         >
@@ -385,7 +384,7 @@ export function HelpGuideModal({
               key={index}
               className="flex gap-3 p-4 bg-[#F5F5F5] rounded-[12px]"
             >
-              <div 
+              <div
                 className="flex-shrink-0 w-6 h-6 rounded-full text-white flex items-center justify-center text-[12px] font-medium font-inter-tight mt-0.5"
                 style={{ backgroundColor: roleColors.primary }}
               >

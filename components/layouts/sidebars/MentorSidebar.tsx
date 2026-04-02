@@ -353,7 +353,13 @@ const menuItems: MenuItem[] = [
 ];
 
 const getOtherItems = (ticketCount?: number): MenuItem[] => [
-  { id: "support", label: "Support", icon: <SupportIcon />, href: "/support", badge: ticketCount },
+  {
+    id: "support",
+    label: "Support",
+    icon: <SupportIcon />,
+    href: "/support",
+    badge: ticketCount,
+  },
   {
     id: "settings",
     label: "Settings",
