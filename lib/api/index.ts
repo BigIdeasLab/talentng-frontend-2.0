@@ -323,3 +323,35 @@ export * from "./notifications";
 export * from "./learning-resources";
 export * from "./users";
 export * from "./talent";
+
+// Export public APIs with specific exports to avoid conflicts
+export {
+  browseTalents,
+  getTalentProfile as getPublicTalentProfile,
+  type TalentPublicProfile,
+  type BrowseTalentsParams,
+} from "./public/talents";
+
+export {
+  browseRecruiters,
+  getRecruiterProfile as getPublicRecruiterProfile,
+  type RecruiterPublicProfile,
+  type BrowseRecruitersParams,
+} from "./public/recruiters";
+
+export {
+  browseMentors,
+  getMentorProfile as getPublicMentorProfile,
+  getMentorAvailability as getPublicMentorAvailability,
+  type MentorPublicProfile,
+  type MentorReview as PublicMentorReview,
+  type MentorAvailability as PublicMentorAvailability,
+  type BrowseMentorsParams,
+} from "./public/mentors";
+
+export {
+  browseOpportunities,
+  getOpportunityProfile as getPublicOpportunityProfile,
+  type OpportunityPublicProfile,
+  type BrowseOpportunitiesParams,
+} from "./public/opportunities";

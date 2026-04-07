@@ -54,6 +54,7 @@ export { useTokenRefresh } from "./useTokenRefresh";
 export {
   useCurrentProfile,
   useTalentProfile,
+  useTalentProfileById,
   useDashboardStats,
   useUpdateProfile,
   useUpdateProfileImage,

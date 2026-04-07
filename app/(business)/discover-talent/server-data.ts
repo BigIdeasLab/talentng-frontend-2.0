@@ -2,17 +2,18 @@
  * Server-side data fetching for discover talent page
  * This runs on the server and passes data to client components
  *
- * Uses centralized talent API from @/lib/api/talent
+ * Uses recruiter-specific talent API endpoints
  */
 
-import { listTalentProfiles, type TalentProfile } from "@/lib/api/talent";
+import apiClient from "@/lib/api";
+import type { TalentProfile } from "@/lib/api/talent/types";
 
 /**
  * TalentData - UI representation of TalentProfile
  * Search fields: fullName, headline, skills, location
  */
 export interface TalentData {
-  id: number;
+  id: string; // Changed from number to string to match actual talent profile ID
   userId: string;
   fullName: string;
   headline: string;
@@ -28,7 +29,7 @@ export interface TalentData {
   createdAt: string;
 }
 
-const mapTalentToUI = (profile: TalentProfile, index: number): TalentData => {
+const mapTalentToUI = (profile: TalentProfile): TalentData => {
   const gallery =
     profile.gallery
       ?.flatMap((item: any) => {
@@ -47,7 +48,7 @@ const mapTalentToUI = (profile: TalentProfile, index: number): TalentData => {
       .filter(Boolean) || [];
 
   return {
-    id: index + 1,
+    id: profile.id, // Use actual talent profile ID instead of artificial index
     userId: profile.userId,
     fullName: profile.fullName || "Talent",
     headline: profile.headline || profile.category || "Professional",
@@ -128,17 +129,68 @@ export async function getDiscoverTalentData(
     filters.limit = limit;
     filters.offset = offset;
 
-    const response = await listTalentProfiles(filters);
+    // Use recruiter-specific endpoint
+    const queryParams = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        queryParams.append(key, String(value));
+      }
+    });
 
-    const talents = response.data.map(mapTalentToUI);
+    const query = queryParams.toString();
+    const endpoint = query
+      ? `/recruiter/talents?${query}`
+      : "/recruiter/talents";
+
+    const response = await apiClient<any>(endpoint);
+
+    // Handle different response structures
+    let talentsData: TalentProfile[];
+    let paginationData: any = null;
+
+    if (Array.isArray(response)) {
+      // Response is directly an array
+      talentsData = response;
+    } else if (response.data && Array.isArray(response.data)) {
+      // Response has paginated structure like the public endpoint
+      talentsData = response.data;
+      paginationData = response.pagination;
+    } else {
+      // Unexpected response structure
+      console.error("Unexpected response structure:", response);
+      throw new Error(
+        "Invalid response format from recruiter talents endpoint",
+      );
+    }
+
+    const talents = talentsData.map(mapTalentToUI);
+
+    // Use provided pagination or create our own
+    const pagination = paginationData || {
+      total: talents.length,
+      currentPage: Math.floor(offset / limit) + 1,
+      totalPages: Math.ceil(talents.length / limit),
+      hasNextPage: offset + limit < talents.length,
+      hasPreviousPage: offset > 0,
+    };
 
     return {
       talents,
-      pagination: response.pagination,
+      pagination,
       error: null,
     };
   } catch (error) {
     console.error("Error loading talents on server:", error);
+
+    // Log additional details for debugging
+    if (error instanceof Error) {
+      console.error("Error details:", {
+        message: error.message,
+        stack: error.stack,
+        endpoint: `/recruiter/talents`,
+      });
+    }
+
     return {
       talents: [],
       pagination: null,

@@ -14,7 +14,7 @@ export function TalentCard({ talent }: TalentCardProps) {
   const router = useRouter();
 
   const handleViewProfile = () => {
-    router.push(`/discover-talent/${talent.userId}`);
+    router.push(`/discover-talent/${talent.id}`); // Use talent profile ID for recruiter endpoint
   };
 
   const GALLERY_COUNT = 4;

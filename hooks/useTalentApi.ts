@@ -10,6 +10,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getCurrentProfile,
   getTalentProfileByUserId,
+  getTalentProfileById,
   updateProfile,
   updateProfileImage,
   updateCoverImage,
@@ -53,6 +54,23 @@ export function useTalentProfile(userId: string) {
   return useQuery({
     queryKey: ["talent-profile", userId],
     queryFn: () => getTalentProfileByUserId(userId),
+    staleTime: 30 * 1000, // 30 seconds instead of 5 minutes
+    retry: (failureCount, error: any) => {
+      // Don't retry on 404 (profile not found)
+      if (error?.status === 404) {
+        return false;
+      }
+      // Retry up to 2 times for other errors
+      return failureCount < 2;
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+  });
+}
+
+export function useTalentProfileById(talentId: string) {
+  return useQuery({
+    queryKey: ["talent-profile-by-id", talentId],
+    queryFn: () => getTalentProfileById(talentId),
     staleTime: 30 * 1000, // 30 seconds instead of 5 minutes
     retry: (failureCount, error: any) => {
       // Don't retry on 404 (profile not found)

@@ -21,7 +21,7 @@ vi.mock("./TalentCard", () => ({
 
 const mockTalents: TalentData[] = [
   {
-    id: 1,
+    id: "talent-1",
     userId: "user-1",
     fullName: "John Doe",
     headline: "Senior Designer",
@@ -37,7 +37,7 @@ const mockTalents: TalentData[] = [
     createdAt: "2024-01-01T00:00:00Z",
   },
   {
-    id: 2,
+    id: "talent-2",
     userId: "user-2",
     fullName: "Jane Smith",
     headline: "Product Designer",
@@ -70,11 +70,11 @@ describe("TalentGrid", () => {
     const { container } = render(<TalentGrid talents={mockTalents} />);
 
     const card1Elements = container.querySelectorAll(
-      '[data-testid="talent-card-1"]',
+      '[data-testid="talent-card-talent-1"]',
     );
     expect(card1Elements.length).toBeGreaterThan(0);
     const card2Elements = container.querySelectorAll(
-      '[data-testid="talent-card-2"]',
+      '[data-testid="talent-card-talent-2"]',
     );
     expect(card2Elements.length).toBeGreaterThan(0);
   });

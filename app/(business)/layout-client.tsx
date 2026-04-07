@@ -66,6 +66,8 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   } = useNotifications("general");
 
   // Subscribe to role-specific notification updates
+  // Temporarily disabled - uncomment when notifications API is available
+  /*
   useNotificationSocket({
     recipientRole: activeRole ? getRecipientRole(activeRole) : "talent",
     onCountUpdate: (unread) => {
@@ -100,6 +102,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
     },
     enabled: !!activeRole,
   });
+  */
 
   // Fetch initial upcoming counts based on active role
   useEffect(() => {

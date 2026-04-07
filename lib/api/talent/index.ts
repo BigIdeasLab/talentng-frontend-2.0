@@ -232,6 +232,16 @@ export async function getTalentProfileByUserId(
 }
 
 /**
+ * 15. Get Talent Profile by ID (Recruiter)
+ * GET /recruiter/talents/:id
+ */
+export async function getTalentProfileById(
+  talentId: string,
+): Promise<TalentProfile> {
+  return apiClient<TalentProfile>(`/recruiter/talents/${talentId}`);
+}
+
+/**
  * Helper: Update profile image URL only (without file upload)
  */
 export async function updateProfileImageUrl(

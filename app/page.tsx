@@ -133,7 +133,13 @@ function ChevronDownIcon({ className = "" }: { className?: string }) {
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
-const navLinks = ["Talents", "Recruiters", "Mentors", "Opportunities", "FAQ"];
+const navLinks = [
+  { label: "Talents", href: "/talents" },
+  { label: "Recruiters", href: "/recruiters" },
+  { label: "Mentors", href: "/mentors" },
+  { label: "Opportunities", href: "/opportunities-public" },
+  { label: "FAQ", href: "/#faq" },
+];
 
 const painPoints = [
   {
@@ -712,11 +718,11 @@ export default function LandingPage() {
           <nav className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <Link
-                key={link}
-                href="#"
+                key={link.label}
+                href={link.href}
                 className="text-[15px] text-gray-800 hover:text-[#5C30FF] transition-colors"
               >
-                {link}
+                {link.label}
               </Link>
             ))}
           </nav>
@@ -768,12 +774,12 @@ export default function LandingPage() {
           <div className="md:hidden bg-white border-t border-[#F0F0F0] px-4 py-4 flex flex-col gap-4">
             {navLinks.map((link) => (
               <Link
-                key={link}
-                href="#"
+                key={link.label}
+                href={link.href}
                 className="text-base text-gray-800 hover:text-[#5C30FF]"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                {link}
+                {link.label}
               </Link>
             ))}
             <Link
@@ -1017,7 +1023,10 @@ export default function LandingPage() {
       </section>
 
       {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
-      <section className="bg-white py-16 md:py-24 border-t border-[#F0F0F0]">
+      <section
+        id="faq"
+        className="bg-white py-16 md:py-24 border-t border-[#F0F0F0]"
+      >
         <div className="max-w-[1280px] mx-auto px-4 sm:px-8">
           <div className="flex flex-col md:flex-row gap-10 md:gap-16 items-start">
             {/* Left title */}

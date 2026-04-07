@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useTalentProfile } from "@/hooks";
+import { useTalentProfileById } from "@/hooks/useTalentApi";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { ProfileLoadingState } from "@/components/talent/profile/components/ProfileLoadingState";
 import { TalentProfileView as RecruiterTalentProfileView } from "@/components/employer/talent-profile/TalentProfileView";
@@ -9,10 +9,15 @@ import { TalentProfileView as PublicTalentProfileView } from "@/components/talen
 
 export default function TalentProfilePage() {
   const params = useParams();
-  const userId = params.userId as string;
+  const talentId = params.id as string;
   const isRecruiter = useRequireRole(["recruiter"]);
 
-  const { data: profile, isLoading, error, isError } = useTalentProfile(userId);
+  const {
+    data: profile,
+    isLoading,
+    error,
+    isError,
+  } = useTalentProfileById(talentId);
 
   // Show loading state while fetching or retrying
   if (isLoading) {
