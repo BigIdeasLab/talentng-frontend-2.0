@@ -1,12 +1,15 @@
 "use client";
 
-import { createRoleBasedPage } from "@/lib/page-utils";
+import { useRequireRole } from "@/hooks/useRequireRole";
+import { PageLoadingState } from "@/lib/page-utils";
 import { TalentMyApplications } from "@/components/talent/applications";
-import { RecruiterMyApplications } from "@/components/employer/applications/RecruiterMyApplications";
-import { MentorMyApplications } from "@/components/mentor/applications/MentorMyApplications";
 
-export default createRoleBasedPage({
-  talent: <TalentMyApplications />,
-  employer: <RecruiterMyApplications />,
-  mentor: <MentorMyApplications />,
-});
+export default function MyApplicationsPage() {
+  const hasAccess = useRequireRole(["talent"]);
+
+  if (!hasAccess) {
+    return <PageLoadingState message="Checking access..." />;
+  }
+
+  return <TalentMyApplications />;
+}

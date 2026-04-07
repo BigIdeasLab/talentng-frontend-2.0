@@ -36,7 +36,7 @@ export default function RecruiterProfilePage() {
   const [isLoadingOpportunities, setIsLoadingOpportunities] = useState(false);
   const [opportunityCount, setOpportunityCount] = useState<number>(0);
 
-  const hasAccess = useRequireRole(["talent", "recruiter", "mentor"]);
+  const hasAccess = useRequireRole(["talent"]);
 
   useEffect(() => {
     if (!hasAccess) return;

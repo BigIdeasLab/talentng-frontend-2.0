@@ -56,7 +56,7 @@ export default function MentorDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const hasAccess = useRequireRole(["talent", "mentor"]);
+  const hasAccess = useRequireRole(["talent"]);
 
   useEffect(() => {
     if (!hasAccess) return;
