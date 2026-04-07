@@ -62,7 +62,13 @@ export default function UpcomingPage() {
     }
   }, [activeRole, roleLoading, router]);
 
-  if (roleLoading || !activeRole || !hasAccess || activeRole === "mentor" || activeRole === "recruiter") {
+  if (
+    roleLoading ||
+    !activeRole ||
+    !hasAccess ||
+    activeRole === "mentor" ||
+    activeRole === "recruiter"
+  ) {
     return <LoadingScreen />;
   }
 
