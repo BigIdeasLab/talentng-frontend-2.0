@@ -25,19 +25,19 @@ This document provides comprehensive documentation for all public discovery endp
 
 #### Query Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `q` | string | No | Search by name, headline, bio, skills, or services |
-| `category` | string | No | Filter by category |
-| `headline` | string | No | Filter by headline (partial match) |
-| `skills` | string | No | Filter by skills (comma-separated) |
-| `stack` | string | No | Filter by tech stack/tools (comma-separated) |
-| `location` | string | No | Filter by location |
-| `availability` | string | No | Filter by availability (comma-separated) |
-| `isFeatured` | boolean | No | Filter featured talents |
-| `sort` | enum | No | Sort order: `newest`, `oldest` (default: `newest`) |
-| `limit` | number | No | Results per page (default: 20) |
-| `offset` | number | No | Results offset (default: 0) |
+| Parameter      | Type    | Required | Description                                        |
+| -------------- | ------- | -------- | -------------------------------------------------- |
+| `q`            | string  | No       | Search by name, headline, bio, skills, or services |
+| `category`     | string  | No       | Filter by category                                 |
+| `headline`     | string  | No       | Filter by headline (partial match)                 |
+| `skills`       | string  | No       | Filter by skills (comma-separated)                 |
+| `stack`        | string  | No       | Filter by tech stack/tools (comma-separated)       |
+| `location`     | string  | No       | Filter by location                                 |
+| `availability` | string  | No       | Filter by availability (comma-separated)           |
+| `isFeatured`   | boolean | No       | Filter featured talents                            |
+| `sort`         | enum    | No       | Sort order: `newest`, `oldest` (default: `newest`) |
+| `limit`        | number  | No       | Results per page (default: 20)                     |
+| `offset`       | number  | No       | Results offset (default: 0)                        |
 
 #### Example Request
 
@@ -81,9 +81,9 @@ GET /api/v1/talents?q=developer&skills=JavaScript,React&location=Lagos&limit=10
 
 #### Path Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `id` | string | Yes | Talent profile ID |
+| Parameter | Type   | Required | Description       |
+| --------- | ------ | -------- | ----------------- |
+| `id`      | string | Yes      | Talent profile ID |
 
 #### Example Request
 
@@ -113,20 +113,20 @@ Same structure as browse endpoint, but returns a single object instead of an arr
 
 #### Query Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `q` | string | No | Search by name, expertise, headline, or bio (with prioritized ranking) |
-| `expertise` | string | No | Filter by expertise (comma-separated) |
-| `industries` | string | No | Filter by industries (comma-separated) |
-| `location` | string | No | Filter by location |
-| `category` | string | No | Filter by category |
-| `languages` | string | No | Filter by languages (comma-separated) |
-| `stack` | string | No | Filter by tech stack (comma-separated) |
-| `isFeatured` | boolean | No | Filter featured mentors |
-| `sortBy` | enum | No | Sort field: `createdAt`, `avgRating`, `totalSessions` (default: `createdAt`) |
-| `sortOrder` | enum | No | Sort order: `asc`, `desc` (default: `desc`) |
-| `limit` | number | No | Results per page (default: 20) |
-| `offset` | number | No | Results offset (default: 0) |
+| Parameter    | Type    | Required | Description                                                                  |
+| ------------ | ------- | -------- | ---------------------------------------------------------------------------- |
+| `q`          | string  | No       | Search by name, expertise, headline, or bio (with prioritized ranking)       |
+| `expertise`  | string  | No       | Filter by expertise (comma-separated)                                        |
+| `industries` | string  | No       | Filter by industries (comma-separated)                                       |
+| `location`   | string  | No       | Filter by location                                                           |
+| `category`   | string  | No       | Filter by category                                                           |
+| `languages`  | string  | No       | Filter by languages (comma-separated)                                        |
+| `stack`      | string  | No       | Filter by tech stack (comma-separated)                                       |
+| `isFeatured` | boolean | No       | Filter featured mentors                                                      |
+| `sortBy`     | enum    | No       | Sort field: `createdAt`, `avgRating`, `totalSessions` (default: `createdAt`) |
+| `sortOrder`  | enum    | No       | Sort order: `asc`, `desc` (default: `desc`)                                  |
+| `limit`      | number  | No       | Results per page (default: 20)                                               |
+| `offset`     | number  | No       | Results offset (default: 0)                                                  |
 
 #### Example Request
 
@@ -175,9 +175,9 @@ GET /api/v1/mentors?expertise=Product%20Management&industries=Tech&sortBy=avgRat
 
 #### Path Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `id` | string | Yes | Mentor profile ID |
+| Parameter | Type   | Required | Description       |
+| --------- | ------ | -------- | ----------------- |
+| `id`      | string | Yes      | Mentor profile ID |
 
 #### Example Request
 
@@ -199,16 +199,16 @@ Same structure as browse endpoint, but returns a single object instead of an arr
 
 #### Path Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `id` | string | Yes | Mentor profile ID |
+| Parameter | Type   | Required | Description       |
+| --------- | ------ | -------- | ----------------- |
+| `id`      | string | Yes      | Mentor profile ID |
 
 #### Query Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `limit` | number | No | Results per page |
-| `offset` | number | No | Results offset |
+| Parameter | Type   | Required | Description      |
+| --------- | ------ | -------- | ---------------- |
+| `limit`   | number | No       | Results per page |
+| `offset`  | number | No       | Results offset   |
 
 ### Get Mentor Availability
 
@@ -220,16 +220,16 @@ Same structure as browse endpoint, but returns a single object instead of an arr
 
 #### Path Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `id` | string | Yes | Mentor profile ID |
+| Parameter | Type   | Required | Description       |
+| --------- | ------ | -------- | ----------------- |
+| `id`      | string | Yes      | Mentor profile ID |
 
 #### Query Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `startDate` | string | No | Start date (YYYY-MM-DD) |
-| `endDate` | string | No | End date (YYYY-MM-DD) |
+| Parameter   | Type   | Required | Description             |
+| ----------- | ------ | -------- | ----------------------- |
+| `startDate` | string | No       | Start date (YYYY-MM-DD) |
+| `endDate`   | string | No       | End date (YYYY-MM-DD)   |
 
 #### Example Request
 
@@ -251,19 +251,19 @@ GET /api/v1/mentors/b15c8e47-fc4a-4413-ac1d-f9bc52e45f34/availability?startDate=
 
 #### Query Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `q` | string | No | Search by company name, industry, or bio |
-| `company` | string | No | Filter by company name (partial match) |
-| `industry` | string | No | Filter by industry |
-| `location` | string | No | Filter by location |
-| `companySize` | string | No | Filter by company size |
-| `companyStage` | string | No | Filter by company stage |
-| `operatingModel` | string | No | Filter by operating model |
-| `isFeatured` | boolean | No | Filter featured recruiters |
-| `sort` | enum | No | Sort order: `newest`, `oldest`, `views` (default: `newest`) |
-| `limit` | number | No | Results per page (default: 20, max: 100) |
-| `offset` | number | No | Results offset (default: 0) |
+| Parameter        | Type    | Required | Description                                                 |
+| ---------------- | ------- | -------- | ----------------------------------------------------------- |
+| `q`              | string  | No       | Search by company name, industry, or bio                    |
+| `company`        | string  | No       | Filter by company name (partial match)                      |
+| `industry`       | string  | No       | Filter by industry                                          |
+| `location`       | string  | No       | Filter by location                                          |
+| `companySize`    | string  | No       | Filter by company size                                      |
+| `companyStage`   | string  | No       | Filter by company stage                                     |
+| `operatingModel` | string  | No       | Filter by operating model                                   |
+| `isFeatured`     | boolean | No       | Filter featured recruiters                                  |
+| `sort`           | enum    | No       | Sort order: `newest`, `oldest`, `views` (default: `newest`) |
+| `limit`          | number  | No       | Results per page (default: 20, max: 100)                    |
+| `offset`         | number  | No       | Results offset (default: 0)                                 |
 
 #### Example Request
 
@@ -312,9 +312,9 @@ GET /api/v1/recruiters?industry=Technology&companySize=51-200&location=Lagos&sor
 
 #### Path Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `id` | string | Yes | Recruiter profile ID (or user ID as fallback) |
+| Parameter | Type   | Required | Description                                   |
+| --------- | ------ | -------- | --------------------------------------------- |
+| `id`      | string | Yes      | Recruiter profile ID (or user ID as fallback) |
 
 #### Example Request
 
@@ -344,25 +344,25 @@ Same structure as browse endpoint, but returns a single object instead of an arr
 
 #### Query Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `q` | string | No | General search query |
-| `type` | enum | No | Opportunity type: `job`, `gig`, `contract`, `internship` |
-| `title` | string | No | Filter by title (partial match) |
-| `location` | string | No | Filter by location |
-| `tags` | string | No | Filter by tags (comma-separated) |
-| `status` | enum | No | Filter by status: `active`, `closed`, `draft` |
-| `postedById` | string | No | Filter by recruiter user ID |
-| `isFeatured` | boolean | No | Filter featured opportunities |
-| `category` | string | No | Filter by category |
-| `experienceLevel` | string | No | Filter by experience level |
-| `minBudget` | number | No | Minimum budget filter |
-| `maxBudget` | number | No | Maximum budget filter |
-| `sortBy` | string | No | Sort field |
-| `sortOrder` | enum | No | Sort order: `asc`, `desc` |
-| `limit` | number | No | Results per page |
-| `offset` | number | No | Results offset |
-| `talentId` | string | No | Talent ID to check application status (for recruiters) |
+| Parameter         | Type    | Required | Description                                              |
+| ----------------- | ------- | -------- | -------------------------------------------------------- |
+| `q`               | string  | No       | General search query                                     |
+| `type`            | enum    | No       | Opportunity type: `job`, `gig`, `contract`, `internship` |
+| `title`           | string  | No       | Filter by title (partial match)                          |
+| `location`        | string  | No       | Filter by location                                       |
+| `tags`            | string  | No       | Filter by tags (comma-separated)                         |
+| `status`          | enum    | No       | Filter by status: `active`, `closed`, `draft`            |
+| `postedById`      | string  | No       | Filter by recruiter user ID                              |
+| `isFeatured`      | boolean | No       | Filter featured opportunities                            |
+| `category`        | string  | No       | Filter by category                                       |
+| `experienceLevel` | string  | No       | Filter by experience level                               |
+| `minBudget`       | number  | No       | Minimum budget filter                                    |
+| `maxBudget`       | number  | No       | Maximum budget filter                                    |
+| `sortBy`          | string  | No       | Sort field                                               |
+| `sortOrder`       | enum    | No       | Sort order: `asc`, `desc`                                |
+| `limit`           | number  | No       | Results per page                                         |
+| `offset`          | number  | No       | Results offset                                           |
+| `talentId`        | string  | No       | Talent ID to check application status (for recruiters)   |
 
 #### Example Request
 
@@ -421,9 +421,9 @@ Same structure but without `hasApplied` and `userApplicationStatus` fields.
 
 #### Path Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `id` | string | Yes | Opportunity ID |
+| Parameter | Type   | Required | Description    |
+| --------- | ------ | -------- | -------------- |
+| `id`      | string | Yes      | Opportunity ID |
 
 #### Example Request
 
@@ -517,6 +517,7 @@ All profile endpoints only return `public` profiles. Private profiles are not ac
 ### Timestamps
 
 All responses include:
+
 - `createdAt`: ISO 8601 timestamp of creation
 - `updatedAt`: ISO 8601 timestamp of last update
 

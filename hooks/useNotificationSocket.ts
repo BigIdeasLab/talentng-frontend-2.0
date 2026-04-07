@@ -171,8 +171,10 @@ export function useNotificationSocket({
       // Handle connection errors
       eventSourceRef.current.addEventListener("error", (error: any) => {
         // Only log detailed errors in development
-        if (process.env.NODE_ENV === 'development') {
-          console.warn("Notification stream connection failed - this is expected if the notifications API is not available");
+        if (process.env.NODE_ENV === "development") {
+          console.warn(
+            "Notification stream connection failed - this is expected if the notifications API is not available",
+          );
         }
         eventSourceRef.current?.close();
         eventSourceRef.current = null;
@@ -187,7 +189,7 @@ export function useNotificationSocket({
             connect();
           }, delay);
         } else {
-          if (process.env.NODE_ENV === 'development') {
+          if (process.env.NODE_ENV === "development") {
             console.warn(
               `Notification stream: Stopped trying to connect after ${maxReconnectAttempts} attempts. This is normal if the notifications API is not implemented.`,
             );

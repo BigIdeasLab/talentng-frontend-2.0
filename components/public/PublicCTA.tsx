@@ -8,7 +8,12 @@ export interface PublicCTAProps {
   ctaHref: string;
 }
 
-export function PublicCTA({ title, subtitle, ctaText, ctaHref }: PublicCTAProps) {
+export function PublicCTA({
+  title,
+  subtitle,
+  ctaText,
+  ctaHref,
+}: PublicCTAProps) {
   return (
     <section className="bg-white py-16 md:py-20 border-t border-[#F0F0F0]">
       <div className="max-w-[1280px] mx-auto px-4 sm:px-8">

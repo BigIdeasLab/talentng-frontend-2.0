@@ -171,7 +171,7 @@ export function TalentDetailPublic({ data }: TalentDetailPublicProps) {
                     "px-[12px] sm:px-[20px] py-[14px] sm:py-[18px] text-[12px] sm:text-[13px] font-medium font-inter-tight whitespace-nowrap transition-colors relative",
                     activeTab === tab.id
                       ? "text-black"
-                      : "text-[rgba(0,0,0,0.30)] hover:text-[rgba(0,0,0,0.6)]"
+                      : "text-[rgba(0,0,0,0.30)] hover:text-[rgba(0,0,0,0.6)]",
                   )}
                 >
                   {tab.label}

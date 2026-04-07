@@ -29,7 +29,12 @@ export const MOCK_RECRUITER_DETAILS: Record<string, RecruiterPublicData> = {
     talentsHired: 45,
     description:
       "Andela is a global talent network that connects companies with vetted, senior software engineers in Africa. We're building a network of the world's most talented technologists and helping them unlock opportunities with leading companies globally. Our mission is to advance human potential by connecting brilliance with opportunity.",
-    hiringFor: ["Software Engineers", "DevOps", "Product Managers", "Data Scientists"],
+    hiringFor: [
+      "Software Engineers",
+      "DevOps",
+      "Product Managers",
+      "Data Scientists",
+    ],
     logoBg: "#3359DF",
     initials: "AN",
     openPositions: [
@@ -65,7 +70,12 @@ export const MOCK_RECRUITER_DETAILS: Record<string, RecruiterPublicData> = {
     talentsHired: 32,
     description:
       "Flutterwave provides a payment infrastructure that helps businesses and individuals make and accept payments across Africa. We're on a mission to simplify payments for endless possibilities. Our technology powers payments for some of Africa's biggest brands and we're expanding rapidly across the continent.",
-    hiringFor: ["Backend Engineers", "UI/UX Designers", "Marketing", "Compliance"],
+    hiringFor: [
+      "Backend Engineers",
+      "UI/UX Designers",
+      "Marketing",
+      "Compliance",
+    ],
     logoBg: "#F5A623",
     initials: "FW",
     openPositions: [
@@ -123,7 +133,12 @@ export const MOCK_RECRUITER_DETAILS: Record<string, RecruiterPublicData> = {
     talentsHired: 38,
     description:
       "Kuda is the money app for Africans. We're building a digital bank that offers free transfers, budgeting tools, and savings features to help Africans take control of their finances. Our mission is to make financial services accessible, affordable, and simple for everyone in Africa.",
-    hiringFor: ["Mobile Developers", "QA Engineers", "Product Designers", "Data Analysts"],
+    hiringFor: [
+      "Mobile Developers",
+      "QA Engineers",
+      "Product Designers",
+      "Data Analysts",
+    ],
     logoBg: "#5C30FF",
     initials: "KB",
     openPositions: [
@@ -188,7 +203,12 @@ export const MOCK_RECRUITER_DETAILS: Record<string, RecruiterPublicData> = {
     talentsHired: 60,
     description:
       "Interswitch is an integrated digital payments and commerce company driving the transformation of payment systems in Africa. We provide payment processing, switching, and settlement services to banks, merchants, and consumers across Africa. With over 20 years of experience, we're at the forefront of Africa's digital payment revolution.",
-    hiringFor: ["Java Developers", "Security Engineers", "Project Managers", "Business Analysts"],
+    hiringFor: [
+      "Java Developers",
+      "Security Engineers",
+      "Project Managers",
+      "Business Analysts",
+    ],
     logoBg: "#ED1C24",
     initials: "IS",
     openPositions: [
@@ -217,6 +237,8 @@ export const MOCK_RECRUITER_DETAILS: Record<string, RecruiterPublicData> = {
   },
 };
 
-export function getRecruiterPublicProfile(id: string): RecruiterPublicData | null {
+export function getRecruiterPublicProfile(
+  id: string,
+): RecruiterPublicData | null {
   return MOCK_RECRUITER_DETAILS[id] || null;
 }

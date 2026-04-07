@@ -10,7 +10,9 @@ export interface MentorDetailPublicProps {
 }
 
 export function MentorDetailPublic({ data }: MentorDetailPublicProps) {
-  const [activeTab, setActiveTab] = useState<"overview" | "reviews">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "reviews">(
+    "overview",
+  );
 
   // Generate JSON-LD structured data for SEO
   const structuredData = {
@@ -113,7 +115,8 @@ export function MentorDetailPublic({ data }: MentorDetailPublicProps) {
                           />
                         </svg>
                         <span className="text-[12px] font-normal text-black font-inter-tight">
-                          {data.rating > 0 ? data.rating.toFixed(1) : "N/A"} Rating
+                          {data.rating > 0 ? data.rating.toFixed(1) : "N/A"}{" "}
+                          Rating
                         </span>
                       </div>
 
@@ -332,8 +335,12 @@ export function MentorDetailPublic({ data }: MentorDetailPublicProps) {
                               >
                                 <path
                                   d="M11 1.83L13.09 8.26H19.92L14.42 12.24L16.51 18.67L11 14.69L5.49 18.67L7.58 12.24L2.08 8.26H8.91L11 1.83Z"
-                                  fill={i < review.rating ? "#FFD700" : "#E1E4EA"}
-                                  stroke={i < review.rating ? "#FFD700" : "#E1E4EA"}
+                                  fill={
+                                    i < review.rating ? "#FFD700" : "#E1E4EA"
+                                  }
+                                  stroke={
+                                    i < review.rating ? "#FFD700" : "#E1E4EA"
+                                  }
                                   strokeWidth="1"
                                   strokeLinejoin="round"
                                 />

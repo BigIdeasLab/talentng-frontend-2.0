@@ -11,7 +11,7 @@ export function DetailPageSkeleton({ type }: DetailPageSkeletonProps) {
           <div className="flex flex-col md:flex-row gap-6">
             {/* Avatar */}
             <div className="w-24 h-24 rounded-full bg-gray-200" />
-            
+
             {/* Info */}
             <div className="flex-1 space-y-4">
               <div className="h-8 bg-gray-200 rounded w-1/3" />

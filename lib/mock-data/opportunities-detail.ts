@@ -134,7 +134,12 @@ export const MOCK_OPPORTUNITY_DETAILS: Record<string, OpportunityPublicData> = {
       "Excellent writing and editing skills",
       "Self-motivated and detail-oriented",
     ],
-    skills: ["API Documentation", "Technical Writing", "Markdown", "Developer Tools"],
+    skills: [
+      "API Documentation",
+      "Technical Writing",
+      "Markdown",
+      "Developer Tools",
+    ],
     tools: ["Markdown", "Git", "Postman", "VS Code"],
     priceMode: "range",
     minBudget: 450000,
@@ -265,6 +270,8 @@ export const MOCK_OPPORTUNITY_DETAILS: Record<string, OpportunityPublicData> = {
   },
 };
 
-export function getOpportunityPublicProfile(id: string): OpportunityPublicData | null {
+export function getOpportunityPublicProfile(
+  id: string,
+): OpportunityPublicData | null {
   return MOCK_OPPORTUNITY_DETAILS[id] || null;
 }

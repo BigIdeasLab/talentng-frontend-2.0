@@ -29,7 +29,12 @@ export const MOCK_TALENT_DETAILS: Record<string, TalentPublicData> = {
     availability: ["Full-time"],
     category: "Designer",
     bio: "Passionate UX/UI designer with 5+ years of experience creating intuitive and beautiful digital experiences. I specialize in mobile app design, user research, and design systems. My approach combines data-driven insights with creative problem-solving to deliver products that users love.",
-    skills: ["Mobile App Design", "User Research", "Visual Design", "Wireframing"],
+    skills: [
+      "Mobile App Design",
+      "User Research",
+      "Visual Design",
+      "Wireframing",
+    ],
     stack: ["Figma", "Sketch", "Adobe XD"],
     gallery: [
       "https://api.builder.io/api/v1/image/assets/TEMP/d7a73bf68c36125971c3bb78d8c11455bc32bc8d?width=490",
@@ -61,7 +66,12 @@ export const MOCK_TALENT_DETAILS: Record<string, TalentPublicData> = {
     availability: ["Freelance"],
     category: "Designer",
     bio: "Creative web designer focused on building responsive, SEO-optimized websites that drive results. I work with businesses to establish their online presence through modern, user-friendly designs that convert visitors into customers.",
-    skills: ["Website Design", "SEO Optimization", "Responsive Design", "User Testing"],
+    skills: [
+      "Website Design",
+      "SEO Optimization",
+      "Responsive Design",
+      "User Testing",
+    ],
     stack: ["WordPress", "Webflow", "HTML/CSS"],
     gallery: [
       "https://api.builder.io/api/v1/image/assets/TEMP/abafb32ec62d33c6dc1db2acdfdb79d6322daeb8?width=490",
@@ -135,7 +145,12 @@ export const MOCK_TALENT_DETAILS: Record<string, TalentPublicData> = {
     availability: ["Freelance"],
     category: "Designer",
     bio: "Product designer with a focus on SaaS products and accessibility. I believe great design should be inclusive and accessible to everyone, and I work to ensure every product I touch meets the highest standards of usability.",
-    skills: ["SaaS Design", "Accessibility Design", "Information Architecture", "Sketching"],
+    skills: [
+      "SaaS Design",
+      "Accessibility Design",
+      "Information Architecture",
+      "Sketching",
+    ],
     stack: ["Figma", "Framer", "Notion"],
     gallery: [
       "https://api.builder.io/api/v1/image/assets/TEMP/4c62644e1b187e2323da216c7c651406c5624fe4?width=490",
@@ -178,6 +193,8 @@ export const MOCK_TALENT_DETAILS: Record<string, TalentPublicData> = {
   },
 };
 
-export function getTalentPublicProfile(userId: string): TalentPublicData | null {
+export function getTalentPublicProfile(
+  userId: string,
+): TalentPublicData | null {
   return MOCK_TALENT_DETAILS[userId] || null;
 }

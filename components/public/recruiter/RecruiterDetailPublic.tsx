@@ -161,11 +161,9 @@ export function RecruiterDetailPublic({ data }: RecruiterDetailPublicProps) {
                       About {data.companyName}
                     </h2>
                     <div className="flex flex-col gap-3 text-[13px] font-normal text-black font-inter-tight leading-[22px]">
-                      {data.description
-                        .split("\n")
-                        .map((paragraph, index) => (
-                          <p key={index}>{paragraph}</p>
-                        ))}
+                      {data.description.split("\n").map((paragraph, index) => (
+                        <p key={index}>{paragraph}</p>
+                      ))}
                     </div>
                   </div>
 

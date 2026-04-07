@@ -79,7 +79,9 @@ export async function browseTalents(
     }
 
     const errorMessage =
-      errorData.message || errorData.error || `API Error: ${response.statusText}`;
+      errorData.message ||
+      errorData.error ||
+      `API Error: ${response.statusText}`;
 
     const error = new Error(errorMessage);
     (error as any).status = response.status;
@@ -120,7 +122,9 @@ export async function getTalentProfile(
     }
 
     const errorMessage =
-      errorData.message || errorData.error || `API Error: ${response.statusText}`;
+      errorData.message ||
+      errorData.error ||
+      `API Error: ${response.statusText}`;
 
     const error = new Error(errorMessage);
     (error as any).status = response.status;

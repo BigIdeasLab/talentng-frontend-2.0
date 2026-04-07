@@ -36,7 +36,12 @@ export const MOCK_MENTOR_DETAILS: Record<string, MentorPublicData> = {
     totalSessions: 156,
     sessionDuration: 60,
     bio: "I'm a Senior Product Designer at Google with over 8 years of experience in the tech industry. I'm passionate about helping aspiring designers navigate their careers, build strong portfolios, and develop the skills needed to succeed in top tech companies. My mentorship focuses on practical, real-world design challenges and career growth strategies.",
-    expertise: ["UI/UX Design", "Design Systems", "User Research", "Career Growth"],
+    expertise: [
+      "UI/UX Design",
+      "Design Systems",
+      "User Research",
+      "Career Growth",
+    ],
     industries: ["Technology", "Fintech", "E-commerce"],
     stack: ["Figma", "Sketch", "Adobe XD", "Framer"],
     reviews: [
@@ -59,7 +64,8 @@ export const MOCK_MENTOR_DETAILS: Record<string, MentorPublicData> = {
       {
         id: "rev-3",
         rating: 4,
-        comment: "Great mentor with practical advice. Would have loved more time to discuss my specific challenges.",
+        comment:
+          "Great mentor with practical advice. Would have loved more time to discuss my specific challenges.",
         author: "Ngozi E.",
         date: "2 months ago",
       },
@@ -85,14 +91,16 @@ export const MOCK_MENTOR_DETAILS: Record<string, MentorPublicData> = {
       {
         id: "rev-4",
         rating: 5,
-        comment: "Emeka helped me ace my Meta interview! His system design guidance was invaluable.",
+        comment:
+          "Emeka helped me ace my Meta interview! His system design guidance was invaluable.",
         author: "Kunle A.",
         date: "3 weeks ago",
       },
       {
         id: "rev-5",
         rating: 4,
-        comment: "Solid technical mentor. Really knows his stuff about React and system architecture.",
+        comment:
+          "Solid technical mentor. Really knows his stuff about React and system architecture.",
         author: "Fatima B.",
         date: "1 month ago",
       },
@@ -111,7 +119,12 @@ export const MOCK_MENTOR_DETAILS: Record<string, MentorPublicData> = {
     totalSessions: 187,
     sessionDuration: 60,
     bio: "VP of Engineering at Paystack with 12+ years of experience building and leading engineering teams. I specialize in helping engineers transition into leadership roles, build high-performing teams, and navigate the challenges of scaling engineering organizations. My mentorship is ideal for senior engineers and engineering managers.",
-    expertise: ["Engineering Leadership", "Team Building", "Mentorship", "Career Strategy"],
+    expertise: [
+      "Engineering Leadership",
+      "Team Building",
+      "Mentorship",
+      "Career Strategy",
+    ],
     industries: ["Fintech", "Technology", "Payments"],
     stack: ["Python", "Go", "Kubernetes", "PostgreSQL"],
     reviews: [
@@ -126,14 +139,16 @@ export const MOCK_MENTOR_DETAILS: Record<string, MentorPublicData> = {
       {
         id: "rev-7",
         rating: 5,
-        comment: "Best mentor I've worked with. Her experience at Paystack brings real-world context to every discussion.",
+        comment:
+          "Best mentor I've worked with. Her experience at Paystack brings real-world context to every discussion.",
         author: "Dolapo A.",
         date: "2 weeks ago",
       },
       {
         id: "rev-8",
         rating: 5,
-        comment: "Fatima helped me build a roadmap for my engineering career. Highly recommend for anyone in leadership.",
+        comment:
+          "Fatima helped me build a roadmap for my engineering career. Highly recommend for anyone in leadership.",
         author: "Seyi O.",
         date: "1 month ago",
       },
@@ -152,21 +167,28 @@ export const MOCK_MENTOR_DETAILS: Record<string, MentorPublicData> = {
     totalSessions: 72,
     sessionDuration: 60,
     bio: "Product Manager at Flutterwave with a focus on growth and product strategy. I help aspiring PMs break into product management, develop product sense, and learn how to work effectively with engineering and design teams. My sessions cover everything from product roadmaps to stakeholder management.",
-    expertise: ["Product Strategy", "Growth", "Stakeholder Management", "Product Roadmaps"],
+    expertise: [
+      "Product Strategy",
+      "Growth",
+      "Stakeholder Management",
+      "Product Roadmaps",
+    ],
     industries: ["Fintech", "Technology", "Payments"],
     stack: ["Jira", "Figma", "Amplitude", "Mixpanel"],
     reviews: [
       {
         id: "rev-9",
         rating: 5,
-        comment: "Tunde's product strategy framework helped me land my first PM role. Very practical advice!",
+        comment:
+          "Tunde's product strategy framework helped me land my first PM role. Very practical advice!",
         author: "Ifeoma C.",
         date: "2 weeks ago",
       },
       {
         id: "rev-10",
         rating: 4,
-        comment: "Good session on stakeholder management. Would love more time to dive deeper into metrics.",
+        comment:
+          "Good session on stakeholder management. Would love more time to dive deeper into metrics.",
         author: "Oluwatobi A.",
         date: "1 month ago",
       },
@@ -185,21 +207,28 @@ export const MOCK_MENTOR_DETAILS: Record<string, MentorPublicData> = {
     totalSessions: 134,
     sessionDuration: 60,
     bio: "Data Science Lead at Andela specializing in machine learning, Python, and data analytics. I mentor data scientists and analysts looking to advance their careers, build ML models, and transition into data science roles. My approach combines theory with hands-on projects.",
-    expertise: ["Machine Learning", "Python", "Data Analytics", "Career Transition"],
+    expertise: [
+      "Machine Learning",
+      "Python",
+      "Data Analytics",
+      "Career Transition",
+    ],
     industries: ["Technology", "Finance", "Healthcare"],
     stack: ["Python", "TensorFlow", "Pandas", "SQL"],
     reviews: [
       {
         id: "rev-11",
         rating: 5,
-        comment: "Ngozi helped me understand ML concepts I struggled with for months. Excellent teacher!",
+        comment:
+          "Ngozi helped me understand ML concepts I struggled with for months. Excellent teacher!",
         author: "Chijioke O.",
         date: "1 week ago",
       },
       {
         id: "rev-12",
         rating: 5,
-        comment: "Very patient and knowledgeable. Her Python tips improved my code quality significantly.",
+        comment:
+          "Very patient and knowledgeable. Her Python tips improved my code quality significantly.",
         author: "Adaobi N.",
         date: "3 weeks ago",
       },
@@ -218,21 +247,28 @@ export const MOCK_MENTOR_DETAILS: Record<string, MentorPublicData> = {
     totalSessions: 58,
     sessionDuration: 60,
     bio: "Marketing Director at Kuda Bank with expertise in digital marketing, brand strategy, and content marketing. I help marketers develop effective strategies, build their personal brands, and grow their careers in the tech industry. My sessions are practical and results-oriented.",
-    expertise: ["Digital Marketing", "Brand Strategy", "Content Marketing", "Growth Marketing"],
+    expertise: [
+      "Digital Marketing",
+      "Brand Strategy",
+      "Content Marketing",
+      "Growth Marketing",
+    ],
     industries: ["Fintech", "Technology", "E-commerce"],
     stack: ["Google Analytics", "HubSpot", "Mailchimp", "Canva"],
     reviews: [
       {
         id: "rev-13",
         rating: 5,
-        comment: "Yusuf's brand strategy advice transformed my approach to marketing. Highly recommend!",
+        comment:
+          "Yusuf's brand strategy advice transformed my approach to marketing. Highly recommend!",
         author: "Dolapo A.",
         date: "2 weeks ago",
       },
       {
         id: "rev-14",
         rating: 4,
-        comment: "Great insights on digital marketing. Would love more case studies in future sessions.",
+        comment:
+          "Great insights on digital marketing. Would love more case studies in future sessions.",
         author: "Seyi O.",
         date: "1 month ago",
       },

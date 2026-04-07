@@ -30,7 +30,9 @@ export function PublicFooter() {
           <div className="flex flex-1 flex-wrap gap-8 sm:gap-12">
             {Object.entries(footerLinks).map(([heading, links]) => (
               <div key={heading} className="flex flex-col gap-4 min-w-[100px]">
-                <h4 className="text-black font-semibold text-base">{heading}</h4>
+                <h4 className="text-black font-semibold text-base">
+                  {heading}
+                </h4>
                 <div className="flex flex-col gap-3">
                   {links.map((link) => (
                     <Link

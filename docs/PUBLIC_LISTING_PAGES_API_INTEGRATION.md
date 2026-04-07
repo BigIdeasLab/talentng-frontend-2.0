@@ -7,14 +7,17 @@ This document describes the API integration completed for all public listing/bro
 ## Completed Pages
 
 ### 1. Talents Listing (`/talents`)
+
 **File:** `app/talents/page.tsx`
 
 **API Integration:**
+
 - Uses `browseTalents()` from `lib/api/public/talents.ts`
 - Fetches on mount and when category filter changes
 - Transforms API response to `TalentData` interface
 
 **Features:**
+
 - Category filtering (All, Designer, Developer, Writer, etc.)
 - Loading spinner during fetch
 - Error message on failure
@@ -22,6 +25,7 @@ This document describes the API integration completed for all public listing/bro
 - Grid layout with TalentCard components
 
 **Data Transformation:**
+
 ```typescript
 const transformedData: TalentData[] = data.map((talent) => ({
   id: parseInt(talent.id) || 0,
@@ -42,14 +46,17 @@ const transformedData: TalentData[] = data.map((talent) => ({
 ```
 
 ### 2. Mentors Listing (`/mentors`)
+
 **File:** `app/mentors/page.tsx`
 
 **API Integration:**
+
 - Uses `browseMentors()` from `lib/api/public/mentors.ts`
 - Fetches on mount and when category filter changes
 - Transforms API response to `MentorCardData` interface
 
 **Features:**
+
 - Category filtering (All, Design, Engineering, Product, etc.)
 - Loading spinner during fetch
 - Error message on failure
@@ -57,6 +64,7 @@ const transformedData: TalentData[] = data.map((talent) => ({
 - Grid layout with MentorCard components
 
 **Data Transformation:**
+
 ```typescript
 const transformedData: MentorCardData[] = data.map((mentor) => ({
   id: mentor.id,
@@ -72,14 +80,17 @@ const transformedData: MentorCardData[] = data.map((mentor) => ({
 ```
 
 ### 3. Recruiters Listing (`/recruiters`)
+
 **File:** `app/recruiters/page.tsx`
 
 **API Integration:**
+
 - Uses `browseRecruiters()` from `lib/api/public/recruiters.ts`
 - Fetches on mount and when category filter changes
 - Transforms API response to `RecruiterData` interface
 
 **Features:**
+
 - Category filtering (All, Technology, Finance, Healthcare, etc.)
 - Loading spinner during fetch
 - Error message on failure
@@ -87,6 +98,7 @@ const transformedData: MentorCardData[] = data.map((mentor) => ({
 - Grid layout with RecruiterCard components
 
 **Data Transformation:**
+
 ```typescript
 const transformedData: RecruiterData[] = data.map((recruiter) => {
   // Generate initials from company name
@@ -98,7 +110,14 @@ const transformedData: RecruiterData[] = data.map((recruiter) => {
     .slice(0, 2);
 
   // Generate a color based on company name
-  const colors = ["#3359DF", "#F5A623", "#00C3F7", "#5C30FF", "#0066F5", "#ED1C24"];
+  const colors = [
+    "#3359DF",
+    "#F5A623",
+    "#00C3F7",
+    "#5C30FF",
+    "#0066F5",
+    "#ED1C24",
+  ];
   const colorIndex = recruiter.companyName.length % colors.length;
 
   return {
@@ -117,14 +136,17 @@ const transformedData: RecruiterData[] = data.map((recruiter) => {
 ```
 
 ### 4. Opportunities Listing (`/opportunities-public`)
+
 **File:** `app/opportunities-public/page.tsx`
 
 **API Integration:**
+
 - Uses `browseOpportunities()` from `lib/api/public/opportunities.ts`
 - Fetches on mount and when category filter changes
 - Transforms API response to `PublicOpportunity` interface
 
 **Features:**
+
 - Category filtering (All, Design, Development, Writing, etc.)
 - Loading spinner during fetch
 - Error message on failure
@@ -132,6 +154,7 @@ const transformedData: RecruiterData[] = data.map((recruiter) => {
 - Grid layout with OpportunityCardPublic components
 
 **Data Transformation:**
+
 ```typescript
 const transformedData: PublicOpportunity[] = data.map((opp) => {
   // Generate initials from company name
@@ -143,7 +166,14 @@ const transformedData: PublicOpportunity[] = data.map((opp) => {
     .slice(0, 2);
 
   // Generate a color based on company name
-  const colors = ["#3359DF", "#F5A623", "#00C3F7", "#5C30FF", "#0066F5", "#ED1C24"];
+  const colors = [
+    "#3359DF",
+    "#F5A623",
+    "#00C3F7",
+    "#5C30FF",
+    "#0066F5",
+    "#ED1C24",
+  ];
   const colorIndex = opp.companyName.length % colors.length;
 
   // Calculate relative date
@@ -186,6 +216,7 @@ const transformedData: PublicOpportunity[] = data.map((opp) => {
 All listing pages follow a consistent pattern:
 
 ### 1. State Management
+
 ```typescript
 const [activeCategory, setActiveCategory] = useState("All");
 const [data, setData] = useState<DataType[]>([]);
@@ -194,6 +225,7 @@ const [error, setError] = useState<string | null>(null);
 ```
 
 ### 2. Data Fetching
+
 ```typescript
 useEffect(() => {
   async function fetchData() {
@@ -218,6 +250,7 @@ useEffect(() => {
 ```
 
 ### 3. UI States
+
 ```typescript
 {/* Loading state */}
 {loading && (
@@ -254,11 +287,11 @@ useEffect(() => {
 
 ## API Endpoints Used
 
-| Page | API Function | Endpoint |
-|------|-------------|----------|
-| `/talents` | `browseTalents()` | `GET /api/v1/talents` |
-| `/mentors` | `browseMentors()` | `GET /api/v1/mentors` |
-| `/recruiters` | `browseRecruiters()` | `GET /api/v1/recruiters` |
+| Page                    | API Function            | Endpoint                    |
+| ----------------------- | ----------------------- | --------------------------- |
+| `/talents`              | `browseTalents()`       | `GET /api/v1/talents`       |
+| `/mentors`              | `browseMentors()`       | `GET /api/v1/mentors`       |
+| `/recruiters`           | `browseRecruiters()`    | `GET /api/v1/recruiters`    |
 | `/opportunities-public` | `browseOpportunities()` | `GET /api/v1/opportunities` |
 
 ## Query Parameters
@@ -309,18 +342,21 @@ The API may return array fields containing objects instead of strings (e.g., `{n
 This ensures all array fields contain only strings, preventing React rendering errors like "Objects are not valid as a React child".
 
 **Fields Using Object-to-String Extraction:**
+
 - **Talents**: `skills`, `stack`, `availability`
 - **Mentors**: `expertise`
 - **Recruiters**: `hiringFor`
 - **Opportunities**: `skills`
 
 **Implementation Example:**
+
 ```typescript
 const extractStrings = (arr: any): string[] => {
   if (!Array.isArray(arr)) return [];
-  return arr.map(item => {
-    if (typeof item === 'string') return item;
-    if (typeof item === 'object' && item !== null && 'name' in item) return item.name;
+  return arr.map((item) => {
+    if (typeof item === "string") return item;
+    if (typeof item === "object" && item !== null && "name" in item)
+      return item.name;
     return String(item);
   });
 };
@@ -347,9 +383,11 @@ app/opportunities-public/page.tsx # Added API integration
 ## Testing Status
 
 ### TypeScript Validation
+
 ✅ All files pass TypeScript compilation with no errors
 
 ### Manual Testing Required
+
 - [ ] Test each listing page with real backend
 - [ ] Verify category filtering works
 - [ ] Test loading states
@@ -360,14 +398,18 @@ app/opportunities-public/page.tsx # Added API integration
 ## Migration Notes
 
 ### Mock Data Removed
+
 The following hardcoded data arrays were removed:
+
 - `talents` array in `/talents` page
 - `mentors` array in `/mentors` page
 - `recruiters` array in `/recruiters` page
 - `opportunities` array in `/opportunities-public` page
 
 ### Component Compatibility
+
 All existing card components remain unchanged:
+
 - `TalentCard` from `@/components/DiscoverTalent/TalentCard`
 - `MentorCard` from `@/components/talent/mentorship/MentorCard`
 - `RecruiterCard` (inline component)

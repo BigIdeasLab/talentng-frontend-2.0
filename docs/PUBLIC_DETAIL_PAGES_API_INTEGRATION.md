@@ -21,10 +21,12 @@ All public API client functions are organized by resource type:
 #### 1. Talents API (`lib/api/public/talents.ts`)
 
 **Functions:**
+
 - `browseTalents(params?)` - Browse/search public talent profiles
 - `getTalentProfile(id)` - Get single talent profile by ID
 
 **Types:**
+
 - `TalentPublicProfile` - Talent profile response structure
 - `BrowseTalentsParams` - Query parameters for browsing
 
@@ -33,18 +35,21 @@ All public API client functions are organized by resource type:
 #### 2. Mentors API (`lib/api/public/mentors.ts`)
 
 **Functions:**
+
 - `browseMentors(params?)` - Browse/search public mentor profiles
 - `getMentorProfile(id)` - Get single mentor profile by ID
 - `getMentorReviews(id, params?)` - Get reviews for a mentor
 - `getMentorAvailability(id, params?)` - Get mentor availability slots
 
 **Types:**
+
 - `MentorPublicProfile` - Mentor profile response structure
 - `MentorReview` - Review structure
 - `MentorAvailability` - Availability slot structure
 - `BrowseMentorsParams` - Query parameters for browsing
 
 **Endpoints:**
+
 - `GET /api/v1/mentors`
 - `GET /api/v1/mentors/:id`
 - `GET /api/v1/mentors/:id/reviews`
@@ -53,28 +58,34 @@ All public API client functions are organized by resource type:
 #### 3. Recruiters API (`lib/api/public/recruiters.ts`)
 
 **Functions:**
+
 - `browseRecruiters(params?)` - Browse/search public recruiter profiles
 - `getRecruiterProfile(id)` - Get single recruiter profile by ID
 
 **Types:**
+
 - `RecruiterPublicProfile` - Recruiter profile response structure
 - `BrowseRecruitersParams` - Query parameters for browsing
 
 **Endpoints:**
+
 - `GET /api/v1/recruiters`
 - `GET /api/v1/recruiters/:id`
 
 #### 4. Opportunities API (`lib/api/public/opportunities.ts`)
 
 **Functions:**
+
 - `browseOpportunities(params?, accessToken?)` - Browse/search opportunities
 - `getOpportunityProfile(id, accessToken?)` - Get single opportunity by ID
 
 **Types:**
+
 - `OpportunityPublicProfile` - Opportunity response structure
 - `BrowseOpportunitiesParams` - Query parameters for browsing
 
 **Endpoints:**
+
 - `GET /api/v1/opportunities`
 - `GET /api/v1/opportunities/:id`
 
@@ -85,12 +96,14 @@ All public API client functions are organized by resource type:
 ### Talent Detail Page (`app/talents/[userId]/page.tsx`)
 
 **Data Flow:**
+
 1. Fetch talent profile using `getTalentProfile(userId)`
 2. Transform API response to match component interface
 3. Handle errors with 404 fallback
 4. Generate SEO metadata dynamically
 
 **Transformations:**
+
 - `profileImageUrl` → `avatar`
 - API response doesn't include `timesHired` or `experience` (set to defaults)
 - `coverImageUrl` → `gallery` array
@@ -98,12 +111,14 @@ All public API client functions are organized by resource type:
 ### Mentor Detail Page (`app/mentors/[id]/page.tsx`)
 
 **Data Flow:**
+
 1. Fetch mentor profile using `getMentorProfile(id)`
 2. Transform API response to match component interface
 3. Handle errors with 404 fallback
 4. Generate SEO metadata dynamically
 
 **Transformations:**
+
 - `fullName` → `name`
 - `headline` → `title`
 - `category` → `company` (fallback)
@@ -113,6 +128,7 @@ All public API client functions are organized by resource type:
 ### Recruiter Detail Page (`app/recruiters/[id]/page.tsx`)
 
 **Data Flow:**
+
 1. Fetch recruiter profile using `getRecruiterProfile(id)`
 2. Fetch opportunities posted by recruiter using `browseOpportunities({ postedById })`
 3. Transform responses to match component interface
@@ -120,6 +136,7 @@ All public API client functions are organized by resource type:
 5. Generate SEO metadata dynamically
 
 **Transformations:**
+
 - `company` → `companyName`
 - `bio` → `description`
 - Generate `initials` from company name
@@ -128,12 +145,14 @@ All public API client functions are organized by resource type:
 ### Opportunity Detail Page (`app/opportunities-public/[id]/page.tsx`)
 
 **Data Flow:**
+
 1. Fetch opportunity using `getOpportunityProfile(id)`
 2. Transform API response to match component interface
 3. Handle errors with 404 fallback
 4. Generate SEO metadata dynamically
 
 **Transformations:**
+
 - `tags` → `skills`
 - `employmentType` → `duration`
 - Generate `companyInitials` from company name
@@ -153,6 +172,7 @@ try {
 ```
 
 **Error States:**
+
 - 404: Resource not found or private
 - 500: Server error
 - Network errors: Connection issues
@@ -162,12 +182,14 @@ All errors result in a user-friendly 404 page with navigation back to the listin
 ## Caching Strategy
 
 All API calls use `cache: "no-store"` to ensure:
+
 - Fresh data on every page load
 - Accurate view count tracking
 - Real-time updates for availability and reviews
 
 **Future Optimization:**
 Consider implementing:
+
 - ISR (Incremental Static Regeneration) for stable profiles
 - Client-side caching for repeated visits
 - Optimistic UI updates
@@ -177,6 +199,7 @@ Consider implementing:
 Each page generates dynamic metadata using `generateMetadata()`:
 
 **Included:**
+
 - Page title with profile name and role
 - Meta description from bio/description
 - Open Graph tags for social sharing
@@ -184,6 +207,7 @@ Each page generates dynamic metadata using `generateMetadata()`:
 - Profile images for social previews
 
 **Structured Data:**
+
 - Person schema for talents and mentors
 - Organization schema for recruiters
 - JobPosting schema for opportunities
@@ -191,6 +215,7 @@ Each page generates dynamic metadata using `generateMetadata()`:
 ## View Tracking
 
 View tracking is handled automatically by the backend API:
+
 - IP-based deduplication prevents duplicate counts
 - No client-side tracking required
 - Works on every `GET` request to detail endpoints
@@ -198,6 +223,7 @@ View tracking is handled automatically by the backend API:
 ## Testing
 
 **Manual Testing Checklist:**
+
 - [ ] Talent detail page loads with real data
 - [ ] Mentor detail page loads with real data
 - [ ] Recruiter detail page loads with real data and opportunities
@@ -210,6 +236,7 @@ View tracking is handled automatically by the backend API:
 
 **API Testing:**
 Use the API contract testing suite in `scripts/api-contract-testing/` to validate:
+
 - Response structure matches TypeScript interfaces
 - All required fields are present
 - Data types are correct
@@ -218,12 +245,14 @@ Use the API contract testing suite in `scripts/api-contract-testing/` to validat
 ## Migration from Mock Data
 
 The following mock data files are now deprecated but kept for reference:
+
 - `lib/mock-data/talents-detail.ts`
 - `lib/mock-data/mentors-detail.ts`
 - `lib/mock-data/recruiters-detail.ts`
 - `lib/mock-data/opportunities-detail.ts`
 
 **To remove mock data:**
+
 1. Verify all pages work with real API
 2. Delete mock data files
 3. Remove imports from any remaining files
@@ -270,6 +299,7 @@ NEXT_PUBLIC_TALENTNG_API_URL=https://api.talentng.com/api/v1  # Production
 ## Support
 
 For issues or questions:
+
 1. Check API documentation in `PUBLIC_DISCOVERY_APIS.md`
 2. Review error logs in browser console
 3. Test API endpoints directly using curl or Postman

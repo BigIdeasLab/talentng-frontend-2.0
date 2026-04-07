@@ -84,7 +84,9 @@ export async function browseRecruiters(
     }
 
     const errorMessage =
-      errorData.message || errorData.error || `API Error: ${response.statusText}`;
+      errorData.message ||
+      errorData.error ||
+      `API Error: ${response.statusText}`;
 
     const error = new Error(errorMessage);
     (error as any).status = response.status;
@@ -126,7 +128,9 @@ export async function getRecruiterProfile(
     }
 
     const errorMessage =
-      errorData.message || errorData.error || `API Error: ${response.statusText}`;
+      errorData.message ||
+      errorData.error ||
+      `API Error: ${response.statusText}`;
 
     const error = new Error(errorMessage);
     (error as any).status = response.status;

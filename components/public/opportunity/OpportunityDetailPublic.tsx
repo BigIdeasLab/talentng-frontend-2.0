@@ -6,7 +6,9 @@ export interface OpportunityDetailPublicProps {
   data: OpportunityPublicData;
 }
 
-export function OpportunityDetailPublic({ data }: OpportunityDetailPublicProps) {
+export function OpportunityDetailPublic({
+  data,
+}: OpportunityDetailPublicProps) {
   const config = TYPE_CONFIG[data.type] || TYPE_CONFIG["FullTime"];
 
   const isVolunteer = data.type?.toLowerCase() === "volunteer";
@@ -41,7 +43,12 @@ export function OpportunityDetailPublic({ data }: OpportunityDetailPublicProps) 
     employmentType: data.type,
     experienceRequirements: {
       "@type": "OccupationalExperienceRequirements",
-      monthsOfExperience: data.experienceLevel === "Senior" ? 60 : data.experienceLevel === "Mid-Level" ? 24 : 0,
+      monthsOfExperience:
+        data.experienceLevel === "Senior"
+          ? 60
+          : data.experienceLevel === "Mid-Level"
+            ? 24
+            : 0,
     },
     skills: data.skills?.join(", "),
     baseSalary:
@@ -52,7 +59,12 @@ export function OpportunityDetailPublic({ data }: OpportunityDetailPublicProps) 
             value: {
               "@type": "QuantitativeValue",
               value: data.price,
-              unitText: data.paymentType === "hourly" ? "HOUR" : data.paymentType === "weekly" ? "WEEK" : "MONTH",
+              unitText:
+                data.paymentType === "hourly"
+                  ? "HOUR"
+                  : data.paymentType === "weekly"
+                    ? "WEEK"
+                    : "MONTH",
             },
           }
         : {
@@ -62,7 +74,12 @@ export function OpportunityDetailPublic({ data }: OpportunityDetailPublicProps) 
               "@type": "QuantitativeValue",
               minValue: data.minBudget,
               maxValue: data.maxBudget,
-              unitText: data.paymentType === "hourly" ? "HOUR" : data.paymentType === "weekly" ? "WEEK" : "MONTH",
+              unitText:
+                data.paymentType === "hourly"
+                  ? "HOUR"
+                  : data.paymentType === "weekly"
+                    ? "WEEK"
+                    : "MONTH",
             },
           },
   };
@@ -172,25 +189,26 @@ export function OpportunityDetailPublic({ data }: OpportunityDetailPublicProps) 
             )}
 
             {/* Key Responsibilities */}
-            {data.keyResponsibilities && data.keyResponsibilities.length > 0 && (
-              <div className="flex flex-col gap-4">
-                <h3 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
-                  Key Responsibilities
-                </h3>
-                <div className="flex flex-col gap-2">
-                  {data.keyResponsibilities.map((item, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <span className="text-[14px] flex-shrink-0 pt-0.5 text-[#5C30FF]">
-                        •
-                      </span>
-                      <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
-                        {item}
-                      </span>
-                    </div>
-                  ))}
+            {data.keyResponsibilities &&
+              data.keyResponsibilities.length > 0 && (
+                <div className="flex flex-col gap-4">
+                  <h3 className="font-inter-tight text-[15px] font-medium text-black leading-[105%]">
+                    Key Responsibilities
+                  </h3>
+                  <div className="flex flex-col gap-2">
+                    {data.keyResponsibilities.map((item, index) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <span className="text-[14px] flex-shrink-0 pt-0.5 text-[#5C30FF]">
+                          •
+                        </span>
+                        <span className="font-inter-tight text-[13px] font-normal text-black leading-[165%]">
+                          {item}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {/* Requirements */}
             {data.requirements && data.requirements.length > 0 && (
@@ -249,14 +267,16 @@ export function OpportunityDetailPublic({ data }: OpportunityDetailPublicProps) 
               <div className="flex flex-col gap-4">
                 {/* Budget */}
                 {!isVolunteer &&
-                  ((data.priceMode === "range" && (data.minBudget || data.maxBudget)) ||
+                  ((data.priceMode === "range" &&
+                    (data.minBudget || data.maxBudget)) ||
                     (data.priceMode === "fixed" && data.price)) && (
                     <div className="flex flex-col gap-2.5">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="font-inter-tight text-[17px] font-medium text-black">
                           {data.priceMode === "range" ? (
                             <>
-                              ₦{(data.minBudget || 0).toLocaleString()} - ₦{(data.maxBudget || 0).toLocaleString()}
+                              ₦{(data.minBudget || 0).toLocaleString()} - ₦
+                              {(data.maxBudget || 0).toLocaleString()}
                             </>
                           ) : (
                             <>₦{(data.price || 0).toLocaleString()}</>

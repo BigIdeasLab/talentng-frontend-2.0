@@ -68,8 +68,19 @@ export function PublicNavbar({ activeLink }: PublicNavbarProps) {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
           >
-            <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              {mobileMenuOpen ? <path d="M4 4L18 18M18 4L4 18" /> : <path d="M3 6h16M3 12h16M3 18h16" />}
+            <svg
+              width="22"
+              height="22"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              {mobileMenuOpen ? (
+                <path d="M4 4L18 18M18 4L4 18" />
+              ) : (
+                <path d="M3 6h16M3 12h16M3 18h16" />
+              )}
             </svg>
           </button>
         </div>
@@ -82,14 +93,20 @@ export function PublicNavbar({ activeLink }: PublicNavbarProps) {
               key={link.label}
               href={link.href}
               className={`text-base ${
-                link.label === activeLink ? "text-[#5C30FF] font-medium" : "text-gray-800 hover:text-[#5C30FF]"
+                link.label === activeLink
+                  ? "text-[#5C30FF] font-medium"
+                  : "text-gray-800 hover:text-[#5C30FF]"
               }`}
               onClick={() => setMobileMenuOpen(false)}
             >
               {link.label}
             </Link>
           ))}
-          <Link href="/login" className="text-base font-medium text-gray-800" onClick={() => setMobileMenuOpen(false)}>
+          <Link
+            href="/login"
+            className="text-base font-medium text-gray-800"
+            onClick={() => setMobileMenuOpen(false)}
+          >
             Log In
           </Link>
         </div>
