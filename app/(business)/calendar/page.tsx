@@ -25,7 +25,6 @@ import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { RescheduleModal } from "@/components/ui/reschedule-modal";
 import { ReviewModal } from "@/components/ui/review-modal";
 import { SuccessModal } from "@/components/ui/success-modal";
-import { RecruiterUpcoming } from "@/components/employer/upcoming/RecruiterUpcoming";
 import { LoadingScreen } from "@/components/layouts/LoadingScreen";
 import { useRouter } from "next/navigation";
 import { useRequireRole } from "@/hooks/useRequireRole";
@@ -52,20 +51,19 @@ const FILTER_TABS = [
 export default function UpcomingPage() {
   const { activeRole, isLoading: roleLoading } = useProfile();
   const router = useRouter();
-  const hasAccess = useRequireRole(["talent", "recruiter", "mentor"]);
+  const hasAccess = useRequireRole(["talent", "mentor"]);
 
   useEffect(() => {
     if (!roleLoading && activeRole === "mentor") {
       router.replace("/sessions");
     }
+    if (!roleLoading && activeRole === "recruiter") {
+      router.replace("/interviews");
+    }
   }, [activeRole, roleLoading, router]);
 
-  if (roleLoading || !activeRole || !hasAccess || activeRole === "mentor") {
+  if (roleLoading || !activeRole || !hasAccess || activeRole === "mentor" || activeRole === "recruiter") {
     return <LoadingScreen />;
-  }
-
-  if (activeRole === "recruiter") {
-    return <RecruiterUpcoming />;
   }
 
   return <TalentUpcoming />;
