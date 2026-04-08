@@ -88,10 +88,7 @@ export async function copyWithFeedback(
 ): Promise<boolean> {
   const success = await copyToClipboard(text);
 
-  if (success) {
-    // You can integrate with your toast system here
-    console.log(successMessage);
-  } else {
+  if (!success) {
     console.error(errorMessage);
   }
 
