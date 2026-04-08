@@ -12,7 +12,7 @@ export function CategoryFilter({
   onCategoryChange,
 }: CategoryFilterProps) {
   return (
-    <div className="flex items-center gap-5 overflow-x-auto scrollbar-hide pb-1.5">
+    <div className="flex items-center gap-5 overflow-x-auto scrollbar-hidden pb-1.5">
       {categories.map((category) => {
         const isActive = activeCategory === category;
 

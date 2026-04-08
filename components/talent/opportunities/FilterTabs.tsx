@@ -22,7 +22,7 @@ const FILTERS = [
 
 export function FilterTabs({ activeFilter, onFilterChange }: FilterTabsProps) {
   return (
-    <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
+    <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hidden">
       {FILTERS.map((filter) => (
         <button
           key={filter.id}

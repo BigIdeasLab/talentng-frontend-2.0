@@ -12,7 +12,7 @@ export function OpportunitiesTabs({
   onTabChange,
 }: OpportunitiesTabsProps) {
   return (
-    <div className="flex items-center gap-[8px] border-b border-transparent overflow-x-auto scrollbar-hide">
+    <div className="flex items-center gap-[8px] border-b border-transparent overflow-x-auto scrollbar-hidden">
       <button
         onClick={() => onTabChange("open")}
         className={`px-[12px] py-[6px] text-[13px] font-medium font-inter-tight whitespace-nowrap transition-colors flex-shrink-0 rounded ${

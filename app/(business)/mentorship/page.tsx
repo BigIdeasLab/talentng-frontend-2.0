@@ -273,7 +273,7 @@ export default function MentorshipPage() {
         </div>
 
         {/* Category Tabs */}
-        <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
+        <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hidden">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
@@ -349,7 +349,7 @@ export default function MentorshipPage() {
 
         {/* Tabs - sticky */}
         <div className="sticky top-0 z-10 w-full px-[25px] py-[12px] bg-white border-b border-[#E1E4EA]">
-          <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
+          <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hidden">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}

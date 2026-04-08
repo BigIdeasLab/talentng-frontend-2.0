@@ -89,7 +89,7 @@ export function ProfilePanel({
   }, [strokeDashoffset]);
 
   return (
-    <div className="hidden lg:flex w-[350px] flex-col bg-white border-r border-[#E1E4EA] px-[25px] py-[15px] overflow-y-auto h-screen scrollbar-hide">
+    <div className="hidden lg:flex w-[350px] flex-col bg-white border-r border-[#E1E4EA] px-[25px] py-[15px] overflow-y-auto h-screen scrollbar-hidden">
       {/* User Profile Section */}
       <div className="flex flex-col items-center gap-[20px]">
         {/* Profile Picture with Completion Badge */}

@@ -521,7 +521,7 @@ export default function ApplicationsPage() {
           </div>
 
           {/* Filter Tabs - Desktop */}
-          <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide pb-[12px]">
+          <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hidden pb-[12px]">
             {TABS.map((tab) => (
               <button
                 key={tab.id}
@@ -562,7 +562,7 @@ export default function ApplicationsPage() {
             </div>
 
             {/* Date Range Filter Buttons */}
-            <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hide pb-1">
+            <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hidden pb-1">
               {[
                 { value: "all", label: "All Time" },
                 { value: "today", label: "Today" },
@@ -586,7 +586,7 @@ export default function ApplicationsPage() {
 
           {/* Status Filter Tabs - Sticky */}
           <div className="sticky top-0 z-10 bg-white px-4 py-2">
-            <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
+            <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hidden">
               {TABS.map((tab) => (
                 <button
                   key={tab.id}
@@ -677,7 +677,7 @@ export default function ApplicationsPage() {
         </div>
 
         {/* Filter Tabs - Desktop */}
-        <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide pb-[12px]">
+        <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hidden pb-[12px]">
           {TABS.map((tab) => (
             <button
               key={tab.id}
@@ -726,7 +726,7 @@ export default function ApplicationsPage() {
           </div>
 
           {/* Date Range Filter Buttons */}
-          <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hide pb-1">
+          <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hidden pb-1">
             {[
               { value: "all", label: "All Time" },
               { value: "today", label: "Today" },
@@ -750,7 +750,7 @@ export default function ApplicationsPage() {
 
         {/* Status Filter Tabs - Sticky */}
         <div className="sticky top-0 z-10 bg-white px-4 py-2">
-          <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
+          <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hidden">
             {TABS.map((tab) => (
               <button
                 key={tab.id}

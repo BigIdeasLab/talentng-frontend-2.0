@@ -269,7 +269,7 @@ export default function ApplicantsPage() {
           </div>
 
           {/* Filter Tabs */}
-          <div className="flex items-center gap-5 border-b border-transparent mb-6 overflow-x-auto scrollbar-hide">
+          <div className="flex items-center gap-5 border-b border-transparent mb-6 overflow-x-auto scrollbar-hidden">
             {TABS.map((tab) => (
               <button
                 key={tab.id}
@@ -425,7 +425,7 @@ export default function ApplicantsPage() {
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex items-center gap-5 border-b border-transparent mb-6 overflow-x-auto scrollbar-hide">
+        <div className="flex items-center gap-5 border-b border-transparent mb-6 overflow-x-auto scrollbar-hidden">
           {TABS.map((tab) => (
             <button
               key={tab.id}

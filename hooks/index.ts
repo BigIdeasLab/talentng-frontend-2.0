@@ -211,3 +211,126 @@ export { useDebounce } from "./useDebounce";
  * Use for responsive UI decisions
  */
 export { useIsMobile } from "./useIsMobile";
+
+/**
+ * useIsTablet() - Check if viewport is tablet
+ *
+ * Returns: boolean (true if window >= 768px and < 1024px)
+ * Use for tablet-specific UI decisions
+ */
+export { useIsTablet } from "./useIsTablet";
+
+/**
+ * useIsTouchDevice() - Check if device supports touch
+ *
+ * Returns: boolean (true if touch events are supported)
+ * Use for touch-specific UI decisions
+ */
+export { useIsTouchDevice } from "./useIsTouchDevice";
+
+/**
+ * useBreakpoint() - Get current responsive breakpoint
+ *
+ * Returns: "mobile" | "tablet" | "desktop"
+ * Use for responsive layout decisions
+ */
+export { useBreakpoint } from "./useBreakpoint";
+
+/**
+ * useOrientation() - Get device orientation
+ *
+ * Returns: "portrait" | "landscape"
+ * Use for orientation-specific layouts
+ */
+export { useOrientation } from "./useOrientation";
+
+/**
+ * useOrientationState() - Get detailed orientation state
+ *
+ * Returns: { orientation, isPortrait, isLandscape }
+ * Use for complex orientation-based logic
+ */
+export { useOrientationState } from "./useOrientationState";
+
+/**
+ * useSwipeGesture() - Handle swipe gestures
+ *
+ * Returns: { handlers } for touch events
+ * Use for swipeable components (modals, cards, etc.)
+ */
+export { useSwipeGesture } from "./useSwipeGesture";
+
+/**
+ * useTextScaling() - Text scaling for accessibility
+ *
+ * Returns: { textScale, setTextScaleLevel, TextScalingControl, withTextScaling }
+ * Use for accessible text size controls
+ */
+export { useTextScaling } from "./useTextScaling";
+
+/**
+ * useMobileInputScroll() - Handle mobile input scroll behavior
+ *
+ * Returns: void (side effect hook)
+ * Use to prevent scroll issues when mobile keyboard appears
+ */
+export { useMobileInputScroll } from "./useMobileInputScroll";
+
+/**
+ * useTabletKeyboardNavigation() - Tablet keyboard navigation
+ *
+ * Returns: void (side effect hook)
+ * Use for keyboard navigation on tablets
+ */
+export { useTabletKeyboardNavigation } from "./useTabletKeyboardNavigation";
+
+/**
+ * useRequireRole() - Enforce role-based access
+ *
+ * Returns: void (redirects if role doesn't match)
+ * Use to protect role-specific pages
+ */
+export { useRequireRole } from "./useRequireRole";
+
+/**
+ * useUnsavedChangesWarning() - Warn before leaving with unsaved changes
+ *
+ * Returns: void (side effect hook)
+ * Use in forms to prevent accidental navigation
+ */
+export { useUnsavedChangesWarning } from "./useUnsavedChangesWarning";
+
+/**
+ * useAvailabilityPrefetch() - Prefetch availability data
+ *
+ * Returns: void (side effect hook)
+ * Use to prefetch mentor availability data
+ */
+export { useAvailabilityPrefetch } from "./useAvailabilityPrefetch";
+
+/**
+ * useBusinessVerification() - Business verification API
+ *
+ * Returns: { verification, loading, error, submitApplication, ... }
+ * Use for business verification flow
+ */
+export {
+  useVerificationStatus,
+  useSubmitVerification,
+  useResubmitVerification,
+  useUploadDocument,
+} from "./useBusinessVerification";
+
+/**
+ * useSupport() - Support ticket API
+ *
+ * Returns: { tickets, loading, error, createTicket, ... }
+ * Use for support ticket management
+ */
+export {
+  useTickets,
+  useTicket,
+  useCreateTicket,
+  useAddReply,
+  useTicketCount,
+} from "./useSupport";

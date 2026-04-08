@@ -736,7 +736,7 @@ export default function MentorDetailPage() {
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto scrollbar-hide px-4 lg:px-6 py-5">
+          <div className="flex-1 overflow-y-auto scrollbar-hidden px-4 lg:px-6 py-5">
             {activeTab === "Overview" && (
               <div className="max-w-[560px] flex flex-col gap-6 lg:gap-7">
                 {/* About Section */}

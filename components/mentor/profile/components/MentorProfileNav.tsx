@@ -17,7 +17,7 @@ export function MentorProfileNav({
 
   return (
     <div className="w-full min-h-[46px] lg:h-[54px] bg-white border-b border-[#E1E4EA] flex-shrink-0">
-      <div className="flex items-center gap-1 lg:gap-2 h-full overflow-x-auto scrollbar-hide">
+      <div className="flex items-center gap-1 lg:gap-2 h-full overflow-x-auto scrollbar-hidden">
         {tabs.map((tab) => (
           <button
             key={tab.id}

@@ -60,7 +60,7 @@ export default function TicketsPage() {
         </div>
 
         {/* Filters */}
-        <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
+        <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hidden">
           {statusFilters.map((filter) => (
             <button
               key={filter.value}

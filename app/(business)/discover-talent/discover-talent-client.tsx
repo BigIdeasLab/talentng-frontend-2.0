@@ -227,7 +227,7 @@ export function DiscoverTalentClient({
         {/* Category Tabs - Sticky */}
         <div className="sticky top-0 z-10 bg-white px-4 py-2 border-b border-[#E1E4EA]">
           <div
-            className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide"
+            className="flex items-center gap-[8px] overflow-x-auto scrollbar-hidden"
             role="tablist"
           >
             {["All", ...categories].map((category) => (

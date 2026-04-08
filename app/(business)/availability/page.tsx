@@ -526,7 +526,7 @@ export default function AvailabilityPage() {
               </div>
 
               {/* Quick Actions */}
-              <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+              <div className="flex gap-2 overflow-x-auto scrollbar-hidden pb-1">
                 <button
                   onClick={clearAll}
                   className="rounded-lg border border-[#E1E4EA] bg-white px-3 py-2 text-[13px] font-medium text-[#525866] transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600 flex-shrink-0"
@@ -557,7 +557,7 @@ export default function AvailabilityPage() {
 
             {/* Day Tabs - Sticky */}
             <div className="sticky top-0 z-10 bg-white border-b border-[#E1E4EA] px-4 py-2">
-              <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hide">
+              <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hidden">
                 {DAYS.map((day) => {
                   const dayHasSlots = Array.from(selectedSlots).some((key) =>
                     key.startsWith(`${day.index}-`),

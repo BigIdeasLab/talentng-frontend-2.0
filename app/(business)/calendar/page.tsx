@@ -463,7 +463,7 @@ function TalentUpcoming() {
           </div>
 
           {/* Date Range Filter Buttons */}
-          <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hide">
+          <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hidden">
             {[
               { value: "all", label: "Upcoming" },
               { value: "today", label: "Today" },
@@ -492,7 +492,7 @@ function TalentUpcoming() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+        <div className="flex items-center gap-2 overflow-x-auto scrollbar-hidden">
           {FILTER_TABS.map((tab) => {
             const Icon = tab.icon;
             const count =

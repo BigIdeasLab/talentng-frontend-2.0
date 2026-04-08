@@ -171,13 +171,6 @@ export default {
             display: "none",
           },
         },
-        ".scrollbar-hide": {
-          "-ms-overflow-style": "none",
-          "scrollbar-width": "none",
-          "&::-webkit-scrollbar": {
-            display: "none",
-          },
-        },
         ".scrollbar-styled": {
           "scrollbar-width": "thin",
           "scrollbar-color": "#D0D5DD #FBFBFB",

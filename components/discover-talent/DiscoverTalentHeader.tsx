@@ -162,7 +162,7 @@ export function DiscoverTalentHeader({
 
         {/* Category Tabs */}
         <div
-          className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide"
+          className="flex items-center gap-[8px] overflow-x-auto scrollbar-hidden"
           role="tablist"
         >
           {["All", ...categories].map((category) => (

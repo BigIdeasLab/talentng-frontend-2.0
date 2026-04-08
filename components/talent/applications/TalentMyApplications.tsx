@@ -301,7 +301,7 @@ export function TalentMyApplications() {
             </div>
 
             {/* Date Range Filter Buttons */}
-            <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hide pb-1">
+            <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hidden pb-1">
               {[
                 { value: "all", label: "All Time" },
                 { value: "today", label: "Today" },
@@ -326,7 +326,7 @@ export function TalentMyApplications() {
           </div>
 
           {/* Status Filter Tabs */}
-          <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
+          <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hidden">
             {statusTabs.map((tab) => (
               <button
                 key={tab.id}
@@ -499,7 +499,7 @@ export function TalentMyApplications() {
           </div>
 
           {/* Date Range Filter Buttons */}
-          <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hide pb-1">
+          <div className="flex items-center gap-[6px] overflow-x-auto scrollbar-hidden pb-1">
             {[
               { value: "all", label: "All Time" },
               { value: "today", label: "Today" },
@@ -525,7 +525,7 @@ export function TalentMyApplications() {
 
         {/* Status Filter Tabs - Sticky */}
         <div className="sticky top-0 z-10 bg-white border-b border-[#E1E4EA] px-4 py-2">
-          <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hide">
+          <div className="flex items-center gap-[8px] overflow-x-auto scrollbar-hidden">
             {statusTabs.map((tab) => (
               <button
                 key={tab.id}
