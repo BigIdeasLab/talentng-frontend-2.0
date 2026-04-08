@@ -20,7 +20,7 @@ import type {
 } from "@/lib/api/mentorship/types";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
-import { SuccessModal } from "@/components/ui/success-modal";
+import { SuccessModal } from "@/components/ui/SuccessModal";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 interface AvailabilitySlot {

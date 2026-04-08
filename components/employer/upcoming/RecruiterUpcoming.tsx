@@ -8,7 +8,7 @@ import {
   Clock,
   MapPin,
 } from "lucide-react";
-import { SearchInput } from "@/components/ui/search-input";
+import { SearchInput } from "@/components/ui/SearchInput";
 import {
   ApplicationFilterModal,
   type ApplicationFilterState,
@@ -21,7 +21,7 @@ import type {
   ApplicationInterview,
 } from "@/lib/api/applications/types";
 import { RecruiterInterviewCard } from "./RecruiterInterviewCard";
-import { EmptyState } from "@/components/ui/empty-state";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 interface UpcomingItem {
   type: "interview";

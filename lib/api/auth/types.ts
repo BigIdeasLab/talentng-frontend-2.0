@@ -13,7 +13,15 @@ export interface RegisterCredentials {
 export interface AuthResponse {
   accessToken: string;
   refreshToken?: string;
+  userId?: string;
   user?: User;
+  needsOnboarding?: boolean;
+}
+
+export interface SwitchRoleResponse {
+  accessToken: string;
+  refreshToken?: string;
+  activeRole: string;
 }
 
 export interface VerifyEmailRequest {

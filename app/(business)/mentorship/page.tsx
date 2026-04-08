@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { SlidersHorizontal } from "lucide-react";
-import { SearchInput } from "@/components/ui/search-input";
+import { SearchInput } from "@/components/ui/SearchInput";
 import { MentorGridSkeleton } from "@/components/talent/mentorship/MentorCardSkeleton";
 import { MentorGrid } from "@/components/talent/mentorship/MentorGrid";
 import {

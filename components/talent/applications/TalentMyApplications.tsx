@@ -12,8 +12,8 @@ import {
   MentorshipRequestCard,
   MyApplicationsSkeleton,
 } from "@/components/talent/applications";
-import { EmptyState } from "@/components/ui/empty-state";
-import { SearchInput } from "@/components/ui/search-input";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { SearchInput } from "@/components/ui/SearchInput";
 
 type TabType = "jobs" | "mentorship";
 

@@ -5,8 +5,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { SearchInput } from "@/components/ui/search-input";
+} from "@/components/ui/DropdownMenu";
+import { SearchInput } from "@/components/ui/SearchInput";
 
 interface ApplicantsHeaderProps {
   searchQuery: string;

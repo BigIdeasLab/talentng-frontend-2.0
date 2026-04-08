@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { TalentCard } from "@/components/DiscoverTalent/TalentCard";
+import { TalentCard } from "@/components/discover-talent/TalentCard";
 import { browseTalents } from "@/lib/api/public/talents";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────

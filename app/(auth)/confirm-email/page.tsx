@@ -11,8 +11,8 @@ import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from "@/components/ui/input-otp";
-import { verifyEmailSend, verifyEmailConfirm } from "@/lib/api/auth-service";
+} from "@/components/ui/InputOtp";
+import { verifyEmailSend, verifyEmailConfirm } from "@/lib/api/auth";
 import { storeTokens } from "@/lib/auth";
 import { COLORS } from "@/lib/constants";
 

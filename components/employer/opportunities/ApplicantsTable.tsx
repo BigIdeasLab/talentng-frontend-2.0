@@ -7,7 +7,7 @@ import {
   updateApplicationStatus,
   scheduleInterview,
 } from "@/lib/api/applications";
-import { SuccessModal } from "@/components/ui/success-modal";
+import { SuccessModal } from "@/components/ui/SuccessModal";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { HireApplicationModal } from "@/components/employer/applicants/HireApplicationModal";
 import {

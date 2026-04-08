@@ -6,8 +6,8 @@ import {
   SessionCard,
   type SessionStatus as CardSessionStatus,
 } from "@/components/mentor/sessions/SessionCard";
-import { ConfirmationModal } from "@/components/ui/confirmation-modal";
-import { RescheduleModal } from "@/components/ui/reschedule-modal";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
+import { RescheduleModal } from "@/components/ui/RescheduleModal";
 import { useToast } from "@/hooks";
 import {
   getSessions,

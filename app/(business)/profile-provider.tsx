@@ -12,7 +12,8 @@ import type { UIProfileData } from "@/lib/profileMapper";
 import type { TalentProfile, DashboardStats } from "@/lib/api/talent/types";
 import type { RecruiterProfile } from "@/lib/api/recruiter/types";
 import type { MentorProfile } from "@/lib/api/mentor/types";
-import { switchRole as switchRoleApi } from "@/lib/api/auth-service";
+import { switchRole as switchRoleApi } from "@/lib/api/auth";
+import { setCookie } from "@/lib/utils";
 
 export interface ProfileContextType {
   // User info
@@ -195,7 +196,7 @@ export function ProfileProvider({
   // Persist all SSR cookies in one place
   useEffect(() => {
     if (!activeRole) return;
-    document.cookie = `activeRole=${activeRole}; path=/; max-age=31536000; SameSite=Lax`;
+    setCookie("activeRole", activeRole, 365);
 
     const profile = profilesUI[activeRole] || profiles[activeRole];
     if (!profile) return;
@@ -203,8 +204,8 @@ export function ProfileProvider({
     const name = getProfileDisplayName(activeRole, profile);
     const avatar = getProfileAvatarUrl(profile);
     if (name && name !== "User" && name !== "Company" && name !== "Mentor") {
-      document.cookie = `profileName=${encodeURIComponent(name)}; path=/; max-age=31536000; SameSite=Lax`;
-      document.cookie = `profileAvatar=${encodeURIComponent(avatar)}; path=/; max-age=31536000; SameSite=Lax`;
+      setCookie("profileName", encodeURIComponent(name), 365);
+      setCookie("profileAvatar", encodeURIComponent(avatar), 365);
     }
   }, [activeRole, profiles, profilesUI]);
 

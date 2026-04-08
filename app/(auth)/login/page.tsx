@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { login } from "@/lib/api/auth-service";
+import { login } from "@/lib/api/auth";
 import { storeTokens } from "@/lib/auth";
 import { COLORS } from "@/lib/constants";
 
@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/RateLimitNotification";
 import { isRateLimitError } from "@/lib/utils/rate-limit-handler";
 
-import type { AuthResponse } from "@/lib/api/auth-service";
+import type { AuthResponse } from "@/lib/api/auth";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address."),

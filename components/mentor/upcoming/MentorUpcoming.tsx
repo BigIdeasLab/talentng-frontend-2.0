@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Calendar, Users, SlidersHorizontal } from "lucide-react";
-import { SearchInput } from "@/components/ui/search-input";
+import { SearchInput } from "@/components/ui/SearchInput";
 import { useToast } from "@/hooks";
 import { getMentorSessions } from "@/lib/api/mentorship";
 import { useNotificationSocket } from "@/hooks/useNotificationSocket";
@@ -12,7 +12,7 @@ import {
   ApplicationFilterModal,
   type ApplicationFilterState,
 } from "@/components/talent/applications";
-import { EmptyState } from "@/components/ui/empty-state";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 interface UpcomingItem {
   type: "session";

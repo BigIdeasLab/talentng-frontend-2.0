@@ -18,12 +18,14 @@ const NotFound = () => {
     <div className="min-h-screen flex items-start md:items-center justify-center bg-gray-100 pt-16 md:pt-0">
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-4">404</h1>
-        <p className="text-xl text-gray-600 mb-4">NOT IMPLEMENTED YET</p>
+        <p className="text-xl text-gray-600 mb-4">
+          Sorry, the page you&apos;re looking for doesn&apos;t exist.
+        </p>
         <Link
           href="/profile"
           className="text-blue-500 hover:text-blue-700 underline"
         >
-          GO TO PROFILE PAGE
+          Go to Profile
         </Link>
       </div>
     </div>

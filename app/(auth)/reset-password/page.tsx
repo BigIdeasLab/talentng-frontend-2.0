@@ -12,11 +12,11 @@ import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from "@/components/ui/input-otp";
+} from "@/components/ui/InputOtp";
 
-import { resetPassword } from "@/lib/api/auth-service";
+import { resetPassword } from "@/lib/api/auth";
 import { COLORS } from "@/lib/constants";
-import type { AuthResponse } from "@/lib/api/auth-service";
+import type { AuthResponse } from "@/lib/api/auth";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {

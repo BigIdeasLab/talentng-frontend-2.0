@@ -10,7 +10,7 @@ import type {
 } from "@/lib/api/applications/types";
 import { TalentInterviewCard } from "./TalentInterviewCard";
 import { TalentSessionCard } from "./TalentSessionCard";
-import { EmptyState } from "@/components/ui/empty-state";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 interface UpcomingItem {
   type: "interview" | "session";

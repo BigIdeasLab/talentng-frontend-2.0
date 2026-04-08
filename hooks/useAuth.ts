@@ -1,10 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { getCurrentUser } from "@/lib/api/users";
 import type { User } from "@/lib/types/auth";
-import { logout as logoutAPI } from "@/lib/api/auth-service";
+import { logout as logoutAPI } from "@/lib/api/auth";
 import { resetRefreshState } from "@/lib/token-refresh";
 
 const fetchUser = async (): Promise<User | null> => {
@@ -21,10 +20,6 @@ export const useAuth = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  // Check if user is authenticated by attempting to fetch user data
-  // Cookies are sent automatically with the request
-  const hasToken = true; // Always attempt to fetch, cookies will determine auth
-
   const {
     data: user,
     isLoading: loading,
@@ -32,17 +27,9 @@ export const useAuth = () => {
   } = useQuery({
     queryKey: ["user"],
     queryFn: fetchUser,
-    staleTime: 0, // Always consider cache stale to ensure fresh data after login
-    enabled: hasToken, // Only run query if token exists in localStorage
-    retry: 1, // Retry once on failure (allows refresh to kick in)
+    staleTime: 0,
+    retry: 1,
   });
-
-  // Refetch user when tokens change (after login or after page reload)
-  useEffect(() => {
-    if (hasToken && !loading) {
-      refetchUser();
-    }
-  }, [hasToken, refetchUser, loading]);
 
   const logout = async () => {
     try {

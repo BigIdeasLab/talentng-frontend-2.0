@@ -9,7 +9,7 @@ import { SmoothCollapse } from "@/components/SmoothCollapse";
 import { SectionHeader } from "@/components/talent/profile/components/edit/SectionHeader";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
-import { ConfirmationModal } from "@/components/ui/confirmation-modal";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
 import { Plus, X as XIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -19,7 +19,7 @@ import {
 import { fetchProfileByRole } from "@/lib/api/profile-service";
 import statesCities from "@/lib/data/states-cities.json";
 import { EmployerEditProfileSkeleton } from "@/components/skeletons/EditProfileSkeleton";
-import { SuccessModal } from "@/components/ui/success-modal";
+import { SuccessModal } from "@/components/ui/SuccessModal";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import {
   ResponsiveFormField,

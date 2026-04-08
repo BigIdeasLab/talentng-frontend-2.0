@@ -9,7 +9,7 @@ import {
   useUpdateOpportunity,
 } from "@/hooks/useRecruiterOpportunities";
 import { useToast } from "@/hooks";
-import { SuccessModal } from "@/components/ui/success-modal";
+import { SuccessModal } from "@/components/ui/SuccessModal";
 import { getToolInfo } from "@/lib/utils/tools";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { VerifiedBadgeIcon } from "@/components/verification/VerifiedBadgeIcon";

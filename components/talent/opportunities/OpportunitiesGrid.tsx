@@ -1,8 +1,8 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { OpportunityCard } from "./opportunity-card";
-import { EmptyState } from "@/components/ui/empty-state";
+import { OpportunityCard } from "./OpportunityCard";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Briefcase } from "lucide-react";
 import type { OpportunitiesGridProps } from "./types";
 

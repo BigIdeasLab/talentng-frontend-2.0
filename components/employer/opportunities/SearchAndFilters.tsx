@@ -1,12 +1,12 @@
 "use client";
 
-import { SearchInput } from "@/components/ui/search-input";
+import { SearchInput } from "@/components/ui/SearchInput";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/DropdownMenu";
 import type { SortType } from "@/lib/types";
 
 interface SearchAndFiltersProps {

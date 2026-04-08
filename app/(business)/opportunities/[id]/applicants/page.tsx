@@ -6,8 +6,8 @@ import { useState, useEffect, useMemo } from "react";
 import { Users } from "lucide-react";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
-import { EmptyState } from "@/components/ui/empty-state";
-import { SearchInput } from "@/components/ui/search-input";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { SearchInput } from "@/components/ui/SearchInput";
 import {
   useRecruiterApplicationsQuery,
   useUpdateApplicationStatus,
@@ -19,7 +19,7 @@ import {
   type ApplicantFilterState,
 } from "@/components/employer/applicants/ApplicantFilterModal";
 import { HireApplicationModal } from "@/components/employer/applicants/HireApplicationModal";
-import { SuccessModal } from "@/components/ui/success-modal";
+import { SuccessModal } from "@/components/ui/SuccessModal";
 import { useToast } from "@/hooks";
 
 // Map status to UI display - Recruiter View

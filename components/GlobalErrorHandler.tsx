@@ -3,6 +3,8 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useProfile } from "@/hooks/useProfile";
+import { setCookie } from "@/lib/utils";
+import { isRoleMismatchError } from "@/lib/api/errors";
 
 export function GlobalErrorHandler() {
   const queryClient = useQueryClient();
@@ -12,13 +14,13 @@ export function GlobalErrorHandler() {
     // Intercept query errors
     const unsubscribeQuery = queryClient.getQueryCache().subscribe((event) => {
       if (event.type === "updated" && event.action.type === "error") {
-        const error = event.action.error as any;
-        if (error?.isRoleMismatch) {
+        const error = event.action.error;
+        if (isRoleMismatchError(error)) {
           if (error.actualRole) {
             // Auto-sync frontend role with backend role if they mismatched
             setActiveRole(error.actualRole);
             localStorage.setItem("activeRole", error.actualRole);
-            document.cookie = `activeRole=${error.actualRole}; path=/; max-age=31536000; SameSite=Lax`;
+            setCookie("activeRole", error.actualRole, 365);
           } else if (error.requiredRole) {
             triggerRoleSwitch(error.requiredRole);
           }
@@ -31,12 +33,12 @@ export function GlobalErrorHandler() {
       .getMutationCache()
       .subscribe((event) => {
         if (event.type === "updated" && event.action.type === "error") {
-          const error = event.action.error as any;
-          if (error?.isRoleMismatch) {
+          const error = event.action.error;
+          if (isRoleMismatchError(error)) {
             if (error.actualRole) {
               setActiveRole(error.actualRole);
               localStorage.setItem("activeRole", error.actualRole);
-              document.cookie = `activeRole=${error.actualRole}; path=/; max-age=31536000; SameSite=Lax`;
+              setCookie("activeRole", error.actualRole, 365);
             } else if (error.requiredRole) {
               triggerRoleSwitch(error.requiredRole);
             }
@@ -48,7 +50,7 @@ export function GlobalErrorHandler() {
       unsubscribeQuery();
       unsubscribeMutation();
     };
-  }, [queryClient, triggerRoleSwitch]);
+  }, [queryClient, triggerRoleSwitch, setActiveRole]);
 
   return null;
 }

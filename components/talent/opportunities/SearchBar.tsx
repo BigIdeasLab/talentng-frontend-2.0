@@ -1,5 +1,5 @@
 import { SlidersHorizontal } from "lucide-react";
-import { SearchInput } from "@/components/ui/search-input";
+import { SearchInput } from "@/components/ui/SearchInput";
 
 interface SearchBarProps {
   searchQuery: string;

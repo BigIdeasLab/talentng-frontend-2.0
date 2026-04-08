@@ -3,10 +3,10 @@
 import React, { useState } from "react";
 import { Modal } from "./modal";
 import { Button } from "./button";
-import { switchRole } from "@/lib/api/auth-service";
+import { switchRole } from "@/lib/api/auth";
 import { Loader2, ShieldAlert } from "lucide-react";
 import { useToast } from "@/hooks";
-import { SuccessModal } from "@/components/ui/success-modal";
+import { SuccessModal } from "@/components/ui/SuccessModal";
 import { ROLE_COLORS, getRoleColors } from "@/lib/theme/role-colors";
 
 interface RoleSwitchModalProps {

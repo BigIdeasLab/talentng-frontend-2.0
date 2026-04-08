@@ -21,8 +21,8 @@ import {
 } from "@/lib/api/mentorship";
 import { Check, Clock, Zap, Info, ChevronDown, Settings } from "lucide-react";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
-import { ConfirmationModal } from "@/components/ui/confirmation-modal";
-import { SuccessModal } from "@/components/ui/success-modal";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
+import { SuccessModal } from "@/components/ui/SuccessModal";
 
 // ============ Constants ============
 

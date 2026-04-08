@@ -11,7 +11,7 @@ import {
   useUnsaveOpportunity,
 } from "@/hooks/useTalentOpportunities";
 import { useProfile } from "@/hooks";
-import { ApplicationModal } from "@/components/talent/opportunities/application-modal";
+import { ApplicationModal } from "@/components/talent/opportunities/ApplicationModal";
 import type { DisplayOpportunity } from "@/components/talent/opportunities/types";
 import { VerifiedBadgeIcon } from "@/components/verification/VerifiedBadgeIcon";
 

@@ -5,13 +5,13 @@ import { SlidersHorizontal, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FilterModal, type FilterState } from "./FilterModal";
 import categories from "@/lib/data/categories.json";
-import { SearchInput } from "@/components/ui/search-input";
+import { SearchInput } from "@/components/ui/SearchInput";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/DropdownMenu";
 
 interface DiscoverTalentHeaderProps {
   selectedCategory: string;

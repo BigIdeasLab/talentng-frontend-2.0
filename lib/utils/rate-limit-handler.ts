@@ -3,6 +3,8 @@
  * Provides user-friendly messages for rate limiting scenarios
  */
 
+import { isRateLimitError as isApiRateLimitError, ApiError } from "@/lib/api/errors";
+
 export interface RateLimitInfo {
   isRateLimited: boolean;
   type: "throttler" | "login_attempts" | "account_lockout" | "unknown";
@@ -35,6 +37,11 @@ export function parseRateLimitError(error: any): RateLimitInfo {
   let waitTime: number | undefined;
   let userMessage = "";
 
+  // If it's an ApiError, extract retryAfter directly
+  if (error instanceof ApiError && error.retryAfter) {
+    waitTime = error.retryAfter;
+  }
+
   // Check endpoint to determine rate limit type
   const isAuthEndpoint = url.includes("/auth/");
   const isAdminEndpoint = url.includes("/admin/");
@@ -48,17 +55,17 @@ export function parseRateLimitError(error: any): RateLimitInfo {
   ) {
     if (isStrictAuthEndpoint) {
       type = "throttler";
-      waitTime = 60; // Strict auth endpoints: 3 requests per 60 seconds
+      waitTime = waitTime || 60; // Strict auth endpoints: 3 requests per 60 seconds
       userMessage =
         "Too many password reset attempts. Please wait a minute before trying again.";
     } else if (isAuthEndpoint || isAdminEndpoint) {
       type = "throttler";
-      waitTime = 60; // Standard auth/admin endpoints: 5 requests per 60 seconds
+      waitTime = waitTime || 60; // Standard auth/admin endpoints: 5 requests per 60 seconds
       userMessage =
         "Too many authentication attempts. Please wait a minute before trying again.";
     } else {
       type = "throttler";
-      waitTime = 60; // Default for any other rate limited endpoint
+      waitTime = waitTime || 60; // Default for any other rate limited endpoint
       userMessage =
         "Too many requests. Please wait a minute before trying again.";
     }
@@ -70,7 +77,7 @@ export function parseRateLimitError(error: any): RateLimitInfo {
     message.includes("login attempts")
   ) {
     type = "login_attempts";
-    waitTime = 60; // Login attempts: wait 1 minute
+    waitTime = waitTime || 60; // Login attempts: wait 1 minute
     userMessage =
       "Too many login attempts. Please wait a minute before trying again.";
   }
@@ -82,21 +89,23 @@ export function parseRateLimitError(error: any): RateLimitInfo {
     message.includes("temporarily locked")
   ) {
     type = "account_lockout";
-    waitTime = 15 * 60; // Account lockout is 15 minutes
+    waitTime = waitTime || 15 * 60; // Account lockout is 15 minutes
     userMessage =
       "Account temporarily locked due to multiple failed login attempts. Please try again in 15 minutes.";
   }
 
-  // Try to extract retry-after header or wait time from response
-  const retryAfter =
-    data.retryAfter || error.response?.headers?.["retry-after"];
-  if (retryAfter) {
-    if (typeof retryAfter === "number") {
-      waitTime = retryAfter;
-    } else if (typeof retryAfter === "string") {
-      const parsed = parseInt(retryAfter, 10);
-      if (!isNaN(parsed)) {
-        waitTime = parsed;
+  // Try to extract retry-after header or wait time from response (fallback)
+  if (!waitTime) {
+    const retryAfter =
+      data.retryAfter || error.response?.headers?.["retry-after"];
+    if (retryAfter) {
+      if (typeof retryAfter === "number") {
+        waitTime = retryAfter;
+      } else if (typeof retryAfter === "string") {
+        const parsed = parseInt(retryAfter, 10);
+        if (!isNaN(parsed)) {
+          waitTime = parsed;
+        }
       }
     }
   }
@@ -197,10 +206,10 @@ export function createRateLimitCountdown(
 
 /**
  * Check if an error is a rate limiting error
+ * Re-exports the type guard from lib/api/errors for convenience
  */
 export function isRateLimitError(error: any): boolean {
-  const status = error.status || error.response?.status;
-  return status === 429;
+  return isApiRateLimitError(error);
 }
 
 /**

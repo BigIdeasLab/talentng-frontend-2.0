@@ -11,8 +11,8 @@ import { getTalentOpportunities } from "@/lib/api/opportunities";
 import type { Opportunity } from "@/lib/api/opportunities/types";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
-import { OpportunityCard } from "@/components/talent/opportunities/opportunity-card";
-import { EmptyState } from "@/components/ui/empty-state";
+import { OpportunityCard } from "@/components/talent/opportunities/OpportunityCard";
+import { EmptyState } from "@/components/ui/EmptyState";
 import type { DisplayOpportunity } from "@/components/talent/opportunities/types";
 import { VerifiedBadgeIcon } from "@/components/verification/VerifiedBadgeIcon";
 

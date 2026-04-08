@@ -1,4 +1,4 @@
-import type { FilterState } from "@/components/DiscoverTalent";
+import type { FilterState } from "@/components/discover-talent";
 import type { TalentData } from "@/app/(business)/discover-talent/server-data";
 
 /**

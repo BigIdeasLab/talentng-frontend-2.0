@@ -12,7 +12,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { useRoleColors } from "@/lib/theme/RoleColorContext";
 import { useProfile, useToast } from "@/hooks";
-import { ApplicationModal } from "@/components/talent/opportunities/application-modal";
+import { ApplicationModal } from "@/components/talent/opportunities/ApplicationModal";
 import { SimilarOpportunitiesSection } from "./SimilarOpportunitiesSection";
 import { VerifiedBadgeIcon } from "@/components/verification/VerifiedBadgeIcon";
 import type { DisplayOpportunity } from "@/components/talent/opportunities/types";

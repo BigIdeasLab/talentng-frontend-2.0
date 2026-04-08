@@ -3,9 +3,9 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import { TalentOpportunitiesHeader } from "@/components/talent/opportunities/header";
-import { OpportunitiesGrid } from "@/components/talent/opportunities/opportunities-grid";
-import { FilterTabs } from "@/components/talent/opportunities/filter-tabs";
-import { SearchInput } from "@/components/ui/search-input";
+import { OpportunitiesGrid } from "@/components/talent/opportunities/OpportunitiesGrid";
+import { FilterTabs } from "@/components/talent/opportunities/FilterTabs";
+import { SearchInput } from "@/components/ui/SearchInput";
 import {
   OpportunitiesFilterModal,
   type OpportunitiesFilterState,

@@ -3,9 +3,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
 import { Check, X, Clock, Calendar, MapPin, Video } from "lucide-react";
-import { SearchInput } from "@/components/ui/search-input";
-import { EmptyState } from "@/components/ui/empty-state";
-import { ConfirmationModal } from "@/components/ui/confirmation-modal";
+import { SearchInput } from "@/components/ui/SearchInput";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
 import { useToast } from "@/hooks";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";

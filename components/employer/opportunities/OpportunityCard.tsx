@@ -11,7 +11,7 @@ import {
 } from "@/hooks/useRecruiterOpportunities";
 import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
 import { useToast } from "@/hooks";
-import { SuccessModal } from "@/components/ui/success-modal";
+import { SuccessModal } from "@/components/ui/SuccessModal";
 import { type Application } from "@/lib/api/applications/types";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
@@ -20,7 +20,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/DropdownMenu";
 import type { OpportunityCardProps } from "@/lib/types";
 import { TYPE_CONFIG } from "@/lib/types/opportunities";
 import { VerifiedBadgeIcon } from "@/components/verification/VerifiedBadgeIcon";

@@ -4,9 +4,9 @@ import { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Loader, Upload } from "lucide-react";
 import { useRoleColors } from "@/lib/theme/RoleColorContext";
 import { getCurrentProfile, uploadGalleryImages } from "@/lib/api/talent";
-import { SuccessModal } from "@/components/ui/success-modal";
+import { SuccessModal } from "@/components/ui/SuccessModal";
 import type { GalleryItem } from "@/lib/api/talent";
-import type { Project } from "./application-modal";
+import type { Project } from "./ApplicationModal";
 
 interface ProjectSelectionModalProps {
   isOpen: boolean;

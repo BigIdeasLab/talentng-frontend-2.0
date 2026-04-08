@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Bookmark, Check } from "lucide-react";
-import { ApplicationStatusBanner } from "./application-status-banner";
-import { ApplicationModal } from "./application-modal";
+import { ApplicationStatusBanner } from "./ApplicationStatusBanner";
+import { ApplicationModal } from "./ApplicationModal";
 import type { DisplayOpportunity } from "./types";
 import { TYPE_CONFIG } from "@/lib/types/opportunities";
 import {
@@ -13,7 +13,7 @@ import {
 } from "@/hooks/useTalentOpportunities";
 import { useProfile } from "@/hooks";
 import { useRoleColors } from "@/lib/theme/RoleColorContext";
-import { SuccessModal } from "@/components/ui/success-modal";
+import { SuccessModal } from "@/components/ui/SuccessModal";
 import { VerifiedBadgeIcon } from "@/components/verification/VerifiedBadgeIcon";
 
 interface OpportunityCardProps {

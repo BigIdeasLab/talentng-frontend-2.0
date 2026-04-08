@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { SlidersHorizontal, MapPin, Mail, Calendar } from "lucide-react";
-import { SearchInput } from "@/components/ui/search-input";
+import { SearchInput } from "@/components/ui/SearchInput";
 import { HireFilterModal, type HireFilterState } from "./HireFilterModal";
 import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
 import { type Application } from "@/lib/api/applications/types";

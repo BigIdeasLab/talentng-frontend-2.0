@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
 import { useToast } from "@/hooks";
-import { SuccessModal } from "@/components/ui/success-modal";
+import { SuccessModal } from "@/components/ui/SuccessModal";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { ScheduleInterviewModal } from "@/components/employer/applicants/ScheduleInterviewModal";
 import { DeclineApplicationModal } from "@/components/employer/applicants/DeclineApplicationModal";

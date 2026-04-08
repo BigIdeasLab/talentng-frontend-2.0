@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { useRoleColors } from "@/lib/theme/RoleColorContext";
 import { useSubmitApplication } from "@/hooks/useTalentApplications";
 import { useToast, useProfile } from "@/hooks";
-import { SuccessModal } from "@/components/ui/success-modal";
+import { SuccessModal } from "@/components/ui/SuccessModal";
 import type { DisplayOpportunity } from "./types";
-import { ProjectSelectionModal } from "./project-selection-modal";
+import { ProjectSelectionModal } from "./ProjectSelectionModal";
 
 interface ApplicationModalProps {
   isOpen: boolean;

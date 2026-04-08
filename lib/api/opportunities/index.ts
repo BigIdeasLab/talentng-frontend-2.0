@@ -4,6 +4,7 @@
  */
 
 import apiClient from "@/lib/api";
+import { buildQueryString } from "@/lib/utils/query";
 import type {
   Opportunity,
   GetOpportunitiesParams,
@@ -15,146 +16,118 @@ import type {
  * Browse opportunities (generic, used for public browsing)
  * GET /opportunities
  */
-export const getOpportunities = async (
+export async function getOpportunities(
   params?: GetOpportunitiesParams,
-): Promise<PaginatedOpportunitiesResponse> => {
-  const query = new URLSearchParams();
-  if (params) {
-    for (const key in params) {
-      const value = params[key as keyof GetOpportunitiesParams];
-      if (value !== undefined && value !== null) {
-        query.append(key, String(value));
-      }
-    }
-  }
-  const queryString = query.toString();
+): Promise<PaginatedOpportunitiesResponse> {
+  const queryString = buildQueryString(params as Record<string, string | number | boolean | null | undefined>);
   const endpoint = `/opportunities${queryString ? `?${queryString}` : ""}`;
-  const response = await apiClient<PaginatedOpportunitiesResponse>(endpoint);
-  return response;
-};
+  return apiClient<PaginatedOpportunitiesResponse>(endpoint);
+}
 
 /**
  * Browse opportunities as a talent
  * GET /talent/opportunities
  */
-export const getTalentOpportunities = async (
+export async function getTalentOpportunities(
   params?: GetOpportunitiesParams,
-): Promise<PaginatedOpportunitiesResponse> => {
-  const query = new URLSearchParams();
-  if (params) {
-    for (const key in params) {
-      const value = params[key as keyof GetOpportunitiesParams];
-      if (value !== undefined && value !== null) {
-        query.append(key, String(value));
-      }
-    }
-  }
-  const queryString = query.toString();
+): Promise<PaginatedOpportunitiesResponse> {
+  const queryString = buildQueryString(params as Record<string, string | number | boolean | null | undefined>);
   const endpoint = `/talent/opportunities${queryString ? `?${queryString}` : ""}`;
   return apiClient<PaginatedOpportunitiesResponse>(endpoint);
-};
+}
 
 /**
  * List recruiter's posted opportunities
  * GET /recruiter/opportunities
  */
-export const getRecruiterOpportunities = async (
+export async function getRecruiterOpportunities(
   params?: GetOpportunitiesParams,
-): Promise<PaginatedOpportunitiesResponse> => {
-  const query = new URLSearchParams();
-  if (params) {
-    for (const key in params) {
-      const value = params[key as keyof GetOpportunitiesParams];
-      if (value !== undefined && value !== null) {
-        query.append(key, String(value));
-      }
-    }
-  }
-  const queryString = query.toString();
+): Promise<PaginatedOpportunitiesResponse> {
+  const queryString = buildQueryString(params as Record<string, string | number | boolean | null | undefined>);
   const endpoint = `/recruiter/opportunities${queryString ? `?${queryString}` : ""}`;
   return apiClient<PaginatedOpportunitiesResponse>(endpoint);
-};
+}
 
-export const getOpportunityById = async (id: string): Promise<Opportunity> => {
+export async function getOpportunityById(id: string): Promise<Opportunity> {
   const endpoint = `/opportunities/${id}`;
   return apiClient<Opportunity>(endpoint);
-};
+}
 
 /**
  * Create opportunity (recruiter only)
  * POST /recruiter/opportunities
  */
-export const createOpportunity = async (
+export async function createOpportunity(
   data: Partial<Opportunity>,
-): Promise<Opportunity> => {
+): Promise<Opportunity> {
   return apiClient<Opportunity>("/recruiter/opportunities", {
     method: "POST",
     body: data,
   });
-};
+}
 
-export const updateOpportunity = async (
+export async function updateOpportunity(
   id: string,
   data: Partial<Opportunity>,
-): Promise<Opportunity> => {
+): Promise<Opportunity> {
   return apiClient<Opportunity>(`/opportunities/${id}`, {
     method: "PATCH",
     body: data,
   });
-};
+}
 
-export const postOpportunity = async (id: string): Promise<Opportunity> => {
+export async function postOpportunity(id: string): Promise<Opportunity> {
   return apiClient<Opportunity>(`/opportunities/${id}`, {
     method: "PATCH",
     body: { status: "active" },
   });
-};
+}
 
-export const deleteOpportunity = async (id: string): Promise<void> => {
+export async function deleteOpportunity(id: string): Promise<void> {
   return apiClient<void>(`/opportunities/${id}`, {
     method: "DELETE",
   });
-};
+}
 
 /**
  * Save an opportunity (talent only)
  * POST /talent/opportunities/:id/save
  */
-export const saveOpportunity = async (id: string): Promise<Opportunity> => {
+export async function saveOpportunity(id: string): Promise<Opportunity> {
   return apiClient<Opportunity>(`/talent/opportunities/${id}/save`, {
     method: "POST",
     body: {},
   });
-};
+}
 
 /**
  * Unsave an opportunity (talent only)
  * DELETE /talent/opportunities/:id/save
  */
-export const unsaveOpportunity = async (id: string): Promise<void> => {
+export async function unsaveOpportunity(id: string): Promise<void> {
   return apiClient<void>(`/talent/opportunities/${id}/save`, {
     method: "DELETE",
   });
-};
+}
 
 /**
  * Check if opportunity is saved (talent only)
  * GET /talent/opportunities/:id/is-saved
  */
-export const getSaveStatus = async (
+export async function getSaveStatus(
   id: string,
-): Promise<{ saved: boolean }> => {
+): Promise<{ saved: boolean }> {
   return apiClient<{ saved: boolean }>(`/talent/opportunities/${id}/is-saved`);
-};
+}
 
 /**
  * Get saved opportunities (talent only)
  * GET /talent/opportunities/saved
  */
-export const getSavedOpportunities = async (
+export async function getSavedOpportunities(
   limit = 20,
   offset = 0,
-): Promise<PaginatedOpportunitiesResponse> => {
+): Promise<PaginatedOpportunitiesResponse> {
   const query = new URLSearchParams({
     limit: String(limit),
     offset: String(offset),
@@ -163,15 +136,15 @@ export const getSavedOpportunities = async (
     `/talent/opportunities/saved?${query.toString()}`,
   );
   return response;
-};
+}
 
-export const reopenOpportunity = async (
+export async function reopenOpportunity(
   id: string,
-): Promise<ReopenOpportunityResponse> => {
+): Promise<ReopenOpportunityResponse> {
   return apiClient<ReopenOpportunityResponse>(`/opportunities/${id}/reopen`, {
     method: "POST",
   });
-};
+}
 
 // Export types
 export type {

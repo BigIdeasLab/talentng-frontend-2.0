@@ -11,7 +11,7 @@ const baseUrl =
   process.env.NEXT_PUBLIC_TALENTNG_API_URL ||
   (process.env.NODE_ENV === "production"
     ? "https://api.talentng.com"
-    : "http://localhost:3001/api/v1");
+    : "http://localhost:3001");
 
 type ApiOptions = {
   headers?: Record<string, string>;

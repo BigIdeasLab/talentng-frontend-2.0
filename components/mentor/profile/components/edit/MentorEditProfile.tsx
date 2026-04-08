@@ -11,9 +11,9 @@ import { Plus, X as XIcon } from "lucide-react";
 import { SmoothCollapse } from "@/components/SmoothCollapse";
 import { SectionHeader } from "@/components/talent/profile/components/edit/SectionHeader";
 import { Button } from "@/components/ui/button";
-import { ConfirmationModal } from "@/components/ui/confirmation-modal";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
 import { Modal } from "@/components/ui/modal";
-import { SuccessModal } from "@/components/ui/success-modal";
+import { SuccessModal } from "@/components/ui/SuccessModal";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { cn } from "@/lib/utils";
 import {

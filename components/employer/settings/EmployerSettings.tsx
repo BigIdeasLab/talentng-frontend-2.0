@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { DeleteConfirmationModal } from "@/components/ui/delete-confirmation-modal";
+import { DeleteConfirmationModal } from "@/components/ui/DeleteConfirmationModal";
 import { ProfileEmailSection } from "@/components/profile-email";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import {

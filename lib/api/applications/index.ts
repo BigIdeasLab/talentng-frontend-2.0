@@ -19,39 +19,39 @@ import type {
  * POST /talent/applications
  * Handles FormData for file uploads
  */
-export const submitApplication = async (
+export async function submitApplication(
   submission: ApplicationSubmission,
-): Promise<ApplicationResponse> => {
+): Promise<ApplicationResponse> {
   return apiClient<ApplicationResponse>("/talent/applications", {
     method: "POST",
     body: submission,
   });
-};
+}
 
 /**
  * Legacy method - submit basic application (talent only)
  * POST /talent/applications
  */
-export const applyToOpportunity = async (
+export async function applyToOpportunity(
   application: Application,
-): Promise<ApplicationResponse> => {
+): Promise<ApplicationResponse> {
   return apiClient<ApplicationResponse>("/talent/applications", {
     method: "POST",
     body: application,
   });
-};
+}
 
 /**
  * Get all applications for current talent
  * GET /talent/applications
  */
-export const getTalentApplications = async (params?: {
+export async function getTalentApplications(params?: {
   q?: string;
   status?: string;
   dateRange?: "today" | "week" | "month";
   limit?: number;
   offset?: number;
-}): Promise<PaginatedApplicationsResponse> => {
+}): Promise<PaginatedApplicationsResponse> {
   const query = new URLSearchParams();
   if (params?.q) query.append("q", params.q);
   if (params?.status) query.append("status", params.status);
@@ -62,13 +62,13 @@ export const getTalentApplications = async (params?: {
   return apiClient<PaginatedApplicationsResponse>(
     `/talent/applications${queryString ? `?${queryString}` : ""}`,
   );
-};
+}
 
 /**
  * Get applications for a recruiter (with filters)
  * GET /recruiter/applications
  */
-export const getRecruiterApplications = async (params: {
+export async function getRecruiterApplications(params: {
   status?: string;
   opportunityId?: string;
   q?: string;
@@ -78,7 +78,7 @@ export const getRecruiterApplications = async (params: {
   sortBy?: "newest" | "oldest" | "name-asc" | "name-desc";
   limit?: number;
   offset?: number;
-}): Promise<PaginatedApplicationsResponse> => {
+}): Promise<PaginatedApplicationsResponse> {
   const query = new URLSearchParams();
   if (params.status) query.append("status", params.status);
   if (params.opportunityId) query.append("opportunityId", params.opportunityId);
@@ -94,29 +94,29 @@ export const getRecruiterApplications = async (params: {
   const endpoint = `/recruiter/applications${queryString ? `?${queryString}` : ""}`;
 
   return apiClient<PaginatedApplicationsResponse>(endpoint);
-};
+}
 
 /**
  * Get all applications for current user (generic, kept for backward compat)
  * GET /applications
  */
-export const getApplications = async (): Promise<Application[]> => {
+export async function getApplications(): Promise<Application[]> {
   return apiClient<Application[]>("/applications");
-};
+}
 
 /**
  * Get a single application by ID
  */
-export const getApplicationById = async (
+export async function getApplicationById(
   applicationId: string,
-): Promise<Application> => {
+): Promise<Application> {
   return apiClient<Application>(`/applications/${applicationId}`);
-};
+}
 
 /**
  * Get applications with filters (generic, kept for backward compat)
  */
-export const getApplicationsWithFilters = async (params: {
+export async function getApplicationsWithFilters(params: {
   status?: string;
   opportunityId?: string;
   searchQuery?: string;
@@ -126,7 +126,7 @@ export const getApplicationsWithFilters = async (params: {
   sortBy?: "newest" | "oldest" | "name-asc" | "name-desc";
   limit?: number;
   offset?: number;
-}): Promise<Application[]> => {
+}): Promise<Application[]> {
   const query = new URLSearchParams();
   if (params.status) query.append("status", params.status);
   if (params.opportunityId) query.append("opportunityId", params.opportunityId);
@@ -142,45 +142,45 @@ export const getApplicationsWithFilters = async (params: {
   const endpoint = `/applications${queryString ? `?${queryString}` : ""}`;
 
   return apiClient<Application[]>(endpoint);
-};
+}
 
 /**
  * Delete an application
  */
-export const deleteApplication = async (
+export async function deleteApplication(
   applicationId: string,
-): Promise<void> => {
+): Promise<void> {
   return apiClient<void>(`/applications/${applicationId}`, {
     method: "DELETE",
   });
-};
+}
 
 /**
  * Update application status (shortlist, reject, hire)
  * PATCH /applications/{id}
  */
-export const updateApplicationStatus = async (
+export async function updateApplicationStatus(
   applicationId: string,
   status: "shortlisted" | "rejected" | "hired",
-): Promise<Application> => {
+): Promise<Application> {
   return apiClient<Application>(`/recruiter/applications/${applicationId}`, {
     method: "PATCH",
     body: { status },
   });
-};
+}
 
 /**
  * Schedule an interview for an application
  * POST /applications/{id}/schedule-interview
  */
-export const scheduleInterview = async (
+export async function scheduleInterview(
   applicationId: string,
   input: {
     scheduledDate: string;
     message?: string;
     meetingLink?: string;
   },
-): Promise<Application> => {
+): Promise<Application> {
   return apiClient<Application>(
     `/recruiter/applications/${applicationId}/schedule-interview`,
     {
@@ -188,17 +188,17 @@ export const scheduleInterview = async (
       body: input,
     },
   );
-};
+}
 
 /**
  * Reschedule an interview
  * POST /applications/{id}/interviews/{interviewId}/reschedule
  */
-export const rescheduleInterview = async (
+export async function rescheduleInterview(
   applicationId: string,
   interviewId: string,
   input: RescheduleInterviewInput,
-): Promise<Application> => {
+): Promise<Application> {
   return apiClient<Application>(
     `/recruiter/applications/${applicationId}/interviews/${interviewId}/reschedule`,
     {
@@ -206,17 +206,17 @@ export const rescheduleInterview = async (
       body: input,
     },
   );
-};
+}
 
 /**
  * Cancel an interview
  * DELETE /applications/{id}/interviews/{interviewId}
  */
-export const cancelInterview = async (
+export async function cancelInterview(
   applicationId: string,
   interviewId: string,
   reason?: string,
-): Promise<Application> => {
+): Promise<Application> {
   return apiClient<Application>(
     `/recruiter/applications/${applicationId}/interviews/${interviewId}/cancel`,
     {
@@ -224,13 +224,13 @@ export const cancelInterview = async (
       body: { reason },
     },
   );
-};
+}
 
 /**
  * Complete an interview (mark as done and add notes/rating)
  * POST /applications/{id}/interviews/{interviewId}/complete
  */
-export const completeInterview = async (
+export async function completeInterview(
   applicationId: string,
   interviewId: string,
   input: {
@@ -238,7 +238,7 @@ export const completeInterview = async (
     rating?: number;
     verdict?: "pass" | "fail";
   },
-): Promise<Application> => {
+): Promise<Application> {
   return apiClient<Application>(
     `/recruiter/applications/${applicationId}/interviews/${interviewId}/complete`,
     {
@@ -246,30 +246,30 @@ export const completeInterview = async (
       body: input,
     },
   );
-};
+}
 
 /**
  * Send job invitations to talents (recruiter only)
  * POST /recruiter/invitations/send
  */
-export const sendInvitations = async (input: {
+export async function sendInvitations(input: {
   opportunityId: string;
   talentIds: string[];
-}): Promise<InvitationResponse[]> => {
+}): Promise<InvitationResponse[]> {
   return apiClient<InvitationResponse[]>("/recruiter/invitations/send", {
     method: "POST",
     body: input,
   });
-};
+}
 
 /**
  * Respond to an invitation (accept/decline)
  * PATCH /applications/invitations/{id}/respond
  */
-export const respondToInvitation = async (
+export async function respondToInvitation(
   applicationId: string,
   response: "accepted" | "declined",
-): Promise<Application> => {
+): Promise<Application> {
   return apiClient<Application>(
     `/applications/invitations/${applicationId}/respond`,
     {
@@ -277,31 +277,31 @@ export const respondToInvitation = async (
       body: { response },
     },
   );
-};
+}
 
 /**
  * Leave a recommendation for a hired talent
  * POST /applications/{id}/recommendation
  */
-export const leaveRecommendation = async (
+export async function leaveRecommendation(
   applicationId: string,
   input: {
     title: string;
     comment?: string;
     rating?: number;
   },
-): Promise<any> => {
+): Promise<any> {
   return apiClient(`/recruiter/applications/${applicationId}/recommendation`, {
     method: "POST",
     body: input,
   });
-};
+}
 
 /**
  * Get unified recruiter interview feed
  * GET /recruiter/interviews
  */
-export const getRecruiterInterviews = async (params?: {
+export async function getRecruiterInterviews(params?: {
   q?: string;
   dateRange?: "today" | "week" | "month";
   limit?: number;
@@ -309,7 +309,7 @@ export const getRecruiterInterviews = async (params?: {
 }): Promise<{
   data: any[];
   pagination: any;
-}> => {
+}> {
   const query = new URLSearchParams();
   if (params?.q) query.append("q", params.q);
   if (params?.dateRange) query.append("dateRange", params.dateRange);
@@ -319,27 +319,27 @@ export const getRecruiterInterviews = async (params?: {
   return apiClient<{ data: any[]; pagination: any }>(
     `/recruiter/interviews${queryString ? `?${queryString}` : ""}`,
   );
-};
+}
 
 /**
  * Get recruiter interview count for badges
  * GET /recruiter/interviews/count
  */
-export const getRecruiterInterviewsCount = async (): Promise<{
+export async function getRecruiterInterviewsCount(): Promise<{
   count: number;
-}> => {
+}> {
   return apiClient<{ count: number }>("/recruiter/interviews/count");
-};
+}
 
 /**
  * Get recruiter applicants count for badges
  * GET /recruiter/applications/count
  */
-export const getRecruiterApplicationsCount = async (): Promise<{
+export async function getRecruiterApplicationsCount(): Promise<{
   count: number;
-}> => {
+}> {
   return apiClient<{ count: number }>("/recruiter/applications/count");
-};
+}
 
 // Export types
 export type {

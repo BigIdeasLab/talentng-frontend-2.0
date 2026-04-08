@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useProfile } from "@/hooks/useProfile";
 import { useProfileData } from "@/hooks/useProfileData";
 import { useNotifications } from "@/hooks/useNotifications";
-import { useNotificationSocket } from "@/hooks/useNotificationSocket";
 import { useTicketCount } from "@/hooks/useSupport";
 import { TalentSidebar } from "@/components/layouts/sidebars/TalentSidebar";
 import { RecruiterSidebar } from "@/components/layouts/sidebars/RecruiterSidebar";
@@ -65,44 +64,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
     refreshNotifications: refreshGeneralNotifications,
   } = useNotifications("general");
 
-  // Subscribe to role-specific notification updates
-  // Temporarily disabled - uncomment when notifications API is available
-  /*
-  useNotificationSocket({
-    recipientRole: activeRole ? getRecipientRole(activeRole) : "talent",
-    onCountUpdate: (unread) => {
-      // Update state when count changes
-      setTotalUnreadCount(() => unread);
-    },
-    onNotificationCreated: () => {
-      // Refresh notifications when new one arrives
-      refreshRoleNotifications();
-      refreshGeneralNotifications();
-    },
-    onNotificationRead: () => {
-      // Refresh notifications when one is marked as read
-      refreshRoleNotifications();
-      refreshGeneralNotifications();
-    },
-    onUpcomingUpdate: (count) => {
-      // Update talent upcoming badge count from SSE
-      setTalentUpcomingCount(count);
-    },
-    onRecruiterUpdate: (count) => {
-      // Update recruiter upcoming badge count from SSE
-      setRecruiterUpcomingCount(count);
-    },
-    onRecruiterApplicantsUpdate: (count: number) => {
-      // Update recruiter applicants badge count from SSE
-      setRecruiterApplicantsCount(count);
-    },
-    onMentorUpdate: (count) => {
-      // Update mentor upcoming badge count from SSE
-      setMentorUpcomingCount(count);
-    },
-    enabled: !!activeRole,
-  });
-  */
+  // TODO: Enable useNotificationSocket when notifications SSE/WebSocket API is available
 
   // Fetch initial upcoming counts based on active role
   useEffect(() => {

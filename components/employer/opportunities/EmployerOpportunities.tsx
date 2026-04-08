@@ -10,7 +10,7 @@ import { OpportunitiesHeader } from "./OpportunitiesHeader";
 import { SearchAndFilters } from "./SearchAndFilters";
 import { OpportunitiesTabs } from "./OpportunitiesTabs";
 import { OpportunityCard as OpportunityCardComponent } from "./OpportunityCard";
-import { EmptyState } from "@/components/ui/empty-state";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Briefcase } from "lucide-react";
 import { OpportunitiesFilterModal } from "@/components/talent/opportunities/OpportunitiesFilterModal";
 import { RoleColorProvider } from "@/lib/theme/RoleColorContext";

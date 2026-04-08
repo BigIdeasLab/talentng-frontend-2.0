@@ -15,7 +15,7 @@ import { Loader2 } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
-import { SuccessModal } from "@/components/ui/success-modal";
+import { SuccessModal } from "@/components/ui/SuccessModal";
 import { EditOpportunityFormSkeleton } from "@/components/skeletons/EditProfileSkeleton";
 import { ResponsiveFormButtons } from "@/components/forms/ResponsiveFormButtons";
 

@@ -9,7 +9,10 @@ import {
   getRefreshToken,
   storeTokens,
   clearTokens,
+  forceLogout,
 } from "@/lib/auth";
+import { setCookie } from "@/lib/utils";
+import { ApiError } from "./errors";
 
 const baseUrl =
   process.env.NEXT_PUBLIC_TALENTNG_API_URL || "http://localhost:3001";
@@ -94,9 +97,7 @@ const apiClient = async <T>(
                 .then(async (res) => {
                   if (!res.ok) {
                     const errBody = await res.text();
-                    const err = new Error(errBody || res.statusText);
-                    (err as any).status = res.status;
-                    throw err;
+                    throw new ApiError(errBody || res.statusText, res.status);
                   }
                   return res.json();
                 })
@@ -113,15 +114,7 @@ const apiClient = async <T>(
 
       if (!refreshToken) {
         // No refresh token, user must log in again
-        clearTokens();
-        if (typeof window !== "undefined") {
-          // Clear all auth-related state
-          localStorage.removeItem("activeRole");
-          localStorage.removeItem("userRoles");
-          document.cookie =
-            "activeRole=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-          window.location.href = "/login";
-        }
+        forceLogout();
         throw new Error("Session expired - please log in again");
       }
 
@@ -166,7 +159,7 @@ const apiClient = async <T>(
                 : null;
             if (currentActiveRole && typeof window !== "undefined") {
               localStorage.setItem("activeRole", currentActiveRole);
-              document.cookie = `activeRole=${currentActiveRole}; path=/; max-age=31536000; SameSite=Lax`;
+              setCookie("activeRole", currentActiveRole, 365);
             }
           }
 
@@ -181,30 +174,14 @@ const apiClient = async <T>(
         } else {
           // Refresh failed, redirect to login
           processQueue(false, new Error("Token refresh failed"));
-          clearTokens();
-          if (typeof window !== "undefined") {
-            // Clear all auth-related state
-            localStorage.removeItem("activeRole");
-            localStorage.removeItem("userRoles");
-            document.cookie =
-              "activeRole=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-            window.location.href = "/login";
-          }
+          forceLogout();
           throw new Error("Session expired - please log in again");
         }
       } catch (error) {
         processQueue(false, error as Error);
         isRefreshing = false;
         refreshPromise = null;
-        clearTokens();
-        if (typeof window !== "undefined") {
-          // Clear all auth-related state
-          localStorage.removeItem("activeRole");
-          localStorage.removeItem("userRoles");
-          document.cookie =
-            "activeRole=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-          window.location.href = "/login";
-        }
+        forceLogout();
         throw error;
       }
     }
@@ -239,18 +216,14 @@ const apiClient = async <T>(
 
       // Handle rate limiting errors (429)
       if (response.status === 429) {
-        const error = new Error(errorMessage);
-        (error as any).status = 429;
-        (error as any).isRateLimit = true;
-        (error as any).data = errorData;
-
         // Try to extract retry-after header
         const retryAfter = response.headers.get("retry-after");
-        if (retryAfter) {
-          (error as any).retryAfter = parseInt(retryAfter, 10);
-        }
 
-        throw error;
+        throw new ApiError(errorMessage, 429, {
+          data: errorData,
+          isRateLimit: true,
+          retryAfter: retryAfter ? parseInt(retryAfter, 10) : undefined,
+        });
       }
 
       // Handle specific error types with user-friendly messages
@@ -271,19 +244,12 @@ const apiClient = async <T>(
           errorMessage.toLowerCase().includes("forbidden") ||
           errorMessage.toLowerCase().includes("access denied")
         ) {
-          const error = new Error(errorMessage);
-          (error as any).status = 403;
-          (error as any).isRoleMismatch = true;
-
           // Try to extract actual role from message "Your active role: recruiter"
           const roleMatch = errorMessage.match(
             /Your active role: ([a-zA-Z]+)/i,
           );
-          if (roleMatch && roleMatch[1]) {
-            (error as any).actualRole = roleMatch[1].toLowerCase();
-          }
 
-          (error as any).requiredRole =
+          const requiredRole =
             errorData.requiredRole ||
             (endpoint.includes("/recruiter")
               ? "recruiter"
@@ -292,15 +258,17 @@ const apiClient = async <T>(
                 : endpoint.includes("/mentor")
                   ? "mentor"
                   : undefined);
-          (error as any).data = errorData;
-          throw error;
+
+          throw new ApiError(errorMessage, 403, {
+            data: errorData,
+            isRoleMismatch: true,
+            actualRole: roleMatch?.[1]?.toLowerCase(),
+            requiredRole,
+          });
         }
       }
 
-      const error = new Error(errorMessage);
-      (error as any).status = response.status;
-      (error as any).data = errorData;
-      throw error;
+      throw new ApiError(errorMessage, response.status, { data: errorData });
     }
 
     const responseText = await response.text();

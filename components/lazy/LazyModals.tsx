@@ -53,11 +53,11 @@ export const LazyOpportunitiesFilterModal = createLazyModal(
 );
 
 export const LazyApplicationModal = createLazyModal(
-  () => import("@/components/talent/opportunities/application-modal"),
+  () => import("@/components/talent/opportunities/ApplicationModal"),
 );
 
 export const LazyProjectSelectionModal = createLazyModal(
-  () => import("@/components/talent/opportunities/project-selection-modal"),
+  () => import("@/components/talent/opportunities/ProjectSelectionModal"),
 );
 
 export const LazyUploadWorksModal = createLazyModal(
@@ -78,7 +78,7 @@ export const LazyMentorFilterModal = createLazyModal(
 
 // General modals
 export const LazyFilterModal = createLazyModal(
-  () => import("@/components/DiscoverTalent/FilterModal"),
+  () => import("@/components/discover-talent/FilterModal"),
 );
 
 export const LazyNotificationsModal = createLazyModal(
@@ -86,15 +86,15 @@ export const LazyNotificationsModal = createLazyModal(
 );
 
 export const LazyConfirmationModal = createLazyModal(
-  () => import("@/components/ui/confirmation-modal"),
+  () => import("@/components/ui/ConfirmationModal"),
 );
 
 export const LazyRescheduleModal = createLazyModal(
-  () => import("@/components/ui/reschedule-modal"),
+  () => import("@/components/ui/RescheduleModal"),
 );
 
 export const LazyReviewModal = createLazyModal(
-  () => import("@/components/ui/review-modal"),
+  () => import("@/components/ui/ReviewModal"),
 );
 
 export const LazyRoleSwitchModal = createLazyModal(
@@ -102,7 +102,7 @@ export const LazyRoleSwitchModal = createLazyModal(
 );
 
 export const LazySuccessModal = createLazyModal(
-  () => import("@/components/ui/success-modal"),
+  () => import("@/components/ui/SuccessModal"),
 );
 
 export const LazySwipeableModal = createLazyModal(

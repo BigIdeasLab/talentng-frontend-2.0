@@ -4,8 +4,8 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Users, SlidersHorizontal } from "lucide-react";
-import { SearchInput } from "@/components/ui/search-input";
-import { EmptyState } from "@/components/ui/empty-state";
+import { SearchInput } from "@/components/ui/SearchInput";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { useProfile } from "@/hooks/useProfile";
 import { PageLoadingState } from "@/lib/page-utils";
@@ -24,7 +24,7 @@ import {
   type ApplicantFilterState,
 } from "@/components/employer/applicants/ApplicantFilterModal";
 import { HireApplicationModal } from "@/components/employer/applicants/HireApplicationModal";
-import { SuccessModal } from "@/components/ui/success-modal";
+import { SuccessModal } from "@/components/ui/SuccessModal";
 import { useToast } from "@/hooks";
 
 // Map status to UI display - Recruiter View

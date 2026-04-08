@@ -6,7 +6,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { useRecruiterOpportunitiesQuery } from "@/hooks/useRecruiterOpportunities";
 import { transformOpportunityToCard } from "@/lib/utils/opportunities";
 import { OpportunityCard as OpportunityCardComponent } from "@/components/employer/opportunities/OpportunityCard";
-import { EmptyState } from "@/components/ui/empty-state";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Briefcase } from "lucide-react";
 import type { OpportunityCard } from "@/lib/types";
 

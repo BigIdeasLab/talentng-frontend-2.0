@@ -1,6 +1,6 @@
 import type { FilterType } from "./types";
-import { SearchBar } from "./search-bar";
-import { FilterTabs } from "./filter-tabs";
+import { SearchBar } from "./SearchBar";
+import { FilterTabs } from "./FilterTabs";
 
 interface TalentOpportunitiesHeaderProps {
   searchQuery: string;

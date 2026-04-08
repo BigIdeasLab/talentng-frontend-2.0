@@ -1,6 +1,6 @@
 "use client";
 
-import { OpportunityCard } from "@/components/talent/opportunities/opportunity-card";
+import { OpportunityCard } from "@/components/talent/opportunities/OpportunityCard";
 import type { DisplayOpportunity } from "@/components/talent/opportunities/types";
 import type { Opportunity } from "@/lib/api/opportunities/types";
 

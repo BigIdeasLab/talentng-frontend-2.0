@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { getMentorReviews } from "@/lib/api/mentorship";
 import type { SessionReview } from "@/lib/api/mentorship";
-import { EmptyState } from "@/components/ui/empty-state";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { MessageSquare } from "lucide-react";
 
 interface MentorReviewsSectionProps {

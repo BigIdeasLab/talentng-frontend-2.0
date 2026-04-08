@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Calendar, Briefcase, Users } from "lucide-react";
-import { SearchInput } from "@/components/ui/search-input";
+import { SearchInput } from "@/components/ui/SearchInput";
 import { useToast } from "@/hooks";
 import { useProfile } from "@/hooks/useProfile";
 import { getTalentUpcoming } from "@/lib/api/talent";
@@ -20,11 +20,11 @@ import type {
 import type { MentorshipSession } from "@/lib/api/mentorship/types";
 import { TalentInterviewCard } from "@/components/talent/applications/TalentInterviewCard";
 import { TalentSessionCard } from "@/components/talent/applications/TalentSessionCard";
-import { EmptyState } from "@/components/ui/empty-state";
-import { ConfirmationModal } from "@/components/ui/confirmation-modal";
-import { RescheduleModal } from "@/components/ui/reschedule-modal";
-import { ReviewModal } from "@/components/ui/review-modal";
-import { SuccessModal } from "@/components/ui/success-modal";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
+import { RescheduleModal } from "@/components/ui/RescheduleModal";
+import { ReviewModal } from "@/components/ui/ReviewModal";
+import { SuccessModal } from "@/components/ui/SuccessModal";
 import { LoadingScreen } from "@/components/layouts/LoadingScreen";
 import { useRouter } from "next/navigation";
 import { useRequireRole } from "@/hooks/useRequireRole";

@@ -9,7 +9,7 @@ import {
   deleteGalleryItem,
 } from "@/lib/api/talent";
 import type { TalentProfile } from "@/lib/api/talent";
-import { ConfirmationModal } from "@/components/ui/confirmation-modal";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
 
 interface UploadWorksModalProps {
   isOpen: boolean;

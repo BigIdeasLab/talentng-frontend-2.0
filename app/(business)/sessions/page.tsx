@@ -2,13 +2,13 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
-import { SearchInput } from "@/components/ui/search-input";
+import { SearchInput } from "@/components/ui/SearchInput";
 import {
   SessionCard,
   type SessionStatus as CardSessionStatus,
 } from "@/components/mentor/sessions/SessionCard";
-import { ConfirmationModal } from "@/components/ui/confirmation-modal";
-import { RescheduleModal } from "@/components/ui/reschedule-modal";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
+import { RescheduleModal } from "@/components/ui/RescheduleModal";
 import { useToast } from "@/hooks";
 import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
@@ -26,7 +26,7 @@ import type {
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { SessionsSkeleton } from "@/components/mentor/sessions/SessionsSkeleton";
 import { useNotificationSocket } from "@/hooks/useNotificationSocket";
-import { EmptyState } from "@/components/ui/empty-state";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Calendar } from "lucide-react";
 
 interface SessionView {

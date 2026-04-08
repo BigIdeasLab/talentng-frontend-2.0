@@ -1,15 +1,15 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { SearchInput } from "@/components/ui/search-input";
+import { SearchInput } from "@/components/ui/SearchInput";
 import {
   DiscoverTalentHeader,
   TalentGrid,
   TalentGridSkeleton,
-} from "@/components/DiscoverTalent";
+} from "@/components/discover-talent";
 import { getDiscoverTalentData } from "./server-data";
 import type { TalentData } from "./server-data";
-import type { FilterState } from "@/components/DiscoverTalent";
+import type { FilterState } from "@/components/discover-talent";
 import { cn } from "@/lib/utils";
 import categories from "@/lib/data/categories.json";
 

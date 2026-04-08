@@ -9,7 +9,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
-import { register } from "@/lib/api/auth-service";
+import { register } from "@/lib/api/auth";
 import { COLORS } from "@/lib/constants";
 
 import { Button } from "@/components/ui/button";

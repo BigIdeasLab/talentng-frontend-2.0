@@ -13,7 +13,7 @@ import { EducationSection } from "@/components/talent/profile/components/edit/Ed
 
 import { SocialLinksSection } from "@/components/talent/profile/components/edit/SocialLinksSection";
 import { Modal } from "@/components/ui/modal";
-import { ConfirmationModal } from "@/components/ui/confirmation-modal";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
 import statesCities from "@/lib/data/states-cities.json";
 import {
   mapUIToAPI,
@@ -24,7 +24,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { updateServerTalentProfile } from "@/lib/api/talent/server";
 import { fetchProfileByRole } from "@/lib/api/profile-service";
 import { TalentEditProfileSkeleton } from "@/components/skeletons/EditProfileSkeleton";
-import { SuccessModal } from "@/components/ui/success-modal";
+import { SuccessModal } from "@/components/ui/SuccessModal";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 const availableSkills = [
