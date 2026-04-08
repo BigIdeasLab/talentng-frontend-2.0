@@ -9,10 +9,8 @@ import { useRequireRole } from "@/hooks/useRequireRole";
 import { PageLoadingState } from "@/lib/page-utils";
 import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
 import { useToast } from "@/hooks";
-import {
-  LazyRecommendationModal,
-  LazyHiredTalentFilterModal,
-} from "@/components/lazy";
+import { HiredTalentFilterModal } from "@/components/employer/applicants/HiredTalentFilterModal";
+import { RecommendationModal } from "@/components/employer/opportunities/RecommendationModal";
 import type { HiredTalentFilterState } from "@/components/employer/applicants/HiredTalentFilterModal";
 import {
   getTalentRecommendationsByUserId,
@@ -22,6 +20,7 @@ import {
 } from "@/lib/api/talent";
 import { Application } from "@/lib/api/applications";
 import type { TalentRecommendationDto } from "@/lib/api/talent";
+import { HiredTalentsGridSkeleton } from "@/components/employer/applicants/HiredTalentCardSkeleton";
 
 interface HiredOpportunity {
   id: string;
@@ -85,8 +84,8 @@ export default function HiredTalentsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [hiredTalents, setHiredTalents] = useState<HiredTalent[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [isFetchingRecs, setIsFetchingRecs] = useState(false);
+  const [hasCompletedInitialLoad, setHasCompletedInitialLoad] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState<HiredTalentFilterState>({
     location: "",
@@ -118,7 +117,7 @@ export default function HiredTalentsPage() {
       : {}),
   });
 
-  const rawApplications = response?.data || [];
+  const rawApplications = response?.data;
 
   const getFilterCount = () => {
     let count = 0;
@@ -131,23 +130,25 @@ export default function HiredTalentsPage() {
     new Set(hiredTalents.map((t) => t.location).filter(Boolean)),
   );
 
+  // Show skeleton until the initial data load (query + recommendations) has fully completed
+  const showSkeleton = !hasCompletedInitialLoad;
+
   useEffect(() => {
+    if (!rawApplications) return;
+
     if (rawApplications.length > 0) {
       fetchRecommendationsForTalents(rawApplications);
-    } else if (!isAppsLoading) {
+    } else {
       setHiredTalents([]);
-      setIsLoading(false);
-      if (isInitialLoad) {
-        setIsInitialLoad(false);
-      }
+      setHasCompletedInitialLoad(true);
     }
-  }, [rawApplications, isAppsLoading, isInitialLoad]);
+  }, [rawApplications]);
 
   const fetchRecommendationsForTalents = async (
     applications: Application[],
   ) => {
     try {
-      setIsLoading(true);
+      setIsFetchingRecs(true);
       const hired = applications.filter((app) => app.status === "hired");
       const talentMap = groupApplicationsByTalent(hired);
 
@@ -168,22 +169,17 @@ export default function HiredTalentsPage() {
       );
 
       setHiredTalents(talentsWithRecommendations);
-      if (isInitialLoad) {
-        setIsInitialLoad(false);
-      }
     } catch (error) {
       console.error("Error fetching hired talents:", error);
       setHiredTalents([]);
-      if (isInitialLoad) {
-        setIsInitialLoad(false);
-      }
     } finally {
-      setIsLoading(false);
+      setIsFetchingRecs(false);
+      setHasCompletedInitialLoad(true);
     }
   };
 
   const refreshRecommendations = async () => {
-    if (rawApplications.length > 0) {
+    if (rawApplications && rawApplications.length > 0) {
       await fetchRecommendationsForTalents(rawApplications);
     }
   };
@@ -279,10 +275,6 @@ export default function HiredTalentsPage() {
     return <PageLoadingState message="Checking access..." />;
   }
 
-  if (isInitialLoad && isLoading) {
-    return <PageLoadingState message="Loading hired talents..." />;
-  }
-
   return (
     <div className="h-screen bg-white overflow-hidden flex flex-col">
       {/* Fixed Header with Border */}
@@ -326,6 +318,7 @@ export default function HiredTalentsPage() {
               onSearch={setSearchQuery}
               placeholder="Search name or Role Or Opportunity"
               debounceDelay={500}
+              isLoading={hasCompletedInitialLoad && (isAppsLoading || isFetchingRecs)}
             />
           </div>
 
@@ -399,7 +392,7 @@ export default function HiredTalentsPage() {
                   </span>
                 )}
               </button>
-              <LazyHiredTalentFilterModal
+              <HiredTalentFilterModal
                 isOpen={isFilterOpen}
                 onClose={() => setIsFilterOpen(false)}
                 onApply={(newFilters: HiredTalentFilterState) =>
@@ -462,7 +455,9 @@ export default function HiredTalentsPage() {
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto px-4 md:px-[25px] py-4">
-        {filteredTalents.length === 0 ? (
+        {showSkeleton ? (
+          <HiredTalentsGridSkeleton />
+        ) : filteredTalents.length === 0 ? (
           <EmptyState
             title={
               searchQuery.trim()
@@ -735,7 +730,7 @@ export default function HiredTalentsPage() {
 
       {/* Recommendation Modal */}
       {isRecommendationModalOpen && selectedTalentUserId && (
-        <LazyRecommendationModal
+        <RecommendationModal
           isOpen={isRecommendationModalOpen}
           onClose={() => {
             setIsRecommendationModalOpen(false);
@@ -744,8 +739,8 @@ export default function HiredTalentsPage() {
           }}
           onSubmit={handleRecommendationSubmit}
           applicantName={
-            hiredTalents.find((t) => t.userId === selectedTalentUserId)?.name ||
-            ""
+            hiredTalents.find((t) => t.userId === selectedTalentUserId)
+              ?.name || ""
           }
           initialData={
             editingRecommendation

@@ -263,22 +263,22 @@ _Break the 1112-line monolith into testable, maintainable components._
 
 ### Group 7B: Hook File Extensions
 
-| #        | Task                                                                                                                                                                                             | File(s)       | Est.   |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- | ------ |
+| #        | Task                                                                                                                                                                                             | File(s)       | Est.                                      |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- | ----------------------------------------- |
 | - [x] 73 | Rename `.tsx` → `.ts` for hooks without JSX: `useIsMobile`, `useIsTablet`, `useOrientation`, `useOrientationState`, `useMobileInputScroll`, `useBreakpoint`, `useSwipeGesture`, `useTextScaling` | 8 files       | ✅ (7 files, useTextScaling kept as .tsx) |
-| - [x] 74 | Update all imports                                                                                                                                                                               | grep + update | ✅ (no imports needed updating) |
+| - [x] 74 | Update all imports                                                                                                                                                                               | grep + update | ✅ (no imports needed updating)           |
 
 ### Group 7C: Update Hooks Barrel File
 
-| #        | Task                                                                                                                                                                                                                                                                                                                                      | File(s)          | Est.   |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- | ------ |
-| - [x] 75 | Add missing hooks to `hooks/index.ts` barrel: `useAvailabilityPrefetch`, `useBusinessVerification`, `useMobileInputScroll`, `useBreakpoint`, `useIsTablet`, `useIsTouchDevice`, `useOrientation`, `useOrientationState`, `useSwipeGesture`, `useTabletKeyboardNavigation`, `useTextScaling`, `useRequireRole`, `useUnsavedChangesWarning` | `hooks/index.ts` | ✅ |
+| #        | Task                                                                                                                                                                                                                                                                                                                                      | File(s)          | Est. |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- | ---- |
+| - [x] 75 | Add missing hooks to `hooks/index.ts` barrel: `useAvailabilityPrefetch`, `useBusinessVerification`, `useMobileInputScroll`, `useBreakpoint`, `useIsTablet`, `useIsTouchDevice`, `useOrientation`, `useOrientationState`, `useSwipeGesture`, `useTabletKeyboardNavigation`, `useTextScaling`, `useRequireRole`, `useUnsavedChangesWarning` | `hooks/index.ts` | ✅   |
 
 ### Group 7D: Duplicate Scrollbar Utility
 
-| #        | Task                                                                          | File(s)              | Est.   |
-| -------- | ----------------------------------------------------------------------------- | -------------------- | ------ |
-| - [x] 76 | Remove `.scrollbar-hide` (keep `.scrollbar-hidden`) from `tailwind.config.ts` | `tailwind.config.ts` | ✅ |
+| #        | Task                                                                          | File(s)              | Est.          |
+| -------- | ----------------------------------------------------------------------------- | -------------------- | ------------- |
+| - [x] 76 | Remove `.scrollbar-hide` (keep `.scrollbar-hidden`) from `tailwind.config.ts` | `tailwind.config.ts` | ✅            |
 | - [x] 77 | Replace all usages of `scrollbar-hide` with `scrollbar-hidden` in templates   | grep + update        | ✅ (31 files) |
 
 **Phase 7 Commit:** `refactor: standardise naming — PascalCase components, kebab-case utils, hook extensions`

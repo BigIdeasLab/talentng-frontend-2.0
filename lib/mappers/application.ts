@@ -17,6 +17,7 @@ export interface MappedApplicant {
   createdAt: string;
   skills: string[];
   status: "invited" | "applied" | "shortlisted" | "rejected" | "hired";
+  sourceType?: "applied" | "invited";
   interviewStatus?: "scheduled" | "rescheduled" | "completed" | "cancelled";
 }
 
@@ -65,6 +66,7 @@ export function mapApplicationToUI(app: any): MappedApplicant {
     createdAt: app.createdAt || "",
     skills: talentProfile.skills || [],
     status: app.status || "applied",
+    sourceType: app.sourceType,
     interviewStatus,
   };
 }

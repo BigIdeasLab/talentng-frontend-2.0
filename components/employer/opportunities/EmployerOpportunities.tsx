@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useProfile } from "@/hooks/useProfile";
-import { useRecruiterOpportunitiesQuery } from "@/hooks/useRecruiterOpportunities";
+import { useRecruiterOpportunitiesQuery, useDeleteOpportunity, useReopenOpportunity } from "@/hooks/useRecruiterOpportunities";
 import type { TabType, SortType } from "@/lib/types";
+import type { OpportunityCard as OpportunityCardType } from "@/lib/types/opportunities";
 import { transformOpportunityToCard } from "@/lib/utils/opportunities";
 import { OpportunitiesHeader } from "./OpportunitiesHeader";
 import { SearchAndFilters } from "./SearchAndFilters";
@@ -15,10 +15,16 @@ import { Briefcase } from "lucide-react";
 import { OpportunitiesFilterModal } from "@/components/talent/opportunities/OpportunitiesFilterModal";
 import { RoleColorProvider } from "@/lib/theme/RoleColorContext";
 import { OpportunitiesSkeleton } from "./OpportunitiesSkeleton";
+import { Modal } from "@/components/ui/modal";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks";
+import { SuccessModal } from "@/components/ui/SuccessModal";
+import { ROLE_COLORS } from "@/lib/theme/role-colors";
 
 export function EmployerOpportunities() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { toast } = useToast();
 
   const [activeTab, setActiveTab] = useState<TabType>("open");
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,6 +32,24 @@ export function EmployerOpportunities() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<any>(null);
   const [offset, setOffset] = useState(0);
+  
+  // Delete modal state - lifted to parent
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [opportunityToDelete, setOpportunityToDelete] = useState<OpportunityCardType | null>(null);
+
+  // Reopen modal state - lifted to parent
+  const [reopenModalOpen, setReopenModalOpen] = useState(false);
+  const [opportunityToReopen, setOpportunityToReopen] = useState<OpportunityCardType | null>(null);
+
+  // Success modal state - lifted to parent
+  const [showSuccess, setShowSuccess] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+  }>({ isOpen: false, title: "", description: "" });
+
+  const deleteMutation = useDeleteOpportunity();
+  const reopenMutation = useReopenOpportunity();
 
   const LIMIT = 20;
   const isInitialLoadRef = useRef(true);
@@ -146,6 +170,87 @@ export function EmployerOpportunities() {
 
   const handlePostClick = () => {
     router.push("/opportunities/post");
+  };
+
+  // Handle delete request from child component
+  const handleDeleteRequest = (opportunity: OpportunityCardType) => {
+    setOpportunityToDelete(opportunity);
+    setDeleteModalOpen(true);
+  };
+
+  // Handle reopen request from child component
+  const handleReopenRequest = (opportunity: OpportunityCardType) => {
+    setOpportunityToReopen(opportunity);
+    setReopenModalOpen(true);
+  };
+
+  // Handle success message from child component
+  const handleShowSuccess = (title: string, description: string) => {
+    setShowSuccess({
+      isOpen: true,
+      title,
+      description,
+    });
+  };
+
+  // Confirm delete
+  const confirmDelete = async () => {
+    if (!opportunityToDelete) return;
+
+    try {
+      await deleteMutation.mutateAsync(opportunityToDelete.id);
+      setDeleteModalOpen(false);
+      setOpportunityToDelete(null);
+      toast({
+        title: "Success",
+        description: "Opportunity deleted successfully",
+      });
+      fetchOpportunities();
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to delete opportunity";
+      toast({
+        title: "Error",
+        description: message,
+        variant: "destructive",
+      });
+      setDeleteModalOpen(false);
+      setOpportunityToDelete(null);
+    }
+  };
+
+  // Confirm reopen
+  const confirmReopen = async () => {
+    if (!opportunityToReopen) return;
+
+    const hadCap = opportunityToReopen.applicationCap && opportunityToReopen.applicationCap > 0;
+
+    try {
+      const response = await reopenMutation.mutateAsync(opportunityToReopen.id);
+      setReopenModalOpen(false);
+      setOpportunityToReopen(null);
+      setShowSuccess({
+        isOpen: true,
+        title: "Opportunity Reopened!",
+        description: response.message || "Your opportunity is now accepting new applications.",
+      });
+      fetchOpportunities();
+      if (hadCap) {
+        router.push(
+          `/opportunities/edit/${opportunityToReopen.id}?section=application-settings`,
+        );
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to reopen opportunity";
+      toast({
+        title: "Error",
+        description: message,
+        variant: "destructive",
+      });
+      setReopenModalOpen(false);
+      setOpportunityToReopen(null);
+    }
   };
 
   if (
@@ -269,6 +374,9 @@ export function EmployerOpportunities() {
                     opportunity={opportunity}
                     activeTab={activeTab}
                     onMutationSuccess={fetchOpportunities}
+                    onDeleteRequest={handleDeleteRequest}
+                    onReopenRequest={handleReopenRequest}
+                    onShowSuccess={handleShowSuccess}
                   />
                 ))}
               </div>
@@ -424,6 +532,9 @@ export function EmployerOpportunities() {
                   opportunity={opportunity}
                   activeTab={activeTab}
                   onMutationSuccess={fetchOpportunities}
+                  onDeleteRequest={handleDeleteRequest}
+                  onReopenRequest={handleReopenRequest}
+                  onShowSuccess={handleShowSuccess}
                 />
               ))}
             </div>
@@ -474,6 +585,97 @@ export function EmployerOpportunities() {
             </div>
           )}
       </div>
+
+      {/* Global Delete Modal */}
+      <Modal
+        isOpen={deleteModalOpen}
+        onClose={() => {
+          if (!deleteMutation.isPending) {
+            setDeleteModalOpen(false);
+            setOpportunityToDelete(null);
+          }
+        }}
+        title={activeTab === "draft" ? "Delete Draft?" : "Delete Opportunity?"}
+        description={
+          opportunityToDelete
+            ? `Are you sure you want to delete "${opportunityToDelete.title}"? This action cannot be undone.`
+            : ""
+        }
+        closeOnBackdrop={!deleteMutation.isPending}
+        footer={
+          <>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setDeleteModalOpen(false);
+                setOpportunityToDelete(null);
+              }}
+              disabled={deleteMutation.isPending}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={confirmDelete}
+              disabled={deleteMutation.isPending}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {deleteMutation.isPending ? "Deleting..." : "Delete"}
+            </Button>
+          </>
+        }
+      />
+
+      {/* Global Reopen Modal */}
+      <Modal
+        isOpen={reopenModalOpen}
+        onClose={() => {
+          if (!reopenMutation.isPending) {
+            setReopenModalOpen(false);
+            setOpportunityToReopen(null);
+          }
+        }}
+        title="Reopen Opportunity"
+        description={
+          opportunityToReopen
+            ? opportunityToReopen.applicationCap && opportunityToReopen.applicationCap > 0
+              ? `Are you sure you want to reopen "${opportunityToReopen.title}"? It will be visible to all talents and accept new applications. Any previous application cap will be cleared.`
+              : `Are you sure you want to reopen "${opportunityToReopen.title}"? It will be visible to all talents and accept new applications.`
+            : ""
+        }
+        closeOnBackdrop={!reopenMutation.isPending}
+        footer={
+          <>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setReopenModalOpen(false);
+                setOpportunityToReopen(null);
+              }}
+              disabled={reopenMutation.isPending}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={confirmReopen}
+              disabled={reopenMutation.isPending}
+              className="hover:opacity-80"
+              style={{ backgroundColor: "#E39B00" }}
+            >
+              {reopenMutation.isPending ? "Reopening..." : "Reopen"}
+            </Button>
+          </>
+        }
+      />
+
+      {/* Global Success Modal */}
+      <SuccessModal
+        isOpen={showSuccess.isOpen}
+        onClose={() => setShowSuccess((s) => ({ ...s, isOpen: false }))}
+        title={showSuccess.title}
+        description={showSuccess.description}
+        accentColor={ROLE_COLORS.recruiter.primary}
+      />
     </RoleColorProvider>
   );
 }
+

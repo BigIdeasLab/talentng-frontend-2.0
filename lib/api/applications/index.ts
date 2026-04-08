@@ -339,6 +339,16 @@ export async function getRecruiterApplicationsCount(): Promise<{
   return apiClient<{ count: number }>("/recruiter/applications/count");
 }
 
+/**
+ * Get talent pending invitations count for badges
+ * GET /talent/applications/pending-invites/count
+ */
+export async function getTalentPendingInvitesCount(): Promise<{
+  count: number;
+}> {
+  return apiClient<{ count: number }>("/talent/applications/pending-invites/count");
+}
+
 // Export types
 export type {
   Application,

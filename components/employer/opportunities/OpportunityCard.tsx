@@ -1,17 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ROLE_COLORS } from "@/lib/theme/role-colors";
 import { useRouter } from "next/navigation";
 import {
-  useDeleteOpportunity,
   useUpdateOpportunity,
   usePostOpportunity,
-  useReopenOpportunity,
 } from "@/hooks/useRecruiterOpportunities";
 import { useRecruiterApplicationsQuery } from "@/hooks/useRecruiterApplications";
 import { useToast } from "@/hooks";
-import { SuccessModal } from "@/components/ui/SuccessModal";
 import { type Application } from "@/lib/api/applications/types";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
@@ -54,29 +51,25 @@ export function OpportunityCard({
   opportunity,
   activeTab,
   onMutationSuccess,
-}: OpportunityCardProps & { onMutationSuccess?: () => void }) {
+  onDeleteRequest,
+  onReopenRequest,
+  onShowSuccess,
+}: OpportunityCardProps & { 
+  onMutationSuccess?: () => void;
+  onDeleteRequest?: (opportunity: OpportunityCardProps['opportunity']) => void;
+  onReopenRequest?: (opportunity: OpportunityCardProps['opportunity']) => void;
+  onShowSuccess?: (title: string, description: string) => void;
+}) {
   const router = useRouter();
   const { toast } = useToast();
   const config = TYPE_CONFIG[opportunity.type] || TYPE_CONFIG["job-listing"];
   const [showModal, setShowModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showReopenModal, setShowReopenModal] = useState(false);
-  const [showSuccess, setShowSuccess] = useState<{
-    isOpen: boolean;
-    title: string;
-    description: string;
-  }>({ isOpen: false, title: "", description: "" });
-
-  const deleteMutation = useDeleteOpportunity();
   const updateMutation = useUpdateOpportunity();
   const postMutation = usePostOpportunity();
-  const reopenMutation = useReopenOpportunity();
 
   const isMutationLoading =
-    deleteMutation.isPending ||
     updateMutation.isPending ||
-    postMutation.isPending ||
-    reopenMutation.isPending;
+    postMutation.isPending;
 
   const { data: response, isLoading: loadingApplicants } =
     useRecruiterApplicationsQuery({
@@ -90,7 +83,7 @@ export function OpportunityCard({
   const isLoading = isMutationLoading; // Mapping for compatibility with existing UI disabled states
 
   const handleCardClick = (e: React.MouseEvent) => {
-    if (isLoading || showModal || showDeleteModal || showReopenModal) {
+    if (isLoading || showModal) {
       e.preventDefault();
       e.stopPropagation();
       return;
@@ -102,12 +95,10 @@ export function OpportunityCard({
     try {
       await postMutation.mutateAsync(opportunity.id);
       setShowModal(false);
-      setShowSuccess({
-        isOpen: true,
-        title: "Opportunity Posted!",
-        description:
-          "Your opportunity is now live and talents can start applying.",
-      });
+      onShowSuccess?.(
+        "Opportunity Posted!",
+        "Your opportunity is now live and talents can start applying."
+      );
       onMutationSuccess?.();
     } catch (error) {
       const message =
@@ -118,59 +109,6 @@ export function OpportunityCard({
         variant: "destructive",
       });
       setShowModal(false);
-    }
-  };
-
-  const confirmDelete = async () => {
-    try {
-      await deleteMutation.mutateAsync(opportunity.id);
-      setShowDeleteModal(false);
-      setShowSuccess({
-        isOpen: true,
-        title: "Opportunity Deleted",
-        description: "The opportunity has been permanently deleted.",
-      });
-      onMutationSuccess?.();
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Failed to delete opportunity";
-      toast({
-        title: "Error",
-        description: message,
-        variant: "destructive",
-      });
-      setShowDeleteModal(false);
-    }
-  };
-
-  const hadCap = opportunity.applicationCap && opportunity.applicationCap > 0;
-
-  const confirmReopen = async () => {
-    try {
-      const response = await reopenMutation.mutateAsync(opportunity.id);
-      setShowReopenModal(false);
-      setShowSuccess({
-        isOpen: true,
-        title: "Opportunity Reopened!",
-        description:
-          response.message ||
-          "Your opportunity is now accepting new applications.",
-      });
-      onMutationSuccess?.();
-      if (hadCap) {
-        router.push(
-          `/opportunities/edit/${opportunity.id}?section=application-settings`,
-        );
-      }
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Failed to reopen opportunity";
-      toast({
-        title: "Error",
-        description: message,
-        variant: "destructive",
-      });
-      setShowReopenModal(false);
     }
   };
 
@@ -255,7 +193,7 @@ export function OpportunityCard({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              setShowDeleteModal(true);
+              onDeleteRequest?.(opportunity);
             }}
             className="flex items-center gap-0.5 h-8 px-3 bg-red-50 text-red-600 rounded-full border border-red-200 hover:bg-red-100 transition-colors flex-shrink-0"
           >
@@ -289,12 +227,10 @@ export function OpportunityCard({
           id: opportunity.id,
           data: { status: "closed" },
         });
-        setShowSuccess({
-          isOpen: true,
-          title: "Marked as Filled!",
-          description:
-            "This opportunity is now closed and no longer accepting applications.",
-        });
+        onShowSuccess?.(
+          "Marked as Filled!",
+          "This opportunity is now closed and no longer accepting applications."
+        );
         onMutationSuccess?.();
       } catch (error) {
         const message =
@@ -397,7 +333,7 @@ export function OpportunityCard({
               className="text-red-600"
               onClick={(e) => {
                 e.stopPropagation();
-                setShowDeleteModal(true);
+                onDeleteRequest?.(opportunity);
               }}
             >
               Delete
@@ -647,7 +583,7 @@ export function OpportunityCard({
           <button
             onClick={(e) => {
               e.stopPropagation();
-              setShowReopenModal(true);
+              onReopenRequest?.(opportunity);
             }}
             disabled={isLoading}
             className="flex items-center gap-0.5 h-8 px-3 text-white rounded-full hover:opacity-80 transition-colors flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -722,76 +658,6 @@ export function OpportunityCard({
           }
         />
       )}
-
-      {/* Delete Confirmation Modal */}
-      <Modal
-        isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        title={activeTab === "draft" ? "Delete Draft?" : "Delete Opportunity?"}
-        description={`Are you sure you want to delete "${opportunity.title}"? This action cannot be undone.`}
-        footer={
-          <>
-            <Button
-              variant="outline"
-              onClick={() => setShowDeleteModal(false)}
-              disabled={isLoading}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={confirmDelete}
-              disabled={isLoading}
-              className="bg-red-600 hover:bg-red-700"
-            >
-              {isLoading
-                ? "Deleting..."
-                : `Delete ${activeTab === "draft" ? "Draft" : "Opportunity"}`}
-            </Button>
-          </>
-        }
-      />
-
-      {/* Reopen Confirmation Modal */}
-      {activeTab === "closed" && (
-        <Modal
-          isOpen={showReopenModal}
-          onClose={() => setShowReopenModal(false)}
-          title="Reopen Opportunity"
-          description={
-            hadCap
-              ? `Are you sure you want to reopen "${opportunity.title}"? It will be visible to all talents and accept new applications. Any previous application cap will be cleared.`
-              : `Are you sure you want to reopen "${opportunity.title}"? It will be visible to all talents and accept new applications.`
-          }
-          footer={
-            <>
-              <Button
-                variant="outline"
-                onClick={() => setShowReopenModal(false)}
-                disabled={isLoading}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={confirmReopen}
-                disabled={isLoading}
-                className="hover:opacity-80"
-                style={{ backgroundColor: ROLE_COLORS.recruiter.primary }}
-              >
-                {isLoading ? "Reopening..." : "Reopen"}
-              </Button>
-            </>
-          }
-        />
-      )}
-
-      {/* Success Modal */}
-      <SuccessModal
-        isOpen={showSuccess.isOpen}
-        onClose={() => setShowSuccess((s) => ({ ...s, isOpen: false }))}
-        title={showSuccess.title}
-        description={showSuccess.description}
-        accentColor={ROLE_COLORS.recruiter.primary}
-      />
     </div>
   );
 }

@@ -20,7 +20,7 @@ function ActivityItem({ message, timeAgo, type, image }: ActivityItemProps) {
       icon: Calendar,
       bgColor: "bg-[#E6F2FF]",
       iconColor: "text-[#3D82F6]",
-      link: "/sessions",
+      link: "/interviews",
     },
   };
 

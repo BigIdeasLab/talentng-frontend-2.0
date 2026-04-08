@@ -13,6 +13,7 @@ import { getTalentUpcomingCount } from "@/lib/api/talent";
 import {
   getRecruiterInterviewsCount,
   getRecruiterApplicationsCount,
+  getTalentPendingInvitesCount,
 } from "@/lib/api/applications";
 import { getMentorSessionsCount } from "@/lib/api/mentorship";
 import { MobileDrawer } from "@/components/navigation/MobileDrawer";
@@ -31,6 +32,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [totalUnreadCount, setTotalUnreadCount] = useState(0);
   const [talentUpcomingCount, setTalentUpcomingCount] = useState(0);
+  const [talentPendingInvitesCount, setTalentPendingInvitesCount] = useState(0);
   const [recruiterUpcomingCount, setRecruiterUpcomingCount] = useState(0);
   const [recruiterApplicantsCount, setRecruiterApplicantsCount] = useState(0);
   const [mentorUpcomingCount, setMentorUpcomingCount] = useState(0);
@@ -76,6 +78,14 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
       getTalentUpcomingCount()
         .then((res) => setTalentUpcomingCount(res.count))
         .catch(console.error);
+      getTalentPendingInvitesCount()
+        .then((res) => {
+          setTalentPendingInvitesCount(res.count);
+        })
+        .catch((error) => {
+          console.error("[Layout] Failed to fetch pending invites count:", error);
+          setTalentPendingInvitesCount(0);
+        });
     } else if (activeRole === "recruiter") {
       getRecruiterInterviewsCount()
         .then((res) => setRecruiterUpcomingCount(res.count))
@@ -155,6 +165,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
             onNotificationClick={() => setIsNotificationsOpen(true)}
             notificationCount={totalUnreadCount}
             upcomingCount={talentUpcomingCount}
+            pendingInvitesCount={talentPendingInvitesCount}
             ticketCount={ticketCount}
           />
         );
@@ -216,6 +227,7 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
                   : talentUpcomingCount
             }
             applicantsCount={recruiterApplicantsCount}
+            pendingInvitesCount={talentPendingInvitesCount}
             ticketCount={ticketCount}
             onClose={() => setIsMobileDrawerOpen(false)}
           />

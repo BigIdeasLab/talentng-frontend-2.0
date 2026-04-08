@@ -56,6 +56,7 @@ export interface Application {
   profileType: "talent" | "mentor";
   profileId: string;
   status: "invited" | "applied" | "shortlisted" | "rejected" | "hired";
+  sourceType?: "applied" | "invited";
   note?: string;
   attachments: Array<any>;
   galleryIds: string[];

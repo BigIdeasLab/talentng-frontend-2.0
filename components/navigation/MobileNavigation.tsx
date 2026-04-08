@@ -31,6 +31,7 @@ interface MobileNavigationProps {
   notificationCount?: number;
   upcomingCount?: number;
   applicantsCount?: number;
+  pendingInvitesCount?: number;
   ticketCount?: number;
   onClose?: () => void;
 }
@@ -46,6 +47,7 @@ interface MenuItem {
 const getTalentMenuItems = (
   notificationCount?: number,
   upcomingCount?: number,
+  pendingInvitesCount?: number,
 ): MenuItem[] => [
   {
     id: "dashboard",
@@ -69,6 +71,7 @@ const getTalentMenuItems = (
     id: "my-applications",
     label: "My Applications",
     icon: <FileText className="w-5 h-5" strokeWidth={1.25} />,
+    badge: pendingInvitesCount,
     href: "/my-applications",
   },
   {
@@ -195,6 +198,7 @@ export function MobileNavigation({
   notificationCount = 0,
   upcomingCount = 0,
   applicantsCount = 0,
+  pendingInvitesCount = 0,
   ticketCount = 0,
   onClose,
 }: MobileNavigationProps) {
@@ -205,7 +209,7 @@ export function MobileNavigation({
       ? getRecruiterMenuItems(notificationCount, upcomingCount, applicantsCount)
       : activeRole === "mentor"
         ? getMentorMenuItems(notificationCount, upcomingCount)
-        : getTalentMenuItems(notificationCount, upcomingCount);
+        : getTalentMenuItems(notificationCount, upcomingCount, pendingInvitesCount);
 
   const otherItems = getOtherItems(ticketCount);
 

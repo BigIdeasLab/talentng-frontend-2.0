@@ -5,6 +5,7 @@ import type { MappedApplicant } from "@/lib/mappers/application";
 
 const statusDisplayMap = {
   applied: { label: "New Application", bg: "#FEF3C7", text: "#D97706" },
+  invitedApplication: { label: "Invited Application", bg: "#E0F2FE", text: "#0369A1" },
   invited: { label: "Invited", bg: "#DBEAFE", text: "#2563EB" },
   shortlisted: { label: "Shortlisted", bg: "#F3E8FF", text: "#7C3AED" },
   hired: { label: "Hired", bg: "#ECFDF3", text: "#059669" },
@@ -29,6 +30,13 @@ export function ApplicantCard({ applicant, onHireClick }: ApplicantCardProps) {
   const router = useRouter();
 
   const getStatusDisplay = () => {
+    // Check for invited application (accepted invitation)
+    if (
+      applicant.status === "applied" &&
+      applicant.sourceType === "invited"
+    ) {
+      return statusDisplayMap["invitedApplication"];
+    }
     if (
       applicant.status === "shortlisted" &&
       applicant.interviewStatus === "cancelled"

@@ -103,12 +103,20 @@ export function OpportunityDetails({
       if (opportunity.saved !== undefined) {
         setIsSaved(opportunity.saved);
       }
-      if (applicationId && opportunity.applications) {
-        const currentApp = opportunity.applications.find(
-          (app) => app.id === applicationId,
-        );
-        if (currentApp?.inviteResponse) {
-          setInvitationResponse(currentApp.inviteResponse);
+      // Check for invitation response from multiple sources
+      if (applicationId) {
+        // First check the opportunity's direct inviteResponse field
+        if (opportunity.inviteResponse) {
+          setInvitationResponse(opportunity.inviteResponse);
+        }
+        // Also check in applications array if available
+        else if (opportunity.applications) {
+          const currentApp = opportunity.applications.find(
+            (app) => app.id === applicationId,
+          );
+          if (currentApp?.inviteResponse) {
+            setInvitationResponse(currentApp.inviteResponse);
+          }
         }
       }
     }
@@ -139,8 +147,8 @@ export function OpportunityDetails({
     // Prevent double responses
     if (invitationResponse !== null) {
       toast({
-        title: "Error",
-        description: "You already responded to this invitation.",
+        title: "Already Responded",
+        description: `You already ${invitationResponse === "accepted" ? "accepted" : "declined"} this invitation.`,
         variant: "destructive",
       });
       return;
@@ -150,8 +158,11 @@ export function OpportunityDetails({
     try {
       const module = await import("@/lib/api/applications/index");
       await module.respondToInvitation(applicationId, response);
-      // Optimistic UI update - disable buttons immediately
+      // Optimistic UI update - set response immediately
       setInvitationResponse(response);
+      // Refetch to get updated data
+      await fetchOpportunityDetails();
+      // Redirect after showing success message
       setTimeout(() => {
         router.push("/opportunities");
       }, 1500);
@@ -161,10 +172,10 @@ export function OpportunityDetails({
       // Check if it's a "already responded" error
       const errorMsg = error instanceof Error ? error.message : "";
       if (errorMsg.includes("already responded")) {
-        // User already responded - refresh to get the actual state
+        // User already responded - refetch to get the actual state
         await fetchOpportunityDetails();
         toast({
-          title: "Error",
+          title: "Already Responded",
           description: "You already responded to this invitation.",
           variant: "destructive",
         });

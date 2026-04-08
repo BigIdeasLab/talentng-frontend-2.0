@@ -29,6 +29,7 @@ interface SidebarProps {
   onNotificationClick?: () => void;
   notificationCount?: number;
   upcomingCount?: number;
+  pendingInvitesCount?: number;
   ticketCount?: number;
 }
 
@@ -43,6 +44,7 @@ interface MenuItem {
 const getMenuItems = (
   notificationCount?: number,
   upcomingCount?: number,
+  pendingInvitesCount?: number,
 ): MenuItem[] => [
   {
     id: "dashboard",
@@ -78,6 +80,7 @@ const getMenuItems = (
     id: "my-applications",
     label: "My Applications",
     icon: <FileText className="w-5 h-5" strokeWidth={1.25} stroke="#525866" />,
+    badge: pendingInvitesCount,
     href: "/my-applications",
   },
   {
@@ -121,10 +124,11 @@ export function TalentSidebar({
   onNotificationClick,
   notificationCount = 0,
   upcomingCount = 0,
+  pendingInvitesCount = 0,
   ticketCount = 0,
 }: SidebarProps) {
   const pathname = usePathname();
-  const menuItems = getMenuItems(notificationCount, upcomingCount);
+  const menuItems = getMenuItems(notificationCount, upcomingCount, pendingInvitesCount);
   const otherItems = getOtherItems(ticketCount);
 
   const handleNotificationClick = (e: React.MouseEvent) => {

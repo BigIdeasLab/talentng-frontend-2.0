@@ -25,6 +25,7 @@ import { useToast } from "@/hooks";
 // Map status to UI display - Recruiter View
 const statusDisplayMap = {
   applied: { label: "New Application", bg: "#FEF3C7", text: "#D97706" },
+  invitedApplication: { label: "Invited Application", bg: "#E0F2FE", text: "#0369A1" },
   invited: { label: "Invited", bg: "#DBEAFE", text: "#2563EB" },
   shortlisted: { label: "Shortlisted", bg: "#F3E8FF", text: "#7C3AED" },
   hired: { label: "Hired", bg: "#ECFDF3", text: "#059669" },
@@ -57,6 +58,7 @@ interface MappedApplicant {
   dateApplied: string;
   createdAt: string;
   status: string;
+  sourceType?: "applied" | "invited";
   interviewStatus?: "scheduled" | "rescheduled" | "completed" | "cancelled";
 }
 
@@ -167,6 +169,7 @@ export default function OpportunityApplicantsPage() {
         }),
         createdAt: app.createdAt,
         status: app.status,
+        sourceType: app.sourceType,
         interviewStatus,
       };
     });
@@ -614,6 +617,13 @@ export default function OpportunityApplicantsPage() {
                         className="flex items-center justify-center px-[20px] py-1 rounded-[50px]"
                         style={{
                           backgroundColor: (() => {
+                            // Check for invited application (accepted invitation)
+                            if (
+                              applicant.status === "applied" &&
+                              applicant.sourceType === "invited"
+                            ) {
+                              return statusDisplayMap["invitedApplication"].bg;
+                            }
                             if (
                               applicant.status === "shortlisted" &&
                               applicant.interviewStatus === "cancelled"
@@ -640,6 +650,13 @@ export default function OpportunityApplicantsPage() {
                           className="font-inter-tight text-[11px] font-semibold text-center leading-tight"
                           style={{
                             color: (() => {
+                              // Check for invited application (accepted invitation)
+                              if (
+                                applicant.status === "applied" &&
+                                applicant.sourceType === "invited"
+                              ) {
+                                return statusDisplayMap["invitedApplication"].text;
+                              }
                               if (
                                 applicant.status === "shortlisted" &&
                                 applicant.interviewStatus === "cancelled"
@@ -663,6 +680,13 @@ export default function OpportunityApplicantsPage() {
                           }}
                         >
                           {(() => {
+                            // Check for invited application (accepted invitation)
+                            if (
+                              applicant.status === "applied" &&
+                              applicant.sourceType === "invited"
+                            ) {
+                              return statusDisplayMap["invitedApplication"].label;
+                            }
                             if (
                               applicant.status === "shortlisted" &&
                               applicant.interviewStatus === "cancelled"
