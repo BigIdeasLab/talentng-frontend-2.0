@@ -83,7 +83,10 @@ export function AppLayoutClient({ children }: { children: React.ReactNode }) {
           setTalentPendingInvitesCount(res.count);
         })
         .catch((error) => {
-          console.error("[Layout] Failed to fetch pending invites count:", error);
+          console.error(
+            "[Layout] Failed to fetch pending invites count:",
+            error,
+          );
           setTalentPendingInvitesCount(0);
         });
     } else if (activeRole === "recruiter") {

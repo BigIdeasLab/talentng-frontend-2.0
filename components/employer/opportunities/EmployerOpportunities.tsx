@@ -2,7 +2,11 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useRecruiterOpportunitiesQuery, useDeleteOpportunity, useReopenOpportunity } from "@/hooks/useRecruiterOpportunities";
+import {
+  useRecruiterOpportunitiesQuery,
+  useDeleteOpportunity,
+  useReopenOpportunity,
+} from "@/hooks/useRecruiterOpportunities";
 import type { TabType, SortType } from "@/lib/types";
 import type { OpportunityCard as OpportunityCardType } from "@/lib/types/opportunities";
 import { transformOpportunityToCard } from "@/lib/utils/opportunities";
@@ -32,14 +36,16 @@ export function EmployerOpportunities() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<any>(null);
   const [offset, setOffset] = useState(0);
-  
+
   // Delete modal state - lifted to parent
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [opportunityToDelete, setOpportunityToDelete] = useState<OpportunityCardType | null>(null);
+  const [opportunityToDelete, setOpportunityToDelete] =
+    useState<OpportunityCardType | null>(null);
 
   // Reopen modal state - lifted to parent
   const [reopenModalOpen, setReopenModalOpen] = useState(false);
-  const [opportunityToReopen, setOpportunityToReopen] = useState<OpportunityCardType | null>(null);
+  const [opportunityToReopen, setOpportunityToReopen] =
+    useState<OpportunityCardType | null>(null);
 
   // Success modal state - lifted to parent
   const [showSuccess, setShowSuccess] = useState<{
@@ -223,7 +229,9 @@ export function EmployerOpportunities() {
   const confirmReopen = async () => {
     if (!opportunityToReopen) return;
 
-    const hadCap = opportunityToReopen.applicationCap && opportunityToReopen.applicationCap > 0;
+    const hadCap =
+      opportunityToReopen.applicationCap &&
+      opportunityToReopen.applicationCap > 0;
 
     try {
       const response = await reopenMutation.mutateAsync(opportunityToReopen.id);
@@ -232,7 +240,9 @@ export function EmployerOpportunities() {
       setShowSuccess({
         isOpen: true,
         title: "Opportunity Reopened!",
-        description: response.message || "Your opportunity is now accepting new applications.",
+        description:
+          response.message ||
+          "Your opportunity is now accepting new applications.",
       });
       fetchOpportunities();
       if (hadCap) {
@@ -637,7 +647,8 @@ export function EmployerOpportunities() {
         title="Reopen Opportunity"
         description={
           opportunityToReopen
-            ? opportunityToReopen.applicationCap && opportunityToReopen.applicationCap > 0
+            ? opportunityToReopen.applicationCap &&
+              opportunityToReopen.applicationCap > 0
               ? `Are you sure you want to reopen "${opportunityToReopen.title}"? It will be visible to all talents and accept new applications. Any previous application cap will be cleared.`
               : `Are you sure you want to reopen "${opportunityToReopen.title}"? It will be visible to all talents and accept new applications.`
             : ""
@@ -678,4 +689,3 @@ export function EmployerOpportunities() {
     </RoleColorProvider>
   );
 }
-

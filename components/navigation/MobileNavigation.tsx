@@ -209,7 +209,11 @@ export function MobileNavigation({
       ? getRecruiterMenuItems(notificationCount, upcomingCount, applicantsCount)
       : activeRole === "mentor"
         ? getMentorMenuItems(notificationCount, upcomingCount)
-        : getTalentMenuItems(notificationCount, upcomingCount, pendingInvitesCount);
+        : getTalentMenuItems(
+            notificationCount,
+            upcomingCount,
+            pendingInvitesCount,
+          );
 
   const otherItems = getOtherItems(ticketCount);
 

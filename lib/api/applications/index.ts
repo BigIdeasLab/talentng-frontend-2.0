@@ -346,7 +346,9 @@ export async function getRecruiterApplicationsCount(): Promise<{
 export async function getTalentPendingInvitesCount(): Promise<{
   count: number;
 }> {
-  return apiClient<{ count: number }>("/talent/applications/pending-invites/count");
+  return apiClient<{ count: number }>(
+    "/talent/applications/pending-invites/count",
+  );
 }
 
 // Export types

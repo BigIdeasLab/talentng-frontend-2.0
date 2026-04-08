@@ -25,7 +25,11 @@ import { useToast } from "@/hooks";
 // Map status to UI display - Recruiter View
 const statusDisplayMap = {
   applied: { label: "New Application", bg: "#FEF3C7", text: "#D97706" },
-  invitedApplication: { label: "Invited Application", bg: "#E0F2FE", text: "#0369A1" },
+  invitedApplication: {
+    label: "Invited Application",
+    bg: "#E0F2FE",
+    text: "#0369A1",
+  },
   invited: { label: "Invited", bg: "#DBEAFE", text: "#2563EB" },
   shortlisted: { label: "Shortlisted", bg: "#F3E8FF", text: "#7C3AED" },
   hired: { label: "Hired", bg: "#ECFDF3", text: "#059669" },
@@ -655,7 +659,8 @@ export default function OpportunityApplicantsPage() {
                                 applicant.status === "applied" &&
                                 applicant.sourceType === "invited"
                               ) {
-                                return statusDisplayMap["invitedApplication"].text;
+                                return statusDisplayMap["invitedApplication"]
+                                  .text;
                               }
                               if (
                                 applicant.status === "shortlisted" &&
@@ -685,7 +690,8 @@ export default function OpportunityApplicantsPage() {
                               applicant.status === "applied" &&
                               applicant.sourceType === "invited"
                             ) {
-                              return statusDisplayMap["invitedApplication"].label;
+                              return statusDisplayMap["invitedApplication"]
+                                .label;
                             }
                             if (
                               applicant.status === "shortlisted" &&

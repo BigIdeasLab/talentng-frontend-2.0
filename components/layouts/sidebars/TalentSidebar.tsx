@@ -128,7 +128,11 @@ export function TalentSidebar({
   ticketCount = 0,
 }: SidebarProps) {
   const pathname = usePathname();
-  const menuItems = getMenuItems(notificationCount, upcomingCount, pendingInvitesCount);
+  const menuItems = getMenuItems(
+    notificationCount,
+    upcomingCount,
+    pendingInvitesCount,
+  );
   const otherItems = getOtherItems(ticketCount);
 
   const handleNotificationClick = (e: React.MouseEvent) => {

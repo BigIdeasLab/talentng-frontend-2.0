@@ -54,10 +54,10 @@ export function OpportunityCard({
   onDeleteRequest,
   onReopenRequest,
   onShowSuccess,
-}: OpportunityCardProps & { 
+}: OpportunityCardProps & {
   onMutationSuccess?: () => void;
-  onDeleteRequest?: (opportunity: OpportunityCardProps['opportunity']) => void;
-  onReopenRequest?: (opportunity: OpportunityCardProps['opportunity']) => void;
+  onDeleteRequest?: (opportunity: OpportunityCardProps["opportunity"]) => void;
+  onReopenRequest?: (opportunity: OpportunityCardProps["opportunity"]) => void;
   onShowSuccess?: (title: string, description: string) => void;
 }) {
   const router = useRouter();
@@ -67,9 +67,7 @@ export function OpportunityCard({
   const updateMutation = useUpdateOpportunity();
   const postMutation = usePostOpportunity();
 
-  const isMutationLoading =
-    updateMutation.isPending ||
-    postMutation.isPending;
+  const isMutationLoading = updateMutation.isPending || postMutation.isPending;
 
   const { data: response, isLoading: loadingApplicants } =
     useRecruiterApplicationsQuery({
@@ -97,7 +95,7 @@ export function OpportunityCard({
       setShowModal(false);
       onShowSuccess?.(
         "Opportunity Posted!",
-        "Your opportunity is now live and talents can start applying."
+        "Your opportunity is now live and talents can start applying.",
       );
       onMutationSuccess?.();
     } catch (error) {
@@ -229,7 +227,7 @@ export function OpportunityCard({
         });
         onShowSuccess?.(
           "Marked as Filled!",
-          "This opportunity is now closed and no longer accepting applications."
+          "This opportunity is now closed and no longer accepting applications.",
         );
         onMutationSuccess?.();
       } catch (error) {

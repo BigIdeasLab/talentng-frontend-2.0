@@ -318,7 +318,9 @@ export default function HiredTalentsPage() {
               onSearch={setSearchQuery}
               placeholder="Search name or Role Or Opportunity"
               debounceDelay={500}
-              isLoading={hasCompletedInitialLoad && (isAppsLoading || isFetchingRecs)}
+              isLoading={
+                hasCompletedInitialLoad && (isAppsLoading || isFetchingRecs)
+              }
             />
           </div>
 
@@ -739,8 +741,8 @@ export default function HiredTalentsPage() {
           }}
           onSubmit={handleRecommendationSubmit}
           applicantName={
-            hiredTalents.find((t) => t.userId === selectedTalentUserId)
-              ?.name || ""
+            hiredTalents.find((t) => t.userId === selectedTalentUserId)?.name ||
+            ""
           }
           initialData={
             editingRecommendation
