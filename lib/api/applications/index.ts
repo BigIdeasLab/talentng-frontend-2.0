@@ -147,9 +147,7 @@ export async function getApplicationsWithFilters(params: {
 /**
  * Delete an application
  */
-export async function deleteApplication(
-  applicationId: string,
-): Promise<void> {
+export async function deleteApplication(applicationId: string): Promise<void> {
   return apiClient<void>(`/applications/${applicationId}`, {
     method: "DELETE",
   });

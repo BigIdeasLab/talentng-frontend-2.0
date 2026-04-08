@@ -73,11 +73,14 @@ export const verifyEmailConfirm = async (
   email: string,
   verificationCode: string,
 ): Promise<LoginResponse> => {
-  const response = await apiClient<LoginResponse>("/auth/verify-email/confirm", {
-    method: "POST",
-    body: { email, verificationCode },
-    credentials: "include",
-  });
+  const response = await apiClient<LoginResponse>(
+    "/auth/verify-email/confirm",
+    {
+      method: "POST",
+      body: { email, verificationCode },
+      credentials: "include",
+    },
+  );
 
   handleAuthResponse(response);
   return response;

@@ -128,7 +128,7 @@ function TalentCard({ talent }: { talent: (typeof talents)[0] }) {
 
 export function DiscoverSection() {
   const [activeTab, setActiveTab] = useState<"People" | "Opportunities">(
-    "People"
+    "People",
   );
   const [activeCategory, setActiveCategory] = useState("All");
 

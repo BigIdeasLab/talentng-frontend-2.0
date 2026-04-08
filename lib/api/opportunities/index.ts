@@ -19,7 +19,9 @@ import type {
 export async function getOpportunities(
   params?: GetOpportunitiesParams,
 ): Promise<PaginatedOpportunitiesResponse> {
-  const queryString = buildQueryString(params as Record<string, string | number | boolean | null | undefined>);
+  const queryString = buildQueryString(
+    params as Record<string, string | number | boolean | null | undefined>,
+  );
   const endpoint = `/opportunities${queryString ? `?${queryString}` : ""}`;
   return apiClient<PaginatedOpportunitiesResponse>(endpoint);
 }
@@ -31,7 +33,9 @@ export async function getOpportunities(
 export async function getTalentOpportunities(
   params?: GetOpportunitiesParams,
 ): Promise<PaginatedOpportunitiesResponse> {
-  const queryString = buildQueryString(params as Record<string, string | number | boolean | null | undefined>);
+  const queryString = buildQueryString(
+    params as Record<string, string | number | boolean | null | undefined>,
+  );
   const endpoint = `/talent/opportunities${queryString ? `?${queryString}` : ""}`;
   return apiClient<PaginatedOpportunitiesResponse>(endpoint);
 }
@@ -43,7 +47,9 @@ export async function getTalentOpportunities(
 export async function getRecruiterOpportunities(
   params?: GetOpportunitiesParams,
 ): Promise<PaginatedOpportunitiesResponse> {
-  const queryString = buildQueryString(params as Record<string, string | number | boolean | null | undefined>);
+  const queryString = buildQueryString(
+    params as Record<string, string | number | boolean | null | undefined>,
+  );
   const endpoint = `/recruiter/opportunities${queryString ? `?${queryString}` : ""}`;
   return apiClient<PaginatedOpportunitiesResponse>(endpoint);
 }
@@ -114,9 +120,7 @@ export async function unsaveOpportunity(id: string): Promise<void> {
  * Check if opportunity is saved (talent only)
  * GET /talent/opportunities/:id/is-saved
  */
-export async function getSaveStatus(
-  id: string,
-): Promise<{ saved: boolean }> {
+export async function getSaveStatus(id: string): Promise<{ saved: boolean }> {
   return apiClient<{ saved: boolean }>(`/talent/opportunities/${id}/is-saved`);
 }
 

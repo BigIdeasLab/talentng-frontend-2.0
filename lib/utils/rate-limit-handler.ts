@@ -3,7 +3,10 @@
  * Provides user-friendly messages for rate limiting scenarios
  */
 
-import { isRateLimitError as isApiRateLimitError, ApiError } from "@/lib/api/errors";
+import {
+  isRateLimitError as isApiRateLimitError,
+  ApiError,
+} from "@/lib/api/errors";
 
 export interface RateLimitInfo {
   isRateLimited: boolean;
