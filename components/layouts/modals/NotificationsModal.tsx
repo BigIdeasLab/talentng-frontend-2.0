@@ -92,7 +92,6 @@ export function NotificationsModal({
   const handleNotificationDismiss = async (notificationId: string) => {
     try {
       // TODO: Implement delete notification functionality
-      console.log("Dismissing notification:", notificationId);
       // If the dismissed notification was selected, close the detail panel
       if (selectedNotificationId === notificationId) {
         setSelectedNotificationId(null);

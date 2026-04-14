@@ -45,12 +45,6 @@ export default function RecruiterProfilePage() {
       setError(null);
       try {
         const data = await getRecruiterProfileByUserId(userId);
-        console.log("RecruiterProfilePage - Profile data:", {
-          userId,
-          company: data.company,
-          verificationStatus: data.verificationStatus,
-          fullProfile: data,
-        });
         setProfile(data);
       } catch (err) {
         if (err instanceof Error && err.message.includes("404")) {

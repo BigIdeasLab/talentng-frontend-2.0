@@ -68,11 +68,6 @@ export function RecruiterUpcoming() {
         setItems(responseData);
         setPagination(responsePagination);
 
-        console.log("Interviews API Response:", {
-          dataLength: responseData.length,
-          pagination: responsePagination,
-        });
-
         if (isInitialLoad) setIsInitialLoad(false);
       } catch (error) {
         console.error("Failed to load recruiter upcoming data:", error);

@@ -291,9 +291,9 @@ _Break the 1112-line monolith into testable, maintainable components._
 
 | #        | Task                                                                                                                                                   | File(s)    | Est.   |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | ------ |
-| - [ ] 78 | Remove debug `console.log` statements from all components listed in audit section 10.1 (~20 files, 70+ statements)                                     | 20+ files  | 45 min |
-| - [ ] 79 | Keep `console.error` for genuine caught errors — review each and decide                                                                                | same files | 15 min |
-| - [ ] 80 | Remove `console.log` statements from `components/performance/PerformanceMonitor.tsx` (7 statements) and `MobilePerformanceProvider.tsx` (5 statements) | 2 files    | 10 min |
+| - [x] 78 | Remove debug `console.log` statements from all components listed in audit section 10.1 (~20 files, 70+ statements)                                     | 20+ files  | ✅ |
+| - [x] 79 | Keep `console.error` for genuine caught errors — review each and decide                                                                                | same files | ✅ |
+| - [x] 80 | Remove `console.log` statements from `components/performance/PerformanceMonitor.tsx` (7 statements) and `MobilePerformanceProvider.tsx` (5 statements) | 2 files    | ✅ (kept - dev-only) |
 
 ### Group 8B: Create Dev-Only Logger (Optional)
 
@@ -306,9 +306,9 @@ _Break the 1112-line monolith into testable, maintainable components._
 
 | #        | Task                                                                     | File(s) | Est.  |
 | -------- | ------------------------------------------------------------------------ | ------- | ----- |
-| - [ ] 83 | Delete `app/(business)/debug/` directory — should not ship to production | delete  | 2 min |
+| - [x] 83 | Delete `app/(business)/debug/` directory — should not ship to production | delete  | ✅ |
 
-**Phase 8 Commit:** `chore: remove console.log debug code, add logger utility, delete debug route`
+**Phase 8 Commit:** `chore: remove console.log debug code, delete debug route`
 
 ---
 

@@ -57,8 +57,6 @@ function DashboardSkeleton() {
 const EmployerDashboard = mobileOptimizedMemo(function EmployerDashboard() {
   const { data, isLoading, isPending, error } = useRecruiterDashboard();
 
-  console.log("Recruiter Dashboard Data:", data);
-
   // Memoized format function
   const formatChange = useMobileOptimizedCallback(
     (value: number, isPercent: boolean): string => {

@@ -84,8 +84,6 @@ const WeeklyOverviewChart = mobileOptimizedMemo(
       },
     );
 
-    console.log("WeeklyOverviewChart - data:", data, "yAxisMax:", yAxisMax);
-
     return (
       <div className="flex flex-col items-start gap-4 p-5 md:p-6 rounded-2xl border border-[#E1E4EA] bg-white w-full">
         <div className="flex flex-col items-start gap-1 self-stretch flex-shrink-0">

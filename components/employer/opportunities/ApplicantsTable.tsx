@@ -234,7 +234,6 @@ export function ApplicantsTable({
       label: "View Profile",
       onClick: (applicant) => {
         // TODO: Navigate to profile
-        console.log("View profile:", applicant.id);
       },
       className: "bg-[#181B25] text-white hover:bg-[#2a2d35]",
     },
