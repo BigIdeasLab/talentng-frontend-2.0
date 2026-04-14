@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Clock, CalendarCheck } from "lucide-react";
+import { MapPin, Clock, CalendarCheck, Briefcase, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { TalentPublicData } from "@/lib/mock-data/talents-detail";
 
@@ -13,6 +13,7 @@ export interface TalentDetailPublicProps {
 
 const tabs = [
   { id: "works", label: "Works" },
+  { id: "services", label: "Services" },
   { id: "about", label: "About" },
 ] as const;
 
@@ -212,6 +213,105 @@ export function TalentDetailPublic({ data }: TalentDetailPublicProps) {
                   <div className="flex flex-col items-center justify-center py-20 text-center">
                     <p className="text-[13px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
                       No portfolio items yet.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Services Tab */}
+            {activeTab === "services" && (
+              <div className="w-full px-[20px] py-[20px]">
+                {data.services && data.services.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[10px] gap-y-[20px]">
+                    {data.services.map((service, idx) => (
+                      <div
+                        key={service.id || `service-${idx}`}
+                        className="group flex flex-col items-start gap-[8px] text-left"
+                      >
+                        {/* Service Image */}
+                        <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-100">
+                          {service.images && service.images.length > 0 ? (
+                            <Image
+                              src={service.images[0]}
+                              alt={service.title}
+                              fill
+                              className="object-cover group-hover:scale-105 transition-transform duration-200"
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300" />
+                          )}
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-200" />
+                        </div>
+
+                        {/* Service Details */}
+                        <div className="flex flex-col items-start gap-[12px] w-full">
+                          {/* Tags */}
+                          {service.tags && service.tags.length > 0 && (
+                            <div className="flex flex-wrap items-center gap-[4px]">
+                              {service.tags.slice(0, 3).map((tag, tagIdx) => (
+                                <div
+                                  key={`${service.id}-${tag}-${tagIdx}`}
+                                  className="flex px-[10px] py-[8px] justify-center items-center rounded-[30px] bg-[#F5F5F5]"
+                                >
+                                  <span className="text-[11px] font-normal leading-[105%] font-inter-tight text-black">
+                                    {tag}
+                                  </span>
+                                </div>
+                              ))}
+                              {service.tags.length > 3 && (
+                                <div className="flex px-[10px] py-[8px] justify-center items-center rounded-[30px] bg-[#F5F5F5]">
+                                  <span className="text-[11px] font-normal leading-[105%] font-inter-tight text-black">
+                                    +{service.tags.length - 3}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Title */}
+                          <h3 className="text-[15px] font-medium leading-normal font-inter-tight text-black">
+                            {service.title}
+                          </h3>
+
+                          {/* Rating */}
+                          {service.totalReviews > 0 && (
+                            <div className="flex items-center gap-[4px]">
+                              <div className="flex items-center gap-1">
+                                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                <span className="text-[13px] font-medium text-black">
+                                  {service.averageRating.toFixed(1)}
+                                </span>
+                              </div>
+                              <span className="text-[12px] text-gray-500">
+                                ({service.totalReviews} reviews)
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Price */}
+                          {service.price && (
+                            <div className="flex items-center gap-[4px]">
+                              <Briefcase
+                                className="w-[16px] h-[16px]"
+                                strokeWidth={1.2}
+                                color="rgba(0, 0, 0, 0.3)"
+                              />
+                              <span className="text-[13px] font-light leading-normal font-inter-tight text-[rgba(0,0,0,0.30)]">
+                                {service.price}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-20 text-center">
+                    <p className="text-[13px] font-normal text-[rgba(0,0,0,0.30)] font-inter-tight">
+                      No services available yet.
                     </p>
                   </div>
                 )}

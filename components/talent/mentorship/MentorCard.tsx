@@ -15,6 +15,7 @@ interface MentorCardProps {
   company?: string;
   location?: string;
   category?: string;
+  basePath?: string; // Optional base path for navigation (defaults to /mentorship)
 }
 
 export function MentorCard({
@@ -28,12 +29,13 @@ export function MentorCard({
   company,
   location,
   category,
+  basePath = "/mentorship",
 }: MentorCardProps) {
   return (
     <div className="flex flex-col gap-2.5 p-1.5 rounded-[16px] border border-[#E1E4EA] bg-white group cursor-pointer h-full transition-all shadow-sm hover:shadow-[0_4px_20px_0_rgba(0,0,0,0.05)]">
       {/* Thumbnail */}
       <Link
-        href={`/mentorship/${id}`}
+        href={`${basePath}/${id}`}
         className="relative w-full aspect-[261/190] rounded-xl bg-white overflow-hidden"
       >
         <Image
@@ -65,7 +67,7 @@ export function MentorCard({
         {/* Profile Info */}
         <div className="flex flex-col gap-2.5">
           <Link
-            href={`/mentorship/${id}`}
+            href={`${basePath}/${id}`}
             className="flex flex-col gap-1.5 active:scale-[0.98] transition-transform"
           >
             <h3 className="font-inter-tight text-[15px] font-semibold leading-tight text-black group-hover:text-black/60 transition-colors line-clamp-1">
@@ -105,7 +107,7 @@ export function MentorCard({
         <div className="flex items-center gap-1.5 pt-2">
           {/* Book Session Button */}
           <Link
-            href={`/mentorship/${id}?book=true`}
+            href={`${basePath}/${id}?book=true`}
             className="flex-1 flex items-center justify-center min-h-[44px] rounded-full bg-[#181B25] text-white font-inter-tight text-[13px] font-medium hover:bg-[#252831] transition-all"
           >
             Book Session
@@ -113,7 +115,7 @@ export function MentorCard({
 
           {/* External Link Button */}
           <Link
-            href={`/mentorship/${id}`}
+            href={`${basePath}/${id}`}
             className="flex items-center justify-center min-h-[44px] min-w-[44px] rounded-full border border-[#E1E4EA] bg-white hover:bg-[#F5F5F5] transition-all"
           >
             <ArrowUpRight className="w-5 h-5 text-black" strokeWidth={1.5} />

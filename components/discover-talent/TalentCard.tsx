@@ -8,13 +8,14 @@ import type { TalentData } from "@/app/(business)/discover-talent/server-data";
 
 interface TalentCardProps {
   talent: TalentData;
+  basePath?: string; // Optional base path for navigation (defaults to /discover-talent)
 }
 
-export function TalentCard({ talent }: TalentCardProps) {
+export function TalentCard({ talent, basePath = "/discover-talent" }: TalentCardProps) {
   const router = useRouter();
 
   const handleViewProfile = () => {
-    router.push(`/discover-talent/${talent.id}`); // Use talent profile ID for recruiter endpoint
+    router.push(`${basePath}/${talent.id}`);
   };
 
   const GALLERY_COUNT = 4;

@@ -9,6 +9,7 @@ import {
   browseOpportunities,
   type OpportunityPublicProfile,
 } from "@/lib/api/public/opportunities";
+import { getRecruiterPublicProfile } from "@/lib/mock-data/recruiters-detail";
 
 interface RecruiterDetailPageProps {
   params: Promise<{
@@ -52,12 +53,14 @@ export async function generateMetadata({
 export default async function RecruiterDetailPage({
   params,
 }: RecruiterDetailPageProps) {
+  const { id } = await params;
+  let recruiterData;
+
   try {
-    const { id } = await params;
+    // Try to fetch from API first
     const recruiter = await getRecruiterProfile(id);
 
     // Fetch opportunities posted by this recruiter
-    // Note: This may fail if the endpoint requires authentication for postedById filter
     let opportunities: OpportunityPublicProfile[] = [];
     try {
       opportunities = await browseOpportunities({
@@ -66,7 +69,7 @@ export default async function RecruiterDetailPage({
         limit: 10,
       });
     } catch (oppError) {
-      // Continue without opportunities - this is acceptable for public view
+      // Continue without opportunities
     }
 
     // Transform opportunities to match component interface
@@ -78,57 +81,64 @@ export default async function RecruiterDetailPage({
       postedDate: new Date(opp.createdAt).toLocaleDateString(),
     }));
 
-    // Transform API response to match component interface
-    const recruiterData = {
+    // Transform API response
+    recruiterData = {
       id: recruiter.id,
       companyName: recruiter.company,
       industry: recruiter.industry,
       location: recruiter.location,
       jobsPosted: opportunities.length,
-      talentsHired: 0, // Not available in API response
+      talentsHired: 0,
       description: recruiter.bio || "",
-      hiringFor: [], // Not available in API response
-      logoBg: "#5C30FF", // Default color
+      hiringFor: [],
+      logoBg: "#5C30FF",
       initials: recruiter.company
         .split(" ")
-        .map((word) => word[0])
+        .map((word: string) => word[0])
         .join("")
         .toUpperCase()
         .slice(0, 2),
       companyLogo: recruiter.profileImageUrl,
       openPositions,
     };
-
-    return (
-      <div className="font-inter-tight bg-white min-h-screen">
-        <PublicNavbar activeLink="Recruiters" />
-        <RecruiterDetailPublic data={recruiterData} />
-        <PublicCTA
-          title="Ready to connect with top companies?"
-          subtitle="Join Talents.ng to discover opportunities with leading employers"
-          ctaText="Sign Up to Connect"
-          ctaHref="/signup"
-        />
-        <PublicFooter />
-      </div>
-    );
   } catch (error) {
-    return (
-      <div className="font-inter-tight bg-white min-h-screen flex flex-col">
-        <PublicNavbar activeLink="Recruiters" />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <p className="text-gray-500 text-lg">Recruiter not found</p>
-            <Link
-              href="/recruiters"
-              className="inline-flex px-6 py-3 bg-[#5C30FF] text-white rounded-full hover:bg-[#4a26d4] transition-colors"
-            >
-              Back to Recruiters
-            </Link>
+    // Fallback to mock data if API fails
+    const mockData = getRecruiterPublicProfile(id);
+    if (mockData) {
+      recruiterData = mockData;
+    } else {
+      // If no mock data either, show error
+      return (
+        <div className="font-inter-tight bg-white min-h-screen flex flex-col">
+          <PublicNavbar activeLink="Recruiters" />
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center space-y-4">
+              <p className="text-gray-500 text-lg">Recruiter not found</p>
+              <Link
+                href="/recruiters"
+                className="inline-flex px-6 py-3 bg-[#5C30FF] text-white rounded-full hover:bg-[#4a26d4] transition-colors"
+              >
+                Back to Recruiters
+              </Link>
+            </div>
           </div>
+          <PublicFooter />
         </div>
-        <PublicFooter />
-      </div>
-    );
+      );
+    }
   }
+
+  return (
+    <div className="font-inter-tight bg-white min-h-screen">
+      <PublicNavbar activeLink="Recruiters" />
+      <RecruiterDetailPublic data={recruiterData} />
+      <PublicCTA
+        title="Ready to connect with top companies?"
+        subtitle="Join Talents.ng to discover opportunities with leading employers"
+        ctaText="Sign Up to Connect"
+        ctaHref="/signup"
+      />
+      <PublicFooter />
+    </div>
+  );
 }

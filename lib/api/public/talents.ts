@@ -26,6 +26,16 @@ export interface TalentPublicProfile {
   visibility: string;
   createdAt: string;
   updatedAt: string;
+  services?: Array<{
+    id: string;
+    title: string;
+    about: string;
+    price?: string;
+    images: string[];
+    tags: string[];
+    averageRating: number;
+    totalReviews: number;
+  }>;
 }
 
 export interface BrowseTalentsParams {

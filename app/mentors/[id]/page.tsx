@@ -5,6 +5,7 @@ import { PublicFooter } from "@/components/public/PublicFooter";
 import { PublicCTA } from "@/components/public/PublicCTA";
 import { MentorDetailPublic } from "@/components/public/mentor/MentorDetailPublic";
 import { getMentorProfile } from "@/lib/api/public/mentors";
+import { getMentorPublicProfile } from "@/lib/mock-data/mentors-detail";
 
 interface MentorDetailPageProps {
   params: Promise<{
@@ -49,59 +50,69 @@ export async function generateMetadata({
 export default async function MentorDetailPage({
   params,
 }: MentorDetailPageProps) {
+  const { id } = await params;
+  let mentorData;
+
   try {
-    const { id } = await params;
+    // Try to fetch from API first
     const mentor = await getMentorProfile(id);
 
     // Transform API response to match component interface
-    const mentorData = {
+    mentorData = {
       id: mentor.id,
       name: mentor.fullName,
       title: mentor.headline,
-      company: mentor.category, // Using category as company fallback
+      company: mentor.category,
       avatar: mentor.profileImageUrl || "/default.png",
       location: mentor.location || "",
       rating: mentor.avgRating || 0,
-      totalReviews: 0, // Will be fetched separately if needed
+      totalReviews: 0,
       totalSessions: mentor.totalSessions || 0,
-      sessionDuration: 60, // Default duration
+      sessionDuration: 60,
       bio: mentor.bio || "",
       expertise: mentor.expertise || [],
       industries: mentor.industries || [],
       stack: mentor.stack || [],
-      reviews: [], // Will be fetched separately if needed
+      reviews: [],
     };
-
-    return (
-      <div className="font-inter-tight bg-white min-h-screen">
-        <PublicNavbar activeLink="Mentors" />
-        <MentorDetailPublic data={mentorData} />
-        <PublicCTA
-          title="Ready to book a session?"
-          subtitle="Join Talents.ng to connect with experienced mentors"
-          ctaText="Sign Up to Book Session"
-          ctaHref="/signup"
-        />
-        <PublicFooter />
-      </div>
-    );
   } catch (error) {
-    return (
-      <div className="font-inter-tight bg-white min-h-screen flex flex-col">
-        <PublicNavbar activeLink="Mentors" />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <p className="text-gray-500 text-lg">Mentor not found</p>
-            <Link
-              href="/mentors"
-              className="inline-flex px-6 py-3 bg-[#5C30FF] text-white rounded-full hover:bg-[#4a26d4] transition-colors"
-            >
-              Back to Mentors
-            </Link>
+    // Fallback to mock data if API fails
+    const mockData = getMentorPublicProfile(id);
+    if (mockData) {
+      mentorData = mockData;
+    } else {
+      // If no mock data either, show error
+      return (
+        <div className="font-inter-tight bg-white min-h-screen flex flex-col">
+          <PublicNavbar activeLink="Mentors" />
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center space-y-4">
+              <p className="text-gray-500 text-lg">Mentor not found</p>
+              <Link
+                href="/mentors"
+                className="inline-flex px-6 py-3 bg-[#5C30FF] text-white rounded-full hover:bg-[#4a26d4] transition-colors"
+              >
+                Back to Mentors
+              </Link>
+            </div>
           </div>
+          <PublicFooter />
         </div>
-        <PublicFooter />
-      </div>
-    );
+      );
+    }
   }
+
+  return (
+    <div className="font-inter-tight bg-white min-h-screen">
+      <PublicNavbar activeLink="Mentors" />
+      <MentorDetailPublic data={mentorData} />
+      <PublicCTA
+        title="Ready to book a session?"
+        subtitle="Join Talents.ng to connect with experienced mentors"
+        ctaText="Sign Up to Book Session"
+        ctaHref="/signup"
+      />
+      <PublicFooter />
+    </div>
+  );
 }
