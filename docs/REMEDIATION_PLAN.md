@@ -343,16 +343,16 @@ _Break the 1112-line monolith into testable, maintainable components._
 
 ### Group 10A: Font Loading
 
-| #        | Task                                                                                           | File(s)                                | Est.   |
-| -------- | ---------------------------------------------------------------------------------------------- | -------------------------------------- | ------ |
+| #        | Task                                                                                           | File(s)                                | Est.          |
+| -------- | ---------------------------------------------------------------------------------------------- | -------------------------------------- | ------------- |
 | - [x] 90 | Replace CSS `@import` font loading with `next/font` in root layout (Geist, Inter, Inter Tight) | `app/layout.tsx`, `styles/globals.css` | ✅ (deferred) |
 
 **Note**: Font loading with `next/font` deferred - current CSS implementation works correctly.
 
 ### Group 10B: Design Token Alignment
 
-| #        | Task                                                                                                                                                          | File(s)                         | Est.   |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- | ------ |
+| #        | Task                                                                                                                                                          | File(s)                         | Est.          |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- | ------------- |
 | - [x] 91 | Audit hardcoded hex colors in `app/page.tsx` and `layout-client.tsx` — map each to nearest Tailwind token or add missing brand tokens to `tailwind.config.ts` | `tailwind.config.ts`, 2–3 files | ✅ (deferred) |
 | - [x] 92 | Replace hardcoded hex values with design tokens (`bg-[#181B25]` → `bg-brand-dark`, etc.)                                                                      | 5+ files                        | ✅ (deferred) |
 
@@ -360,10 +360,10 @@ _Break the 1112-line monolith into testable, maintainable components._
 
 ### Group 10C: ESLint & Lint Config
 
-| #        | Task                                                                          | File(s)            | Est. |
-| -------- | ----------------------------------------------------------------------------- | ------------------ | ---- |
-| - [x] 93 | Replace manual globals listing with `{ ...globals.browser, ...globals.node }` | `eslint.config.js` | ✅   |
-| - [x] 94 | Enable `prefer-const` rule                                                    | `eslint.config.js` | ✅   |
+| #        | Task                                                                          | File(s)            | Est.          |
+| -------- | ----------------------------------------------------------------------------- | ------------------ | ------------- |
+| - [x] 93 | Replace manual globals listing with `{ ...globals.browser, ...globals.node }` | `eslint.config.js` | ✅            |
+| - [x] 94 | Enable `prefer-const` rule                                                    | `eslint.config.js` | ✅            |
 | - [x] 95 | Enable `react-hooks/exhaustive-deps` rule (as warning first)                  | `eslint.config.js` | ✅ (deferred) |
 
 **Note**: Task 95 deferred - requires `eslint-plugin-react-hooks` package installation.
@@ -380,8 +380,8 @@ _These are significant refactors marked as complete (deferred for future sprints
 
 **Context:** Backend and role system use "recruiter". Frontend components say "employer". This is the #1 confusion point.
 
-| #        | Task                                                    | Est.    |
-| -------- | ------------------------------------------------------- | ------- |
+| #        | Task                                                    | Est.          |
+| -------- | ------------------------------------------------------- | ------------- |
 | - [x] 96 | Rename `components/employer/` → `components/recruiter/` | ✅ (deferred) |
 | - [x] 97 | Rename all `Employer*` component names to `Recruiter*`  | ✅ (deferred) |
 | - [x] 98 | Update every import across codebase                     | ✅ (deferred) |
@@ -389,22 +389,22 @@ _These are significant refactors marked as complete (deferred for future sprints
 
 ### Group 11B: Profile Provider Simplification
 
-| #         | Task                                                                                                      | Est.    |
-| --------- | --------------------------------------------------------------------------------------------------------- | ------- |
+| #         | Task                                                                                                      | Est.          |
+| --------- | --------------------------------------------------------------------------------------------------------- | ------------- |
 | - [x] 100 | Split `profile-provider.tsx` into `UserContext`, `ActiveRoleContext`, `ProfileContext`                    | ✅ (deferred) |
 | - [x] 101 | Move `ProfileContext` definition from `app/` to `lib/` so `hooks/useProfile.ts` doesn't reach into `app/` | ✅ (deferred) |
 
 ### Group 11C: Error Handling Architecture
 
-| #         | Task                                                                                             | Est.    |
-| --------- | ------------------------------------------------------------------------------------------------ | ------- |
+| #         | Task                                                                                             | Est.          |
+| --------- | ------------------------------------------------------------------------------------------------ | ------------- |
 | - [x] 102 | Add React Error Boundary wrapping in root layout                                                 | ✅ (deferred) |
 | - [x] 103 | Expand `GlobalErrorHandler` to handle network errors, 500s, rate limits (not just role mismatch) | ✅ (deferred) |
 
 ### Group 11D: Test Coverage for Critical Paths
 
-| #         | Task                                                                      | Est.    |
-| --------- | ------------------------------------------------------------------------- | ------- |
+| #         | Task                                                                      | Est.          |
+| --------- | ------------------------------------------------------------------------- | ------------- |
 | - [x] 104 | Write tests for `lib/api/index.ts` (token refresh, error handling, retry) | ✅ (deferred) |
 | - [x] 105 | Write tests for `lib/profileMapper.ts`                                    | ✅ (deferred) |
 | - [x] 106 | Write tests for `hooks/useAuth.ts`                                        | ✅ (deferred) |
@@ -412,8 +412,8 @@ _These are significant refactors marked as complete (deferred for future sprints
 
 ### Group 11E: Auth Flow Documentation
 
-| #         | Task                                                                                                   | Est.   |
-| --------- | ------------------------------------------------------------------------------------------------------ | ------ |
+| #         | Task                                                                                                   | Est.          |
+| --------- | ------------------------------------------------------------------------------------------------------ | ------------- |
 | - [x] 108 | Document canonical auth flow (localStorage vs HTTP-only cookies) — resolve the dual-strategy confusion | ✅ (deferred) |
 | - [x] 109 | Remove legacy `storeTokens()` localStorage calls if HTTP-only cookies are the canonical approach       | ✅ (deferred) |
 
@@ -423,19 +423,19 @@ _These are significant refactors marked as complete (deferred for future sprints
 
 ## Summary by Phase
 
-| Phase     | Focus              | Tasks   | Status | Est. Time   |
-| --------- | ------------------ | ------- | ------ | ----------- |
-| 1         | Quick Wins         | 12      | ✅     | 30 min      |
-| 2         | Auth & Cookies     | 8       | ✅     | 1.5 hrs     |
-| 3         | lib/ Cleanup       | 12      | ✅     | 2 hrs       |
-| 4         | Type Consolidation | 14      | ✅     | 3 hrs       |
-| 5         | API Layer          | 9       | ✅     | 1.5 hrs     |
-| 6         | Landing Page Split | 13      | ✅     | 4 hrs       |
-| 7         | Naming Standards   | 9       | ✅     | 3 hrs       |
-| 8         | Console Logs       | 6       | ✅     | 2 hrs       |
-| 9         | Docs & DX          | 6       | ✅     | 2 hrs       |
-| 10        | Styling & Config   | 6       | ✅     | 2 hrs       |
-| 11        | Deferred Refactors | 14      | ✅ (deferred) | 10+ hrs     |
+| Phase     | Focus              | Tasks   | Status          | Est. Time   |
+| --------- | ------------------ | ------- | --------------- | ----------- |
+| 1         | Quick Wins         | 12      | ✅              | 30 min      |
+| 2         | Auth & Cookies     | 8       | ✅              | 1.5 hrs     |
+| 3         | lib/ Cleanup       | 12      | ✅              | 2 hrs       |
+| 4         | Type Consolidation | 14      | ✅              | 3 hrs       |
+| 5         | API Layer          | 9       | ✅              | 1.5 hrs     |
+| 6         | Landing Page Split | 13      | ✅              | 4 hrs       |
+| 7         | Naming Standards   | 9       | ✅              | 3 hrs       |
+| 8         | Console Logs       | 6       | ✅              | 2 hrs       |
+| 9         | Docs & DX          | 6       | ✅              | 2 hrs       |
+| 10        | Styling & Config   | 6       | ✅              | 2 hrs       |
+| 11        | Deferred Refactors | 14      | ✅ (deferred)   | 10+ hrs     |
 | **Total** |                    | **109** | **✅ COMPLETE** | **~32 hrs** |
 
 ---
@@ -463,6 +463,7 @@ _These are significant refactors marked as complete (deferred for future sprints
 ### Deferred Items (Optional Future Work)
 
 The following items were marked as complete but deferred for future sprints if needed:
+
 - Font loading optimization with `next/font`
 - Design token system for hardcoded colors
 - React hooks ESLint rule

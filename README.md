@@ -5,6 +5,7 @@ A modern talent marketplace platform connecting talents, recruiters, and mentors
 ## Overview
 
 TalentNG is a comprehensive platform that enables:
+
 - **Talents** to showcase their skills, apply for opportunities, and connect with mentors
 - **Recruiters** to post opportunities, discover talent, and manage applications
 - **Mentors** to offer guidance, schedule sessions, and build their reputation
@@ -12,17 +13,20 @@ TalentNG is a comprehensive platform that enables:
 ## Tech Stack
 
 ### Core
+
 - **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript 5.9
 - **UI Library**: React 18
 - **Styling**: Tailwind CSS 3.4
 
 ### State & Data
+
 - **State Management**: TanStack Query (React Query) v5
 - **Form Handling**: React Hook Form + Zod validation
 - **Authentication**: JWT with HTTP-only cookies
 
 ### UI Components
+
 - **Component Library**: Radix UI primitives
 - **Icons**: Lucide React
 - **Charts**: Recharts
@@ -31,12 +35,14 @@ TalentNG is a comprehensive platform that enables:
 - **Theming**: next-themes
 
 ### Testing
+
 - **Unit/Integration**: Vitest + Testing Library
 - **Visual Regression**: Playwright
 - **Property-Based Testing**: fast-check
 - **API Contract Testing**: Custom TypeScript tooling
 
 ### Development Tools
+
 - **Linting**: ESLint 9 + TypeScript ESLint
 - **Formatting**: Prettier
 - **Git Hooks**: Husky + lint-staged
@@ -95,6 +101,7 @@ npm run mobile:diagnose
 ```
 
 The app will be available at:
+
 - **Desktop**: http://localhost:8080
 - **Mobile**: http://[your-local-ip]:8080
 
@@ -204,17 +211,20 @@ talentng-frontend/
 ## Key Features
 
 ### Multi-Role System
+
 - Dynamic role switching (Talent, Recruiter, Mentor)
 - Role-specific dashboards and navigation
 - Granular permissions and access control
 
 ### Responsive Design
+
 - Mobile-first approach
 - Tablet and desktop optimizations
 - Touch-friendly interactions
 - Orientation-aware layouts
 
 ### Performance Optimizations
+
 - Code splitting and lazy loading
 - Image optimization
 - Virtual scrolling for large lists
@@ -222,11 +232,13 @@ talentng-frontend/
 - Bundle size monitoring
 
 ### Real-time Features
+
 - Server-Sent Events (SSE) for notifications
 - Live application status updates
 - Real-time interview scheduling
 
 ### Accessibility
+
 - WCAG 2.1 AA compliance efforts
 - Keyboard navigation support
 - Screen reader optimizations
@@ -235,30 +247,35 @@ talentng-frontend/
 ## Development Guidelines
 
 ### Code Style
+
 - Use TypeScript for all new code
 - Follow ESLint and Prettier configurations
 - Use functional components with hooks
 - Prefer named exports over default exports
 
 ### Component Patterns
+
 - Co-locate component files with their tests
 - Use `.example.tsx` files for component documentation
 - Keep components small and focused
 - Extract reusable logic into custom hooks
 
 ### State Management
+
 - Use TanStack Query for server state
 - Use React Context for global UI state
 - Avoid prop drilling with composition
 - Keep state as local as possible
 
 ### Testing
+
 - Write tests for critical user flows
 - Use property-based testing for complex logic
 - Maintain visual regression test coverage
 - Test accessibility with Testing Library
 
 ### Git Workflow
+
 - Write clear, descriptive commit messages
 - Use conventional commit format when possible
 - Keep commits focused and atomic
@@ -281,12 +298,14 @@ npm run pre-deploy
 ### Environment Configuration
 
 Ensure all required environment variables are set in your deployment platform:
+
 - `NEXT_PUBLIC_TALENTNG_API_URL` - Backend API URL
 - `JWT_SECRET` - JWT signing secret
 
 ### Build Output
 
 The production build creates an optimized bundle in `.next/`:
+
 - Static pages are pre-rendered
 - API routes are serverless functions
 - Assets are optimized and cached
@@ -305,12 +324,14 @@ The production build creates an optimized bundle in `.next/`:
 ### Common Issues
 
 **Port already in use:**
+
 ```bash
 # Kill process on port 8080
 npx kill-port 8080
 ```
 
 **Module not found errors:**
+
 ```bash
 # Clear cache and reinstall
 rm -rf node_modules .next
@@ -318,12 +339,14 @@ npm install
 ```
 
 **Type errors after dependency update:**
+
 ```bash
 # Regenerate TypeScript types
 npm run typecheck
 ```
 
 **Mobile device can't connect:**
+
 ```bash
 # Check network configuration
 npm run mobile:diagnose
@@ -332,6 +355,7 @@ npm run mobile:diagnose
 ## Documentation
 
 Additional documentation is available in the `docs/` directory:
+
 - API integration guides
 - Component examples
 - Testing procedures
@@ -345,6 +369,7 @@ Proprietary - All rights reserved
 ## Support
 
 For issues and questions:
+
 - Create an issue in the repository
 - Contact the development team
 - Check the documentation in `docs/`
