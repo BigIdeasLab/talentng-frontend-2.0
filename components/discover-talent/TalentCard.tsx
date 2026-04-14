@@ -11,7 +11,10 @@ interface TalentCardProps {
   basePath?: string; // Optional base path for navigation (defaults to /discover-talent)
 }
 
-export function TalentCard({ talent, basePath = "/discover-talent" }: TalentCardProps) {
+export function TalentCard({
+  talent,
+  basePath = "/discover-talent",
+}: TalentCardProps) {
   const router = useRouter();
 
   const handleViewProfile = () => {

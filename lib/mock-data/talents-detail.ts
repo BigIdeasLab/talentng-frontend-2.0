@@ -58,7 +58,8 @@ export const MOCK_TALENT_DETAILS: Record<string, TalentPublicData> = {
       {
         id: "service-1",
         title: "Mobile App UI/UX Design",
-        about: "Complete mobile app design from wireframes to high-fidelity mockups. Includes user research, prototyping, and design system creation.",
+        about:
+          "Complete mobile app design from wireframes to high-fidelity mockups. Includes user research, prototyping, and design system creation.",
         price: "$2,500 - $5,000",
         images: [
           "https://api.builder.io/api/v1/image/assets/TEMP/d7a73bf68c36125971c3bb78d8c11455bc32bc8d?width=490",
@@ -70,7 +71,8 @@ export const MOCK_TALENT_DETAILS: Record<string, TalentPublicData> = {
       {
         id: "service-2",
         title: "Design System Creation",
-        about: "Build scalable design systems with comprehensive component libraries, style guides, and documentation for your product.",
+        about:
+          "Build scalable design systems with comprehensive component libraries, style guides, and documentation for your product.",
         price: "$3,000 - $7,000",
         images: [
           "https://api.builder.io/api/v1/image/assets/TEMP/298eb50fb8577b41f6d5b1a3cbb571ec8ca50903?width=488",
@@ -121,7 +123,8 @@ export const MOCK_TALENT_DETAILS: Record<string, TalentPublicData> = {
       {
         id: "service-3",
         title: "Business Website Design",
-        about: "Professional website design for small to medium businesses. Includes responsive design, SEO optimization, and content management system setup.",
+        about:
+          "Professional website design for small to medium businesses. Includes responsive design, SEO optimization, and content management system setup.",
         price: "$1,500 - $3,500",
         images: [
           "https://api.builder.io/api/v1/image/assets/TEMP/abafb32ec62d33c6dc1db2acdfdb79d6322daeb8?width=490",

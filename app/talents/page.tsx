@@ -275,7 +275,11 @@ export default function TalentsPage() {
               ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                   {talents.map((talent) => (
-                    <TalentCard key={talent.userId} talent={talent} basePath="/talents" />
+                    <TalentCard
+                      key={talent.userId}
+                      talent={talent}
+                      basePath="/talents"
+                    />
                   ))}
                 </div>
               )}

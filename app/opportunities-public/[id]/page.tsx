@@ -47,7 +47,7 @@ export default async function OpportunityDetailPage({
   params,
 }: OpportunityDetailPageProps) {
   const { id } = await params;
-  
+
   let opportunityData;
 
   try {
@@ -88,7 +88,7 @@ export default async function OpportunityDetailPage({
   } catch (error) {
     // Fallback to mock data if API fails
     const mockData = getOpportunityPublicProfile(id);
-    
+
     if (mockData) {
       opportunityData = mockData;
     } else {
